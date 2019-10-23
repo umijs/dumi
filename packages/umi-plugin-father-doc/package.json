@@ -2,7 +2,7 @@
   "name": "umi-plugin-father-doc",
   "version": "0.0.1",
   "description": "",
-  "main":  "lib/index.js",
+  "main": "lib/index.js",
   "files": [
     "dist",
     "lib",
