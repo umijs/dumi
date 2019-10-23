@@ -1,0 +1,22 @@
+{
+  "name": "umi-plugin-father-doc",
+  "version": "0.0.1",
+  "description": "",
+  "main":  "lib/index.js",
+  "files": [
+    "dist",
+    "lib",
+    "src"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/umijs/father-doc",
+    "directory": "umi-plugin-father-doc"
+  },
+  "homepage": "http://github.com/umijs/father-doc",
+  "bugs": "http://github.com/umijs/father-doc/issues",
+  "authors": [
+    "ycjcl868 <chaolinjin@gmail.com> (https://github.com/ycjcl868)"
+  ],
+  "license": "MIT"
+}

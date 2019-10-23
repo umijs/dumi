@@ -1,0 +1,12 @@
+/node_modules
+/coverage
+/packages/*/lib
+/packages/*/node_modules
+/packages/*/.local
+/.local
+/packages/*/src/fixtures/**/node_modules/.cache
+/packages/umi-plugin-father-doc/src/fixtures/build/*/dist
+/packages/father-doc/src/fixtures/e2e/normal/.doc
+/packages/father-doc/src/fixtures/e2e/normal/.docz
+/.changelog
+yarn.lock

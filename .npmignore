@@ -1,0 +1,8 @@
+/packages/*/src/fixtures
+/packages/*/node_modules
+/packages/*/.local
+/packages/**/*.test.ts
+/packages/**/*.test.js
+/node_modules
+/coverage
+/.idea

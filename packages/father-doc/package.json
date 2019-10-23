@@ -1,0 +1,20 @@
+{
+  "name": "father-doc",
+  "version": "0.0.1",
+  "description": "father-doc",
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/umijs/father-doc",
+    "directory": "father-doc"
+  },
+  "homepage": "http://github.com/umijs/father-doc",
+  "bugs": "http://github.com/umijs/father-doc/issues",
+  "dependencies": {
+    "umi": "^2.10.7"
+  },
+  "authors": [
+    "ycjcl868 <chaolinjin@gmail.com> (https://github.com/ycjcl868)"
+  ],
+  "license": "MIT"
+}
