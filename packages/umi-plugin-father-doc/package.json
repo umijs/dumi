@@ -16,7 +16,11 @@
   "homepage": "http://github.com/umijs/father-doc",
   "bugs": "http://github.com/umijs/father-doc/issues",
   "authors": [
-    "ycjcl868 <chaolinjin@gmail.com> (https://github.com/ycjcl868)"
+    "ycjcl868 <chaolinjin@gmail.com> (https://github.com/ycjcl868)",
+    "PeachScript <scdzwyxst@gmail.com> (https://github.com/PeachScript)"
   ],
+  "dependencies": {
+    "umi-types": "^0.5.4"
+  },
   "license": "MIT"
 }
