@@ -10,11 +10,13 @@
   },
   "homepage": "http://github.com/umijs/father-doc",
   "bugs": "http://github.com/umijs/father-doc/issues",
-  "dependencies": {
-    "umi": "^2.10.7"
-  },
   "authors": [
-    "ycjcl868 <chaolinjin@gmail.com> (https://github.com/ycjcl868)"
+    "ycjcl868 <chaolinjin@gmail.com> (https://github.com/ycjcl868)",
+    "PeachScript <scdzwyxst@gmail.com> (https://github.com/PeachScript)"
   ],
+  "dependencies": {
+    "umi": "^2.11.1",
+    "umi-plugin-father-doc": "0.0.1"
+  },
   "license": "MIT"
 }
