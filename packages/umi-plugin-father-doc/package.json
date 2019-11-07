@@ -20,7 +20,13 @@
     "PeachScript <scdzwyxst@gmail.com> (https://github.com/PeachScript)"
   ],
   "dependencies": {
-    "umi-types": "^0.5.4"
+    "@mapbox/rehype-prism": "^0.3.1",
+    "rehype-stringify": "^6.0.0",
+    "remark-parse": "^7.0.1",
+    "remark-rehype": "^5.0.0",
+    "umi-types": "^0.5.4",
+    "unified": "^8.4.1",
+    "unist-util-visit": "^2.0.0"
   },
   "license": "MIT"
 }

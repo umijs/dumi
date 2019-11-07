@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { IRoute, IApi } from 'umi-types';
+import transformer from '../transformer';
 
 const DIST_DIR = '.father-doc';
 
@@ -31,8 +32,8 @@ export default (paths: IApi['paths'], routes: IRoute[]) => {
 
     switch (cPathParsed.ext) {
       case '.md':
-        // todo: parse markdown file content
-        componentContent = `export default () => 'Hello father-doc! (${cPath})';`;
+        // todo: handle YAML config
+        componentContent = transformer.markdown(componentContent).content;
         break;
       default:
     }
