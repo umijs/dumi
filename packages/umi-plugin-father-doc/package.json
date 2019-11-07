@@ -20,6 +20,13 @@
     "PeachScript <scdzwyxst@gmail.com> (https://github.com/PeachScript)"
   ],
   "dependencies": {
+    "@babel/core": "^7.7.2",
+    "@babel/generator": "^7.7.2",
+    "@babel/plugin-transform-typescript": "^7.7.2",
+    "@babel/preset-env": "^7.7.1",
+    "@babel/preset-react": "^7.7.0",
+    "@babel/traverse": "^7.7.2",
+    "@babel/types": "^7.7.2",
     "@mapbox/rehype-prism": "^0.3.1",
     "rehype-stringify": "^6.0.0",
     "remark-parse": "^7.0.1",

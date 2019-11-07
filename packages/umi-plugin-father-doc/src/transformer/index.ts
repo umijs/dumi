@@ -6,11 +6,11 @@ export interface TransformResult {
 }
 
 export default {
-  markdown(raw: string): TransformResult {
+  markdown(raw: string, dir: string): TransformResult {
     return {
       content: `export default function () {
         return (
-          <div>${remark(raw)}</div>
+          <div>${remark(raw, dir)}</div>
         )
       }`,
       config: {},

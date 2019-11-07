@@ -1,15 +1,17 @@
 import unified from 'unified';
-import parse from 'remark-parse';
-import rehype from 'remark-rehype';
 import stringify from 'rehype-stringify';
 import prism from '@mapbox/rehype-prism';
+import parse from './parse';
+import rehype from './rehype';
 import jsx from './jsx';
 
-const processor = unified()
-  .use(parse)
-  .use(rehype)
-  .use(stringify, { allowDangerousHTML: true })
-  .use(prism)
-  .use(jsx);
+export default (raw: string, dir: string) => {
+  const processor = unified()
+    .use(parse)
+    .use(rehype, { dir })
+    .use(stringify, { allowDangerousHTML: true })
+    .use(prism)
+    .use(jsx);
 
-export default (raw: string) => processor.processSync(raw).contents as string;
+  return processor.processSync(raw).contents as string;
+};

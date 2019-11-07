@@ -33,7 +33,7 @@ export default (paths: IApi['paths'], routes: IRoute[]) => {
     switch (cPathParsed.ext) {
       case '.md':
         // todo: handle YAML config
-        componentContent = transformer.markdown(componentContent).content;
+        componentContent = transformer.markdown(componentContent, cPathParsed.dir).content;
         break;
       default:
     }
