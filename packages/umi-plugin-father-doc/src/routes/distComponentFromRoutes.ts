@@ -29,13 +29,19 @@ export default (paths: IApi['paths'], routes: IRoute[]) => {
     }.jsx`;
     const distFilePath = path.join(distPath, filename);
     let componentContent = fs.readFileSync(cPath).toString();
+    let result;
 
     switch (cPathParsed.ext) {
       case '.md':
-        // todo: handle YAML config
-        componentContent = transformer.markdown(componentContent, cPathParsed.dir).content;
+        result = transformer.markdown(componentContent, cPathParsed.dir);
+        componentContent = result.content;
         break;
       default:
+    }
+
+    // dynamic title support
+    if (result && result.config.frontmatter.title) {
+      route.title = result.config.frontmatter.title;
     }
 
     // distribute component to temp dir
