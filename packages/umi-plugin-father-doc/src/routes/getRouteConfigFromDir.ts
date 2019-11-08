@@ -11,10 +11,10 @@ function isValidPath(pathname: string) {
 }
 
 /**
- * convert TheComponent to the-component
+ * convert TheComponent to the-component and discard ext
  */
-function camelCase2Hyphenated(name: string) {
-  return name.replace( /([a-z])([A-Z])/g, '$1-$2' ).toLowerCase();
+function filenameToPath(name: string) {
+  return name.replace( /([a-z])([A-Z])/g, '$1-$2' ).replace(/\.\w+$/, '').toLowerCase();
 }
 
 /**
@@ -28,7 +28,7 @@ function findChildRoutes(absPath: string, parentRoutePath: string = '/'): IRoute
 
   files.forEach((file) => {
     const filePath = path.join(absPath, file);
-    const routePath = path.join(parentRoutePath, camelCase2Hyphenated(file))
+    const routePath = path.join(parentRoutePath, filenameToPath(file))
     const fileParsed = path.parse(file);
 
     if (fs.statSync(filePath).isDirectory()) {

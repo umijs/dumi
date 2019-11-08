@@ -15,7 +15,7 @@ export default {
     return {
       content: `export default function () {
         return (
-          <div class="markdown-body">${result.contents}</div>
+          <div className="markdown-body">${result.contents}</div>
         )
       }`,
       config: {

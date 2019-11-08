@@ -20,10 +20,9 @@ export default (paths: IApi['paths'], routes: IRoute[]) => {
     const filename = `${
       filePrefix
     }${
-      cPathParsed
-        .dir
-        .replace(paths.absPagesPath, '') // discard base path
-        .replace(/^(\/|\\)/, '') // discard head dir separator
+      path
+        // get relative path and discard ext
+        .relative(paths.absPagesPath, path.join(cPathParsed.dir, cPathParsed.name))
         .split(/\/|\\/)
         .join('__')
     }.jsx`;

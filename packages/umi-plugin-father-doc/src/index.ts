@@ -16,7 +16,7 @@ export default function (api: IApi) {
     // insert TitleWrapper for routes
     childRoutes.forEach((item) => {
       // see also: https://github.com/umijs/umi/blob/master/packages/umi-plugin-react/src/plugins/title/index.js#L37
-      if (item.title && (!item.routes || !item.routes.length)) {
+      if (!item.routes || !item.routes.length) {
         item.Routes = [
           ...(item.Routes || []),
           path.relative(api.paths.cwd, path.join(api.paths.absTmpDirPath, './TitleWrapper.jsx')),
