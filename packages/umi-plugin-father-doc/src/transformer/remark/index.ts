@@ -6,6 +6,7 @@ import parse from './parse';
 import rehype from './rehype';
 import yaml from './yaml';
 import jsx from './jsx';
+import isolation from './isolation';
 
 export default (raw: string, dir: string) => {
   const processor = unified()
@@ -15,7 +16,8 @@ export default (raw: string, dir: string) => {
     .use(rehype, { dir })
     .use(stringify, { allowDangerousHTML: true })
     .use(prism)
-    .use(jsx);
+    .use(jsx)
+    .use(isolation);
 
   return processor.processSync(raw);
 };

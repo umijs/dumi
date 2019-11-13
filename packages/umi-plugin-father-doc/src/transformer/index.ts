@@ -14,9 +14,7 @@ export default {
 
     return {
       content: `export default function () {
-        return (
-          <div className="markdown-body">${result.contents}</div>
-        )
+        return <>${result.contents}</>;
       }`,
       config: {
         frontmatter: {},
