@@ -7,15 +7,17 @@ import prism from '@mapbox/rehype-prism';
 import parse from './parse';
 import rehype from './rehype';
 import yaml from './yaml';
+import externalDemo from './externalDemo';
 import jsx from './jsx';
 import isolation from './isolation';
 
-export default (raw: string, dir: string) => {
+export default (raw: string, fileAbsDir: string) => {
   const processor = unified()
     .use(parse)
     .use(frontmatter)
     .use(yaml)
-    .use(rehype, { dir })
+    .use(externalDemo, { fileAbsDir })
+    .use(rehype, { dir: fileAbsDir })
     .use(stringify, { allowDangerousHTML: true })
     .use(slug)
     .use(headings, {

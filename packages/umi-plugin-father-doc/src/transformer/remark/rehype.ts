@@ -7,7 +7,7 @@ import transformer, { PREVIEWER_NAME } from '../previewer';
  */
 function previewerHandler(h, node) {
   const code = `{(function () {
-    ${transformer(node.value, this.dir, node.lang === 'tsx')}
+    ${transformer(node.value, node.basePath || this.dir, node.lang === 'tsx')}
     return <${PREVIEWER_NAME} />;
   })()}`
   ;
@@ -20,5 +20,6 @@ export default (options: { [key: string]: any } = {}) => {
     handlers: {
       previewer: previewerHandler.bind({ dir: options.dir }),
     },
+    allowDangerousHTML: true,
   }, options));
 }
