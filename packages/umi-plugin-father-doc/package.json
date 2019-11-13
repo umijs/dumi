@@ -29,6 +29,8 @@
     "@babel/types": "^7.7.2",
     "@mapbox/rehype-prism": "^0.3.1",
     "js-yaml": "^3.13.1",
+    "rehype-autolink-headings": "^2.0.5",
+    "rehype-slug": "^2.0.3",
     "rehype-stringify": "^6.0.0",
     "remark-frontmatter": "^1.3.2",
     "remark-parse": "^7.0.1",
