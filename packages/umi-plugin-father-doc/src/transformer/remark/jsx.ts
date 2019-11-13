@@ -1,19 +1,21 @@
 import { Node } from 'unist';
-import visit from 'unist-util-visit';
+import visit from 'unist-util-visit-parents';
 
 function hasSubClassName(className: string[], subCls: string) {
   return (className || []).find(cls => cls.indexOf(subCls) > -1);
 }
 
-const visitor = (node, i, parent) => {
+const visitor = (node, ancestors) => {
+  const parentNode = ancestors[ancestors.length - 1];
+  const closestCodeAncestor = ancestors.slice().reverse().find(ancestor => ancestor.tagName === 'code');
+
   // escape { & } for JSX
   node.value = node.value.replace(/([{}])/g, '{\'$1\'}');
 
-  // convert \n to <br> in code block for JSX
+  // convert \n to <br> in code block for JSX, for render indents & newlines
   if (
-    parent
-    && parent.tagName === 'code'
-    && hasSubClassName(parent.properties.className, 'language-')
+    closestCodeAncestor
+    && hasSubClassName(closestCodeAncestor.properties.className, 'language-')
     && node.type === 'text'
   ) {
     const replace = node.value.split('\n').reduce((result, str, isNotFirst) => {
@@ -29,7 +31,7 @@ const visitor = (node, i, parent) => {
     }, []);
 
     // replace original children
-    parent.children.splice(i, 1, ...replace);
+    parentNode.children.splice(parentNode.children.indexOf(node), 1, ...replace);
   }
 }
 

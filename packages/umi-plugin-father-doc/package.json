@@ -36,7 +36,8 @@
     "umi-plugin-react": "^1.13.1",
     "umi-types": "^0.5.4",
     "unified": "^8.4.1",
-    "unist-util-visit": "^2.0.0"
+    "unist-util-visit": "^2.0.1",
+    "unist-util-visit-parents": "^3.0.1"
   },
   "license": "MIT"
 }
