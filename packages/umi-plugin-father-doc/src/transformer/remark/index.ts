@@ -17,7 +17,7 @@ export default (raw: string, fileAbsDir: string) => {
     .use(frontmatter)
     .use(yaml)
     .use(externalDemo, { fileAbsDir })
-    .use(rehype, { dir: fileAbsDir })
+    .use(rehype, { fileAbsDir })
     .use(stringify, { allowDangerousHTML: true })
     .use(slug)
     .use(headings, {

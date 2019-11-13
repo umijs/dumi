@@ -35,6 +35,6 @@ const visitor = (node, ancestors) => {
   }
 }
 
-export default () => (tree: Node) => {
-  visit(tree, 'text', visitor);
+export default () => (ast: Node) => {
+  visit(ast, 'text', visitor);
 }

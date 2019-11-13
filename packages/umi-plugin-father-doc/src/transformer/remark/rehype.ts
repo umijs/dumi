@@ -7,7 +7,7 @@ import transformer, { PREVIEWER_NAME } from '../previewer';
  */
 function previewerHandler(h, node) {
   const code = `{(function () {
-    ${transformer(node.value, node.basePath || this.dir, node.lang === 'tsx')}
+    ${transformer(node.value, node.basePath || this.fileAbsDir, node.lang === 'tsx')}
     return <${PREVIEWER_NAME} />;
   })()}`
   ;
@@ -18,7 +18,7 @@ function previewerHandler(h, node) {
 export default (options: { [key: string]: any } = {}) => {
   return rehype(Object.assign({
     handlers: {
-      previewer: previewerHandler.bind({ dir: options.dir }),
+      previewer: previewerHandler.bind({ fileAbsDir: options.fileAbsDir }),
     },
     allowDangerousHTML: true,
   }, options));

@@ -34,6 +34,6 @@ function visitor(node) {
   }, []);
 }
 
-export default (options: { [key: string]: any } = {}) => (tree: Node) => {
-  visit(tree, 'root', visitor.bind({ className: options.className || 'markdown-body' }));
+export default (options: { [key: string]: any } = {}) => (ast: Node) => {
+  visit(ast, 'root', visitor.bind({ className: options.className || 'markdown-body' }));
 }
