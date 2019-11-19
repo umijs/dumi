@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "build": "umi-tools build",
+    "build": "father-build build",
     "changelog": "lerna-changelog",
     "clean": "lerna clean -y",
     "test": "umi-test --coverage",
@@ -11,10 +11,10 @@
   },
   "devDependencies": {
     "@types/jest": "^24.0.13",
+    "father-build": "^1.14.2",
     "lerna": "^3.6.0",
     "lerna-changelog": "^0.8.2",
     "umi-test": "^1.5.12",
-    "umi-tools": "^0.4.0",
     "umi-types": "^0.5.3"
   }
 }
