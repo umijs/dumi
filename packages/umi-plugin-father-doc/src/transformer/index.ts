@@ -13,7 +13,7 @@ export default {
     const result = remark(raw, dir);
 
     return {
-      content: `export default function () {
+      content: `import React from 'react';export default function () {
         return <>${result.contents}</>;
       }`,
       config: {

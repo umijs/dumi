@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { IRoute, IApi } from 'umi-types';
-import distComponentFromRoutes from './distComponentFromRoutes';
+import getFrontMatter from './getFrontMatter';
 
 /**
  * discard .dirname & _dirname
@@ -53,7 +53,13 @@ function findChildRoutes(absPath: string, parentRoutePath: string = '/'): IRoute
 export default (paths: IApi['paths']): IRoute[] => {
   const routes = findChildRoutes(paths.absPagesPath);
 
-  distComponentFromRoutes(paths, routes);
+  routes.forEach((route) => {
+    const yaml = getFrontMatter(route.component as string);
+
+    if (yaml.title) {
+      route.title = yaml.title;
+    }
+  });
 
   return routes;
 };

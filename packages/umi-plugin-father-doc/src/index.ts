@@ -29,4 +29,17 @@ export default function (api: IApi) {
 
     return result;
   });
+
+  api.modifyDefaultConfig(config => ({
+    ...config,
+    urlLoaderExcludes: [/.md$/],
+  }));
+
+  api.chainWebpackConfig(config => {
+    config.module
+      .rule('md')
+      .test(/\.md$/)
+      .use('father-doc')
+      .loader(require.resolve('./loader'))
+  });
 }
