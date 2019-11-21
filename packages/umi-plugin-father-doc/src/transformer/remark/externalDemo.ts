@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import visit from 'unist-util-visit';
+import transformer, { TransformResult } from '../index';
 
 const DEMO_TOKEN_EXP = /^\s*<(code)[^>]+src="?([^ ">]+)"?/;
 
@@ -14,13 +15,20 @@ export default (options: { [key: string]: any } = {}) => (ast) => {
         const absPath = demoPath.startsWith('/') ? demoPath : path.join(options.fileAbsDir, demoPath);
 
         if (fs.existsSync(absPath)) {
+          const lang = absPath.match(/\.(\w+)$/)[1];
+          const processer = transformer[lang];
           // read external demo content and convert node to previewer
-          const content = fs.readFileSync(absPath).toString();
+          const result: TransformResult = transformer[lang](fs.readFileSync(absPath).toString());
 
-          node.type = 'previewer';
-          node.lang = absPath.match(/\.(\w+)$/)[1];
-          node.value = content;
-          node.basePath = path.parse(absPath).dir;
+          if (processer) {
+            node.type = 'previewer';
+            node.lang = lang;
+            node.value = result.content;
+            node.meta = result.config;
+            node.basePath = path.parse(absPath).dir;
+          } else {
+            throw new Error(`[External-Demo Error]: unsupported file type: ${lang}`);
+          }
         } else {
           throw new Error(`[External-Demo Error]: cannot find demo in ${absPath}`);
         }
