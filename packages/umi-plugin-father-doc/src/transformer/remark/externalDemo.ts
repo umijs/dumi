@@ -2,13 +2,13 @@ import fs from 'fs';
 import path from 'path';
 import visit from 'unist-util-visit';
 
-const DEMO_TOKEN_EXP = /^\s*<code[^>]+src="?([^ ">]+)"?/;
+const DEMO_TOKEN_EXP = /^\s*<(code)[^>]+src="?([^ ">]+)"?/;
 
 export default (options: { [key: string]: any } = {}) => (ast) => {
   visit(ast, 'html', (node) => {
     if (typeof node.value === 'string') {
       const matches = node.value.match(DEMO_TOKEN_EXP) || [];
-      const demoPath = matches[1];
+      const demoPath = matches[2];
 
       if (demoPath) {
         const absPath = demoPath.startsWith('/') ? demoPath : path.join(options.fileAbsDir, demoPath);
@@ -24,7 +24,7 @@ export default (options: { [key: string]: any } = {}) => (ast) => {
         } else {
           throw new Error(`[External-Demo Error]: cannot find demo in ${absPath}`);
         }
-      } else {
+      } else if (matches[1]) {
         throw new Error(`[External-Demo Error]: expected a code element with valid src property but got ${node.value}`);
       }
     }
