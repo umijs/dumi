@@ -13,7 +13,7 @@ function isValidPath(pathname: string) {
 /**
  * convert TheComponent to the-component and discard ext
  */
-function filenameToPath(name: string) {
+export function filenameToPath(name: string) {
   return name.replace( /([a-z])([A-Z])/g, '$1-$2' ).replace(/\.\w+$/, '').toLowerCase();
 }
 
