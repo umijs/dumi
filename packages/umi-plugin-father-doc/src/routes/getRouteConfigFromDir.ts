@@ -50,8 +50,8 @@ function findChildRoutes(absPath: string, parentRoutePath: string = '/'): IRoute
   return routes;
 }
 
-export default (paths: IApi['paths']): IRoute[] => {
-  const routes = findChildRoutes(paths.absPagesPath);
+export default (absPath: string): IRoute[] => {
+  const routes = findChildRoutes(absPath);
 
   routes.forEach((route) => {
     const yaml = getFrontMatter(route.component as string);
