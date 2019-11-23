@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { IRoute, IApi } from 'umi-types';
-import getFrontMatter from './getFrontMatter';
+import { IRoute } from 'umi-types';
 
 /**
  * discard .dirname & _dirname
@@ -23,43 +22,50 @@ export function filenameToPath(name: string) {
  * @param parentRoutePath   route path that need to join current
  */
 function findChildRoutes(absPath: string, parentRoutePath: string = '/'): IRoute[] {
-  const files = fs.readdirSync(absPath).filter(isValidPath);
+  const mixture = fs.readdirSync(absPath).filter(isValidPath);
   const routes: IRoute[] = [];
+  // separate files & child directories
+  const [files, dirs] = mixture.reduce((result, item) => {
+    if (fs.statSync(path.join(absPath, item)).isDirectory()) {
+      result[1].push(item);
+    } else {
+      result[0].push(item);
+    }
 
+    return result;
+  }, [[], []]);
+
+  // make sure file is front of child directory in routes
   files.forEach((file) => {
     const filePath = path.join(absPath, file);
     const routePath = path.join(parentRoutePath, filenameToPath(file))
     const fileParsed = path.parse(file);
 
-    if (fs.statSync(filePath).isDirectory()) {
-      // continue to find child routes
-      routes.push(...findChildRoutes(
-        filePath,
-        routePath,
-      ))
-    } else if (fileParsed.ext === '.md') {
-      // add route if there has .md file
-      routes.push({
-        path: fileParsed.name === 'index' ? parentRoutePath : routePath,
-        component: filePath,
-        exact: true,
-      });
+    switch (fileParsed.ext) {
+      case '.md':
+        routes.push({
+          path: fileParsed.name === 'index' ? parentRoutePath : routePath,
+          component: filePath,
+          exact: true,
+        });
+        break;
+
+      default:
     }
+  });
+
+  // continue to find child routes
+  dirs.forEach((dir) => {
+    const dirAbsPath = path.join(absPath, dir);
+    const routePath = path.join(parentRoutePath, filenameToPath(dir))
+
+    routes.push(...findChildRoutes(
+      dirAbsPath,
+      routePath,
+    ))
   });
 
   return routes;
 }
 
-export default (absPath: string): IRoute[] => {
-  const routes = findChildRoutes(absPath);
-
-  routes.forEach((route) => {
-    const yaml = getFrontMatter(route.component as string);
-
-    if (yaml.title) {
-      route.title = yaml.title;
-    }
-  });
-
-  return routes;
-};
+export default (absPath: string): IRoute[] => findChildRoutes(absPath);
