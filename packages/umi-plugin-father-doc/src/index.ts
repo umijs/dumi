@@ -1,10 +1,28 @@
 import path from 'path';
-import { IApi } from 'umi-types';
+import { IApi, IRoute } from 'umi-types';
 import getRouteConfig from './routes/getRouteConfig';
 import getMenuFromRoutes from'./routes/getMenuFromRoutes';
 
-export default function (api: IApi) {
-  const routeConfig = getRouteConfig(api.paths);
+export interface IFatherDocOpts {
+  name?: string;
+  logo?: URL;
+  include?: string[];
+  routes?: {
+    path: IRoute['path'];
+    component: IRoute['component'];
+    redirect: IRoute['redirect'];
+    [key: string]: any;
+  }[];
+}
+
+export default function (api: IApi, opts: IFatherDocOpts) {
+  // apply default options
+  opts = Object.assign({
+    name: require(path.join(api.paths.cwd, 'package.json')).name,
+    include: ['docs'],
+  }, (api.config as any).doc, opts);
+
+  const routeConfig = getRouteConfig(api.paths, opts);
 
   api.registerPlugin({
     id: require.resolve('umi-plugin-react'),
