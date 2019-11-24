@@ -1,6 +1,6 @@
 // Todo: fix definition files cannot be identified problem
-/// <reference path="../types/global.d.ts" />
-/// <reference path="../types/typings.d.ts" />
+/// <reference path="../typings/global.d.ts" />
+/// <reference path="../typings/typings.d.ts" />
 
 import React, { Component, MouseEvent } from 'react';
 import { IMenuItem } from '../../routes/getMenuFromRoutes';
