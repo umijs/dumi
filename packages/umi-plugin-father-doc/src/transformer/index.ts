@@ -1,8 +1,16 @@
+import path from 'path';
 import { parseText } from 'sylvanas';
 import getYamlConfig from 'umi-build-dev/lib/routes/getYamlConfig';
 import remark from './remark';
 
 const FRONT_COMMENT_EXP = /^\n*\/\*[^]+?\s*\*\/\n*/;
+const MD_WRAPPER = `
+import React from 'react';
+import Alert from '${path.join(__dirname, '../themes/default/alert.js')}';
+
+export default function () {
+  return <>$CONTENT</>;
+}`
 
 export interface TransformResult {
   content: string;
@@ -17,9 +25,7 @@ export default {
     const result = remark(raw, dir);
 
     return {
-      content: `import React from 'react';export default function () {
-        return <>${result.contents}</>;
-      }`,
+      content: MD_WRAPPER.replace('$CONTENT', result.contents as string),
       config: {
         frontmatter: {},
         ...result.data as TransformResult['config'],
