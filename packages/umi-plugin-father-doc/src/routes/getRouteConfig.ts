@@ -7,7 +7,7 @@ import getRouteConfigFromDir from './getRouteConfigFromDir';
 export default (paths: IApi['paths']): IRoute[] => {
   const config = [{
     path: '/',
-    component: path.join(__dirname, '../../src/fixtures/layout.jsx'),
+    component: path.join(__dirname, '../themes/default/layout.js'),
     routes: [],
   }];
   const docsPath = path.join(paths.cwd, 'docs');
