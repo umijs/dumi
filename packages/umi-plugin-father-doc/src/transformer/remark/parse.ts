@@ -15,8 +15,8 @@ blockTokenizers.fencedCode = function (...args) {
       // clear useless meta if the lang with pure modifier
       result.meta = result.meta.replace(/ ?\| ?pure/, '');
     } else {
-      // customize type (use for rehype previewer handler)
-      result.type = 'previewer';
+      // customize type (use for rehype demo handler)
+      result.type = 'demo';
     }
   }
 

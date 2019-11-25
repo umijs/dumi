@@ -4,7 +4,7 @@ import * as types from '@babel/types';
 import traverse from '@babel/traverse';
 import generator from '@babel/generator';
 
-export const PREVIEWER_NAME = 'FatherDocPreviewer';
+export const DEMO_COMPONENT_NAME = 'FatherDocDemo';
 
 /**
  * transform code block statments to preview
@@ -61,12 +61,12 @@ export default (raw: string, dir: string, isTSX?: boolean) => {
     body.push(returnStatement);
   }
 
-  // create preview function
-  const previewFunction = types.functionDeclaration(
-    types.identifier(PREVIEWER_NAME),
+  // create demo function
+  const demoFunction = types.functionDeclaration(
+    types.identifier(DEMO_COMPONENT_NAME),
     [],
     types.blockStatement(body),
   );
 
-  return generator(types.program([previewFunction]), {}, raw).code;
+  return generator(types.program([demoFunction]), {}, raw).code;
 }

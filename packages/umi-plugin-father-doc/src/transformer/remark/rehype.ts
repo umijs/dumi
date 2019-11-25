@@ -1,14 +1,14 @@
 import rehype from 'remark-rehype';
 import unist from 'unist-builder';
-import transformer, { PREVIEWER_NAME } from '../previewer';
+import transformer, { DEMO_COMPONENT_NAME } from '../demo';
 
 /**
- * handle previewer type node from parse
+ * handle demo type node from parse
  */
-function previewerHandler(h, node) {
+function demoHandler(h, node) {
   const code = `{(function () {
     ${transformer(node.value, node.basePath || this.fileAbsDir, node.lang === 'tsx')}
-    return <${PREVIEWER_NAME} />;
+    return <${DEMO_COMPONENT_NAME} />;
   })()}`
   ;
 
@@ -18,7 +18,7 @@ function previewerHandler(h, node) {
 export default (options: { [key: string]: any } = {}) => {
   return rehype(Object.assign({
     handlers: {
-      previewer: previewerHandler.bind({ fileAbsDir: options.fileAbsDir }),
+      demo: demoHandler.bind({ fileAbsDir: options.fileAbsDir }),
     },
     allowDangerousHTML: true,
   }, options));

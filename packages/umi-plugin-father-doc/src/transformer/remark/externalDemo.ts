@@ -17,11 +17,11 @@ export default (options: { [key: string]: any } = {}) => (ast) => {
         if (fs.existsSync(absPath)) {
           const lang = absPath.match(/\.(\w+)$/)[1];
           const processer = transformer[lang];
-          // read external demo content and convert node to previewer
+          // read external demo content and convert node to demo node
           const result: TransformResult = transformer[lang](fs.readFileSync(absPath).toString());
 
           if (processer) {
-            node.type = 'previewer';
+            node.type = 'demo';
             node.lang = lang;
             node.value = result.content;
             node.meta = result.config;
