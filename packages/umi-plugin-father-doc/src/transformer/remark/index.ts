@@ -17,7 +17,7 @@ export default (raw: string, fileAbsDir: string) => {
     .use(parse)
     .use(frontmatter)
     .use(yaml)
-    .use(externalDemo, { fileAbsDir })
+    .use(externalDemo)
     .use(rehype)
     .use(stringify, { allowDangerousHTML: true })
     .use(slug)
@@ -31,9 +31,11 @@ export default (raw: string, fileAbsDir: string) => {
       properties: { className: 'anchor' },
     })
     .use(prism)
-    .use(previewer, { fileAbsDir })
+    .use(previewer)
     .use(jsx)
     .use(isolation);
+
+  processor.data('fileAbsDir', fileAbsDir);
 
   return processor.processSync(raw);
 };
