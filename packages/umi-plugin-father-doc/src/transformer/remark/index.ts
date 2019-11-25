@@ -8,6 +8,7 @@ import parse from './parse';
 import rehype from './rehype';
 import yaml from './yaml';
 import externalDemo from './externalDemo';
+import previewer from './previewer';
 import jsx from './jsx';
 import isolation from './isolation';
 
@@ -17,7 +18,7 @@ export default (raw: string, fileAbsDir: string) => {
     .use(frontmatter)
     .use(yaml)
     .use(externalDemo, { fileAbsDir })
-    .use(rehype, { fileAbsDir })
+    .use(rehype)
     .use(stringify, { allowDangerousHTML: true })
     .use(slug)
     .use(headings, {
@@ -30,6 +31,7 @@ export default (raw: string, fileAbsDir: string) => {
       properties: { className: 'anchor' },
     })
     .use(prism)
+    .use(previewer, { fileAbsDir })
     .use(jsx)
     .use(isolation);
 

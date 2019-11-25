@@ -1,25 +1,45 @@
 import rehype from 'remark-rehype';
 import unist from 'unist-builder';
-import transformer, { DEMO_COMPONENT_NAME } from '../demo';
+import { parseText } from 'sylvanas';
+import codeHandler from 'mdast-util-to-hast/lib/handlers/code';
 
 /**
  * handle demo type node from parse
  */
-function demoHandler(h, node) {
-  const code = `{(function () {
-    ${transformer(node.value, node.basePath || this.fileAbsDir, node.lang === 'tsx')}
-    return <${DEMO_COMPONENT_NAME} />;
-  })()}`
-  ;
+function demoHandler(h, { type, lang, value, position, ...props }) {
+  // split source codes & raw code for previewer
+  const clonedNode = { lang, value };
+  const sources = [];
 
-  return h(node.position, 'div', [unist('raw', code)]);
-}
+  // push original source code node
+  sources.push(codeHandler(h, clonedNode));
 
-export default (options: { [key: string]: any } = {}) => {
-  return rehype(Object.assign({
-    handlers: {
-      demo: demoHandler.bind({ fileAbsDir: options.fileAbsDir }),
+  // push transformed source code node for tsx demo (use unshift to keep jsx first)
+  if (lang === 'tsx') {
+    clonedNode.value = parseText(clonedNode.value);
+    sources.unshift(codeHandler(h, clonedNode));
+  }
+
+  return h(
+    position,
+    'div',
+    {
+      type: 'previewer',
+      lang,
+      ...props,
     },
-    allowDangerousHTML: true,
-  }, options));
+    [
+      // append raw code node
+      unist('raw', value),
+      // append source code nodes
+      ...sources,
+    ],
+  );
 }
+
+export default () => rehype({
+  handlers: {
+    demo: demoHandler,
+  },
+  allowDangerousHTML: true,
+})

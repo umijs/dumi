@@ -1,5 +1,4 @@
 import path from 'path';
-import { parseText } from 'sylvanas';
 import getYamlConfig from 'umi-build-dev/lib/routes/getYamlConfig';
 import remark from './remark';
 
@@ -7,6 +6,7 @@ const FRONT_COMMENT_EXP = /^\n*\/\*[^]+?\s*\*\/\n*/;
 const MD_WRAPPER = `
 import React from 'react';
 import Alert from '${path.join(__dirname, '../themes/default/alert.js')}';
+import FatherDocPreviewer from '${path.join(__dirname, '../themes/default/previewer.js')}';
 
 export default function () {
   return <>$CONTENT</>;
@@ -42,11 +42,6 @@ export default {
     };
   },
   tsx(raw: string): TransformResult {
-    const result = this.jsx(raw);
-
-    // parse tsx to jsx for source code display
-    result.config.jsx = parseText(raw);
-
-    return result;
+    return this.jsx(raw);
   },
 }
