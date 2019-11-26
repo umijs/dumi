@@ -10,6 +10,7 @@ export default (paths: IApi['paths'], opts: IFatherDocOpts): IRoute[] => {
     path: '/',
     component: path.join(__dirname, '../themes/default/layout.js'),
     routes: [],
+    title: opts.name,
   }];
 
   if (opts.routes) {
@@ -41,6 +42,11 @@ export default (paths: IApi['paths'], opts: IFatherDocOpts): IRoute[] => {
   // read yaml config for all routes
   config[0].routes.forEach((route) => {
     route.meta = getFrontMatter(route.component as string);
+
+    // apply frontmatter title
+    if (route.meta.title) {
+      route.title = route.meta.title;
+    }
   });
 
   return config;

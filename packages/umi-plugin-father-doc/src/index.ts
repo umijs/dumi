@@ -27,7 +27,7 @@ export default function (api: IApi, opts: IFatherDocOpts) {
   api.registerPlugin({
     id: require.resolve('umi-plugin-react'),
     apply: require('umi-plugin-react').default,
-    opts: { title: 'father-doc' },
+    opts: { title: { defaultTitle: opts.name } },
   });
 
   api.modifyRoutes((routes) => {
