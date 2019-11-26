@@ -1,0 +1,137 @@
+@import (reference) './variables.less';
+
+@img-actions: 'data:image/png;base64,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';
+
+.wrapper {
+  border: 1px solid @c-border;
+
+  .demo {
+    padding: 40px 24px;
+  }
+
+  .desc {
+    &:not(:empty) {
+      padding: 1em;
+      color: @c-text;
+      border-top: 1px solid @c-border;
+    }
+
+    &[title] {
+      position: relative;
+      margin-top: 6px;
+      padding-top: 1.2em;
+
+      &::before {
+        content: attr(title);
+        position: absolute;
+        top: 0;
+        left: 1em;
+        margin-left: -4px;
+        padding: 0 4px;
+        color: @c-heading;
+        font-weight: 500;
+        background-color: #fff;
+        transform: translateY(-50%);
+      }
+
+      // modify action area style when only has title field
+      &:empty + .actions {
+        height: 46px;
+        border-top-style: solid;
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+    height: 40px;
+    padding: 0 1em;
+    align-items: center;
+    border-top: 1px dashed @c-border;
+
+    button {
+      position: relative;
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      padding: 0;
+      background: url(@img-actions) no-repeat ~'0 0/120px auto';
+      border: 0;
+      box-sizing: border-box;
+      cursor: pointer;
+      opacity: 0.6;
+      transition: opacity 0.2s, background 0.2s;
+
+      // expand click area
+      &::after {
+        content: '';
+        position: absolute;
+        top: -8px;
+        left: -8px;
+        right: -8px;
+        bottom: -8px;
+      }
+
+      &:hover {
+        opacity: 0.8;
+      }
+
+      &:active {
+        opacity: 0.9;
+      }
+
+      &:not(:last-child) {
+        margin-right: 8px;
+      }
+
+      &:not(:first-child) {
+        margin-left: 8px;
+      }
+
+      &[role='codesandbox'] {
+        background-position: -18px 0;
+      }
+
+      &[role='codepen'] {
+        background-position: -36px 0;
+      }
+
+      &[role='copy'] {
+        background-position: -54px 0;
+      }
+
+      &[role='copied'] {
+        opacity: 1;
+        pointer-events: none;
+        background-position: -54px -16px;
+      }
+
+      &[role='source'] {
+        background-position: -72px 0;
+      }
+
+      &[role='change-jsx'] {
+        background-position: -90px 0;
+      }
+
+      &[role='change-tsx'] {
+        background-position: -106px 0;
+      }
+    }
+
+    // split action buttons by a blank node
+    > span {
+      flex: 1;
+      display: inline-block;
+    }
+  }
+
+  .source {
+    border-top: 1px dashed @c-border;
+
+    > pre {
+      margin: 0;
+      background: @c-light-bg;
+    }
+  }
+}

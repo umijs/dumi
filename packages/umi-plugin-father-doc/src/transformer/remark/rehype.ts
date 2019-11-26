@@ -16,6 +16,7 @@ function demoHandler(h, { type, lang, value, position, ...props }) {
 
   // push transformed source code node for tsx demo (use unshift to keep jsx first)
   if (lang === 'tsx') {
+    clonedNode.lang = 'jsx';
     clonedNode.value = parseText(clonedNode.value);
     sources.unshift(codeHandler(h, clonedNode));
   }

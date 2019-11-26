@@ -1,6 +1,7 @@
 // Todo: fix definition files cannot be identified problem
 /// <reference path="../typings/typings.d.ts" />
 import { Component } from 'react';
+import Clipboard from 'react-clipboard.js'
 import styles from './previewer.less';
 
 export interface IPreviewerProps {
@@ -8,6 +9,10 @@ export interface IPreviewerProps {
    * 当前 Demo 的源代码
    */
   source?: {
+    /**
+     * 未经 prism 格式化前的源代码，必定存在
+     */
+    raw?: string;
     /**
      * jsx 形式的源代码，必定存在
      */
@@ -28,25 +33,65 @@ export interface IPreviewerProps {
 }
 
 export default class Previewer extends Component<IPreviewerProps> {
+  state = {
+    showSource: false,
+    sourceType: '',
+    copyTimer: null,
+  }
+
+  componentDidMount() {
+    const { source } = this.props;
+
+    // prioritize display tsx
+    this.setState({ sourceType: source.tsx ? 'tsx' : 'jsx' });
+  }
+
+  handleCopied = () => {
+    clearTimeout(this.state.copyTimer);
+    this.setState({
+      copyTimer: setTimeout(() => {
+        this.setState({ copyTimer: null });
+      }, 2000),
+    });
+  }
+
   render() {
-    const { children, source } = this.props;
+    const { children, source, title, desc } = this.props;
+    const { showSource, sourceType, copyTimer } = this.state;
 
     return (
       <div className={styles.wrapper}>
-        {children}
-        {source && (
-          <div className={styles.source}>
-            <div
-              className={styles.sourcePanel}
-              dangerouslySetInnerHTML={{ __html: source.jsx }}
+        <div className={styles.demo}>
+          {children}
+        </div>
+        <div className={styles.desc} title={title}>
+          {desc}
+        </div>
+        <div className={styles.actions}>
+          <span />
+          <Clipboard
+            button-role={copyTimer ? 'copied' : 'copy'}
+            data-clipboard-text={source.raw}
+            onSuccess={this.handleCopied}
+          />
+          {source.tsx && showSource && (
+            <button
+              role={`change-${sourceType}`}
+              onClick={() => this.setState({
+                sourceType: sourceType === 'tsx' ? 'jsx' : 'tsx',
+              })}
             />
-            {source.tsx && (
-              <div
-                className={styles.sourcePanel}
-                dangerouslySetInnerHTML={{ __html: source.tsx }}
-              />
-            )}
-          </div>
+          )}
+          <button
+            role="source"
+            onClick={() => this.setState({ showSource: !showSource })}
+          />
+        </div>
+        {showSource && (
+          <div
+            className={styles.source}
+            dangerouslySetInnerHTML={{ __html: source[sourceType] }}
+          />
         )}
       </div>
     );

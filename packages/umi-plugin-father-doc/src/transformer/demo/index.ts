@@ -16,7 +16,7 @@ export default (raw: string, dir: string, isTSX?: boolean) => {
       require.resolve('@babel/preset-env'),
     ],
     plugins: (isTSX
-      ? [['@babel/plugin-transform-typescript', { isTSX: true }]]
+      ? [[require.resolve('@babel/plugin-transform-typescript'), { isTSX: true }]]
       : []
     ),
     ast: true,

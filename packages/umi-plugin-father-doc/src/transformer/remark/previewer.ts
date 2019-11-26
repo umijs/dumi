@@ -21,7 +21,7 @@ function visitor(node, i, parent) {
 
   return (
     <FatherDocPreviewer
-      source={${JSON.stringify({ jsx, tsx })}}
+      source={${JSON.stringify({ raw, jsx, tsx })}}
       {...${JSON.stringify(yaml)}}
     >
       <${DEMO_COMPONENT_NAME} />

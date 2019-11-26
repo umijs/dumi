@@ -33,6 +33,7 @@
     "js-yaml": "^3.13.1",
     "lodash": "^4.17.15",
     "mdast-util-to-hast": "^7.0.0",
+    "react-clipboard.js": "^2.0.16",
     "rehype-autolink-headings": "^2.0.5",
     "rehype-slug": "^2.0.3",
     "rehype-stringify": "^6.0.0",
