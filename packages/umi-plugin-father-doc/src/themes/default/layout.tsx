@@ -4,6 +4,7 @@
 
 import React, { Component, MouseEvent } from 'react';
 import { IMenuItem } from '../../routes/getMenuFromRoutes';
+import 'prismjs/themes/prism.css';
 import styles from './layout.less';
 
 export interface ILayoutProps {

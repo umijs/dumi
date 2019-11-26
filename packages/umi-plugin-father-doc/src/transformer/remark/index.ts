@@ -19,17 +19,9 @@ export default (raw: string, fileAbsDir: string) => {
     .use(yaml)
     .use(externalDemo)
     .use(rehype)
-    .use(stringify, { allowDangerousHTML: true })
+    .use(stringify, { allowDangerousHTML: true, closeSelfClosing: true })
     .use(slug)
-    .use(headings, {
-      content: {
-        type: 'element',
-        tagName: 'span',
-        properties: { className: ['octicon', 'octicon-link'] },
-        children: [{ type: 'text', value: '#' }]
-      },
-      properties: { className: 'anchor' },
-    })
+    .use(headings)
     .use(prism)
     .use(previewer)
     .use(jsx)

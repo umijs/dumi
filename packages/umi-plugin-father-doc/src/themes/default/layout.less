@@ -1,7 +1,7 @@
-@import 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.17.1/themes/prism.css';
-@import 'https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/3.0.1/github-markdown.min.css';
+@import './markdown.less';
 
-@menu-width: 300px;
+@s-menu-width: 300px;
+@s-content-margin: 64px;
 
 body {
   margin: 0;
@@ -15,15 +15,14 @@ body {
 
 .wrapper {
   min-height: 100vh;
-  padding-left: @menu-width + 32px;
-  padding-right: 32px;
+  padding: 16px @s-content-margin 50px @s-menu-width + @s-content-margin;
 
   .menu {
     position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
-    width: @menu-width;
+    width: @s-menu-width;
     border-right: 1px solid #eee;
     box-sizing: border-box;
   }
