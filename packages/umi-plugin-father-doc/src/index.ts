@@ -1,4 +1,6 @@
 import path from 'path';
+import assert from 'assert';
+import { isPlainObject } from 'lodash';
 import { IApi, IRoute } from 'umi-types';
 import getRouteConfig from './routes/getRouteConfig';
 import getMenuFromRoutes from'./routes/getMenuFromRoutes';
@@ -15,6 +17,21 @@ export interface IFatherDocOpts {
   }[];
 }
 
+function docConfigPlugin() {
+  return (api: IApi) => ({
+    name: 'doc',
+    validate(val: any) {
+      assert(
+        isPlainObject(val),
+        `Configure item doc should be Plain Object, but got ${val}.`,
+      );
+    },
+    onChange() {
+      api.service.restart('Configure item doc Changed.');
+    },
+  })
+}
+
 export default function (api: IApi, opts: IFatherDocOpts) {
   // apply default options
   opts = Object.assign({
@@ -24,12 +41,17 @@ export default function (api: IApi, opts: IFatherDocOpts) {
 
   const routeConfig = getRouteConfig(api.paths, opts);
 
+  // register doc config on umi system config
+  api._registerConfig(docConfigPlugin);
+
+  // apply umi-plugin-react for use title
   api.registerPlugin({
     id: require.resolve('umi-plugin-react'),
     apply: require('umi-plugin-react').default,
     opts: { title: { defaultTitle: opts.name } },
   });
 
+  // repalce default routes with generated routes
   api.modifyRoutes((routes) => {
     const result = routeConfig;
     const childRoutes = result[0].routes;
@@ -51,21 +73,6 @@ export default function (api: IApi, opts: IFatherDocOpts) {
     return result;
   });
 
-  // exclude .md file for url-loader
-  api.modifyDefaultConfig(config => ({
-    ...config,
-    urlLoaderExcludes: [/\.md$/],
-  }));
-
-  // configure loader for .md file
-  api.chainWebpackConfig(config => {
-    config.module
-      .rule('md')
-      .test(/\.md$/)
-      .use('father-doc')
-      .loader(require.resolve('./loader'));
-  });
-
   // pass menu props for layout component
   api.modifyRouteComponent((module, { component }) => {
     let ret = module;
@@ -79,5 +86,20 @@ export default function (api: IApi, opts: IFatherDocOpts) {
     }
 
     return ret;
+  });
+
+  // exclude .md file for url-loader
+  api.modifyDefaultConfig(config => ({
+    ...config,
+    urlLoaderExcludes: [/\.md$/],
+  }));
+
+  // configure loader for .md file
+  api.chainWebpackConfig(config => {
+    config.module
+      .rule('md')
+      .test(/\.md$/)
+      .use('father-doc')
+      .loader(require.resolve('./loader'));
   });
 }
