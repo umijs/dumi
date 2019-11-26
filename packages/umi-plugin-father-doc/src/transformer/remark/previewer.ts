@@ -13,6 +13,7 @@ function visitor(node, i, parent) {
 
     // replace original node
     parent.children[i] = {
+      previewer: true,
       type: 'raw',
       value: `
 {(() => {
