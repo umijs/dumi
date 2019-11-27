@@ -6,8 +6,9 @@ import getRouteConfig from './routes/getRouteConfig';
 import getMenuFromRoutes from'./routes/getMenuFromRoutes';
 
 export interface IFatherDocOpts {
-  name?: string;
+  title?: string;
   logo?: URL;
+  desc?: string;
   include?: string[];
   routes?: {
     path: IRoute['path'];
@@ -34,10 +35,17 @@ function docConfigPlugin() {
 
 export default function (api: IApi, opts: IFatherDocOpts) {
   // apply default options
-  opts = Object.assign({
-    name: require(path.join(api.paths.cwd, 'package.json')).name,
-    include: ['docs'],
-  }, (api.config as any).doc, opts);
+  opts = Object.assign(
+    {
+      title: require(path.join(api.paths.cwd, 'package.json')).name,
+      include: ['docs'],
+    },
+    {
+      routes: api.config.routes
+    },
+    (api.config as any).doc,
+    opts,
+  );
 
   const routeConfig = getRouteConfig(api.paths, opts);
 
@@ -48,7 +56,7 @@ export default function (api: IApi, opts: IFatherDocOpts) {
   api.registerPlugin({
     id: require.resolve('umi-plugin-react'),
     apply: require('umi-plugin-react').default,
-    opts: { title: { defaultTitle: opts.name } },
+    opts: { title: { defaultTitle: opts.title } },
   });
 
   // repalce default routes with generated routes
@@ -82,7 +90,13 @@ export default function (api: IApi, opts: IFatherDocOpts) {
         module
       }, { menu: { items: ${
         JSON.stringify(getMenuFromRoutes(routeConfig[0].routes)).replace(/\"/g, '\'')
-      } }, ...props })`;
+      } }, title: '${
+        opts.title
+      }', logo: '${
+        opts.logo || ''
+      }', desc: '${
+        opts.desc || ''
+      }', ...props })`;
     }
 
     return ret;

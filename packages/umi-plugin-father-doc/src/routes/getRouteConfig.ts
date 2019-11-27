@@ -10,7 +10,7 @@ export default (paths: IApi['paths'], opts: IFatherDocOpts): IRoute[] => {
     path: '/',
     component: path.join(__dirname, '../themes/default/layout.js'),
     routes: [],
-    title: opts.name,
+    title: opts.title,
   }];
 
   if (opts.routes) {
@@ -46,6 +46,11 @@ export default (paths: IApi['paths'], opts: IFatherDocOpts): IRoute[] => {
     // apply frontmatter title
     if (route.meta.title) {
       route.title = route.meta.title;
+    }
+
+    // apply group path
+    if (route.meta.group?.path) {
+      route.path = path.join(route.meta.group.path, route.path);
     }
   });
 
