@@ -1,3 +1,4 @@
+import fs from 'fs';
 import path from 'path';
 import assert from 'assert';
 import { isPlainObject } from 'lodash';
@@ -106,6 +107,13 @@ export default function (api: IApi, opts: IFatherDocOpts) {
   api.modifyDefaultConfig(config => ({
     ...config,
     urlLoaderExcludes: [/\.md$/],
+    // pass empty routes if pages path does not exist and no routes config
+    // to avoid umi throw src directory not exists error
+    routes: (
+      (fs.existsSync(api.paths.absPagesPath) && !api.config.routes)
+        ? undefined
+        : []
+    ),
   }));
 
   // configure loader for .md file
