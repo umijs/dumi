@@ -3,6 +3,7 @@
 /// <reference path="../typings/typings.d.ts" />
 
 import React, { Component } from 'react';
+import { RouterTypes } from 'umi';
 import Link from 'umi/link';
 import NavLink from 'umi/navlink';
 import 'prismjs/themes/prism.css';
@@ -18,63 +19,80 @@ export interface ILayoutProps {
   };
 }
 
-export default class Layout extends Component<ILayoutProps> {
-  render () {
-    const { children, menu, logo, title, desc } = this.props;
+export default class Layout extends Component<ILayoutProps & RouterTypes> {
+  getMetaForCurrentPath = () => {
+    const { route, location: { pathname } } = this.props;
+    const current = (route as any).routes.find(item => item.path === pathname);
+
+    return (current && current.meta) || {};
+  }
+
+  renderSideMenu() {
+    const { menu, logo, title, desc } = this.props;
 
     return (
-      <div className={styles.wrapper}>
-        <div className={styles.menu}>
-          <div className={styles.menuHeader}>
-            <Link
-              to="/"
-              className={styles.logo}
-              style={{
-                backgroundImage: logo && `url('${logo}')`,
-              }}
-            />
-              <h1>{title}</h1>
-              <p>{desc}</p>
-          </div>
-          <ul>
-            {menu.items.map((item) => (
-              <li>
-                {
-                  item.path
-                    ? (
-                      // render single routes
-                      <NavLink to={item.path} exact>
+      <div className={styles.menu}>
+        <div className={styles.menuHeader}>
+          <Link
+            to="/"
+            className={styles.logo}
+            style={{
+              backgroundImage: logo && `url('${logo}')`,
+            }}
+          />
+            <h1>{title}</h1>
+            <p>{desc}</p>
+        </div>
+        <ul>
+          {menu.items.map((item) => (
+            <li>
+              {
+                item.path
+                  ? (
+                    // render single routes
+                    <NavLink to={item.path} exact>
+                      {item.title}
+                    </NavLink>
+                  )
+                  : (
+                    // render child routes
+                    <>
+                      {/* use NavLink for active, but disable click by css */}
+                      <NavLink
+                        to={item.prefix}
+                        data-group
+                      >
                         {item.title}
                       </NavLink>
-                    )
-                    : (
-                      // render child routes
-                      <>
-                        {/* use NavLink for active, but disable click by css */}
-                        <NavLink
-                          to={item.prefix}
-                          data-group
-                        >
-                          {item.title}
-                        </NavLink>
-                        {item.children && item.children.length && (
-                          <ul>
-                            <li>
-                              {item.children.map((child) => (
-                                <NavLink to={child.path} exact>
-                                  {child.title}
-                                </NavLink>
-                              ))}
-                            </li>
-                          </ul>
-                        )}
-                      </>
-                    )
-                }
-              </li>
-            ))}
-          </ul>
-        </div>
+                      {item.children && item.children.length && (
+                        <ul>
+                          <li>
+                            {item.children.map((child) => (
+                              <NavLink to={child.path} exact>
+                                {child.title}
+                              </NavLink>
+                            ))}
+                          </li>
+                        </ul>
+                      )}
+                    </>
+                  )
+              }
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
+  render () {
+    const { children } = this.props;
+    const meta = this.getMetaForCurrentPath();
+    const showSidebar = meta.sidebar !== false;
+
+    return (
+      <div className={styles.wrapper} data-mode={showSidebar ? '' : 'fullscreen'}>
+        {showSidebar && this.renderSideMenu()}
         {children}
       </div>
     );

@@ -18,6 +18,10 @@ body {
   min-height: 100vh;
   padding: 16px @s-content-margin 50px @s-menu-width + @s-content-margin;
 
+  &[data-mode='fullscreen'] {
+    padding-left: @s-content-margin;
+  }
+
   .menu {
     position: fixed;
     top: 0;
