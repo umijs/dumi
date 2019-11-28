@@ -29,20 +29,6 @@ export default (raw: string, dir: string, isTSX?: boolean) => {
     CallExpression(callPath) {
       const nodeCallee = callPath.node.callee;
 
-      // remove original render expression
-      if (
-        types.isMemberExpression(nodeCallee)
-        && nodeCallee.object
-        && (nodeCallee.object.loc as any).identifierName === 'ReactDOM'
-        && nodeCallee.property
-        && nodeCallee.property.name === 'render'
-        && types.isExpression(callPath.node.arguments[0])
-      ) {
-        // save render expression as return statement
-        returnStatement = types.returnStatement(callPath.node.arguments[0]);
-        callPath.remove();
-      }
-
       // replace relative module path
       if (
         dir
@@ -54,6 +40,29 @@ export default (raw: string, dir: string, isTSX?: boolean) => {
         callPath.node.arguments[0].value = path.join(dir, callPath.node.arguments[0].value);
       }
     },
+    AssignmentExpression(callPath) {
+      const callPathNode = callPath.node;
+
+      // remove original export expression
+      if (
+        callPathNode.operator === '='
+        && types.isMemberExpression(callPathNode.left)
+        && callPathNode.left.property.value === 'default'
+        && types.isIdentifier(callPathNode.left.object)
+        && callPathNode.left.object.name === 'exports'
+        && types.isIdentifier(callPathNode.right)
+        && callPathNode.right.name === '_default'
+      ) {
+        // save export function as return statement arg
+        returnStatement = types.returnStatement(
+          types.callExpression(
+            callPathNode.right,
+            [],
+          )
+        );
+        callPath.remove();
+      }
+    }
   });
 
   // push return statement to program body
