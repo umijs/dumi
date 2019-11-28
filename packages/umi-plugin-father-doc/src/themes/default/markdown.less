@@ -5,7 +5,7 @@
   .markdown {
     color: @c-text;
     font-size: 14px;
-    line-height: 1.40625;
+    line-height: 1.60625;
 
     // titles
     h1, h2, h3, h4, h5, h6 {
@@ -22,6 +22,7 @@
         width: 20px;
         padding-right: 4px;
         line-height: 1;
+        box-sizing: border-box;
 
         &::after {
           content: '#';
@@ -78,6 +79,7 @@
 
     // code block
     pre {
+      font-size: 14px;
       background: darken(@c-light-bg, 1%);
 
       &:not([class^='language-']) {

@@ -66,13 +66,13 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
                       </NavLink>
                       {item.children && item.children.length && (
                         <ul>
-                          <li>
-                            {item.children.map((child) => (
+                          {item.children.map((child) => (
+                            <li>
                               <NavLink to={child.path} exact>
                                 {child.title}
                               </NavLink>
-                            ))}
-                          </li>
+                            </li>
+                          ))}
                         </ul>
                       )}
                     </>
