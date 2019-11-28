@@ -37,16 +37,28 @@ function findChildRoutes(absPath: string, parentRoutePath: string = '/'): IRoute
 
   // make sure file is front of child directory in routes
   files.forEach((file) => {
+    let parentPath = parentRoutePath;
+    let routePath = path.join(parentPath, filenameToPath(file))
     const filePath = path.join(absPath, file);
-    const routePath = path.join(parentRoutePath, filenameToPath(file))
     const fileParsed = path.parse(file);
+    const firstParentPath = parentPath.split('/')[1];
+    const meta: any = {};
+
+    if (firstParentPath) {
+      meta.group = { title: firstParentPath, path: `/${firstParentPath}` };
+
+      // discard first parent path then join parent path in getRouteConfig.ts uniformly (for process frontmatter)
+      routePath = routePath.replace(meta.group.path, '');
+      parentPath = parentPath.replace(meta.group.path, '');
+    }
 
     switch (fileParsed.ext) {
       case '.md':
         routes.push({
-          path: fileParsed.name === 'index' ? parentRoutePath : routePath,
+          path: fileParsed.name === 'index' ? parentPath : routePath,
           component: filePath,
           exact: true,
+          meta,
         });
         break;
 
@@ -68,4 +80,12 @@ function findChildRoutes(absPath: string, parentRoutePath: string = '/'): IRoute
   return routes;
 }
 
-export default (absPath: string): IRoute[] => findChildRoutes(absPath);
+export default (absPath: string): IRoute[] => {
+  const routes = [];
+
+  if (fs.existsSync(absPath)) {
+    routes.push(...findChildRoutes(absPath));
+  }
+
+  return routes;
+};

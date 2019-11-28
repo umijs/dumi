@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { IApi, IRoute } from 'umi-types';
+import deepmerge from 'deepmerge';
 import getFrontMatter from './getFrontMatter';
 import getRouteConfigFromDir from './getRouteConfigFromDir';
 import { IFatherDocOpts } from '../index';
@@ -41,7 +42,7 @@ export default (paths: IApi['paths'], opts: IFatherDocOpts): IRoute[] => {
 
   // read yaml config for all routes
   config[0].routes.forEach((route) => {
-    route.meta = getFrontMatter(route.component as string);
+    route.meta = deepmerge(route.meta, getFrontMatter(route.component as string));
 
     // apply frontmatter title
     if (route.meta.title) {

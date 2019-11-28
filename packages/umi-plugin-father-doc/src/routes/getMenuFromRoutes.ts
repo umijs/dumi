@@ -15,6 +15,13 @@ export interface IMenuItem {
   children?: IMenuItem[];
 }
 
+function menuSorter(prev, next) {
+  const prevOrder = typeof(prev.meta.order) === 'number' ? prev.meta.order : 0;
+  const nextOrder = typeof(next.meta.order) === 'number' ? next.meta.order : 0;
+
+  return (prevOrder === nextOrder) ? 0 : (nextOrder - prevOrder);
+}
+
 export default (routes: IApi['routes']) : IMenuItem[] => {
   let menu: IMenuItem[] = [];
 
@@ -46,29 +53,27 @@ export default (routes: IApi['routes']) : IMenuItem[] => {
     return result;
   }, [[], {}]);
 
+
   menu = ungroup.concat(
     Object
       .keys(groupedMapping)
-      .map(key => {
-
-        return {
-          title: key,
-          prefix: groupedMapping[key].find(item => item.meta.group.path).meta.group.path,
-          children: groupedMapping[key],
-          meta: {
-            // use child order as group order
-            order: groupedMapping[key].find(item => item.meta.order)?.meta?.order || undefined,
-          },
-        }
-      })
+      .map(key => ({
+        title: key,
+        prefix: groupedMapping[key].find(item => item.meta.group.path).meta.group.path,
+        children: groupedMapping[key],
+        meta: {
+          // use child order as group order
+          order: groupedMapping[key].find(item => item.meta.group.order)?.meta?.group?.order || undefined,
+        },
+      }))
   );
 
   // sort menu
-  menu.sort((prev, next) => {
-    const prevOrder = typeof(prev.meta.order) === 'number' ? prev.meta.order : 0;
-    const nextOrder = typeof(next.meta.order) === 'number' ? next.meta.order : 0;
-
-    return (prevOrder === nextOrder) ? 0 : (nextOrder - prevOrder);
+  menu.sort(menuSorter);
+  menu.forEach((route) => {
+    if (route.children) {
+      route.children.sort(menuSorter);
+    }
   });
 
   return menu;

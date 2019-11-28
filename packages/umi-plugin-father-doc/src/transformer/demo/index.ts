@@ -15,10 +15,12 @@ export default (raw: string, dir: string, isTSX?: boolean) => {
       require.resolve('@babel/preset-react'),
       require.resolve('@babel/preset-env'),
     ],
-    plugins: (isTSX
-      ? [[require.resolve('@babel/plugin-transform-typescript'), { isTSX: true }]]
-      : []
-    ),
+    plugins: [
+      require.resolve('@babel/plugin-proposal-class-properties'),
+      ...(isTSX
+        ? [[require.resolve('@babel/plugin-transform-typescript'), { isTSX: true }]]
+        : [])
+    ],
     ast: true,
   });
   const body = code.ast.program.body as types.Statement[];
