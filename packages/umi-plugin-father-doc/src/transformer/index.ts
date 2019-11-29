@@ -23,9 +23,10 @@ export interface TransformResult {
 export default {
   markdown(raw: string, dir: string): TransformResult {
     const result = remark(raw, dir);
+    const contents = (result.contents as string).replace(/class="/g, 'className="');
 
     return {
-      content: MD_WRAPPER.replace('$CONTENT', result.contents as string),
+      content: MD_WRAPPER.replace('$CONTENT', contents),
       config: {
         frontmatter: {},
         ...result.data as TransformResult['config'],

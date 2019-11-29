@@ -20,6 +20,12 @@ export interface ILayoutProps {
 }
 
 export default class Layout extends Component<ILayoutProps & RouterTypes> {
+  componentDidMount() {
+    window.g_history.listen(() => {
+      window.scrollTo(0, 0);
+    });
+  }
+
   getMetaForCurrentPath = () => {
     const { route, location: { pathname } } = this.props;
     const current = (route as any).routes.find(item => item.path === pathname);
@@ -45,7 +51,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
         </div>
         <ul>
           {menu.items.map((item) => (
-            <li>
+            <li key={item.path || item.prefix}>
               {
                 item.path
                   ? (
@@ -67,7 +73,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
                       {item.children && item.children.length && (
                         <ul>
                           {item.children.map((child) => (
-                            <li>
+                            <li key={child.path}>
                               <NavLink to={child.path} exact>
                                 {child.title}
                               </NavLink>
