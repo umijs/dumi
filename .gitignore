@@ -10,3 +10,4 @@
 /packages/father-doc/src/fixtures/e2e/normal/.docz
 /.changelog
 yarn.lock
+dist
