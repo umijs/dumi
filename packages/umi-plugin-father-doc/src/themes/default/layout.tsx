@@ -8,7 +8,7 @@ import Link from 'umi/link';
 import NavLink from 'umi/navlink';
 import 'prismjs/themes/prism.css';
 import { IMenuItem } from '../../routes/getMenuFromRoutes';
-import styles from './layout.less';
+import './layout.less';
 
 export interface ILayoutProps {
   title: string;
@@ -37,11 +37,11 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
     const { menu, logo, title, desc } = this.props;
 
     return (
-      <div className={styles.menu}>
-        <div className={styles.menuHeader}>
+      <div className="__father-doc-default-layout-menu">
+        <div className="__father-doc-default-layout-menu-header">
           <Link
             to="/"
-            className={styles.logo}
+            className="__father-doc-default-logo"
             style={{
               backgroundImage: logo && `url('${logo}')`,
             }}
@@ -97,7 +97,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
     const showSidebar = meta.sidebar !== false;
 
     return (
-      <div className={styles.wrapper} data-mode={showSidebar ? '' : 'fullscreen'}>
+      <div className="__father-doc-default-layout" data-mode={showSidebar ? '' : 'fullscreen'}>
         {showSidebar && this.renderSideMenu()}
         {children}
       </div>

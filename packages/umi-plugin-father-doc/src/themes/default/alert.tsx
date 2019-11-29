@@ -1,10 +1,10 @@
 // Todo: fix definition files cannot be identified problem
 /// <reference path="../typings/typings.d.ts" />
-import styles from './alert.less';
+import './alert.less';
 
 export default ({ children, ...props }) => (
   <div
-    className={styles.wrapper}
+    className="__father-doc-default-alert"
     {...props}
   >
     {children}

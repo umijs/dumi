@@ -123,6 +123,17 @@ export default function (api: IApi, opts: IFatherDocOpts) {
       .test(/\.md$/)
       .use('father-doc')
       .loader(require.resolve('./loader'));
+
+    // disable css modules for built-in theme
+    config.module
+      .rule('less-in-node_modules')
+      .include
+      .add(path.join(__dirname, './themes'));
+
+    config.module
+      .rule('less')
+      .exclude
+      .add(path.join(__dirname, './themes'));
   });
 
   // modify help info

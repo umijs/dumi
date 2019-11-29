@@ -2,7 +2,7 @@
 /// <reference path="../typings/typings.d.ts" />
 import { Component } from 'react';
 import Clipboard from 'react-clipboard.js'
-import styles from './previewer.less';
+import './previewer.less';
 
 export interface IPreviewerProps {
   /**
@@ -60,14 +60,14 @@ export default class Previewer extends Component<IPreviewerProps> {
     const { showSource, sourceType, copyTimer } = this.state;
 
     return (
-      <div className={styles.wrapper}>
-        <div className={styles.demo}>
+      <div className="__father-doc-default-previewer">
+        <div className="__father-doc-default-previewer-demo">
           {children}
         </div>
-        <div className={styles.desc} title={title}>
+        <div className="__father-doc-default-previewer-desc" title={title}>
           {desc}
         </div>
-        <div className={styles.actions}>
+        <div className="__father-doc-default-previewer-actions">
           <span />
           <Clipboard
             button-role={copyTimer ? 'copied' : 'copy'}
@@ -89,7 +89,7 @@ export default class Previewer extends Component<IPreviewerProps> {
         </div>
         {showSource && (
           <div
-            className={styles.source}
+            className="__father-doc-default-previewer-source"
             dangerouslySetInnerHTML={{ __html: source[sourceType] }}
           />
         )}
