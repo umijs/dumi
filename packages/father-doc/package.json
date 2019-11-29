@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "father-doc",
   "main": "lib/index.js",
+  "bin": "bin/father-doc.js",
   "repository": {
     "type": "git",
     "url": "http://github.com/umijs/father-doc",

@@ -1,16 +1,13 @@
-import { fork } from 'child_process';
+const { fork } = require('child_process');
 
-// for dev
-start();
-
-export default function start() {
+module.exports = () => {
   process.env.PAGES_PATH = 'src';
   process.env.UMI_PLUGINS = require.resolve('umi-plugin-father-doc');
 
   // start umi use child process
   const child = fork(
     require.resolve('umi/bin/umi'),
-    ['dev', ...process.argv.slice(3)],
+    [...process.argv.slice(2)],
     {
       stdio: 'inherit'
     },

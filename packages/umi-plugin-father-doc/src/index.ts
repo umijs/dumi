@@ -124,4 +124,11 @@ export default function (api: IApi, opts: IFatherDocOpts) {
       .use('father-doc')
       .loader(require.resolve('./loader'));
   });
+
+  // modify help info
+  api._modifyHelpInfo(memo => {
+    memo.scriptName = 'father-doc';
+
+    return memo;
+  });
 }
