@@ -1,5 +1,33 @@
 .wrapper {
-  padding: 8px 16px;
-  border: 1px solid #eee;
-  border-left: 2px solid #09f;
+  @s-border-right: 6px;
+
+  margin: 16px 0 16px @s-border-right;
+  padding: 12px 16px;
+  border: 1px solid;
+  border-left: 0;
+
+  &:not([type]),
+  &[type='warning'] {
+    background: #fff8e4;
+    border-color: #ffe9a9;
+    box-shadow: -@s-border-right 0 0 #ffb300;
+  }
+
+  &[type='info'] {
+    background: #f0fcff;
+    border-color: #c9e9ec;
+    box-shadow: -@s-border-right 0 0 #5bc0df;
+  }
+
+  &[type='success'] {
+    background: #faffee;
+    border-color: #daeebd;
+    box-shadow: -@s-border-right 0 0 #8cd225;
+  }
+
+  &[type='error'] {
+    background: #fff3f3;
+    border-color: #ffe1e1;
+    box-shadow: -@s-border-right 0 0 #ff4646;
+  }
 }
