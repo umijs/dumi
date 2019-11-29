@@ -48,8 +48,6 @@ export default function (api: IApi, opts: IFatherDocOpts) {
     opts,
   );
 
-  const routeConfig = getRouteConfig(api.paths, opts);
-
   // register doc config on umi system config
   api._registerConfig(docConfigPlugin);
 
@@ -62,7 +60,7 @@ export default function (api: IApi, opts: IFatherDocOpts) {
 
   // repalce default routes with generated routes
   api.modifyRoutes((routes) => {
-    const result = routeConfig;
+    const result = getRouteConfig(api.paths, opts);
     const childRoutes = result[0].routes;
 
     // insert TitleWrapper for routes
@@ -83,14 +81,14 @@ export default function (api: IApi, opts: IFatherDocOpts) {
   });
 
   // pass menu props for layout component
-  api.modifyRouteComponent((module, { component }) => {
+  api.modifyRouteComponent((module, { importPath, component }) => {
     let ret = module;
 
     if (/\/layout\.[tj]sx?$/.test(component)) {
-      ret = `props => React.createElement(${
-        module
-      }, { menu: { items: ${
-        JSON.stringify(getMenuFromRoutes(routeConfig[0].routes)).replace(/\"/g, '\'')
+      ret = `props => React.createElement(require('${
+        importPath
+      }').default, { menu: { items: ${
+        JSON.stringify(getMenuFromRoutes(api.routes[0].routes)).replace(/\"/g, '\'')
       } }, title: '${
         opts.title
       }', logo: '${
@@ -142,4 +140,10 @@ export default function (api: IApi, opts: IFatherDocOpts) {
 
     return memo;
   });
+
+  // watch .md files
+  api.addPageWatcher([
+    ...opts.include.map(key => path.join(api.paths.cwd, key, '**/*.md')),
+    path.join(api.paths.absPagesPath, '**/*.md'),
+  ]);
 }
