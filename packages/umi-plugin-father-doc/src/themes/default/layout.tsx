@@ -64,10 +64,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
                     // render child routes
                     <>
                       {/* use NavLink for active, but disable click by css */}
-                      <NavLink
-                        to={item.prefix}
-                        data-group
-                      >
+                      <NavLink to={item.prefix}>
                         {item.title}
                       </NavLink>
                       {item.children && item.children.length && (

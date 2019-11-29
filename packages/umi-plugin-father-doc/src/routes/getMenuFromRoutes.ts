@@ -12,6 +12,7 @@ export interface IMenuItem {
   prefix?: string;
   title: string;
   meta?: { [key: string]: any };
+  redirect?: string;
   children?: IMenuItem[];
 }
 
@@ -73,6 +74,7 @@ export default (routes: IApi['routes']) : IMenuItem[] => {
   menu.forEach((route) => {
     if (route.children) {
       route.children.sort(menuSorter);
+      route.redirect = route.children[0].path;
     }
   });
 
