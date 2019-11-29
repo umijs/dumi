@@ -2,7 +2,8 @@
   "private": true,
   "scripts": {
     "dev": "BROWSER=none node ./packages/father-doc/bin/father-doc.js dev",
-    "build:doc": "BROWSER=none node ./packages/father-doc/bin/father-doc.js build",
+    "doc:build": "BROWSER=none node ./packages/father-doc/bin/father-doc.js build",
+    "doc:deploy": "bash ./scripts/deploy_doc.sh",
     "bootstrap": "lerna bootstrap",
     "build": "father-build build",
     "changelog": "lerna-changelog",
