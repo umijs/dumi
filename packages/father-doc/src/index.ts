@@ -7,7 +7,7 @@ module.exports = () => {
   // start umi use child process
   const child = fork(
     require.resolve('umi/bin/umi'),
-    [...process.argv.slice(2)],
+    [...(process.argv.slice(2) || [])],
     {
       stdio: 'inherit'
     },
