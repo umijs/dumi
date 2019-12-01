@@ -11,7 +11,7 @@ To check out live examples and docs, visit [father-doc GitHub Pages](https://umi
 ```bash
 $ npm install
 $ npm run bootstrap
-$ npm run dev
 $ npm run build
+$ npm run dev
 $ npm run test
 ```

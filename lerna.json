@@ -18,6 +18,5 @@
       "exact": true
     }
   },
-  "npmClient": "yarn",
   "version": "independent"
 }
