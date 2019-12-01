@@ -1,5 +1,3 @@
-// Todo: fix definition files cannot be identified problem
-/// <reference path="../typings/typings.d.ts" />
 import { Component } from 'react';
 import Clipboard from 'react-clipboard.js'
 import './previewer.less';

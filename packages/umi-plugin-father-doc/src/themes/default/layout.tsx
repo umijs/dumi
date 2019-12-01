@@ -1,7 +1,3 @@
-// Todo: fix definition files cannot be identified problem
-/// <reference path="../typings/global.d.ts" />
-/// <reference path="../typings/typings.d.ts" />
-
 import React, { Component } from 'react';
 import { RouterTypes } from 'umi';
 import Link from 'umi/link';
