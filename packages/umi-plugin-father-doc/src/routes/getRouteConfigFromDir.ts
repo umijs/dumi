@@ -1,5 +1,5 @@
 import fs from 'fs';
-import path from 'path';
+import path from 'upath';
 import { IRoute } from 'umi-types';
 
 /**

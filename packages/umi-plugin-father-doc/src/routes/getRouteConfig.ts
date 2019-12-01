@@ -1,5 +1,5 @@
 import fs from 'fs';
-import path from 'path';
+import path from 'upath';
 import { IApi, IRoute } from 'umi-types';
 import deepmerge from 'deepmerge';
 import getFrontMatter from './getFrontMatter';

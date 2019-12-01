@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'upath';
 import { IApi } from 'umi-types';
 
 export interface IMenuItem {
