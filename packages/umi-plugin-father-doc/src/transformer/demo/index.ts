@@ -1,4 +1,3 @@
-import path from 'path';
 import * as babel from '@babel/core';
 import * as types from '@babel/types';
 import traverse from '@babel/traverse';
@@ -9,7 +8,7 @@ export const DEMO_COMPONENT_NAME = 'FatherDocDemo';
 /**
  * transform code block statments to preview
  */
-export default (raw: string, dir: string, isTSX?: boolean) => {
+export default (raw: string, isTSX?: boolean) => {
   const code = babel.transformSync(raw, {
     presets: [
       require.resolve('@babel/preset-react'),
@@ -28,20 +27,6 @@ export default (raw: string, dir: string, isTSX?: boolean) => {
 
   // traverse call expression
   traverse(code.ast, {
-    CallExpression(callPath) {
-      const nodeCallee = callPath.node.callee;
-
-      // replace relative module path
-      if (
-        dir
-        && types.isIdentifier(nodeCallee)
-        && nodeCallee.name === 'require'
-        && types.isStringLiteral(callPath.node.arguments[0])
-        && callPath.node.arguments[0].value.startsWith('.')
-      ) {
-        callPath.node.arguments[0].value = path.join(dir, callPath.node.arguments[0].value);
-      }
-    },
     AssignmentExpression(callPath) {
       const callPathNode = callPath.node;
 

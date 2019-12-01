@@ -26,7 +26,7 @@ export default function externalDemo() {
               node.lang = lang;
               node.value = result.content;
               node.meta = result.config;
-              node.basePath = path.parse(absPath).dir;
+              node.filePath = absPath;
             } else {
               throw new Error(`[External-Demo Error]: unsupported file type: ${lang}`);
             }
