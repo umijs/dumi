@@ -5,6 +5,7 @@ import { isPlainObject } from 'lodash';
 import { IApi, IRoute } from 'umi-types';
 import getRouteConfig from './routes/getRouteConfig';
 import getMenuFromRoutes from'./routes/getMenuFromRoutes';
+import getHostPkgAlias from './utils/getHostPkgAlias';
 
 export interface IFatherDocOpts {
   title?: string;
@@ -127,11 +128,15 @@ export default function (api: IApi, opts: IFatherDocOpts) {
       .rule('less-in-node_modules')
       .include
       .add(path.join(__dirname, './themes'));
-
     config.module
       .rule('less')
       .exclude
       .add(path.join(__dirname, './themes'));
+
+    // add alias for current package(s)
+    getHostPkgAlias(api.paths).forEach(([pkgName, pkgPath]) => {
+      config.resolve.alias.set(pkgName, pkgPath);
+    });
   });
 
   // modify help info

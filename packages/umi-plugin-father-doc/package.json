@@ -31,6 +31,7 @@
     "@mapbox/rehype-prism": "^0.3.1",
     "assert": "^2.0.0",
     "deepmerge": "^4.2.2",
+    "glob": "^7.1.6",
     "hast-util-to-html": "^6.0.2",
     "js-yaml": "^3.13.1",
     "lodash": "^4.17.15",
