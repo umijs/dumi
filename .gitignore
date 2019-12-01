@@ -10,4 +10,7 @@
 /packages/father-doc/src/fixtures/e2e/normal/.docz
 /.changelog
 yarn.lock
+package-lock.json
 dist
+/src
+/.vscode
