@@ -13,7 +13,14 @@ function isValidPath(pathname: string) {
  * convert TheComponent to the-component and discard ext
  */
 export function filenameToPath(name: string) {
-  return name.replace( /([a-z])([A-Z])/g, '$1-$2' ).replace(/\.\w+$/, '').toLowerCase();
+  return name.replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\.\w+$/, '').toLowerCase();
+}
+
+/**
+ * check the file is default entry
+ */
+function isDefaultEntry(name: string) {
+  return name === 'index' || name === 'readme' || name === 'README';
 }
 
 /**
@@ -55,7 +62,7 @@ function findChildRoutes(absPath: string, parentRoutePath: string = '/'): IRoute
     switch (fileParsed.ext) {
       case '.md':
         routes.push({
-          path: fileParsed.name === 'index' ? parentPath : routePath,
+          path: isDefaultEntry(fileParsed.name) ? parentPath : routePath,
           component: filePath,
           exact: true,
           meta,
