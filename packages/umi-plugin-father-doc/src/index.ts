@@ -4,7 +4,7 @@ import assert from 'assert';
 import { isPlainObject } from 'lodash';
 import { IApi, IRoute } from 'umi-types';
 import getRouteConfig from './routes/getRouteConfig';
-import getMenuFromRoutes from'./routes/getMenuFromRoutes';
+import getMenuFromRoutes from './routes/getMenuFromRoutes';
 import getHostPkgAlias from './utils/getHostPkgAlias';
 
 export interface IFatherDocOpts {
@@ -37,9 +37,10 @@ function docConfigPlugin() {
 
 export default function (api: IApi, opts: IFatherDocOpts) {
   // apply default options
+  const defaultTitle = require(path.join(api.paths.cwd, 'package.json')).name;
   opts = Object.assign(
     {
-      title: require(path.join(api.paths.cwd, 'package.json')).name,
+      title: defaultTitle,
       include: ['docs'],
     },
     {
@@ -56,7 +57,7 @@ export default function (api: IApi, opts: IFatherDocOpts) {
   api.registerPlugin({
     id: require.resolve('umi-plugin-react'),
     apply: require('umi-plugin-react').default,
-    opts: { title: { defaultTitle: opts.title } },
+    opts: { title: { defaultTitle: opts.title || defaultTitle } },
   });
 
   // repalce default routes with generated routes
@@ -88,15 +89,15 @@ export default function (api: IApi, opts: IFatherDocOpts) {
     if (/\/layout\.[tj]sx?$/.test(component)) {
       ret = `props => React.createElement(require('${
         importPath
-      }').default, { menu: { items: ${
+        }').default, { menu: { items: ${
         JSON.stringify(getMenuFromRoutes(api.routes[0].routes)).replace(/\"/g, '\'')
-      } }, title: '${
+        } }, title: '${
         opts.title
-      }', logo: '${
+        }', logo: '${
         opts.logo || ''
-      }', desc: '${
+        }', desc: '${
         opts.desc || ''
-      }', ...props })`;
+        }', ...props })`;
     }
 
     return ret;
@@ -142,7 +143,6 @@ export default function (api: IApi, opts: IFatherDocOpts) {
   // modify help info
   api._modifyHelpInfo(memo => {
     memo.scriptName = 'father-doc';
-
     return memo;
   });
 
