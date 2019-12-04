@@ -38,6 +38,10 @@ const textVisitor = (node, ancestors) => {
 }
 
 const rawVisitor = (node) => {
+
+  // <img > --> <img /> <br> --> <br/>
+  node.value = node.value.replace(/(<img.*?[^/]|<img)>/g, '$1/>').replace(/(<br.*?[^/]|<br)>/g, '$1/>');
+
   const PRE_EXP = /^<pre>([^]+)<\/pre>$/;
 
   // convert \n to <br> in code block for pre tag
