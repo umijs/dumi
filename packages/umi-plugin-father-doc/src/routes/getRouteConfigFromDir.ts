@@ -2,11 +2,15 @@ import fs from 'fs';
 import path from 'upath';
 import { IRoute } from 'umi-types';
 
+const IGNORE_DIR = [
+  'node_modules',
+];
+
 /**
  * discard .dirname & _dirname
  */
 function isValidPath(pathname: string) {
-  return !/(^|\/)[._][^\/]+/.test(pathname);
+  return !/(^|\/)[._][^\/]+/.test(pathname) && IGNORE_DIR.indexOf(pathname) === -1;
 }
 
 /**
