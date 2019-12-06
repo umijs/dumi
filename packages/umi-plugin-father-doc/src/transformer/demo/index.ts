@@ -43,8 +43,11 @@ export default (raw: string, isTSX?: boolean) => {
         // save export function as return statement arg
         returnStatement = types.returnStatement(
           types.callExpression(
-            callPathNode.right,
-            [],
+            types.memberExpression(
+              types.identifier('React'),
+              types.identifier('createElement'),
+            ),
+            [callPathNode.right],
           )
         );
         callPath.remove();
