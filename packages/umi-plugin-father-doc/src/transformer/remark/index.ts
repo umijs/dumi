@@ -3,6 +3,7 @@ import frontmatter from 'remark-frontmatter';
 import stringify from 'rehype-stringify';
 import slug from 'rehype-slug';
 import headings from 'rehype-autolink-headings';
+import comments from 'rehype-remove-comments';
 import prism from '@mapbox/rehype-prism';
 import parse from './parse';
 import rehype from './rehype';
@@ -22,6 +23,7 @@ export default (raw: string, fileAbsDir: string) => {
     .use(stringify, { allowDangerousHTML: true, closeSelfClosing: true })
     .use(slug)
     .use(headings)
+    .use(comments, { removeConditional: true })
     .use(prism)
     .use(previewer)
     .use(jsx)

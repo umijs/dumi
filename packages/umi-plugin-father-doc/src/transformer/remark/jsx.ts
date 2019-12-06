@@ -1,5 +1,6 @@
 import { Node } from 'unist';
-import visit from 'unist-util-visit-parents';
+import visit from 'unist-util-visit';
+import visitParents from 'unist-util-visit-parents';
 
 function hasSubClassName(className: string[], subCls: string) {
   return (className || []).find(cls => cls.indexOf(subCls) > -1);
@@ -37,8 +38,9 @@ const textVisitor = (node, ancestors) => {
   }
 }
 
-const rawVisitor = (node) => {
+const rawVisitor = (node, i, parent) => {
   const PRE_EXP = /^<pre>([^]+)<\/pre>$/;
+  const COMMENT_EXP = /^\s*<!--[^]+-->\s*$/
 
   // convert \n to <br> in code block for pre tag
   if (PRE_EXP.test(node.value)) {
@@ -46,9 +48,14 @@ const rawVisitor = (node) => {
 
     node.value = `<pre>${content}</pre>`;
   }
+
+  // remove HTML comments for JSX
+  if (COMMENT_EXP.test(node.value)) {
+    parent.children.splice(i, 1);
+  }
 }
 
 export default () => (ast: Node) => {
-  visit(ast, 'text', textVisitor);
+  visitParents(ast, 'text', textVisitor);
   visit(ast, 'raw', rawVisitor);
 }
