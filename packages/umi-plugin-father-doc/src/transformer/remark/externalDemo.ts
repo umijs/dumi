@@ -1,5 +1,5 @@
 import fs from 'fs';
-import path from 'path';
+import path from 'upath';
 import visit from 'unist-util-visit';
 import transformer, { TransformResult } from '../index';
 
