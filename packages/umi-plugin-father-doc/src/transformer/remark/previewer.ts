@@ -8,7 +8,7 @@ function visitor(node, i, parent) {
     const raw = node.children?.[0]?.value;
     const jsx = (node.children?.[1] && toHtml(node.children?.[1])) || undefined;
     const tsx = (node.children?.[2] && toHtml(node.children?.[2])) || undefined;
-    const yaml = node.properties?.meta?.frontmatter || {};
+    const yaml = node.properties?.meta || {};
     let transformCode = raw;
 
     // use import way rather than source code way for external demo (for HMR & sourcemap)

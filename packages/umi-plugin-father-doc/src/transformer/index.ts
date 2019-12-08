@@ -15,7 +15,6 @@ export default function () {
 export interface TransformResult {
   content: string;
   config: {
-    frontmatter: { [key: string]: any };
     [key: string]: any;
   };
 }
@@ -28,7 +27,6 @@ export default {
     return {
       content: MD_WRAPPER.replace('$CONTENT', contents),
       config: {
-        frontmatter: {},
         ...result.data as TransformResult['config'],
       },
     };
@@ -37,9 +35,7 @@ export default {
     return {
       // discard frontmatter for source code display
       content: raw.replace(FRONT_COMMENT_EXP, ''),
-      config: {
-        frontmatter: getYamlConfig(raw),
-      },
+      config: getYamlConfig(raw),
     };
   },
   tsx(raw: string): TransformResult {
