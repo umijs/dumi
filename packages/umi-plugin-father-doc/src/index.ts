@@ -85,19 +85,26 @@ export default function (api: IApi, opts: IFatherDocOpts) {
   // pass menu props for layout component
   api.modifyRouteComponent((module, { importPath, component }) => {
     let ret = module;
+    const meta = {
+      menu: {
+        items: getMenuFromRoutes(api.routes[0].routes),
+      },
+      title: opts.title,
+      logo: opts.logo,
+      desc: opts.desc,
+    };
 
     if (/\/layout\.[tj]sx?$/.test(component)) {
       ret = `props => React.createElement(require('${
-        importPath
-        }').default, { menu: { items: ${
-        JSON.stringify(getMenuFromRoutes(api.routes[0].routes)).replace(/\"/g, '\'')
-        } }, title: '${
-        opts.title
-        }', logo: '${
-        opts.logo || ''
-        }', desc: '${
-        opts.desc || ''
-        }', ...props })`;
+          importPath
+        }').default, {
+          ...${
+            // escape " to ^ to avoid umi parse error, then umi will decode them
+            // see also: https://github.com/umijs/umi/blob/master/packages/umi-build-dev/src/routes/stripJSONQuote.js#L4
+            JSON.stringify(meta).replace(/\"/g, '^')
+          },
+          ...props,
+        })`;
     }
 
     return ret;
