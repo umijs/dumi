@@ -20,12 +20,27 @@ export interface TransformResult {
 }
 
 export default {
-  markdown(raw: string, dir: string): TransformResult {
-    const result = remark(raw, dir);
-    const contents = (result.contents as string).replace(/class="/g, 'className="');
+  /**
+   * transform markdown content to jsx & meta data
+   * @param raw         content
+   * @param fileAbsDir  absolute path of markdown file
+   * @param onlyConfig  whether transform meta data only
+   */
+  markdown(raw: string, fileAbsDir: string, onlyConfig?: boolean): TransformResult {
+    const result = remark(raw, { fileAbsDir, strategy: onlyConfig ? 'data' : 'default' });
+    let content = '';
+
+    if (!onlyConfig) {
+      // convert class to className for jsx
+      // Todo: process in a Unified way
+      content = (result.contents as string).replace(/class="/g, 'className="');
+
+      // wrap by page component
+      content = MD_WRAPPER.replace('$CONTENT', content)
+    }
 
     return {
-      content: MD_WRAPPER.replace('$CONTENT', contents),
+      content,
       config: {
         ...result.data as TransformResult['config'],
       },
