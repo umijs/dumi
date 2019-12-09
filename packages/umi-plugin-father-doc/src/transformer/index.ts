@@ -1,6 +1,7 @@
 import path from 'upath';
 import getYamlConfig from 'umi-build-dev/lib/routes/getYamlConfig';
 import remark from './remark';
+import getRouteLayout from '../utils/getRouteLayout';
 
 const FRONT_COMMENT_EXP = /^\n*\/\*[^]+?\s*\*\/\n*/;
 const MD_WRAPPER = `
@@ -29,6 +30,7 @@ export default {
   markdown(raw: string, fileAbsDir: string, onlyConfig?: boolean): TransformResult {
     const result = remark(raw, { fileAbsDir, strategy: onlyConfig ? 'data' : 'default' });
     let content = '';
+    const routeLayout = getRouteLayout((result.data as TransformResult['config']).routeLayout, 3);
 
     if (!onlyConfig) {
       // convert class to className for jsx
@@ -43,6 +45,7 @@ export default {
       content,
       config: {
         ...result.data as TransformResult['config'],
+        routeLayout
       },
     };
   },
