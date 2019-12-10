@@ -47,36 +47,21 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
         </div>
         <ul>
           {menu.items.map((item) => (
-            <li key={item.path || item.prefix}>
-              {
-                item.path
-                  ? (
-                    // render single routes
-                    <NavLink to={item.path} exact>
-                      {item.title}
-                    </NavLink>
-                  )
-                  : (
-                    // render child routes
-                    <>
-                      {/* use NavLink for active, but disable click by css */}
-                      <NavLink to={item.prefix}>
-                        {item.title}
+            <li key={item.path}>
+              <NavLink to={item.path} exact={!(item.children && item.children.length)}>
+                {item.title}
+              </NavLink>
+              {item.children && item.children.length && (
+                <ul>
+                  {item.children.map((child) => (
+                    <li key={child.path}>
+                      <NavLink to={child.path} exact>
+                        {child.title}
                       </NavLink>
-                      {item.children && item.children.length && (
-                        <ul>
-                          {item.children.map((child) => (
-                            <li key={child.path}>
-                              <NavLink to={child.path} exact>
-                                {child.title}
-                              </NavLink>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </>
-                  )
-              }
+                    </li>
+                  ))}
+                </ul>
+              )}
             </li>
           ))}
         </ul>

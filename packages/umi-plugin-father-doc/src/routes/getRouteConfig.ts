@@ -1,9 +1,8 @@
 import fs from 'fs';
 import path from 'upath';
 import { IApi, IRoute } from 'umi-types';
-import deepmerge from 'deepmerge';
-import getFrontMatter from './getFrontMatter';
 import getRouteConfigFromDir from './getRouteConfigFromDir';
+import decorateRoutes from './decorateRoutes';
 import { IFatherDocOpts } from '../index';
 
 export default (paths: IApi['paths'], opts: IFatherDocOpts): IRoute[] => {
@@ -40,20 +39,8 @@ export default (paths: IApi['paths'], opts: IFatherDocOpts): IRoute[] => {
     config[0].routes.push(...getRouteConfigFromDir(paths.absPagesPath));
   }
 
-  // read yaml config for all routes
-  config[0].routes.forEach((route) => {
-    route.meta = deepmerge(route.meta, getFrontMatter(route.component as string));
-
-    // apply frontmatter title
-    if (route.meta.title) {
-      route.title = route.meta.title;
-    }
-
-    // apply group path
-    if (route.meta.group?.path) {
-      route.path = path.join(route.meta.group.path, route.path);
-    }
-  });
+  // decorate standard umi routes
+  config[0].routes = decorateRoutes(config[0].routes, paths);
 
   return config;
 }
