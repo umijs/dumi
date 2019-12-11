@@ -1,12 +1,11 @@
-import React, { Component } from 'react';
-import { RouterTypes } from 'umi';
-import { Affix } from 'antd';
-import Link from 'umi/link';
-import NavLink from 'umi/navlink';
-import 'prismjs/themes/prism.css';
-import { IMenuItem } from '../../routes/getMenuFromRoutes';
-import './layout.less';
-import slugAnchor from '../../utils/slugAnchor';
+import React, { Component } from "react";
+import { RouterTypes } from "umi";
+import { Affix } from "antd";
+import Link from "umi/link";
+import NavLink from "umi/navlink";
+import "prismjs/themes/prism.css";
+import { IMenuItem } from "../../routes/getMenuFromRoutes";
+import "./layout.less";
 
 export interface ILayoutProps {
   title: string;
@@ -27,7 +26,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
   getMetaForCurrentPath = () => {
     const {
       route,
-      location: { pathname },
+      location: { pathname }
     } = this.props;
     const current = (route as any).routes.find(item => item.path === pathname);
 
@@ -44,7 +43,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
             to="/"
             className="__father-doc-default-logo"
             style={{
-              backgroundImage: logo && `url('${logo}')`,
+              backgroundImage: logo && `url('${logo}')`
             }}
           />
           <h1>{title}</h1>
@@ -86,35 +85,26 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
   renderAffix(meta, hash) {
     const { routeLayout } = meta;
 
-    const jumper = Object.keys(routeLayout).map(item => {
+    const jumper = routeLayout.map(item => {
       return (
-        <li key={item} title={item}>
+        <li key={item.value} title={item.value}>
           <a
-            href={`#${slugAnchor(item)}`}
-            className={`#${encodeURI(slugAnchor(item))}` === hash ? 'current' : ''}
+            href={`#${item.heading}`}
+            style={{
+              paddingLeft: `${(item.depth - 1) * 16 + 10}px`
+            }}
+            className={`#${encodeURI(item.heading)}` === hash ? "current" : ""}
           >
-            {item}
+            {item.value}
           </a>
-          <ul className="js-guides">
-            {routeLayout[item] &&
-              Object.keys(routeLayout[item]).map(subItem => {
-                return (
-                  <li key={subItem}>
-                    <a
-                      href={`#${slugAnchor(subItem)}`}
-                      className={`#${encodeURI(slugAnchor(subItem))}` === hash ? 'current' : ''}
-                    >
-                      <div dangerouslySetInnerHTML={{ __html: subItem }} />
-                    </a>
-                  </li>
-                );
-              })}
-          </ul>
         </li>
       );
     });
     return (
-      <Affix offsetTop={8} style={{ position: 'absolute', top: '8px', right: '20px' }}>
+      <Affix
+        offsetTop={8}
+        style={{ position: "absolute", top: "8px", right: "20px" }}
+      >
         <ul className="__father-doc-default-layout-toc">{jumper}</ul>
       </Affix>
     );
@@ -123,16 +113,19 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
   render() {
     const {
       children,
-      location: { hash },
+      location: { hash }
     } = this.props;
     const meta = this.getMetaForCurrentPath();
 
     const showSidebar = meta.sidebar !== false;
 
     return (
-      <div className="__father-doc-default-layout" data-mode={showSidebar ? '' : 'fullscreen'}>
+      <div
+        className="__father-doc-default-layout"
+        data-mode={showSidebar ? "" : "fullscreen"}
+      >
         {showSidebar && this.renderSideMenu()}
-        <div style={{ padding: '0 110px 0 0' }}>
+        <div style={{ padding: "0 110px 0 0" }}>
           {this.renderAffix(meta, hash)}
           {children}
         </div>

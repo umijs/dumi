@@ -1,9 +1,11 @@
-function notNull(x) {
-  return x !== null;
-}
+import slugAnchor from "./slugAnchor";
 
-function getMarkdownHeaders(lines, maxHeaderLevel) {
-  function extractText(header) {
+const notNull = x => {
+  return x !== null;
+};
+
+const formatLayoutData = (data, maxHeaderLevel) => {
+  const extractText = header => {
     return header.children
       .map(function (x) {
         if (x.type === "text") {
@@ -13,41 +15,19 @@ function getMarkdownHeaders(lines, maxHeaderLevel) {
         }
       })
       .join("");
-  }
-  return lines
-    .map(function (x) {
+  };
+  return data
+    .map(x => {
       return !maxHeaderLevel || x.depth <= maxHeaderLevel
-        ? { rank: x.depth, name: extractText(x) }
+        ? {
+          depth: x.depth,
+          value: extractText(x),
+          heading: slugAnchor(extractText(x))
+        }
         : null;
     })
     .filter(notNull);
-}
-const parseRoutes = (routes = []) => {
-  const routesObject = {};
-  let rootNode = null;
-  let rootIndex = 0;
-  for (let i = 0; i < routes.length; i++) {
-    const item = routes[i];
-    if (rootNode === null) {
-      rootNode = item;
-      rootIndex = i;
-    } else if (item.rank <= rootNode.rank) {
-      const subRoutes = routes.slice(rootIndex + 1, i);
-      routesObject[rootNode.name] = parseRoutes(subRoutes);
-      rootNode = item;
-      rootIndex = i;
-    }
-  }
-  if (rootIndex === routes.length - 1) {
-    routesObject[rootNode.name] = {};
-  } else if (rootNode) {
-    const restRoutes = routes.slice(rootIndex + 1, routes.length);
-    routesObject[rootNode.name] = parseRoutes(restRoutes);
-  } else {
-  }
-  return routesObject;
 };
-
-export default (data, maxHeaderLevel) => {
-  return parseRoutes(getMarkdownHeaders(data, maxHeaderLevel));
+export default (data: any, maxHeaderLevel: number = 2) => {
+  return formatLayoutData(data, maxHeaderLevel);
 };
