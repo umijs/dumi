@@ -57,6 +57,11 @@ export default function decorateRoutes(routes: IRoute[], paths: IApi['paths'], p
         result[0].push(item);
       }
     } else {
+      // prefix parent route for route
+      if (parentRoute) {
+        item.path = path.join(parentRoute.path, item.path).replace(/\/$/, '');
+      }
+
       result[0].push(item);
     }
 
@@ -73,6 +78,11 @@ export default function decorateRoutes(routes: IRoute[], paths: IApi['paths'], p
           path: route.path,
           redirect: route.routes[0].path,
         });
+
+        // use group title for parent routes
+        if (route.routes[0].meta?.group.title) {
+          route.meta.title = route.routes[0].meta.group.title;
+        }
       }
     });
   }
@@ -103,7 +113,7 @@ export default function decorateRoutes(routes: IRoute[], paths: IApi['paths'], p
   );
 
   // sort routes by order field
-  routes.sort(routeSorter);
+  result.sort(routeSorter);
 
   return result;
 }

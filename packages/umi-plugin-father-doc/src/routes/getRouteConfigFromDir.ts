@@ -48,19 +48,17 @@ function findChildRoutes(absPath: string, parentRoutePath: string = '/'): IRoute
 
   // make sure file is front of child directory in routes
   files.forEach((file) => {
-    let parentPath = parentRoutePath;
-    let routePath = path.join(parentPath, filenameToPath(file))
+    let routePath = path.join(parentRoutePath, filenameToPath(file))
     const filePath = path.join(absPath, file);
     const fileParsed = path.parse(file);
-    const meta: any = {};
 
     switch (fileParsed.ext) {
       case '.md':
         routes.push({
-          path: isDefaultEntry(fileParsed.name) ? parentPath : routePath,
+          path: isDefaultEntry(fileParsed.name) ? parentRoutePath : routePath,
           component: filePath,
           exact: true,
-          meta,
+          meta: {},
         });
         break;
 
