@@ -15,6 +15,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.6.0",
     "@types/jest": "^24.0.13",
+    "@umijs/fabric": "^1.2.4",
     "antd": "^3.25.3",
     "babel-plugin-import": "^1.13.0",
     "cross-env": "^6.0.3",
