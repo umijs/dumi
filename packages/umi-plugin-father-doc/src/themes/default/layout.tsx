@@ -22,14 +22,27 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
     });
   }
 
-  getMetaForCurrentPath = () => {
+  getMetaForCurrentPath = (routes = (this.props.route as any).routes) => {
+    let result;
     const {
-      route,
       location: { pathname },
     } = this.props;
-    const current = (route as any).routes.find(item => item.path === pathname);
 
-    return (current && current.meta) || {};
+    routes.find(item => {
+      if (item.path === pathname) {
+        // use valid child routes first, for nest routes scene
+        result = item.routes ? item.routes[0].meta : item.meta;
+      } else if (item.routes) {
+        // continue to find child routes
+        const childMeta = this.getMetaForCurrentPath(item.routes);
+
+        result = Object.keys(childMeta).length ? childMeta : null;
+      }
+
+      return Boolean(result);
+    });
+
+    return result || {};
   };
 
   renderSideMenu() {
