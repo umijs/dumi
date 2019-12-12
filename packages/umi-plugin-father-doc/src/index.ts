@@ -6,6 +6,7 @@ import { IApi, IRoute } from 'umi-types';
 import getRouteConfig from './routes/getRouteConfig';
 import getMenuFromRoutes from './routes/getMenuFromRoutes';
 import getHostPkgAlias from './utils/getHostPkgAlias';
+import { setUserExtraBabelPlugin } from './transformer/demo';
 
 export interface IFatherDocOpts {
   title?: string;
@@ -146,4 +147,13 @@ export default function (api: IApi, opts: IFatherDocOpts) {
     ...opts.include.map(key => path.join(api.paths.cwd, key, '**/*.md')),
     path.join(api.paths.absPagesPath, '**/*.md'),
   ]);
+
+  // sync user extra babel plugins for demo transformer
+  api.modifyAFWebpackOpts((memo) => {
+    if (memo.extraBabelPlugins) {
+      setUserExtraBabelPlugin(api.config.extraBabelPlugins);
+    }
+
+    return memo;
+  });
 }

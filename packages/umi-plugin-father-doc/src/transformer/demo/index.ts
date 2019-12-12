@@ -4,6 +4,11 @@ import traverse from '@babel/traverse';
 import generator from '@babel/generator';
 
 export const DEMO_COMPONENT_NAME = 'FatherDocDemo';
+export let userExtraBabelPlugin = [];
+
+export function setUserExtraBabelPlugin(plugins: any[]) {
+  userExtraBabelPlugin = plugins;
+}
 
 /**
  * transform code block statments to preview
@@ -18,7 +23,8 @@ export default (raw: string, isTSX?: boolean) => {
       require.resolve('@babel/plugin-proposal-class-properties'),
       ...(isTSX
         ? [[require.resolve('@babel/plugin-transform-typescript'), { isTSX: true }]]
-        : [])
+        : []),
+      ...userExtraBabelPlugin,
     ],
     ast: true,
   });
