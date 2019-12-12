@@ -88,27 +88,24 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
   }
 
   renderAffix(meta, hash) {
-    const { routeLayout = [] } = meta;
+    const { slugs = [] } = meta;
 
-    const jumper = routeLayout.map(item => {
+    const jumper = slugs.map(item => {
       return (
-        <li key={item.value} title={item.value}>
-          <a
-            href={`#${item.heading}`}
-            style={{
-              paddingLeft: `${(item.depth - 1) * 16 + 10}px`,
-            }}
-            className={`#${encodeURI(item.heading)}` === hash ? 'current' : ''}
-          >
+        <li
+          key={item.heading}
+          title={item.value}
+          data-depth={item.depth}
+          className={`#${encodeURI(item.heading)}` === hash ? 'active' : ''}
+        >
+          <a href={`#${item.heading}`}>
             {item.value}
           </a>
         </li>
       );
     });
     return (
-      <div style={{ position: 'fixed', top: '8px', right: '20px' }}>
-        <ul className="__father-doc-default-layout-toc">{jumper}</ul>
-      </div>
+      <ul className="__father-doc-default-layout-toc">{jumper}</ul>
     );
   }
 
@@ -118,16 +115,18 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
       location: { hash },
     } = this.props;
     const meta = this.getMetaForCurrentPath();
-
     const showSidebar = meta.sidebar !== false;
+    const showSlugs = meta.slugs && Boolean(meta.slugs.length);
 
     return (
-      <div className="__father-doc-default-layout" data-mode={showSidebar ? '' : 'fullscreen'}>
+      <div
+        className="__father-doc-default-layout"
+        data-show-sidebar={showSidebar}
+        data-show-slugs={showSlugs}
+      >
         {showSidebar && this.renderSideMenu()}
-        <div style={{ padding: '0 110px 0 0' }}>
-          {this.renderAffix(meta, hash)}
-          {children}
-        </div>
+        {showSlugs && this.renderAffix(meta, hash)}
+        {children}
       </div>
     );
   }
