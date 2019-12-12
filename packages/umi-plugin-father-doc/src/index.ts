@@ -151,7 +151,7 @@ export default function (api: IApi, opts: IFatherDocOpts) {
   // sync user extra babel plugins for demo transformer
   api.modifyAFWebpackOpts((memo) => {
     if (memo.extraBabelPlugins) {
-      setUserExtraBabelPlugin(api.config.extraBabelPlugins);
+      setUserExtraBabelPlugin(api.config.extraBabelPlugins || []);
     }
 
     return memo;
