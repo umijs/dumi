@@ -48,11 +48,12 @@ const PLUGIN_STRATEGIES = {
   ],
   data: [
     [frontmatter],
-    [headings],
-    [header],
     [yaml],
     [rehype],
     [stringify],
+    [slug],
+    [headings],
+    [header],
   ],
 } as {
   [key: string]: [any][]

@@ -1,7 +1,6 @@
 import path from 'upath';
 import getYamlConfig from 'umi-build-dev/lib/routes/getYamlConfig';
 import remark from './remark';
-import getRouteLayout from '../utils/getRouteLayout';
 
 const FRONT_COMMENT_EXP = /^\n*\/\*[^]+?\s*\*\/\n*/;
 const MD_WRAPPER = `
