@@ -37,37 +37,39 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
 
     return (
       <div className="__father-doc-default-layout-menu">
-        <div className="__father-doc-default-layout-menu-header">
-          <Link
-            to="/"
-            className="__father-doc-default-logo"
-            style={{
-              backgroundImage: logo && `url('${logo}')`,
-            }}
-          />
-          <h1>{title}</h1>
-          <p>{desc}</p>
+        <div className="__father-doc-default-layout-menu-inner">
+          <div className="__father-doc-default-layout-menu-header">
+            <Link
+              to="/"
+              className="__father-doc-default-logo"
+              style={{
+                backgroundImage: logo && `url('${logo}')`,
+              }}
+            />
+            <h1>{title}</h1>
+            <p>{desc}</p>
+          </div>
+          <ul>
+            {menu.items.map(item => (
+              <li key={item.path}>
+                <NavLink to={item.path} exact={!(item.children && item.children.length)}>
+                  {item.title}
+                </NavLink>
+                {item.children && Boolean(item.children.length) && (
+                  <ul>
+                    {item.children.map(child => (
+                      <li key={child.path}>
+                        <NavLink to={child.path} exact>
+                          {child.title}
+                        </NavLink>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul>
         </div>
-        <ul>
-          {menu.items.map(item => (
-            <li key={item.path}>
-              <NavLink to={item.path} exact={!(item.children && item.children.length)}>
-                {item.title}
-              </NavLink>
-              {item.children && item.children.length && (
-                <ul>
-                  {item.children.map(child => (
-                    <li key={child.path}>
-                      <NavLink to={child.path} exact>
-                        {child.title}
-                      </NavLink>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          ))}
-        </ul>
       </div>
     );
   }
