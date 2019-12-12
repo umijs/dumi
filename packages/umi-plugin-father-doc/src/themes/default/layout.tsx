@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { RouterTypes } from "umi";
-import { Affix } from "antd";
 import Link from "umi/link";
 import NavLink from "umi/navlink";
 import "prismjs/themes/prism.css";
@@ -101,12 +100,9 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
       );
     });
     return (
-      <Affix
-        offsetTop={8}
-        style={{ position: "absolute", top: "8px", right: "20px" }}
-      >
+      <div style={{ position: "fixed", top: "8px", right: "20px" }}>
         <ul className="__father-doc-default-layout-toc">{jumper}</ul>
-      </Affix>
+      </div>
     );
   }
 
