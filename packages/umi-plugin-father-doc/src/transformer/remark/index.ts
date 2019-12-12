@@ -33,13 +33,13 @@ export interface IRemarkOpts {
 const PLUGIN_STRATEGIES = {
   default: [
     [frontmatter],
-    [header],
     [yaml],
     [externalDemo],
     [rehype],
     [stringify, { allowDangerousHTML: true, closeSelfClosing: true }],
     [slug],
     [headings],
+    [header],
     [comments, { removeConditional: true }],
     [prism],
     [previewer],
@@ -48,6 +48,7 @@ const PLUGIN_STRATEGIES = {
   ],
   data: [
     [frontmatter],
+    [headings],
     [header],
     [yaml],
     [rehype],
