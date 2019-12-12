@@ -9,14 +9,14 @@ group:
 
 father-doc 基于 Umi，配置的方式与 Umi 项目一致，使用 `.umirc.js` 或 `config/config.js` 都可进行配置，内容大致如下：
 
-``` js
+```js
 // 配置文件内容
 export default {
   // Umi 配置
-  doc : {
+  doc: {
     // father-doc 独有配置
-  }
-}
+  },
+};
 ```
 
 ## father-doc 独有配置

@@ -9,4 +9,4 @@ export default (filePath: string): { [key: string]: any } => {
   const content = fs.readFileSync(filePath).toString();
 
   return transformer.markdown(content, path.parse(filePath).dir, true).config;
-}
+};

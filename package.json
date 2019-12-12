@@ -1,20 +1,22 @@
 {
   "private": true,
   "scripts": {
-    "dev": "cross-env BROWSER=none node ./packages/father-doc/bin/father-doc.js dev",
-    "doc:build": "cross-env BROWSER=none node ./packages/father-doc/bin/father-doc.js build",
-    "doc:deploy": "bash ./scripts/deploy_doc.sh",
     "bootstrap": "lerna bootstrap",
     "build": "father-build build",
     "changelog": "lerna-changelog",
     "clean": "lerna clean -y",
-    "test": "umi-test --coverage",
     "debug": "umi-test",
-    "publish": "npm run changelog && npm run build && lerna publish"
+    "dev": "cross-env BROWSER=none node ./packages/father-doc/bin/father-doc.js dev",
+    "doc:build": "cross-env BROWSER=none node ./packages/father-doc/bin/father-doc.js build",
+    "doc:deploy": "bash ./scripts/deploy_doc.sh",
+    "prettier": "prettier -c --write \"**/*\"",
+    "publish": "npm run changelog && npm run build && lerna publish",
+    "test": "umi-test --coverage"
   },
   "devDependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.6.0",
     "@types/jest": "^24.0.13",
+    "@umijs/fabric": "^1.2.4",
     "antd": "^3.25.3",
     "babel-plugin-import": "^1.13.0",
     "cross-env": "^6.0.3",

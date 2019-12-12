@@ -52,24 +52,21 @@ blockTokenizers.fencedCode = function fencedCode(...args) {
   }
 
   return result;
-}
+};
 
 /**
  * a decorator use for turn off tokenizer feature
  * @param oTokenizer the original tokenizer
  */
 function tokenizerDecorator(oTokenizer) {
-  const tokenizer = function (...args) {
+  const tokenizer = function(...args) {
     // turn off disableable tokenizers if strategy is 'data'
-    if (
-      this.options.strategy === 'data'
-      && DISABLEABLE_TOKENIZERS.indexOf(oTokenizer.name) > -1
-    ) {
+    if (this.options.strategy === 'data' && DISABLEABLE_TOKENIZERS.indexOf(oTokenizer.name) > -1) {
       return true;
     }
 
     return oTokenizer.apply(this, args);
-  }
+  };
 
   if (oTokenizer.locator) {
     tokenizer.locator = oTokenizer.locator;
@@ -89,11 +86,11 @@ Object.keys(inlineTokenizers).forEach(method => {
 });
 
 // proxy set options to avoid remove the custom strategy option
-(parse.Parser.prototype as any).setOptions = function (opts) {
+(parse.Parser.prototype as any).setOptions = function(opts) {
   if (this.options.strategy) {
     opts.strategy = this.options.strategy;
   }
   setOptions.call(this, opts);
-}
+};
 
 export default parse as Plugin<[Partial<IParseProps>?]>;

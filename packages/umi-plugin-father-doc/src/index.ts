@@ -24,18 +24,15 @@ function docConfigPlugin() {
   return (api: IApi) => ({
     name: 'doc',
     validate(val: any) {
-      assert(
-        isPlainObject(val),
-        `Configure item doc should be Plain Object, but got ${val}.`,
-      );
+      assert(isPlainObject(val), `Configure item doc should be Plain Object, but got ${val}.`);
     },
     onChange() {
       api.service.restart('Configure item doc Changed.');
     },
-  })
+  });
 }
 
-export default function (api: IApi, opts: IFatherDocOpts) {
+export default function(api: IApi, opts: IFatherDocOpts) {
   // apply default options
   const defaultTitle = require(path.join(api.paths.cwd, 'package.json')).name;
   opts = Object.assign(
@@ -44,7 +41,7 @@ export default function (api: IApi, opts: IFatherDocOpts) {
       include: ['docs'],
     },
     {
-      routes: api.config.routes
+      routes: api.config.routes,
     },
     (api.config as any).doc,
     opts,
@@ -61,7 +58,7 @@ export default function (api: IApi, opts: IFatherDocOpts) {
   });
 
   // repalce default routes with generated routes
-  api.modifyRoutes((routes) => {
+  api.modifyRoutes(routes => {
     const result = getRouteConfig(api.paths, opts);
     const childRoutes = result[0].routes;
 
@@ -83,9 +80,7 @@ export default function (api: IApi, opts: IFatherDocOpts) {
     };
 
     if (/\/layout\.[tj]sx?$/.test(component)) {
-      ret = `props => React.createElement(require('${
-          importPath
-        }').default, {
+      ret = `props => React.createElement(require('${importPath}').default, {
           ...${
             // escape " to ^ to avoid umi parse error, then umi will decode them
             // see also: https://github.com/umijs/umi/blob/master/packages/umi-build-dev/src/routes/stripJSONQuote.js#L4
@@ -104,11 +99,7 @@ export default function (api: IApi, opts: IFatherDocOpts) {
     urlLoaderExcludes: [/\.md$/],
     // pass empty routes if pages path does not exist and no routes config
     // to avoid umi throw src directory not exists error
-    routes: (
-      (fs.existsSync(api.paths.absPagesPath) && !api.config.routes)
-        ? undefined
-        : []
-    ),
+    routes: fs.existsSync(api.paths.absPagesPath) && !api.config.routes ? undefined : [],
   }));
 
   // configure loader for .md file
@@ -120,14 +111,8 @@ export default function (api: IApi, opts: IFatherDocOpts) {
       .loader(require.resolve('./loader'));
 
     // disable css modules for built-in theme
-    config.module
-      .rule('less-in-node_modules')
-      .include
-      .add(path.join(__dirname, './themes'));
-    config.module
-      .rule('less')
-      .exclude
-      .add(path.join(__dirname, './themes'));
+    config.module.rule('less-in-node_modules').include.add(path.join(__dirname, './themes'));
+    config.module.rule('less').exclude.add(path.join(__dirname, './themes'));
 
     // add alias for current package(s)
     getHostPkgAlias(api.paths).forEach(([pkgName, pkgPath]) => {

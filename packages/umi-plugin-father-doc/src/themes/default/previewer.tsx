@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import Clipboard from 'react-clipboard.js'
+import Clipboard from 'react-clipboard.js';
 import './previewer.less';
 
 export interface IPreviewerProps {
@@ -35,7 +35,7 @@ export default class Previewer extends Component<IPreviewerProps> {
     showSource: false,
     sourceType: '',
     copyTimer: null,
-  }
+  };
 
   componentDidMount() {
     const { source } = this.props;
@@ -51,7 +51,7 @@ export default class Previewer extends Component<IPreviewerProps> {
         this.setState({ copyTimer: null });
       }, 2000),
     });
-  }
+  };
 
   render() {
     const { children, source, title, desc } = this.props;
@@ -59,9 +59,7 @@ export default class Previewer extends Component<IPreviewerProps> {
 
     return (
       <div className="__father-doc-default-previewer">
-        <div className="__father-doc-default-previewer-demo">
-          {children}
-        </div>
+        <div className="__father-doc-default-previewer-demo">{children}</div>
         <div className="__father-doc-default-previewer-desc" title={title}>
           {desc}
         </div>
@@ -75,15 +73,14 @@ export default class Previewer extends Component<IPreviewerProps> {
           {source.tsx && showSource && (
             <button
               role={`change-${sourceType}`}
-              onClick={() => this.setState({
-                sourceType: sourceType === 'tsx' ? 'jsx' : 'tsx',
-              })}
+              onClick={() =>
+                this.setState({
+                  sourceType: sourceType === 'tsx' ? 'jsx' : 'tsx',
+                })
+              }
             />
           )}
-          <button
-            role="source"
-            onClick={() => this.setState({ showSource: !showSource })}
-          />
+          <button role="source" onClick={() => this.setState({ showSource: !showSource })} />
         </div>
         {showSource && (
           <div

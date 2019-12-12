@@ -2,9 +2,7 @@ import fs from 'fs';
 import path from 'upath';
 import { IRoute } from 'umi-types';
 
-const IGNORE_DIR = [
-  'node_modules',
-];
+const IGNORE_DIR = ['node_modules'];
 
 /**
  * discard .dirname & _dirname
@@ -17,7 +15,10 @@ function isValidPath(pathname: string) {
  * convert TheComponent to the-component and discard ext
  */
 export function filenameToPath(name: string) {
-  return name.replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\.\w+$/, '').toLowerCase();
+  return name
+    .replace(/([a-z])([A-Z])/g, '$1-$2')
+    .replace(/\.\w+$/, '')
+    .toLowerCase();
 }
 
 /**
@@ -36,20 +37,23 @@ function findChildRoutes(absPath: string, parentRoutePath: string = '/'): IRoute
   const mixture = fs.readdirSync(absPath).filter(isValidPath);
   const routes: IRoute[] = [];
   // separate files & child directories
-  const [files, dirs] = mixture.reduce((result, item) => {
-    if (fs.statSync(path.join(absPath, item)).isDirectory()) {
-      result[1].push(item);
-    } else {
-      result[0].push(item);
-    }
+  const [files, dirs] = mixture.reduce(
+    (result, item) => {
+      if (fs.statSync(path.join(absPath, item)).isDirectory()) {
+        result[1].push(item);
+      } else {
+        result[0].push(item);
+      }
 
-    return result;
-  }, [[], []]);
+      return result;
+    },
+    [[], []],
+  );
 
   // make sure file is front of child directory in routes
-  files.forEach((file) => {
+  files.forEach(file => {
     let parentPath = parentRoutePath;
-    let routePath = path.join(parentPath, filenameToPath(file))
+    let routePath = path.join(parentPath, filenameToPath(file));
     const filePath = path.join(absPath, file);
     const fileParsed = path.parse(file);
     const meta: any = {};
@@ -69,9 +73,9 @@ function findChildRoutes(absPath: string, parentRoutePath: string = '/'): IRoute
   });
 
   // continue to find child routes
-  dirs.forEach((dir) => {
+  dirs.forEach(dir => {
     const dirAbsPath = path.join(absPath, dir);
-    const routePath = path.join(parentRoutePath, filenameToPath(dir))
+    const routePath = path.join(parentRoutePath, filenameToPath(dir));
 
     // only support 2-level routes
     if (parentRoutePath === '/') {
@@ -95,10 +99,7 @@ function findChildRoutes(absPath: string, parentRoutePath: string = '/'): IRoute
       }
     } else {
       // push child routes to parent level routes if nest over 2-level
-      routes.push(...findChildRoutes(
-        dirAbsPath,
-        routePath,
-      ));
+      routes.push(...findChildRoutes(dirAbsPath, routePath));
     }
   });
 

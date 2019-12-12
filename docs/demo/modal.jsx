@@ -10,7 +10,7 @@ import Button from 'antd/es/button';
 import 'antd/es/button/style/css';
 
 class App extends React.Component {
-  state = { visible: false }
+  state = { visible: false };
 
   showModal = () => {
     this.setState({

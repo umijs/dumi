@@ -10,7 +10,7 @@ import FatherDocPreviewer from '${path.join(__dirname, '../themes/default/previe
 
 export default function () {
   return <>$CONTENT</>;
-}`
+}`;
 
 export interface TransformResult {
   content: string;
@@ -36,13 +36,13 @@ export default {
       content = (result.contents as string).replace(/class="/g, 'className="');
 
       // wrap by page component
-      content = MD_WRAPPER.replace('$CONTENT', content)
+      content = MD_WRAPPER.replace('$CONTENT', content);
     }
 
     return {
       content,
       config: {
-        ...result.data as TransformResult['config'],
+        ...(result.data as TransformResult['config']),
       },
     };
   },
@@ -56,4 +56,4 @@ export default {
   tsx(raw: string): TransformResult {
     return this.jsx(raw);
   },
-}
+};

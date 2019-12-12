@@ -7,7 +7,7 @@ order: 9
 
 在组件项目开发目录下执行以下命令进行安装：
 
-``` bash
+```bash
 $ npm i father-doc@next -D
 ```
 
@@ -17,13 +17,13 @@ father-doc 默认会搜寻 `src` 及 `docs` 目录下的 `.md` 文件，然后�
 
 我们先创建我们的第一个文档页面：
 
-``` bash
+```bash
 $ echo '# Hello World!' > src/index.md
 ```
 
 然后直接执行：
 
-``` bash
+```bash
 $ father-doc dev
 ```
 
@@ -33,13 +33,13 @@ $ father-doc dev
 
 但这只是普普通通的文档，接下来我们尝试嵌入一个 Demo 试试看：
 
-``` bash
+````bash
 $ echo '\n\n``` jsx\nexport default () => <button>Hello World!</button>;\n```' >> src/index.md
-```
+````
 
 一个内容为 Hello World! 的 Button 将会出现在页面上，就像这样：
 
-``` jsx
+```jsx
 export default () => <button>Hello World!</button>;
 ```
 
@@ -65,7 +65,7 @@ export default () => <button>Hello World!</button>;
 
 它也能如上面的 Demo 一样被插入进文档中进行展示：
 
-``` jsx
+```jsx
 export default () => <button>Hello World!</button>;
 ```
 
