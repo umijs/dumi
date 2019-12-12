@@ -25,7 +25,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
   getMetaForCurrentPath = () => {
     const {
       route,
-      location: { pathname }
+      location: { pathname },
     } = this.props;
     const current = (route as any).routes.find(item => item.path === pathname);
 
@@ -42,7 +42,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
             to="/"
             className="__father-doc-default-logo"
             style={{
-              backgroundImage: logo && `url('${logo}')`
+              backgroundImage: logo && `url('${logo}')`,
             }}
           />
           <h1>{title}</h1>
@@ -51,10 +51,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
         <ul>
           {menu.items.map(item => (
             <li key={item.path}>
-              <NavLink
-                to={item.path}
-                exact={!(item.children && item.children.length)}
-              >
+              <NavLink to={item.path} exact={!(item.children && item.children.length)}>
                 {item.title}
               </NavLink>
               {item.children && item.children.length && (
@@ -77,7 +74,6 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
 
   renderAffix(meta, hash) {
     const { routeLayout = [] } = meta;
-console.log(routeLayout);
 
     const jumper = routeLayout.map(item => {
       return (
@@ -85,9 +81,9 @@ console.log(routeLayout);
           <a
             href={`#${item.heading}`}
             style={{
-              paddingLeft: `${(item.depth - 1) * 16 + 10}px`
+              paddingLeft: `${(item.depth - 1) * 16 + 10}px`,
             }}
-            className={`#${encodeURI(item.heading)}` === hash ? "current" : ""}
+            className={`#${encodeURI(item.heading)}` === hash ? 'current' : ''}
           >
             {item.value}
           </a>
@@ -95,7 +91,7 @@ console.log(routeLayout);
       );
     });
     return (
-      <div style={{ position: "fixed", top: "8px", right: "20px" }}>
+      <div style={{ position: 'fixed', top: '8px', right: '20px' }}>
         <ul className="__father-doc-default-layout-toc">{jumper}</ul>
       </div>
     );
@@ -104,19 +100,16 @@ console.log(routeLayout);
   render() {
     const {
       children,
-      location: { hash }
+      location: { hash },
     } = this.props;
     const meta = this.getMetaForCurrentPath();
 
     const showSidebar = meta.sidebar !== false;
 
     return (
-      <div
-        className="__father-doc-default-layout"
-        data-mode={showSidebar ? "" : "fullscreen"}
-      >
+      <div className="__father-doc-default-layout" data-mode={showSidebar ? '' : 'fullscreen'}>
         {showSidebar && this.renderSideMenu()}
-        <div style={{ padding: "0 110px 0 0" }}>
+        <div style={{ padding: '0 110px 0 0' }}>
           {this.renderAffix(meta, hash)}
           {children}
         </div>

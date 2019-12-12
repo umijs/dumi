@@ -30,7 +30,6 @@ export default {
   markdown(raw: string, fileAbsDir: string, onlyConfig?: boolean): TransformResult {
     const result = remark(raw, { fileAbsDir, strategy: onlyConfig ? 'data' : 'default' });
     let content = '';
-    const routeLayout = getRouteLayout((result.data as TransformResult['config']).routeLayout || []);
 
     if (!onlyConfig) {
       // convert class to className for jsx
@@ -45,7 +44,6 @@ export default {
       content,
       config: {
         ...result.data as TransformResult['config'],
-        routeLayout
       },
     };
   },
