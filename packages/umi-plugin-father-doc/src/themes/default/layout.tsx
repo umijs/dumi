@@ -23,11 +23,14 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
   }
 
   getMetaForCurrentPath = () => {
-    const { route, location: { pathname } } = this.props;
+    const {
+      route,
+      location: { pathname },
+    } = this.props;
     const current = (route as any).routes.find(item => item.path === pathname);
 
     return (current && current.meta) || {};
-  }
+  };
 
   renderSideMenu() {
     const { menu, logo, title, desc } = this.props;
@@ -42,18 +45,18 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
               backgroundImage: logo && `url('${logo}')`,
             }}
           />
-            <h1>{title}</h1>
-            <p>{desc}</p>
+          <h1>{title}</h1>
+          <p>{desc}</p>
         </div>
         <ul>
-          {menu.items.map((item) => (
+          {menu.items.map(item => (
             <li key={item.path}>
               <NavLink to={item.path} exact={!(item.children && item.children.length)}>
                 {item.title}
               </NavLink>
               {item.children && item.children.length && (
                 <ul>
-                  {item.children.map((child) => (
+                  {item.children.map(child => (
                     <li key={child.path}>
                       <NavLink to={child.path} exact>
                         {child.title}
@@ -69,15 +72,47 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
     );
   }
 
-  render () {
-    const { children } = this.props;
+  renderAffix(meta, hash) {
+    const { routeLayout = [] } = meta;
+
+    const jumper = routeLayout.map(item => {
+      return (
+        <li key={item.value} title={item.value}>
+          <a
+            href={`#${item.heading}`}
+            style={{
+              paddingLeft: `${(item.depth - 1) * 16 + 10}px`,
+            }}
+            className={`#${encodeURI(item.heading)}` === hash ? 'current' : ''}
+          >
+            {item.value}
+          </a>
+        </li>
+      );
+    });
+    return (
+      <div style={{ position: 'fixed', top: '8px', right: '20px' }}>
+        <ul className="__father-doc-default-layout-toc">{jumper}</ul>
+      </div>
+    );
+  }
+
+  render() {
+    const {
+      children,
+      location: { hash },
+    } = this.props;
     const meta = this.getMetaForCurrentPath();
+
     const showSidebar = meta.sidebar !== false;
 
     return (
       <div className="__father-doc-default-layout" data-mode={showSidebar ? '' : 'fullscreen'}>
         {showSidebar && this.renderSideMenu()}
-        {children}
+        <div style={{ padding: '0 110px 0 0' }}>
+          {this.renderAffix(meta, hash)}
+          {children}
+        </div>
       </div>
     );
   }

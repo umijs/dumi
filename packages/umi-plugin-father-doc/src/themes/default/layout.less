@@ -26,7 +26,7 @@ body {
     left: 0;
     bottom: 0;
     width: @s-menu-width;
-    background-color: #F2F5FA;
+    background-color: #f2f5fa;
     box-sizing: border-box;
     overflow: auto;
 
@@ -51,7 +51,7 @@ body {
         display: inline-block;
         width: 66px;
         height: 65px;
-        background: url(@img-logo) no-repeat 0/contain;
+        background: url(@img-logo) no-repeat 0 / contain;
       }
 
       h1 {
@@ -74,7 +74,7 @@ body {
 
       > li {
         > a {
-          @c-active-bg: #E8ECF4;
+          @c-active-bg: #e8ecf4;
 
           display: block;
           padding: 0 28px;
@@ -95,7 +95,7 @@ body {
 
           &.active {
             color: @c-primary;
-            background: #E8ECF4;
+            background: #e8ecf4;
           }
         }
 
@@ -124,6 +124,39 @@ body {
             }
           }
         }
+      }
+    }
+  }
+  &-toc {
+    margin: 16px 0;
+    padding-left: 0;
+    font-size: 12px;
+    list-style: none;
+    border-left: 1px solid #ebedf0;
+    li {
+      margin-left: 0;
+      padding-left: 0;
+      line-height: 1.5;
+      list-style: none;
+      border-color: #1890ff;
+    }
+    li a {
+      display: block;
+      width: 110px;
+      margin-left: -1px;
+      padding-left: 16px;
+      overflow: hidden;
+      color: #314659;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      border-left: 1px solid transparent;
+      transition: all 0.3s ease;
+      :hover {
+        color: #1890ff;
+      }
+      &.current {
+        color: #1890ff;
+        border-color: #1890ff;
       }
     }
   }

@@ -8,6 +8,7 @@ import prism from '@mapbox/rehype-prism';
 import parse, { IParseProps } from './parse';
 import rehype from './rehype';
 import yaml from './yaml';
+import header from './header';
 import externalDemo from './externalDemo';
 import previewer from './previewer';
 import jsx from './jsx';
@@ -38,6 +39,7 @@ const PLUGIN_STRATEGIES = {
     [stringify, { allowDangerousHTML: true, closeSelfClosing: true }],
     [slug],
     [headings],
+    [header],
     [comments, { removeConditional: true }],
     [prism],
     [previewer],
@@ -46,6 +48,8 @@ const PLUGIN_STRATEGIES = {
   ],
   data: [
     [frontmatter],
+    [headings],
+    [header],
     [yaml],
     [rehype],
     [stringify],
