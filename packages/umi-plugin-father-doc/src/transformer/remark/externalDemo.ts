@@ -3,17 +3,33 @@ import path from 'upath';
 import visit from 'unist-util-visit';
 import transformer, { TransformResult } from '../index';
 
-const DEMO_TOKEN_EXP = /^\s*<(code)[^>]+src="?([^ ">]+)"?/;
+const DEMO_TOKEN_EXP = /^\s*<(code)([^>]+?)\/?>/;
+
+/**
+ * simple parser for parse HTML attributes
+ * @param str   attributes string on HTML tag
+ */
+function HTMLAttrParser(str: string): { [key: string]: any } {
+  const attrs = {};
+
+  (str || '').replace(/([^=\s]+)(="([^"]+)")?/g, (_, name, content, value) => {
+    attrs[name] = content ? value : true;
+
+    return _;
+  });
+
+  return attrs;
+}
 
 export default function externalDemo() {
   return (ast) => {
     visit(ast, 'html', (node) => {
       if (typeof node.value === 'string') {
         const matches = node.value.match(DEMO_TOKEN_EXP) || [];
-        const demoPath = matches[2];
+        const { src, ...inheritAttrs} = HTMLAttrParser(matches[2]);
 
-        if (demoPath) {
-          const absPath = demoPath.startsWith('/') ? demoPath : path.join(this.data('fileAbsDir'), demoPath);
+        if (src) {
+          const absPath = src.startsWith('/') ? src : path.join(this.data('fileAbsDir'), src);
 
           if (fs.existsSync(absPath)) {
             const lang = absPath.match(/\.(\w+)$/)[1];
@@ -25,7 +41,10 @@ export default function externalDemo() {
               node.type = 'demo';
               node.lang = lang;
               node.value = result.content;
-              node.meta = result.config;
+              node.meta = {
+                ...inheritAttrs,
+                ...result.config,
+              };
               node.filePath = absPath;
             } else {
               throw new Error(`[External-Demo Error]: unsupported file type: ${lang}`);

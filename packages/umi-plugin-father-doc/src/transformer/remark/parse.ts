@@ -36,18 +36,37 @@ const DISABLEABLE_TOKENIZERS = [
   'break',
 ];
 
+/**
+ * parser for parse modifier of code block
+ * @param meta  meta raw string
+ */
+function codeBlockModifierParser(meta: string): { [key: string]: any } {
+  return (meta || '').split('|').reduce((result, item) => {
+    item = String.prototype.trim.call(item);
+
+    if (item) {
+      result[item] = true;
+    }
+
+    return result;
+  }, {});
+}
+
 // override original fencedCode tokenizer
 blockTokenizers.fencedCode = function fencedCode(...args) {
   const result = oFencedCode.apply(this, args);
 
   // only process jsx & tsx code block
   if (result && /^[jt]sx$/.test(result.lang)) {
-    if ((result.meta || '').indexOf('pure') > -1) {
+    const modifier = codeBlockModifierParser(result.meta);
+
+    if (modifier.pure) {
       // clear useless meta if the lang with pure modifier
       result.meta = result.meta.replace(/ ?\| ?pure/, '');
     } else {
       // customize type (use for rehype demo handler)
       result.type = 'demo';
+      result.meta = modifier;
     }
   }
 

@@ -4,30 +4,34 @@ import './previewer.less';
 
 export interface IPreviewerProps {
   /**
-   * 当前 Demo 的源代码
+   * demo sources
    */
   source?: {
     /**
-     * 未经 prism 格式化前的源代码，必定存在
+     * unformatted source code, exsits definitely
      */
     raw?: string;
     /**
-     * jsx 形式的源代码，必定存在
+     * jsx source code, exsits definitely
      */
     jsx: string;
     /**
-     * tsx 形式的源代码，仅在源码语言为 tsx 时存在
+     * tsx source, exists when the source code language is tsx
      */
     tsx?: string;
   };
   /**
-   * 当前 demo 的标题
+   * demo title
    */
   title?: string;
   /**
-   * 当前 demo 的介绍
+   * demo desc
    */
   desc?: string;
+  /**
+   * enable inline mode
+   */
+  inline?: true;
 }
 
 export default class Previewer extends Component<IPreviewerProps> {
@@ -54,8 +58,13 @@ export default class Previewer extends Component<IPreviewerProps> {
   }
 
   render() {
-    const { children, source, title, desc } = this.props;
+    const { children, source, title, desc, inline } = this.props;
     const { showSource, sourceType, copyTimer } = this.state;
+
+    // render directly for inline mode
+    if (inline) {
+      return children;
+    }
 
     return (
       <div className="__father-doc-default-previewer">
