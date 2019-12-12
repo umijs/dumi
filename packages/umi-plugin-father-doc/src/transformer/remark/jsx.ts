@@ -2,6 +2,25 @@ import { Node } from 'unist';
 import visit from 'unist-util-visit';
 import visitParents from 'unist-util-visit-parents';
 
+const SINGLE_TAGS_EXPS = [
+  'area',
+  'base',
+  'br',
+  'col',
+  'command',
+  'embed',
+  'hr',
+  'img',
+  'input',
+  'keygen',
+  'link',
+  'meta',
+  'param',
+  'source',
+  'track',
+  'wbr',
+].map(tag => new RegExp(`<(${tag}[^>]*?)>`, 'g'));
+
 function hasSubClassName(className: string[], subCls: string) {
   return (className || []).find(cls => cls.indexOf(subCls) > -1);
 }
@@ -52,6 +71,20 @@ const rawVisitor = (node, i, parent) => {
   // remove HTML comments for JSX
   if (COMMENT_EXP.test(node.value)) {
     parent.children.splice(i, 1);
+  }
+
+  // convert all self-closing HTML tag
+  // see also: https://github.com/umijs/umi/blob/master/packages/umi-build-dev/src/htmlToJSX.js#L118
+  if (!node.previewer) {
+    SINGLE_TAGS_EXPS.forEach(function(regex) {
+      node.value = node.value.replace(regex, function(_, str) {
+        if (str.endsWith('/')) {
+          return `<${str}>`;
+        } else {
+          return `<${str} />`;
+        }
+      });
+    });
   }
 }
 

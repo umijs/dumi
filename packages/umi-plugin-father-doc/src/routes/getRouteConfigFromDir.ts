@@ -52,16 +52,7 @@ function findChildRoutes(absPath: string, parentRoutePath: string = '/'): IRoute
     let routePath = path.join(parentPath, filenameToPath(file))
     const filePath = path.join(absPath, file);
     const fileParsed = path.parse(file);
-    const firstParentPath = parentPath.split('/')[1];
     const meta: any = {};
-
-    if (firstParentPath) {
-      meta.group = { title: firstParentPath, path: `/${firstParentPath}` };
-
-      // discard first parent path then join parent path in getRouteConfig.ts uniformly (for process frontmatter)
-      routePath = routePath.replace(meta.group.path, '');
-      parentPath = parentPath.replace(meta.group.path, '');
-    }
 
     switch (fileParsed.ext) {
       case '.md':
@@ -82,10 +73,33 @@ function findChildRoutes(absPath: string, parentRoutePath: string = '/'): IRoute
     const dirAbsPath = path.join(absPath, dir);
     const routePath = path.join(parentRoutePath, filenameToPath(dir))
 
-    routes.push(...findChildRoutes(
-      dirAbsPath,
-      routePath,
-    ))
+    // only support 2-level routes
+    if (parentRoutePath === '/') {
+      const childRoutes = findChildRoutes(
+        dirAbsPath,
+        // nest routes need not to join parent route path, will be process when decorating
+        parentRoutePath,
+      );
+
+      if (childRoutes.length) {
+        const route = { path: routePath, meta: {} };
+
+        // convert root child route to parent route
+        if (childRoutes.length === 1 && childRoutes[0].path === '/') {
+          Object.assign(route, childRoutes[0], { path: routePath });
+        } else {
+          Object.assign(route, { routes: childRoutes });
+        }
+
+        routes.push(route);
+      }
+    } else {
+      // push child routes to parent level routes if nest over 2-level
+      routes.push(...findChildRoutes(
+        dirAbsPath,
+        routePath,
+      ));
+    }
   });
 
   return routes;
