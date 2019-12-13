@@ -31,15 +31,21 @@ $ father-doc dev
 
 ## 嵌入式 Demo
 
-但这只是普普通通的文档，接下来我们尝试嵌入一个 Demo 试试看：
+但这只是普普通通的文档，接下来我们尝试在 `index.md` 中嵌入一个 Demo 试试看，输入：
 
-``` bash
-$ echo '\n\n``` jsx\nexport default () => <button>Hello World!</button>;\n```' >> src/index.md
+<pre>
+``` jsx
+import React from 'react';
+
+export default () => &lt;button&gt;Hello World!&lt;/button&gt;
 ```
+</pre>
 
 一个内容为 Hello World! 的 Button 将会出现在页面上，就像这样：
 
 ``` jsx
+import React from 'react';
+
 export default () => <button>Hello World!</button>;
 ```
 
@@ -66,6 +72,8 @@ export default () => <button>Hello World!</button>;
 它也能如上面的 Demo 一样被插入进文档中进行展示：
 
 ``` jsx
+import React from 'react';
+
 export default () => <button>Hello World!</button>;
 ```
 

@@ -7,6 +7,7 @@ title: 文档示例
 ## Demo 嵌入
 
 ``` jsx
+import React from 'react';
 import { Button } from 'antd';
 import 'antd/es/button/style/css';
 

@@ -4,10 +4,8 @@
  */
 
 import React from 'react';
-import Modal from 'antd/es/modal';
-import 'antd/es/modal/style/css';
-import Button from 'antd/es/button';
-import 'antd/es/button/style/css';
+import { Modal } from 'antd';
+import { Button } from 'antd';
 
 class App extends React.Component {
   state = { visible: false }
