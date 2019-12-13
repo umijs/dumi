@@ -2,6 +2,7 @@
   "private": true,
   "scripts": {
     "dev": "cross-env BROWSER=none node ./packages/father-doc/bin/father-doc.js dev",
+    "watch": "father-build build --watch",
     "doc:build": "cross-env BROWSER=none node ./packages/father-doc/bin/father-doc.js build",
     "doc:deploy": "bash ./scripts/deploy_doc.sh",
     "bootstrap": "lerna bootstrap",

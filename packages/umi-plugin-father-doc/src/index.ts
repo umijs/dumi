@@ -7,6 +7,7 @@ import getRouteConfig from './routes/getRouteConfig';
 import getMenuFromRoutes from './routes/getMenuFromRoutes';
 import getHostPkgAlias from './utils/getHostPkgAlias';
 import { setUserExtraBabelPlugin } from './transformer/demo';
+import 'intersection-observer';
 
 export interface IFatherDocOpts {
   title?: string;
