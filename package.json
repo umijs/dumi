@@ -22,6 +22,7 @@
     "father-build": "^1.14.2",
     "lerna": "^3.6.0",
     "lerna-changelog": "^0.8.2",
+    "puppeteer": "2.0.0",
     "umi-test": "^1.5.12",
     "umi-types": "^0.5.3"
   }
