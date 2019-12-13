@@ -27,12 +27,32 @@ export default (raw: string, isTSX?: boolean) => {
       ...userExtraBabelPlugin,
     ],
     ast: true,
+    babelrc: false,
+    configFile: false,
   });
   const body = code.ast.program.body as types.Statement[];
+  let reactVar;
   let returnStatement;
 
   // traverse call expression
   traverse(code.ast, {
+    VariableDeclaration(callPath) {
+      const callPathNode = callPath.node;
+
+      // save react import variables
+      if (
+        callPathNode.declarations[0]
+        && types.isIdentifier(callPathNode.declarations[0].id)
+        && types.isCallExpression(callPathNode.declarations[0].init)
+        && types.isCallExpression(callPathNode.declarations[0].init.arguments[0])
+        && types.isIdentifier(callPathNode.declarations[0].init.arguments[0].callee)
+        && callPathNode.declarations[0].init.arguments[0].callee.name === 'require'
+        && types.isStringLiteral(callPathNode.declarations[0].init.arguments[0].arguments[0])
+        && callPathNode.declarations[0].init.arguments[0].arguments[0].value === 'react'
+      ) {
+        reactVar = callPathNode.declarations[0].id.name;
+      }
+    },
     AssignmentExpression(callPath) {
       const callPathNode = callPath.node;
 
@@ -47,10 +67,20 @@ export default (raw: string, isTSX?: boolean) => {
         && callPathNode.right.name === '_default'
       ) {
         // save export function as return statement arg
+        const reactIdentifier = (
+          reactVar
+            ? types.memberExpression(
+              types.identifier(reactVar),
+              types.stringLiteral('default'),
+              true,
+            )
+            : types.identifier('React')
+        )
+
         returnStatement = types.returnStatement(
           types.callExpression(
             types.memberExpression(
-              types.identifier('React'),
+              reactIdentifier,
               types.identifier('createElement'),
             ),
             [callPathNode.right],
@@ -64,6 +94,11 @@ export default (raw: string, isTSX?: boolean) => {
   // push return statement to program body
   if (returnStatement) {
     body.push(returnStatement);
+  }
+
+  // if user forgot to import react, redeclare it in local scope for throw error
+  if (!reactVar) {
+    body.unshift(types.variableDeclaration('var', [types.variableDeclarator(types.identifier('React'))]));
   }
 
   // create demo function
