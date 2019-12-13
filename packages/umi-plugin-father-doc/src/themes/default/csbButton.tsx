@@ -9,7 +9,7 @@ interface ButtonProps {
 export default ({ type, base64, children }: ButtonProps ) => {
   return (
     <form
-      style={{ display: 'inline' }}
+      style={{ display: 'flex' }}
       method="POST"
       action={`https://codesandbox.io/api/v1/sandboxes/define?query=module=/demo.${
         type
