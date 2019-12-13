@@ -23,6 +23,8 @@ export interface ILayoutState {
 
 export default class Layout extends Component<ILayoutProps & RouterTypes, ILayoutState> {
 
+  private scrollama;
+
   constructor(props: ILayoutProps & RouterTypes) {
     super(props);
     this.state = {
@@ -45,11 +47,11 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
 
   initializeScrollma() {
     // instantiate the scrollama
-    const scroller = scrollama();
+    this.scrollama = scrollama();
     const { slugs } = this.getMetaForCurrentPath();
 
     // setup the instance, pass callback functions
-    scroller
+    this.scrollama
       .setup({
         step: '[id]',
         offset: 0.01,
@@ -62,7 +64,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
       });
 
     // setup resize event
-    window.addEventListener('resize', scroller.resize);
+    window.addEventListener('resize', this.scrollama.resize);
   }
 
   componentDidMount() {
@@ -78,6 +80,9 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
     if(prevProps.location.hash !== this.props.location.hash ||
       prevProps.location.pathname !== this.props.location.pathname ){
         window.scrollTo(0, 0);
+        this.scrollama.destroy();
+        this.initializeScrollma();
+        this.setState({localActive: ''});
       }
   }
 
@@ -154,7 +159,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
     let realActive = '';
     if(localActive) {
       realActive = localActive;
-    } else if ( section ) {
+    } else if (section) {
       realActive = section as string;
     } else {
       realActive = slugs[0].heading;
