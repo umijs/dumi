@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { RouterTypes } from 'umi';
 import Link from 'umi/link';
 import NavLink from 'umi/navlink';
+import scrollama from 'scrollama';
 import 'prismjs/themes/prism.css';
 import { IMenuItem } from '../../routes/getMenuFromRoutes';
+import { parse } from 'querystring';
 import './layout.less';
 
 export interface ILayoutProps {
@@ -15,11 +17,68 @@ export interface ILayoutProps {
   };
 }
 
-export default class Layout extends Component<ILayoutProps & RouterTypes> {
+export interface ILayoutState {
+  localActive : string;
+}
+
+export default class Layout extends Component<ILayoutProps & RouterTypes, ILayoutState> {
+
+  constructor(props: ILayoutProps & RouterTypes) {
+    super(props);
+    this.state = {
+      localActive: ''
+    };
+  };
+
+  scrollIntoAnchor() {
+    // 如果存在 anchor 滚动过去
+    const anchor = parse(this.props.location.search.slice(1)).section as string;
+    if(anchor){
+      window.setTimeout(()=>{
+        const dom = document.getElementById(anchor);
+        if(dom){
+          dom.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 20)
+    }
+  }
+
+  initializeScrollma() {
+    // instantiate the scrollama
+    const scroller = scrollama();
+    const { slugs } = this.getMetaForCurrentPath();
+
+    // setup the instance, pass callback functions
+    scroller
+      .setup({
+        step: '[id]',
+        offset: 0.01,
+      })
+      .onStepEnter(response => {
+        const { element } = response;
+        if(slugs.map(ele => ele.heading).includes(element.id)){
+          this.setState({localActive: element.id })
+        }
+      });
+
+    // setup resize event
+    window.addEventListener('resize', scroller.resize);
+  }
+
   componentDidMount() {
-    window.g_history.listen(() => {
-      window.scrollTo(0, 0);
-    });
+    window.scrollTo(0, 0);
+    this.initializeScrollma();
+    this.scrollIntoAnchor();
+  }
+
+  componentDidUpdate(prevProps: ILayoutProps & RouterTypes, prevState: ILayoutState) {
+    if(prevProps.location.search !== this.props.location.search) {
+      this.scrollIntoAnchor();
+    }
+    if(prevProps.location.hash !== this.props.location.hash ||
+      prevProps.location.pathname !== this.props.location.pathname ){
+        window.scrollTo(0, 0);
+      }
   }
 
   getMetaForCurrentPath = (routes = (this.props.route as any).routes) => {
@@ -87,8 +146,19 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
     );
   }
 
-  renderAffix(meta, hash) {
+  renderAffix(meta, search) {
     const { slugs = [] } = meta;
+    const { localActive = '' } = this.state;
+    const section = parse(search).section;
+
+    let realActive = '';
+    if(localActive) {
+      realActive = localActive;
+    } else if ( section ) {
+      realActive = section as string;
+    } else {
+      realActive = slugs[0].heading;
+    }
 
     const jumper = slugs.map(item => {
       return (
@@ -96,11 +166,11 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
           key={item.heading}
           title={item.value}
           data-depth={item.depth}
-          className={`#${encodeURI(item.heading)}` === hash ? 'active' : ''}
+          className={realActive === item.heading ? 'active' : ''}
         >
-          <a href={`#${item.heading}`}>
+          <Link to={`?section=${item.heading}`}>
             {item.value}
-          </a>
+          </Link>
         </li>
       );
     });
@@ -112,7 +182,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
   render() {
     const {
       children,
-      location: { hash },
+      location: { search },
     } = this.props;
     const meta = this.getMetaForCurrentPath();
     const showSidebar = meta.sidebar !== false;
@@ -125,7 +195,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
         data-show-slugs={showSlugs}
       >
         {showSidebar && this.renderSideMenu()}
-        {showSlugs && this.renderAffix(meta, hash)}
+        {showSlugs && this.renderAffix(meta, search.slice(1))}
         {children}
       </div>
     );
