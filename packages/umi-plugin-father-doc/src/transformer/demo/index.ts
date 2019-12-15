@@ -15,11 +15,16 @@ export function setUserExtraBabelPlugin(plugins: any[]) {
  */
 export default (raw: string, isTSX?: boolean) => {
   const code = babel.transformSync(raw, {
-    presets: [require.resolve('@babel/preset-react'), require.resolve('@babel/preset-env')],
+    presets: [
+      require.resolve('@babel/preset-react'),
+      require.resolve('@babel/preset-env'),
+    ],
     plugins: [
       require.resolve('@babel/plugin-proposal-class-properties'),
-      ...(isTSX ? [[require.resolve('@babel/plugin-transform-typescript'), { isTSX: true }]] : []),
-      ...(userExtraBabelPlugin || []),
+      ...(isTSX
+        ? [[require.resolve('@babel/plugin-transform-typescript'), { isTSX: true }]]
+        : []),
+      ...userExtraBabelPlugin,
     ],
     ast: true,
   });
@@ -33,24 +38,27 @@ export default (raw: string, isTSX?: boolean) => {
 
       // remove original export expression
       if (
-        callPathNode.operator === '=' &&
-        types.isMemberExpression(callPathNode.left) &&
-        callPathNode.left.property.value === 'default' &&
-        types.isIdentifier(callPathNode.left.object) &&
-        callPathNode.left.object.name === 'exports' &&
-        types.isIdentifier(callPathNode.right) &&
-        callPathNode.right.name === '_default'
+        callPathNode.operator === '='
+        && types.isMemberExpression(callPathNode.left)
+        && callPathNode.left.property.value === 'default'
+        && types.isIdentifier(callPathNode.left.object)
+        && callPathNode.left.object.name === 'exports'
+        && types.isIdentifier(callPathNode.right)
+        && callPathNode.right.name === '_default'
       ) {
         // save export function as return statement arg
         returnStatement = types.returnStatement(
           types.callExpression(
-            types.memberExpression(types.identifier('React'), types.identifier('createElement')),
+            types.memberExpression(
+              types.identifier('React'),
+              types.identifier('createElement'),
+            ),
             [callPathNode.right],
-          ),
+          )
         );
         callPath.remove();
       }
-    },
+    }
   });
 
   // push return statement to program body
@@ -66,4 +74,4 @@ export default (raw: string, isTSX?: boolean) => {
   );
 
   return generator(types.program([demoFunction]), {}, raw).code;
-};
+}
