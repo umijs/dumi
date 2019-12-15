@@ -1,5 +1,5 @@
 import fs from 'fs';
-import path from 'upath';
+import path from 'path';
 import { IRoute } from 'umi-types';
 
 const IGNORE_DIR = [

@@ -1,5 +1,6 @@
 import fs from 'fs';
-import path from 'upath';
+import path from 'path';
+import slash from 'slash2';
 import visit from 'unist-util-visit';
 import transformer, { TransformResult } from '../index';
 
@@ -29,7 +30,7 @@ export default function externalDemo() {
         const { src, ...inheritAttrs} = HTMLAttrParser(matches[2]);
 
         if (src) {
-          const absPath = src.startsWith('/') ? src : path.join(this.data('fileAbsDir'), src);
+          const absPath = path.isAbsolute(src) ? src : slash(path.join(this.data('fileAbsDir'), src));
 
           if (fs.existsSync(absPath)) {
             const lang = absPath.match(/\.(\w+)$/)[1];
