@@ -46,26 +46,19 @@ const PLUGIN_STRATEGIES = {
     [jsx],
     [isolation],
   ],
-  data: [
-    [frontmatter],
-    [yaml],
-    [rehype],
-    [stringify],
-    [slug],
-    [headings],
-    [header],
-  ],
+  data: [[frontmatter], [yaml], [rehype], [stringify], [slug], [headings], [header]],
 } as {
-  [key: string]: [any][]
+  [key: string]: [any][];
 };
 
 export default (raw: string, opts: IRemarkOpts) => {
+  console.log({ strategy: opts.strategy || 'default' });
   const processor = unified()
     .use(parse, { strategy: opts.strategy || 'default' })
     .data('fileAbsDir', opts.fileAbsDir);
 
   // apply plugins through strategy
-  PLUGIN_STRATEGIES[opts.strategy].forEach((plugin) => {
+  PLUGIN_STRATEGIES[opts.strategy].forEach(plugin => {
     processor.use(...plugin);
   });
 

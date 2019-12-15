@@ -1,16 +1,17 @@
 import path from 'upath';
 import getYamlConfig from 'umi-build-dev/lib/routes/getYamlConfig';
+import slash from 'slash2';
 import remark from './remark';
 
 const FRONT_COMMENT_EXP = /^\n*\/\*[^]+?\s*\*\/\n*/;
 const MD_WRAPPER = `
 import React from 'react';
-import Alert from '${path.join(__dirname, '../themes/default/alert.js')}';
-import FatherDocPreviewer from '${path.join(__dirname, '../themes/default/previewer.js')}';
+import Alert from '${path.join(slash(__dirname), '../themes/default/alert.js')}';
+import FatherDocPreviewer from '${path.join(slash(__dirname), '../themes/default/previewer.js')}';
 
 export default function () {
   return <>$CONTENT</>;
-}`
+}`;
 
 export interface TransformResult {
   content: string;
@@ -27,6 +28,7 @@ export default {
    * @param onlyConfig  whether transform meta data only
    */
   markdown(raw: string, fileAbsDir: string, onlyConfig?: boolean): TransformResult {
+    console.log(raw, onlyConfig);
     const result = remark(raw, { fileAbsDir, strategy: onlyConfig ? 'data' : 'default' });
     let content = '';
 
@@ -36,13 +38,13 @@ export default {
       content = (result.contents as string).replace(/class="/g, 'className="');
 
       // wrap by page component
-      content = MD_WRAPPER.replace('$CONTENT', content)
+      content = MD_WRAPPER.replace('$CONTENT', content);
     }
 
     return {
       content,
       config: {
-        ...result.data as TransformResult['config'],
+        ...(result.data as TransformResult['config']),
       },
     };
   },
@@ -56,4 +58,4 @@ export default {
   tsx(raw: string): TransformResult {
     return this.jsx(raw);
   },
-}
+};

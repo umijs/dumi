@@ -1,13 +1,14 @@
 import path from 'path';
 import { IRoute, IApi } from 'umi-types';
 import deepmerge from 'deepmerge';
+import slash from 'slash2';
 import getFrontMatter from './getFrontMatter';
 
 function routeSorter(prev, next) {
-  const prevOrder = typeof(prev.meta.order) === 'number' ? prev.meta.order : 0;
-  const nextOrder = typeof(next.meta.order) === 'number' ? next.meta.order : 0;
+  const prevOrder = typeof prev.meta.order === 'number' ? prev.meta.order : 0;
+  const nextOrder = typeof next.meta.order === 'number' ? next.meta.order : 0;
 
-  return (prevOrder === nextOrder) ? 0 : (nextOrder - prevOrder);
+  return prevOrder === nextOrder ? 0 : nextOrder - prevOrder;
 }
 
 /**
@@ -18,59 +19,68 @@ function routeSorter(prev, next) {
  *        - sort routes & group by order field
  *        - group routes by group field & directory nest
  */
-export default function decorateRoutes(routes: IRoute[], paths: IApi['paths'], parentRoute?: IRoute) {
+export default function decorateRoutes(
+  routes: IRoute[],
+  paths: IApi['paths'],
+  parentRoute?: IRoute,
+) {
   let result: IRoute[];
 
   // read yaml config for current level routes
-  routes.forEach((route) => {
-    route.meta = route.component ? deepmerge(route.meta, getFrontMatter(route.component as string)) : {};
+  routes.forEach(route => {
+    route.meta = route.component
+      ? deepmerge(route.meta, getFrontMatter(route.component as string))
+      : {};
 
     // apply yaml title
     route.title = route.meta.title;
 
     // apply TitleWrapper
     // see also: https://github.com/umijs/umi/blob/master/packages/umi-plugin-react/src/plugins/title/index.js#L37
-    route.Routes = (route.Routes || []).concat(
-      path.relative(paths.cwd, path.join(paths.absTmpDirPath, './TitleWrapper.jsx')),
-    );
+    route.Routes = (route.Routes || [])
+      .concat(path.relative(paths.cwd, path.join(paths.absTmpDirPath, './TitleWrapper.jsx')))
+      .map(path => slash(path));
   });
 
   // split grouped & ungrouped routes for current level routes
-  const [ungrouped, groupedMapping] = routes.reduce((result, item) => {
-    if (item.meta.group?.path) {
-      // prefix parent route for route
-      item.path = path.join(item.meta.group.path, item.path);
+  const [ungrouped, groupedMapping] = routes.reduce(
+    (result, item) => {
+      if (item.meta.group?.path) {
+        // prefix parent route for route
+        item.path = slash(path.join(item.meta.group.path, item.path));
 
-      if (!parentRoute) {
-        // only process top level group routes
-        const key = item.meta.group.path;
+        if (!parentRoute) {
+          // only process top level group routes
+          const key = item.meta.group.path;
 
-        if (result[1][key]) {
-          result[1][key].push(item);
+          if (result[1][key]) {
+            result[1][key].push(item);
+          } else {
+            result[1][key] = [item];
+          }
         } else {
-          result[1][key] = [item];
+          // correct parent route path if it is not top level group
+          // can be use to correct path for automatic parent route from directory
+          parentRoute.path = slash(item.meta.group.path);
+          result[0].push(item);
         }
       } else {
-        // correct parent route path if it is not top level group
-        // can be use to correct path for automatic parent route from directory
-        parentRoute.path = item.meta.group.path;
+        // prefix parent route for route
+        if (parentRoute) {
+          item.path = slash(path.join(parentRoute.path, item.path).replace(/\/$/, ''));
+        }
+
         result[0].push(item);
       }
-    } else {
-      // prefix parent route for route
-      if (parentRoute) {
-        item.path = path.join(parentRoute.path, item.path).replace(/\/$/, '');
-      }
 
-      result[0].push(item);
-    }
-
-    return result;
-  }, [[], {}]);
+      return result;
+    },
+    [[], {}],
+  );
 
   // process child routes for ungropued routes if there is top level
   if (!parentRoute) {
-    ungrouped.forEach((route) => {
+    ungrouped.forEach(route => {
       if (route.routes) {
         route.routes = decorateRoutes(route.routes, paths, route);
         // redirect to the first child route when visit root path
@@ -89,27 +99,28 @@ export default function decorateRoutes(routes: IRoute[], paths: IApi['paths'], p
 
   // concat ungrouped routes & grouped items
   result = ungrouped.concat(
-    Object
-      .keys(groupedMapping)
-      .map(key => {
-        // find first configured child
-        const configuredChild = groupedMapping[key].find(item => item.meta.group);
-        const groupTitle = configuredChild ? configuredChild.meta.group.title : key.replace(/^\/|\/$/g, '');
-        const groupOrder = configuredChild ? configuredChild.meta.group.order : undefined;
+    Object.keys(groupedMapping).map(groupedPath => {
+      const winGroupedPath = slash(groupedPath);
+      // find first configured child
+      const configuredChild = groupedMapping[winGroupedPath].find(item => item.meta.group);
+      const groupTitle = configuredChild
+        ? configuredChild.meta.group.title
+        : winGroupedPath.replace(/^\/|\/$/g, '');
+      const groupOrder = configuredChild ? configuredChild.meta.group.order : undefined;
 
-        return {
-          path: key,
-          routes: groupedMapping[key].concat({
-            path: key,
-            // redirect to the first child route when visit root path
-            redirect: groupedMapping[key][0].path,
-          }),
-          meta: {
-            title: groupTitle,
-            order: groupOrder,
-          },
-        };
-      })
+      return {
+        path: winGroupedPath,
+        routes: groupedMapping[winGroupedPath].concat({
+          path: winGroupedPath,
+          // redirect to the first child route when visit root path
+          redirect: groupedMapping[winGroupedPath][0].path,
+        }),
+        meta: {
+          title: groupTitle,
+          order: groupOrder,
+        },
+      };
+    }),
   );
 
   // sort routes by order field
