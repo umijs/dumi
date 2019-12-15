@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import assert from 'assert';
-import slash from 'slash2';
 import { isPlainObject } from 'lodash';
 import { IApi, IRoute } from 'umi-types';
 import getRouteConfig from './routes/getRouteConfig';
@@ -113,8 +112,8 @@ export default function(api: IApi, opts: IFatherDocOpts) {
       .loader(require.resolve('./loader'));
 
     // disable css modules for built-in theme
-    config.module.rule('less-in-node_modules').include.add(path.join(slash(__dirname), './themes'));
-    config.module.rule('less').exclude.add(path.join(slash(__dirname), './themes'));
+    config.module.rule('less-in-node_modules').include.add(path.join(__dirname, 'themes'));
+    config.module.rule('less').exclude.add(path.join(__dirname, 'themes'));
 
     // add alias for current package(s)
     getHostPkgAlias(api.paths).forEach(([pkgName, pkgPath]) => {

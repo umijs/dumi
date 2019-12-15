@@ -55,8 +55,7 @@
     "umi-types": "^0.5.4",
     "unified": "^8.4.1",
     "unist-util-visit": "^2.0.1",
-    "unist-util-visit-parents": "^3.0.1",
-    "upath": "^1.2.0"
+    "unist-util-visit-parents": "^3.0.1"
   },
   "devDependencies": {
     "@types/history": "^4.7.3",

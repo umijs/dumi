@@ -1,5 +1,5 @@
 import fs from 'fs';
-import path from 'upath';
+import path from 'path';
 import slash from 'slash2';
 import { IApi, IRoute } from 'umi-types';
 import getRouteConfigFromDir from './getRouteConfigFromDir';
@@ -21,7 +21,7 @@ export default (paths: IApi['paths'], opts: IFatherDocOpts): IRoute[] => {
     config[0].routes = opts.routes.map(({ component, ...routeOpts }) => ({
       component: path.isAbsolute(component as string)
         ? component
-        : path.join(paths.absPagesPath, component as string),
+        : slash(path.join(paths.absPagesPath, component as string)),
       ...routeOpts,
     }));
   } else {

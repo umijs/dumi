@@ -38,14 +38,14 @@ export default function decorateRoutes(
     // apply TitleWrapper
     // see also: https://github.com/umijs/umi/blob/master/packages/umi-plugin-react/src/plugins/title/index.js#L37
     route.Routes = (route.Routes || [])
-      .concat(path.relative(paths.cwd, path.join(paths.absTmpDirPath, './TitleWrapper.jsx')))
-      .map(path => slash(path));
+      .concat(slash(path.relative(paths.cwd, path.join(paths.absTmpDirPath, './TitleWrapper.jsx'))));
   });
 
   // split grouped & ungrouped routes for current level routes
   const [ungrouped, groupedMapping] = routes.reduce(
     (result, item) => {
       if (item.meta.group?.path) {
+        item.meta.group.path = slash(item.meta.group.path);
         // prefix parent route for route
         item.path = slash(path.join(item.meta.group.path, item.path));
 
@@ -61,14 +61,16 @@ export default function decorateRoutes(
         } else {
           // correct parent route path if it is not top level group
           // can be use to correct path for automatic parent route from directory
-          parentRoute.path = slash(item.meta.group.path);
+          parentRoute.path = item.meta.group.path;
           result[0].push(item);
         }
       } else {
         // prefix parent route for route
         if (parentRoute) {
-          item.path = slash(path.join(parentRoute.path, item.path).replace(/\/$/, ''));
+          item.path = path.join(parentRoute.path, item.path).replace(/(\/|\\)$/, '');
         }
+
+        item.path = slash(item.path);
 
         result[0].push(item);
       }
@@ -100,20 +102,19 @@ export default function decorateRoutes(
   // concat ungrouped routes & grouped items
   result = ungrouped.concat(
     Object.keys(groupedMapping).map(groupedPath => {
-      const winGroupedPath = slash(groupedPath);
       // find first configured child
-      const configuredChild = groupedMapping[winGroupedPath].find(item => item.meta.group);
+      const configuredChild = groupedMapping[groupedPath].find(item => item.meta.group);
       const groupTitle = configuredChild
         ? configuredChild.meta.group.title
-        : winGroupedPath.replace(/^\/|\/$/g, '');
+        : groupedPath.replace(/^\/|\/$/g, '');
       const groupOrder = configuredChild ? configuredChild.meta.group.order : undefined;
 
       return {
-        path: winGroupedPath,
-        routes: groupedMapping[winGroupedPath].concat({
-          path: winGroupedPath,
+        path: groupedPath,
+        routes: groupedMapping[groupedPath].concat({
+          path: groupedPath,
           // redirect to the first child route when visit root path
-          redirect: groupedMapping[winGroupedPath][0].path,
+          redirect: groupedMapping[groupedPath][0].path,
         }),
         meta: {
           title: groupTitle,

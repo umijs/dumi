@@ -1,4 +1,4 @@
-import path from 'upath';
+import path from 'path';
 import getYamlConfig from 'umi-build-dev/lib/routes/getYamlConfig';
 import slash from 'slash2';
 import remark from './remark';
@@ -6,8 +6,8 @@ import remark from './remark';
 const FRONT_COMMENT_EXP = /^\n*\/\*[^]+?\s*\*\/\n*/;
 const MD_WRAPPER = `
 import React from 'react';
-import Alert from '${path.join(slash(__dirname), '../themes/default/alert.js')}';
-import FatherDocPreviewer from '${path.join(slash(__dirname), '../themes/default/previewer.js')}';
+import Alert from '${slash(path.join(__dirname, '../themes/default/alert.js'))}';
+import FatherDocPreviewer from '${slash(path.join(__dirname, '../themes/default/previewer.js'))}';
 
 export default function () {
   return <>$CONTENT</>;
