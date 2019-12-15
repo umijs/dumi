@@ -52,7 +52,6 @@ const PLUGIN_STRATEGIES = {
 };
 
 export default (raw: string, opts: IRemarkOpts) => {
-  console.log({ strategy: opts.strategy || 'default' });
   const processor = unified()
     .use(parse, { strategy: opts.strategy || 'default' })
     .data('fileAbsDir', opts.fileAbsDir);

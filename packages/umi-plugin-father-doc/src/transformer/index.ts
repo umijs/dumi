@@ -28,7 +28,6 @@ export default {
    * @param onlyConfig  whether transform meta data only
    */
   markdown(raw: string, fileAbsDir: string, onlyConfig?: boolean): TransformResult {
-    console.log(raw, onlyConfig);
     const result = remark(raw, { fileAbsDir, strategy: onlyConfig ? 'data' : 'default' });
     let content = '';
 
