@@ -34,7 +34,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
 
   scrollIntoAnchor() {
     // 如果存在 anchor 滚动过去
-    const anchor = parse(this.props.location.search.slice(1)).section as string;
+    const anchor = parse(this.props.location.search.slice(1)).anchor as string;
     if(anchor){
       window.setTimeout(()=>{
         const dom = document.getElementById(anchor);
@@ -154,7 +154,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
   renderAffix(meta, search) {
     const { slugs = [] } = meta;
     const { localActive = '' } = this.state;
-    const section = parse(search).section;
+    const section = parse(search).anchor;
 
     let realActive = '';
     if(localActive) {
@@ -173,7 +173,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
           data-depth={item.depth}
           className={realActive === item.heading ? 'active' : ''}
         >
-          <Link to={`?section=${item.heading}`}>
+          <Link to={`?anchor=${item.heading}`}>
             {item.value}
           </Link>
         </li>
