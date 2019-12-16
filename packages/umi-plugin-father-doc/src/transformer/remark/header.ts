@@ -6,7 +6,7 @@ const headings = ['h2', 'h3']; // 先只取两级
 
 const extractText = header =>
   header.children
-    .map((x)=> {
+    .map(x => {
       if (x.type === 'text') {
         return x.value;
       }

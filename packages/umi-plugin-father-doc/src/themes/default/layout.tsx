@@ -170,8 +170,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
       realActive = slugs[0].heading;
     }
 
-    const jumper = slugs.map(item => {
-      return (
+    const jumper = slugs.map(item =>  (
         <li
           key={item.heading}
           title={item.value}
@@ -180,8 +179,8 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
         >
           <Link to={`?anchor=${item.heading}`}>{item.value}</Link>
         </li>
-      );
-    });
+      )
+    );
     return <ul className="__father-doc-default-layout-toc">{jumper}</ul>;
   }
 
