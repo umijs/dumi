@@ -60,7 +60,10 @@ export default (raw: string, isTSX?: boolean) => {
       if (
         callPathNode.operator === '='
         && types.isMemberExpression(callPathNode.left)
-        && callPathNode.left.property.value === 'default'
+        && (
+          callPathNode.left.property.value === 'default' // exports["default"]
+          || callPathNode.left.property.name === 'default' // exports.default
+        )
         && types.isIdentifier(callPathNode.left.object)
         && callPathNode.left.object.name === 'exports'
         && types.isIdentifier(callPathNode.right)
