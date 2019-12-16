@@ -1,6 +1,6 @@
 {
   "name": "umi-plugin-father-doc",
-  "version": "1.0.0-alpha.5",
+  "version": "1.0.0-alpha.6",
   "description": "",
   "main": "lib/index.js",
   "files": [
