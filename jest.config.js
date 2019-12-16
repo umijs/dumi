@@ -4,6 +4,7 @@ module.exports = {
     '/packages/umi-plugin-father-doc/lib/',
   ],
   collectCoverageFrom: [
-    'index.js'
+    `packages/**/src/**/*.{js,jsx,ts,tsx}`,
+    '!**/fixtures/**',
   ],
 };
