@@ -1,5 +1,5 @@
-import { Component } from 'react';
-import Clipboard from 'react-clipboard.js'
+import React, { Component } from 'react';
+import Clipboard from 'react-clipboard.js';
 import finaliseCSB, { parseImport, issueLink } from '../../utils/codesandbox';
 import './previewer.less';
 import CsbButton from './csbButton';
@@ -43,7 +43,7 @@ export default class Previewer extends Component<IPreviewerProps> {
     copyTimer: null,
     jsBase64: '',
     tsBase64: '',
-  }
+  };
 
   componentDidMount() {
     const { source, desc, title } = this.props;
@@ -54,7 +54,7 @@ export default class Previewer extends Component<IPreviewerProps> {
     // tsx and jsx should have same dependencies, so only parse once
     const dep = parseImport(raw);
 
-    if(tsx) {
+    if (tsx) {
       tsData = {
         files: {
           'index.html': {
@@ -83,9 +83,9 @@ ${issueLink}`,
         desc,
         template: 'create-react-app-typescript',
         fileName: 'demo.tsx',
-      }
+      };
     }
-    if(jsx) {
+    if (jsx) {
       jsData = {
         files: {
           'index.html': {
@@ -116,13 +116,12 @@ ${issueLink}`,
         fileName: 'demo.jsx',
       };
     }
-    
-    const jsBase64 = finaliseCSB( jsData, { name: title || 'father-doc-demo' }).parameters;
-    const tsBase64 = finaliseCSB( tsData, { name: title || 'father-doc-demo' }).parameters;
+
+    const jsBase64 = finaliseCSB(jsData, { name: title || 'father-doc-demo' }).parameters;
+    const tsBase64 = finaliseCSB(tsData, { name: title || 'father-doc-demo' }).parameters;
 
     // prioritize display tsx
     this.setState({ sourceType: tsx ? 'tsx' : 'jsx', jsBase64, tsBase64 });
-
   }
 
   handleCopied = () => {
@@ -132,7 +131,7 @@ ${issueLink}`,
         this.setState({ copyTimer: null });
       }, 2000),
     });
-  }
+  };
 
   render() {
     const { children, source, title, desc, inline } = this.props;
@@ -145,18 +144,16 @@ ${issueLink}`,
 
     return (
       <div className="__father-doc-default-previewer">
-        <div className="__father-doc-default-previewer-demo">
-          {children}
-        </div>
+        <div className="__father-doc-default-previewer-demo">{children}</div>
         <div className="__father-doc-default-previewer-desc" title={title}>
           {desc}
         </div>
         <div className="__father-doc-default-previewer-actions">
-          <CsbButton type={this.props.source.tsx ? 'tsx' : 'jsx'} base64={this.props.source.tsx ? tsBase64 : jsBase64} >
-            <button
-              role='codesandbox'
-              type="submit"
-            />
+          <CsbButton
+            type={this.props.source.tsx ? 'tsx' : 'jsx'}
+            base64={this.props.source.tsx ? tsBase64 : jsBase64}
+          >
+            <button role="codesandbox" type="submit" />
           </CsbButton>
           <span />
           <Clipboard
@@ -167,13 +164,17 @@ ${issueLink}`,
           {source.tsx && showSource && (
             <button
               role={`change-${sourceType}`}
-              onClick={() => this.setState({
-                sourceType: sourceType === 'tsx' ? 'jsx' : 'tsx',
-              })}
+              type="button"
+              onClick={() =>
+                this.setState({
+                  sourceType: sourceType === 'tsx' ? 'jsx' : 'tsx',
+                })
+              }
             />
           )}
           <button
             role="source"
+            type="button"
             onClick={() => this.setState({ showSource: !showSource })}
           />
         </div>

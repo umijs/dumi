@@ -1,6 +1,5 @@
 # umi-plugin-father-doc
 
-
 ## Install
 
 ```bash
@@ -14,10 +13,8 @@ Configure in `.umirc.js`,
 
 ```js
 export default {
-  plugins: [
-    ['umi-plugin-father-doc', options],
-  ],
-}
+  plugins: [['umi-plugin-father-doc', options]],
+};
 ```
 
 ## Options

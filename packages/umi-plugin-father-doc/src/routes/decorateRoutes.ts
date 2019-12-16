@@ -24,8 +24,6 @@ export default function decorateRoutes(
   paths: IApi['paths'],
   parentRoute?: IRoute,
 ) {
-  let result: IRoute[];
-
   // read yaml config for current level routes
   routes.forEach(route => {
     route.meta = route.component
@@ -37,8 +35,9 @@ export default function decorateRoutes(
 
     // apply TitleWrapper
     // see also: https://github.com/umijs/umi/blob/master/packages/umi-plugin-react/src/plugins/title/index.js#L37
-    route.Routes = (route.Routes || [])
-      .concat(slash(path.relative(paths.cwd, path.join(paths.absTmpDirPath, './TitleWrapper.jsx'))));
+    route.Routes = (route.Routes || []).concat(
+      slash(path.relative(paths.cwd, path.join(paths.absTmpDirPath, './TitleWrapper.jsx'))),
+    );
   });
 
   // split grouped & ungrouped routes for current level routes
@@ -100,7 +99,7 @@ export default function decorateRoutes(
   }
 
   // concat ungrouped routes & grouped items
-  result = ungrouped.concat(
+  const result: IRoute[] = ungrouped.concat(
     Object.keys(groupedMapping).map(groupedPath => {
       // find first configured child
       const configuredChild = groupedMapping[groupedPath].find(item => item.meta.group);

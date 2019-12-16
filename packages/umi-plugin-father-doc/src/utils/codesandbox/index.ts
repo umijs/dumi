@@ -20,7 +20,7 @@ export const issueLink = `/** This is an auto-generated demo by father-doc
 ReactDOM.render(
   <App />,
   document.getElementById('root')
-);`
+);`;
 
 export { parseImport } from './parseImport';
 

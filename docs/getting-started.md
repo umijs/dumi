@@ -3,11 +3,13 @@ title: 快速上手
 order: 9
 ---
 
+# 快速上手
+
 ## 安装
 
 在组件项目开发目录下执行以下命令进行安装：
 
-``` bash
+```bash
 $ npm i father-doc@next -D
 ```
 
@@ -17,29 +19,35 @@ father-doc 默认会搜寻 `src` 及 `docs` 目录下的 `.md` 文件，然后�
 
 我们先创建我们的第一个文档页面：
 
-``` bash
+```bash
 $ echo '# Hello World!' > src/index.md
 ```
 
 然后直接执行：
 
-``` bash
+```bash
 $ father-doc dev
 ```
 
 我们将在浏览器中看到我们的第一个文档页面！
 
-## 嵌入式 Demo
+## 嵌入 Demo
 
-但这只是普普通通的文档，接下来我们尝试嵌入一个 Demo 试试看：
+但这只是普普通通的文档，接下来我们尝试在 `index.md` 中嵌入一个 Demo 试试看，输入：
 
-``` bash
-$ echo '\n\n``` jsx\nexport default () => <button>Hello World!</button>;\n```' >> src/index.md
+<pre>
+``` jsx
+import React from 'react';
+
+export default () => &lt;button&gt;Hello World!&lt;/button&gt;
 ```
+</pre>
 
 一个内容为 Hello World! 的 Button 将会出现在页面上，就像这样：
 
-``` jsx
+```jsx
+import React from 'react';
+
 export default () => <button>Hello World!</button>;
 ```
 
@@ -51,22 +59,4 @@ export default () => <button>Hello World!</button>;
 ```
 </pre>
 
-看起来有点儿意思了，但如果我们需要嵌入到文档中的 Demo 非常多或者非常大呢？
-
-## 外部 Demo
-
-当嵌入式 Demo 数量增加、或者内容变长时，将会给维护工作带来负担；而且嵌入式 Demo 无法利用编辑器的 lint、autocomplete 等利器，Demo 编写的效率会大幅下降。
-
-所以 father-doc 提供了从 `.md` 文件中引入外部 Demo 语法，我们可以通过 `code` 标签引入一个外部 Demo：
-
-```
-<code src="./HelloButton.tsx" />
-```
-
-它也能如上面的 Demo 一样被插入进文档中进行展示：
-
-``` jsx
-export default () => <button>Hello World!</button>;
-```
-
-恭喜你，已经掌握了使用 father-doc 的核心技巧，更多使用方法请参阅 <a href="#/config">配置项</a>。
+看起来有点儿意思了，但写 Demo 可是件精细的活儿，想掌握更多编写 Demo 的技巧，请查看 <a href="#/write-demo">好好写 Demo</a>。

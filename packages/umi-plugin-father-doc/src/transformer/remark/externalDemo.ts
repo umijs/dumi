@@ -23,14 +23,16 @@ function HTMLAttrParser(str: string): { [key: string]: any } {
 }
 
 export default function externalDemo() {
-  return (ast) => {
-    visit(ast, 'html', (node) => {
+  return ast => {
+    visit(ast, 'html', node => {
       if (typeof node.value === 'string') {
         const matches = node.value.match(DEMO_TOKEN_EXP) || [];
-        const { src, ...inheritAttrs} = HTMLAttrParser(matches[2]);
+        const { src, ...inheritAttrs } = HTMLAttrParser(matches[2]);
 
         if (src) {
-          const absPath = path.isAbsolute(src) ? src : slash(path.join(this.data('fileAbsDir'), src));
+          const absPath = path.isAbsolute(src)
+            ? src
+            : slash(path.join(this.data('fileAbsDir'), src));
 
           if (fs.existsSync(absPath)) {
             const lang = absPath.match(/\.(\w+)$/)[1];
@@ -54,9 +56,11 @@ export default function externalDemo() {
             throw new Error(`[External-Demo Error]: cannot find demo in ${absPath}`);
           }
         } else if (matches[1]) {
-          throw new Error(`[External-Demo Error]: expected a code element with valid src property but got ${node.value}`);
+          throw new Error(
+            `[External-Demo Error]: expected a code element with valid src property but got ${node.value}`,
+          );
         }
       }
     });
-  }
+  };
 }

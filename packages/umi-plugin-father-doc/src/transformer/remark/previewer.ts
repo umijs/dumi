@@ -14,8 +14,10 @@ function visitor(node, i, parent) {
     // use import way rather than source code way for external demo (for HMR & sourcemap)
     if (node.properties.filePath) {
       transformCode = `
+import React from 'react';
 import Demo from '${node.properties.filePath}';
-export default () => <Demo />;`
+
+export default () => <Demo />;`;
     }
 
     const code = transformer(transformCode, Boolean(tsx));
@@ -44,5 +46,5 @@ export default () => <Demo />;`
 export default function previewer() {
   return (ast: Node) => {
     visit(ast, 'element', visitor);
-  }
+  };
 }

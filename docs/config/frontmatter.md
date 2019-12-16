@@ -41,7 +41,15 @@ TSX/JSX 文件的 FrontMatter 编写方法如下：
 - 默认值：`true`
 - 详细：
 
-控制侧边栏菜单的显示或隐藏，通常用于展示全屏 Demo 的场景。
+控制侧边栏菜单的显示或隐藏。
+
+### slugs
+
+- 类型：`Boolean`
+- 默认值：`true`
+- 详细：
+
+控制右侧 affix menu 的显示或隐藏。
 
 ### order
 

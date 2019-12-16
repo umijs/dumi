@@ -4,8 +4,8 @@ import Link from 'umi/link';
 import NavLink from 'umi/navlink';
 import scrollama from 'scrollama';
 import 'prismjs/themes/prism.css';
-import { IMenuItem } from '../../routes/getMenuFromRoutes';
 import { parse } from 'querystring';
+import { IMenuItem } from '../../routes/getMenuFromRoutes';
 import './layout.less';
 
 export interface ILayoutProps {
@@ -18,30 +18,29 @@ export interface ILayoutProps {
 }
 
 export interface ILayoutState {
-  localActive : string;
+  localActive: string;
 }
 
 export default class Layout extends Component<ILayoutProps & RouterTypes, ILayoutState> {
-
   private scrollama;
 
   constructor(props: ILayoutProps & RouterTypes) {
     super(props);
     this.state = {
-      localActive: ''
+      localActive: '',
     };
-  };
+  }
 
   scrollIntoAnchor() {
     // 如果存在 anchor 滚动过去
-    const anchor = parse(this.props.location.search.slice(1)).section as string;
-    if(anchor){
-      window.setTimeout(()=>{
+    const anchor = parse(this.props.location.search.slice(1)).anchor as string;
+    if (anchor) {
+      window.setTimeout(() => {
         const dom = document.getElementById(anchor);
-        if(dom){
+        if (dom) {
           dom.scrollIntoView({ behavior: 'smooth' });
         }
-      }, 20)
+      }, 20);
     }
   }
 
@@ -58,8 +57,8 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
       })
       .onStepEnter(response => {
         const { element } = response;
-        if(slugs.map(ele => ele.heading).includes(element.id)){
-          this.setState({localActive: element.id })
+        if (slugs.map(ele => ele.heading).includes(element.id)) {
+          this.setState({ localActive: element.id });
         }
       });
 
@@ -73,17 +72,23 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
     this.scrollIntoAnchor();
   }
 
-  componentDidUpdate(prevProps: ILayoutProps & RouterTypes, prevState: ILayoutState) {
-    if(prevProps.location.search !== this.props.location.search) {
+  componentDidUpdate(prevProps: ILayoutProps & RouterTypes) {
+    if (prevProps.location.search !== this.props.location.search) {
       this.scrollIntoAnchor();
     }
-    if(prevProps.location.hash !== this.props.location.hash ||
-      prevProps.location.pathname !== this.props.location.pathname ){
-        window.scrollTo(0, 0);
-        this.scrollama.destroy();
-        this.initializeScrollma();
-        this.setState({localActive: ''});
-      }
+    if (
+      prevProps.location.hash !== this.props.location.hash ||
+      prevProps.location.pathname !== this.props.location.pathname
+    ) {
+      this.updateLocale();
+    }
+  }
+
+  updateLocale() {
+    window.scrollTo(0, 0);
+    this.scrollama.destroy();
+    this.initializeScrollma();
+    this.setState({ localActive: '' });
   }
 
   getMetaForCurrentPath = (routes = (this.props.route as any).routes) => {
@@ -154,10 +159,10 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
   renderAffix(meta, search) {
     const { slugs = [] } = meta;
     const { localActive = '' } = this.state;
-    const section = parse(search).section;
+    const section = parse(search).anchor;
 
     let realActive = '';
-    if(localActive) {
+    if (localActive) {
       realActive = localActive;
     } else if (section) {
       realActive = section as string;
@@ -165,23 +170,18 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
       realActive = slugs[0].heading;
     }
 
-    const jumper = slugs.map(item => {
-      return (
+    const jumper = slugs.map(item =>  (
         <li
           key={item.heading}
           title={item.value}
           data-depth={item.depth}
           className={realActive === item.heading ? 'active' : ''}
         >
-          <Link to={`?section=${item.heading}`}>
-            {item.value}
-          </Link>
+          <Link to={`?anchor=${item.heading}`}>{item.value}</Link>
         </li>
-      );
-    });
-    return (
-      <ul className="__father-doc-default-layout-toc">{jumper}</ul>
+      )
     );
+    return <ul className="__father-doc-default-layout-toc">{jumper}</ul>;
   }
 
   render() {
