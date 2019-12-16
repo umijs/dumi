@@ -8,7 +8,7 @@ title: 文档示例
 
 ``` jsx
 import { Button } from 'antd';
-import 'antd/es/button/style/css';
+import 'antd/lib/button/style/css';
 
 export default () => <Button type="primary">我是 antd 的按钮</Button>;
 ```
