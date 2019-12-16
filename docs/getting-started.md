@@ -9,7 +9,7 @@ order: 9
 
 在组件项目开发目录下执行以下命令进行安装：
 
-``` bash
+```bash
 $ npm i father-doc@next -D
 ```
 
@@ -19,13 +19,13 @@ father-doc 默认会搜寻 `src` 及 `docs` 目录下的 `.md` 文件，然后�
 
 我们先创建我们的第一个文档页面：
 
-``` bash
+```bash
 $ echo '# Hello World!' > src/index.md
 ```
 
 然后直接执行：
 
-``` bash
+```bash
 $ father-doc dev
 ```
 
@@ -45,7 +45,7 @@ export default () => &lt;button&gt;Hello World!&lt;/button&gt;
 
 一个内容为 Hello World! 的 Button 将会出现在页面上，就像这样：
 
-``` jsx
+```jsx
 import React from 'react';
 
 export default () => <button>Hello World!</button>;

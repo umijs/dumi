@@ -64,7 +64,7 @@ export default function(api: IApi, opts: IFatherDocOpts) {
     const result = getRouteConfig(api.paths, opts);
     const childRoutes = result[0].routes;
     // append umi NotFound component to routes
-    childRoutes.push(...routes.filter(({ path }) => !path));
+    childRoutes.push(...routes.filter(({ path: routerPath }) => !routerPath));
     return result;
   });
 
@@ -85,7 +85,7 @@ export default function(api: IApi, opts: IFatherDocOpts) {
           ...${
             // escape " to ^ to avoid umi parse error, then umi will decode them
             // see also: https://github.com/umijs/umi/blob/master/packages/umi-build-dev/src/routes/stripJSONQuote.js#L4
-            JSON.stringify(meta).replace(/\"/g, '^')
+            JSON.stringify(meta).replace(/"/g, '^')
           },
           ...props,
         })`;

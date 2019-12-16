@@ -8,7 +8,7 @@ import { Modal } from 'antd';
 import { Button } from 'antd';
 
 class App extends React.Component {
-  state = { visible: false }
+  state = { visible: false };
 
   showModal = () => {
     this.setState({

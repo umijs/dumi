@@ -4,21 +4,19 @@ import is from 'hast-util-is-element';
 
 const headings = ['h2', 'h3']; // 先只取两级
 
-const extractText = header => {
-  return header.children
-    .map(function (x) {
+const extractText = header =>
+  header.children
+    .map((x)=> {
       if (x.type === 'text') {
         return x.value;
-      } else {
-        return '';
       }
+      return '';
     })
     .join('');
-};
 
 export default () => (ast, vFile) => {
   if (vFile.data.slugs !== false) {
-    visit(ast, 'element', (node) => {
+    visit(ast, 'element', node => {
       if (is(node, headings) && has(node, 'id')) {
         if (!vFile.data.slugs) {
           vFile.data.slugs = [];
@@ -32,4 +30,4 @@ export default () => (ast, vFile) => {
       }
     });
   }
-}
+};

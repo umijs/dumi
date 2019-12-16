@@ -7,11 +7,11 @@ export interface IMenuItem {
   children?: IMenuItem[];
 }
 
-export default function getMenuFromRoutes(routes: IApi['routes']) : IMenuItem[] {
-  let menu: IMenuItem[] = [];
+export default function getMenuFromRoutes(routes: IApi['routes']): IMenuItem[] {
+  const menu: IMenuItem[] = [];
 
   // convert routes to menu
-  routes.forEach((route) => {
+  routes.forEach(route => {
     if (route.path && route.meta) {
       menu.push({
         path: route.path,

@@ -4,7 +4,7 @@ import glob from 'glob';
 import { IApi } from 'umi-types';
 
 function getPkgAliasForPath(absPath: string) {
-  const result = [, absPath];
+  const result = [undefined, absPath];
   const pkgPath = path.join(absPath, 'package.json');
 
   // use package.name if exists
@@ -25,7 +25,7 @@ export default (paths: IApi['paths']) => {
   if (lernaConfig) {
     // for lerna repo
     (lernaConfig.packages || []).forEach(exp => {
-      glob.sync(exp, { cwd: paths.cwd }).forEach((pkg) => {
+      glob.sync(exp, { cwd: paths.cwd }).forEach(pkg => {
         pkgs.push(getPkgAliasForPath(path.join(paths.cwd, pkg)));
       });
     });
@@ -35,4 +35,4 @@ export default (paths: IApi['paths']) => {
   }
 
   return pkgs;
-}
+};

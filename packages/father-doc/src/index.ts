@@ -5,13 +5,9 @@ module.exports = () => {
   process.env.UMI_PLUGINS = require.resolve('umi-plugin-father-doc');
 
   // start umi use child process
-  const child = fork(
-    require.resolve('umi/bin/umi'),
-    [...(process.argv.slice(2) || [])],
-    {
-      stdio: 'inherit'
-    },
-  );
+  const child = fork(require.resolve('umi/bin/umi'), [...(process.argv.slice(2) || [])], {
+    stdio: 'inherit',
+  });
 
   // handle exit signals
   child.on('exit', (code, signal) => {
@@ -29,5 +25,4 @@ module.exports = () => {
   process.on('SIGTERM', () => {
     child.kill('SIGTERM');
   });
-}
-
+};

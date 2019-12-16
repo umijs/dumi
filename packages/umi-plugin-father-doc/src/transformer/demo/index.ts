@@ -4,7 +4,11 @@ import traverse from '@babel/traverse';
 import generator from '@babel/generator';
 
 export const DEMO_COMPONENT_NAME = 'FatherDocDemo';
-export let userExtraBabelPlugin = [];
+let userExtraBabelPlugin = [];
+
+export function getUserExtraBabelPlugin() {
+  return userExtraBabelPlugin;
+}
 
 export function setUserExtraBabelPlugin(plugins: any[]) {
   userExtraBabelPlugin = plugins;
@@ -15,15 +19,10 @@ export function setUserExtraBabelPlugin(plugins: any[]) {
  */
 export default (raw: string, isTSX?: boolean) => {
   const code = babel.transformSync(raw, {
-    presets: [
-      require.resolve('@babel/preset-react'),
-      require.resolve('@babel/preset-env'),
-    ],
+    presets: [require.resolve('@babel/preset-react'), require.resolve('@babel/preset-env')],
     plugins: [
       require.resolve('@babel/plugin-proposal-class-properties'),
-      ...(isTSX
-        ? [[require.resolve('@babel/plugin-transform-typescript'), { isTSX: true }]]
-        : []),
+      ...(isTSX ? [[require.resolve('@babel/plugin-transform-typescript'), { isTSX: true }]] : []),
       ...userExtraBabelPlugin,
     ],
     ast: true,
@@ -41,14 +40,14 @@ export default (raw: string, isTSX?: boolean) => {
 
       // save react import variables
       if (
-        callPathNode.declarations[0]
-        && types.isIdentifier(callPathNode.declarations[0].id)
-        && types.isCallExpression(callPathNode.declarations[0].init)
-        && types.isCallExpression(callPathNode.declarations[0].init.arguments[0])
-        && types.isIdentifier(callPathNode.declarations[0].init.arguments[0].callee)
-        && callPathNode.declarations[0].init.arguments[0].callee.name === 'require'
-        && types.isStringLiteral(callPathNode.declarations[0].init.arguments[0].arguments[0])
-        && callPathNode.declarations[0].init.arguments[0].arguments[0].value === 'react'
+        callPathNode.declarations[0] &&
+        types.isIdentifier(callPathNode.declarations[0].id) &&
+        types.isCallExpression(callPathNode.declarations[0].init) &&
+        types.isCallExpression(callPathNode.declarations[0].init.arguments[0]) &&
+        types.isIdentifier(callPathNode.declarations[0].init.arguments[0].callee) &&
+        callPathNode.declarations[0].init.arguments[0].callee.name === 'require' &&
+        types.isStringLiteral(callPathNode.declarations[0].init.arguments[0].arguments[0]) &&
+        callPathNode.declarations[0].init.arguments[0].arguments[0].value === 'react'
       ) {
         reactVar = callPathNode.declarations[0].id.name;
       }
@@ -58,40 +57,29 @@ export default (raw: string, isTSX?: boolean) => {
 
       // remove original export expression
       if (
-        callPathNode.operator === '='
-        && types.isMemberExpression(callPathNode.left)
-        && (
-          callPathNode.left.property.value === 'default' // exports["default"]
-          || callPathNode.left.property.name === 'default' // exports.default
-        )
-        && types.isIdentifier(callPathNode.left.object)
-        && callPathNode.left.object.name === 'exports'
-        && types.isIdentifier(callPathNode.right)
-        && callPathNode.right.name === '_default'
+        callPathNode.operator === '=' &&
+        types.isMemberExpression(callPathNode.left) &&
+        (callPathNode.left.property.value === 'default' || // exports["default"]
+          callPathNode.left.property.name === 'default') && // exports.default
+        types.isIdentifier(callPathNode.left.object) &&
+        callPathNode.left.object.name === 'exports' &&
+        types.isIdentifier(callPathNode.right) &&
+        callPathNode.right.name === '_default'
       ) {
         // save export function as return statement arg
-        const reactIdentifier = (
-          reactVar
-            ? types.memberExpression(
-              types.identifier(reactVar),
-              types.stringLiteral('default'),
-              true,
-            )
-            : types.identifier('React')
-        )
+        const reactIdentifier = reactVar
+          ? types.memberExpression(types.identifier(reactVar), types.stringLiteral('default'), true)
+          : types.identifier('React');
 
         returnStatement = types.returnStatement(
           types.callExpression(
-            types.memberExpression(
-              reactIdentifier,
-              types.identifier('createElement'),
-            ),
+            types.memberExpression(reactIdentifier, types.identifier('createElement')),
             [callPathNode.right],
-          )
+          ),
         );
         callPath.remove();
       }
-    }
+    },
   });
 
   // push return statement to program body
@@ -101,7 +89,9 @@ export default (raw: string, isTSX?: boolean) => {
 
   // if user forgot to import react, redeclare it in local scope for throw error
   if (!reactVar) {
-    body.unshift(types.variableDeclaration('var', [types.variableDeclarator(types.identifier('React'))]));
+    body.unshift(
+      types.variableDeclaration('var', [types.variableDeclarator(types.identifier('React'))]),
+    );
   }
 
   // create demo function
@@ -112,4 +102,4 @@ export default (raw: string, isTSX?: boolean) => {
   );
 
   return generator(types.program([demoFunction]), {}, raw).code;
-}
+};
