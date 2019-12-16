@@ -38,9 +38,10 @@ function demoHandler(h, { type, lang, value, position, ...props }) {
   );
 }
 
-export default () => rehype({
-  handlers: {
-    demo: demoHandler,
-  },
-  allowDangerousHTML: true,
-})
+export default () =>
+  rehype({
+    handlers: {
+      demo: demoHandler,
+    },
+    allowDangerousHTML: true,
+  });

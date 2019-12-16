@@ -13,7 +13,7 @@ father-doc 奉行一个原则——**开发者应该像用户一样写 Demo**。
 
 为了践行这个原则，father-doc 会为开发者自动 alias 当前项目的包，如果是 lerna 项目则会 alias 全部的包，这意味着，我们不需要再使用相对路径去引用开发的组件库了：
 
-``` jsx | pure
+```jsx | pure
 import Component from '../HelloWorld'; // 不推荐写法，此行应有删除线
 import Component from 'yourPackageName'; // 推荐写法，包名为 package.json 中的 name 字段
 ```
@@ -26,13 +26,13 @@ import Component from 'yourPackageName'; // 推荐写法，包名为 package.jso
 
 所以 father-doc 提供了从 `.md` 文件中引入外部 Demo 语法，我们可以通过 `code` 标签引入一个外部 Demo：
 
-``` html
+```html
 <code src="./HelloButton.tsx" />
 ```
 
 它也能如上面的 Demo 一样被插入进文档中进行展示：
 
-``` jsx
+```jsx
 import React from 'react';
 
 export default () => <button>Hello World!</button>;
@@ -42,7 +42,7 @@ export default () => <button>Hello World!</button>;
 
 father-doc 作为文档编写工具只能满足一些通用场景，倘若有自定义组件的需求就会显得有心无力，所以 father-doc 提供了一种 inline 语法，能让开发者直接在 markdown 中插入任意自定义 React Component：
 
-``` html
+```html
 <code src="path/to/your/component" inline />
 ```
 

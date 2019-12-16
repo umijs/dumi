@@ -17,7 +17,7 @@ function visitor(node, i, parent) {
 import React from 'react';
 import Demo from '${node.properties.filePath}';
 
-export default () => <Demo />;`
+export default () => <Demo />;`;
     }
 
     const code = transformer(transformCode, Boolean(tsx));
@@ -46,5 +46,5 @@ export default () => <Demo />;`
 export default function previewer() {
   return (ast: Node) => {
     visit(ast, 'element', visitor);
-  }
+  };
 }

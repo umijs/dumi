@@ -6,10 +6,13 @@ export default {
     title: 'father-doc',
   },
   extraBabelPlugins: [
-    [ 'import', {
-      libraryName: 'antd',
-      libraryDirectory: 'es',
-      style: 'css',
-    }],
+    [
+      'import',
+      {
+        libraryName: 'antd',
+        libraryDirectory: 'es',
+        style: 'css',
+      },
+    ],
   ],
-}
+};
