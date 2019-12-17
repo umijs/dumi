@@ -91,7 +91,7 @@ export default function decorateRoutes(
         });
 
         // use group title for parent routes
-        if (route.routes[0].meta?.group.title) {
+        if (route.routes[0].meta?.group?.title) {
           route.meta.title = route.routes[0].meta.group.title;
         }
       }
