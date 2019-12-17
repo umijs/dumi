@@ -21,8 +21,6 @@ jobs:
     working_directory: ~/father
     steps:
       - checkout
-      - restore_cache:
-          key: node-modules-{{ checksum "package.json" }}
       - run: yarn install
       - run: yarn bootstrap
       - run: yarn build
@@ -30,7 +28,3 @@ jobs:
           command: yarn test -- --forceExit --detectOpenHandles --runInBand --maxWorkers=2
           no_output_timeout: 300m
       - run: bash <(curl -s https://codecov.io/bash)
-      - save_cache:
-          key: node-modules-{{ checksum "package.json" }}
-          paths:
-            - ./node_modules
