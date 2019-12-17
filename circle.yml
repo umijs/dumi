@@ -19,17 +19,15 @@ jobs:
         - gh-pages # list of branches to ignore
         - /release\/.*/ # or ignore regexes
     working_directory: ~/father
-
     steps:
       - checkout
       - restore_cache:
           key: node-modules-{{ checksum "package.json" }}
-      - run: sudo npm install -g cnpm
-      - run: cnpm install --registry=https://registry.npmjs.org
-      - run: cnpm run bootstrap -- --npm-client=cnpm
-      - run: cnpm run build
+      - run: yarn install
+      - run: yarn bootstrap
+      - run: yarn build
       - run:
-          command: npm run test -- --forceExit --detectOpenHandles --runInBand --maxWorkers=2
+          command: yarn test -- --forceExit --detectOpenHandles --runInBand --maxWorkers=2
           no_output_timeout: 300m
       - run: bash <(curl -s https://codecov.io/bash)
       - save_cache:
