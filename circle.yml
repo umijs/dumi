@@ -19,6 +19,7 @@ jobs:
         - gh-pages # list of branches to ignore
         - /release\/.*/ # or ignore regexes
     working_directory: ~/father
+    executor: node
     steps:
       - checkout
       - run: yarn install
