@@ -47,7 +47,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
   initializeScrollma() {
     // instantiate the scrollama
     this.scrollama = scrollama();
-    const { slugs } = this.getMetaForCurrentPath();
+    const { slugs = [] } = this.getMetaForCurrentPath();
 
     // setup the instance, pass callback functions
     this.scrollama
