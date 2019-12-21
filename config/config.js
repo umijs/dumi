@@ -8,13 +8,13 @@ export default {
       links: [
         {
           key: 'UmiJS',
-          title: 'umijs',
+          title: 'UmiJS',
           href: 'https://umijs.org/',
           blankTarget: true,
         },
         {
           key: 'GitHub',
-          title: 'github',
+          title: 'GitHub',
           href: 'https://github.com/umijs/father-doc/',
           blankTarget: true,
         },
