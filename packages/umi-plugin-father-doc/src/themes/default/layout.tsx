@@ -19,17 +19,17 @@ export interface ILayoutProps {
 
 export interface ILayoutState {
   localActive: string;
+  headerMenuCollapsed: boolean;
 }
 
 export default class Layout extends Component<ILayoutProps & RouterTypes, ILayoutState> {
   private scrollama;
 
-  constructor(props: ILayoutProps & RouterTypes) {
-    super(props);
-    this.state = {
-      localActive: '',
-    };
-  }
+  state = {
+    localActive: '',
+    // 用于控制手机模式下菜单是否显示
+    headerMenuCollapsed: true,
+  };
 
   scrollIntoAnchor() {
     // 如果存在 anchor 滚动过去
@@ -114,11 +114,16 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
     return result || {};
   };
 
-  renderSideMenu() {
+  renderSideMenu = () => {
+    const { headerMenuCollapsed } = this.state;
     const { menu, logo, title, desc } = this.props;
 
     return (
-      <div className="__father-doc-default-layout-menu">
+      <div
+        className={`__father-doc-default-layout-menu  ${
+          headerMenuCollapsed ? '' : '__father-doc-default-layout-menu-show'
+        }`}
+      >
         <div className="__father-doc-default-layout-menu-inner">
           <div className="__father-doc-default-layout-menu-header">
             <Link
@@ -151,10 +156,20 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
               </li>
             ))}
           </ul>
+          <a
+            className="__father-doc-default-layout-menu-handle"
+            onClick={() =>
+              this.setState({
+                headerMenuCollapsed: !headerMenuCollapsed,
+              })
+            }
+          >
+            {headerMenuCollapsed ? '📖' : '📚'}
+          </a>
         </div>
       </div>
     );
-  }
+  };
 
   renderAffix(meta, search) {
     const { slugs = [] } = meta;
@@ -170,19 +185,35 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
       realActive = slugs[0].heading;
     }
 
-    const jumper = slugs.map(item =>  (
-        <li
-          key={item.heading}
-          title={item.value}
-          data-depth={item.depth}
-          className={realActive === item.heading ? 'active' : ''}
-        >
-          <Link to={`?anchor=${item.heading}`}>{item.value}</Link>
-        </li>
-      )
-    );
+    const jumper = slugs.map(item => (
+      <li
+        key={item.heading}
+        title={item.value}
+        data-depth={item.depth}
+        className={realActive === item.heading ? 'active' : ''}
+      >
+        <Link to={`?anchor=${item.heading}`}>{item.value}</Link>
+      </li>
+    ));
     return <ul className="__father-doc-default-layout-toc">{jumper}</ul>;
   }
+
+  renderPageHeader = () => {
+    const { logo, title, desc } = this.props;
+    return (
+      <div className="__father-doc-default-layout-header">
+        <Link
+          to="/"
+          className="__father-doc-default-layout-header-logo"
+          style={{
+            backgroundImage: logo && `url('${logo}')`,
+          }}
+        />
+        <h1>{title}</h1>
+        <p>{desc}</p>
+      </div>
+    );
+  };
 
   render() {
     const {
@@ -199,6 +230,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
         data-show-sidebar={showSidebar}
         data-show-slugs={showSlugs}
       >
+        {this.renderPageHeader()}
         {showSidebar && this.renderSideMenu()}
         {showSlugs && this.renderAffix(meta, search.slice(1))}
         {children}
