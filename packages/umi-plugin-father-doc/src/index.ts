@@ -117,9 +117,24 @@ export default function(api: IApi, opts: IFatherDocOpts) {
 
     // add alias for current package(s)
     getHostPkgAlias(api.paths).forEach(([pkgName, pkgPath]) => {
+      const srcPath = path.join(pkgPath, 'src');
+      // 如果 src 存在，alias设置为 src
+      if (fs.existsSync(srcPath)) {
+        config.resolve.alias.set(pkgName, srcPath);
+        return;
+      }
       config.resolve.alias.set(pkgName, pkgPath);
     });
   });
+
+  // link pkg to node node_modules
+  // all for eslint and ts
+  const nodeModulesPath = path.join(api.paths.cwd, 'node_modules');
+  const packageNodeModulesPath = path.join(nodeModulesPath, api.pkg.name);
+  if (fs.existsSync(nodeModulesPath) && api.pkg.name && !fs.existsSync(packageNodeModulesPath)) {
+    // mk link  pkg to node_modules/pkg
+    fs.symlinkSync(api.paths.cwd, packageNodeModulesPath, 'dir');
+  }
 
   // modify help info
   api._modifyHelpInfo(memo => {
