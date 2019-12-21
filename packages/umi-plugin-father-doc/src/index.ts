@@ -20,6 +20,17 @@ export interface IFatherDocOpts {
     redirect: IRoute['redirect'];
     [key: string]: any;
   }[];
+  footer?: {
+    links?:
+      | false
+      | {
+          key?: string;
+          title: React.ReactNode;
+          href: string;
+          blankTarget?: boolean;
+        }[];
+    copyright?: React.ReactNode;
+  };
 }
 
 function docConfigPlugin() {
@@ -78,6 +89,7 @@ export default function(api: IApi, opts: IFatherDocOpts) {
       title: opts.title,
       logo: opts.logo,
       desc: opts.desc,
+      footer: opts.footer,
     };
 
     if (/\/layout\.[tj]sx?$/.test(component)) {

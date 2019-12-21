@@ -53,6 +53,29 @@ export default {
 
 配置默认会嗅探的除 `src` 目录以外的目录，该目录下的 `.md` 文件也会被加入进路由，而且优先级高于 `src` 目录。
 
+### doc.footer
+
+- 类型：
+
+```tsx | pure
+type footer = {
+  links?:
+    | false
+    | {
+        key?: string;
+        title: React.ReactNode;
+        href: string;
+        blankTarget?: boolean;
+      }[];
+  copyright?: React.ReactNode;
+};
+```
+
+- 默认值：`{ copyright: '❤️ Powered By Father' }`
+- 详细：
+
+  配置文档的页脚，设置为 `{}` 即可不显示页脚。
+
 ## Umi 的配置
 
 ### routes

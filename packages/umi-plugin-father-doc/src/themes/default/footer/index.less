@@ -1,0 +1,29 @@
+@import (reference) '../variables.less';
+
+.@{prefix}-footer {
+  margin: 48px 0 0px 0;
+  padding: 0 16px;
+  text-align: center;
+
+  &-links {
+    margin-bottom: 8px;
+
+    a {
+      color: rgba(0, 0, 0, 0.45);
+      transition: all 0.3s;
+
+      &:not(:last-child) {
+        margin-right: 40px;
+      }
+
+      &:hover {
+        color: rgba(0, 0, 0, 0.65);
+      }
+    }
+  }
+
+  &-copyright {
+    color: rgba(0, 0, 0, 0.45);
+    font-size: 14px;
+  }
+}

@@ -5,6 +5,7 @@ import NavLink from 'umi/navlink';
 import scrollama from 'scrollama';
 import 'prismjs/themes/prism.css';
 import { parse } from 'querystring';
+import Footer from './footer';
 import { IMenuItem } from '../../routes/getMenuFromRoutes';
 import './layout.less';
 
@@ -14,6 +15,17 @@ export interface ILayoutProps {
   desc?: string;
   menu: {
     items: IMenuItem[];
+  };
+  footer?: {
+    links?:
+      | false
+      | {
+          key?: string;
+          title: React.ReactNode;
+          href: string;
+          blankTarget?: boolean;
+        }[];
+    copyright?: React.ReactNode;
   };
 }
 
@@ -170,29 +182,31 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
       realActive = slugs[0].heading;
     }
 
-    const jumper = slugs.map(item =>  (
-        <li
-          key={item.heading}
-          title={item.value}
-          data-depth={item.depth}
-          className={realActive === item.heading ? 'active' : ''}
-        >
-          <Link to={`?anchor=${item.heading}`}>{item.value}</Link>
-        </li>
-      )
-    );
+    const jumper = slugs.map(item => (
+      <li
+        key={item.heading}
+        title={item.value}
+        data-depth={item.depth}
+        className={realActive === item.heading ? 'active' : ''}
+      >
+        <Link to={`?anchor=${item.heading}`}>{item.value}</Link>
+      </li>
+    ));
     return <ul className="__father-doc-default-layout-toc">{jumper}</ul>;
   }
 
   render() {
     const {
       children,
+      footer = {
+        links: [],
+        copyright: '❤️ Powered By Father',
+      },
       location: { search },
     } = this.props;
     const meta = this.getMetaForCurrentPath();
     const showSidebar = meta.sidebar !== false;
     const showSlugs = meta.slugs && Boolean(meta.slugs.length);
-
     return (
       <div
         className="__father-doc-default-layout"
@@ -202,6 +216,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
         {showSidebar && this.renderSideMenu()}
         {showSlugs && this.renderAffix(meta, search.slice(1))}
         {children}
+        <Footer {...footer} />
       </div>
     );
   }
