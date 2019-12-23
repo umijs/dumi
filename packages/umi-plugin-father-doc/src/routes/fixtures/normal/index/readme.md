@@ -1,0 +1,3 @@
+---
+legacy: /legacy/path/test
+---

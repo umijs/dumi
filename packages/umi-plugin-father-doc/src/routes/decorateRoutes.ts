@@ -99,8 +99,8 @@ export default function decorateRoutes(
     return total;
   }, [] as IRoute[]);
 
-  // add index route redirect for group which has no index route
   result.forEach((route) => {
+    // add index route redirect for group which has no index route
     if (
       route.meta.group?.path &&
       !result.some(item => item.path === route.meta.group.path)
@@ -115,6 +115,15 @@ export default function decorateRoutes(
         },
         exact: true,
         redirect: result.find(item => item.meta.group?.path === route.meta.group.path).path,
+      });
+    }
+
+    // append redirect for legacy path
+    if (route.meta.legacy) {
+      redirects.push({
+        path: route.meta.legacy,
+        exact: true,
+        redirect: route.path,
       });
     }
   });

@@ -82,6 +82,7 @@ describe('routes & menu', () => {
           exact: true,
           meta: {
             group: { title: 'Index', path: '/index' },
+            legacy: '/legacy/path/test',
             title: 'Readme'
           },
           title: 'Readme',
@@ -133,6 +134,11 @@ describe('routes & menu', () => {
           title: 'Test'
         },
         {
+          path: '/legacy/path/test',
+          exact: true,
+          redirect: '/index'
+        },
+        {
           path: '/rename-sub-sub',
           exact: true,
           meta: {},
@@ -174,7 +180,11 @@ describe('routes & menu', () => {
             {
               path: '/index',
               title: 'Readme',
-              meta: { group: { path: '/index', title: 'Index' }, title: 'Readme' }
+              meta: {
+                group: { path: '/index', title: 'Index' },
+                legacy: '/legacy/path/test',
+                title: 'Readme'
+              }
             }
           ]
         },
