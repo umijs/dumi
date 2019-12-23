@@ -4,14 +4,12 @@ import glob from 'glob';
 import { IApi } from 'umi-types';
 
 function getPkgAliasForPath(absPath: string) {
-  const result = [undefined, absPath];
+  const result = [path.basename(absPath), absPath];
   const pkgPath = path.join(absPath, 'package.json');
 
   // use package.name if exists
   if (fs.existsSync(pkgPath)) {
     result[0] = require(pkgPath).name;
-  } else {
-    result[0] = path.basename(absPath);
   }
 
   return result;
