@@ -1,16 +1,57 @@
 import path from 'path';
 import getRoute from './getRouteConfigFromDir';
 import decorateRoute from './decorateRoutes';
+import getMenu from './getMenuFromRoutes';
 
-describe('getRouteConfigFromDir', () => {
-  it('normal', () => {
+describe('routes & menu', () => {
+  let routes;
+
+  it('getRouteConfigFromDir: normal', () => {
+    routes = getRoute(path.join(__dirname, 'fixtures', 'normal'));
+    expect(routes).toEqual(
+      [
+        {
+          path: '/',
+          component: './packages/umi-plugin-father-doc/src/routes/fixtures/normal/index.md',
+          exact: true
+        },
+        {
+          path: '/intro',
+          component: './packages/umi-plugin-father-doc/src/routes/fixtures/normal/intro.md',
+          exact: true
+        },
+        {
+          path: '/index',
+          component: './packages/umi-plugin-father-doc/src/routes/fixtures/normal/index/readme.md',
+          exact: true
+        },
+        {
+          path: '/sub/hello-component',
+          component: './packages/umi-plugin-father-doc/src/routes/fixtures/normal/sub/HelloComponent.md',
+          exact: true
+        },
+        {
+          path: '/sub',
+          component: './packages/umi-plugin-father-doc/src/routes/fixtures/normal/sub/README.md',
+          exact: true
+        },
+        {
+          path: '/sub/subsub/still-hello',
+          component: './packages/umi-plugin-father-doc/src/routes/fixtures/normal/sub/subsub/stillHello.md',
+          exact: true
+        }
+      ]
+    );
+  });
+
+  it('decorateRoutes: normal', () => {
     const appRoot = path.join(__dirname, 'fixtures', 'normal');
-    const routes = getRoute(appRoot);
 
-    expect(decorateRoute(routes, {
+    routes = decorateRoute(routes, {
       cwd: process.cwd(),
       absTmpDirPath: path.join(appRoot, '.umi'),
-    })).toEqual(
+    });
+    expect(routes).toEqual(
       [
         {
           path: '/',
@@ -97,6 +138,75 @@ describe('getRouteConfigFromDir', () => {
           meta: {},
           redirect: '/rename-sub-sub/still-hello',
           title: 'Rename-sub-sub'
+        }
+      ]
+    );
+  });
+
+  it('getMenuFromRoutes: normal', () => {
+    const menu = getMenu(routes);
+
+    expect(menu).toEqual(
+      [
+        { path: '/', title: 'Index', meta: { title: 'Index' } },
+        {
+          path: '/sub',
+          title: 'README',
+          meta: { title: 'README', group: { title: 'Rename Sub' } }
+        },
+        {
+          path: '/test',
+          title: 'Test',
+          meta: {},
+          children: [
+            {
+              path: '/test/intro',
+              title: 'Intro',
+              meta: { title: 'Intro', group: { path: '/test', title: 'Test' } }
+            }
+          ]
+        },
+        {
+          path: '/index',
+          title: 'Index',
+          meta: {},
+          children: [
+            {
+              path: '/index',
+              title: 'Readme',
+              meta: { group: { path: '/index', title: 'Index' }, title: 'Readme' }
+            }
+          ]
+        },
+        {
+          path: '/sub',
+          title: 'Rename Sub',
+          meta: {},
+          children: [
+            {
+              path: '/sub/hello-component',
+              title: 'HelloComponent',
+              meta: {
+                group: { path: '/sub', title: 'Rename Sub' },
+                title: 'HelloComponent'
+              }
+            }
+          ]
+        },
+        {
+          path: '/rename-sub-sub',
+          title: 'Rename-sub-sub',
+          meta: {},
+          children: [
+            {
+              path: '/rename-sub-sub/still-hello',
+              title: 'StillHello',
+              meta: {
+                group: { path: '/rename-sub-sub', title: 'Rename-sub-sub' },
+                title: 'StillHello'
+              }
+            }
+          ]
         }
       ]
     );
