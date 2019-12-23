@@ -1,3 +1,4 @@
+import fs from 'fs';
 import path from 'path';
 import { IRoute, IApi } from 'umi-types';
 import deepmerge from 'deepmerge';
@@ -117,6 +118,23 @@ export default function decorateRoutes(
       });
     }
   });
+
+  // fallback to readme if there has no index route
+  if (!result.some(route => route.path === '/')) {
+    const readmePath = path.join(paths.cwd, 'README.md');
+
+    if (fs.existsSync(readmePath)) {
+      result.unshift({
+        path: '/',
+        component: './README.md',
+        exact: true,
+        meta: {
+          title: 'README',
+        },
+        title: 'README'
+      });
+    }
+  }
 
   return result.concat(redirects);
 }
