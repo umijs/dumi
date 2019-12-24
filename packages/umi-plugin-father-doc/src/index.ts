@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import assert from 'assert';
+import { exec } from 'child_process';
 import { isPlainObject } from 'lodash';
 import { IApi, IRoute } from 'umi-types';
 import getRouteConfig from './routes/getRouteConfig';
@@ -118,23 +119,16 @@ export default function(api: IApi, opts: IFatherDocOpts) {
     // add alias for current package(s)
     getHostPkgAlias(api.paths).forEach(([pkgName, pkgPath]) => {
       const srcPath = path.join(pkgPath, 'src');
-      // 如果 src 存在，alias设置为 src
-      if (fs.existsSync(srcPath)) {
-        config.resolve.alias.set(pkgName, srcPath);
-        return;
+
+      // use src path instead of main field in package.json if exists
+      config.resolve.alias.set(pkgName, fs.existsSync(srcPath) ? srcPath : pkgPath);
+
+      // link current pkgs into node_modules, for import module resolve when writing demo
+      if (!fs.existsSync(path.join(api.paths.cwd, 'node_modules', pkgName))) {
+        exec(`npm ln ${pkgName} ${pkgPath}`);
       }
-      config.resolve.alias.set(pkgName, pkgPath);
     });
   });
-
-  // link pkg to node node_modules
-  // all for eslint and ts
-  const nodeModulesPath = path.join(api.paths.cwd, 'node_modules');
-  const packageNodeModulesPath = path.join(nodeModulesPath, api.pkg.name);
-  if (fs.existsSync(nodeModulesPath) && api.pkg.name && !fs.existsSync(packageNodeModulesPath)) {
-    // mk link  pkg to node_modules/pkg
-    fs.symlinkSync(api.paths.cwd, packageNodeModulesPath, 'dir');
-  }
 
   // modify help info
   api._modifyHelpInfo(memo => {
