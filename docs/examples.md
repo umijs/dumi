@@ -1,5 +1,6 @@
 ---
 title: 文档示例
+legacy: /example
 ---
 
 # 文档示例
