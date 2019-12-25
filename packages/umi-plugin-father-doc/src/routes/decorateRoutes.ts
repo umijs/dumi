@@ -34,7 +34,7 @@ export default function decorateRoutes(
   paths: IApi['paths'],
   parentRoute?: IRoute,
 ) {
-  const redirects: IRoute[] = [];
+  const redirects: { [key: string]: IRoute } = {};
   const result = routes.reduce((total, route) => {
     const frontMatter = typeof route.component === 'string' ? getFrontMatter(route.component) : {};
     const fallbackMeta: any = {};
@@ -103,11 +103,12 @@ export default function decorateRoutes(
     // add index route redirect for group which has no index route
     if (
       route.meta.group?.path &&
+      !redirects[route.meta.group.path] &&
       !result.some(item => item.path === route.meta.group.path)
     ) {
       const { title, path, ...resGroupMeta } = route.meta.group;
 
-      redirects.push({
+      redirects[path] = {
         title,
         path,
         meta: {
@@ -115,16 +116,16 @@ export default function decorateRoutes(
         },
         exact: true,
         redirect: result.find(item => item.meta.group?.path === route.meta.group.path).path,
-      });
+      };
     }
 
     // append redirect for legacy path
     if (route.meta.legacy) {
-      redirects.push({
+      redirects[route.meta.legacy] = {
         path: route.meta.legacy,
         exact: true,
         redirect: route.path,
-      });
+      };
     }
   });
 
@@ -145,5 +146,5 @@ export default function decorateRoutes(
     }
   }
 
-  return result.concat(redirects);
+  return result.concat(Object.values(redirects));
 }
