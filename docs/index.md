@@ -11,7 +11,7 @@ father-doc 仍处于 <code>alpha</code> 阶段，功能可能存在不稳定，�
 
 father-doc 是基于 Umi 为组件开发场景而生的文档工具，与 [father](https://github.com/umijs/father) 一起为开发者提供一站式的组件开发体验，**father 负责构建，而 father-doc 负责组件开发及文档生成**。
 
-可以直接查看 [文档示例](#/example)，先睹为快。
+可以直接查看 [文档示例](#/examples)，先睹为快。
 
 ## 特性
 
