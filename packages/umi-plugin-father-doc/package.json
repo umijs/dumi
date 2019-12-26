@@ -33,6 +33,7 @@
     "deepmerge": "^4.2.2",
     "glob": "^7.1.6",
     "hast-util-to-html": "^6.0.2",
+    "hast-util-to-string": "^1.0.2",
     "intersection-observer": "^0.7.0",
     "js-yaml": "^3.13.1",
     "lodash": "^4.17.15",
