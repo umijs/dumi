@@ -57,7 +57,7 @@ describe('routes & menu', () => {
           path: '/',
           component: './packages/umi-plugin-father-doc/src/routes/fixtures/normal/index.md',
           exact: true,
-          meta: { title: 'Index' },
+          meta: { title: 'Index', slugs: [] },
           title: 'Index',
           Routes: [
             './packages/umi-plugin-father-doc/src/routes/fixtures/normal/.umi/TitleWrapper.jsx'
@@ -69,7 +69,8 @@ describe('routes & menu', () => {
           exact: true,
           meta: {
             group: { title: 'Test', path: '/test' },
-            title: 'Intro'
+            title: 'Intro',
+            slugs: []
           },
           title: 'Intro',
           Routes: [
@@ -83,7 +84,8 @@ describe('routes & menu', () => {
           meta: {
             group: { title: 'Index', path: '/index' },
             legacy: '/legacy/path/test',
-            title: 'Readme'
+            title: 'Readme',
+            slugs: []
           },
           title: 'Readme',
           Routes: [
@@ -96,7 +98,8 @@ describe('routes & menu', () => {
           exact: true,
           meta: {
             group: { title: 'Rename Sub', path: '/sub' },
-            title: 'HelloComponent'
+            title: 'HelloComponent',
+            slugs: []
           },
           title: 'HelloComponent',
           Routes: [
@@ -107,7 +110,7 @@ describe('routes & menu', () => {
           path: '/sub',
           component: './packages/umi-plugin-father-doc/src/routes/fixtures/normal/sub/README.md',
           exact: true,
-          meta: { title: 'README', group: { title: 'Rename Sub' } },
+          meta: { title: 'README', group: { title: 'Rename Sub' }, slugs: [] },
           title: 'README',
           Routes: [
             './packages/umi-plugin-father-doc/src/routes/fixtures/normal/.umi/TitleWrapper.jsx'
@@ -119,7 +122,8 @@ describe('routes & menu', () => {
           exact: true,
           meta: {
             group: { title: 'Rename-sub-sub', path: '/rename-sub-sub' },
-            title: 'StillHello'
+            title: 'StillHello',
+            slugs: []
           },
           title: 'StillHello',
           Routes: [
@@ -154,11 +158,11 @@ describe('routes & menu', () => {
 
     expect(menu).toEqual(
       [
-        { path: '/', title: 'Index', meta: { title: 'Index' } },
+        { path: '/', title: 'Index', meta: { title: 'Index', slugs: [] } },
         {
           path: '/sub',
           title: 'README',
-          meta: { title: 'README', group: { title: 'Rename Sub' } }
+          meta: { title: 'README', group: { title: 'Rename Sub' }, slugs: [] }
         },
         {
           path: '/test',
@@ -168,7 +172,7 @@ describe('routes & menu', () => {
             {
               path: '/test/intro',
               title: 'Intro',
-              meta: { title: 'Intro', group: { path: '/test', title: 'Test' } }
+              meta: { title: 'Intro', group: { path: '/test', title: 'Test' }, slugs: [] }
             }
           ]
         },
@@ -183,7 +187,8 @@ describe('routes & menu', () => {
               meta: {
                 group: { path: '/index', title: 'Index' },
                 legacy: '/legacy/path/test',
-                title: 'Readme'
+                title: 'Readme',
+                slugs: []
               }
             }
           ]
@@ -198,7 +203,8 @@ describe('routes & menu', () => {
               title: 'HelloComponent',
               meta: {
                 group: { path: '/sub', title: 'Rename Sub' },
-                title: 'HelloComponent'
+                title: 'HelloComponent',
+                slugs: []
               }
             }
           ]
@@ -213,7 +219,8 @@ describe('routes & menu', () => {
               title: 'StillHello',
               meta: {
                 group: { path: '/rename-sub-sub', title: 'Rename-sub-sub' },
-                title: 'StillHello'
+                title: 'StillHello',
+                slugs: []
               }
             }
           ]

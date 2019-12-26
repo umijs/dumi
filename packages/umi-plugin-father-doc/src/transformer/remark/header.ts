@@ -6,13 +6,11 @@ import is from 'hast-util-is-element';
 const headings = ['h2', 'h3']; // 先只取两级
 
 export default () => (ast, vFile) => {
-  const slugsEnable = vFile.data.slugs !== false;
-
-  // initial slugs meta
-  vFile.data.slugs = [];
-
   // extract if user did not set slugs to false
-  if (slugsEnable) {
+  if (vFile.data.slugs !== false) {
+    // initial slugs meta
+    vFile.data.slugs = [];
+
     visit(ast, 'element', node => {
       if (is(node, headings) && has(node, 'id')) {
         vFile.data.slugs.push({
@@ -22,5 +20,7 @@ export default () => (ast, vFile) => {
         });
       }
     });
+  } else {
+    delete vFile.data.slugs;
   }
 };
