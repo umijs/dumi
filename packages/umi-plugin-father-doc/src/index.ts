@@ -1,9 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import assert from 'assert';
-import { exec } from 'child_process';
 import { isPlainObject } from 'lodash';
 import { IApi, IRoute } from 'umi-types';
+import symlink from 'symlink-dir';
 import getRouteConfig from './routes/getRouteConfig';
 import getMenuFromRoutes from './routes/getMenuFromRoutes';
 import getHostPkgAlias from './utils/getHostPkgAlias';
@@ -119,13 +119,14 @@ export default function(api: IApi, opts: IFatherDocOpts) {
     // add alias for current package(s)
     getHostPkgAlias(api.paths).forEach(([pkgName, pkgPath]) => {
       const srcPath = path.join(pkgPath, 'src');
+      const linkPath = path.join(api.paths.cwd, 'node_modules', pkgName);
 
       // use src path instead of main field in package.json if exists
       config.resolve.alias.set(pkgName, fs.existsSync(srcPath) ? srcPath : pkgPath);
 
       // link current pkgs into node_modules, for import module resolve when writing demo
-      if (!fs.existsSync(path.join(api.paths.cwd, 'node_modules', pkgName))) {
-        exec(`npm ln ${pkgName} ${pkgPath}`);
+      if (!fs.existsSync(linkPath)) {
+        symlink(pkgPath, linkPath);
       }
     });
   });
