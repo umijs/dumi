@@ -15,7 +15,7 @@ function isNestedRoute(route: IRoute) {
     (
       parsed &&
       route.path.length > 1 &&
-      /^(index|readme)$/.test(parsed.name)
+      /^(index|readme)$/i.test(parsed.name)
     )
   );
 }

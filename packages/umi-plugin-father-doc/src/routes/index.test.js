@@ -118,7 +118,8 @@ describe('routes & menu', () => {
             title: 'README',
             group: {
               order: 10,
-              title: 'Rename Sub'
+              title: 'Rename Sub',
+              path: '/sub'
             },
             slugs: []
           },
@@ -184,15 +185,19 @@ describe('routes & menu', () => {
                 title: 'HelloComponent',
                 slugs: []
               }
+            },
+            {
+              path: '/sub',
+              title: 'README',
+              meta: {
+                group: { order: 10, path: '/sub', title: 'Rename Sub' },
+                title: 'README',
+                slugs: []
+              }
             }
           ]
         },
         { path: '/', title: 'Index', meta: { title: 'Index', slugs: [] } },
-        {
-          path: '/sub',
-          title: 'README',
-          meta: { title: 'README', group: { order: 10, title: 'Rename Sub' }, slugs: [] }
-        },
         {
           path: '/test',
           title: 'Test',
