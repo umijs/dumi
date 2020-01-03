@@ -32,7 +32,9 @@ export default function getMenuFromRoutes(routes: IApi['routes']): IMenuItem[] {
     };
 
     if (key) {
-      result[0][key] = result[0][key] || { ...group, meta: {}, children: [] };
+      const { title, path, ...meta } = group;
+
+      result[0][key] = result[0][key] || { title, path, meta, children: [] };
       result[0][key].children.push(menuItem);
     } else {
       result[1].push(menuItem);

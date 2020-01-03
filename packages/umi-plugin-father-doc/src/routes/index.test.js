@@ -97,7 +97,11 @@ describe('routes & menu', () => {
           component: './packages/umi-plugin-father-doc/src/routes/fixtures/normal/sub/HelloComponent.md',
           exact: true,
           meta: {
-            group: { title: 'Rename Sub', path: '/sub' },
+            group: {
+              order: 10,
+              title: 'Rename Sub',
+              path: '/sub'
+            },
             title: 'HelloComponent',
             slugs: []
           },
@@ -110,7 +114,14 @@ describe('routes & menu', () => {
           path: '/sub',
           component: './packages/umi-plugin-father-doc/src/routes/fixtures/normal/sub/README.md',
           exact: true,
-          meta: { title: 'README', group: { title: 'Rename Sub' }, slugs: [] },
+          meta: {
+            title: 'README',
+            group: {
+              order: 10,
+              title: 'Rename Sub'
+            },
+            slugs: []
+          },
           title: 'README',
           Routes: [
             './packages/umi-plugin-father-doc/src/routes/fixtures/normal/.umi/TitleWrapper.jsx'
@@ -158,11 +169,29 @@ describe('routes & menu', () => {
 
     expect(menu).toEqual(
       [
+        {
+          path: '/sub',
+          title: 'Rename Sub',
+          meta: {
+            order: 10,
+          },
+          children: [
+            {
+              path: '/sub/hello-component',
+              title: 'HelloComponent',
+              meta: {
+                group: { order: 10, path: '/sub', title: 'Rename Sub' },
+                title: 'HelloComponent',
+                slugs: []
+              }
+            }
+          ]
+        },
         { path: '/', title: 'Index', meta: { title: 'Index', slugs: [] } },
         {
           path: '/sub',
           title: 'README',
-          meta: { title: 'README', group: { title: 'Rename Sub' }, slugs: [] }
+          meta: { title: 'README', group: { order: 10, title: 'Rename Sub' }, slugs: [] }
         },
         {
           path: '/test',
@@ -188,22 +217,6 @@ describe('routes & menu', () => {
                 group: { path: '/index', title: 'Index' },
                 legacy: '/legacy/path/test',
                 title: 'Readme',
-                slugs: []
-              }
-            }
-          ]
-        },
-        {
-          path: '/sub',
-          title: 'Rename Sub',
-          meta: {},
-          children: [
-            {
-              path: '/sub/hello-component',
-              title: 'HelloComponent',
-              meta: {
-                group: { path: '/sub', title: 'Rename Sub' },
-                title: 'HelloComponent',
                 slugs: []
               }
             }
