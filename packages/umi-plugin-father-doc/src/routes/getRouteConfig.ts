@@ -32,16 +32,16 @@ export default (paths: IApi['paths'], opts: IFatherDocOpts): IRoute[] => {
       const docsPath = path.isAbsolute(item) ? item : path.join(paths.cwd, item);
 
       if (fs.existsSync(docsPath) && fs.statSync(docsPath).isDirectory()) {
-        config[0].routes.push(...getRouteConfigFromDir(docsPath));
+        config[0].routes.push(...getRouteConfigFromDir(docsPath, opts));
       }
     });
 
     // find routes from source path
-    config[0].routes.push(...getRouteConfigFromDir(paths.absPagesPath));
+    config[0].routes.push(...getRouteConfigFromDir(paths.absPagesPath, opts));
   }
 
   // decorate standard umi routes
-  config[0].routes = decorateRoutes(config[0].routes, paths);
+  config[0].routes = decorateRoutes(config[0].routes, paths, opts);
 
   return config;
 };

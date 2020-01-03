@@ -15,6 +15,7 @@ export interface IFatherDocOpts {
   logo?: URL;
   desc?: string;
   include?: string[];
+  locales?: [string, string][];
   routes?: {
     path: IRoute['path'];
     component: IRoute['component'];
@@ -42,9 +43,11 @@ export default function(api: IApi, opts: IFatherDocOpts) {
     {
       title: defaultTitle,
       include: ['docs'],
-    },
-    {
       routes: api.config.routes,
+      locales: [
+        ['en-US', 'EN'],
+        ['zh-CN', '中文'],
+      ],
     },
     (api.config as any).doc,
     opts,
@@ -73,9 +76,7 @@ export default function(api: IApi, opts: IFatherDocOpts) {
   api.modifyRouteComponent((module, { importPath, component }) => {
     let ret = module;
     const meta = {
-      menu: {
-        items: getMenuFromRoutes(api.routes[0].routes),
-      },
+      menus: getMenuFromRoutes(api.routes[0].routes, opts),
       title: opts.title,
       logo: opts.logo,
       desc: opts.desc,
