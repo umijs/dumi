@@ -4,17 +4,32 @@ import { IRoute, IApi } from 'umi-types';
 import deepmerge from 'deepmerge';
 import slash from 'slash2';
 import getFrontMatter from './getFrontMatter';
+import { IFatherDocOpts } from '../';
 
-function isNestedRoute(route: IRoute) {
-  const parsed = typeof route.component === 'string' ? path.parse(route.component) : null;
+function getLocaleFromFilepath(filepath: string, locales: IFatherDocOpts['locales']) {
+  const guessLocale = path.parse(filepath).name.match(/[^.]+$/)?.[0];
+
+  return (guessLocale && locales.find(([name]) => name === guessLocale)) ? guessLocale : null;
+}
+
+function discardLocaleForPath(pathname: string, locale: string) {
+  return pathname.replace(`/${locale}`, '') || '/';
+}
+
+function discardLocaleForFilename(filename: string, locale: string) {
+  return filename.replace(`.${locale}`, '');
+}
+
+function isNestedRoute(routePath: string, componentPath: any) {
+  const parsed = typeof componentPath === 'string' ? path.parse(componentPath) : null;
 
   return (
     // at least 2-level path
-    route.path.lastIndexOf('/') !== 0 ||
+    routePath.lastIndexOf('/') !== 0 ||
     // or component filename is the default entry
     (
       parsed &&
-      route.path.length > 1 &&
+      routePath.length > 1 &&
       /^(index|readme)$/i.test(parsed.name)
     )
   );
@@ -32,15 +47,18 @@ function isNestedRoute(route: IRoute) {
 export default function decorateRoutes(
   routes: IRoute[],
   paths: IApi['paths'],
+  opts: IFatherDocOpts,
   parentRoute?: IRoute,
 ) {
   const redirects: { [key: string]: IRoute } = {};
   const result = routes.reduce((total, route) => {
     const frontMatter = typeof route.component === 'string' ? getFrontMatter(route.component) : {};
+    const locale = typeof route.component === 'string' ? getLocaleFromFilepath(route.component, opts.locales) : '';
     const fallbackMeta: any = {};
 
     // generate fallback group meta for nest route
-    if (isNestedRoute(route)) {
+    if (isNestedRoute(discardLocaleForPath(route.path, locale), route.component)) {
+      // group path still contains locale path, such as /zh-CN/child
       const groupPath = route.path.match(/^([^]+?)(\/[^/]+)?$/)[1];
 
       fallbackMeta.group = {
@@ -48,9 +66,18 @@ export default function decorateRoutes(
       };
     }
 
+    // set locale for route
+    if (locale) {
+      fallbackMeta.locale = locale;
+    }
+
     // set fallback title for route
     if (typeof route.component === 'string') {
-      fallbackMeta.title = path.parse(route.component).name.replace(/^[a-z]/, s => s.toUpperCase());
+      // index.zh-CN => Index
+      fallbackMeta.title = discardLocaleForFilename(
+        path.parse(route.component).name,
+        locale,
+      ).replace(/^[a-z]/, s => s.toUpperCase());
     }
 
     // merge meta for route
@@ -62,7 +89,8 @@ export default function decorateRoutes(
 
     // fallback group title if there only has group path
     if(route.meta.group?.path && !route.meta.group.title) {
-      route.meta.group.title = route.meta.group.path
+      // /zh-CN/abc => Abc
+      route.meta.group.title = discardLocaleForPath(route.meta.group.path, locale)
         // discard start slash
         .replace(/^\//g, '')
         // upper case the first english letter
@@ -91,7 +119,7 @@ export default function decorateRoutes(
 
     // flat child routes
     if (route.routes) {
-      total.push(...decorateRoutes(route.routes, paths, route));
+      total.push(...decorateRoutes(route.routes, paths, opts, route));
     } else {
       total.push(route);
     }
@@ -109,7 +137,6 @@ export default function decorateRoutes(
       const { title, path, ...resGroupMeta } = route.meta.group;
 
       redirects[path] = {
-        title,
         path,
         meta: {
           ...resGroupMeta
