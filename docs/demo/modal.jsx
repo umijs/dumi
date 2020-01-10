@@ -4,8 +4,7 @@
  */
 
 import React from 'react';
-import { Modal } from 'antd';
-import { Button } from 'antd';
+import { Button, Modal } from 'antd';
 
 class App extends React.Component {
   state = { visible: false };
