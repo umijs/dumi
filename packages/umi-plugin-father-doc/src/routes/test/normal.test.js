@@ -1,13 +1,15 @@
 import path from 'path';
-import getRoute from './getRouteConfigFromDir';
-import decorateRoute from './decorateRoutes';
-import getMenu from './getMenuFromRoutes';
+import getRoute from '../getRouteConfigFromDir';
+import decorateRoute from '../decorateRoutes';
+import getMenu from '../getMenuFromRoutes';
 
-describe('routes & menu', () => {
+const FIXTURES_PATH = path.join(__dirname, '..', 'fixtures');
+
+describe('routes & menu: normal', () => {
   let routes;
 
-  it('getRouteConfigFromDir: normal', () => {
-    routes = getRoute(path.join(__dirname, 'fixtures', 'normal'));
+  it('getRouteConfigFromDir', () => {
+    routes = getRoute(path.join(FIXTURES_PATH, 'normal'), { locales: [] });
     expect(routes).toEqual(
       [
         {
@@ -44,13 +46,13 @@ describe('routes & menu', () => {
     );
   });
 
-  it('decorateRoutes: normal', () => {
-    const appRoot = path.join(__dirname, 'fixtures', 'normal');
+  it('decorateRoutes', () => {
+    const appRoot = path.join(FIXTURES_PATH, 'normal');
 
     routes = decorateRoute(routes, {
       cwd: process.cwd(),
       absTmpDirPath: path.join(appRoot, '.umi'),
-    });
+    }, { locales: [] });
     expect(routes).toEqual(
       [
         {
@@ -146,8 +148,7 @@ describe('routes & menu', () => {
           path: '/test',
           exact: true,
           meta: {},
-          redirect: '/test/intro',
-          title: 'Test'
+          redirect: '/test/intro'
         },
         {
           path: '/legacy/path/test',
@@ -158,88 +159,91 @@ describe('routes & menu', () => {
           path: '/rename-sub-sub',
           exact: true,
           meta: {},
-          redirect: '/rename-sub-sub/still-hello',
-          title: 'Rename-sub-sub'
+          redirect: '/rename-sub-sub/still-hello'
         }
       ]
     );
   });
 
-  it('getMenuFromRoutes: normal', () => {
-    const menu = getMenu(routes);
+  it('getMenuFromRoutes', () => {
+    const menu = getMenu(routes, { locales: [] });
 
     expect(menu).toEqual(
       [
         {
-          path: '/sub',
-          title: 'Rename Sub',
-          meta: {
-            order: 10,
-          },
-          children: [
-            {
-              path: '/sub/hello-component',
-              title: 'HelloComponent',
-              meta: {
-                group: { order: 10, path: '/sub', title: 'Rename Sub' },
-                title: 'HelloComponent',
-                slugs: []
-              }
-            },
+          items: [
             {
               path: '/sub',
-              title: 'README',
+              title: 'Rename Sub',
               meta: {
-                group: { order: 10, path: '/sub', title: 'Rename Sub' },
-                title: 'README',
-                slugs: []
-              }
-            }
-          ]
-        },
-        { path: '/', title: 'Index', meta: { title: 'Index', slugs: [] } },
-        {
-          path: '/test',
-          title: 'Test',
-          meta: {},
-          children: [
+                order: 10,
+              },
+              children: [
+                {
+                  path: '/sub/hello-component',
+                  title: 'HelloComponent',
+                  meta: {
+                    group: { order: 10, path: '/sub', title: 'Rename Sub' },
+                    title: 'HelloComponent',
+                    slugs: []
+                  }
+                },
+                {
+                  path: '/sub',
+                  title: 'README',
+                  meta: {
+                    group: { order: 10, path: '/sub', title: 'Rename Sub' },
+                    title: 'README',
+                    slugs: []
+                  }
+                }
+              ]
+            },
+            { path: '/', title: 'Index', meta: { title: 'Index', slugs: [] } },
             {
-              path: '/test/intro',
-              title: 'Intro',
-              meta: { title: 'Intro', group: { path: '/test', title: 'Test' }, slugs: [] }
-            }
-          ]
-        },
-        {
-          path: '/index',
-          title: 'Index',
-          meta: {},
-          children: [
+              path: '/test',
+              title: 'Test',
+              meta: {},
+              children: [
+                {
+                  path: '/test/intro',
+                  title: 'Intro',
+                  meta: { title: 'Intro', group: { path: '/test', title: 'Test' }, slugs: [] }
+                }
+              ]
+            },
             {
               path: '/index',
-              title: 'Readme',
-              meta: {
-                group: { path: '/index', title: 'Index' },
-                legacy: '/legacy/path/test',
-                title: 'Readme',
-                slugs: []
-              }
-            }
-          ]
-        },
-        {
-          path: '/rename-sub-sub',
-          title: 'Rename-sub-sub',
-          meta: {},
-          children: [
+              title: 'Index',
+              meta: {},
+              children: [
+                {
+                  path: '/index',
+                  title: 'Readme',
+                  meta: {
+                    group: { path: '/index', title: 'Index' },
+                    legacy: '/legacy/path/test',
+                    title: 'Readme',
+                    slugs: []
+                  }
+                }
+              ]
+            },
             {
-              path: '/rename-sub-sub/still-hello',
-              title: 'StillHello',
-              meta: {
-                group: { path: '/rename-sub-sub', title: 'Rename-sub-sub' },
-                title: 'StillHello',
-                slugs: []
-              }
+              path: '/rename-sub-sub',
+              title: 'Rename-sub-sub',
+              meta: {},
+              children: [
+                {
+                  path: '/rename-sub-sub/still-hello',
+                  title: 'StillHello',
+                  meta: {
+                    group: { path: '/rename-sub-sub', title: 'Rename-sub-sub' },
+                    title: 'StillHello',
+                    slugs: []
+                  }
+                }
+              ]
             }
           ]
         }

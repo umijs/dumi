@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import slash from 'slash2';
 import { IRoute } from 'umi-types';
+import { IFatherDocOpts } from '../index';
 
 const IGNORE_DIR = ['node_modules'];
 
@@ -14,25 +15,46 @@ function isValidPath(pathname: string) {
 
 /**
  * normalize file path to route path
- * @param path  original file path
+ * @param oPath       original file path
+ * @param localePath  locale path (optional)
  */
-function normalizePath(path: string) {
-  return slash(path)
-    // discard filename for the default entries (index.md, README.md)
-    .replace(/(index|readme)$/i, '')
-    // convert TheComponent to the-component
-    .replace(/([a-z])([A-Z])/g, '$1-$2')
-    .toLowerCase()
-    // discard end slash
-    .replace(/([^]+)\/$/, '$1');
+function normalizePath(oPath: string, localePath: string = '') {
+  return slash(path.join(
+    localePath,
+    oPath
+      // discard filename for the default entries (index.md, README.md)
+      .replace(/(index|readme)$/i, '')
+      // convert TheComponent to the-component
+      .replace(/([a-z])([A-Z])/g, '$1-$2')
+      .toLowerCase(),
+  )).replace(/([^]+)\/$/, '$1'); // discard end slashZ
+}
+
+function splitLocalePathFromFilename(filename: string, locales: IFatherDocOpts['locales']) {
+  const matchs = filename.match(/^(.+)\.([^.]+)$/);
+  const result: [string, string] = ['', filename];
+
+  if (matchs) {
+    const locale = locales.find(([name]) => name === matchs[2]);
+
+    // set locale path if there has locale config & it is not the default locale
+    if (locale && locales.indexOf(locale) > 0) {
+      result[0] = `/${locale[0]}`; // locale path
+    }
+
+    result[1] = matchs[1]; // real filename
+  }
+
+  return result;
 }
 
 /**
  * find child routes for specific path
  * @param absPath           absolute path
+ * @param opts              father-doc options
  * @param parentRoutePath   route path that need prefix for current
  */
-function findChildRoutes(absPath: string, parentRoutePath: string = '/'): IRoute[] {
+function findChildRoutes(absPath: string, opts: IFatherDocOpts, parentRoutePath: string = '/'): IRoute[] {
   const mixture = fs.readdirSync(absPath).filter(isValidPath);
   const routes: IRoute[] = [];
   // separate files & child directories
@@ -52,13 +74,14 @@ function findChildRoutes(absPath: string, parentRoutePath: string = '/'): IRoute
   // make sure file is front of child directory in routes
   files.forEach(file => {
     const fileParsed = path.parse(file);
-    const routePath = path.join(parentRoutePath, fileParsed.name);
+    const [localePath, realFilename] = splitLocalePathFromFilename(fileParsed.name, opts.locales);
+    const routePath = path.join(parentRoutePath, realFilename);
     const filePath = path.join(absPath, file);
 
     switch (fileParsed.ext) {
       case '.md':
         routes.push({
-          path: normalizePath(routePath),
+          path: normalizePath(routePath, localePath),
           component: `./${slash(path.relative(process.cwd(), filePath))}`,
           exact: true,
         });
@@ -70,17 +93,17 @@ function findChildRoutes(absPath: string, parentRoutePath: string = '/'): IRoute
 
   // continue to find child routes
   dirs.forEach(dir => {
-    routes.push(...findChildRoutes(path.join(absPath, dir), path.join(parentRoutePath, dir)));
+    routes.push(...findChildRoutes(path.join(absPath, dir), opts, path.join(parentRoutePath, dir)));
   });
 
   return routes;
 }
 
-export default (absPath: string): IRoute[] => {
+export default (absPath: string, opts: IFatherDocOpts): IRoute[] => {
   const routes = [];
 
   if (fs.existsSync(absPath)) {
-    routes.push(...findChildRoutes(absPath));
+    routes.push(...findChildRoutes(absPath, opts));
   }
 
   return routes;

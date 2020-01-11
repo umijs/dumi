@@ -1,25 +1,25 @@
 import React, { Component } from 'react';
 import { RouterTypes } from 'umi';
+import router from 'umi/router'
 import Link from 'umi/link';
 import NavLink from 'umi/navlink';
 import scrollama from 'scrollama';
 import 'prismjs/themes/prism.css';
 import { parse } from 'querystring';
-import { IMenuItem } from '../../routes/getMenuFromRoutes';
+import { IMenu } from '../../routes/getMenuFromRoutes';
 import './layout.less';
 
 export interface ILayoutProps {
   title: string;
   logo?: string;
   desc?: string;
-  menu: {
-    items: IMenuItem[];
-  };
+  menus: IMenu[];
 }
 
 export interface ILayoutState {
   localActive: string;
   headerMenuCollapsed: boolean;
+  currentMenuIndex: number;
 }
 
 export default class Layout extends Component<ILayoutProps & RouterTypes, ILayoutState> {
@@ -27,9 +27,26 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
 
   state = {
     localActive: '',
-    // 用于控制手机模式下菜单是否显示
+    // control side menu in mobile responsive mode
     headerMenuCollapsed: true,
+    // save menu index for current locale
+    currentMenuIndex: 0,
   };
+
+  static getDerivedStateFromProps({ menus, location }) {
+    let state = { currentMenuIndex: 0 };
+
+    // find menu in reverse way to fallback to the first menu
+    for (let i = menus.length - 1; i >= 0; i -= 1) {
+      const localeName = (menus[i].locale || { name: '' }).name;
+
+      if (location.pathname.startsWith(`/${localeName}`)) {
+        state.currentMenuIndex = i;
+      }
+    }
+
+    return state;
+  }
 
   scrollIntoAnchor() {
     // 如果存在 anchor 滚动过去
@@ -114,9 +131,23 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
     return result || {};
   };
 
+  handleLocaleChange = (menuIndex) => {
+    const { location: { pathname }, menus } = this.props;
+    const currentLocaleName = menus[this.state.currentMenuIndex].locale.name;
+    // clear locale prefix from the previous locale
+    let newPathname = pathname.replace(`/${currentLocaleName}`, '');
+
+    // append locale prefix to path if it is not the default locale
+    if (menuIndex > 0) {
+      newPathname = `/${menus[menuIndex].locale.name}${newPathname}`;
+    }
+
+    router.push(newPathname)
+  }
+
   renderSideMenu = () => {
-    const { headerMenuCollapsed } = this.state;
-    const { menu, logo, title, desc } = this.props;
+    const { headerMenuCollapsed, currentMenuIndex } = this.state;
+    const { menus, logo, title, desc } = this.props;
 
     return (
       <div
@@ -126,6 +157,15 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
       >
         <div className="__father-doc-default-layout-menu-inner">
           <div className="__father-doc-default-layout-menu-header">
+            {menus.length > 1 && (
+              <div className="__father-doc-default-layout-locale-select">
+                <select onChange={ev => this.handleLocaleChange(ev.target.value)}>
+                  {menus.map((menu, i) => (
+                    <option value={i} key={menu.locale.name}>{menu.locale.label}</option>
+                  ))}
+                </select>
+              </div>
+            )}
             <Link
               to="/"
               className="__father-doc-default-logo"
@@ -137,7 +177,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
             <p>{desc}</p>
           </div>
           <ul>
-            {menu.items.map(item => (
+            {menus[currentMenuIndex].items.map(item => (
               <li key={item.path}>
                 <NavLink to={item.path} exact={!(item.children && item.children.length)}>
                   {item.title}

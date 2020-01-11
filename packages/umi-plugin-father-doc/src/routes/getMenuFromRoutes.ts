@@ -1,10 +1,19 @@
 import { IApi, IRoute } from 'umi-types';
+import { IFatherDocOpts } from '..';
 
 export interface IMenuItem {
   path?: string;
   title: string;
   meta?: { [key: string]: any };
   children?: IMenuItem[];
+}
+
+export interface IMenu {
+  locale?: {
+    name: string;
+    label: string;
+  };
+  items: IMenuItem[];
 }
 
 function isValidMenuRoutes(route: IRoute) {
@@ -18,41 +27,67 @@ function menuSorter(prev, next) {
   return prevOrder === nextOrder ? 0 : nextOrder - prevOrder;
 }
 
-export default function getMenuFromRoutes(routes: IApi['routes']): IMenuItem[] {
-  const menu: IMenuItem[] = [];
+export default function getMenuFromRoutes(routes: IApi['routes'], opts: IFatherDocOpts): IMenu[] {
+  const menus: IMenu[] = opts.locales.length ?
+    // generate initial menus from locales
+    opts.locales.map(([name, label]) => ({
+      locale: {
+        name,
+        label,
+      },
+      items: [],
+    })) :
+    // fallback to unique locale
+    [{ items: [] }];
+  const validRoutes = routes.filter(isValidMenuRoutes);
 
-  // split routes to grouped & ungrouped menu items
-  const [groupedMapping, ungrouped] = routes.filter(isValidMenuRoutes).reduce((result, route) => {
-    const group = route.meta?.group;
-    const key = group?.path;
-    const menuItem = {
-      path: route.path,
-      title: route.title,
-      meta: route.meta,
-    };
+  menus.forEach(({ locale: { name } = {}, items }, isNotDefault) => {
+    // split routes to grouped & ungrouped menu items
+    const [groupedMapping, ungrouped] = validRoutes
+      // filter routes for current locale
+      .filter(({ meta: { locale } }) => (
+        locale === name ||
+        // no locale routes fallback into the default locale
+        (!locale && !isNotDefault)
+      ))
+      .reduce((result, route) => {
+        const group = route.meta?.group;
+        const key = group?.path;
+        const menuItem = {
+          path: route.path,
+          title: route.title,
+          meta: route.meta,
+        };
 
-    if (key) {
-      const { title, path, ...meta } = group;
+        if (key) {
+          const { title, path, ...meta } = group;
 
-      result[0][key] = result[0][key] || { title, path, meta, children: [] };
-      result[0][key].children.push(menuItem);
-    } else {
-      result[1].push(menuItem);
-    }
+          result[0][key] = result[0][key] || { title, path, meta, children: [] };
+          result[0][key].children.push(menuItem);
+        } else {
+          result[1].push(menuItem);
+        }
 
-    return result;
-  }, [{}, []]);
+        return result;
+      }, [{}, []]);
 
-  // merge grouped & unngrouped menus
-  menu.push(...ungrouped, ...Object.keys(groupedMapping).map(key => groupedMapping[key]));
+    // merge grouped & unngrouped menus
+    items.push(...ungrouped, ...Object.keys(groupedMapping).map(key => groupedMapping[key]));
 
-  // sort routes
-  menu.sort(menuSorter);
-  menu.forEach(menu => {
-    if (menu.children) {
-      menu.children.sort(menuSorter);
-    }
+    // sort routes
+    items.sort(menuSorter);
+    items.forEach(menu => {
+      if (menu.children) {
+        menu.children.sort(menuSorter);
+      }
+    });
   });
 
-  return menu;
+  // remove useless locales if there has no locale menus
+  if (menus.filter(menu => menu.items.length).length === 1) {
+    menus.splice(1);
+    delete menus[0].locale;
+  }
+
+  return menus;
 }
