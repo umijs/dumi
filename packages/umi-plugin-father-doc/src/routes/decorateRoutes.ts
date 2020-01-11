@@ -20,6 +20,12 @@ function discardLocaleForFilename(filename: string, locale: string) {
   return filename.replace(`.${locale}`, '');
 }
 
+function replaceLocaleForPath(pathname: string, prevLocale: string | undefined, nextLocale: string) {
+  const oPath = prevLocale ? discardLocaleForPath(pathname, prevLocale) : pathname;
+
+  return `/${nextLocale}${oPath}`.replace(/\/$/, '');
+}
+
 function isNestedRoute(routePath: string, componentPath: any) {
   const parsed = typeof componentPath === 'string' ? path.parse(componentPath) : null;
 
@@ -51,6 +57,7 @@ export default function decorateRoutes(
   parentRoute?: IRoute,
 ) {
   const redirects: { [key: string]: IRoute } = {};
+  const validLocales = new Set<string>();
   const result = routes.reduce((total, route) => {
     const frontMatter = typeof route.component === 'string' ? getFrontMatter(route.component) : {};
     const locale = typeof route.component === 'string' ? getLocaleFromFilepath(route.component, opts.locales) : '';
@@ -69,6 +76,7 @@ export default function decorateRoutes(
     // set locale for route
     if (locale) {
       fallbackMeta.locale = locale;
+      validLocales.add(locale);
     }
 
     // set fallback title for route
@@ -126,6 +134,52 @@ export default function decorateRoutes(
 
     return total;
   }, [] as IRoute[]);
+
+  // fallback to default locale if there has no translation for other locales
+  if (validLocales.size) {
+    const fallbackLocalRoutes = [];
+    const defaultLocale = opts.locales[0]?.[0];
+
+    validLocales.forEach(locale => {
+      const currentLocalePrefix = `/${locale}`;
+
+      // do not deal with default locale
+      if (defaultLocale && locale !== defaultLocale) {
+        result.forEach(({ path: routePath, ...routeProps }) => {
+          const currentLocalePath = replaceLocaleForPath(
+            routePath,
+            routeProps.meta.locale,
+            locale
+          );
+
+          // deal with every default route (without locale prefix)
+          if (
+            !routePath.startsWith(currentLocalePrefix) &&
+            !result.some(route => route.path === currentLocalePath)
+          ) {
+            const fallbackRoute = deepmerge({
+              path: currentLocalePath,
+            }, routeProps);
+
+            fallbackRoute.meta.locale = locale;
+
+            // replace locale prefix for group path
+            if (fallbackRoute.meta.group) {
+              fallbackRoute.meta.group.path = replaceLocaleForPath(
+                fallbackRoute.meta.group.path,
+                routeProps.meta.locale,
+                locale
+              );
+            }
+
+            fallbackLocalRoutes.push(fallbackRoute);
+          }
+        });
+      }
+    });
+
+    result.push(...fallbackLocalRoutes);
+  }
 
   result.forEach((route) => {
     // add index route redirect for group which has no index route
