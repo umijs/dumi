@@ -32,6 +32,11 @@ describe('routes & menu: locales', () => {
           exact: true
         },
         {
+          path: '/en-US/missing/abc',
+          component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/missing/abc.en-US.md',
+          exact: true
+        },
+        {
           path: '/en-US/sub/abc',
           component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/abc.en-US.md',
           exact: true
@@ -58,6 +63,11 @@ describe('routes & menu: locales', () => {
         {
           path: '/zh-CN',
           component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/index.zh-CN.md',
+          exact: true
+        },
+        {
+          path: '/missing/abc',
+          component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/missing/abc.en-US.md',
           exact: true
         },
         {
@@ -109,10 +119,30 @@ describe('routes & menu: locales', () => {
           ]
         },
         {
+          path: '/missing/abc',
+          component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/missing/abc.en-US.md',
+          exact: true,
+          meta: {
+            group: { path: '/missing', title: 'Missing' },
+            locale: 'en-US',
+            title: 'Abc',
+            slugs: []
+          },
+          title: 'Abc',
+          Routes: [
+            './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx'
+          ]
+        },
+        {
           path: '/sub/abc',
           component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/abc.en-US.md',
           exact: true,
-          meta: { group: { path: '/sub', title: 'Sub' }, title: 'Abc', slugs: [], locale: 'en-US' },
+          meta: {
+            group: { path: '/sub', title: 'Sub' },
+            locale: 'en-US',
+            title: 'Abc',
+            slugs: []
+          },
           title: 'Abc',
           Routes: [
             './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx'
@@ -124,21 +154,43 @@ describe('routes & menu: locales', () => {
           exact: true,
           meta: {
             group: { path: '/zh-CN/sub', title: 'Sub' },
+            locale: 'zh-CN',
             title: 'Abc',
-            slugs: [],
-            locale: 'zh-CN'
+            slugs: []
           },
           title: 'Abc',
           Routes: [
             './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx'
           ]
         },
+        {
+          path: '/zh-CN/missing/abc',
+          component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/missing/abc.en-US.md',
+          exact: true,
+          meta: {
+            group: { path: '/zh-CN/missing', title: 'Missing' },
+            locale: 'zh-CN',
+            title: 'Abc',
+            slugs: []
+          },
+          title: 'Abc',
+          Routes: [
+            './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx'
+          ]
+        },
+        { path: '/missing', meta: {}, exact: true, redirect: '/missing/abc' },
         { path: '/sub', meta: {}, exact: true, redirect: '/sub/abc' },
         {
           path: '/zh-CN/sub',
           meta: {},
           exact: true,
           redirect: '/zh-CN/sub/abc'
+        },
+        {
+          path: '/zh-CN/missing',
+          meta: {},
+          exact: true,
+          redirect: '/zh-CN/missing/abc'
         }
       ]
     );
