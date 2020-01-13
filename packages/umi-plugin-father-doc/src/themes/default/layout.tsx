@@ -159,7 +159,10 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
           <div className="__father-doc-default-layout-menu-header">
             {menus.length > 1 && (
               <div className="__father-doc-default-layout-locale-select">
-                <select onChange={ev => this.handleLocaleChange(ev.target.value)}>
+                <select
+                  value={currentMenuIndex}
+                  onChange={ev => this.handleLocaleChange(ev.target.value)}
+                >
                   {menus.map((menu, i) => (
                     <option value={i} key={menu.locale.name}>{menu.locale.label}</option>
                   ))}
