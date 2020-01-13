@@ -10,7 +10,7 @@ order: 9
 在组件项目开发目录下执行以下命令进行安装：
 
 ```bash
-$ npm i father-doc@next -D
+$ npm i father-doc -D
 ```
 
 ## 小试牛刀

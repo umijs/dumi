@@ -53,6 +53,18 @@ export default {
 
 配置默认会嗅探的除 `src` 目录以外的目录，该目录下的 `.md` 文件也会被加入进路由，而且优先级高于 `src` 目录。
 
+### doc.locales
+
+- 类型：`Array<[String, String]>`
+- 默认值：`[['en-US', 'EN'], ['zh-CN', '中文']]`
+- 详细：
+
+该配置为二维数组，第一项配置会作为站点默认的 locale。
+
+每一项配置是一个长度为 2 的数组，数组的第一个值代表该 locale 的 name，会用于拼接路由前缀和检测文件名属于什么 locale，第二个值代表该 locale 的 label，会用作语言切换时的选项显示。
+
+默认 locale 的文件名后缀是可选的，比如，在默认配置下，`index.md` 和 `index.en-US.md` 等价。
+
 ## Umi 的配置
 
 ### routes
