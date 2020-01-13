@@ -26,7 +26,7 @@ function replaceLocaleForPath(pathname: string, prevLocale: string | undefined, 
   return `/${nextLocale}${oPath}`.replace(/\/$/, '');
 }
 
-function isNestedRoute(routePath: string, componentPath: any) {
+function isNestedRoute(routePath: string, componentPath: any, locales: IFatherDocOpts['locales']) {
   const parsed = typeof componentPath === 'string' ? path.parse(componentPath) : null;
 
   return (
@@ -36,7 +36,9 @@ function isNestedRoute(routePath: string, componentPath: any) {
     (
       parsed &&
       routePath.length > 1 &&
-      /^(index|readme)$/i.test(parsed.name)
+      (new RegExp(`^(index|readme)(\\.(${
+        locales.map(([name]) => name).join('|')
+      }))?$`, 'i')).test(parsed.name)
     )
   );
 }
@@ -64,9 +66,9 @@ export default function decorateRoutes(
     const fallbackMeta: any = {};
 
     // generate fallback group meta for nest route
-    if (isNestedRoute(discardLocaleForPath(route.path, locale), route.component)) {
+    if (isNestedRoute(discardLocaleForPath(route.path, locale), route.component, opts.locales)) {
       // group path still contains locale path, such as /zh-CN/child
-      const groupPath = route.path.match(/^([^]+?)(\/[^/]+)?$/)[1];
+      const groupPath = route.path.replace(new RegExp(`^(/${locale || ''})?([^]+?)(/[^/]+)?$`), '$1$2');
 
       fallbackMeta.group = {
         path: groupPath,

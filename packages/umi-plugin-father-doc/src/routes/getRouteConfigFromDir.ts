@@ -17,13 +17,23 @@ function isValidPath(pathname: string) {
  * normalize file path to route path
  * @param oPath       original file path
  * @param localePath  locale path (optional)
+ * @param locales     current locale options (optional)
  */
-function normalizePath(oPath: string, localePath: string = '') {
+function normalizePath(
+  oPath: string,
+  localePath: string = '',
+  locales: IFatherDocOpts['locales'] = []
+) {
   return slash(path.join(
     localePath,
     oPath
-      // discard filename for the default entries (index.md, README.md)
-      .replace(/(index|readme)$/i, '')
+      // discard filename for the default entries (index, README.zh-CN)
+      .replace(
+        new RegExp(`/(index|readme)(\\.(${
+          locales.map(([name]) => name).join('|')
+        }))?$`, 'i'),
+        '/',
+      )
       // convert TheComponent to the-component
       .replace(/([a-z])([A-Z])/g, '$1-$2')
       .toLowerCase(),
@@ -81,7 +91,7 @@ function findChildRoutes(absPath: string, opts: IFatherDocOpts, parentRoutePath:
     switch (fileParsed.ext) {
       case '.md':
         routes.push({
-          path: normalizePath(routePath, localePath),
+          path: normalizePath(routePath, localePath, opts.locales),
           component: `./${slash(path.relative(process.cwd(), filePath))}`,
           exact: true,
         });
