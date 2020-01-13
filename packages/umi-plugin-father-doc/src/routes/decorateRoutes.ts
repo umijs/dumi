@@ -142,6 +142,30 @@ export default function decorateRoutes(
     const fallbackLocalRoutes = [];
     const defaultLocale = opts.locales[0]?.[0];
 
+    // fallback to readme if there has no index route
+    validLocales.forEach(locale => {
+      const localeRootPath = locale === defaultLocale ? '/' : `/${locale}`;
+      const localeFileAddon = locale === defaultLocale ? '' : `.${locale}`;
+
+      if (!result.some(route => route.path === localeRootPath)) {
+        const readmePath = path.join(paths.cwd, `README${localeFileAddon}.md`);
+
+        if (fs.existsSync(readmePath)) {
+          result.unshift({
+            path: localeRootPath,
+            component: `./README${localeFileAddon}.md`,
+            exact: true,
+            meta: {
+              locale,
+              title: `README${localeFileAddon}`,
+            },
+            title: `README${localeFileAddon}`,
+          });
+        }
+      }
+    });
+
+    // fallback remaining non-default-locale routes
     validLocales.forEach(locale => {
       const currentLocalePrefix = `/${locale}`;
 
@@ -211,23 +235,6 @@ export default function decorateRoutes(
       };
     }
   });
-
-  // fallback to readme if there has no index route
-  if (!result.some(route => route.path === '/')) {
-    const readmePath = path.join(paths.cwd, 'README.md');
-
-    if (fs.existsSync(readmePath)) {
-      result.unshift({
-        path: '/',
-        component: './README.md',
-        exact: true,
-        meta: {
-          title: 'README',
-        },
-        title: 'README'
-      });
-    }
-  }
 
   return result.concat(Object.values(redirects));
 }
