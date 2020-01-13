@@ -173,17 +173,15 @@ describe('routes & menu: normal', () => {
         {
           items: [
             {
-              path: '/sub',
               title: 'Rename Sub',
-              meta: {
-                order: 10,
-              },
+              path: '/sub',
+              meta: { order: 10 },
               children: [
                 {
                   path: '/sub/hello-component',
                   title: 'HelloComponent',
                   meta: {
-                    group: { order: 10, path: '/sub', title: 'Rename Sub' },
+                    group: { path: '/sub', title: 'Rename Sub', order: 10 },
                     title: 'HelloComponent',
                     slugs: []
                   }
@@ -192,29 +190,16 @@ describe('routes & menu: normal', () => {
                   path: '/sub',
                   title: 'README',
                   meta: {
-                    group: { order: 10, path: '/sub', title: 'Rename Sub' },
+                    group: { path: '/sub', title: 'Rename Sub', order: 10 },
                     title: 'README',
                     slugs: []
                   }
                 }
               ]
             },
-            { path: '/', title: 'Index', meta: { title: 'Index', slugs: [] } },
             {
-              path: '/test',
-              title: 'Test',
-              meta: {},
-              children: [
-                {
-                  path: '/test/intro',
-                  title: 'Intro',
-                  meta: { title: 'Intro', group: { path: '/test', title: 'Test' }, slugs: [] }
-                }
-              ]
-            },
-            {
-              path: '/index',
               title: 'Index',
+              path: '/index',
               meta: {},
               children: [
                 {
@@ -222,16 +207,21 @@ describe('routes & menu: normal', () => {
                   title: 'Readme',
                   meta: {
                     group: { path: '/index', title: 'Index' },
-                    legacy: '/legacy/path/test',
                     title: 'Readme',
+                    legacy: '/legacy/path/test',
                     slugs: []
                   }
                 }
               ]
             },
             {
-              path: '/rename-sub-sub',
+              path: '/',
+              title: 'Index',
+              meta: { title: 'Index', slugs: [] }
+            },
+            {
               title: 'Rename-sub-sub',
+              path: '/rename-sub-sub',
               meta: {},
               children: [
                 {
@@ -240,6 +230,22 @@ describe('routes & menu: normal', () => {
                   meta: {
                     group: { path: '/rename-sub-sub', title: 'Rename-sub-sub' },
                     title: 'StillHello',
+                    slugs: []
+                  }
+                }
+              ]
+            },
+            {
+              title: 'Test',
+              path: '/test',
+              meta: {},
+              children: [
+                {
+                  path: '/test/intro',
+                  title: 'Intro',
+                  meta: {
+                    title: 'Intro',
+                    group: { path: '/test', title: 'Test' },
                     slugs: []
                   }
                 }
