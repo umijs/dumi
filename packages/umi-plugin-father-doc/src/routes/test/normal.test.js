@@ -198,6 +198,11 @@ describe('routes & menu: normal', () => {
               ]
             },
             {
+              path: '/',
+              title: 'Index',
+              meta: { title: 'Index', slugs: [] }
+            },
+            {
               title: 'Index',
               path: '/index',
               meta: {},
@@ -213,11 +218,6 @@ describe('routes & menu: normal', () => {
                   }
                 }
               ]
-            },
-            {
-              path: '/',
-              title: 'Index',
-              meta: { title: 'Index', slugs: [] }
             },
             {
               title: 'Rename-sub-sub',

@@ -23,10 +23,14 @@ function isValidMenuRoutes(route: IRoute) {
 function menuSorter(prev, next) {
   const prevOrder = typeof prev.meta.order === 'number' ? prev.meta.order : 0;
   const nextOrder = typeof next.meta.order === 'number' ? next.meta.order : 0;
+  // compare order meta config first
   const metaOrder = prevOrder === nextOrder ? 0 : nextOrder - prevOrder;
-  const ascOrder = prev.title > next.title ? 1 : -1;
+  // then compare title ASCII
+  const ascOrder = prev.title > next.title ? 1 : (prev.title < next.title ? -1 : 0);
+  // last compare path length
+  const pathOrder = prev.path.length - next.path.length;
 
-  return metaOrder || ascOrder;
+  return metaOrder || ascOrder || pathOrder;
 }
 
 export default function getMenuFromRoutes(routes: IApi['routes'], opts: IFatherDocOpts): IMenu[] {
