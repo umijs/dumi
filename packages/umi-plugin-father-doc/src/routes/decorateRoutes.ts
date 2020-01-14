@@ -60,25 +60,20 @@ export default function decorateRoutes(
 ) {
   const redirects: { [key: string]: IRoute } = {};
   const validLocales = new Set<string>();
+  const defaultLocale = opts.locales[0]?.[0];
   const result = routes.reduce((total, route) => {
     const frontMatter = typeof route.component === 'string' ? getFrontMatter(route.component) : {};
     const locale = typeof route.component === 'string' ? getLocaleFromFilepath(route.component, opts.locales) : '';
+    const pathWithoutLocale = discardLocaleForPath(route.path, locale);
     const fallbackMeta: any = {};
 
     // generate fallback group meta for nest route
-    if (isNestedRoute(discardLocaleForPath(route.path, locale), route.component, opts.locales)) {
-      // group path still contains locale path, such as /zh-CN/child
-      const groupPath = route.path.replace(new RegExp(`^(/${locale || ''})?([^]+?)(/[^/]+)?$`), '$1$2');
+    if (isNestedRoute(pathWithoutLocale, route.component, opts.locales)) {
+      const groupPath = pathWithoutLocale.match(/^([^]+?)(\/[^/]+)?$/)[1];
 
       fallbackMeta.group = {
         path: groupPath,
       };
-    }
-
-    // set locale for route
-    if (locale) {
-      fallbackMeta.locale = locale;
-      validLocales.add(locale);
     }
 
     // set fallback title for route
@@ -96,6 +91,17 @@ export default function decorateRoutes(
       frontMatter,
       (route.meta || {}), // allow user override meta via configuration routes
     );
+
+    // set locale for route
+    if (locale) {
+      route.meta.locale = locale;
+      validLocales.add(locale);
+
+      // prefix group path
+      if (route.meta.group?.path && locale !== defaultLocale) {
+        route.meta.group.path = `/${locale}${route.meta.group.path}`;
+      }
+    }
 
     // fallback group title if there only has group path
     if(route.meta.group?.path && !route.meta.group.title) {
@@ -140,7 +146,6 @@ export default function decorateRoutes(
   // fallback to default locale if there has no translation for other locales
   if (validLocales.size) {
     const fallbackLocalRoutes = [];
-    const defaultLocale = opts.locales[0]?.[0];
 
     // fallback to readme if there has no index route
     validLocales.forEach(locale => {

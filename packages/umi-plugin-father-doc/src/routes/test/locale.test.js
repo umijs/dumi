@@ -154,11 +154,11 @@ describe('routes & menu: locales', () => {
           ]
         },
         {
-          path: '/sub/abc',
+          path: '/group/abc',
           component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/abc.en-US.md',
           exact: true,
           meta: {
-            group: { path: '/sub', title: 'Sub' },
+            group: { path: '/group', title: 'Group' },
             locale: 'en-US',
             title: 'Abc',
             slugs: []
@@ -169,11 +169,11 @@ describe('routes & menu: locales', () => {
           ]
         },
         {
-          path: '/zh-CN/sub/abc',
+          path: '/zh-CN/group/abc',
           component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/abc.zh-CN.md',
           exact: true,
           meta: {
-            group: { path: '/zh-CN/sub', title: 'Sub' },
+            group: { path: '/zh-CN/group', title: 'Group' },
             locale: 'zh-CN',
             title: 'Abc',
             slugs: []
@@ -229,6 +229,13 @@ describe('routes & menu: locales', () => {
           ]
         },
         { path: '/missing', meta: {}, exact: true, redirect: '/missing/abc' },
+        { path: '/group', meta: {}, exact: true, redirect: '/group/abc' },
+        {
+          path: '/zh-CN/group',
+          meta: {},
+          exact: true,
+          redirect: '/zh-CN/group/abc'
+        },
         {
           path: '/zh-CN/missing',
           meta: {},
@@ -250,7 +257,24 @@ describe('routes & menu: locales', () => {
             {
               path: '/',
               title: 'English',
-              meta: { locale: 'en-US', title: 'English', slugs: [] }
+              meta: { title: 'English', slugs: [], locale: 'en-US' }
+            },
+            {
+              title: 'Group',
+              path: '/group',
+              meta: {},
+              children: [
+                {
+                  path: '/group/abc',
+                  title: 'Abc',
+                  meta: {
+                    group: { path: '/group', title: 'Group' },
+                    title: 'Abc',
+                    slugs: [],
+                    locale: 'en-US'
+                  }
+                }
+              ]
             },
             {
               title: 'Missing',
@@ -275,16 +299,6 @@ describe('routes & menu: locales', () => {
               meta: {},
               children: [
                 {
-                  path: '/sub/abc',
-                  title: 'Abc',
-                  meta: {
-                    group: { path: '/sub', title: 'Sub' },
-                    locale: 'en-US',
-                    title: 'Abc',
-                    slugs: []
-                  }
-                },
-                {
                   path: '/sub',
                   title: 'Index',
                   meta: {
@@ -301,6 +315,23 @@ describe('routes & menu: locales', () => {
         {
           locale: { name: 'zh-CN', label: '中文' },
           items: [
+            {
+              title: 'Group',
+              path: '/zh-CN/group',
+              meta: {},
+              children: [
+                {
+                  path: '/zh-CN/group/abc',
+                  title: 'Abc',
+                  meta: {
+                    group: { path: '/zh-CN/group', title: 'Group' },
+                    title: 'Abc',
+                    slugs: [],
+                    locale: 'zh-CN'
+                  }
+                }
+              ]
+            },
             {
               title: 'Missing',
               path: '/zh-CN/missing',
@@ -323,16 +354,6 @@ describe('routes & menu: locales', () => {
               path: '/zh-CN/sub',
               meta: {},
               children: [
-                {
-                  path: '/zh-CN/sub/abc',
-                  title: 'Abc',
-                  meta: {
-                    group: { path: '/zh-CN/sub', title: 'Sub' },
-                    locale: 'zh-CN',
-                    title: 'Abc',
-                    slugs: []
-                  }
-                },
                 {
                   path: '/zh-CN/sub',
                   title: 'Index',

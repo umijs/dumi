@@ -1,0 +1,4 @@
+---
+group:
+  path: /group
+---
