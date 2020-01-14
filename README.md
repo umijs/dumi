@@ -14,3 +14,7 @@ $ npm run bootstrap
 $ npm run build -- -w
 $ npm run dev
 ```
+
+## Discuss
+
+<img src="./docs/assets/qrcode.jpg" width="300" />

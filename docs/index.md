@@ -31,3 +31,10 @@ father-doc 是基于 Umi 为组件开发场景而生的文档工具，与 [fathe
 ## 参与贡献
 
 欢迎加入到 father-doc 的建设队伍中来，请访问 https://github.com/umijs/father-doc 。
+
+``` jsx | inline
+import React from 'react';
+import gif from './assets/qrcode.jpg';
+
+export default () => <img src={gif} width="300" />
+```
