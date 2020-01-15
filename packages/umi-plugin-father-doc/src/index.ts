@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import assert from 'assert';
 import { isPlainObject } from 'lodash';
-import { IApi, IRoute } from 'umi-types';
+import { IApi, IRoute, IPlugin } from 'umi-types';
 import symlink from 'symlink-dir';
 import getRouteConfig from './routes/getRouteConfig';
 import getMenuFromRoutes from './routes/getMenuFromRoutes';
@@ -22,6 +22,7 @@ export interface IFatherDocOpts {
     redirect: IRoute['redirect'];
     [key: string]: any;
   }[];
+  umi?: IPlugin;
 }
 
 function docConfigPlugin() {
@@ -36,7 +37,7 @@ function docConfigPlugin() {
   });
 }
 
-export default function(api: IApi, opts: IFatherDocOpts) {
+export default function (api: IApi, opts: IFatherDocOpts) {
   // apply default options
   const defaultTitle = require(path.join(api.paths.cwd, 'package.json')).name;
   opts = Object.assign(
@@ -56,11 +57,26 @@ export default function(api: IApi, opts: IFatherDocOpts) {
   // register doc config on umi system config
   api._registerConfig(docConfigPlugin);
 
+  if ((api.config as any).umi) {
+    api._registerConfig(() => {
+      return () => {
+        return {
+          name: 'umi',
+          validate: () => true,
+          onChange(newConfig) {
+            api.restart('Configure item umi Changed.');
+          },
+        };
+      };
+    });
+  }
+
+
   // apply umi-plugin-react for use title
   api.registerPlugin({
     id: require.resolve('umi-plugin-react'),
     apply: require('umi-plugin-react').default,
-    opts: { title: { defaultTitle: opts.title || defaultTitle } },
+    opts: Object.assign({ title: { defaultTitle: opts.title || defaultTitle } }, (api.config as any).umi),
   });
 
   // repalce default routes with generated routes
@@ -85,10 +101,10 @@ export default function(api: IApi, opts: IFatherDocOpts) {
     if (/\/layout\.[tj]sx?$/.test(component)) {
       ret = `props => React.createElement(require('${importPath}').default, {
           ...${
-            // escape " to ^ to avoid umi parse error, then umi will decode them
-            // see also: https://github.com/umijs/umi/blob/master/packages/umi-build-dev/src/routes/stripJSONQuote.js#L4
-            JSON.stringify(meta).replace(/"/g, '^')
-          },
+        // escape " to ^ to avoid umi parse error, then umi will decode them
+        // see also: https://github.com/umijs/umi/blob/master/packages/umi-build-dev/src/routes/stripJSONQuote.js#L4
+        JSON.stringify(meta).replace(/"/g, '^')
+        },
           ...props,
         })`;
     }
