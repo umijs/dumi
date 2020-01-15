@@ -63,14 +63,13 @@ export default function (api: IApi, opts: IFatherDocOpts) {
         return {
           name: 'umi',
           validate: () => true,
-          onChange(newConfig) {
+          onChange() {
             api.restart('Configure item umi Changed.');
           },
         };
       };
     });
   }
-
 
   // apply umi-plugin-react for use title
   api.registerPlugin({
