@@ -34,6 +34,10 @@ export interface IPreviewerProps {
    * enable inline mode
    */
   inline?: true;
+  /**
+   * only show code
+   */
+  norender?: false;
 }
 
 export default class Previewer extends Component<IPreviewerProps> {
@@ -134,7 +138,7 @@ ${issueLink}`,
   };
 
   render() {
-    const { children, source, title, desc, inline } = this.props;
+    const { children, source, title, desc, inline, norender } = this.props;
     const { showSource, sourceType, copyTimer, jsBase64, tsBase64 } = this.state;
 
     // render directly for inline mode
@@ -144,7 +148,7 @@ ${issueLink}`,
 
     return (
       <div className="__father-doc-default-previewer">
-        <div className="__father-doc-default-previewer-demo">{children}</div>
+        {!norender && <div className="__father-doc-default-previewer-demo">{children}</div>}
         <div className="__father-doc-default-previewer-desc" title={title}>
           {desc}
         </div>
