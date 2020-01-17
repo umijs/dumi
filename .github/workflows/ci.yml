@@ -16,6 +16,7 @@ jobs:
         with:
           node-version: ${{ matrix.node_version }}
       - run: npm -v
+      - run: npm i
       - run: npm run bootstrap
       - run: npm run build
       - run: npm test --forceExit
