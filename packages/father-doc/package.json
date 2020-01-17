@@ -1,6 +1,6 @@
 {
   "name": "father-doc",
-  "version": "1.0.0-alpha.15",
+  "version": "1.0.0-alpha.16",
   "description": "father-doc",
   "main": "lib/index.js",
   "bin": "bin/father-doc.js",
@@ -17,7 +17,7 @@
   ],
   "dependencies": {
     "umi": "^2.11.1",
-    "umi-plugin-father-doc": "1.0.0-alpha.15"
+    "umi-plugin-father-doc": "1.0.0-alpha.16"
   },
   "license": "MIT"
 }
