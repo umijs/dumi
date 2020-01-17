@@ -15,10 +15,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node_version }}
-      - run: yarn
-      - run: yarn bootstrap --npm-client yarn
-      - run: yarn build
-      - run: yarn test --forceExit
+      - run: npm -v
+      - run: npm run bootstrap
+      - run: npm run build
+      - run: npm test --forceExit
         env:
           CI: true
           HEADLESS: false
