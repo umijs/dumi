@@ -1,5 +1,6 @@
 import parse, { RemarkParseOptions } from 'remark-parse';
 import { Plugin } from 'unified';
+import transformer from '..';
 
 export interface IParseProps extends RemarkParseOptions {
   /**
@@ -59,6 +60,8 @@ blockTokenizers.fencedCode = function fencedCode(...args) {
   // only process jsx & tsx code block
   if (result && /^[jt]sx$/.test(result.lang)) {
     const modifier = codeBlockModifierParser(result.meta);
+    // extract frontmatters for embedded demo and omit the useless slugs field
+    const { content, config: { slugs, ...config } } = transformer[result.lang](result.value);
 
     if (modifier.pure) {
       // clear useless meta if the lang with pure modifier
@@ -66,7 +69,8 @@ blockTokenizers.fencedCode = function fencedCode(...args) {
     } else {
       // customize type (use for rehype demo handler)
       result.type = 'demo';
-      result.meta = modifier;
+      result.meta = { ...modifier, ...config };
+      result.value = content;
     }
   }
 
