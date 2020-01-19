@@ -36,11 +36,11 @@ export default function externalDemo() {
 
           if (fs.existsSync(absPath)) {
             const lang = absPath.match(/\.(\w+)$/)[1];
-            const processer = transformer[lang];
-            // read external demo content and convert node to demo node
-            const result: TransformResult = transformer[lang](fs.readFileSync(absPath).toString());
 
-            if (processer) {
+            if (transformer[lang]) {
+              // read external demo content and convert node to demo node
+              const result: TransformResult = transformer[lang](fs.readFileSync(absPath).toString());
+
               node.type = 'demo';
               node.lang = lang;
               node.value = result.content;

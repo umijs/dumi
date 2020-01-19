@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Clipboard from 'react-clipboard.js';
 import finaliseCSB, { parseImport, issueLink } from '../../utils/codesandbox';
+import localePropsHoc from './localePropsHoc';
 import './previewer.less';
 import CsbButton from './csbButton';
 
@@ -40,7 +41,7 @@ export interface IPreviewerProps {
   transform?: boolean;
 }
 
-export default class Previewer extends Component<IPreviewerProps> {
+class Previewer extends Component<IPreviewerProps> {
   state = {
     showSource: false,
     sourceType: '',
@@ -197,3 +198,5 @@ ${issueLink}`,
     );
   }
 }
+
+export default localePropsHoc(Previewer);

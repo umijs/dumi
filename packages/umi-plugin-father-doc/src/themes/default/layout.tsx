@@ -6,6 +6,7 @@ import NavLink from 'umi/navlink';
 import scrollama from 'scrollama';
 import 'prismjs/themes/prism.css';
 import { parse } from 'querystring';
+import Context from './context';
 import { IMenu } from '../../routes/getMenuFromRoutes';
 import './layout.less';
 
@@ -261,6 +262,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
   render() {
     const {
       children,
+      menus,
       location: { search },
     } = this.props;
     const meta = this.getMetaForCurrentPath();
@@ -268,16 +270,22 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
     const showSlugs = meta.slugs && Boolean(meta.slugs.length);
 
     return (
-      <div
-        className="__father-doc-default-layout"
-        data-show-sidebar={showSidebar}
-        data-show-slugs={showSlugs}
+      <Context.Provider
+        value={{
+          locale: menus.length > 1 ? menus[this.state.currentMenuIndex].locale.name : '',
+        }}
       >
-        {this.renderPageHeader()}
-        {showSidebar && this.renderSideMenu()}
-        {showSlugs && this.renderAffix(meta, search.slice(1))}
-        {children}
-      </div>
+        <div
+          className="__father-doc-default-layout"
+          data-show-sidebar={showSidebar}
+          data-show-slugs={showSlugs}
+        >
+          {this.renderPageHeader()}
+          {showSidebar && this.renderSideMenu()}
+          {showSlugs && this.renderAffix(meta, search.slice(1))}
+          {children}
+        </div>
+      </Context.Provider>
     );
   }
 }
