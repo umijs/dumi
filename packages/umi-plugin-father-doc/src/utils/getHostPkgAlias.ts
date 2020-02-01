@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import glob from 'glob';
+import { execSync } from 'child_process';
 import { IApi } from 'umi-types';
 
 function getPkgAliasForPath(absPath: string) {
@@ -16,16 +16,16 @@ function getPkgAliasForPath(absPath: string) {
 }
 
 export default (paths: IApi['paths']) => {
-  const lernaConfigPath = path.join(paths.cwd, 'lerna.json');
-  const lernaConfig = fs.existsSync(lernaConfigPath) ? require(lernaConfigPath) : null;
+  const isLerna = fs.existsSync(path.join(paths.cwd, 'lerna.json'));
   const pkgs = [];
 
-  if (lernaConfig) {
+  if (isLerna) {
     // for lerna repo
-    (lernaConfig.packages || []).forEach(exp => {
-      glob.sync(exp, { cwd: paths.cwd }).forEach(pkg => {
-        pkgs.push(getPkgAliasForPath(path.join(paths.cwd, pkg)));
-      });
+    execSync(
+      `${path.join(paths.cwd, 'node_modules/.bin/lerna')} list`,
+      { stdio: 'pipe' },
+    ).toString().replace(/\n$/, '').split('\n').forEach(pkg => {
+      pkgs.push(getPkgAliasForPath(path.join(paths.cwd, 'packages', pkg)));
     });
   } else {
     // for standard repo

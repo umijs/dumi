@@ -12,6 +12,6 @@
 yarn.lock
 package-lock.json
 dist
-/src
+/pages
 /.vscode
 .eslintcache

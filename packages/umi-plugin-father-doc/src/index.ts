@@ -39,10 +39,12 @@ function docConfigPlugin() {
 export default function(api: IApi, opts: IFatherDocOpts) {
   // apply default options
   const defaultTitle = require(path.join(api.paths.cwd, 'package.json')).name;
+  const hostPkgAlias = getHostPkgAlias(api.paths);
   opts = Object.assign(
     {
       title: defaultTitle,
-      include: ['docs'],
+      // default to include src, lerna pkg's src & docs folder
+      include: hostPkgAlias.map(([_, pkgPath]) => path.join(pkgPath, 'src')).concat(['docs']),
       routes: api.config.routes,
       locales: [
         ['en-US', 'EN'],
@@ -118,7 +120,7 @@ export default function(api: IApi, opts: IFatherDocOpts) {
     config.module.rule('less').exclude.add(path.join(__dirname, 'themes'));
 
     // add alias for current package(s)
-    getHostPkgAlias(api.paths).forEach(([pkgName, pkgPath]) => {
+    hostPkgAlias.forEach(([pkgName, pkgPath]) => {
       const srcPath = path.join(pkgPath, 'src');
       const linkPath = path.join(api.paths.cwd, 'node_modules', pkgName);
 
@@ -141,7 +143,6 @@ export default function(api: IApi, opts: IFatherDocOpts) {
   // watch .md files
   api.addPageWatcher([
     ...opts.include.map(key => path.join(api.paths.cwd, key, '**/*.md')),
-    path.join(api.paths.absPagesPath, '**/*.md'),
   ]);
 
   // sync user extra babel plugins for demo transformer

@@ -1,7 +1,6 @@
 const { fork } = require('child_process');
 
 module.exports = () => {
-  process.env.PAGES_PATH = 'src';
   process.env.UMI_PLUGINS = require.resolve('umi-plugin-father-doc');
 
   // start umi use child process

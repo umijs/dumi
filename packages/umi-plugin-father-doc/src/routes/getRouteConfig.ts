@@ -35,9 +35,6 @@ export default (paths: IApi['paths'], opts: IFatherDocOpts): IRoute[] => {
         config[0].routes.push(...getRouteConfigFromDir(docsPath, opts));
       }
     });
-
-    // find routes from source path
-    config[0].routes.push(...getRouteConfigFromDir(paths.absPagesPath, opts));
   }
 
   // decorate standard umi routes

@@ -4,7 +4,7 @@ import slash from 'slash2';
 import { IRoute } from 'umi-types';
 import { IFatherDocOpts } from '../index';
 
-const IGNORE_DIR = ['node_modules'];
+const IGNORE_DIR = ['node_modules', 'fixtures'];
 
 /**
  * discard .dirname & _dirname & ignore directories
