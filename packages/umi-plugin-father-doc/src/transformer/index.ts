@@ -15,6 +15,7 @@ export default function () {
 
 export interface TransformResult {
   content: string;
+  html?: string;
   config: {
     [key: string]: any;
   };
@@ -42,6 +43,7 @@ export default {
 
     return {
       content,
+      html: result.contents as string,
       config: {
         ...(result.data as TransformResult['config']),
       },

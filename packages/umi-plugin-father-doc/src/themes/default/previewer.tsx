@@ -155,9 +155,11 @@ ${issueLink}`,
         >
           {children}
         </div>
-        <div className="__father-doc-default-previewer-desc" title={title}>
-          {desc}
-        </div>
+        <div
+          className="__father-doc-default-previewer-desc"
+          title={title}
+          dangerouslySetInnerHTML={{ __html: desc }}
+        />
         <div className="__father-doc-default-previewer-actions">
           <CsbButton
             type={this.props.source.tsx ? 'tsx' : 'jsx'}

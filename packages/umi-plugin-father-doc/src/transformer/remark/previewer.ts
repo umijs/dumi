@@ -1,7 +1,8 @@
 import { Node } from 'unist';
 import visit from 'unist-util-visit';
 import toHtml from 'hast-util-to-html';
-import transformer, { DEMO_COMPONENT_NAME } from '../demo';
+import demoTransformer, { DEMO_COMPONENT_NAME } from '../demo';
+import transformer from '../index';
 
 function visitor(node, i, parent) {
   if (node.tagName === 'div' && node.properties?.type === 'previewer') {
@@ -10,6 +11,13 @@ function visitor(node, i, parent) {
     const tsx = (node.children?.[2] && toHtml(node.children?.[2])) || undefined;
     const yaml = node.properties?.meta || {};
     let transformCode = raw;
+
+    // transform markdown for previewer desc field
+    Object.keys(yaml).forEach(key => {
+      if (/^desc(\.|$)/.test(key)) {
+        yaml[key] = transformer.markdown(yaml[key], '').html;
+      }
+    });
 
     // use import way rather than source code way for external demo (for HMR & sourcemap)
     if (node.properties.filePath) {
@@ -20,7 +28,7 @@ import Demo from '${node.properties.filePath}';
 export default () => <Demo />;`;
     }
 
-    const code = transformer(transformCode, Boolean(tsx));
+    const code = demoTransformer(transformCode, Boolean(tsx));
 
     // replace original node
     parent.children[i] = {
