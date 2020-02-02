@@ -130,7 +130,7 @@ export default function decorateRoutes(
 
     // correct route path by group path
     if (route.meta.group?.path && route.path !== route.meta.group.path) {
-      route.path = slash(path.join(route.meta.group.path, route.path.match(/([^/]*)$/)[1]));
+      route.path = slash(path.join(route.meta.group.path, pathWithoutLocale.match(/([^/]*)$/)[1]));
     }
 
     // flat child routes
@@ -162,9 +162,9 @@ export default function decorateRoutes(
             exact: true,
             meta: {
               locale,
-              title: `README${localeFileAddon}`,
+              title: 'README',
             },
-            title: `README${localeFileAddon}`,
+            title: 'README',
           });
         }
       }
