@@ -59,8 +59,8 @@ export default function decorateRoutes(
   parentRoute?: IRoute,
 ) {
   const redirects: { [key: string]: IRoute } = {};
-  const validLocales = new Set<string>();
   const defaultLocale = opts.locales[0]?.[0];
+  const validLocales = new Set<string>([defaultLocale]);
   const result = routes.reduce((total, route) => {
     const frontMatter = typeof route.component === 'string' ? getFrontMatter(route.component) : {};
     const locale = typeof route.component === 'string' ? getLocaleFromFilepath(route.component, opts.locales) : '';
@@ -144,7 +144,7 @@ export default function decorateRoutes(
   }, [] as IRoute[]);
 
   // fallback to default locale if there has no translation for other locales
-  if (validLocales.size) {
+  {
     const fallbackLocalRoutes = [];
 
     // fallback to readme if there has no index route
@@ -163,6 +163,7 @@ export default function decorateRoutes(
             meta: {
               locale,
               title: 'README',
+              order: Infinity, // keep readme on the top
             },
             title: 'README',
           });
