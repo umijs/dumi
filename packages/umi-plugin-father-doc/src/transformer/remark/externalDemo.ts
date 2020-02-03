@@ -24,41 +24,54 @@ function HTMLAttrParser(str: string): { [key: string]: any } {
 
 export default function externalDemo() {
   return ast => {
-    visit(ast, 'html', node => {
+    visit(ast, 'html', (node, i, parent) => {
       if (typeof node.value === 'string') {
-        const matches = node.value.match(DEMO_TOKEN_EXP) || [];
-        const { src, ...inheritAttrs } = HTMLAttrParser(matches[2]);
+        // split multiple code tag
+        const tags = node.value.match(/(<code.*?(<\/code>|\/?>))/g);
+        const demos = [];
 
-        if (src) {
-          const absPath = path.isAbsolute(src)
-            ? src
-            : slash(path.join(this.data('fileAbsDir'), src));
+        tags?.forEach((tag) => {
+          const matches = tag.match(DEMO_TOKEN_EXP) || [];
+          const { src, ...inheritAttrs } = HTMLAttrParser(matches[2]);
 
-          if (fs.existsSync(absPath)) {
-            const lang = absPath.match(/\.(\w+)$/)[1];
+          if (src) {
+            const absPath = path.isAbsolute(src)
+              ? src
+              : slash(path.join(this.data('fileAbsDir'), src));
 
-            if (transformer[lang]) {
-              // read external demo content and convert node to demo node
-              const result: TransformResult = transformer[lang](fs.readFileSync(absPath).toString());
+            if (fs.existsSync(absPath)) {
+              const lang = absPath.match(/\.(\w+)$/)[1];
 
-              node.type = 'demo';
-              node.lang = lang;
-              node.value = result.content;
-              node.meta = {
-                ...inheritAttrs,
-                ...result.config,
-              };
-              node.filePath = absPath;
+              if (transformer[lang]) {
+                // read external demo content and convert node to demo node
+                const result: TransformResult = transformer[lang](fs.readFileSync(absPath).toString());
+
+                demos.push({
+                  type: 'demo',
+                  lang,
+                  value: result.content,
+                  filePath: absPath,
+                  meta: {
+                    ...inheritAttrs,
+                    ...result.config,
+                  },
+                });
+              } else {
+                throw new Error(`[External-Demo Error]: unsupported file type: ${lang}`);
+              }
             } else {
-              throw new Error(`[External-Demo Error]: unsupported file type: ${lang}`);
+              throw new Error(`[External-Demo Error]: cannot find demo in ${absPath}`);
             }
-          } else {
-            throw new Error(`[External-Demo Error]: cannot find demo in ${absPath}`);
+          } else if (matches[1]) {
+            throw new Error(
+              `[External-Demo Error]: expected a code element with valid src property but got ${node.value}`,
+            );
           }
-        } else if (matches[1]) {
-          throw new Error(
-            `[External-Demo Error]: expected a code element with valid src property but got ${node.value}`,
-          );
+        });
+
+        // replace original node with demo(s)
+        if (demos.length) {
+          (parent.children as any[]).splice(i, 1, ...demos);
         }
       }
     });
