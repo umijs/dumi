@@ -35,9 +35,14 @@ export default function externalDemo() {
           const { src, ...inheritAttrs } = HTMLAttrParser(matches[2]);
 
           if (src) {
-            const absPath = path.isAbsolute(src)
+            let absPath = path.isAbsolute(src)
               ? src
               : slash(path.join(this.data('fileAbsDir'), src));
+
+            // auto complete file extension
+            if (!/\.\w+$/.test(absPath)) {
+              absPath = fs.existsSync(`${absPath}.jsx`) ? `${absPath}.jsx` : `${absPath}.tsx`;
+            }
 
             if (fs.existsSync(absPath)) {
               const lang = absPath.match(/\.(\w+)$/)[1];
