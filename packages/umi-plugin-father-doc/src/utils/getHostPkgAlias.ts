@@ -21,11 +21,13 @@ export default (paths: IApi['paths']) => {
 
   if (isLerna) {
     // for lerna repo
-    execSync(
-      `${path.join(paths.cwd, 'node_modules/.bin/lerna')} list`,
-      { stdio: 'pipe' },
-    ).toString().replace(/\n$/, '').split('\n').forEach(pkg => {
-      pkgs.push(getPkgAliasForPath(path.join(paths.cwd, 'packages', pkg)));
+    JSON.parse(
+      execSync(
+        `${path.join(paths.cwd, 'node_modules/.bin/lerna')} ls --json`,
+        { stdio: 'pipe' },
+      ).toString(),
+    ).forEach(pkg => {
+      pkgs.push([pkg.name, pkg.location]);
     });
   } else {
     // for standard repo
