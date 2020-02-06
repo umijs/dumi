@@ -4,6 +4,7 @@ import assert from 'assert';
 import { isPlainObject } from 'lodash';
 import { IApi, IRoute } from 'umi-types';
 import symlink from 'symlink-dir';
+import hostedGit from 'hosted-git-info';
 import getRouteConfig from './routes/getRouteConfig';
 import getMenuFromRoutes from './routes/getMenuFromRoutes';
 import getHostPkgAlias from './utils/getHostPkgAlias';
@@ -38,7 +39,8 @@ function docConfigPlugin() {
 
 export default function(api: IApi, opts: IFatherDocOpts) {
   // apply default options
-  const defaultTitle = require(path.join(api.paths.cwd, 'package.json')).name;
+  const pkg = require(path.join(api.paths.cwd, 'package.json'));
+  const defaultTitle = pkg.name || 'father-doc';
   const hostPkgAlias = getHostPkgAlias(api.paths);
   opts = Object.assign(
     {
@@ -82,6 +84,7 @@ export default function(api: IApi, opts: IFatherDocOpts) {
       title: opts.title,
       logo: opts.logo,
       desc: opts.desc,
+      repoUrl: hostedGit.fromUrl(pkg.repository?.url || pkg.repository)?.browse(),
     };
 
     if (/\/layout\.[tj]sx?$/.test(component)) {

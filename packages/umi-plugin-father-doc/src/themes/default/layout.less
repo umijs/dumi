@@ -137,8 +137,17 @@ body {
       }
 
       p {
-        margin: 0 0 10px;
+        margin: 0 0 5px;
         color: lighten(@c-secondary, 10%);
+
+        // badges
+        > object[data^='https://img.shields.io'] {
+          max-height: 20px;
+        }
+
+        + p {
+          margin-bottom: 10px;
+        }
       }
     }
 

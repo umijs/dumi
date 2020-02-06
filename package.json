@@ -15,6 +15,10 @@
     "prettier": "prettier -c --write \"**/*\"",
     "publish": "umi-test && npm run changelog && npm run build && lerna publish"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/umijs/father-doc.git"
+  },
   "devDependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.6.0",
     "@types/jest": "^24.0.13",

@@ -15,6 +15,7 @@ export interface ILayoutProps {
   logo?: string;
   desc?: string;
   menus: IMenu[];
+  repoUrl?: string;
 }
 
 export interface ILayoutState {
@@ -148,7 +149,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
 
   renderSideMenu = () => {
     const { headerMenuCollapsed, currentMenuIndex } = this.state;
-    const { menus, logo, title, desc } = this.props;
+    const { menus, logo, title, desc, repoUrl } = this.props;
 
     return (
       <div
@@ -179,6 +180,16 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
             />
             <h1>{title}</h1>
             <p>{desc}</p>
+            {/github\.com/.test(repoUrl) && (
+              <p>
+                <object
+                  type="image/svg+xml"
+                  data={`https://img.shields.io/github/stars${
+                    repoUrl.match(/((\/[^\/]+){2})$/)[1]
+                  }?style=social`}
+                />
+              </p>
+            )}
           </div>
           <ul>
             {menus[currentMenuIndex].items.map(item => (
