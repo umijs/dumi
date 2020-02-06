@@ -1,25 +1,17 @@
 ---
-name: '功能需求 ✨'
-about: 对 father-doc  的需求或建议
-title: '👑 [需求]'
-labels: '👑Feature Request'
-assignees: ''
+name: Feature request
+about: Suggest an idea for this project
+title: 'feat: '
+labels: enhancement
 ---
 
-### 🥰 需求描述
-
 <!--
-详细地描述需求，让大家都能理解
+Please provide thoughtful commentary *and code samples* on what this feature means for your project. What will it allow you to do that you can't do today? How will it make current work-arounds straightforward? What potential bugs and edge cases does it help to avoid? etc. Please keep it project-centric.
 -->
 
-### 🧐 解决方案
+### Description
 
+### Sulution
 <!--
-如果你有解决方案，在这里清晰地阐述
--->
-
-### 🚑 其他信息
-
-<!--
-如截图等其他信息可以贴在这里
+Maybe you have?
 -->

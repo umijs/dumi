@@ -1,44 +1,30 @@
 ---
-name: '报告Bug 🐛'
-about: 报告 father-doc 的 bug
-title: '🐛[BUG]'
-labels: '🐛bug'
+name: Report bug
+about: Create a report to help us improve
+title: 'bug: '
+labels: 'bug'
 assignees: ''
 ---
 
-### 🐛 bug 描述
-
 <!--
-详细地描述 bug，让大家都能理解
+- Try to search for your issue, it may have already been answered or even fixed in the development version.
+
+- Check if the issue is reproducible with the latest stable version of father-doc. If you are using a pre-release, please indicate the specific version you are using.
+
+- It is **required** that you clearly describe the steps necessary to reproduce the issue you are running into. Issues with no clear repro steps will not be triaged. If an issue labeled "need repro" receives no further input from the issue author for more than 5 days, it will be closed.
+
+- If your issue is resolved but still open, don’t hesitate to close it. In case you found a solution by yourself, it could be helpful to explain how you fixed it.
 -->
 
-### 📷 复现步骤
+### Versions
+- father-doc:
+- node:
+- npm:
+- OS:
+- Browser:
 
-<!--
-清晰描述复现步骤，让别人也能看到问题
--->
+### Steps to reproduce
 
-### 🏞 期望结果
+### What is Expected?
 
-<!--
-描述你原本期望看到的结果
--->
-
-### 💻 复现代码
-
-<!--
-提供可复现的代码，仓库，或线上示例
--->
-
-### © 版本信息
-
-- father-doc 版本: [e.g. 1.0.0]
-- node 版本
-- 浏览器环境
-- 开发环境 [e.g. mac OS]
-
-### 🚑 其他信息
-
-<!--
-如截图等其他信息可以贴在这里
--->
+### What is actually happening?
