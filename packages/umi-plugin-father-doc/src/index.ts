@@ -123,7 +123,7 @@ export default function(api: IApi, opts: IFatherDocOpts) {
     config.module.rule('less').exclude.add(path.join(__dirname, 'themes'));
 
     // add alias for current package(s)
-    hostPkgAlias.forEach(([pkgName, pkgPath]) => {
+    hostPkgAlias.filter(([pkgName]) => pkgName).forEach(([pkgName, pkgPath]) => {
       const srcPath = path.join(pkgPath, 'src');
       const linkPath = path.join(api.paths.cwd, 'node_modules', pkgName);
 
