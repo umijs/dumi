@@ -125,7 +125,13 @@ export default function(api: IApi, opts: IFatherDocOpts) {
       const linkPath = path.join(api.paths.cwd, 'node_modules', pkgName);
 
       // use src path instead of main field in package.json if exists
-      config.resolve.alias.set(pkgName, fs.existsSync(srcPath) ? srcPath : pkgPath);
+      if (fs.existsSync(srcPath)) {
+        // exclude lib folder
+        config.resolve.alias.set(`${pkgName}/lib`, `${pkgPath}/lib`);
+        config.resolve.alias.set(pkgName, srcPath);
+      } else {
+        config.resolve.alias.set(pkgName, pkgPath);
+      }
 
       // link current pkgs into node_modules, for import module resolve when writing demo
       if (!fs.existsSync(linkPath)) {
