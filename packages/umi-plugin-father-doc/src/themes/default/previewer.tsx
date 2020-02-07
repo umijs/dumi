@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Clipboard from 'react-clipboard.js';
+import innertext from 'innertext';
 import finaliseCSB, { parseImport, issueLink } from '../../utils/codesandbox';
 import localePropsHoc from './localePropsHoc';
 import './previewer.less';
@@ -85,7 +86,7 @@ ${issueLink}`,
         devDependencies: {
           typescript: '3.3.3',
         },
-        desc,
+        desc: innertext(desc || ''),
         template: 'create-react-app-typescript',
         fileName: 'demo.tsx',
       };
@@ -116,7 +117,7 @@ ${issueLink}`,
         devDependencies: {
           typescript: '3.3.3',
         },
-        desc,
+        desc: innertext(desc || ''),
         template: 'create-react-app',
         fileName: 'demo.jsx',
       };
