@@ -46,10 +46,14 @@
         transform: translateY(-50%);
       }
 
-      // modify action area style when only has title field
-      &:empty + @{prefix}-previewer-actions {
-        height: 46px;
-        border-top-style: solid;
+      &:empty {
+        padding-top: 0;
+
+        // modify action area style when only has title field
+        + .@{prefix}-previewer-actions {
+          height: 46px;
+          border-top-style: solid;
+        }
       }
     }
   }

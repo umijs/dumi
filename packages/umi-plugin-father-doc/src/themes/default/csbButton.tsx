@@ -13,7 +13,7 @@ export default ({ type, base64, children }: ButtonProps) => (
     action={`https://codesandbox.io/api/v1/sandboxes/define?query=module=/demo.${type}`}
     target="_blank"
   >
-    <input type="hidden" value={base64} name="parameters" />
     {children}
+    <input type="hidden" value={base64} name="parameters" />
   </form>
 );
