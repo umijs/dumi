@@ -41,6 +41,11 @@ describe('routes & menu: normal', () => {
           path: '/sub/subsub/still-hello',
           component: './packages/umi-plugin-father-doc/src/routes/fixtures/normal/sub/subsub/stillHello.md',
           exact: true
+        },
+        {
+          path: '/sub/subsub/y-end',
+          component: './packages/umi-plugin-father-doc/src/routes/fixtures/normal/sub/subsub/yEnd.md',
+          exact: true
         }
       ]
     );
@@ -145,6 +150,21 @@ describe('routes & menu: normal', () => {
           ]
         },
         {
+          path: '/rename-sub-sub/y-end',
+          component: './packages/umi-plugin-father-doc/src/routes/fixtures/normal/sub/subsub/yEnd.md',
+          exact: true,
+          meta: {
+            group: { title: 'Rename-sub-sub', path: '/rename-sub-sub' },
+            title: 'YEnd',
+            order: 1,
+            slugs: []
+          },
+          title: 'YEnd',
+          Routes: [
+            './packages/umi-plugin-father-doc/src/routes/fixtures/normal/.umi/TitleWrapper.jsx'
+          ]
+        },
+        {
           path: '/test',
           exact: true,
           meta: {},
@@ -159,7 +179,7 @@ describe('routes & menu: normal', () => {
           path: '/rename-sub-sub',
           exact: true,
           meta: {},
-          redirect: '/rename-sub-sub/still-hello'
+          redirect: '/rename-sub-sub/y-end'
         }
       ]
     );
@@ -224,6 +244,16 @@ describe('routes & menu: normal', () => {
               path: '/rename-sub-sub',
               meta: {},
               children: [
+                {
+                  path: '/rename-sub-sub/y-end',
+                  title: 'YEnd',
+                  meta: {
+                    group: { path: '/rename-sub-sub', title: 'Rename-sub-sub' },
+                    title: 'YEnd',
+                    order: 1,
+                    slugs: []
+                  }
+                },
                 {
                   path: '/rename-sub-sub/still-hello',
                   title: 'StillHello',

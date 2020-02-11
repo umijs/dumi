@@ -20,7 +20,7 @@ function isValidMenuRoutes(route: IRoute) {
   return Boolean(route.path) && !route.redirect;
 }
 
-function menuSorter(prev, next) {
+export function menuSorter(prev, next) {
   const prevOrder = typeof prev.meta.order === 'number' ? prev.meta.order : 0;
   const nextOrder = typeof next.meta.order === 'number' ? next.meta.order : 0;
   // compare order meta config first

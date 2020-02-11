@@ -3,6 +3,7 @@ import path from 'path';
 import { IRoute, IApi } from 'umi-types';
 import deepmerge from 'deepmerge';
 import slash from 'slash2';
+import { menuSorter } from './getMenuFromRoutes';
 import getFrontMatter from './getFrontMatter';
 import { IFatherDocOpts } from '../';
 
@@ -228,7 +229,9 @@ export default function decorateRoutes(
           ...resGroupMeta
         },
         exact: true,
-        redirect: result.find(item => item.meta.group?.path === route.meta.group.path).path,
+        redirect: result
+          .filter(item => item.meta.group?.path === route.meta.group.path)
+          .sort(menuSorter)[0].path,
       };
     }
 
