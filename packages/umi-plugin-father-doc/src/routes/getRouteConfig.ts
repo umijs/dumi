@@ -3,10 +3,10 @@ import path from 'path';
 import slash from 'slash2';
 import { IApi, IRoute } from 'umi-types';
 import getRouteConfigFromDir from './getRouteConfigFromDir';
-import decorateRoutes from './decorateRoutes';
+import decorateRoutes from './decorator';
 import { IFatherDocOpts } from '../index';
 
-export default (paths: IApi['paths'], opts: IFatherDocOpts): IRoute[] => {
+export default (api: IApi, opts: IFatherDocOpts): IRoute[] => {
   const config = [
     {
       path: '/',
@@ -15,6 +15,7 @@ export default (paths: IApi['paths'], opts: IFatherDocOpts): IRoute[] => {
       title: opts.title,
     },
   ];
+  const paths = api.paths;
 
   if (opts.routes) {
     // only apply user's routes if there has routes config
@@ -38,7 +39,7 @@ export default (paths: IApi['paths'], opts: IFatherDocOpts): IRoute[] => {
   }
 
   // decorate standard umi routes
-  config[0].routes = decorateRoutes(config[0].routes, paths, opts);
+  config[0].routes = decorateRoutes(config[0].routes, opts, api);
 
   return config;
 };

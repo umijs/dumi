@@ -1,6 +1,6 @@
 import path from 'path';
 import getRoute from '../getRouteConfigFromDir';
-import decorateRoute from '../decorateRoutes';
+import decorateRoute from '../decorator';
 import getMenu from '../getMenuFromRoutes';
 
 const FIXTURES_PATH = path.join(__dirname, '..', 'fixtures');
@@ -13,367 +13,363 @@ describe('routes & menu: locales', () => {
   let routes;
 
   it('getRouteConfigFromDir: custom', () => {
-    routes = getRoute(
-      path.join(FIXTURES_PATH, 'locale'),
-      {
-        locales: DEFAULT_LOCALES.slice().reverse(),
-      });
+    routes = getRoute(path.join(FIXTURES_PATH, 'locale'), {
+      locales: DEFAULT_LOCALES.slice().reverse(),
+    });
 
-    expect(routes).toEqual(
-      [
-        {
-          path: '/en-US',
-          component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/index.en-US.md',
-          exact: true
-        },
-        {
-          path: '/',
-          component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/index.zh-CN.md',
-          exact: true
-        },
-        {
-          path: '/en-US/missing/abc',
-          component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/missing/abc.en-US.md',
-          exact: true
-        },
-        {
-          path: '/en-US/sub/abc',
-          component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/abc.en-US.md',
-          exact: true
-        },
-        {
-          path: '/sub/abc',
-          component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/abc.zh-CN.md',
-          exact: true
-        },
-        {
-          path: '/en-US/sub',
-          component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/index.en-US.md',
-          exact: true
-        },
-        {
-          path: '/sub',
-          component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/index.zh-CN.md',
-          exact: true
-        }
-      ]
-    );
+    expect(routes).toEqual([
+      {
+        path: '/en-US',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/index.en-US.md',
+        exact: true,
+      },
+      {
+        path: '/',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/index.zh-CN.md',
+        exact: true,
+      },
+      {
+        path: '/en-US/missing/abc',
+        component:
+          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/missing/abc.en-US.md',
+        exact: true,
+      },
+      {
+        path: '/en-US/sub/abc',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/abc.en-US.md',
+        exact: true,
+      },
+      {
+        path: '/sub/abc',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/abc.zh-CN.md',
+        exact: true,
+      },
+      {
+        path: '/en-US/sub',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/index.en-US.md',
+        exact: true,
+      },
+      {
+        path: '/sub',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/index.zh-CN.md',
+        exact: true,
+      },
+    ]);
   });
 
   it('getRouteConfigFromDir: default', () => {
     routes = getRoute(path.join(FIXTURES_PATH, 'locale'), { locales: DEFAULT_LOCALES });
 
-    expect(routes).toEqual(
-      [
-        {
-          path: '/',
-          component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/index.en-US.md',
-          exact: true
-        },
-        {
-          path: '/zh-CN',
-          component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/index.zh-CN.md',
-          exact: true
-        },
-        {
-          path: '/missing/abc',
-          component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/missing/abc.en-US.md',
-          exact: true
-        },
-        {
-          path: '/sub/abc',
-          component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/abc.en-US.md',
-          exact: true
-        },
-        {
-          path: '/zh-CN/sub/abc',
-          component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/abc.zh-CN.md',
-          exact: true
-        },
-        {
-          path: '/sub',
-          component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/index.en-US.md',
-          exact: true
-        },
-        {
-          path: '/zh-CN/sub',
-          component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/index.zh-CN.md',
-          exact: true
-        }
-      ]
-    );
+    expect(routes).toEqual([
+      {
+        path: '/',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/index.en-US.md',
+        exact: true,
+      },
+      {
+        path: '/zh-CN',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/index.zh-CN.md',
+        exact: true,
+      },
+      {
+        path: '/missing/abc',
+        component:
+          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/missing/abc.en-US.md',
+        exact: true,
+      },
+      {
+        path: '/sub/abc',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/abc.en-US.md',
+        exact: true,
+      },
+      {
+        path: '/zh-CN/sub/abc',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/abc.zh-CN.md',
+        exact: true,
+      },
+      {
+        path: '/sub',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/index.en-US.md',
+        exact: true,
+      },
+      {
+        path: '/zh-CN/sub',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/index.zh-CN.md',
+        exact: true,
+      },
+    ]);
   });
 
-  it('decorateRoute', () => {
+  it('route decorator', () => {
     const appRoot = path.join(FIXTURES_PATH, 'locale');
 
     routes = decorateRoute(
       routes,
+      { locales: DEFAULT_LOCALES },
       {
-        cwd: process.cwd(),
-        absTmpDirPath: path.join(appRoot, '.umi'),
+        paths: {
+          cwd: process.cwd(),
+          absTmpDirPath: path.join(appRoot, '.umi'),
+        },
       },
-      { locales: DEFAULT_LOCALES }
     );
 
-    expect(routes).toEqual(
-      [
-        {
-          path: '/',
-          component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/index.en-US.md',
-          exact: true,
-          meta: { title: 'English', slugs: [], locale: 'en-US' },
-          title: 'English',
-          Routes: [
-            './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx'
-          ]
-        },
-        {
-          path: '/zh-CN',
-          component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/index.zh-CN.md',
-          exact: true,
-          meta: { title: '中文', slugs: [], locale: 'zh-CN' },
-          title: '中文',
-          Routes: [
-            './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx'
-          ]
-        },
-        {
-          path: '/missing/abc',
-          component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/missing/abc.en-US.md',
-          exact: true,
-          meta: {
-            group: { path: '/missing', title: 'Missing' },
-            locale: 'en-US',
-            title: 'Abc',
-            slugs: []
-          },
+    expect(routes).toEqual([
+      {
+        path: '/',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/index.en-US.md',
+        exact: true,
+        meta: { title: 'English', slugs: [], locale: 'en-US' },
+        title: 'English',
+        Routes: [
+          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
+        ],
+      },
+      {
+        path: '/zh-CN',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/index.zh-CN.md',
+        exact: true,
+        meta: { title: '中文', slugs: [], locale: 'zh-CN' },
+        title: '中文',
+        Routes: [
+          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
+        ],
+      },
+      {
+        path: '/missing/abc',
+        component:
+          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/missing/abc.en-US.md',
+        exact: true,
+        meta: {
+          group: { path: '/missing', title: 'Missing' },
+          locale: 'en-US',
           title: 'Abc',
-          Routes: [
-            './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx'
-          ]
+          slugs: [],
         },
-        {
-          path: '/group/abc',
-          component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/abc.en-US.md',
-          exact: true,
-          meta: {
-            group: { path: '/group', title: 'Group' },
-            locale: 'en-US',
-            title: 'Abc',
-            slugs: []
-          },
+        title: 'Abc',
+        Routes: [
+          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
+        ],
+      },
+      {
+        path: '/group/abc',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/abc.en-US.md',
+        exact: true,
+        meta: {
+          group: { path: '/group', title: 'Group' },
+          locale: 'en-US',
           title: 'Abc',
-          Routes: [
-            './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx'
-          ]
+          slugs: [],
         },
-        {
-          path: '/zh-CN/group/abc',
-          component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/abc.zh-CN.md',
-          exact: true,
-          meta: {
-            group: { path: '/zh-CN/group', title: 'Group' },
-            locale: 'zh-CN',
-            title: 'Abc',
-            slugs: []
-          },
+        title: 'Abc',
+        Routes: [
+          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
+        ],
+      },
+      {
+        path: '/zh-CN/group/abc',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/abc.zh-CN.md',
+        exact: true,
+        meta: {
+          group: { path: '/zh-CN/group', title: 'Group' },
+          locale: 'zh-CN',
           title: 'Abc',
-          Routes: [
-            './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx'
-          ]
+          slugs: [],
         },
-        {
-          path: '/sub',
-          component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/index.en-US.md',
-          exact: true,
-          meta: {
-            group: { path: '/sub', title: 'Sub' },
-            locale: 'en-US',
-            title: 'Index',
-            slugs: []
-          },
+        title: 'Abc',
+        Routes: [
+          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
+        ],
+      },
+      {
+        path: '/sub',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/index.en-US.md',
+        exact: true,
+        meta: {
+          group: { path: '/sub', title: 'Sub' },
+          locale: 'en-US',
           title: 'Index',
-          Routes: [
-            './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx'
-          ]
+          slugs: [],
         },
-        {
-          path: '/zh-CN/sub',
-          component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/index.zh-CN.md',
-          exact: true,
-          meta: {
-            group: { path: '/zh-CN/sub', title: 'Sub' },
-            locale: 'zh-CN',
-            title: 'Index',
-            slugs: []
-          },
+        title: 'Index',
+        Routes: [
+          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
+        ],
+      },
+      {
+        path: '/zh-CN/sub',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/index.zh-CN.md',
+        exact: true,
+        meta: {
+          group: { path: '/zh-CN/sub', title: 'Sub' },
+          locale: 'zh-CN',
           title: 'Index',
-          Routes: [
-            './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx'
-          ]
+          slugs: [],
         },
-        {
-          path: '/zh-CN/missing/abc',
-          component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/missing/abc.en-US.md',
-          exact: true,
-          meta: {
-            group: { path: '/zh-CN/missing', title: 'Missing' },
-            locale: 'zh-CN',
-            title: 'Abc',
-            slugs: []
-          },
+        title: 'Index',
+        Routes: [
+          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
+        ],
+      },
+      {
+        path: '/zh-CN/missing/abc',
+        component:
+          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/missing/abc.en-US.md',
+        exact: true,
+        meta: {
+          group: { path: '/zh-CN/missing', title: 'Missing' },
+          locale: 'zh-CN',
           title: 'Abc',
-          Routes: [
-            './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx'
-          ]
+          slugs: [],
         },
-        { path: '/missing', meta: {}, exact: true, redirect: '/missing/abc' },
-        { path: '/group', meta: {}, exact: true, redirect: '/group/abc' },
-        {
-          path: '/zh-CN/group',
-          meta: {},
-          exact: true,
-          redirect: '/zh-CN/group/abc'
-        },
-        {
-          path: '/zh-CN/missing',
-          meta: {},
-          exact: true,
-          redirect: '/zh-CN/missing/abc'
-        }
-      ]
-    );
+        title: 'Abc',
+        Routes: [
+          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
+        ],
+      },
+      { path: '/missing', meta: {}, exact: true, redirect: '/missing/abc' },
+      { path: '/group', meta: {}, exact: true, redirect: '/group/abc' },
+      {
+        path: '/zh-CN/group',
+        meta: {},
+        exact: true,
+        redirect: '/zh-CN/group/abc',
+      },
+      {
+        path: '/zh-CN/missing',
+        meta: {},
+        exact: true,
+        redirect: '/zh-CN/missing/abc',
+      },
+    ]);
   });
 
   it('getMenuFromRoutes', () => {
     const menu = getMenu(routes, { locales: DEFAULT_LOCALES });
 
-    expect(menu).toEqual(
-      [
-        {
-          locale: { name: 'en-US', label: 'EN' },
-          items: [
-            {
-              path: '/',
-              title: 'English',
-              meta: { title: 'English', slugs: [], locale: 'en-US' }
-            },
-            {
-              title: 'Group',
-              path: '/group',
-              meta: {},
-              children: [
-                {
-                  path: '/group/abc',
+    expect(menu).toEqual([
+      {
+        locale: { name: 'en-US', label: 'EN' },
+        items: [
+          {
+            path: '/',
+            title: 'English',
+            meta: { title: 'English', slugs: [], locale: 'en-US' },
+          },
+          {
+            title: 'Group',
+            path: '/group',
+            meta: {},
+            children: [
+              {
+                path: '/group/abc',
+                title: 'Abc',
+                meta: {
+                  group: { path: '/group', title: 'Group' },
                   title: 'Abc',
-                  meta: {
-                    group: { path: '/group', title: 'Group' },
-                    title: 'Abc',
-                    slugs: [],
-                    locale: 'en-US'
-                  }
-                }
-              ]
-            },
-            {
-              title: 'Missing',
-              path: '/missing',
-              meta: {},
-              children: [
-                {
-                  path: '/missing/abc',
+                  slugs: [],
+                  locale: 'en-US',
+                },
+              },
+            ],
+          },
+          {
+            title: 'Missing',
+            path: '/missing',
+            meta: {},
+            children: [
+              {
+                path: '/missing/abc',
+                title: 'Abc',
+                meta: {
+                  group: { path: '/missing', title: 'Missing' },
+                  locale: 'en-US',
                   title: 'Abc',
-                  meta: {
-                    group: { path: '/missing', title: 'Missing' },
-                    locale: 'en-US',
-                    title: 'Abc',
-                    slugs: []
-                  }
-                }
-              ]
-            },
-            {
-              title: 'Sub',
-              path: '/sub',
-              meta: {},
-              children: [
-                {
-                  path: '/sub',
+                  slugs: [],
+                },
+              },
+            ],
+          },
+          {
+            title: 'Sub',
+            path: '/sub',
+            meta: {},
+            children: [
+              {
+                path: '/sub',
+                title: 'Index',
+                meta: {
+                  group: { path: '/sub', title: 'Sub' },
+                  locale: 'en-US',
                   title: 'Index',
-                  meta: {
-                    group: { path: '/sub', title: 'Sub' },
-                    locale: 'en-US',
-                    title: 'Index',
-                    slugs: []
-                  }
-                }
-              ]
-            }
-          ]
-        },
-        {
-          locale: { name: 'zh-CN', label: '中文' },
-          items: [
-            {
-              title: 'Group',
-              path: '/zh-CN/group',
-              meta: {},
-              children: [
-                {
-                  path: '/zh-CN/group/abc',
+                  slugs: [],
+                },
+              },
+            ],
+          },
+        ],
+      },
+      {
+        locale: { name: 'zh-CN', label: '中文' },
+        items: [
+          {
+            title: 'Group',
+            path: '/zh-CN/group',
+            meta: {},
+            children: [
+              {
+                path: '/zh-CN/group/abc',
+                title: 'Abc',
+                meta: {
+                  group: { path: '/zh-CN/group', title: 'Group' },
                   title: 'Abc',
-                  meta: {
-                    group: { path: '/zh-CN/group', title: 'Group' },
-                    title: 'Abc',
-                    slugs: [],
-                    locale: 'zh-CN'
-                  }
-                }
-              ]
-            },
-            {
-              title: 'Missing',
-              path: '/zh-CN/missing',
-              meta: {},
-              children: [
-                {
-                  path: '/zh-CN/missing/abc',
+                  slugs: [],
+                  locale: 'zh-CN',
+                },
+              },
+            ],
+          },
+          {
+            title: 'Missing',
+            path: '/zh-CN/missing',
+            meta: {},
+            children: [
+              {
+                path: '/zh-CN/missing/abc',
+                title: 'Abc',
+                meta: {
+                  group: { path: '/zh-CN/missing', title: 'Missing' },
+                  locale: 'zh-CN',
                   title: 'Abc',
-                  meta: {
-                    group: { path: '/zh-CN/missing', title: 'Missing' },
-                    locale: 'zh-CN',
-                    title: 'Abc',
-                    slugs: []
-                  }
-                }
-              ]
-            },
-            {
-              title: 'Sub',
-              path: '/zh-CN/sub',
-              meta: {},
-              children: [
-                {
-                  path: '/zh-CN/sub',
+                  slugs: [],
+                },
+              },
+            ],
+          },
+          {
+            title: 'Sub',
+            path: '/zh-CN/sub',
+            meta: {},
+            children: [
+              {
+                path: '/zh-CN/sub',
+                title: 'Index',
+                meta: {
+                  group: { path: '/zh-CN/sub', title: 'Sub' },
+                  locale: 'zh-CN',
                   title: 'Index',
-                  meta: {
-                    group: { path: '/zh-CN/sub', title: 'Sub' },
-                    locale: 'zh-CN',
-                    title: 'Index',
-                    slugs: []
-                  }
-                }
-              ]
-            },
-            {
-              path: '/zh-CN',
-              title: '中文',
-              meta: { locale: 'zh-CN', title: '中文', slugs: [] }
-            }
-          ]
-        }
-      ]
-    );
+                  slugs: [],
+                },
+              },
+            ],
+          },
+          {
+            path: '/zh-CN',
+            title: '中文',
+            meta: { locale: 'zh-CN', title: '中文', slugs: [] },
+          },
+        ],
+      },
+    ]);
   });
 });

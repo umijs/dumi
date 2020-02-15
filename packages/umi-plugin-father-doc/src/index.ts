@@ -69,7 +69,7 @@ export default function(api: IApi, opts: IFatherDocOpts) {
 
   // repalce default routes with generated routes
   api.modifyRoutes(routes => {
-    const result = getRouteConfig(api.paths, opts);
+    const result = getRouteConfig(api, opts);
     const childRoutes = result[0].routes;
     // append umi NotFound component to routes
     childRoutes.push(...routes.filter(({ path: routerPath }) => !routerPath));
@@ -123,24 +123,26 @@ export default function(api: IApi, opts: IFatherDocOpts) {
     config.module.rule('less').exclude.add(path.join(__dirname, 'themes'));
 
     // add alias for current package(s)
-    hostPkgAlias.filter(([pkgName]) => pkgName).forEach(([pkgName, pkgPath]) => {
-      const srcPath = path.join(pkgPath, 'src');
-      const linkPath = path.join(api.paths.cwd, 'node_modules', pkgName);
+    hostPkgAlias
+      .filter(([pkgName]) => pkgName)
+      .forEach(([pkgName, pkgPath]) => {
+        const srcPath = path.join(pkgPath, 'src');
+        const linkPath = path.join(api.paths.cwd, 'node_modules', pkgName);
 
-      // use src path instead of main field in package.json if exists
-      if (fs.existsSync(srcPath)) {
-        // exclude lib folder
-        config.resolve.alias.set(`${pkgName}/lib`, `${pkgPath}/lib`);
-        config.resolve.alias.set(pkgName, srcPath);
-      } else {
-        config.resolve.alias.set(pkgName, pkgPath);
-      }
+        // use src path instead of main field in package.json if exists
+        if (fs.existsSync(srcPath)) {
+          // exclude lib folder
+          config.resolve.alias.set(`${pkgName}/lib`, `${pkgPath}/lib`);
+          config.resolve.alias.set(pkgName, srcPath);
+        } else {
+          config.resolve.alias.set(pkgName, pkgPath);
+        }
 
-      // link current pkgs into node_modules, for import module resolve when writing demo
-      if (!fs.existsSync(linkPath)) {
-        symlink(pkgPath, linkPath);
-      }
-    });
+        // link current pkgs into node_modules, for import module resolve when writing demo
+        if (!fs.existsSync(linkPath)) {
+          symlink(pkgPath, linkPath);
+        }
+      });
   });
 
   // modify help info
@@ -150,9 +152,7 @@ export default function(api: IApi, opts: IFatherDocOpts) {
   });
 
   // watch .md files
-  api.addPageWatcher([
-    ...opts.include.map(key => path.join(api.paths.cwd, key, '**/*.md')),
-  ]);
+  api.addPageWatcher([...opts.include.map(key => path.join(api.paths.cwd, key, '**/*.md'))]);
 
   // sync user extra babel plugins for demo transformer
   api.modifyAFWebpackOpts(memo => {
