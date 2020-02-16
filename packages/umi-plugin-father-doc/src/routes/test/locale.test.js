@@ -247,129 +247,123 @@ describe('routes & menu: locales', () => {
   it('getMenuFromRoutes', () => {
     const menu = getMenu(routes, { locales: DEFAULT_LOCALES });
 
-    expect(menu).toEqual([
-      {
-        locale: { name: 'en-US', label: 'EN' },
-        items: [
-          {
-            path: '/',
-            title: 'English',
-            meta: { title: 'English', slugs: [], locale: 'en-US' },
-          },
-          {
-            title: 'Group',
-            path: '/group',
-            meta: {},
-            children: [
-              {
-                path: '/group/abc',
+    expect(menu).toEqual({
+      'en-US': [
+        {
+          path: '/',
+          title: 'English',
+          meta: { title: 'English', slugs: [], locale: 'en-US' },
+        },
+        {
+          title: 'Group',
+          path: '/group',
+          meta: {},
+          children: [
+            {
+              path: '/group/abc',
+              title: 'Abc',
+              meta: {
+                group: { path: '/group', title: 'Group' },
                 title: 'Abc',
-                meta: {
-                  group: { path: '/group', title: 'Group' },
-                  title: 'Abc',
-                  slugs: [],
-                  locale: 'en-US',
-                },
+                slugs: [],
+                locale: 'en-US',
               },
-            ],
-          },
-          {
-            title: 'Missing',
-            path: '/missing',
-            meta: {},
-            children: [
-              {
-                path: '/missing/abc',
+            },
+          ],
+        },
+        {
+          title: 'Missing',
+          path: '/missing',
+          meta: {},
+          children: [
+            {
+              path: '/missing/abc',
+              title: 'Abc',
+              meta: {
+                group: { path: '/missing', title: 'Missing' },
+                locale: 'en-US',
                 title: 'Abc',
-                meta: {
-                  group: { path: '/missing', title: 'Missing' },
-                  locale: 'en-US',
-                  title: 'Abc',
-                  slugs: [],
-                },
+                slugs: [],
               },
-            ],
-          },
-          {
-            title: 'Sub',
-            path: '/sub',
-            meta: {},
-            children: [
-              {
-                path: '/sub',
+            },
+          ],
+        },
+        {
+          title: 'Sub',
+          path: '/sub',
+          meta: {},
+          children: [
+            {
+              path: '/sub',
+              title: 'Index',
+              meta: {
+                group: { path: '/sub', title: 'Sub' },
+                locale: 'en-US',
                 title: 'Index',
-                meta: {
-                  group: { path: '/sub', title: 'Sub' },
-                  locale: 'en-US',
-                  title: 'Index',
-                  slugs: [],
-                },
+                slugs: [],
               },
-            ],
-          },
-        ],
-      },
-      {
-        locale: { name: 'zh-CN', label: '中文' },
-        items: [
-          {
-            title: 'Group',
-            path: '/zh-CN/group',
-            meta: {},
-            children: [
-              {
-                path: '/zh-CN/group/abc',
+            },
+          ],
+        },
+      ],
+      'zh-CN': [
+        {
+          title: 'Group',
+          path: '/zh-CN/group',
+          meta: {},
+          children: [
+            {
+              path: '/zh-CN/group/abc',
+              title: 'Abc',
+              meta: {
+                group: { path: '/zh-CN/group', title: 'Group' },
                 title: 'Abc',
-                meta: {
-                  group: { path: '/zh-CN/group', title: 'Group' },
-                  title: 'Abc',
-                  slugs: [],
-                  locale: 'zh-CN',
-                },
+                slugs: [],
+                locale: 'zh-CN',
               },
-            ],
-          },
-          {
-            title: 'Missing',
-            path: '/zh-CN/missing',
-            meta: {},
-            children: [
-              {
-                path: '/zh-CN/missing/abc',
+            },
+          ],
+        },
+        {
+          title: 'Missing',
+          path: '/zh-CN/missing',
+          meta: {},
+          children: [
+            {
+              path: '/zh-CN/missing/abc',
+              title: 'Abc',
+              meta: {
+                group: { path: '/zh-CN/missing', title: 'Missing' },
+                locale: 'zh-CN',
                 title: 'Abc',
-                meta: {
-                  group: { path: '/zh-CN/missing', title: 'Missing' },
-                  locale: 'zh-CN',
-                  title: 'Abc',
-                  slugs: [],
-                },
+                slugs: [],
               },
-            ],
-          },
-          {
-            title: 'Sub',
-            path: '/zh-CN/sub',
-            meta: {},
-            children: [
-              {
-                path: '/zh-CN/sub',
+            },
+          ],
+        },
+        {
+          title: 'Sub',
+          path: '/zh-CN/sub',
+          meta: {},
+          children: [
+            {
+              path: '/zh-CN/sub',
+              title: 'Index',
+              meta: {
+                group: { path: '/zh-CN/sub', title: 'Sub' },
+                locale: 'zh-CN',
                 title: 'Index',
-                meta: {
-                  group: { path: '/zh-CN/sub', title: 'Sub' },
-                  locale: 'zh-CN',
-                  title: 'Index',
-                  slugs: [],
-                },
+                slugs: [],
               },
-            ],
-          },
-          {
-            path: '/zh-CN',
-            title: '中文',
-            meta: { locale: 'zh-CN', title: '中文', slugs: [] },
-          },
-        ],
-      },
-    ]);
+            },
+          ],
+        },
+        {
+          path: '/zh-CN',
+          title: '中文',
+          meta: { locale: 'zh-CN', title: '中文', slugs: [] },
+        },
+      ],
+    });
   });
 });

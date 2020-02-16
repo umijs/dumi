@@ -7,6 +7,7 @@ import symlink from 'symlink-dir';
 import hostedGit from 'hosted-git-info';
 import getRouteConfig from './routes/getRouteConfig';
 import getMenuFromRoutes from './routes/getMenuFromRoutes';
+import getLocaleFromRoutes from './routes/getLocaleFromRoutes';
 import getHostPkgAlias from './utils/getHostPkgAlias';
 import { setUserExtraBabelPlugin } from './transformer/demo';
 import 'intersection-observer';
@@ -81,6 +82,7 @@ export default function(api: IApi, opts: IFatherDocOpts) {
     let ret = module;
     const meta = {
       menus: getMenuFromRoutes(api.routes[0].routes, opts),
+      locales: getLocaleFromRoutes(api.routes[0].routes, opts),
       title: opts.title,
       logo: opts.logo,
       desc: opts.desc,

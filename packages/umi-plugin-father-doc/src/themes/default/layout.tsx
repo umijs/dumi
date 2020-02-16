@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { RouterTypes } from 'umi';
-import router from 'umi/router'
+import router from 'umi/router';
 import Link from 'umi/link';
 import NavLink from 'umi/navlink';
 import scrollama from 'scrollama';
@@ -8,6 +8,7 @@ import 'prismjs/themes/prism.css';
 import { parse } from 'querystring';
 import Context from './context';
 import { IMenu } from '../../routes/getMenuFromRoutes';
+import { ILocale } from '../../routes/getLocaleFromRoutes';
 import './layout.less';
 
 export interface ILayoutProps {
@@ -15,13 +16,14 @@ export interface ILayoutProps {
   logo?: string;
   desc?: string;
   menus: IMenu[];
+  locales: ILocale[];
   repoUrl?: string;
 }
 
 export interface ILayoutState {
   localActive: string;
   headerMenuCollapsed: boolean;
-  currentMenuIndex: number;
+  currentLocale: string;
 }
 
 export default class Layout extends Component<ILayoutProps & RouterTypes, ILayoutState> {
@@ -31,19 +33,19 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
     localActive: '',
     // control side menu in mobile responsive mode
     headerMenuCollapsed: true,
-    // save menu index for current locale
-    currentMenuIndex: 0,
+    // save current locale
+    currentLocale: '',
   };
 
-  static getDerivedStateFromProps({ menus, location }) {
-    let state = { currentMenuIndex: 0 };
+  static getDerivedStateFromProps({ locales, location }) {
+    let state = { currentLocale: (locales[0] || { name: '*' }).name };
 
     // find menu in reverse way to fallback to the first menu
-    for (let i = menus.length - 1; i >= 0; i -= 1) {
-      const localeName = (menus[i].locale || { name: '' }).name;
+    for (let i = locales.length - 1; i >= 0; i -= 1) {
+      const localeName = (locales[i] || { name: '' }).name;
 
       if (location.pathname.startsWith(`/${localeName}`)) {
-        state.currentMenuIndex = i;
+        state.currentLocale = localeName;
       }
     }
 
@@ -133,23 +135,25 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
     return result || {};
   };
 
-  handleLocaleChange = (menuIndex) => {
-    const { location: { pathname }, menus } = this.props;
-    const currentLocaleName = menus[this.state.currentMenuIndex].locale.name;
+  handleLocaleChange = locale => {
+    const {
+      location: { pathname },
+      locales,
+    } = this.props;
     // clear locale prefix from the previous locale
-    let newPathname = pathname.replace(`/${currentLocaleName}`, '');
+    let newPathname = pathname.replace(`/${this.state.currentLocale}`, '');
 
     // append locale prefix to path if it is not the default locale
-    if (menuIndex > 0) {
-      newPathname = `/${menus[menuIndex].locale.name}${newPathname}`;
+    if (locale !== locales[0].name) {
+      newPathname = `/${locale}${newPathname}`.replace(/\/$/, '');
     }
 
-    router.push(newPathname)
-  }
+    router.push(newPathname);
+  };
 
   renderSideMenu = () => {
-    const { headerMenuCollapsed, currentMenuIndex } = this.state;
-    const { menus, logo, title, desc, repoUrl } = this.props;
+    const { headerMenuCollapsed, currentLocale } = this.state;
+    const { menus, locales, logo, title, desc, repoUrl } = this.props;
 
     return (
       <div
@@ -159,14 +163,16 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
       >
         <div className="__father-doc-default-layout-menu-inner">
           <div className="__father-doc-default-layout-menu-header">
-            {menus.length > 1 && (
+            {locales.length > 1 && (
               <div className="__father-doc-default-layout-locale-select">
                 <select
-                  value={currentMenuIndex}
+                  value={currentLocale}
                   onChange={ev => this.handleLocaleChange(ev.target.value)}
                 >
-                  {menus.map((menu, i) => (
-                    <option value={i} key={menu.locale.name}>{menu.locale.label}</option>
+                  {locales.map(locale => (
+                    <option value={locale.name} key={locale.name}>
+                      {locale.label}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -192,7 +198,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
             )}
           </div>
           <ul>
-            {menus[currentMenuIndex].items.map(item => (
+            {menus[currentLocale].map(item => (
               <li key={item.path}>
                 <NavLink to={item.path} exact={!(item.children && item.children.length)}>
                   {item.title}
@@ -273,7 +279,6 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
   render() {
     const {
       children,
-      menus,
       location: { search },
     } = this.props;
     const meta = this.getMetaForCurrentPath();
@@ -283,7 +288,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
     return (
       <Context.Provider
         value={{
-          locale: menus.length > 1 ? menus[this.state.currentMenuIndex].locale.name : '',
+          locale: this.state.currentLocale,
         }}
       >
         <div
