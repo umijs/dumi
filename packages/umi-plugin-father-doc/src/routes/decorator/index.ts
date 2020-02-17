@@ -3,8 +3,9 @@ import { IFatherDocOpts } from '../..';
 import flat from './flat';
 import frontMatter from './frontMatter';
 import locale from './locale';
-import group from './group';
 import title from './title';
+import nav from './nav';
+import group from './group';
 import fallback from './fallback';
 import redirect from './redirect';
 
@@ -48,6 +49,9 @@ class RouteDecorator {
   }
 }
 
+/**
+ * decorator standard umi routes for father-doc
+ */
 export default (routes: IRoute[], opts: IFatherDocOpts, umi: IApi) => {
   const decorator = new RouteDecorator(opts, umi);
 
@@ -55,8 +59,9 @@ export default (routes: IRoute[], opts: IFatherDocOpts, umi: IApi) => {
     .use(flat)
     .use(frontMatter)
     .use(locale)
-    .use(group)
     .use(title)
+    .use(nav)
+    .use(group)
     .use(fallback)
     .use(redirect);
 

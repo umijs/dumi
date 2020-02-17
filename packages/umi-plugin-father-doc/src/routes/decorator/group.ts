@@ -17,8 +17,11 @@ export default (function group(routes) {
       const filePath = route.component as string;
       const parsed = path.parse(filePath);
 
-      // discard locale prefix
-      if (route.meta.locale) {
+      if (route.meta.nav?.path) {
+        // discard nav prefix (include locale prefix)
+        clearPath = clearPath.replace(route.meta.nav.path, '');
+      } else if (route.meta.locale) {
+        // discard locale prefix
         clearPath = clearPath.replace(`/${route.meta.locale}`, '');
       }
 
@@ -47,16 +50,18 @@ export default (function group(routes) {
         .replace(/^[a-z]/, s => s.toUpperCase());
     }
 
-    // add locale for group path
-    if (groupPath && route.meta.locale && route.meta.locale !== defaultLocale) {
-      groupPath = `/${route.meta.locale}${groupPath}`;
-    }
-
     // set group path & group title
     if (groupPath || groupTitle) {
       route.meta.group = route.meta.group || {};
 
       if (groupPath) {
+        // restore locale prefix or nav path
+        if (route.meta.nav?.path) {
+          groupPath = `${route.meta.nav.path}${groupPath}`;
+        } else if (route.meta.locale && route.meta.locale !== defaultLocale) {
+          groupPath = `/${route.meta.locale}${groupPath}`;
+        }
+
         route.meta.group.path = groupPath;
       }
 

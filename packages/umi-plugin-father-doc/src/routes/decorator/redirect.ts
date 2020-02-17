@@ -28,6 +28,26 @@ export default (routes => {
       };
     }
 
+    // add index route redirect for nav which has no index route
+    if (
+      route.meta.nav?.path &&
+      !redirects[route.meta.nav.path] &&
+      !routes.some(item => item.path === route.meta.nav.path)
+    ) {
+      const { title, path, ...resNavMeta } = route.meta.nav;
+
+      redirects[path] = {
+        path,
+        meta: {
+          ...resNavMeta
+        },
+        exact: true,
+        redirect: routes
+          .filter(item => item.meta.nav?.path === route.meta.nav.path)
+          .sort(menuSorter)[0].path,
+      };
+    }
+
     // append redirect for legacy path
     if (route.meta.legacy) {
       redirects[route.meta.legacy] = {

@@ -7,6 +7,7 @@ import scrollama from 'scrollama';
 import 'prismjs/themes/prism.css';
 import { parse } from 'querystring';
 import Context from './context';
+import { INav } from '../../routes/getNavFromRoutes';
 import { IMenu } from '../../routes/getMenuFromRoutes';
 import { ILocale } from '../../routes/getLocaleFromRoutes';
 import './layout.less';
@@ -15,6 +16,7 @@ export interface ILayoutProps {
   title: string;
   logo?: string;
   desc?: string;
+  navs: INav[];
   menus: IMenu[];
   locales: ILocale[];
   repoUrl?: string;
@@ -22,8 +24,10 @@ export interface ILayoutProps {
 
 export interface ILayoutState {
   localActive: string;
-  headerMenuCollapsed: boolean;
+  menuCollapsed: boolean;
   currentLocale: string;
+  navs: INav[0];
+  menus: IMenu[0][0];
 }
 
 export default class Layout extends Component<ILayoutProps & RouterTypes, ILayoutState> {
@@ -32,13 +36,22 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
   state = {
     localActive: '',
     // control side menu in mobile responsive mode
-    headerMenuCollapsed: true,
+    menuCollapsed: true,
     // save current locale
     currentLocale: '',
+    // navs of current locale
+    navs: [],
+    // menus of current locale & nav path
+    menus: [],
   };
 
-  static getDerivedStateFromProps({ locales, location }) {
-    let state = { currentLocale: (locales[0] || { name: '*' }).name };
+  static getDerivedStateFromProps({ locales, navs, location, menus }) {
+    let navPath = '*';
+    let state = {
+      currentLocale: (locales[0] || { name: '*' }).name,
+      navs: [],
+      menus: [],
+    };
 
     // find menu in reverse way to fallback to the first menu
     for (let i = locales.length - 1; i >= 0; i -= 1) {
@@ -46,8 +59,24 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
 
       if (location.pathname.startsWith(`/${localeName}`)) {
         state.currentLocale = localeName;
+        break;
       }
     }
+
+    // find nav in reverse way to fallback to the first nav
+    if (navs[state.currentLocale]) {
+      for (let i = navs[state.currentLocale].length - 1; i >= 0; i -= 1) {
+        const nav = navs[state.currentLocale][i];
+
+        if (new RegExp(`^${nav.path}(/|$)`).test(location.pathname)) {
+          navPath = nav.path;
+          break;
+        }
+      }
+    }
+
+    state.navs = navs[state.currentLocale] || [];
+    state.menus = menus[state.currentLocale][navPath] || [];
 
     return state;
   }
@@ -135,7 +164,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
     return result || {};
   };
 
-  handleLocaleChange = locale => {
+  handleLocaleChange = ev => {
     const {
       location: { pathname },
       locales,
@@ -144,31 +173,28 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
     let newPathname = pathname.replace(`/${this.state.currentLocale}`, '');
 
     // append locale prefix to path if it is not the default locale
-    if (locale !== locales[0].name) {
-      newPathname = `/${locale}${newPathname}`.replace(/\/$/, '');
+    if (ev.target.value !== locales[0].name) {
+      newPathname = `/${ev.target.value}${newPathname}`.replace(/\/$/, '');
     }
 
     router.push(newPathname);
   };
 
   renderSideMenu = () => {
-    const { headerMenuCollapsed, currentLocale } = this.state;
-    const { menus, locales, logo, title, desc, repoUrl } = this.props;
+    const { menuCollapsed, currentLocale, menus, navs } = this.state;
+    const { locales, logo, title, desc, repoUrl } = this.props;
 
     return (
       <div
-        className={`__father-doc-default-layout-menu  ${
-          headerMenuCollapsed ? '' : '__father-doc-default-layout-menu-show'
+        className={`__father-doc-default-layout-menu${
+          menuCollapsed ? '' : ' __father-doc-default-layout-menu-show'
         }`}
       >
         <div className="__father-doc-default-layout-menu-inner">
           <div className="__father-doc-default-layout-menu-header">
             {locales.length > 1 && (
               <div className="__father-doc-default-layout-locale-select">
-                <select
-                  value={currentLocale}
-                  onChange={ev => this.handleLocaleChange(ev.target.value)}
-                >
+                <select value={currentLocale} onChange={this.handleLocaleChange}>
                   {locales.map(locale => (
                     <option value={locale.name} key={locale.name}>
                       {locale.label}
@@ -197,13 +223,22 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
               </p>
             )}
           </div>
+          {Boolean(navs.length) && (
+            <ul className="__father-doc-default-layout-menu-nav">
+              {navs.map(nav => (
+                <li key={nav.path}>
+                  <NavLink to={nav.path}>{nav.title}</NavLink>
+                </li>
+              ))}
+            </ul>
+          )}
           <ul>
-            {menus[currentLocale].map(item => (
+            {menus.map(item => (
               <li key={item.path}>
                 <NavLink to={item.path} exact={!(item.children && item.children.length)}>
                   {item.title}
                 </NavLink>
-                {item.children && Boolean(item.children.length) && (
+                {item.children && Boolean(item.children.length) && !navs.length && (
                   <ul>
                     {item.children.map(child => (
                       <li key={child.path}>
@@ -214,19 +249,18 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
                     ))}
                   </ul>
                 )}
+                {Boolean(navs.length) && Boolean(item.meta.slugs && item.meta.slugs.length) && (
+                  <ul>
+                    {item.meta.slugs.map(slug => (
+                      <li key={slug.heading} data-depth={slug.depth}>
+                        <Link to={`${item.path}?anchor=${slug.heading}`}>{slug.value}</Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
             ))}
           </ul>
-          <a
-            className="__father-doc-default-layout-menu-handle"
-            onClick={() =>
-              this.setState({
-                headerMenuCollapsed: !headerMenuCollapsed,
-              })
-            }
-          >
-            {headerMenuCollapsed ? '📖' : '📚'}
-          </a>
         </div>
       </div>
     );
@@ -259,22 +293,82 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
     return <ul className="__father-doc-default-layout-toc">{jumper}</ul>;
   }
 
-  renderPageHeader = () => {
-    const { logo, title, desc } = this.props;
+  renderNavBar = () => {
+    const { currentLocale, menuCollapsed, navs } = this.state;
+    const { title, locales, logo } = this.props;
+
     return (
-      <div className="__father-doc-default-layout-header">
+      <div className="__father-doc-default-layout-navbar">
+        <button
+          className="__father-doc-default-layout-navbar-toggle"
+          onClick={() => this.setState({ menuCollapsed: !menuCollapsed })}
+        />
         <Link
-          to="/"
-          className="__father-doc-default-layout-header-logo"
+          className="__father-doc-default-layout-navbar-logo"
           style={{
             backgroundImage: logo && `url('${logo}')`,
           }}
-        />
-        <h1>{title}</h1>
-        <p>{desc}</p>
+          to={!locales.length || currentLocale === locales[0].name ? '/' : `/${currentLocale}`}
+        >
+          {title}
+        </Link>
+        <nav>
+          {navs.map(nav => (
+            <NavLink to={nav.path} key={nav.path}>
+              {nav.title}
+            </NavLink>
+          ))}
+          {Boolean(locales.length) && (
+            <div className="__father-doc-default-layout-navbar-locale">
+              <select value={currentLocale} onChange={this.handleLocaleChange}>
+                {locales.map(locale => (
+                  <option value={locale.name} key={locale.name}>
+                    {locale.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+        </nav>
       </div>
     );
   };
+
+  renderHero(hero) {
+    return (
+      <>
+        <div className="__father-doc-default-layout-hero">
+          <h1>{hero.text}</h1>
+          <p>{hero.desc}</p>
+          {hero.actions &&
+            hero.actions.map(action => (
+              <Link to={action.link} key={action.text}>
+                <button>{action.text}</button>
+              </Link>
+            ))}
+        </div>
+        <div>
+          <dl>
+            <dt></dt>
+            <dd></dd>
+          </dl>
+        </div>
+      </>
+    );
+  }
+
+  renderFeatures(features) {
+    return (
+      <div className="__father-doc-default-layout-features">
+        {features.map(feat => (
+          <dl key={feat.title}>
+            <dt>{feat.title}</dt>
+            <dd>{feat.desc}</dd>
+          </dl>
+        ))}
+      </div>
+    );
+  }
 
   render() {
     const {
@@ -282,8 +376,11 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
       location: { search },
     } = this.props;
     const meta = this.getMetaForCurrentPath();
-    const showSidebar = meta.sidebar !== false;
-    const showSlugs = meta.slugs && Boolean(meta.slugs.length);
+    const siteMode = Boolean(this.state.navs.length);
+    const showHero = siteMode && meta.hero;
+    const showFeatures = siteMode && meta.features;
+    const showSidebar = meta.sidebar !== false && !showHero && !showFeatures;
+    const showSlugs = meta.slugs && Boolean(meta.slugs.length) && !siteMode;
 
     return (
       <Context.Provider
@@ -295,11 +392,14 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
           className="__father-doc-default-layout"
           data-show-sidebar={showSidebar}
           data-show-slugs={showSlugs}
+          data-site-mode={siteMode}
         >
-          {this.renderPageHeader()}
+          {this.renderNavBar()}
           {showSidebar && this.renderSideMenu()}
           {showSlugs && this.renderAffix(meta, search.slice(1))}
-          {children}
+          {showHero && this.renderHero(meta.hero)}
+          {showFeatures && this.renderFeatures(meta.features)}
+          <div className="__father-doc-default-layout-content">{children}</div>
         </div>
       </Context.Provider>
     );

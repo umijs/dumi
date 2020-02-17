@@ -10,7 +10,11 @@ export interface IMenuItem {
 
 export interface IMenu {
   // locale level
-  [key: string]: IMenuItem[];
+  [key: string]: {
+    // path level
+    '*'?: IMenuItem[];
+    [key: string]: IMenuItem[];
+  };
 }
 
 function isValidMenuRoutes(route: IRoute) {
@@ -35,8 +39,11 @@ export default function getMenuFromRoutes(routes: IApi['routes'], opts: IFatherD
   const localeMenusMapping: {
     // locale level
     [key: string]: {
-      // group path level (only use for group routes by path)
-      [key: string]: IMenuItem;
+      // path level
+      [key: string]: {
+        // group path level (only use for group routes by path)
+        [key: string]: IMenuItem;
+      };
     };
   } = {};
   let localeMenus: IMenu = {};
@@ -44,6 +51,7 @@ export default function getMenuFromRoutes(routes: IApi['routes'], opts: IFatherD
   routes.forEach(route => {
     if (isValidMenuRoutes(route)) {
       const group = route.meta.group;
+      const nav = route.meta.nav?.path || '*';
       const locale = route.meta.locale || opts.locales[0]?.[0] || '*';
       const menuItem = {
         path: route.path,
@@ -57,22 +65,30 @@ export default function getMenuFromRoutes(routes: IApi['routes'], opts: IFatherD
         // group route items by group path & locale
         localeMenusMapping[locale] = {
           ...(localeMenusMapping[locale] || {}),
-          [group.path]: {
-            title,
-            path,
-            meta: {
-              // merge group meta
-              ...(localeMenusMapping[locale]?.[group.path]?.meta || {}),
-              ...meta,
+          [nav]: {
+            ...(localeMenusMapping[locale]?.[nav] || {}),
+            [group.path]: {
+              title,
+              path,
+              meta: {
+                // merge group meta
+                ...(localeMenusMapping[locale]?.[nav]?.[group.path]?.meta || {}),
+                ...meta,
+              },
+              children: (localeMenusMapping[locale]?.[nav]?.[group.path]?.children || []).concat(
+                menuItem,
+              ),
             },
-            children: (localeMenusMapping[locale]?.[group.path]?.children || []).concat(menuItem),
           },
         };
       } else {
         // push route to top-level if it has not group
         localeMenusMapping[locale] = {
           ...(localeMenusMapping[locale] || {}),
-          [menuItem.path]: menuItem,
+          [nav]: {
+            ...(localeMenusMapping[locale]?.[nav] || {}),
+            [menuItem.path]: menuItem,
+          },
         };
       }
     }
@@ -80,18 +96,23 @@ export default function getMenuFromRoutes(routes: IApi['routes'], opts: IFatherD
 
   // deconstuct locale menus from mapping to array
   Object.keys(localeMenusMapping).forEach(locale => {
-    const menus = Object.values(localeMenusMapping[locale]).map((menu: IMenuItem) => {
-      // sort child menu items
-      menu.children?.sort(menuSorter);
+    Object.keys(localeMenusMapping[locale]).forEach(nav => {
+      const menus = Object.values(localeMenusMapping[locale][nav]).map((menu: IMenuItem) => {
+        // sort child menu items
+        menu.children?.sort(menuSorter);
 
-      return menu;
+        return menu;
+      });
+
+      // discard empty locale
+      if (menus.length) {
+        localeMenus[locale] = {
+          ...(localeMenus[locale] || {}),
+          // sort top-level menu items
+          [nav]: menus.sort(menuSorter),
+        };
+      }
     });
-
-    // discard empty locale
-    if (menus.length) {
-      // sort top-level menu items
-      localeMenus[locale] = menus.sort(menuSorter);
-    }
   });
 
   // replace unique locale key with *

@@ -195,97 +195,99 @@ describe('routes & menu: normal', () => {
     const menu = getMenu(routes, { locales: [] });
 
     expect(menu).toEqual({
-      '*': [
-        {
-          title: 'Rename Sub',
-          path: '/sub',
-          meta: { order: 10 },
-          children: [
-            {
-              path: '/sub/hello-component',
-              title: 'HelloComponent',
-              meta: {
-                group: { path: '/sub', title: 'Rename Sub', order: 10 },
+      '*': {
+        '*': [
+          {
+            title: 'Rename Sub',
+            path: '/sub',
+            meta: { order: 10 },
+            children: [
+              {
+                path: '/sub/hello-component',
                 title: 'HelloComponent',
-                slugs: [],
+                meta: {
+                  group: { path: '/sub', title: 'Rename Sub', order: 10 },
+                  title: 'HelloComponent',
+                  slugs: [],
+                },
               },
-            },
-            {
-              path: '/sub',
-              title: 'README',
-              meta: {
-                group: { path: '/sub', title: 'Rename Sub', order: 10 },
+              {
+                path: '/sub',
                 title: 'README',
-                slugs: [],
+                meta: {
+                  group: { path: '/sub', title: 'Rename Sub', order: 10 },
+                  title: 'README',
+                  slugs: [],
+                },
               },
-            },
-          ],
-        },
-        {
-          path: '/',
-          title: 'Index',
-          meta: { title: 'Index', slugs: [] },
-        },
-        {
-          title: 'Index',
-          path: '/index',
-          meta: {},
-          children: [
-            {
-              path: '/index',
-              title: 'Readme',
-              meta: {
-                group: { path: '/index', title: 'Index' },
+            ],
+          },
+          {
+            path: '/',
+            title: 'Index',
+            meta: { title: 'Index', slugs: [] },
+          },
+          {
+            title: 'Index',
+            path: '/index',
+            meta: {},
+            children: [
+              {
+                path: '/index',
                 title: 'Readme',
-                legacy: '/legacy/path/test',
-                slugs: [],
+                meta: {
+                  group: { path: '/index', title: 'Index' },
+                  title: 'Readme',
+                  legacy: '/legacy/path/test',
+                  slugs: [],
+                },
               },
-            },
-          ],
-        },
-        {
-          title: 'Rename-sub-sub',
-          path: '/rename-sub-sub',
-          meta: {},
-          children: [
-            {
-              path: '/rename-sub-sub/y-end',
-              title: 'YEnd',
-              meta: {
-                group: { path: '/rename-sub-sub', title: 'Rename-sub-sub' },
+            ],
+          },
+          {
+            title: 'Rename-sub-sub',
+            path: '/rename-sub-sub',
+            meta: {},
+            children: [
+              {
+                path: '/rename-sub-sub/y-end',
                 title: 'YEnd',
-                order: 1,
-                slugs: [],
+                meta: {
+                  group: { path: '/rename-sub-sub', title: 'Rename-sub-sub' },
+                  title: 'YEnd',
+                  order: 1,
+                  slugs: [],
+                },
               },
-            },
-            {
-              path: '/rename-sub-sub/still-hello',
-              title: 'StillHello',
-              meta: {
-                group: { path: '/rename-sub-sub', title: 'Rename-sub-sub' },
+              {
+                path: '/rename-sub-sub/still-hello',
                 title: 'StillHello',
-                slugs: [],
+                meta: {
+                  group: { path: '/rename-sub-sub', title: 'Rename-sub-sub' },
+                  title: 'StillHello',
+                  slugs: [],
+                },
               },
-            },
-          ],
-        },
-        {
-          title: 'Test',
-          path: '/test',
-          meta: {},
-          children: [
-            {
-              path: '/test/intro',
-              title: 'Intro',
-              meta: {
+            ],
+          },
+          {
+            title: 'Test',
+            path: '/test',
+            meta: {},
+            children: [
+              {
+                path: '/test/intro',
                 title: 'Intro',
-                group: { path: '/test', title: 'Test' },
-                slugs: [],
+                meta: {
+                  title: 'Intro',
+                  group: { path: '/test', title: 'Test' },
+                  slugs: [],
+                },
               },
-            },
-          ],
-        },
-      ],
+            ],
+          },
+        ],
+      },
     });
   });
 });

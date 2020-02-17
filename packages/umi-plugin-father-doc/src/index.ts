@@ -6,6 +6,7 @@ import { IApi, IRoute } from 'umi-types';
 import symlink from 'symlink-dir';
 import hostedGit from 'hosted-git-info';
 import getRouteConfig from './routes/getRouteConfig';
+import getNavFromRoutes from './routes/getNavFromRoutes';
 import getMenuFromRoutes from './routes/getMenuFromRoutes';
 import getLocaleFromRoutes from './routes/getLocaleFromRoutes';
 import getHostPkgAlias from './utils/getHostPkgAlias';
@@ -15,6 +16,7 @@ import 'intersection-observer';
 export interface IFatherDocOpts {
   title?: string;
   logo?: URL;
+  mode?: 'doc' | 'site';
   desc?: string;
   include?: string[];
   locales?: [string, string][];
@@ -53,6 +55,7 @@ export default function(api: IApi, opts: IFatherDocOpts) {
         ['en-US', 'EN'],
         ['zh-CN', '中文'],
       ],
+      mode: 'doc',
     },
     (api.config as any).doc,
     opts,
@@ -83,6 +86,7 @@ export default function(api: IApi, opts: IFatherDocOpts) {
     const meta = {
       menus: getMenuFromRoutes(api.routes[0].routes, opts),
       locales: getLocaleFromRoutes(api.routes[0].routes, opts),
+      navs: getNavFromRoutes(api.routes[0].routes, opts),
       title: opts.title,
       logo: opts.logo,
       desc: opts.desc,

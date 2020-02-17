@@ -248,122 +248,126 @@ describe('routes & menu: locales', () => {
     const menu = getMenu(routes, { locales: DEFAULT_LOCALES });
 
     expect(menu).toEqual({
-      'en-US': [
-        {
-          path: '/',
-          title: 'English',
-          meta: { title: 'English', slugs: [], locale: 'en-US' },
-        },
-        {
-          title: 'Group',
-          path: '/group',
-          meta: {},
-          children: [
-            {
-              path: '/group/abc',
-              title: 'Abc',
-              meta: {
-                group: { path: '/group', title: 'Group' },
+      'en-US': {
+        '*': [
+          {
+            path: '/',
+            title: 'English',
+            meta: { title: 'English', slugs: [], locale: 'en-US' },
+          },
+          {
+            title: 'Group',
+            path: '/group',
+            meta: {},
+            children: [
+              {
+                path: '/group/abc',
                 title: 'Abc',
-                slugs: [],
-                locale: 'en-US',
+                meta: {
+                  group: { path: '/group', title: 'Group' },
+                  title: 'Abc',
+                  slugs: [],
+                  locale: 'en-US',
+                },
               },
-            },
-          ],
-        },
-        {
-          title: 'Missing',
-          path: '/missing',
-          meta: {},
-          children: [
-            {
-              path: '/missing/abc',
-              title: 'Abc',
-              meta: {
-                group: { path: '/missing', title: 'Missing' },
-                locale: 'en-US',
+            ],
+          },
+          {
+            title: 'Missing',
+            path: '/missing',
+            meta: {},
+            children: [
+              {
+                path: '/missing/abc',
                 title: 'Abc',
-                slugs: [],
+                meta: {
+                  group: { path: '/missing', title: 'Missing' },
+                  locale: 'en-US',
+                  title: 'Abc',
+                  slugs: [],
+                },
               },
-            },
-          ],
-        },
-        {
-          title: 'Sub',
-          path: '/sub',
-          meta: {},
-          children: [
-            {
-              path: '/sub',
-              title: 'Index',
-              meta: {
-                group: { path: '/sub', title: 'Sub' },
-                locale: 'en-US',
+            ],
+          },
+          {
+            title: 'Sub',
+            path: '/sub',
+            meta: {},
+            children: [
+              {
+                path: '/sub',
                 title: 'Index',
-                slugs: [],
+                meta: {
+                  group: { path: '/sub', title: 'Sub' },
+                  locale: 'en-US',
+                  title: 'Index',
+                  slugs: [],
+                },
               },
-            },
-          ],
-        },
-      ],
-      'zh-CN': [
-        {
-          title: 'Group',
-          path: '/zh-CN/group',
-          meta: {},
-          children: [
-            {
-              path: '/zh-CN/group/abc',
-              title: 'Abc',
-              meta: {
-                group: { path: '/zh-CN/group', title: 'Group' },
+            ],
+          },
+        ],
+      },
+      'zh-CN': {
+        '*': [
+          {
+            title: 'Group',
+            path: '/zh-CN/group',
+            meta: {},
+            children: [
+              {
+                path: '/zh-CN/group/abc',
                 title: 'Abc',
-                slugs: [],
-                locale: 'zh-CN',
+                meta: {
+                  group: { path: '/zh-CN/group', title: 'Group' },
+                  title: 'Abc',
+                  slugs: [],
+                  locale: 'zh-CN',
+                },
               },
-            },
-          ],
-        },
-        {
-          title: 'Missing',
-          path: '/zh-CN/missing',
-          meta: {},
-          children: [
-            {
-              path: '/zh-CN/missing/abc',
-              title: 'Abc',
-              meta: {
-                group: { path: '/zh-CN/missing', title: 'Missing' },
-                locale: 'zh-CN',
+            ],
+          },
+          {
+            title: 'Missing',
+            path: '/zh-CN/missing',
+            meta: {},
+            children: [
+              {
+                path: '/zh-CN/missing/abc',
                 title: 'Abc',
-                slugs: [],
+                meta: {
+                  group: { path: '/zh-CN/missing', title: 'Missing' },
+                  locale: 'zh-CN',
+                  title: 'Abc',
+                  slugs: [],
+                },
               },
-            },
-          ],
-        },
-        {
-          title: 'Sub',
-          path: '/zh-CN/sub',
-          meta: {},
-          children: [
-            {
-              path: '/zh-CN/sub',
-              title: 'Index',
-              meta: {
-                group: { path: '/zh-CN/sub', title: 'Sub' },
-                locale: 'zh-CN',
+            ],
+          },
+          {
+            title: 'Sub',
+            path: '/zh-CN/sub',
+            meta: {},
+            children: [
+              {
+                path: '/zh-CN/sub',
                 title: 'Index',
-                slugs: [],
+                meta: {
+                  group: { path: '/zh-CN/sub', title: 'Sub' },
+                  locale: 'zh-CN',
+                  title: 'Index',
+                  slugs: [],
+                },
               },
-            },
-          ],
-        },
-        {
-          path: '/zh-CN',
-          title: '中文',
-          meta: { locale: 'zh-CN', title: '中文', slugs: [] },
-        },
-      ],
+            ],
+          },
+          {
+            path: '/zh-CN',
+            title: '中文',
+            meta: { locale: 'zh-CN', title: '中文', slugs: [] },
+          },
+        ],
+      },
     });
   });
 });

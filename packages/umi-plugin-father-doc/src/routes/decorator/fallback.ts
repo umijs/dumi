@@ -65,9 +65,18 @@ export default (function fallback(routes) {
           fallbackRoute.meta.locale = locale;
 
           // replace locale prefix for group path
-          if (fallbackRoute.meta.group) {
+          if (fallbackRoute.meta.group?.path) {
             fallbackRoute.meta.group.path = replaceLocaleForPath(
               fallbackRoute.meta.group.path,
+              routeProps.meta.locale,
+              locale,
+            );
+          }
+
+          // replace locale prefix for nav path
+          if (fallbackRoute.meta.nav?.path) {
+            fallbackRoute.meta.nav.path = replaceLocaleForPath(
+              fallbackRoute.meta.nav.path,
               routeProps.meta.locale,
               locale,
             );
