@@ -1,9 +1,9 @@
 ---
-title: 好好写 Demo
+title: 写好用的 Demo
 order: 8
 ---
 
-# 好好写 Demo
+# 写好用的 Demo
 
 ## 原则
 

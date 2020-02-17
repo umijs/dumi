@@ -1,9 +1,24 @@
 ---
 title: 介绍
 order: 10
+hero:
+  text: father-doc
+  desc: 基于 Umi 为组件开发场景而生的文档工具
+  actions:
+    - text: 快速上手
+      link: /getting-started
+features:
+  - title: 开箱即用
+    desc: 考究的默认配置和约定式的目录结构，帮助开发者零成本上手，使得让所有注意力都能放在文档编写和组件开发上
+  - title: 高性能
+    desc: 有强大的 Umi 做底座，天生高性能、可扩展，且可使用 Umi 生态中的大部分插件
+  - title: 为组件开发而生
+    desc: 独特的 Markdown 扩展，可嵌入 Demo、可导入外部 Demo 甚至插入自定义 React 组件，使得组件的文档不仅能看，还好用
 ---
 
-# 介绍
+---
+
+## 介绍
 
 <Alert>
 father-doc 仍处于 <code>alpha</code> 阶段，功能可能存在不稳定，如果在使用中出现问题，请反馈到 <a href="https://github.com/umijs/father-doc/issues">https://github.com/umijs/father-doc/issues</a>，感谢 ❤️
@@ -32,9 +47,9 @@ father-doc 是基于 Umi 为组件开发场景而生的文档工具，与 [fathe
 
 欢迎加入到 father-doc 的建设队伍中来，请访问 https://github.com/umijs/father-doc 。
 
-``` jsx | inline
+```jsx | inline
 import React from 'react';
 import gif from './assets/qrcode.jpg';
 
-export default () => <img src={gif} width="300" />
+export default () => <img src={gif} width="300" />;
 ```

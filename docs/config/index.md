@@ -1,8 +1,9 @@
 ---
 title: Config
 order: 1
-group:
+nav:
   title: 配置项
+  order: 9
 ---
 
 # Config
@@ -20,6 +21,14 @@ export default {
 ```
 
 ## father-doc 独有配置
+
+### doc.mode
+
+- 类型：`doc | site`
+- 默认值：`doc`
+- 详细：
+
+用于设定文档的展现模式，默认为文档模式（左侧菜单 + 右侧内容），配置为 `site` 时可无缝切换为站点模式（导航头 + 左侧菜单 + 右侧内容）。如果希望对导航菜单项展示的文本和顺序，可参考 frontmatter 配置中的 `nav` 配置项。
 
 ### doc.title
 

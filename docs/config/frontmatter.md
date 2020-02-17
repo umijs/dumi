@@ -86,7 +86,7 @@ TSX/JSX 文件的 FrontMatter 编写方法如下：
 
 father-doc 会自动为 `index.md`、`a.md`、`b.md` 指定 `group.title` 为 `Components`、`group.path` 为 `/components`。并且我们可以通过 FrontMatter 对生成的默认配置进行**选择性复写**，比如：
 
-``` md
+```md
 ---
 group:
   title: 组件
@@ -116,6 +116,26 @@ group:
 - 详细：
 
 控制该文档组的显示顺序，数值越大排序越靠前。
+
+### nav
+
+- 类型：`Object`
+- 默认值：`null`
+- 详细：
+
+**仅 site 模式下可用**，该配置用于手动指定当前文档所处的导航菜单，默认根据第一级路由路径自动生成，子配置项与 `group` 一致。
+
+#### nav.title
+
+略，与 `group.title` 一致。
+
+#### nav.path
+
+略，与 `group.path` 一致。
+
+#### nav.order
+
+略，与 `group.order` 一致。
 
 ## TSX/JSX 支持的 FrontMatter 配置项
 
