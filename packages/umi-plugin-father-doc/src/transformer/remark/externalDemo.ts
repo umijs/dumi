@@ -4,7 +4,7 @@ import slash from 'slash2';
 import visit from 'unist-util-visit';
 import transformer, { TransformResult } from '../index';
 
-const DEMO_TOKEN_EXP = /^\s*<(code)([^>]+?)\/?>/;
+const DEMO_TOKEN_EXP = /<(code) ([^>]+?)\/?>/;
 
 /**
  * simple parser for parse HTML attributes
@@ -27,10 +27,10 @@ export default function externalDemo() {
     visit(ast, 'html', (node, i, parent) => {
       if (typeof node.value === 'string') {
         // split multiple code tag
-        const tags = node.value.match(/(<code.*?(<\/code>|\/?>))/g);
+        const tags = node.value.match(/^\s*(<code.*?(<\/code>|\/?>))/g);
         const demos = [];
 
-        tags?.forEach((tag) => {
+        tags?.forEach(tag => {
           const matches = tag.match(DEMO_TOKEN_EXP) || [];
           const { src, ...inheritAttrs } = HTMLAttrParser(matches[2]);
 
@@ -49,7 +49,9 @@ export default function externalDemo() {
 
               if (transformer[lang]) {
                 // read external demo content and convert node to demo node
-                const result: TransformResult = transformer[lang](fs.readFileSync(absPath).toString());
+                const result: TransformResult = transformer[lang](
+                  fs.readFileSync(absPath).toString(),
+                );
 
                 demos.push({
                   type: 'demo',
