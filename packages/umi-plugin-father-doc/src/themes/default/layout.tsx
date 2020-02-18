@@ -182,7 +182,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
 
   renderSideMenu = () => {
     const { menuCollapsed, currentLocale, menus, navs } = this.state;
-    const { locales, logo, title, desc, repoUrl } = this.props;
+    const { locales, logo, title, desc, repoUrl, location } = this.props;
 
     return (
       <div
@@ -233,33 +233,54 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
             </ul>
           )}
           <ul>
-            {menus.map(item => (
-              <li key={item.path}>
-                <NavLink to={item.path} exact={!(item.children && item.children.length)}>
-                  {item.title}
-                </NavLink>
-                {item.children && Boolean(item.children.length) && !navs.length && (
-                  <ul>
-                    {item.children.map(child => (
-                      <li key={child.path}>
-                        <NavLink to={child.path} exact>
-                          {child.title}
-                        </NavLink>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                {Boolean(navs.length) && Boolean(item.meta.slugs && item.meta.slugs.length) && (
-                  <ul>
-                    {item.meta.slugs.map(slug => (
-                      <li key={slug.heading} data-depth={slug.depth}>
-                        <Link to={`${item.path}?anchor=${slug.heading}`}>{slug.value}</Link>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-            ))}
+            {menus.map(item => {
+              const show1LevelSlugs =
+                (!item.children || !item.children.length) &&
+                (item.meta.slugs || item.meta.slugs.length);
+
+              return (
+                <li key={item.path}>
+                  <NavLink to={item.path} exact={!(item.children && item.children.length)}>
+                    {item.title}
+                  </NavLink>
+                  {Boolean(item.children && item.children.length) && (
+                    <ul>
+                      {item.children.map(child => (
+                        <li key={child.path}>
+                          <NavLink to={child.path} exact>
+                            {child.title}
+                          </NavLink>
+                          {Boolean(
+                            child.meta.slugs &&
+                              child.meta.slugs.length &&
+                              child.path === location.pathname,
+                          ) && (
+                            <ul>
+                              {child.meta.slugs.map(slug => (
+                                <li key={slug.heading} data-depth={slug.depth}>
+                                  <Link to={`${item.path}?anchor=${slug.heading}`}>
+                                    {slug.value}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {Boolean(show1LevelSlugs) && (
+                    <ul>
+                      {item.meta.slugs.map(slug => (
+                        <li key={slug.heading} data-depth={slug.depth}>
+                          <Link to={`${item.path}?anchor=${slug.heading}`}>{slug.value}</Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>
