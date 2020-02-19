@@ -12,18 +12,17 @@ export default (function group(routes) {
     let groupTitle: string = route.meta.group?.title;
     let clearPath = route.path;
 
+    if (route.meta.nav?.path) {
+      // discard nav prefix (include locale prefix)
+      clearPath = clearPath.replace(route.meta.nav.path, '');
+    } else if (route.meta.locale) {
+      // discard locale prefix
+      clearPath = clearPath.replace(`/${route.meta.locale}`, '');
+    }
+
     // generate group if user did not customized group via frontmatter
     if (!groupPath) {
-      const filePath = route.component as string;
-      const parsed = path.parse(filePath);
-
-      if (route.meta.nav?.path) {
-        // discard nav prefix (include locale prefix)
-        clearPath = clearPath.replace(route.meta.nav.path, '');
-      } else if (route.meta.locale) {
-        // discard locale prefix
-        clearPath = clearPath.replace(`/${route.meta.locale}`, '');
-      }
+      const parsed = path.parse(route.component as string);
 
       // only process nested route
       if (
@@ -38,6 +37,7 @@ export default (function group(routes) {
           ).test(parsed.name))
       ) {
         groupPath = clearPath.match(/^([^]+?)(\/[^/]+)?$/)[1];
+        clearPath = clearPath.replace(groupPath, '');
       }
     }
 

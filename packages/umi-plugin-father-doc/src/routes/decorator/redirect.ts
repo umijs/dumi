@@ -35,16 +35,25 @@ export default (routes => {
       !routes.some(item => item.path === route.meta.nav.path)
     ) {
       const { title, path, ...resNavMeta } = route.meta.nav;
+      const validRoutes = routes.filter(item => item.meta.nav?.path === route.meta.nav.path);
+      // concat valid groups to find redirect to ensure the redirect order same as menu order
+      const validGroups = validRoutes.reduce((result, item) => {
+        if (item.meta.group?.path) {
+          const { title, path, ...resGroupMeta } = item.meta.group;
+
+          result.push({ title, path, meta: { ...resGroupMeta, nav: item.meta.nav } });
+        }
+
+        return result;
+      }, []);
 
       redirects[path] = {
         path,
         meta: {
-          ...resNavMeta
+          ...resNavMeta,
         },
         exact: true,
-        redirect: routes
-          .filter(item => item.meta.nav?.path === route.meta.nav.path)
-          .sort(menuSorter)[0].path,
+        redirect: validRoutes.concat(validGroups).sort(menuSorter)[0].path,
       };
     }
 

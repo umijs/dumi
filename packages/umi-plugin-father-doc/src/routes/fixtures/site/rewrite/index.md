@@ -1,0 +1,4 @@
+---
+nav:
+  path: /test-rewrite
+---

@@ -44,6 +44,11 @@ describe('routes & menu: site mode', () => {
         component: './packages/umi-plugin-father-doc/src/routes/fixtures/site/config/others.md',
         exact: true,
       },
+      {
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/site/rewrite/index.md',
+        exact: true,
+        path: '/rewrite',
+      },
     ]);
   });
 
@@ -128,6 +133,21 @@ describe('routes & menu: site mode', () => {
         ],
       },
       {
+        path: '/test-rewrite/rewrite',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/site/rewrite/index.md',
+        exact: true,
+        meta: {
+          nav: { path: '/test-rewrite', title: 'Index' },
+          slugs: [],
+          title: 'Index',
+          group: { path: '/test-rewrite/rewrite', title: 'Rewrite' },
+        },
+        title: 'Index',
+        Routes: [
+          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
+        ],
+      },
+      {
         path: '/zh-CN/api',
         component: './packages/umi-plugin-father-doc/src/routes/fixtures/site/api.md',
         exact: true,
@@ -175,6 +195,34 @@ describe('routes & menu: site mode', () => {
           './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
         ],
       },
+      {
+        path: '/zh-CN/test-rewrite/rewrite',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/site/rewrite/index.md',
+        exact: true,
+        meta: {
+          nav: { path: '/zh-CN/test-rewrite', title: 'Index' },
+          slugs: [],
+          title: 'Index',
+          group: { path: '/zh-CN/test-rewrite/rewrite', title: 'Rewrite' },
+          locale: 'zh-CN',
+        },
+        title: 'Index',
+        Routes: [
+          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
+        ],
+      },
+      {
+        path: '/test-rewrite',
+        meta: {},
+        exact: true,
+        redirect: '/test-rewrite/rewrite',
+      },
+      {
+        path: '/zh-CN/test-rewrite',
+        meta: {},
+        exact: true,
+        redirect: '/zh-CN/test-rewrite/rewrite',
+      },
     ]);
   });
 
@@ -184,10 +232,12 @@ describe('routes & menu: site mode', () => {
     expect(navs).toEqual({
       'en-US': [
         { path: '/api', title: 'Api' },
+        { path: '/test-rewrite', title: 'Index' },
         { path: '/config', title: 'Others' },
       ],
       'zh-CN': [
         { path: '/zh-CN/api', title: 'Api' },
+        { path: '/zh-CN/test-rewrite', title: 'Index' },
         { path: '/zh-CN/config', title: 'Others' },
       ],
     });
@@ -239,6 +289,25 @@ describe('routes & menu: site mode', () => {
             },
           },
         ],
+        '/test-rewrite': [
+          {
+            title: 'Rewrite',
+            path: '/test-rewrite/rewrite',
+            meta: {},
+            children: [
+              {
+                path: '/test-rewrite/rewrite',
+                title: 'Index',
+                meta: {
+                  nav: { path: '/test-rewrite', title: 'Index' },
+                  slugs: [],
+                  title: 'Index',
+                  group: { path: '/test-rewrite/rewrite', title: 'Rewrite' },
+                },
+              },
+            ],
+          },
+        ],
       },
       'zh-CN': {
         '*': [
@@ -283,6 +352,26 @@ describe('routes & menu: site mode', () => {
               nav: { path: '/zh-CN/config', title: 'Others' },
               locale: 'zh-CN',
             },
+          },
+        ],
+        '/zh-CN/test-rewrite': [
+          {
+            title: 'Rewrite',
+            path: '/zh-CN/test-rewrite/rewrite',
+            meta: {},
+            children: [
+              {
+                path: '/zh-CN/test-rewrite/rewrite',
+                title: 'Index',
+                meta: {
+                  nav: { path: '/zh-CN/test-rewrite', title: 'Index' },
+                  slugs: [],
+                  title: 'Index',
+                  group: { path: '/zh-CN/test-rewrite/rewrite', title: 'Rewrite' },
+                  locale: 'zh-CN',
+                },
+              },
+            ],
           },
         ],
       },
