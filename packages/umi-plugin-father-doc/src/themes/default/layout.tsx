@@ -236,7 +236,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
             {menus.map(item => {
               const show1LevelSlugs =
                 (!item.children || !item.children.length) &&
-                (item.meta.slugs || item.meta.slugs.length);
+                item.meta.slugs && item.meta.slugs.length;
 
               return (
                 <li key={item.path}>
@@ -258,7 +258,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
                             <ul>
                               {child.meta.slugs.map(slug => (
                                 <li key={slug.heading} data-depth={slug.depth}>
-                                  <Link to={`${item.path}?anchor=${slug.heading}`}>
+                                  <Link to={`${child.path}?anchor=${slug.heading}`}>
                                     {slug.value}
                                   </Link>
                                 </li>
@@ -367,12 +367,6 @@ export default class Layout extends Component<ILayoutProps & RouterTypes, ILayou
                 <button>{action.text}</button>
               </Link>
             ))}
-        </div>
-        <div>
-          <dl>
-            <dt></dt>
-            <dd></dd>
-          </dl>
         </div>
       </>
     );
