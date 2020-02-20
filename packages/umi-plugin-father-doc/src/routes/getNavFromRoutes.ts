@@ -21,7 +21,10 @@ export default (routes: IRoute[], opts: IFatherDocOpts): INav => {
 
       localeNavs[locale] = {
         ...(localeNavs[locale] || {}),
-        [route.meta.nav.path]: route.meta.nav,
+        [route.meta.nav.path]: {
+          ...(localeNavs[locale]?.[route.meta.nav.path] || {}),
+          ...(route.meta.nav || {}),
+        },
       };
     }
   });
