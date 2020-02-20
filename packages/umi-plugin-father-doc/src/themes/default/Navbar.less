@@ -1,0 +1,109 @@
+@import (reference) './variables.less';
+
+.@{prefix}-navbar {
+  position: fixed;
+  z-index: 101;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 58px;
+  height: @s-nav-height;
+  white-space: nowrap;
+  background: #fff;
+  box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.05);
+
+  @media @mobile {
+    display: flex;
+    justify-content: center;
+    height: @s-mobile-nav-height;
+  }
+
+  &-toggle {
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    display: none;
+    width: 22px;
+    height: 22px;
+    border: 0;
+    outline: none;
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFgAAAA4CAYAAAB5YT9uAAAAAXNSR0IArs4c6QAAASVJREFUeAHt3DuOwjAUBVAHscWZjaSkAIqU2QjskV80QwpsF3ArdGiw3hW3OGnQM2Iof6/dfr7+n71/LjAdx+HRsvm8SkNPAHBPJ5ABDiD2KgD3dAIZ4ABirwJwTyeQAQ4g9ioA93QC2fbZsSm/z7MDAQIECBAgQIAAAQIECBAgQIAAAQKvAsvV8mO8O8yn19jkXYHpMC7byXVdeS0/75b5XFvAwr1tE0kARxjbJYDbNpEEcISxXQK4bRNJAEcY2yWA2zaRZP0ePJRzpFEJAQIECBAgQIAAAQIECBAgQIAAgW8VWK/tj7Nb5eBTnvbjsp1c15WX4ncRQeB7lb8zyHrW29xo1F1iU8AxynoR4LpLbAo4RlkvAlx3iU0BxyjrRYDrLrHpDVSAEEPXScHTAAAAAElFTkSuQmCC')
+      no-repeat center / contain;
+
+    @media @mobile {
+      display: block;
+    }
+  }
+
+  &-logo {
+    display: inline-block;
+    padding-left: 56px;
+    height: 40px;
+    color: @c-heading;
+    font-size: 24px;
+    line-height: 40px;
+    background: url(@img-logo) no-repeat 0 / contain;
+
+    @media @mobile {
+      height: 28px;
+      padding-left: 36px;
+      line-height: 28px;
+    }
+  }
+
+  nav {
+    a {
+      margin-left: 36px;
+      font-size: 16px;
+      color: @c-heading;
+      letter-spacing: 0;
+
+      &.active {
+        color: @c-primary;
+      }
+    }
+
+    @media @mobile {
+      display: none;
+    }
+  }
+
+  &-locale {
+    position: relative;
+    margin-left: 36px;
+    display: inline-block;
+    border: 1px solid @c-border;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      margin-top: -3px;
+      width: 0;
+      height: 0;
+      border: 4px solid transparent;
+      border-top: 6px solid #7b7f8d;
+    }
+
+    select {
+      padding: 0 24px 0 14px;
+      height: 30px;
+      text-align: center;
+      line-height: 30px;
+      appearance: none;
+      border: 0;
+      font-size: 16px;
+      color: #7b7f8d;
+      background: transparent;
+      outline: none;
+    }
+  }
+
+  &[data-mode='site'] {
+    display: flex;
+  }
+}

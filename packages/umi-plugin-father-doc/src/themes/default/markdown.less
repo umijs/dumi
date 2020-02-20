@@ -1,5 +1,4 @@
 @import (reference) './variables.less';
-@import '~prismjs/themes/prism.css';
 
 .markdown {
   color: @c-text;
@@ -31,6 +30,11 @@
       padding-right: 4px;
       line-height: 1;
       box-sizing: border-box;
+
+      @media @mobile {
+        width: 14px;
+        margin-left: -14px;
+      }
 
       &::after {
         content: '#';

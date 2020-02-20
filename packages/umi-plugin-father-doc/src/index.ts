@@ -11,11 +11,10 @@ import getMenuFromRoutes from './routes/getMenuFromRoutes';
 import getLocaleFromRoutes from './routes/getLocaleFromRoutes';
 import getHostPkgAlias from './utils/getHostPkgAlias';
 import { setUserExtraBabelPlugin } from './transformer/demo';
-import 'intersection-observer';
 
 export interface IFatherDocOpts {
   title?: string;
-  logo?: URL;
+  logo?: string;
   mode?: 'doc' | 'site';
   desc?: string;
   include?: string[];
@@ -90,6 +89,7 @@ export default function(api: IApi, opts: IFatherDocOpts) {
       title: opts.title,
       logo: opts.logo,
       desc: opts.desc,
+      mode: opts.mode,
       repoUrl: hostedGit.fromUrl(pkg.repository?.url || pkg.repository)?.browse(),
     };
 

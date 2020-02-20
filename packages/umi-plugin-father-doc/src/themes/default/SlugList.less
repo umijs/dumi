@@ -1,0 +1,13 @@
+@import (reference) './variables.less';
+
+ul[role='slug-list'] {
+  li {
+    &.active a {
+      color: @c-primary;
+    }
+
+    &[data-depth='2'] {
+      padding-left: 12px;
+    }
+  }
+}
