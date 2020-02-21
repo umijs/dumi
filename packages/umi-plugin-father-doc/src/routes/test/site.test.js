@@ -227,7 +227,7 @@ describe('routes & menu: site mode', () => {
   });
 
   it('getNavFromRoutes', () => {
-    const navs = getNav(routes, { locales: DEFAULT_LOCALES });
+    const navs = getNav(routes, { locales: DEFAULT_LOCALES, mode: 'site' });
 
     expect(navs).toEqual({
       'en-US': [

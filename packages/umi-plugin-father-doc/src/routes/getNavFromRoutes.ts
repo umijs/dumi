@@ -14,6 +14,10 @@ export interface INav {
 export default (routes: IRoute[], opts: IFatherDocOpts): INav => {
   let localeNavs = {};
 
+  if (opts.mode !== 'site') {
+    return {};
+  }
+
   // group navs by locale
   routes.forEach(route => {
     if (route.meta?.nav) {

@@ -7,21 +7,25 @@ export interface ILocale {
 }
 
 export default (routes: IRoute[], opts: IFatherDocOpts): ILocale[] => {
-  const localesMapping: { [key: string]: ILocale } = {};
+  const validLocales = new Set<string>();
   const locales: ILocale[] = [];
 
-  // collect locales mapping
+  // collect valid locales set
   routes.forEach(route => {
     const localeName = route.meta?.locale || opts.locales[0]?.[0];
     const locale = opts.locales.find(([name]) => name === localeName);
 
-    if (locale && !localesMapping[locale[0]]) {
-      localesMapping[locale[0]] = { name: locale[0], label: locale[1] };
+    if (locale) {
+      validLocales.add(locale[0]);
     }
   });
 
-  // deconstruct locale from mapping to array
-  locales.push(...Object.values(localesMapping));
+  // filter valid locales from locale options
+  locales.push(
+    ...opts.locales
+      .filter(([name]) => validLocales.has(name))
+      .map(([name, label]) => ({ name, label })),
+  );
 
   // discard unique locale
   if (locales.length === 1) {
