@@ -83,8 +83,8 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, onLocaleChange }) => 
         <ul className="__father-doc-default-menu-list">
           {menus.map(item => {
             const location = history.location;
-            const hasSlugs = item.meta.slugs && item.meta.slugs.length;
-            const hasChildren = item.children && item.children.length;
+            const hasSlugs = item.meta.slugs && Boolean(item.meta.slugs.length);
+            const hasChildren = item.children && Boolean(item.children.length);
             const show1LevelSlugs =
               mode === 'site' && !hasChildren && hasSlugs && item.path === location.pathname;
 
