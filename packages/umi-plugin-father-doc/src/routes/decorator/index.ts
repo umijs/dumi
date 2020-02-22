@@ -16,8 +16,11 @@ export type RouteProcessor = (
 
 class RouteDecorator {
   private processors: RouteProcessor[] = [];
+
   private options: IFatherDocOpts;
+
   private umi: IApi;
+
   /**
    * shared storage for all processors
    */

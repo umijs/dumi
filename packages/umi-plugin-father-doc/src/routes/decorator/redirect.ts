@@ -2,6 +2,21 @@ import { RouteProcessor } from '.';
 import { menuSorter } from '../getMenuFromRoutes';
 
 /**
+ * 获取分组菜单的数组
+ * @param validRoutes
+ */
+const genValidGroups = validRoutes =>
+  validRoutes.reduce((result, item) => {
+    if (item.meta.group?.path) {
+      const { title, path, ...resGroupMeta } = item.meta.group;
+
+      result.push({ title, path, meta: { ...resGroupMeta, nav: item.meta.nav } });
+    }
+
+    return result;
+  }, []);
+
+/**
  * generate redirects for missing group index routes & legacy route paths
  */
 export default (routes => {
@@ -37,15 +52,7 @@ export default (routes => {
       const { title, path, ...resNavMeta } = route.meta.nav;
       const validRoutes = routes.filter(item => item.meta.nav?.path === route.meta.nav.path);
       // concat valid groups to find redirect to ensure the redirect order same as menu order
-      const validGroups = validRoutes.reduce((result, item) => {
-        if (item.meta.group?.path) {
-          const { title, path, ...resGroupMeta } = item.meta.group;
-
-          result.push({ title, path, meta: { ...resGroupMeta, nav: item.meta.nav } });
-        }
-
-        return result;
-      }, []);
+      const validGroups = genValidGroups(validRoutes);
 
       redirects[path] = {
         path,

@@ -54,10 +54,11 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
 
   static getDerivedStateFromProps({ locales, navs, location, menus, route }) {
     let navPath = '*';
-    let state = {
+    const state = {
       currentLocale: (locales[0] || { name: '*' }).name,
       currentRouteMeta:
-        (route as any).routes.find(route => route.path === location.pathname)?.meta || {},
+        (route as any).routes.find(currentRoute => currentRoute.path === location.pathname)?.meta ||
+        {},
       currentSlug: /^(#\/|[^#])/.test(window.location.hash)
         ? location.query.anchor
         : decodeURIComponent(location.hash).replace('#', ''),
@@ -126,19 +127,17 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
         slugs
           .slice(0)
           .reverse()
-          .some(({ heading }) => {
+          .forEach(({ heading }) => {
             const elm = document.getElementById(heading);
-
+            const { currentSlug } = this.state;
             if (elm && elm.offsetTop - 100 <= document.documentElement.scrollTop) {
-              if (heading !== this.state.currentSlug) {
+              if (heading !== currentSlug) {
                 window.g_history.push(
                   `${window.g_history.location.pathname}${
                     /^(#\/|[^#])/.test(window.location.hash) ? '?anchor=' : '#'
                   }${heading}`,
                 );
               }
-
-              return true;
             }
           });
       }, 200),
@@ -161,35 +160,31 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
     router.push(newPathname);
   };
 
-  renderHero(hero) {
-    return (
-      <>
-        <div className="__father-doc-default-layout-hero">
-          <h1>{hero.text}</h1>
-          <p>{hero.desc}</p>
-          {hero.actions &&
-            hero.actions.map(action => (
-              <Link to={action.link} key={action.text}>
-                <button>{action.text}</button>
-              </Link>
-            ))}
-        </div>
-      </>
-    );
-  }
-
-  renderFeatures(features) {
-    return (
-      <div className="__father-doc-default-layout-features">
-        {features.map(feat => (
-          <dl key={feat.title}>
-            <dt>{feat.title}</dt>
-            <dd>{feat.desc}</dd>
-          </dl>
-        ))}
+  renderHero = hero => (
+    <>
+      <div className="__father-doc-default-layout-hero">
+        <h1>{hero.text}</h1>
+        <p>{hero.desc}</p>
+        {hero.actions &&
+          hero.actions.map(action => (
+            <Link to={action.link} key={action.text}>
+              <button type="button">{action.text}</button>
+            </Link>
+          ))}
       </div>
-    );
-  }
+    </>
+  );
+
+  renderFeatures = features => (
+    <div className="__father-doc-default-layout-features">
+      {features.map(feat => (
+        <dl key={feat.title}>
+          <dt>{feat.title}</dt>
+          <dd>{feat.desc}</dd>
+        </dl>
+      ))}
+    </div>
+  );
 
   render() {
     const { mode, title, desc, logo, repoUrl, locales, children } = this.props;
@@ -231,7 +226,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
           <SideMenu mobileMenuCollapsed={menuCollapsed} onLocaleChange={this.handleLocaleChange} />
           {showSlugs && (
             <SlugList
-              base={''}
+              base=""
               slugs={currentRouteMeta.slugs}
               className="__father-doc-default-layout-toc"
             />
