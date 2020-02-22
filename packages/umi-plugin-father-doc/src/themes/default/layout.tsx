@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { RouterTypes } from 'umi';
-import router from 'umi/router';
-import Link from 'umi/link';
+import { Link, RouteProps, history } from 'umi';
 import Context from './context';
 import { IFatherDocOpts } from '../..';
 import { INav } from '../../routes/getNavFromRoutes';
@@ -34,7 +32,7 @@ export interface ILayoutState {
   menus: IMenu[0][0];
 }
 
-export default class Layout extends Component<ILayoutProps & RouterTypes> {
+export default class Layout extends Component<ILayoutProps & RouteProps> {
   state: ILayoutState = {
     // control side menu in mobile responsive mode
     menuCollapsed: true,
@@ -132,8 +130,8 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
             const { currentSlug } = this.state;
             if (elm && elm.offsetTop - 100 <= document.documentElement.scrollTop) {
               if (heading !== currentSlug) {
-                window.g_history.push(
-                  `${window.g_history.location.pathname}${
+                history.push(
+                  `${history.location.pathname}${
                     /^(#\/|[^#])/.test(window.location.hash) ? '?anchor=' : '#'
                   }${heading}`,
                 );
@@ -157,7 +155,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
       newPathname = `/${ev.target.value}${newPathname}`.replace(/\/$/, '');
     }
 
-    router.push(newPathname);
+    history.push(newPathname);
   };
 
   renderHero = hero => (

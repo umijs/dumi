@@ -1,4 +1,4 @@
-import { IApi, IRoute } from 'umi-types';
+import { IApi, IRoute } from '@umijs/types';
 import { IFatherDocOpts } from '../..';
 import flat from './flat';
 import frontMatter from './frontMatter';
@@ -8,6 +8,7 @@ import nav from './nav';
 import group from './group';
 import fallback from './fallback';
 import redirect from './redirect';
+import relative from './relative';
 
 export type RouteProcessor = (
   this: { options: IFatherDocOpts; umi: IApi; data: { [key: string]: any } },
@@ -66,7 +67,8 @@ export default (routes: IRoute[], opts: IFatherDocOpts, umi: IApi) => {
     .use(nav)
     .use(group)
     .use(fallback)
-    .use(redirect);
+    .use(redirect)
+    .use(relative);
 
   return decorator.process(routes);
 };

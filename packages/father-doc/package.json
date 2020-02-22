@@ -16,7 +16,7 @@
     "PeachScript <scdzwyxst@gmail.com> (https://github.com/PeachScript)"
   ],
   "dependencies": {
-    "umi": "^2.11.1",
+    "umi": "^3.0.0-beta.22",
     "umi-plugin-father-doc": "1.0.0-beta.3"
   },
   "license": "MIT"

@@ -1,6 +1,5 @@
 import React, { useContext, FC, MouseEvent, ChangeEvent } from 'react';
-import Link from 'umi/link';
-import NavLink from 'umi/navlink';
+import { Link, NavLink } from 'umi';
 import context from './context';
 import './Navbar.less';
 

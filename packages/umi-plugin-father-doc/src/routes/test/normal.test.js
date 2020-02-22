@@ -52,32 +52,27 @@ describe('routes & menu: normal', () => {
   });
 
   it('route decorator', () => {
-    const appRoot = path.join(FIXTURES_PATH, 'normal');
-
     routes = decorateRoute(
       routes,
       { locales: [] },
       {
         paths: {
           cwd: process.cwd(),
-          absTmpDirPath: path.join(appRoot, '.umi'),
+          absTmpPath: path.join(process.cwd(), '.umi'),
         },
       },
     );
     expect(routes).toEqual([
       {
         path: '/',
-        component: './packages/umi-plugin-father-doc/src/routes/fixtures/normal/index.md',
+        component: '../../packages/umi-plugin-father-doc/src/routes/fixtures/normal/index.md',
         exact: true,
         meta: { title: 'Index', slugs: [] },
         title: 'Index',
-        Routes: [
-          './packages/umi-plugin-father-doc/src/routes/fixtures/normal/.umi/TitleWrapper.jsx',
-        ],
       },
       {
         path: '/test/intro',
-        component: './packages/umi-plugin-father-doc/src/routes/fixtures/normal/intro.md',
+        component: '../../packages/umi-plugin-father-doc/src/routes/fixtures/normal/intro.md',
         exact: true,
         meta: {
           group: { title: 'Test', path: '/test' },
@@ -85,13 +80,11 @@ describe('routes & menu: normal', () => {
           slugs: [],
         },
         title: 'Intro',
-        Routes: [
-          './packages/umi-plugin-father-doc/src/routes/fixtures/normal/.umi/TitleWrapper.jsx',
-        ],
       },
       {
         path: '/index',
-        component: './packages/umi-plugin-father-doc/src/routes/fixtures/normal/index/readme.md',
+        component:
+          '../../packages/umi-plugin-father-doc/src/routes/fixtures/normal/index/readme.md',
         exact: true,
         meta: {
           group: { title: 'Index', path: '/index' },
@@ -100,14 +93,11 @@ describe('routes & menu: normal', () => {
           slugs: [],
         },
         title: 'Readme',
-        Routes: [
-          './packages/umi-plugin-father-doc/src/routes/fixtures/normal/.umi/TitleWrapper.jsx',
-        ],
       },
       {
         path: '/sub/hello-component',
         component:
-          './packages/umi-plugin-father-doc/src/routes/fixtures/normal/sub/HelloComponent.md',
+          '../../packages/umi-plugin-father-doc/src/routes/fixtures/normal/sub/HelloComponent.md',
         exact: true,
         meta: {
           group: {
@@ -119,13 +109,10 @@ describe('routes & menu: normal', () => {
           slugs: [],
         },
         title: 'HelloComponent',
-        Routes: [
-          './packages/umi-plugin-father-doc/src/routes/fixtures/normal/.umi/TitleWrapper.jsx',
-        ],
       },
       {
         path: '/sub',
-        component: './packages/umi-plugin-father-doc/src/routes/fixtures/normal/sub/README.md',
+        component: '../../packages/umi-plugin-father-doc/src/routes/fixtures/normal/sub/README.md',
         exact: true,
         meta: {
           title: 'README',
@@ -137,14 +124,11 @@ describe('routes & menu: normal', () => {
           slugs: [],
         },
         title: 'README',
-        Routes: [
-          './packages/umi-plugin-father-doc/src/routes/fixtures/normal/.umi/TitleWrapper.jsx',
-        ],
       },
       {
         path: '/rename-sub-sub/still-hello',
         component:
-          './packages/umi-plugin-father-doc/src/routes/fixtures/normal/sub/subsub/stillHello.md',
+          '../../packages/umi-plugin-father-doc/src/routes/fixtures/normal/sub/subsub/stillHello.md',
         exact: true,
         meta: {
           group: { title: 'Rename-sub-sub', path: '/rename-sub-sub' },
@@ -152,13 +136,11 @@ describe('routes & menu: normal', () => {
           slugs: [],
         },
         title: 'StillHello',
-        Routes: [
-          './packages/umi-plugin-father-doc/src/routes/fixtures/normal/.umi/TitleWrapper.jsx',
-        ],
       },
       {
         path: '/rename-sub-sub/y-end',
-        component: './packages/umi-plugin-father-doc/src/routes/fixtures/normal/sub/subsub/yEnd.md',
+        component:
+          '../../packages/umi-plugin-father-doc/src/routes/fixtures/normal/sub/subsub/yEnd.md',
         exact: true,
         meta: {
           group: { title: 'Rename-sub-sub', path: '/rename-sub-sub' },
@@ -167,9 +149,6 @@ describe('routes & menu: normal', () => {
           slugs: [],
         },
         title: 'YEnd',
-        Routes: [
-          './packages/umi-plugin-father-doc/src/routes/fixtures/normal/.umi/TitleWrapper.jsx',
-        ],
       },
       {
         path: '/test',

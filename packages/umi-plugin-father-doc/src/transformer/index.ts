@@ -1,6 +1,7 @@
 import path from 'path';
-import getYamlConfig from 'umi-build-dev/lib/routes/getYamlConfig';
+import yaml from 'js-yaml';
 import slash from 'slash2';
+import extractComments from 'esprima-extract-comments';
 import remark from './remark';
 
 const FRONT_COMMENT_EXP = /^\n*\/\*[^]+?\s*\*\/\n*/;
@@ -21,6 +22,30 @@ export interface TransformResult {
   config: {
     [key: string]: any;
   };
+}
+
+// From: https://github.com/umijs/umi/blob/master/packages/umi-build-dev/src/routes/getYamlConfig.js
+function getYamlConfig(code, componentFile = '') {
+  const comments = extractComments(code);
+
+  return comments
+    .slice(0, 1)
+    .filter(c => c.value.includes(':') && c.loc.start.line === 1)
+    .reduce((memo, item) => {
+      const { value } = item;
+      const v = value.replace(/^(\s+)?\*/gm, '');
+
+      try {
+        const yamlResult = yaml.safeLoad(v);
+        return {
+          ...memo,
+          ...yamlResult,
+        };
+      } catch (e) {
+        console.warn(`Annotation fails to parse - ${componentFile}: ${e}`);
+      }
+      return memo;
+    }, {});
 }
 
 export default {

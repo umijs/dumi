@@ -1,6 +1,5 @@
 import React, { FC, useContext, ChangeEvent } from 'react';
-import Link from 'umi/link';
-import NavLink from 'umi/navlink';
+import { Link, NavLink, history } from 'umi';
 import context from './context';
 import SlugList from './SlugList';
 import './SideMenu.less';
@@ -83,7 +82,7 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, onLocaleChange }) => 
         {/* menu list */}
         <ul className="__father-doc-default-menu-list">
           {menus.map(item => {
-            const location = window.g_history.location;
+            const location = history.location;
             const hasSlugs = item.meta.slugs && item.meta.slugs.length;
             const hasChildren = item.children && item.children.length;
             const show1LevelSlugs =

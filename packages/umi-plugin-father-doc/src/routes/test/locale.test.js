@@ -58,7 +58,9 @@ describe('routes & menu: locales', () => {
   });
 
   it('getRouteConfigFromDir: default', () => {
-    routes = getRoute(path.join(FIXTURES_PATH, 'locale'), { locales: DEFAULT_LOCALES });
+    routes = getRoute(path.join(FIXTURES_PATH, 'locale'), {
+      locales: DEFAULT_LOCALES,
+    });
 
     expect(routes).toEqual([
       {
@@ -101,15 +103,13 @@ describe('routes & menu: locales', () => {
   });
 
   it('route decorator', () => {
-    const appRoot = path.join(FIXTURES_PATH, 'locale');
-
     routes = decorateRoute(
       routes,
       { locales: DEFAULT_LOCALES },
       {
         paths: {
           cwd: process.cwd(),
-          absTmpDirPath: path.join(appRoot, '.umi'),
+          absTmpPath: path.join(process.cwd(), '.umi'),
         },
       },
     );
@@ -117,28 +117,22 @@ describe('routes & menu: locales', () => {
     expect(routes).toEqual([
       {
         path: '/',
-        component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/index.en-US.md',
+        component: '../../packages/umi-plugin-father-doc/src/routes/fixtures/locale/index.en-US.md',
         exact: true,
         meta: { title: 'English', slugs: [], locale: 'en-US' },
         title: 'English',
-        Routes: [
-          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
-        ],
       },
       {
         path: '/zh-CN',
-        component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/index.zh-CN.md',
+        component: '../../packages/umi-plugin-father-doc/src/routes/fixtures/locale/index.zh-CN.md',
         exact: true,
         meta: { title: '中文', slugs: [], locale: 'zh-CN' },
         title: '中文',
-        Routes: [
-          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
-        ],
       },
       {
         path: '/missing/abc',
         component:
-          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/missing/abc.en-US.md',
+          '../../packages/umi-plugin-father-doc/src/routes/fixtures/locale/missing/abc.en-US.md',
         exact: true,
         meta: {
           group: { path: '/missing', title: 'Missing' },
@@ -147,13 +141,11 @@ describe('routes & menu: locales', () => {
           slugs: [],
         },
         title: 'Abc',
-        Routes: [
-          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
-        ],
       },
       {
         path: '/group/abc',
-        component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/abc.en-US.md',
+        component:
+          '../../packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/abc.en-US.md',
         exact: true,
         meta: {
           group: { path: '/group', title: 'Group' },
@@ -162,13 +154,11 @@ describe('routes & menu: locales', () => {
           slugs: [],
         },
         title: 'Abc',
-        Routes: [
-          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
-        ],
       },
       {
         path: '/zh-CN/group/abc',
-        component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/abc.zh-CN.md',
+        component:
+          '../../packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/abc.zh-CN.md',
         exact: true,
         meta: {
           group: { path: '/zh-CN/group', title: 'Group' },
@@ -177,13 +167,11 @@ describe('routes & menu: locales', () => {
           slugs: [],
         },
         title: 'Abc',
-        Routes: [
-          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
-        ],
       },
       {
         path: '/sub',
-        component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/index.en-US.md',
+        component:
+          '../../packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/index.en-US.md',
         exact: true,
         meta: {
           group: { path: '/sub', title: 'Sub' },
@@ -192,13 +180,11 @@ describe('routes & menu: locales', () => {
           slugs: [],
         },
         title: 'Index',
-        Routes: [
-          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
-        ],
       },
       {
         path: '/zh-CN/sub',
-        component: './packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/index.zh-CN.md',
+        component:
+          '../../packages/umi-plugin-father-doc/src/routes/fixtures/locale/sub/index.zh-CN.md',
         exact: true,
         meta: {
           group: { path: '/zh-CN/sub', title: 'Sub' },
@@ -207,14 +193,11 @@ describe('routes & menu: locales', () => {
           slugs: [],
         },
         title: 'Index',
-        Routes: [
-          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
-        ],
       },
       {
         path: '/zh-CN/missing/abc',
         component:
-          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/missing/abc.en-US.md',
+          '../../packages/umi-plugin-father-doc/src/routes/fixtures/locale/missing/abc.en-US.md',
         exact: true,
         meta: {
           group: { path: '/zh-CN/missing', title: 'Missing' },
@@ -223,9 +206,6 @@ describe('routes & menu: locales', () => {
           slugs: [],
         },
         title: 'Abc',
-        Routes: [
-          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
-        ],
       },
       { path: '/missing', meta: {}, exact: true, redirect: '/missing/abc' },
       { path: '/group', meta: {}, exact: true, redirect: '/group/abc' },

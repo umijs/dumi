@@ -1,4 +1,4 @@
-import { IRoute } from 'umi-types';
+import { IRoute } from '@umijs/types';
 import { IFatherDocOpts } from '..';
 
 export interface INavItem {

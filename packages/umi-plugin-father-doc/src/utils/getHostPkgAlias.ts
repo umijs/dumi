@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
-import { IApi } from 'umi-types';
+import { IApi } from '@umijs/types';
 
 function getPkgAliasForPath(absPath: string) {
   const result = [path.basename(absPath), absPath];
@@ -22,10 +22,9 @@ export default (paths: IApi['paths']) => {
   if (isLerna) {
     // for lerna repo
     JSON.parse(
-      execSync(
-        `${path.join(paths.cwd, 'node_modules/.bin/lerna')} ls --json`,
-        { stdio: 'pipe' },
-      ).toString(),
+      execSync(`${path.join(paths.cwd, 'node_modules/.bin/lerna')} ls --json`, {
+        stdio: 'pipe',
+      }).toString(),
     ).forEach(pkg => {
       pkgs.push([pkg.name, pkg.location]);
     });
