@@ -100,7 +100,7 @@ describe('routes & menu: site mode', () => {
         meta: {
           slugs: [],
           title: 'Index',
-          nav: { path: '/config', title: 'Index' },
+          nav: { path: '/config', title: 'Config' },
         },
         title: 'Index',
       },
@@ -111,7 +111,7 @@ describe('routes & menu: site mode', () => {
         meta: {
           slugs: [],
           title: 'Others',
-          nav: { path: '/config', title: 'Others' },
+          nav: { path: '/config', title: 'Config' },
         },
         title: 'Others',
       },
@@ -120,7 +120,7 @@ describe('routes & menu: site mode', () => {
         component: '../../packages/umi-plugin-father-doc/src/routes/fixtures/site/rewrite/index.md',
         exact: true,
         meta: {
-          nav: { path: '/test-rewrite', title: 'Index' },
+          nav: { path: '/test-rewrite', title: 'Test-rewrite' },
           slugs: [],
           title: 'Index',
           group: { path: '/test-rewrite/rewrite', title: 'Rewrite' },
@@ -149,7 +149,7 @@ describe('routes & menu: site mode', () => {
         meta: {
           slugs: [],
           title: 'Index',
-          nav: { path: '/zh-CN/config', title: 'Index' },
+          nav: { path: '/zh-CN/config', title: 'Config' },
           locale: 'zh-CN',
         },
         title: 'Index',
@@ -161,7 +161,7 @@ describe('routes & menu: site mode', () => {
         meta: {
           slugs: [],
           title: 'Others',
-          nav: { path: '/zh-CN/config', title: 'Others' },
+          nav: { path: '/zh-CN/config', title: 'Config' },
           locale: 'zh-CN',
         },
         title: 'Others',
@@ -171,7 +171,7 @@ describe('routes & menu: site mode', () => {
         component: '../../packages/umi-plugin-father-doc/src/routes/fixtures/site/rewrite/index.md',
         exact: true,
         meta: {
-          nav: { path: '/zh-CN/test-rewrite', title: 'Index' },
+          nav: { path: '/zh-CN/test-rewrite', title: 'Test-rewrite' },
           slugs: [],
           title: 'Index',
           group: { path: '/zh-CN/test-rewrite/rewrite', title: 'Rewrite' },
@@ -200,13 +200,13 @@ describe('routes & menu: site mode', () => {
     expect(navs).toEqual({
       'en-US': [
         { path: '/api', title: 'Api' },
-        { path: '/test-rewrite', title: 'Index' },
-        { path: '/config', title: 'Others' },
+        { path: '/config', title: 'Config' },
+        { path: '/test-rewrite', title: 'Test-rewrite' },
       ],
       'zh-CN': [
         { path: '/zh-CN/api', title: 'Api' },
-        { path: '/zh-CN/test-rewrite', title: 'Index' },
-        { path: '/zh-CN/config', title: 'Others' },
+        { path: '/zh-CN/config', title: 'Config' },
+        { path: '/zh-CN/test-rewrite', title: 'Test-rewrite' },
       ],
     });
   });
@@ -244,7 +244,7 @@ describe('routes & menu: site mode', () => {
             meta: {
               slugs: [],
               title: 'Index',
-              nav: { path: '/config', title: 'Index' },
+              nav: { path: '/config', title: 'Config' },
             },
           },
           {
@@ -253,7 +253,7 @@ describe('routes & menu: site mode', () => {
             meta: {
               slugs: [],
               title: 'Others',
-              nav: { path: '/config', title: 'Others' },
+              nav: { path: '/config', title: 'Config' },
             },
           },
         ],
@@ -267,7 +267,7 @@ describe('routes & menu: site mode', () => {
                 path: '/test-rewrite/rewrite',
                 title: 'Index',
                 meta: {
-                  nav: { path: '/test-rewrite', title: 'Index' },
+                  nav: { path: '/test-rewrite', title: 'Test-rewrite' },
                   slugs: [],
                   title: 'Index',
                   group: { path: '/test-rewrite/rewrite', title: 'Rewrite' },
@@ -307,7 +307,7 @@ describe('routes & menu: site mode', () => {
             meta: {
               slugs: [],
               title: 'Index',
-              nav: { path: '/zh-CN/config', title: 'Index' },
+              nav: { path: '/zh-CN/config', title: 'Config' },
               locale: 'zh-CN',
             },
           },
@@ -317,7 +317,7 @@ describe('routes & menu: site mode', () => {
             meta: {
               slugs: [],
               title: 'Others',
-              nav: { path: '/zh-CN/config', title: 'Others' },
+              nav: { path: '/zh-CN/config', title: 'Config' },
               locale: 'zh-CN',
             },
           },
@@ -332,7 +332,7 @@ describe('routes & menu: site mode', () => {
                 path: '/zh-CN/test-rewrite/rewrite',
                 title: 'Index',
                 meta: {
-                  nav: { path: '/zh-CN/test-rewrite', title: 'Index' },
+                  nav: { path: '/zh-CN/test-rewrite', title: 'Test-rewrite' },
                   slugs: [],
                   title: 'Index',
                   group: { path: '/zh-CN/test-rewrite/rewrite', title: 'Rewrite' },

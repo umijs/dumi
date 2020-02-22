@@ -236,6 +236,23 @@ describe('routes & menu: locales', () => {
             meta: { title: 'English', slugs: [], locale: 'en-US' },
           },
           {
+            title: 'Sub',
+            path: '/sub',
+            meta: {},
+            children: [
+              {
+                path: '/sub',
+                title: 'Index',
+                meta: {
+                  slugs: [],
+                  locale: 'en-US',
+                  title: 'Index',
+                  group: { path: '/sub', title: 'Sub' },
+                },
+              },
+            ],
+          },
+          {
             title: 'Group',
             path: '/group',
             meta: {},
@@ -245,9 +262,9 @@ describe('routes & menu: locales', () => {
                 title: 'Abc',
                 meta: {
                   group: { path: '/group', title: 'Group' },
-                  title: 'Abc',
                   slugs: [],
                   locale: 'en-US',
+                  title: 'Abc',
                 },
               },
             ],
@@ -261,27 +278,10 @@ describe('routes & menu: locales', () => {
                 path: '/missing/abc',
                 title: 'Abc',
                 meta: {
-                  group: { path: '/missing', title: 'Missing' },
+                  slugs: [],
                   locale: 'en-US',
                   title: 'Abc',
-                  slugs: [],
-                },
-              },
-            ],
-          },
-          {
-            title: 'Sub',
-            path: '/sub',
-            meta: {},
-            children: [
-              {
-                path: '/sub',
-                title: 'Index',
-                meta: {
-                  group: { path: '/sub', title: 'Sub' },
-                  locale: 'en-US',
-                  title: 'Index',
-                  slugs: [],
+                  group: { path: '/missing', title: 'Missing' },
                 },
               },
             ],
@@ -290,6 +290,28 @@ describe('routes & menu: locales', () => {
       },
       'zh-CN': {
         '*': [
+          {
+            path: '/zh-CN',
+            title: '中文',
+            meta: { title: '中文', slugs: [], locale: 'zh-CN' },
+          },
+          {
+            title: 'Sub',
+            path: '/zh-CN/sub',
+            meta: {},
+            children: [
+              {
+                path: '/zh-CN/sub',
+                title: 'Index',
+                meta: {
+                  slugs: [],
+                  locale: 'zh-CN',
+                  title: 'Index',
+                  group: { path: '/zh-CN/sub', title: 'Sub' },
+                },
+              },
+            ],
+          },
           {
             title: 'Group',
             path: '/zh-CN/group',
@@ -300,9 +322,9 @@ describe('routes & menu: locales', () => {
                 title: 'Abc',
                 meta: {
                   group: { path: '/zh-CN/group', title: 'Group' },
-                  title: 'Abc',
                   slugs: [],
                   locale: 'zh-CN',
+                  title: 'Abc',
                 },
               },
             ],
@@ -316,35 +338,13 @@ describe('routes & menu: locales', () => {
                 path: '/zh-CN/missing/abc',
                 title: 'Abc',
                 meta: {
-                  group: { path: '/zh-CN/missing', title: 'Missing' },
+                  slugs: [],
                   locale: 'zh-CN',
                   title: 'Abc',
-                  slugs: [],
+                  group: { path: '/zh-CN/missing', title: 'Missing' },
                 },
               },
             ],
-          },
-          {
-            title: 'Sub',
-            path: '/zh-CN/sub',
-            meta: {},
-            children: [
-              {
-                path: '/zh-CN/sub',
-                title: 'Index',
-                meta: {
-                  group: { path: '/zh-CN/sub', title: 'Sub' },
-                  locale: 'zh-CN',
-                  title: 'Index',
-                  slugs: [],
-                },
-              },
-            ],
-          },
-          {
-            path: '/zh-CN',
-            title: '中文',
-            meta: { locale: 'zh-CN', title: '中文', slugs: [] },
           },
         ],
       },

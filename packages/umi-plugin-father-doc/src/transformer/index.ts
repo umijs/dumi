@@ -5,16 +5,6 @@ import extractComments from 'esprima-extract-comments';
 import remark from './remark';
 
 const FRONT_COMMENT_EXP = /^\n*\/\*[^]+?\s*\*\/\n*/;
-const MD_WRAPPER = `
-import React from 'react';
-import Alert from '${slash(path.join(__dirname, '../themes/default/builtins/Alert.js'))}';
-import FatherDocPreviewer from '${slash(
-  path.join(__dirname, '../themes/default/builtins/Previewer.js'),
-)}';
-
-export default function () {
-  return <>$CONTENT</>;
-}`;
 
 export interface TransformResult {
   content: string;
@@ -48,6 +38,19 @@ function getYamlConfig(code, componentFile = '') {
     }, {});
 }
 
+function wrapperHtmlByComponent(html: string) {
+  return `
+    import React from 'react';
+    import Alert from '${slash(path.join(__dirname, '../themes/default/builtins/Alert.js'))}';
+    import FatherDocPreviewer from '${slash(
+      path.join(__dirname, '../themes/default/builtins/Previewer.js'),
+    )}';
+
+    export default function () {
+      return <>${html}</>;
+  }`;
+}
+
 export default {
   /**
    * transform markdown content to jsx & meta data
@@ -65,7 +68,7 @@ export default {
       content = (result.contents as string).replace(/class="/g, 'className="');
 
       // wrap by page component
-      content = MD_WRAPPER.replace('$CONTENT', content);
+      content = wrapperHtmlByComponent(content);
     }
 
     return {

@@ -182,21 +182,21 @@ describe('routes & menu: normal', () => {
             meta: { order: 10 },
             children: [
               {
-                path: '/sub/hello-component',
-                title: 'HelloComponent',
-                meta: {
-                  group: { path: '/sub', title: 'Rename Sub', order: 10 },
-                  title: 'HelloComponent',
-                  slugs: [],
-                },
-              },
-              {
                 path: '/sub',
                 title: 'README',
                 meta: {
-                  group: { path: '/sub', title: 'Rename Sub', order: 10 },
-                  title: 'README',
+                  group: { title: 'Rename Sub', order: 10, path: '/sub' },
                   slugs: [],
+                  title: 'README',
+                },
+              },
+              {
+                path: '/sub/hello-component',
+                title: 'HelloComponent',
+                meta: {
+                  group: { title: 'Rename Sub', order: 10, path: '/sub' },
+                  slugs: [],
+                  title: 'HelloComponent',
                 },
               },
             ],
@@ -204,50 +204,7 @@ describe('routes & menu: normal', () => {
           {
             path: '/',
             title: 'Index',
-            meta: { title: 'Index', slugs: [] },
-          },
-          {
-            title: 'Index',
-            path: '/index',
-            meta: {},
-            children: [
-              {
-                path: '/index',
-                title: 'Readme',
-                meta: {
-                  group: { path: '/index', title: 'Index' },
-                  title: 'Readme',
-                  legacy: '/legacy/path/test',
-                  slugs: [],
-                },
-              },
-            ],
-          },
-          {
-            title: 'Rename-sub-sub',
-            path: '/rename-sub-sub',
-            meta: {},
-            children: [
-              {
-                path: '/rename-sub-sub/y-end',
-                title: 'YEnd',
-                meta: {
-                  group: { path: '/rename-sub-sub', title: 'Rename-sub-sub' },
-                  title: 'YEnd',
-                  order: 1,
-                  slugs: [],
-                },
-              },
-              {
-                path: '/rename-sub-sub/still-hello',
-                title: 'StillHello',
-                meta: {
-                  group: { path: '/rename-sub-sub', title: 'Rename-sub-sub' },
-                  title: 'StillHello',
-                  slugs: [],
-                },
-              },
-            ],
+            meta: { slugs: [], title: 'Index' },
           },
           {
             title: 'Test',
@@ -261,6 +218,49 @@ describe('routes & menu: normal', () => {
                   title: 'Intro',
                   group: { path: '/test', title: 'Test' },
                   slugs: [],
+                },
+              },
+            ],
+          },
+          {
+            title: 'Index',
+            path: '/index',
+            meta: {},
+            children: [
+              {
+                path: '/index',
+                title: 'Readme',
+                meta: {
+                  legacy: '/legacy/path/test',
+                  slugs: [],
+                  title: 'Readme',
+                  group: { path: '/index', title: 'Index' },
+                },
+              },
+            ],
+          },
+          {
+            title: 'Rename-sub-sub',
+            path: '/rename-sub-sub',
+            meta: {},
+            children: [
+              {
+                path: '/rename-sub-sub/y-end',
+                title: 'YEnd',
+                meta: {
+                  order: 1,
+                  group: { path: '/rename-sub-sub', title: 'Rename-sub-sub' },
+                  slugs: [],
+                  title: 'YEnd',
+                },
+              },
+              {
+                path: '/rename-sub-sub/still-hello',
+                title: 'StillHello',
+                meta: {
+                  group: { path: '/rename-sub-sub', title: 'Rename-sub-sub' },
+                  slugs: [],
+                  title: 'StillHello',
                 },
               },
             ],

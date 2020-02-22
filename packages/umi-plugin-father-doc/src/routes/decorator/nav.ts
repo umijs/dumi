@@ -28,13 +28,11 @@ export default (function nav(routes) {
       if (route.meta.nav?.path) {
         // generate nav title by nav path
         if (!route.meta.nav.title) {
-          route.meta.nav.title =
-            route.title ||
-            route.meta.nav.path
-              // discard start slash
-              .replace(/^\//g, '')
-              // upper case the first english letter
-              .replace(/^[a-z]/, s => s.toUpperCase());
+          route.meta.nav.title = route.meta.nav.path
+            // discard start slash
+            .replace(/^\//g, '')
+            // upper case the first english letter
+            .replace(/^[a-z]/, s => s.toUpperCase());
         }
 
         // add locale prefix for nav path
