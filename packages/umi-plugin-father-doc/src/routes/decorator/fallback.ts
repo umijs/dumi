@@ -15,6 +15,25 @@ function replaceLocaleForPath(
 }
 
 /**
+ * 判断是不是包含 index 页面
+ * index 有两种，
+ * 一种是 "/"
+ * 一种是 /index
+ * @param routes 路由列表
+ * @param localePrefix 国际化前缀
+ */
+const hasIndexPage = (routes: { path: string }[], localePrefix: string) =>
+  routes.some(route => {
+    if (route.path === localePrefix) {
+      return true;
+    }
+    if (route.path === `${localePrefix}index`) {
+      return true;
+    }
+    return false;
+  });
+
+/**
  * generate fallback routes for missing locales
  */
 export default (function fallback(routes) {
@@ -24,9 +43,8 @@ export default (function fallback(routes) {
   // for missing locale routes
   this.data.locales.forEach(locale => {
     const localePrefix = locale === defaultLocale ? '/' : `/${locale}`;
-
     // fallback root route path to README.md for each locale
-    if (!routes.some(route => route.path === localePrefix)) {
+    if (!hasIndexPage) {
       const localeFileAddon = locale === defaultLocale ? '' : `.${locale}`;
       const readmePath = slash(path.join(this.umi.paths.cwd, `README${localeFileAddon}.md`));
 

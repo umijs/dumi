@@ -15,7 +15,7 @@ export default (api: IApi, opts: IFatherDocOpts): IRoute[] => {
       title: opts.title,
     },
   ];
-  const paths = api.paths;
+  const { paths } = api;
 
   if (opts.routes) {
     // only apply user's routes if there has routes config

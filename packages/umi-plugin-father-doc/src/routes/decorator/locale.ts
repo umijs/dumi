@@ -9,14 +9,14 @@ export default (function locale(routes) {
 
   return routes.map(route => {
     // guess filename has locale suffix, eg: index.zh-CN
-    const locale = path.parse(route.component as string).name.match(/[^.]+$/)?.[0];
+    const pathLocale = path.parse(route.component as string).name.match(/[^.]+$/)?.[0];
 
     // valid locale
-    if (locale && this.options.locales.find(([name]) => name === locale)) {
-      route.meta.locale = locale;
+    if (pathLocale && this.options.locales.find(([name]) => name === pathLocale)) {
+      route.meta.locale = pathLocale;
 
       // share locale list for other processor
-      this.data.locales.add(locale);
+      this.data.locales.add(pathLocale);
     }
 
     return route;
