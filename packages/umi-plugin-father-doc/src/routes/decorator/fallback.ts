@@ -16,18 +16,13 @@ function replaceLocaleForPath(
 
 /**
  * 判断是不是包含 index 页面
- * index 有两种，
- * 一种是 "/"
- * 一种是 /index
+ * index 就是 "/"
  * @param routes 路由列表
  * @param localePrefix 国际化前缀
  */
 const hasIndexPage = (routes: { path: string }[], localePrefix: string) =>
   routes.some(route => {
     if (route.path === localePrefix) {
-      return true;
-    }
-    if (route.path === `${localePrefix}index`) {
       return true;
     }
     return false;
