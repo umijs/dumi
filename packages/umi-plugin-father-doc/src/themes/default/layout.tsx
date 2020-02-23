@@ -309,12 +309,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
             onLocaleChange={this.handleLocaleChange}
             onMobileMenuClick={() => this.setState({ menuCollapsed: !menuCollapsed })}
           />
-          {showSidebar && (
-            <SideMenu
-              mobileMenuCollapsed={menuCollapsed}
-              onLocaleChange={this.handleLocaleChange}
-            />
-          )}
+          <SideMenu mobileMenuCollapsed={menuCollapsed} onLocaleChange={this.handleLocaleChange} />
           {showSlugs && (
             <SlugList
               base=""
