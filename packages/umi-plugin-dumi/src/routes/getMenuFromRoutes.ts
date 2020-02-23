@@ -22,10 +22,10 @@ function isValidMenuRoutes(route: IRoute) {
 }
 
 export function menuSorter(prev, next) {
-  const prevOrder = typeof prev.meta.order === 'number' ? prev.meta.order : 0;
-  const nextOrder = typeof next.meta.order === 'number' ? next.meta.order : 0;
+  const prevOrder = typeof prev.meta.order === 'number' ? prev.meta.order : Infinity;
+  const nextOrder = typeof next.meta.order === 'number' ? next.meta.order : Infinity;
   // compare order meta config first
-  const metaOrder = prevOrder === nextOrder ? 0 : nextOrder - prevOrder;
+  const metaOrder = prevOrder === nextOrder ? 0 : prevOrder - nextOrder;
   // last compare path length
   const pathOrder = prev.path.length - next.path.length;
   // then compare title ASCII

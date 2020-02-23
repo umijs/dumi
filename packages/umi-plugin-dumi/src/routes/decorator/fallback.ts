@@ -38,7 +38,7 @@ export default (function fallback(routes) {
           meta: {
             locale,
             title: 'README',
-            order: Infinity, // keep readme on the top
+            order: -Infinity, // keep readme on the top
           },
           title: 'README',
         });

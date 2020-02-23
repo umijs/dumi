@@ -36,10 +36,10 @@ export default (routes: IRoute[], opts: IDumiOpts): INav => {
   // deconstruct locale navs from mapping to array
   Object.keys(localeNavs).forEach(key => {
     localeNavs[key] = Object.values(localeNavs[key]).sort((prev: INavItem, next: INavItem) => {
-      const prevOrder = typeof prev.order === 'number' ? prev.order : 0;
-      const nextOrder = typeof next.order === 'number' ? next.order : 0;
+      const prevOrder = typeof prev.order === 'number' ? prev.order : Infinity;
+      const nextOrder = typeof next.order === 'number' ? next.order : Infinity;
       // compare order meta config first
-      const metaOrder = prevOrder === nextOrder ? 0 : nextOrder - prevOrder;
+      const metaOrder = prevOrder === nextOrder ? 0 : prevOrder - nextOrder;
       // last compare path length
       const pathOrder = prev.path.length - next.path.length;
       // then compare title ASCII
