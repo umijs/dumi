@@ -1,0 +1,264 @@
+@import (reference) './variables.less';
+
+.@{prefix}-menu {
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: @s-menu-width;
+  background-color: #f2f5fa;
+  box-sizing: border-box;
+  transition: left 0.3s;
+
+  @media @mobile {
+    left: -@s-menu-mobile-width;
+    top: @s-mobile-nav-height;
+    width: @s-menu-mobile-width;
+    background-color: #fff;
+
+    &[data-mobile-show] {
+      left: 0;
+    }
+  }
+
+  // shadow
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: block;
+    width: 20px;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.03));
+
+    // use border on mobile devices
+    @media @mobile {
+      width: 1px;
+      background: @c-border;
+    }
+  }
+
+  &-locale {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 0 8px;
+    border: 1px solid @c-border;
+    cursor: pointer;
+
+    &::before {
+      content: '🌏';
+      color: #fff;
+    }
+
+    &::after {
+      content: '';
+      display: inline-block;
+      width: 0;
+      height: 0;
+      border: 3px solid transparent;
+      border-top-color: @c-text;
+    }
+
+    select {
+      padding: 4px 0;
+      color: @c-secondary;
+      appearance: none;
+      background: transparent;
+      border: 0;
+      outline: none;
+    }
+  }
+
+  &-header {
+    position: relative;
+    padding-top: 40px;
+    text-align: center;
+    border-bottom: 1px solid @c-border;
+
+    @media @mobile {
+      display: none;
+    }
+
+    .@{prefix}-menu-logo {
+      display: inline-block;
+      width: 66px;
+      height: 65px;
+      background: url(@img-logo) no-repeat 0 / contain;
+    }
+
+    h1 {
+      margin: 10px 0 0;
+      color: @c-heading;
+      font-weight: 500;
+      line-height: 1.40625;
+    }
+
+    p {
+      margin: 0 0 5px;
+      color: lighten(@c-secondary, 10%);
+
+      // badges
+      > object[data^='https://img.shields.io'] {
+        max-height: 20px;
+      }
+
+      + p {
+        margin-bottom: 10px;
+      }
+    }
+  }
+
+  &-inner {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    overscroll-behavior: contain;
+
+    // common list styles
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      font-size: 16px;
+
+      li {
+        a {
+          display: block;
+          padding-right: 24px;
+          color: @c-heading;
+          line-height: 2.4;
+          text-decoration: none;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          outline: none;
+
+          &:hover,
+          &.active {
+            color: @c-primary;
+          }
+        }
+
+        // level larger, offset larger, font size smaller
+        ul {
+          font-size: 0.9em;
+          padding-left: 1em;
+        }
+      }
+    }
+
+    // 1-level list styles
+    > ul {
+      > li > a {
+        line-height: 2.875;
+      }
+    }
+
+    // n-level list styles
+    > ul ul {
+      a {
+        color: @c-secondary;
+      }
+    }
+
+    // mobile nav list
+    .@{prefix}-menu-nav-list {
+      display: none;
+      padding: 16px 16px 8px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid @c-border;
+
+      @media @mobile {
+        display: block;
+      }
+    }
+
+    // menu list
+    .@{prefix}-menu-list {
+      padding: 8px 0;
+
+      > li > a {
+        @c-active-bg: #e8ecf4;
+
+        padding-left: 28px;
+
+        &:hover {
+          background: lighten(@c-active-bg, 2%);
+        }
+
+        &:active {
+          background: lighten(@c-active-bg, 1%);
+        }
+
+        &.active {
+          background: #e8ecf4;
+        }
+
+        ~ ul {
+          margin-top: 8px;
+          margin-left: 28px;
+        }
+
+        @media @mobile {
+          padding-left: 16px;
+
+          ~ ul {
+            margin-top: 0px;
+            margin-left: 16px;
+          }
+        }
+      }
+    }
+  }
+
+  &[data-mode='site'] {
+    &::after {
+      width: 1px;
+      background: @c-border;
+    }
+
+    .@{prefix}-menu-list {
+      padding: 0;
+
+      > li > a {
+        &.active {
+          position: relative;
+          z-index: 1;
+
+          &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            display: block;
+            width: 4px;
+            background-color: @c-primary;
+          }
+        }
+      }
+    }
+
+    @media @desktop {
+      top: @s-nav-height + 50;
+      width: @s-site-menu-width;
+      background: transparent;
+
+      .@{prefix}-menu-nav,
+      .@{prefix}-menu-header {
+        display: none;
+      }
+
+      .@{prefix}-menu-list > li > a {
+        padding-left: 58px;
+
+        ~ ul {
+          margin-left: 58px;
+        }
+      }
+    }
+  }
+}

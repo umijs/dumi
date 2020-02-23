@@ -1,0 +1,23 @@
+{
+  "name": "dumi",
+  "version": "0.0.0",
+  "description": "dumi",
+  "main": "lib/index.js",
+  "bin": "bin/dumi.js",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/umijs/father-doc",
+    "directory": "father-doc"
+  },
+  "homepage": "http://github.com/umijs/father-doc",
+  "bugs": "http://github.com/umijs/father-doc/issues",
+  "authors": [
+    "ycjcl868 <chaolinjin@gmail.com> (https://github.com/ycjcl868)",
+    "PeachScript <scdzwyxst@gmail.com> (https://github.com/PeachScript)"
+  ],
+  "dependencies": {
+    "umi": "^3.0.0-beta.22",
+    "umi-plugin-dumi": "1.0.0-beta.4"
+  },
+  "license": "MIT"
+}

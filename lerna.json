@@ -7,7 +7,7 @@
       "pr(dependency)": ":deciduous_tree: Dependency",
       "pr(chore)": ":turtle: Chore"
     },
-    "repo": "umijs/father-doc",
+    "repo": "umijs/dumi",
     "cacheDir": ".changelog"
   },
   "packages": ["packages/*"],

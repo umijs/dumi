@@ -1,9 +1,9 @@
 {
   "private": true,
   "scripts": {
-    "dev": "cross-env BROWSER=none node ./packages/father-doc/bin/father-doc.js dev",
+    "dev": "cross-env BROWSER=none node ./packages/dumi/bin/dumi.js dev",
     "watch": "father-build build --watch",
-    "doc:build": "cross-env BROWSER=none node ./packages/father-doc/bin/father-doc.js build",
+    "doc:build": "cross-env BROWSER=none node ./packages/dumi/bin/dumi.js build",
     "doc:deploy": "bash ./scripts/deploy_doc.sh",
     "bootstrap": "lerna bootstrap",
     "build": "father-build build",
@@ -11,7 +11,7 @@
     "clean": "lerna clean -y",
     "test": "umi-test --coverage",
     "debug": "umi-test",
-    "lint": "eslint --cache --ext .js,.jsx,.ts,.tsx --format=pretty \"./packages/umi-plugin-father-doc/src\"",
+    "lint": "eslint --cache --ext .js,.jsx,.ts,.tsx --format=pretty \"./packages/umi-plugin-dumi/src\"",
     "prettier": "prettier -c --write \"**/*\"",
     "publish": "umi-test && npm run changelog && npm run build && lerna publish"
   },

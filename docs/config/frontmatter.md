@@ -6,7 +6,7 @@ group:
 
 # FrontMatter
 
-和大多数文档工具一样，为了使 Markdown 文件能发挥出配置能力，father-doc 也不能免俗地提供了一些 FrontMatter 的配置；值得一提的是，father-doc 不仅支持 Markdown 文件进行 FrontMatter 配置，也支持外部 Demo 引入的 TSX/JSX 文件的 FrontMatter 配置。
+和大多数文档工具一样，为了使 Markdown 文件能发挥出配置能力，dumi 也不能免俗地提供了一些 FrontMatter 的配置；值得一提的是，dumi 不仅支持 Markdown 文件进行 FrontMatter 配置，也支持外部 Demo 引入的 TSX/JSX 文件的 FrontMatter 配置。
 
 Markdown 文件的 FrontMatter 编写方法如下：
 
@@ -65,7 +65,7 @@ TSX/JSX 文件的 FrontMatter 编写方法如下：
 - 默认值：`null`
 - 详细：
 
-指定该文档的旧路径（从根路径开始指定），避免从其他文档迁移到 father-doc 后原路径访问 `404`。
+指定该文档的旧路径（从根路径开始指定），避免从其他文档迁移到 dumi 后原路径访问 `404`。
 
 ### group
 
@@ -73,7 +73,7 @@ TSX/JSX 文件的 FrontMatter 编写方法如下：
 - 默认值：`null`
 - 详细：
 
-该配置用于对当前页面进行分组，这样可以在侧边栏菜单进行分组显示，我们可以通过下方三项 FrontMatter 配置项显示地对 `group` 进行配置，也可以基于 father-doc 的文件夹嵌套来自动生成 group，例如：
+该配置用于对当前页面进行分组，这样可以在侧边栏菜单进行分组显示，我们可以通过下方三项 FrontMatter 配置项显示地对 `group` 进行配置，也可以基于 dumi 的文件夹嵌套来自动生成 group，例如：
 
 ```
 .
@@ -84,7 +84,7 @@ TSX/JSX 文件的 FrontMatter 编写方法如下：
         ├── b.md
 ```
 
-father-doc 会自动为 `index.md`、`a.md`、`b.md` 指定 `group.title` 为 `Components`、`group.path` 为 `/components`。并且我们可以通过 FrontMatter 对生成的默认配置进行**选择性复写**，比如：
+dumi 会自动为 `index.md`、`a.md`、`b.md` 指定 `group.title` 为 `Components`、`group.path` 为 `/components`。并且我们可以通过 FrontMatter 对生成的默认配置进行**选择性复写**，比如：
 
 ```md
 ---
