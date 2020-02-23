@@ -35,7 +35,7 @@ TSX/JSX 文件的 FrontMatter 编写方法如下：
 
 如果用户不进行配置，网站标题将会仅显示主标题；左侧菜单项名称默认为该 Markdown 文件的文件名（不含后缀）。
 
-### sidebar
+### sidemenu
 
 - 类型：`Boolean`
 - 默认值：`true`

@@ -161,7 +161,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
   renderHero = hero => (
     <>
       <div className="__dumi-default-layout-hero">
-        <h1>{hero.text}</h1>
+        <h1>{hero.title}</h1>
         <p>{hero.desc}</p>
         {hero.actions &&
           hero.actions.map(action => (
@@ -190,7 +190,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     const siteMode = Boolean(this.state.navs.length);
     const showHero = siteMode && currentRouteMeta.hero;
     const showFeatures = siteMode && currentRouteMeta.features;
-    const showSidebar = currentRouteMeta.sidebar !== false && !showHero && !showFeatures;
+    const showSideMenu = currentRouteMeta.sidemenu !== false && !showHero && !showFeatures;
     const showSlugs = currentRouteMeta.slugs && Boolean(currentRouteMeta.slugs.length) && !siteMode;
 
     return (
@@ -213,7 +213,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
       >
         <div
           className="__dumi-default-layout"
-          data-show-sidebar={showSidebar}
+          data-show-sidemenu={showSideMenu}
           data-show-slugs={showSlugs}
           data-site-mode={siteMode}
         >
