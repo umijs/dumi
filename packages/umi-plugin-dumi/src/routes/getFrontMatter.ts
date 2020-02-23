@@ -8,5 +8,6 @@ import transformer from '../transformer';
 export default (filePath: string): { [key: string]: any } => {
   const content = fs.readFileSync(filePath).toString();
 
-  return transformer.markdown(content, path.parse(filePath).dir, true).config;
+  return transformer.markdown(content, { fileAbsDir: path.parse(filePath).dir, onlyConfig: true })
+    .config;
 };

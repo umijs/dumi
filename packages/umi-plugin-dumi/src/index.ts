@@ -17,6 +17,7 @@ export interface IDumiOpts {
   desc?: string;
   include?: string[];
   locales?: [string, string][];
+  previewLangs?: string[];
   routes?: {
     path: IRoute['path'];
     component: IRoute['component'];
@@ -37,6 +38,7 @@ export default function(api: IApi, opts: IDumiOpts) {
       // default to include src, lerna pkg's src & docs folder
       include: hostPkgAlias.map(([_, pkgPath]) => path.join(pkgPath, 'src')).concat(['docs']),
       routes: api.userConfig.routes,
+      previewLangs: ['jsx', 'tsx'],
       locales: [
         ['en-US', 'EN'],
         ['zh-CN', '中文'],
@@ -116,7 +118,8 @@ export default function(api: IApi, opts: IDumiOpts) {
       .rule('md')
       .test(/\.md$/)
       .use('dumi')
-      .loader(require.resolve('./loader'));
+      .loader(require.resolve('./loader'))
+      .options({ previewLangs: opts.previewLangs });
 
     // add alias for current package(s)
     hostPkgAlias

@@ -1,8 +1,13 @@
 import * as babel from '@babel/core';
+import loaderUtils from 'loader-utils';
 import transformer from '../transformer';
 
 export default function loader(content: string) {
-  const result = transformer.markdown(content, this.context);
+  const options = loaderUtils.getOptions(this);
+  const result = transformer.markdown(content, {
+    fileAbsDir: this.context,
+    previewLangs: options.previewLangs,
+  });
 
   return babel.transformSync(result.content, {
     presets: [require.resolve('@babel/preset-react'), require.resolve('@babel/preset-env')],

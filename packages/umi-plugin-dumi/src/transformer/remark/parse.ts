@@ -9,6 +9,10 @@ export interface IParseProps extends RemarkParseOptions {
    *        only turn on tokenizers which use for parse yaml data if pass 'data'
    */
   strategy: 'default' | 'data';
+  /**
+   * which code block languages will be parse to previewer
+   */
+  langs: string[];
 }
 
 const { blockTokenizers, inlineTokenizers, setOptions } = parse.Parser.prototype as any;
@@ -57,11 +61,14 @@ function codeBlockModifierParser(meta: string): { [key: string]: any } {
 blockTokenizers.fencedCode = function fencedCode(...args) {
   const result = oFencedCode.apply(this, args);
 
-  // only process jsx & tsx code block
-  if (result && /^[jt]sx$/.test(result.lang)) {
+  // only process needed code block
+  if (result && this.options.langs.indexOf(result.lang) > -1) {
     const modifier = codeBlockModifierParser(result.meta);
     // extract frontmatters for embedded demo and omit the useless slugs field
-    const { content, config: { slugs, ...config } } = transformer[result.lang](result.value);
+    const {
+      content,
+      config: { slugs, ...config },
+    } = transformer[result.lang](result.value);
 
     if (modifier.pure) {
       // clear useless meta if the lang with pure modifier
@@ -112,6 +119,7 @@ Object.keys(inlineTokenizers).forEach(method => {
 (parse.Parser.prototype as any).setOptions = function(opts) {
   if (this.options.strategy) {
     opts.strategy = this.options.strategy;
+    opts.langs = this.options.langs;
   }
   setOptions.call(this, opts);
 };

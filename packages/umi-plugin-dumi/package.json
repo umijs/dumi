@@ -38,6 +38,7 @@
     "hosted-git-info": "^3.0.2",
     "innertext": "^1.0.3",
     "js-yaml": "^3.13.1",
+    "loader-utils": "^1.4.0",
     "lz-string": "^1.4.4",
     "mdast-util-to-hast": "^7.0.0",
     "react-clipboard.js": "^2.0.16",

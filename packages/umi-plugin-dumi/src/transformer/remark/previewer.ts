@@ -15,7 +15,7 @@ function visitor(node, i, parent) {
     // transform markdown for previewer desc field
     Object.keys(yaml).forEach(key => {
       if (/^desc(\.|$)/.test(key)) {
-        yaml[key] = transformer.markdown(yaml[key], '').html;
+        yaml[key] = transformer.markdown(yaml[key]).html;
       }
     });
 

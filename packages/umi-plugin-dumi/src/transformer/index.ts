@@ -55,14 +55,22 @@ export default {
   /**
    * transform markdown content to jsx & meta data
    * @param raw         content
+   * @param opts        transform options
    * @param fileAbsDir  absolute path of markdown file
    * @param onlyConfig  whether transform meta data only
    */
-  markdown(raw: string, fileAbsDir: string, onlyConfig?: boolean): TransformResult {
-    const result = remark(raw, { fileAbsDir, strategy: onlyConfig ? 'data' : 'default' });
+  markdown(
+    raw: string,
+    opts: { fileAbsDir?: string; onlyConfig?: boolean; previewLangs?: string[] } = {},
+  ): TransformResult {
+    const result = remark(raw, {
+      fileAbsDir: opts.fileAbsDir,
+      strategy: opts.onlyConfig ? 'data' : 'default',
+      previewLangs: opts.previewLangs || [],
+    });
     let content = '';
 
-    if (!onlyConfig) {
+    if (!opts.onlyConfig) {
       // convert class to className for jsx
       // Todo: process in a Unified way
       content = (result.contents as string).replace(/class="/g, 'className="');

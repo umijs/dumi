@@ -26,6 +26,10 @@ export interface IRemarkOpts {
    *        only return data (FrontMatter & other vFile data) if pass 'data'
    */
   strategy: IParseProps['strategy'];
+  /**
+   * which code block languages will be parse to previewer
+   */
+  previewLangs: IParseProps['langs'];
 }
 
 /**
@@ -55,7 +59,7 @@ const PLUGIN_STRATEGIES = {
 
 export default (raw: string, opts: IRemarkOpts) => {
   const processor = unified()
-    .use(parse, { strategy: opts.strategy || 'default' })
+    .use(parse, { strategy: opts.strategy || 'default', langs: opts.previewLangs })
     .data('fileAbsDir', opts.fileAbsDir);
 
   // apply plugins through strategy
