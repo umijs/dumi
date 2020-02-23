@@ -1,5 +1,5 @@
 {
-  "name": "umi-plugin-dumi",
+  "name": "@umijs/plugin-dumi",
   "version": "1.0.0-beta.0",
   "description": "",
   "main": "lib/index.js",

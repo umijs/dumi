@@ -1,4 +1,4 @@
-# umi-plugin-dumi
+# @umijs/plugin-dumi
 
 ## Install
 
@@ -13,7 +13,7 @@ Configure in `.umirc.js`,
 
 ```js
 export default {
-  plugins: [['umi-plugin-dumi', options]],
+  plugins: [['@umijs/plugin-dumi', options]],
 };
 ```
 
