@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import slash from 'slash2';
-import { IApi, IRoute } from '@umijs/types';
+import { IApi, IRoute } from 'umi-types';
 import getRouteConfigFromDir from './getRouteConfigFromDir';
 import decorateRoutes from './decorator';
 import { IFatherDocOpts } from '../index';
@@ -27,6 +27,7 @@ export default (api: IApi, opts: IFatherDocOpts): IRoute[] => {
     }));
   } else {
     // generate routes automatically if there has no routes config
+
     // find routes from include path
     opts.include.forEach(item => {
       const docsPath = path.isAbsolute(item) ? item : path.join(paths.cwd, item);

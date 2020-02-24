@@ -1,5 +1,5 @@
-import React, { FC, useContext } from 'react';
-import { Link } from 'umi';
+import React, { FC, useContext, useEffect } from 'react';
+import Link from 'umi/link';
 import context from './context';
 import './SlugList.less';
 import getGotoPathName from '../../utils/getGotoPathName';

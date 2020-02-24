@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import slash from 'slash2';
-import { IRoute, IApi } from '@umijs/types';
+import { IRoute } from 'umi-types';
 import { IFatherDocOpts } from '../index';
 
 const IGNORE_DIR = ['node_modules', 'fixtures'];

@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import { IApi, IRoute } from '@umijs/types';
+import assert from 'assert';
+import { isPlainObject } from 'lodash';
+import { IApi, IRoute } from 'umi-types';
 import symlink from 'symlink-dir';
 import hostedGit from 'hosted-git-info';
 import getRouteConfig from './routes/getRouteConfig';
@@ -25,57 +27,65 @@ export interface IFatherDocOpts {
   }[];
 }
 
+function docConfigPlugin() {
+  return (api: IApi) => ({
+    name: 'doc',
+    validate(val: any) {
+      assert(isPlainObject(val), `Configure item doc should be Plain Object, but got ${val}.`);
+    },
+    onChange() {
+      api.service.restart('Configure item doc Changed.');
+    },
+  });
+}
+
 export default function(api: IApi, opts: IFatherDocOpts) {
   // apply default options
   const pkg = require(path.join(api.paths.cwd, 'package.json'));
   const defaultTitle = pkg.name || 'father-doc';
   const hostPkgAlias = getHostPkgAlias(api.paths);
-
   opts = Object.assign(
     {
       title: defaultTitle,
       // default to include src, lerna pkg's src & docs folder
       include: hostPkgAlias.map(([_, pkgPath]) => path.join(pkgPath, 'src')).concat(['docs']),
-      routes: api.userConfig.routes,
+      routes: api.config.routes,
       locales: [
         ['en-US', 'EN'],
         ['zh-CN', '中文'],
       ],
       mode: 'doc',
     },
-    (api.userConfig as any).doc,
+    (api.config as any).doc,
     opts,
   );
 
   // register doc config on umi system config
-  api.describe({
-    key: 'doc',
-    config: {
-      default: {
-        title: defaultTitle,
-        // default to include src, lerna pkg's src & docs folder
-        include: hostPkgAlias.map(([_, pkgPath]) => path.join(pkgPath, 'src')).concat(['docs']),
-        locales: [
-          ['en-US', 'EN'],
-          ['zh-CN', '中文'],
-        ],
-        mode: 'doc',
-      },
-      schema(joi) {
-        return joi.object();
-      },
-      onChange: api.ConfigChangeType.regenerateTmpFiles,
-    },
+  api._registerConfig(docConfigPlugin);
+
+  // apply umi-plugin-react for use title
+  api.registerPlugin({
+    id: require.resolve('umi-plugin-react'),
+    apply: require('umi-plugin-react').default,
+    opts: { title: { defaultTitle: opts.title || defaultTitle } },
   });
 
   // repalce default routes with generated routes
   api.modifyRoutes(routes => {
     const result = getRouteConfig(api, opts);
     const childRoutes = result[0].routes;
+    // append umi NotFound component to routes
+    childRoutes.push(...routes.filter(({ path: routerPath }) => !routerPath));
+    return result;
+  });
+
+  // pass menu props for layout component
+  api.modifyRouteComponent((module, { importPath, component }) => {
+    let ret = module;
     const meta = {
-      menus: getMenuFromRoutes(childRoutes, opts),
-      locales: getLocaleFromRoutes(childRoutes, opts),
-      navs: getNavFromRoutes(childRoutes, opts),
+      menus: getMenuFromRoutes(api.routes[0].routes, opts),
+      locales: getLocaleFromRoutes(api.routes[0].routes, opts),
+      navs: getNavFromRoutes(api.routes[0].routes, opts),
       title: opts.title,
       logo: opts.logo,
       desc: opts.desc,
@@ -83,22 +93,18 @@ export default function(api: IApi, opts: IFatherDocOpts) {
       repoUrl: hostedGit.fromUrl(pkg.repository?.url || pkg.repository)?.browse(),
     };
 
-    // append umi NotFound component to routes
-    childRoutes.push(...routes.filter(({ path: routerPath }) => !routerPath));
+    if (/\/layout\.[tj]sx?$/.test(component)) {
+      ret = `props => React.createElement(require('${importPath}').default, {
+          ...${
+            // escape " to ^ to avoid umi parse error, then umi will decode them
+            // see also: https://github.com/umijs/umi/blob/master/packages/umi-build-dev/src/routes/stripJSONQuote.js#L4
+            JSON.stringify(meta).replace(/"/g, '^')
+          },
+          ...props,
+        })`;
+    }
 
-    // pass props for layout
-    result[0].component = `(props) => require('react').createElement(require('${
-      result[0].component
-    }').default, {
-      ...${
-        // escape " to ^ to avoid umi parse error, then umi will decode them
-        // see also: https://github.com/umijs/umi/blob/master/packages/umi-build-dev/src/routes/stripJSONQuote.js#L4
-        JSON.stringify(meta).replace(/"/g, '^')
-      },
-      ...props,
-    })`;
-
-    return result;
+    return ret;
   });
 
   // exclude .md file for url-loader
@@ -107,16 +113,20 @@ export default function(api: IApi, opts: IFatherDocOpts) {
     urlLoaderExcludes: [/\.md$/],
     // pass empty routes if pages path does not exist and no routes config
     // to avoid umi throw src directory not exists error
-    routes: fs.existsSync(api.paths.absPagesPath) && !api.userConfig.routes ? undefined : [],
+    routes: fs.existsSync(api.paths.absPagesPath) && !api.config.routes ? undefined : [],
   }));
 
   // configure loader for .md file
-  api.chainWebpack(config => {
+  api.chainWebpackConfig(config => {
     config.module
       .rule('md')
       .test(/\.md$/)
       .use('father-doc')
       .loader(require.resolve('./loader'));
+
+    // disable css modules for built-in theme
+    config.module.rule('less-in-node_modules').include.add(path.join(__dirname, 'themes'));
+    config.module.rule('less').exclude.add(path.join(__dirname, 'themes'));
 
     // add alias for current package(s)
     hostPkgAlias
@@ -128,7 +138,6 @@ export default function(api: IApi, opts: IFatherDocOpts) {
         // use src path instead of main field in package.json if exists
         if (fs.existsSync(srcPath)) {
           // exclude lib folder
-          config.resolve.alias.set(`${pkgName}/es`, `${pkgPath}/es`);
           config.resolve.alias.set(`${pkgName}/lib`, `${pkgPath}/lib`);
           config.resolve.alias.set(pkgName, srcPath);
         } else {
@@ -140,20 +149,23 @@ export default function(api: IApi, opts: IFatherDocOpts) {
           symlink(pkgPath, linkPath);
         }
       });
+  });
 
-    return config;
+  // modify help info
+  api._modifyHelpInfo(memo => {
+    memo.scriptName = 'father-doc';
+    return memo;
   });
 
   // watch .md files
-  api.addTmpGenerateWatcherPaths(() => [
-    ...opts.include.map(key => path.join(api.paths.cwd, key, '**/*.md')),
-  ]);
+  api.addPageWatcher([...opts.include.map(key => path.join(api.paths.cwd, key, '**/*.md'))]);
 
   // sync user extra babel plugins for demo transformer
-  if (api.userConfig.extraBabelPlugins) {
-    setUserExtraBabelPlugin(api.userConfig.extraBabelPlugins);
-  }
+  api.modifyAFWebpackOpts(memo => {
+    if (memo.extraBabelPlugins) {
+      setUserExtraBabelPlugin(memo.extraBabelPlugins);
+    }
 
-  // TODO: CLI help info
-  // TODO: site title support for routes
+    return memo;
+  });
 }

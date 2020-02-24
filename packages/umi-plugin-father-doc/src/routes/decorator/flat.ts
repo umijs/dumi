@@ -1,4 +1,4 @@
-import { IRoute } from '@umijs/types';
+import { IRoute } from 'umi-types';
 import { RouteProcessor } from '.';
 
 function process(routes: IRoute[], parent?: IRoute) {
@@ -13,8 +13,8 @@ function process(routes: IRoute[], parent?: IRoute) {
     } else {
       // push parent route directly if there has no child route
       if (typeof parent?.component === 'string') {
-        // use parent component as Umi router's wrappers
-        current.wrappers = [parent.component as string, ...(current.wrappers || [])];
+        // use parent component as Umi's Routes (like layout wrapper)
+        current.Routes = [parent.component as string, ...(current.Routes || [])];
       }
 
       result.push(current);

@@ -23,6 +23,17 @@ export default (function title(routes) {
     // apply meta title for umi routes
     route.title = route.meta.title;
 
+    // apply TitleWrapper
+    // see also: https://github.com/umijs/umi/blob/master/packages/umi-plugin-react/src/plugins/title/index.js#L37
+    route.Routes = (route.Routes || []).concat(
+      `./${slash(
+        path.relative(
+          this.umi.paths.cwd,
+          path.join(this.umi.paths.absTmpDirPath, './TitleWrapper.jsx'),
+        ),
+      )}`,
+    );
+
     return route;
   });
 } as RouteProcessor);

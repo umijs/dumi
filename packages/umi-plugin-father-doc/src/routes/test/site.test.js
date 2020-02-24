@@ -53,13 +53,15 @@ describe('routes & menu: site mode', () => {
   });
 
   it('route decorator', () => {
+    const appRoot = path.join(FIXTURES_PATH, 'locale');
+
     routes = decorateRoute(
       routes,
       { locales: DEFAULT_LOCALES, mode: 'site' },
       {
         paths: {
           cwd: process.cwd(),
-          absTmpPath: path.join(process.cwd(), '.umi'),
+          absTmpDirPath: path.join(appRoot, '.umi'),
         },
       },
     );
@@ -67,7 +69,7 @@ describe('routes & menu: site mode', () => {
     expect(routes).toEqual([
       {
         path: '/api',
-        component: '../../packages/umi-plugin-father-doc/src/routes/fixtures/site/api.md',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/site/api.md',
         exact: true,
         meta: {
           slugs: [
@@ -78,24 +80,33 @@ describe('routes & menu: site mode', () => {
           nav: { path: '/api', title: 'Api' },
         },
         title: 'Api',
+        Routes: [
+          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
+        ],
       },
       {
         path: '/',
-        component: '../../packages/umi-plugin-father-doc/src/routes/fixtures/site/index.md',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/site/index.md',
         exact: true,
         meta: { slugs: [], title: 'Index' },
         title: 'Index',
+        Routes: [
+          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
+        ],
       },
       {
         path: '/zh-CN',
-        component: '../../packages/umi-plugin-father-doc/src/routes/fixtures/site/index.zh-CN.md',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/site/index.zh-CN.md',
         exact: true,
         meta: { slugs: [], locale: 'zh-CN', title: 'Index' },
         title: 'Index',
+        Routes: [
+          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
+        ],
       },
       {
         path: '/config',
-        component: '../../packages/umi-plugin-father-doc/src/routes/fixtures/site/config/index.md',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/site/config/index.md',
         exact: true,
         meta: {
           slugs: [],
@@ -103,10 +114,13 @@ describe('routes & menu: site mode', () => {
           nav: { path: '/config', title: 'Config' },
         },
         title: 'Index',
+        Routes: [
+          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
+        ],
       },
       {
         path: '/config/others',
-        component: '../../packages/umi-plugin-father-doc/src/routes/fixtures/site/config/others.md',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/site/config/others.md',
         exact: true,
         meta: {
           slugs: [],
@@ -114,10 +128,13 @@ describe('routes & menu: site mode', () => {
           nav: { path: '/config', title: 'Config' },
         },
         title: 'Others',
+        Routes: [
+          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
+        ],
       },
       {
         path: '/test-rewrite/rewrite',
-        component: '../../packages/umi-plugin-father-doc/src/routes/fixtures/site/rewrite/index.md',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/site/rewrite/index.md',
         exact: true,
         meta: {
           nav: { path: '/test-rewrite', title: 'Test-rewrite' },
@@ -126,10 +143,13 @@ describe('routes & menu: site mode', () => {
           group: { path: '/test-rewrite/rewrite', title: 'Rewrite' },
         },
         title: 'Index',
+        Routes: [
+          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
+        ],
       },
       {
         path: '/zh-CN/api',
-        component: '../../packages/umi-plugin-father-doc/src/routes/fixtures/site/api.md',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/site/api.md',
         exact: true,
         meta: {
           slugs: [
@@ -141,10 +161,13 @@ describe('routes & menu: site mode', () => {
           locale: 'zh-CN',
         },
         title: 'Api',
+        Routes: [
+          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
+        ],
       },
       {
         path: '/zh-CN/config',
-        component: '../../packages/umi-plugin-father-doc/src/routes/fixtures/site/config/index.md',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/site/config/index.md',
         exact: true,
         meta: {
           slugs: [],
@@ -153,10 +176,13 @@ describe('routes & menu: site mode', () => {
           locale: 'zh-CN',
         },
         title: 'Index',
+        Routes: [
+          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
+        ],
       },
       {
         path: '/zh-CN/config/others',
-        component: '../../packages/umi-plugin-father-doc/src/routes/fixtures/site/config/others.md',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/site/config/others.md',
         exact: true,
         meta: {
           slugs: [],
@@ -165,10 +191,13 @@ describe('routes & menu: site mode', () => {
           locale: 'zh-CN',
         },
         title: 'Others',
+        Routes: [
+          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
+        ],
       },
       {
         path: '/zh-CN/test-rewrite/rewrite',
-        component: '../../packages/umi-plugin-father-doc/src/routes/fixtures/site/rewrite/index.md',
+        component: './packages/umi-plugin-father-doc/src/routes/fixtures/site/rewrite/index.md',
         exact: true,
         meta: {
           nav: { path: '/zh-CN/test-rewrite', title: 'Test-rewrite' },
@@ -178,6 +207,9 @@ describe('routes & menu: site mode', () => {
           locale: 'zh-CN',
         },
         title: 'Index',
+        Routes: [
+          './packages/umi-plugin-father-doc/src/routes/fixtures/locale/.umi/TitleWrapper.jsx',
+        ],
       },
       {
         path: '/test-rewrite',

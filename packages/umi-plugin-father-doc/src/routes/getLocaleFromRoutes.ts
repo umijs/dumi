@@ -1,4 +1,4 @@
-import { IRoute } from '@umijs/types';
+import { IRoute } from 'umi-types';
 import { IFatherDocOpts } from '..';
 
 export interface ILocale {

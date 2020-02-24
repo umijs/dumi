@@ -1,4 +1,4 @@
-import { IRoute } from '@umijs/types';
+import { IApi, IRoute } from 'umi-types';
 import { IFatherDocOpts } from '..';
 
 export interface IMenuItem {
@@ -34,7 +34,7 @@ export function menuSorter(prev, next) {
   return metaOrder || pathOrder || ascOrder;
 }
 
-export default function getMenuFromRoutes(routes: IRoute[], opts: IFatherDocOpts): IMenu {
+export default function getMenuFromRoutes(routes: IApi['routes'], opts: IFatherDocOpts): IMenu {
   // temporary menus mapping
   const localeMenusMapping: {
     // locale level
