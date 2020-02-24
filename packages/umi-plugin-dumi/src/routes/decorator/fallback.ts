@@ -71,6 +71,19 @@ export default (function fallback(routes) {
               routeProps.meta.locale,
               locale,
             );
+
+            // correct group title from brother group route
+            if (fallbackRoute.meta.group?.title) {
+              const brotherRoute = routes.find(
+                route =>
+                  route.meta.group?.path === fallbackRoute.meta.group.path &&
+                  route.meta.locale === fallbackRoute.meta.locale,
+              );
+
+              if (brotherRoute) {
+                fallbackRoute.meta.group.title = brotherRoute.meta.group.title;
+              }
+            }
           }
 
           // replace locale prefix for nav path
@@ -80,6 +93,19 @@ export default (function fallback(routes) {
               routeProps.meta.locale,
               locale,
             );
+
+            // correct group title from brother group route
+            if (fallbackRoute.meta.nav?.title) {
+              const brotherRoute = routes.find(
+                route =>
+                  route.meta.nav?.path === fallbackRoute.meta.nav.path &&
+                  route.meta.locale === fallbackRoute.meta.locale,
+              );
+
+              if (brotherRoute) {
+                fallbackRoute.meta.nav.title = brotherRoute.meta.nav.title;
+              }
+            }
           }
 
           fallbacks.push(fallbackRoute);
