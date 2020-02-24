@@ -88,14 +88,14 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
     menus: [],
   };
 
-  static getDerivedStateFromProps({ locales, navs, location, menus, route }) {
+  static getDerivedStateFromProps({ locales, navs, location, menus, route }, prevState) {
     let navPath = '*';
     const state = {
       currentLocale: (locales[0] || { name: '*' }).name,
       currentRouteMeta: findCurrentRouteMeta(route, location),
       currentSlug: isHashRoute()
         ? location.query.anchor
-        : decodeURIComponent(location.hash).replace('#', ''),
+        : decodeURIComponent(location.hash).replace('#', '') || prevState.currentSlug,
       navs: [],
       menus: [],
     };
@@ -229,7 +229,11 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
     // 在符合的要求的里面选一个最小的
     const maxSection = linkSections.reduce((prev, curr) => (curr.top > prev.top ? curr : prev));
 
-    router.push(getGotoPathName(location.pathname, maxSection.heading));
+    if (maxSection.heading !== currentSlug) {
+      this.setState({ currentSlug: maxSection.heading });
+      // TODO: disable hash change util find a way to change hash and donot re-render previewer
+      // router.push(getGotoPathName(location.pathname, maxSection.heading));
+    }
   };
 
   handleLocaleChange = ev => {
