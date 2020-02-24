@@ -67,6 +67,11 @@ export default (function group(routes) {
 
       if (groupTitle) {
         route.meta.group.title = groupTitle;
+
+        // fallback group path if there only has group title (non-path type group)
+        if (!groupPath && (route.meta.nav?.path || route.meta.locale)) {
+          route.meta.group.path = route.meta.nav?.path || `/${route.meta.locale}`;
+        }
       }
     }
 

@@ -83,16 +83,20 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, onLocaleChange }) => 
         <ul className="__dumi-default-menu-list">
           {menus.map(item => {
             const location = history.location;
-            const hasSlugs = item.meta.slugs && Boolean(item.meta.slugs.length);
+            const hasSlugs = item.meta?.slugs && Boolean(item.meta.slugs.length);
             const hasChildren = item.children && Boolean(item.children.length);
             const show1LevelSlugs =
               mode === 'site' && !hasChildren && hasSlugs && item.path === location.pathname;
 
             return (
               <li key={item.path}>
-                <NavLink to={item.path} exact={!(item.children && item.children.length)}>
-                  {item.title}
-                </NavLink>
+                {item.path ? (
+                  <NavLink to={item.path} exact={!(item.children && item.children.length)}>
+                    {item.title}
+                  </NavLink>
+                ) : (
+                  <a>{item.title}</a>
+                )}
                 {/* group children */}
                 {Boolean(item.children && item.children.length) && (
                   <ul>
@@ -104,7 +108,7 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, onLocaleChange }) => 
                         {/* group children slugs */}
                         {Boolean(
                           mode === 'site' &&
-                            child.meta.slugs &&
+                            child.meta?.slugs &&
                             child.meta.slugs.length &&
                             child.path === location.pathname,
                         ) && <SlugList base={child.path} slugs={child.meta.slugs} />}

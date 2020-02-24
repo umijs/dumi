@@ -5,7 +5,7 @@ import symlink from 'symlink-dir';
 import hostedGit from 'hosted-git-info';
 import getRouteConfig from './routes/getRouteConfig';
 import getNavFromRoutes from './routes/getNavFromRoutes';
-import getMenuFromRoutes from './routes/getMenuFromRoutes';
+import getMenuFromRoutes, { IMenu, IMenuItem } from './routes/getMenuFromRoutes';
 import getLocaleFromRoutes from './routes/getLocaleFromRoutes';
 import getHostPkgAlias from './utils/getHostPkgAlias';
 import { setUserExtraBabelPlugin } from './transformer/demo';
@@ -18,6 +18,7 @@ export interface IDumiOpts {
   include?: string[];
   locales?: [string, string][];
   previewLangs?: string[];
+  menus: { [key: string]: IMenuItem[] };
   routes?: {
     path: IRoute['path'];
     component: IRoute['component'];
@@ -39,6 +40,7 @@ export default function(api: IApi, opts: IDumiOpts) {
       include: hostPkgAlias.map(([_, pkgPath]) => path.join(pkgPath, 'src')).concat(['docs']),
       routes: api.userConfig.routes,
       previewLangs: ['jsx', 'tsx'],
+      menus: api.userConfig.menus,
       locales: [
         ['en-US', 'EN'],
         ['zh-CN', '中文'],
@@ -75,7 +77,7 @@ export default function(api: IApi, opts: IDumiOpts) {
     const result = getRouteConfig(api, opts);
     const childRoutes = result[0].routes;
     const meta = {
-      menus: getMenuFromRoutes(childRoutes, opts),
+      menus: getMenuFromRoutes(childRoutes, opts, opts.menus),
       locales: getLocaleFromRoutes(childRoutes, opts),
       navs: getNavFromRoutes(childRoutes, opts),
       title: opts.title,

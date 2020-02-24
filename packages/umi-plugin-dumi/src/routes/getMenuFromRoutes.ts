@@ -21,6 +21,36 @@ function isValidMenuRoutes(route: IRoute) {
   return Boolean(route.path) && !route.redirect;
 }
 
+function convertUserMenuChilds(
+  menus: IMenuItem[],
+  routes: IRoute[],
+  locale: string,
+  isDefaultLocale: boolean,
+) {
+  menus.forEach(menu => {
+    (menu.children || []).forEach((child, i) => {
+      if (typeof child === 'string') {
+        const route =
+          routes.find(route => {
+            if (
+              route.component?.indexOf(child) > -1 &&
+              (route.meta?.locale === locale || (!route.meta?.locale && isDefaultLocale))
+            ) {
+              return true;
+            }
+          }) || {};
+
+        menu.children[i] = {
+          path: route.path,
+          title: route.title,
+        };
+      }
+    });
+  });
+
+  return menus;
+}
+
 export function menuSorter(prev, next) {
   const prevOrder = typeof prev.meta.order === 'number' ? prev.meta.order : Infinity;
   const nextOrder = typeof next.meta.order === 'number' ? next.meta.order : Infinity;
@@ -34,7 +64,11 @@ export function menuSorter(prev, next) {
   return metaOrder || pathOrder || ascOrder;
 }
 
-export default function getMenuFromRoutes(routes: IRoute[], opts: IDumiOpts): IMenu {
+export default function getMenuFromRoutes(
+  routes: IRoute[],
+  opts: IDumiOpts,
+  userMenus: IDumiOpts['menus'] = {},
+): IMenu {
   // temporary menus mapping
   const localeMenusMapping: {
     // locale level
@@ -67,7 +101,7 @@ export default function getMenuFromRoutes(routes: IRoute[], opts: IDumiOpts): IM
           ...(localeMenusMapping[locale] || {}),
           [nav]: {
             ...(localeMenusMapping[locale]?.[nav] || {}),
-            [group.path]: {
+            [group.path || group.title]: {
               title,
               path,
               meta: {
@@ -111,6 +145,21 @@ export default function getMenuFromRoutes(routes: IRoute[], opts: IDumiOpts): IM
           // sort top-level menu items
           [nav]: menus.sort(menuSorter),
         };
+      }
+    });
+  });
+
+  // merge user menus
+  Object.keys(userMenus).forEach(navPath => {
+    [...opts.locales].reverse().some(locale => {
+      const isDefaultLocale = locale[0] === opts.locales[0][0];
+      const localePrefix = isDefaultLocale ? '/' : `/${locale[0]}`;
+
+      if (navPath.startsWith(localePrefix)) {
+        convertUserMenuChilds(userMenus[navPath], routes, locale[0], isDefaultLocale);
+        localeMenus[locale[0]][navPath] = userMenus[navPath];
+
+        return true;
       }
     });
   });
