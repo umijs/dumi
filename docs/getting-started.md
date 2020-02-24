@@ -12,12 +12,12 @@ nav:
 在组件项目开发目录下执行以下命令进行安装：
 
 ```bash
-$ npm i father-doc -D
+$ npm i dumi -D
 ```
 
 ## 小试牛刀
 
-father-doc 默认会搜寻 `src` 及 `docs` 目录下的 `.md` 文件，然后根据文件目录结构及 FrontMatter 配置来生成路由，当然这些默认行为可以通过配置进行修改。
+dumi 默认会搜寻 `src` 及 `docs` 目录下的 `.md` 文件，然后根据文件目录结构及 FrontMatter 配置来生成路由，当然这些默认行为可以通过配置进行修改。
 
 我们先创建我们的第一个文档页面：
 
@@ -28,7 +28,7 @@ $ echo '# Hello World!' > src/index.md
 然后直接执行：
 
 ```bash
-$ father-doc dev
+$ dumi dev
 ```
 
 我们将在浏览器中看到我们的第一个文档页面！
@@ -53,7 +53,7 @@ import React from 'react';
 export default () => <button>Hello World!</button>;
 ```
 
-页面上所有的 jsx/tsx 代码块，都会被 father-doc 自动转换为嵌入式 Demo，如果你确实希望展示一段 jsx/tsx 的代码块，可以使用 `pure` 修饰符，像这样：
+页面上所有的 jsx/tsx 代码块，都会被 dumi 自动转换为嵌入式 Demo，如果你确实希望展示一段 jsx/tsx 的代码块，可以使用 `pure` 修饰符，像这样：
 
 <pre>
 ``` jsx | pure

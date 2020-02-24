@@ -1,7 +1,7 @@
 export default {
   publicPath: '/father-doc/',
   doc: {
-    title: 'father-doc',
+    title: 'Dumi',
     mode: 'site',
   },
   extraBabelPlugins: [

@@ -62,9 +62,9 @@ _斜体样式_
 
 有序列表
 
-1. father-doc 不基于 father
-2. father-doc 基于 Umi
-3. father-doc 核心是一个 Umi 插件
+1. dumi 不基于 father
+2. dumi 基于 Umi
+3. dumi 核心是一个 Umi 插件
 
 ## 代码
 

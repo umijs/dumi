@@ -1,6 +1,6 @@
 ---
 name: Question
-about: Need help during use father-doc
+about: Need help during use dumi
 labels: question
 ---
 
