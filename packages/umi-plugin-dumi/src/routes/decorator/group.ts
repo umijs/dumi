@@ -6,7 +6,9 @@ import { RouteProcessor } from '.';
  * generate route group & update route path by group path
  */
 export default (function group(routes) {
-  return routes.map(route => {
+  const userCustomGroupTitles = {};
+
+  routes.map(route => {
     const defaultLocale = this.options.locales[0]?.[0];
     let groupPath: string = route.meta.group?.path;
     let groupTitle: string = route.meta.group?.title;
@@ -41,38 +43,26 @@ export default (function group(routes) {
       }
     }
 
-    // fallback group title if there only has group path
-    if (groupPath && !groupTitle) {
-      groupTitle = groupPath
-        // discard start slash
-        .replace(/^\//g, '')
-        // upper case the first english letter
-        .replace(/^[a-z]/, s => s.toUpperCase());
-    }
-
-    // set group path & group title
-    if (groupPath || groupTitle) {
+    // set group path
+    if (groupPath) {
       route.meta.group = route.meta.group || {};
 
-      if (groupPath) {
-        // restore locale prefix or nav path
-        if (route.meta.nav?.path) {
-          groupPath = `${route.meta.nav.path}${groupPath}`;
-        } else if (route.meta.locale && route.meta.locale !== defaultLocale) {
-          groupPath = `/${route.meta.locale}${groupPath}`;
-        }
-
-        route.meta.group.path = groupPath;
+      // restore locale prefix or nav path
+      if (route.meta.nav?.path) {
+        groupPath = `${route.meta.nav.path}${groupPath}`;
+      } else if (route.meta.locale && route.meta.locale !== defaultLocale) {
+        groupPath = `/${route.meta.locale}${groupPath}`;
       }
 
+      // save user cusomize group title, then will use for other route
       if (groupTitle) {
-        route.meta.group.title = groupTitle;
-
-        // fallback group path if there only has group title (non-path type group)
-        if (!groupPath && (route.meta.nav?.path || route.meta.locale)) {
-          route.meta.group.path = route.meta.nav?.path || `/${route.meta.locale}`;
-        }
+        userCustomGroupTitles[groupPath] = groupTitle;
       }
+
+      route.meta.group.path = groupPath;
+    } else if (groupTitle && (route.meta.nav?.path || route.meta.locale)) {
+      // fallback group path if there only has group title (non-path type group)
+      route.meta.group.path = route.meta.nav?.path || `/${route.meta.locale}`;
     }
 
     // correct route path by new group path
@@ -82,4 +72,23 @@ export default (function group(routes) {
 
     return route;
   });
+
+  // fallback groups title
+  routes.forEach(route => {
+    if (route.meta.group?.path && !route.meta.group.title) {
+      route.meta.group.title =
+        // use other same group path title first
+        userCustomGroupTitles[route.meta.group.title] ||
+        // fallback group title if there only has group path
+        route.meta.group.path
+          // discard nav prefix path or locale prefix path
+          .replace(route.meta.nav?.path || `/${route.meta.locale || ''}`, '')
+          // discard start slash
+          .replace(/^\//g, '')
+          // upper case the first english letter
+          .replace(/^[a-z]/, s => s.toUpperCase());
+    }
+  });
+
+  return routes;
 } as RouteProcessor);

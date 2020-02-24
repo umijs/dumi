@@ -5,7 +5,7 @@ import symlink from 'symlink-dir';
 import hostedGit from 'hosted-git-info';
 import getRouteConfig from './routes/getRouteConfig';
 import getNavFromRoutes from './routes/getNavFromRoutes';
-import getMenuFromRoutes, { IMenu, IMenuItem } from './routes/getMenuFromRoutes';
+import getMenuFromRoutes, { IMenuItem } from './routes/getMenuFromRoutes';
 import getLocaleFromRoutes from './routes/getLocaleFromRoutes';
 import getHostPkgAlias from './utils/getHostPkgAlias';
 import { setUserExtraBabelPlugin } from './transformer/demo';
