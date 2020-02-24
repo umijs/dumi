@@ -2,6 +2,7 @@ import React, { FC, useContext } from 'react';
 import { Link } from 'umi';
 import context from './context';
 import './SlugList.less';
+import getGotoPathName from '../../utils/getGotoPathName';
 
 interface ISlugsListProps {
   base: string;
@@ -30,13 +31,7 @@ const SlugsList: FC<ISlugsListProps> = ({ className, slugs, base }) => {
           className={currentSlug === slug.heading ? 'active' : ''}
           onClick={() => scrollToSlug(slug.heading)}
         >
-          <Link
-            to={`${base}${/^(#\/|[^#])/.test(window.location.hash) ? '?anchor=' : '#'}${
-              slug.heading
-            }`}
-          >
-            {slug.value}
-          </Link>
+          <Link to={getGotoPathName(base, slug.heading)}>{slug.value}</Link>
         </li>
       ))}
     </ul>

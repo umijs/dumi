@@ -3,7 +3,7 @@ import toString from 'hast-util-to-string';
 import has from 'hast-util-has-property';
 import is from 'hast-util-is-element';
 
-const headings = ['h2', 'h3']; // 先只取两级
+const headings = ['h2', 'h3'];
 
 export default () => (ast, vFile) => {
   // extract if user did not set slugs to false
