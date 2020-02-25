@@ -15,7 +15,7 @@ const ensureReact = (deps: any) => {
 export const issueLink = `/** This is an auto-generated demo by dumi
 * if you think it is not working as expected,
 * please report the issue at
-* https://github.com/umijs/father-doc/issues
+* https://github.com/umijs/dumi/issues
 **/
 ReactDOM.render(
   <App />,

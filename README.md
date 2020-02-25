@@ -1,10 +1,10 @@
 # dumi
 
-[![codecov](https://codecov.io/gh/umijs/father-doc/branch/master/graph/badge.svg)](https://codecov.io/gh/umijs/father-doc) [![NPM version](https://img.shields.io/npm/v/father-doc.svg?style=flat)](https://npmjs.org/package/father-doc) [![CircleCI](https://circleci.com/gh/umijs/father-doc/tree/master.svg?style=svg)](https://circleci.com/gh/umijs/father-doc/tree/master) [![GitHub Actions status](https://github.com/umijs/father-doc/workflows/Node%20CI/badge.svg)](https://github.com/umijs/father-doc) [![NPM downloads](http://img.shields.io/npm/dm/father-doc.svg?style=flat)](https://npmjs.org/package/father-doc) [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/)
+[![codecov](https://codecov.io/gh/umijs/dumi/branch/master/graph/badge.svg)](https://codecov.io/gh/umijs/dumi) [![NPM version](https://img.shields.io/npm/v/dumi.svg?style=flat)](https://npmjs.org/package/dumi) [![CircleCI](https://circleci.com/gh/umijs/dumi/tree/master.svg?style=svg)](https://circleci.com/gh/umijs/dumi/tree/master) [![GitHub Actions status](https://github.com/umijs/dumi/workflows/Node%20CI/badge.svg)](https://github.com/umijs/dumi) [![NPM downloads](http://img.shields.io/npm/dm/dumi.svg?style=flat)](https://npmjs.org/package/dumi) [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/)
 
 ## Usage & Guide
 
-To check out live examples and docs, visit [father-doc GitHub Pages](https://umijs.github.io/father-doc).
+To check out live examples and docs, visit [dumi GitHub Pages](https://umijs.github.io/dumi).
 
 ## Development
 

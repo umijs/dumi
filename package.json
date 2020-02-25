@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/umijs/father-doc.git"
+    "url": "git+https://github.com/umijs/dumi.git"
   },
   "devDependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.6.0",

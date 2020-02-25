@@ -1,5 +1,5 @@
 export default {
-  publicPath: '/father-doc/',
+  publicPath: '/dumi/',
   doc: {
     title: 'Dumi',
     mode: 'site',

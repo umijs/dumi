@@ -21,7 +21,7 @@ features:
 ## 介绍
 
 <Alert>
-dumi 仍处于 <code>alpha</code> 阶段，功能可能存在不稳定，如果在使用中出现问题，请反馈到 <a href="https://github.com/umijs/father-doc/issues">https://github.com/umijs/father-doc/issues</a>，感谢 ❤️
+dumi 仍处于 <code>alpha</code> 阶段，功能可能存在不稳定，如果在使用中出现问题，请反馈到 <a href="https://github.com/umijs/dumi/issues">https://github.com/umijs/dumi/issues</a>，感谢 ❤️
 </Alert>
 
 dumi 是基于 Umi 为组件开发场景而生的文档工具，与 [father](https://github.com/umijs/father) 一起为开发者提供一站式的组件开发体验，**father 负责构建，而 dumi 负责组件开发及文档生成**。
@@ -45,7 +45,7 @@ dumi 是基于 Umi 为组件开发场景而生的文档工具，与 [father](htt
 
 ## 参与贡献
 
-欢迎加入到 dumi 的建设队伍中来，请访问 https://github.com/umijs/father-doc 。
+欢迎加入到 dumi 的建设队伍中来，请访问 https://github.com/umijs/dumi 。
 
 ```jsx | inline
 import React from 'react';

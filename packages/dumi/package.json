@@ -6,11 +6,11 @@
   "bin": "bin/dumi.js",
   "repository": {
     "type": "git",
-    "url": "http://github.com/umijs/father-doc",
-    "directory": "father-doc"
+    "url": "http://github.com/umijs/dumi",
+    "directory": "dumi"
   },
-  "homepage": "http://github.com/umijs/father-doc",
-  "bugs": "http://github.com/umijs/father-doc/issues",
+  "homepage": "http://github.com/umijs/dumi",
+  "bugs": "http://github.com/umijs/dumi/issues",
   "authors": [
     "ycjcl868 <chaolinjin@gmail.com> (https://github.com/ycjcl868)",
     "PeachScript <scdzwyxst@gmail.com> (https://github.com/PeachScript)"
