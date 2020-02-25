@@ -135,6 +135,7 @@
           overflow: hidden;
           text-overflow: ellipsis;
           outline: none;
+          transition: color 0.3s, background 0.3s;
 
           &:hover,
           &.active {
@@ -168,6 +169,10 @@
     > ul ul {
       a {
         color: @c-secondary;
+
+        &.active {
+          color: #1561c4;
+        }
       }
     }
 
@@ -231,19 +236,33 @@
       padding: 0;
 
       > li > a {
+        position: relative;
+
+        &:hover {
+          background-color: #f8faff;
+        }
+
+        &::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          right: 0;
+          display: block;
+          width: 4px;
+          background-color: @c-primary;
+          visibility: hidden;
+          opacity: 0;
+          transition: all 0.3s;
+        }
+
         &.active {
-          position: relative;
           z-index: 1;
+          background-color: #f8faff;
 
           &::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            right: 0;
-            display: block;
-            width: 4px;
-            background-color: @c-primary;
+            opacity: 1;
+            visibility: visible;
           }
         }
       }

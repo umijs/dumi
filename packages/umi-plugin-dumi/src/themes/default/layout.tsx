@@ -227,7 +227,11 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     // 在符合的要求的里面选一个最小的
     const maxSection = linkSections.reduce((prev, curr) => (curr.top > prev.top ? curr : prev));
 
-    history.push(getGotoPathName(location.pathname, maxSection.heading));
+    if (maxSection.heading !== currentSlug) {
+      history[currentSlug ? 'replace' : 'push'](
+        getGotoPathName(location.pathname, maxSection.heading),
+      );
+    }
   };
 
   handleLocaleChange = ev => {
