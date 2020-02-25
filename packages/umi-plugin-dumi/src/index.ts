@@ -28,44 +28,44 @@ export interface IDumiOpts {
   }[];
 }
 
-export default function(api: IApi, opts: IDumiOpts) {
+function mergeUserConfig(
+  defaultOpts: { [key: string]: any },
+  api: IApi,
+  pluginOpts: IDumiOpts,
+): IDumiOpts {
+  const result = {} as IDumiOpts;
+
+  Object.assign(result, defaultOpts, api.config.doc || {}, pluginOpts || {});
+
+  if (api.userConfig.routes) {
+    result.routes = api.userConfig.routes;
+  }
+
+  return result;
+}
+
+export default function(api: IApi, pluginOpts: IDumiOpts) {
   // apply default options
   const pkg = require(path.join(api.paths.cwd, 'package.json'));
   const defaultTitle = pkg.name || 'dumi';
   const hostPkgAlias = getHostPkgAlias(api.paths);
-
-  opts = Object.assign(
-    {
-      title: defaultTitle,
-      // default to include src, lerna pkg's src & docs folder
-      include: hostPkgAlias.map(([_, pkgPath]) => path.join(pkgPath, 'src')).concat(['docs']),
-      routes: api.userConfig.routes,
-      previewLangs: ['jsx', 'tsx'],
-      menus: api.userConfig.menus,
-      locales: [
-        ['en-US', 'EN'],
-        ['zh-CN', '中文'],
-      ],
-      mode: 'doc',
-    },
-    (api.userConfig as any).doc,
-    opts,
-  );
+  const defaultOpts = {
+    title: defaultTitle,
+    // default to include src, lerna pkg's src & docs folder
+    include: hostPkgAlias.map(([_, pkgPath]) => path.join(pkgPath, 'src')).concat(['docs']),
+    previewLangs: ['jsx', 'tsx'],
+    locales: [
+      ['en-US', 'EN'],
+      ['zh-CN', '中文'],
+    ],
+    mode: 'doc',
+  };
 
   // register doc config on umi system config
   api.describe({
     key: 'doc',
     config: {
-      default: {
-        title: defaultTitle,
-        // default to include src, lerna pkg's src & docs folder
-        include: hostPkgAlias.map(([_, pkgPath]) => path.join(pkgPath, 'src')).concat(['docs']),
-        locales: [
-          ['en-US', 'EN'],
-          ['zh-CN', '中文'],
-        ],
-        mode: 'doc',
-      },
+      default: {},
       schema(joi) {
         return joi.object();
       },
@@ -75,6 +75,7 @@ export default function(api: IApi, opts: IDumiOpts) {
 
   // repalce default routes with generated routes
   api.modifyRoutes(routes => {
+    const opts = mergeUserConfig(defaultOpts, api, pluginOpts);
     const result = getRouteConfig(api, opts);
     const childRoutes = result[0].routes;
     const meta = {
@@ -117,6 +118,8 @@ export default function(api: IApi, opts: IDumiOpts) {
 
   // configure loader for .md file
   api.chainWebpack(config => {
+    const opts = mergeUserConfig(defaultOpts, api, pluginOpts);
+
     config.module
       .rule('md')
       .test(/\.md$/)
@@ -151,9 +154,11 @@ export default function(api: IApi, opts: IDumiOpts) {
   });
 
   // watch .md files
-  api.addTmpGenerateWatcherPaths(() => [
-    ...opts.include.map(key => path.join(api.paths.cwd, key, '**/*.md')),
-  ]);
+  api.addTmpGenerateWatcherPaths(() => {
+    const opts = mergeUserConfig(defaultOpts, api, pluginOpts);
+
+    return [...opts.include.map(key => path.join(api.paths.cwd, key, '**/*.md'))];
+  });
 
   // sync user extra babel plugins for demo transformer
   if (api.userConfig.extraBabelPlugins) {
