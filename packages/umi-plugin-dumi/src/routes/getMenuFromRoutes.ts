@@ -28,6 +28,10 @@ function convertUserMenuChilds(
   isDefaultLocale: boolean,
 ) {
   menus.forEach(menu => {
+    if (menu.path && locale && !isDefaultLocale && !menu.path.startsWith(`/${locale}`)) {
+      menu.path = `/${locale}${menu.path}`;
+    }
+
     (menu.children || []).forEach((child, i) => {
       if (typeof child === 'string') {
         const route =
