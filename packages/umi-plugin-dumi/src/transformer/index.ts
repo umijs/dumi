@@ -3,6 +3,7 @@ import yaml from 'js-yaml';
 import slash from 'slash2';
 import extractComments from 'esprima-extract-comments';
 import remark from './remark';
+import html from './html';
 
 const FRONT_COMMENT_EXP = /^\n*\/\*[^]+?\s*\*\/\n*/;
 
@@ -71,9 +72,8 @@ export default {
     let content = '';
 
     if (!opts.onlyConfig) {
-      // convert class to className for jsx
-      // Todo: process in a Unified way
-      content = (result.contents as string).replace(/class="/g, 'className="');
+      // transform html string to jsx string
+      content = this.html(result.contents as string);
 
       // wrap by page component
       content = wrapperHtmlByComponent(content);
@@ -96,5 +96,12 @@ export default {
   },
   tsx(raw: string): TransformResult {
     return this.jsx(raw);
+  },
+  /**
+   * transform html string to jsx string
+   * @param raw   html string
+   */
+  html(raw: string): TransformResult {
+    return html(raw);
   },
 };
