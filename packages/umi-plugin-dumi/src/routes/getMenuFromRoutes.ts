@@ -1,3 +1,5 @@
+import path from 'path';
+import slash from 'slash2';
 import { IRoute } from '@umijs/types';
 import { IDumiOpts } from '..';
 
@@ -21,11 +23,16 @@ function isValidMenuRoutes(route: IRoute) {
   return Boolean(route.path) && !route.redirect;
 }
 
+function isSameRouteComponent(fragment: string, component: string, includes: IDumiOpts['include']) {
+  return includes.some(dir => component.indexOf(slash(path.join(dir, fragment))) > -1);
+}
+
 function convertUserMenuChilds(
   menus: IMenuItem[],
   routes: IRoute[],
   locale: string,
   isDefaultLocale: boolean,
+  includes: IDumiOpts['include'],
 ) {
   menus.forEach(menu => {
     if (menu.path && locale && !isDefaultLocale && !menu.path.startsWith(`/${locale}`)) {
@@ -37,7 +44,8 @@ function convertUserMenuChilds(
         const route =
           routes.find(route => {
             if (
-              route.component?.indexOf(child) > -1 &&
+              route.component &&
+              isSameRouteComponent(child, route.component, includes) &&
               (route.meta?.locale === locale || (!route.meta?.locale && isDefaultLocale))
             ) {
               return true;
@@ -132,7 +140,7 @@ export default function getMenuFromRoutes(
     }
   });
 
-  // deconstuct locale menus from mapping to array
+  // deconstruct locale menus from mapping to array
   Object.keys(localeMenusMapping).forEach(locale => {
     Object.keys(localeMenusMapping[locale]).forEach(nav => {
       const menus = Object.values(localeMenusMapping[locale][nav]).map((menu: IMenuItem) => {
@@ -160,7 +168,7 @@ export default function getMenuFromRoutes(
       const localePrefix = isDefaultLocale ? '/' : `/${locale[0]}`;
 
       if (navPath.startsWith(localePrefix)) {
-        convertUserMenuChilds(userMenus[navPath], routes, locale[0], isDefaultLocale);
+        convertUserMenuChilds(userMenus[navPath], routes, locale[0], isDefaultLocale, opts.include);
         localeMenus[locale[0]][navPath] = userMenus[navPath];
 
         return true;
