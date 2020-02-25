@@ -11,8 +11,9 @@ export interface INav {
   [key: string]: INavItem[];
 }
 
-export default (routes: IRoute[], opts: IDumiOpts): INav => {
+export default (routes: IRoute[], opts: IDumiOpts, userCustomNavs: INav | INavItem[]): INav => {
   let localeNavs = {};
+  let customNavs = userCustomNavs || {};
 
   if (opts.mode !== 'site') {
     return {};
@@ -58,6 +59,25 @@ export default (routes: IRoute[], opts: IDumiOpts): INav => {
     }
 
     return true;
+  });
+
+  // merge user's navs & generated navs
+  if (Array.isArray(customNavs)) {
+    customNavs = Object.keys(localeNavs).reduce((result, locale) => {
+      result[locale] = customNavs;
+
+      return result;
+    }, {});
+  }
+
+  Object.keys(localeNavs).forEach(locale => {
+    if (customNavs[locale]) {
+      localeNavs[locale] = customNavs[locale].reduce(
+        // concat original navs if navs has empty item from user
+        (result, nav) => result.concat(nav || localeNavs[locale]),
+        [],
+      );
+    }
   });
 
   return localeNavs;

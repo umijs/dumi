@@ -4,7 +4,7 @@ import { IApi, IRoute } from '@umijs/types';
 import symlink from 'symlink-dir';
 import hostedGit from 'hosted-git-info';
 import getRouteConfig from './routes/getRouteConfig';
-import getNavFromRoutes from './routes/getNavFromRoutes';
+import getNavFromRoutes, { INavItem, INav } from './routes/getNavFromRoutes';
 import getMenuFromRoutes, { IMenuItem } from './routes/getMenuFromRoutes';
 import getLocaleFromRoutes from './routes/getLocaleFromRoutes';
 import getHostPkgAlias from './utils/getHostPkgAlias';
@@ -19,6 +19,7 @@ export interface IDumiOpts {
   locales?: [string, string][];
   previewLangs?: string[];
   menus: { [key: string]: IMenuItem[] };
+  navs: INav | INavItem[];
   routes?: {
     path: IRoute['path'];
     component: IRoute['component'];
@@ -79,7 +80,7 @@ export default function(api: IApi, opts: IDumiOpts) {
     const meta = {
       menus: getMenuFromRoutes(childRoutes, opts, opts.menus),
       locales: getLocaleFromRoutes(childRoutes, opts),
-      navs: getNavFromRoutes(childRoutes, opts),
+      navs: getNavFromRoutes(childRoutes, opts, opts.navs),
       title: opts.title,
       logo: opts.logo,
       desc: opts.desc,
