@@ -31,6 +31,7 @@
     "lerna": "^3.6.0",
     "lerna-changelog": "^0.8.2",
     "prettier": "^1.19.1",
+    "umi-plugin-githubpages": "^2.0.0",
     "umi-test": "^1.5.12"
   }
 }
