@@ -146,8 +146,8 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     window.removeEventListener('scroll', this.debounceOnScroll);
   }
 
-  componentDidUpdate(_, prevState) {
-    if (!this.state.currentSlug && prevState.currentSlug) {
+  componentDidUpdate(prevProps) {
+    if (this.props.location.pathname !== prevProps.location.pathname) {
       window.scrollTo(0, 0);
     }
   }
@@ -193,12 +193,10 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     const container = window;
     const linkSections: Array<{ heading: string; top: number }> = [];
     [...slugs]
+      .filter(({ depth }) => depth > 1)
       // 优先匹配深度比较深的
       .sort((a, b) => a.depth - b.depth)
       .forEach(({ heading }) => {
-        if (!heading || currentSlug === heading) {
-          return;
-        }
         // 寻找 dom 节点
         const target = document.getElementById(heading);
         if (!target) {
@@ -219,6 +217,11 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
           top,
         });
       });
+
+    // clear heading if scroll top than first section
+    if (document.documentElement.scrollTop < 108) {
+      return history.push(location.pathname);
+    }
 
     if (!linkSections.length) {
       return;
