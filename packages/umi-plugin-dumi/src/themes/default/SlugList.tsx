@@ -24,7 +24,7 @@ const SlugsList: FC<ISlugsListProps> = ({ className, slugs, base }) => {
   return (
     <ul className={className} role="slug-list">
       {slugs
-        .filter(({ depth }) => depth > 1 && depth < 3)
+        .filter(({ depth }) => depth > 1 && depth < 4)
         .map(slug => (
           <li
             key={slug.heading}

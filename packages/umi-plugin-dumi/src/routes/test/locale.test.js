@@ -225,7 +225,7 @@ describe('routes & menu: locales', () => {
           {
             path: '/',
             title: 'English',
-            meta: { title: 'English', slugs: [], locale: 'en-US' },
+            meta: {},
           },
           {
             title: 'Sub',
@@ -235,12 +235,7 @@ describe('routes & menu: locales', () => {
               {
                 path: '/sub',
                 title: 'Index',
-                meta: {
-                  slugs: [],
-                  locale: 'en-US',
-                  title: 'Index',
-                  group: { path: '/sub', title: 'Sub' },
-                },
+                meta: {},
               },
             ],
           },
@@ -252,12 +247,7 @@ describe('routes & menu: locales', () => {
               {
                 path: '/group/abc',
                 title: 'Abc',
-                meta: {
-                  group: { path: '/group', title: 'Group' },
-                  slugs: [],
-                  locale: 'en-US',
-                  title: 'Abc',
-                },
+                meta: {},
               },
             ],
           },
@@ -269,12 +259,7 @@ describe('routes & menu: locales', () => {
               {
                 path: '/missing/abc',
                 title: 'Abc',
-                meta: {
-                  slugs: [],
-                  locale: 'en-US',
-                  title: 'Abc',
-                  group: { path: '/missing', title: 'Missing' },
-                },
+                meta: {},
               },
             ],
           },
@@ -285,7 +270,7 @@ describe('routes & menu: locales', () => {
           {
             path: '/zh-CN',
             title: '中文',
-            meta: { title: '中文', slugs: [], locale: 'zh-CN' },
+            meta: {},
           },
           {
             title: 'Sub',
@@ -295,12 +280,7 @@ describe('routes & menu: locales', () => {
               {
                 path: '/zh-CN/sub',
                 title: 'Index',
-                meta: {
-                  slugs: [],
-                  locale: 'zh-CN',
-                  title: 'Index',
-                  group: { path: '/zh-CN/sub', title: 'Sub' },
-                },
+                meta: {},
               },
             ],
           },
@@ -312,12 +292,7 @@ describe('routes & menu: locales', () => {
               {
                 path: '/zh-CN/group/abc',
                 title: 'Abc',
-                meta: {
-                  group: { path: '/zh-CN/group', title: 'Group' },
-                  slugs: [],
-                  locale: 'zh-CN',
-                  title: 'Abc',
-                },
+                meta: {},
               },
             ],
           },
@@ -329,12 +304,7 @@ describe('routes & menu: locales', () => {
               {
                 path: '/zh-CN/missing/abc',
                 title: 'Abc',
-                meta: {
-                  slugs: [],
-                  locale: 'zh-CN',
-                  title: 'Abc',
-                  group: { path: '/zh-CN/missing', title: 'Missing' },
-                },
+                meta: {},
               },
             ],
           },

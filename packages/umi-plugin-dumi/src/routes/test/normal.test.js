@@ -180,27 +180,19 @@ describe('routes & menu: normal', () => {
               {
                 path: '/sub',
                 title: 'README',
-                meta: {
-                  group: { title: 'Rename Sub', order: 10, path: '/sub' },
-                  slugs: [],
-                  title: 'README',
-                },
+                meta: {},
               },
               {
                 path: '/sub/hello-component',
                 title: 'HelloComponent',
-                meta: {
-                  group: { title: 'Rename Sub', order: 10, path: '/sub' },
-                  slugs: [],
-                  title: 'HelloComponent',
-                },
+                meta: {},
               },
             ],
           },
           {
             path: '/',
             title: 'Index',
-            meta: { slugs: [], title: 'Index' },
+            meta: {},
           },
           {
             title: 'Test',
@@ -210,11 +202,7 @@ describe('routes & menu: normal', () => {
               {
                 path: '/test/intro',
                 title: 'Intro',
-                meta: {
-                  title: 'Intro',
-                  group: { path: '/test', title: 'Test' },
-                  slugs: [],
-                },
+                meta: {},
               },
             ],
           },
@@ -226,12 +214,7 @@ describe('routes & menu: normal', () => {
               {
                 path: '/index',
                 title: 'Readme',
-                meta: {
-                  legacy: '/legacy/path/test',
-                  slugs: [],
-                  title: 'Readme',
-                  group: { path: '/index', title: 'Index' },
-                },
+                meta: {},
               },
             ],
           },
@@ -245,19 +228,12 @@ describe('routes & menu: normal', () => {
                 title: 'YEnd',
                 meta: {
                   order: 1,
-                  group: { path: '/rename-sub-sub', title: 'Rename-sub-sub' },
-                  slugs: [],
-                  title: 'YEnd',
                 },
               },
               {
                 path: '/rename-sub-sub/still-hello',
                 title: 'StillHello',
-                meta: {
-                  group: { path: '/rename-sub-sub', title: 'Rename-sub-sub' },
-                  slugs: [],
-                  title: 'StillHello',
-                },
+                meta: {},
               },
             ],
           },

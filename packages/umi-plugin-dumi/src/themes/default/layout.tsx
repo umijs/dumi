@@ -270,7 +270,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
       {features.map(feat => (
         <dl key={feat.title}>
           <dt>{feat.title}</dt>
-          <dd>{feat.desc}</dd>
+          <dd dangerouslySetInnerHTML={{ __html: feat.desc }} />
         </dl>
       ))}
     </div>

@@ -83,7 +83,8 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, onLocaleChange }) => 
         <ul className="__dumi-default-menu-list">
           {menus.map(item => {
             const location = history.location;
-            const hasSlugs = item.meta?.slugs && Boolean(item.meta.slugs.length);
+            // always use meta from routes to reduce menu data size
+            const hasSlugs = Boolean(routeMeta.slugs?.length);
             const hasChildren = item.children && Boolean(item.children.length);
             const show1LevelSlugs =
               mode === 'site' && !hasChildren && hasSlugs && item.path === location.pathname;
@@ -110,15 +111,14 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, onLocaleChange }) => 
                           (routeMeta.toc === 'menu' ||
                             (routeMeta.toc === undefined && mode === 'site')) &&
                             child.path === location.pathname &&
-                            // use meta from routes
-                            routeMeta.slugs?.length,
+                            hasSlugs,
                         ) && <SlugList base={child.path} slugs={routeMeta.slugs} />}
                       </li>
                     ))}
                   </ul>
                 )}
                 {/* group slugs */}
-                {show1LevelSlugs && <SlugList base={item.path} slugs={item.meta.slugs} />}
+                {show1LevelSlugs && <SlugList base={item.path} slugs={routeMeta.slugs} />}
               </li>
             );
           })}

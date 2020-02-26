@@ -64,8 +64,8 @@ function convertUserMenuChilds(
 }
 
 export function menuSorter(prev, next) {
-  const prevOrder = typeof prev.meta.order === 'number' ? prev.meta.order : Infinity;
-  const nextOrder = typeof next.meta.order === 'number' ? next.meta.order : Infinity;
+  const prevOrder = typeof prev.meta?.order === 'number' ? prev.meta.order : Infinity;
+  const nextOrder = typeof next.meta?.order === 'number' ? next.meta.order : Infinity;
   // compare order meta config first
   const metaOrder = prevOrder === nextOrder ? 0 : prevOrder - nextOrder;
   // last compare path length
@@ -99,11 +99,15 @@ export default function getMenuFromRoutes(
       const group = route.meta.group;
       const nav = route.meta.nav?.path || '*';
       const locale = route.meta.locale || opts.locales[0]?.[0] || '*';
-      const menuItem = {
+      const menuItem: IMenuItem = {
         path: route.path,
         title: route.title,
-        meta: route.meta,
+        meta: {},
       };
+
+      if (route.meta?.order) {
+        menuItem.meta.order = route.meta.order;
+      }
 
       if (group?.path) {
         const { title, path, ...meta } = group;
