@@ -32,12 +32,7 @@ const DISABLEABLE_TOKENIZERS = [
   'autoLink',
   'url',
   'html',
-  'link',
   'reference',
-  'strong',
-  'emphasis',
-  'deletion',
-  'code',
   'break',
 ];
 
