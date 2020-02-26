@@ -33,7 +33,7 @@ const Navbar: FC<INavbarProps> = ({ onMobileMenuClick, onLocaleChange }) => {
               {nav.title}
             </NavLink>
           ) : (
-            <a target="_blank" href={nav.path}>
+            <a target="_blank" href={nav.path} key={nav.path}>
               {nav.title}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
