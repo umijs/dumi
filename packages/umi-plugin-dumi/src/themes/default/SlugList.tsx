@@ -23,17 +23,19 @@ const SlugsList: FC<ISlugsListProps> = ({ className, slugs, base }) => {
 
   return (
     <ul className={className} role="slug-list">
-      {slugs.map(slug => (
-        <li
-          key={slug.heading}
-          title={slug.value}
-          data-depth={slug.depth}
-          className={currentSlug === slug.heading ? 'active' : ''}
-          onClick={() => scrollToSlug(slug.heading)}
-        >
-          <Link to={getGotoPathName(base, slug.heading)}>{slug.value}</Link>
-        </li>
-      ))}
+      {slugs
+        .filter(({ depth }) => depth > 1 && depth < 3)
+        .map(slug => (
+          <li
+            key={slug.heading}
+            title={slug.value}
+            data-depth={slug.depth}
+            className={currentSlug === slug.heading ? 'active' : ''}
+            onClick={() => scrollToSlug(slug.heading)}
+          >
+            <Link to={getGotoPathName(base, slug.heading)}>{slug.value}</Link>
+          </li>
+        ))}
     </ul>
   );
 };

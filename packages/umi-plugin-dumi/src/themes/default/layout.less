@@ -37,8 +37,16 @@ body {
       padding-left: @s-site-menu-width + 50px;
     }
 
+    &[data-show-slugs='true'] {
+      padding-right: @s-content-margin + @s-toc-width + 14;
+    }
+
     .@{prefix}-layout-content > .markdown:first-child > *:first-child {
       margin-top: 0;
+    }
+
+    .@{prefix}-layout-toc {
+      top: 118px;
     }
   }
 

@@ -89,7 +89,7 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, onLocaleChange }) => 
               mode === 'site' && !hasChildren && hasSlugs && item.path === location.pathname;
 
             return (
-              <li key={item.path}>
+              <li key={item.title}>
                 {item.path ? (
                   <NavLink to={item.path} exact={!(item.children && item.children.length)}>
                     {item.title}
@@ -107,11 +107,12 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, onLocaleChange }) => 
                         </NavLink>
                         {/* group children slugs */}
                         {Boolean(
-                          mode === 'site' &&
-                            child.meta?.slugs &&
-                            child.meta.slugs.length &&
-                            child.path === location.pathname,
-                        ) && <SlugList base={child.path} slugs={child.meta.slugs} />}
+                          (routeMeta.toc === 'menu' ||
+                            (routeMeta.toc === undefined && mode === 'site')) &&
+                            child.path === location.pathname &&
+                            // use meta from routes
+                            routeMeta.slugs?.length,
+                        ) && <SlugList base={child.path} slugs={routeMeta.slugs} />}
                       </li>
                     ))}
                   </ul>

@@ -71,8 +71,8 @@ describe('routes & menu: site mode', () => {
         exact: true,
         meta: {
           slugs: [
-            { depth: 1, value: 'config.a', heading: 'configa' },
-            { depth: 1, value: 'config.b', heading: 'configb' },
+            { depth: 2, value: 'config.a', heading: 'configa' },
+            { depth: 2, value: 'config.b', heading: 'configb' },
           ],
           title: 'Api',
           nav: { path: '/api', title: 'Api' },
@@ -133,8 +133,8 @@ describe('routes & menu: site mode', () => {
         exact: true,
         meta: {
           slugs: [
-            { depth: 1, value: 'config.a', heading: 'configa' },
-            { depth: 1, value: 'config.b', heading: 'configb' },
+            { depth: 2, value: 'config.a', heading: 'configa' },
+            { depth: 2, value: 'config.b', heading: 'configb' },
           ],
           title: 'Api',
           nav: { path: '/zh-CN/api', title: 'Api' },
@@ -222,8 +222,8 @@ describe('routes & menu: site mode', () => {
             title: 'Api',
             meta: {
               slugs: [
-                { depth: 1, value: 'config.a', heading: 'configa' },
-                { depth: 1, value: 'config.b', heading: 'configb' },
+                { depth: 2, value: 'config.a', heading: 'configa' },
+                { depth: 2, value: 'config.b', heading: 'configb' },
               ],
               title: 'Api',
               nav: { path: '/api', title: 'Api' },
@@ -291,8 +291,8 @@ describe('routes & menu: site mode', () => {
             title: 'Api',
             meta: {
               slugs: [
-                { depth: 1, value: 'config.a', heading: 'configa' },
-                { depth: 1, value: 'config.b', heading: 'configb' },
+                { depth: 2, value: 'config.a', heading: 'configa' },
+                { depth: 2, value: 'config.b', heading: 'configb' },
               ],
               title: 'Api',
               nav: { path: '/zh-CN/api', title: 'Api' },

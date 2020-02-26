@@ -283,7 +283,9 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     const showHero = siteMode && currentRouteMeta.hero;
     const showFeatures = siteMode && currentRouteMeta.features;
     const showSideMenu = currentRouteMeta.sidemenu !== false && !showHero && !showFeatures;
-    const showSlugs = currentRouteMeta.slugs && Boolean(currentRouteMeta.slugs.length) && !siteMode;
+    const showSlugs =
+      Boolean(currentRouteMeta.slugs?.length) &&
+      (currentRouteMeta.toc === 'content' || (currentRouteMeta.toc === undefined && !siteMode));
 
     return (
       <Context.Provider
