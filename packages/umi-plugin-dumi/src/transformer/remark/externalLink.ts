@@ -10,9 +10,19 @@ export default () => ast => {
   visit(ast, 'element', node => {
     if (is(node, 'a') && has(node, 'href') && isAbsoluteUrl(node.properties.href)) {
       node.properties = node.properties || {};
+
       Object.assign(node.properties, {
         target: '_blank',
       });
+
+      // remove nested hyperlink, this is a bug from something
+      node.children.forEach((child, i) => {
+        if (child.tagName === 'a') {
+          node.children.splice(i, 1, ...child.children);
+        }
+      });
+
+      // push external link icon
       node.children.push({
         type: 'element',
         tagName: 'svg',
