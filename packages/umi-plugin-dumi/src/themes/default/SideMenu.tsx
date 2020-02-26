@@ -24,14 +24,11 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, onLocaleChange }) => 
     routeMeta,
   } = useContext(context);
 
-  if (mode === 'site' && (routeMeta.hero || routeMeta.features)) {
-    return null;
-  }
-
   return (
     <div
       className="__dumi-default-menu"
       data-mode={mode}
+      data-homepage={Boolean(routeMeta.hero || routeMeta.features) || undefined}
       data-mobile-show={!mobileMenuCollapsed || undefined}
     >
       <div className="__dumi-default-menu-inner">

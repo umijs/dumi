@@ -11,9 +11,14 @@
   box-sizing: border-box;
   transition: left 0.3s;
 
+  &[data-mode='site'][data-homepage] {
+    display: none;
+  }
+
   @media @mobile {
     left: -@s-menu-mobile-width;
     top: @s-mobile-nav-height;
+    display: block !important;
     width: @s-menu-mobile-width;
     background-color: #fff;
 
