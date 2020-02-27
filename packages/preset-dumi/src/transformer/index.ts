@@ -39,7 +39,7 @@ function getYamlConfig(code, componentFile = '') {
     }, {});
 }
 
-function wrapperHtmlByComponent(html: string) {
+function wrapperHtmlByComponent(html: string, meta: TransformResult['config']) {
   return `
     import React from 'react';
     import Alert from '${slash(path.join(__dirname, '../themes/default/builtins/Alert.js'))}';
@@ -48,7 +48,16 @@ function wrapperHtmlByComponent(html: string) {
     )}';
 
     export default function () {
-      return <>${html}</>;
+      return (
+        <>
+          ${
+            meta.translateHelp
+              ? "<Alert>This article has not been translated yet. Wan't to help us out? Click the Edit this page on GitHub at the end of the page.</Alert>"
+              : ''
+          }
+          ${html}
+        </>
+      );
   }`;
 }
 
@@ -76,7 +85,7 @@ export default {
       content = this.html(result.contents as string);
 
       // wrap by page component
-      content = wrapperHtmlByComponent(content);
+      content = wrapperHtmlByComponent(content, result.data);
     }
 
     return {
