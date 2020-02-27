@@ -57,15 +57,15 @@ export default {
    * transform markdown content to jsx & meta data
    * @param raw         content
    * @param opts        transform options
-   * @param fileAbsDir  absolute path of markdown file
+   * @param fileAbsPath  absolute path of markdown file
    * @param onlyConfig  whether transform meta data only
    */
   markdown(
     raw: string,
-    opts: { fileAbsDir?: string; onlyConfig?: boolean; previewLangs?: string[] } = {},
+    opts: { fileAbsPath?: string; onlyConfig?: boolean; previewLangs?: string[] } = {},
   ): TransformResult {
     const result = remark(raw, {
-      fileAbsDir: opts.fileAbsDir,
+      fileAbsPath: opts.fileAbsPath,
       strategy: opts.onlyConfig ? 'data' : 'default',
       previewLangs: opts.previewLangs || [],
     });

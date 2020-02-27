@@ -190,4 +190,32 @@ body {
       }
     }
   }
+
+  &-footer-meta {
+    margin-top: 40px;
+    padding-top: 24px;
+    display: flex;
+    color: @c-secondary;
+    font-size: 14px;
+    justify-content: space-between;
+    border-top: 1px solid @c-border;
+
+    @media only screen and (max-width: 960px) {
+      display: block;
+    }
+
+    > a {
+      margin-bottom: 4px;
+      display: block;
+      color: @c-primary;
+      text-decoration: none;
+    }
+
+    > span:last-child {
+      &::before {
+        content: attr(data-updated-text);
+        color: @c-primary;
+      }
+    }
+  }
 }

@@ -5,9 +5,8 @@ import transformer from '../transformer';
 /**
  * extract Front Matter config from markdown file
  */
-export default (filePath: string): { [key: string]: any } => {
-  const content = fs.readFileSync(filePath).toString();
+export default (fileAbsPath: string): { [key: string]: any } => {
+  const content = fs.readFileSync(fileAbsPath).toString();
 
-  return transformer.markdown(content, { fileAbsDir: path.parse(filePath).dir, onlyConfig: true })
-    .config;
+  return transformer.markdown(content, { fileAbsPath, onlyConfig: true }).config;
 };

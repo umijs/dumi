@@ -17,9 +17,9 @@ import isolation from './isolation';
 
 export interface IRemarkOpts {
   /**
-   * the directory for the file which will be transformed
+   * the path of file which will be transformed
    */
-  fileAbsDir?: string;
+  fileAbsPath?: string;
   /**
    * transform strategy
    * @note  both md & data will be transformed by default
@@ -60,7 +60,7 @@ const PLUGIN_STRATEGIES = {
 export default (raw: string, opts: IRemarkOpts) => {
   const processor = unified()
     .use(parse, { strategy: opts.strategy || 'default', langs: opts.previewLangs })
-    .data('fileAbsDir', opts.fileAbsDir);
+    .data('fileAbsPath', opts.fileAbsPath);
 
   // apply plugins through strategy
   PLUGIN_STRATEGIES[opts.strategy].forEach(plugin => {

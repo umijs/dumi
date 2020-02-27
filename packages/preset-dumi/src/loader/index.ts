@@ -5,7 +5,7 @@ import transformer from '../transformer';
 export default function loader(content: string) {
   const options = loaderUtils.getOptions(this);
   const result = transformer.markdown(content, {
-    fileAbsDir: this.context,
+    fileAbsPath: this.resource,
     previewLangs: options.previewLangs,
   });
 

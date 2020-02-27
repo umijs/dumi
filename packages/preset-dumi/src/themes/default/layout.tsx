@@ -294,6 +294,8 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     const showSlugs =
       Boolean(currentRouteMeta.slugs?.length) &&
       (currentRouteMeta.toc === 'content' || (currentRouteMeta.toc === undefined && !siteMode));
+    const isCN =
+      currentLocale === 'zh-CN' || (currentLocale === '*' && locales[0]?.name === 'zh-CN');
 
     return (
       <Context.Provider
@@ -334,7 +336,21 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
           )}
           {showHero && this.renderHero(currentRouteMeta.hero)}
           {showFeatures && this.renderFeatures(currentRouteMeta.features)}
-          <div className="__dumi-default-layout-content">{children}</div>
+          <div className="__dumi-default-layout-content">
+            {children}
+            {!showHero && !showFeatures && (
+              <div className="__dumi-default-layout-footer-meta">
+                {/github\.com/.test(repoUrl) && (
+                  <a href={`${repoUrl}/edit/master/${currentRouteMeta.filePath}`}>
+                    {isCN ? '在 GitHub 上编辑这篇文档' : 'Edit this doc on GitHub'}
+                  </a>
+                )}
+                <span data-updated-text={isCN ? '最后更新时间：' : 'Last Update: '}>
+                  {new Date(currentRouteMeta.updatedTime).toLocaleString(currentLocale)}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
       </Context.Provider>
     );

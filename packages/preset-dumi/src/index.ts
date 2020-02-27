@@ -1,4 +1,4 @@
-import { IRoute } from 'umi';
+import { IRoute } from '@umijs/types';
 import { INavItem, INav } from './routes/getNavFromRoutes';
 import { IMenuItem } from './routes/getMenuFromRoutes';
 

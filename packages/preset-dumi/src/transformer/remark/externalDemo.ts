@@ -37,7 +37,7 @@ export default function externalDemo() {
           if (src) {
             let absPath = path.isAbsolute(src)
               ? src
-              : slash(path.join(this.data('fileAbsDir'), src));
+              : slash(path.join(path.parse(this.data('fileAbsPath')).dir, src));
 
             // auto complete file extension
             if (!/\.\w+$/.test(absPath)) {

@@ -1,4 +1,4 @@
-import { IApi } from 'umi';
+import { IApi } from '@umijs/types';
 
 export default (api: IApi) => {
   api.describe({
