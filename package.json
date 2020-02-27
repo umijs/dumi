@@ -11,7 +11,7 @@
     "clean": "lerna clean -y",
     "test": "umi-test --coverage",
     "debug": "umi-test",
-    "lint": "eslint --cache --ext .js,.jsx,.ts,.tsx --format=pretty \"./packages/umi-plugin-dumi/src\"",
+    "lint": "eslint --cache --ext .js,.jsx,.ts,.tsx --format=pretty \"./packages/preset-dumi/src\"",
     "prettier": "prettier -c --write \"**/*\"",
     "publish": "umi-test && npm run changelog && npm run build && lerna publish"
   },

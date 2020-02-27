@@ -16,7 +16,7 @@
     "PeachScript <scdzwyxst@gmail.com> (https://github.com/PeachScript)"
   ],
   "dependencies": {
-    "@umijs/plugin-dumi": "1.0.0-beta.6",
+    "@umijs/preset-dumi": "1.0.0-beta.6",
     "umi": "^3.0.0-beta.22"
   },
   "license": "MIT"

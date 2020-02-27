@@ -14,7 +14,7 @@ interface IContext {
   mode: IDumiOpts['mode'];
   logo: IDumiOpts['logo'];
   title: IDumiOpts['title'];
-  desc: IDumiOpts['desc'];
+  desc: IDumiOpts['description'];
   repoUrl: string;
   routeMeta: { [key: string]: any };
 }

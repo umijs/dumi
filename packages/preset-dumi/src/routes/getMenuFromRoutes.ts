@@ -23,7 +23,11 @@ function isValidMenuRoutes(route: IRoute) {
   return Boolean(route.path) && !route.redirect;
 }
 
-function isSameRouteComponent(fragment: string, component: string, includes: IDumiOpts['include']) {
+function isSameRouteComponent(
+  fragment: string,
+  component: string,
+  includes: IDumiOpts['resolve']['includes'],
+) {
   return includes.some(dir => component.indexOf(slash(path.join(dir, fragment))) > -1);
 }
 
@@ -32,7 +36,7 @@ function convertUserMenuChilds(
   routes: IRoute[],
   locale: string,
   isDefaultLocale: boolean,
-  includes: IDumiOpts['include'],
+  includes: IDumiOpts['resolve']['includes'],
 ) {
   menus.forEach(menu => {
     if (menu.path && locale && !isDefaultLocale && !menu.path.startsWith(`/${locale}`)) {
@@ -172,7 +176,13 @@ export default function getMenuFromRoutes(
       const localePrefix = isDefaultLocale ? '/' : `/${locale[0]}`;
 
       if (navPath.startsWith(localePrefix)) {
-        convertUserMenuChilds(userMenus[navPath], routes, locale[0], isDefaultLocale, opts.include);
+        convertUserMenuChilds(
+          userMenus[navPath],
+          routes,
+          locale[0],
+          isDefaultLocale,
+          opts.resolve.includes,
+        );
         localeMenus[locale[0]][navPath] = userMenus[navPath];
 
         return true;

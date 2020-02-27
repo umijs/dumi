@@ -1,3 +1,3 @@
 module.exports = {
-  testPathIgnorePatterns: ['/packages/dumi/lib/', '/packages/umi-plugin-dumi/lib/'],
+  testPathIgnorePatterns: ['/packages/dumi/lib/', '/packages/preset-dumi/lib/'],
 };

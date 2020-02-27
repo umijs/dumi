@@ -13,37 +13,37 @@ describe('routes & menu: normal', () => {
     expect(routes).toEqual([
       {
         path: '/',
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/normal/index.md',
+        component: './packages/preset-dumi/src/routes/fixtures/normal/index.md',
         exact: true,
       },
       {
         path: '/intro',
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/normal/intro.md',
+        component: './packages/preset-dumi/src/routes/fixtures/normal/intro.md',
         exact: true,
       },
       {
         path: '/index',
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/normal/index/readme.md',
+        component: './packages/preset-dumi/src/routes/fixtures/normal/index/readme.md',
         exact: true,
       },
       {
         path: '/sub/hello-component',
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/normal/sub/HelloComponent.md',
+        component: './packages/preset-dumi/src/routes/fixtures/normal/sub/HelloComponent.md',
         exact: true,
       },
       {
         path: '/sub',
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/normal/sub/README.md',
+        component: './packages/preset-dumi/src/routes/fixtures/normal/sub/README.md',
         exact: true,
       },
       {
         path: '/sub/subsub/still-hello',
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/normal/sub/subsub/stillHello.md',
+        component: './packages/preset-dumi/src/routes/fixtures/normal/sub/subsub/stillHello.md',
         exact: true,
       },
       {
         path: '/sub/subsub/y-end',
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/normal/sub/subsub/yEnd.md',
+        component: './packages/preset-dumi/src/routes/fixtures/normal/sub/subsub/yEnd.md',
         exact: true,
       },
     ]);
@@ -63,14 +63,14 @@ describe('routes & menu: normal', () => {
     expect(routes).toEqual([
       {
         path: '/',
-        component: '../../packages/umi-plugin-dumi/src/routes/fixtures/normal/index.md',
+        component: '../../packages/preset-dumi/src/routes/fixtures/normal/index.md',
         exact: true,
         meta: { title: 'Index', slugs: [] },
         title: 'Index',
       },
       {
         path: '/test/intro',
-        component: '../../packages/umi-plugin-dumi/src/routes/fixtures/normal/intro.md',
+        component: '../../packages/preset-dumi/src/routes/fixtures/normal/intro.md',
         exact: true,
         meta: {
           group: { title: 'Test', path: '/test' },
@@ -81,7 +81,7 @@ describe('routes & menu: normal', () => {
       },
       {
         path: '/index',
-        component: '../../packages/umi-plugin-dumi/src/routes/fixtures/normal/index/readme.md',
+        component: '../../packages/preset-dumi/src/routes/fixtures/normal/index/readme.md',
         exact: true,
         meta: {
           group: { title: 'Index', path: '/index' },
@@ -93,8 +93,7 @@ describe('routes & menu: normal', () => {
       },
       {
         path: '/sub/hello-component',
-        component:
-          '../../packages/umi-plugin-dumi/src/routes/fixtures/normal/sub/HelloComponent.md',
+        component: '../../packages/preset-dumi/src/routes/fixtures/normal/sub/HelloComponent.md',
         exact: true,
         meta: {
           group: {
@@ -109,7 +108,7 @@ describe('routes & menu: normal', () => {
       },
       {
         path: '/sub',
-        component: '../../packages/umi-plugin-dumi/src/routes/fixtures/normal/sub/README.md',
+        component: '../../packages/preset-dumi/src/routes/fixtures/normal/sub/README.md',
         exact: true,
         meta: {
           title: 'README',
@@ -124,8 +123,7 @@ describe('routes & menu: normal', () => {
       },
       {
         path: '/rename-sub-sub/still-hello',
-        component:
-          '../../packages/umi-plugin-dumi/src/routes/fixtures/normal/sub/subsub/stillHello.md',
+        component: '../../packages/preset-dumi/src/routes/fixtures/normal/sub/subsub/stillHello.md',
         exact: true,
         meta: {
           group: { title: 'Rename-sub-sub', path: '/rename-sub-sub' },
@@ -136,7 +134,7 @@ describe('routes & menu: normal', () => {
       },
       {
         path: '/rename-sub-sub/y-end',
-        component: '../../packages/umi-plugin-dumi/src/routes/fixtures/normal/sub/subsub/yEnd.md',
+        component: '../../packages/preset-dumi/src/routes/fixtures/normal/sub/subsub/yEnd.md',
         exact: true,
         meta: {
           group: { title: 'Rename-sub-sub', path: '/rename-sub-sub' },

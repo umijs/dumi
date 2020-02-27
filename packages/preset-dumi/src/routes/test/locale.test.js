@@ -20,37 +20,37 @@ describe('routes & menu: locales', () => {
     expect(routes).toEqual([
       {
         path: '/en-US',
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/locale/index.en-US.md',
+        component: './packages/preset-dumi/src/routes/fixtures/locale/index.en-US.md',
         exact: true,
       },
       {
         path: '/',
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/locale/index.zh-CN.md',
+        component: './packages/preset-dumi/src/routes/fixtures/locale/index.zh-CN.md',
         exact: true,
       },
       {
         path: '/en-US/missing/abc',
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/locale/missing/abc.en-US.md',
+        component: './packages/preset-dumi/src/routes/fixtures/locale/missing/abc.en-US.md',
         exact: true,
       },
       {
         path: '/en-US/sub/abc',
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/locale/sub/abc.en-US.md',
+        component: './packages/preset-dumi/src/routes/fixtures/locale/sub/abc.en-US.md',
         exact: true,
       },
       {
         path: '/sub/abc',
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/locale/sub/abc.zh-CN.md',
+        component: './packages/preset-dumi/src/routes/fixtures/locale/sub/abc.zh-CN.md',
         exact: true,
       },
       {
         path: '/en-US/sub',
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/locale/sub/index.en-US.md',
+        component: './packages/preset-dumi/src/routes/fixtures/locale/sub/index.en-US.md',
         exact: true,
       },
       {
         path: '/sub',
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/locale/sub/index.zh-CN.md',
+        component: './packages/preset-dumi/src/routes/fixtures/locale/sub/index.zh-CN.md',
         exact: true,
       },
     ]);
@@ -64,37 +64,37 @@ describe('routes & menu: locales', () => {
     expect(routes).toEqual([
       {
         path: '/',
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/locale/index.en-US.md',
+        component: './packages/preset-dumi/src/routes/fixtures/locale/index.en-US.md',
         exact: true,
       },
       {
         path: '/zh-CN',
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/locale/index.zh-CN.md',
+        component: './packages/preset-dumi/src/routes/fixtures/locale/index.zh-CN.md',
         exact: true,
       },
       {
         path: '/missing/abc',
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/locale/missing/abc.en-US.md',
+        component: './packages/preset-dumi/src/routes/fixtures/locale/missing/abc.en-US.md',
         exact: true,
       },
       {
         path: '/sub/abc',
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/locale/sub/abc.en-US.md',
+        component: './packages/preset-dumi/src/routes/fixtures/locale/sub/abc.en-US.md',
         exact: true,
       },
       {
         path: '/zh-CN/sub/abc',
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/locale/sub/abc.zh-CN.md',
+        component: './packages/preset-dumi/src/routes/fixtures/locale/sub/abc.zh-CN.md',
         exact: true,
       },
       {
         path: '/sub',
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/locale/sub/index.en-US.md',
+        component: './packages/preset-dumi/src/routes/fixtures/locale/sub/index.en-US.md',
         exact: true,
       },
       {
         path: '/zh-CN/sub',
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/locale/sub/index.zh-CN.md',
+        component: './packages/preset-dumi/src/routes/fixtures/locale/sub/index.zh-CN.md',
         exact: true,
       },
     ]);
@@ -115,21 +115,21 @@ describe('routes & menu: locales', () => {
     expect(routes).toEqual([
       {
         path: '/',
-        component: '../../packages/umi-plugin-dumi/src/routes/fixtures/locale/index.en-US.md',
+        component: '../../packages/preset-dumi/src/routes/fixtures/locale/index.en-US.md',
         exact: true,
         meta: { title: 'English', slugs: [], locale: 'en-US' },
         title: 'English',
       },
       {
         path: '/zh-CN',
-        component: '../../packages/umi-plugin-dumi/src/routes/fixtures/locale/index.zh-CN.md',
+        component: '../../packages/preset-dumi/src/routes/fixtures/locale/index.zh-CN.md',
         exact: true,
         meta: { title: '中文', slugs: [], locale: 'zh-CN' },
         title: '中文',
       },
       {
         path: '/missing/abc',
-        component: '../../packages/umi-plugin-dumi/src/routes/fixtures/locale/missing/abc.en-US.md',
+        component: '../../packages/preset-dumi/src/routes/fixtures/locale/missing/abc.en-US.md',
         exact: true,
         meta: {
           group: { path: '/missing', title: 'Missing' },
@@ -141,7 +141,7 @@ describe('routes & menu: locales', () => {
       },
       {
         path: '/group/abc',
-        component: '../../packages/umi-plugin-dumi/src/routes/fixtures/locale/sub/abc.en-US.md',
+        component: '../../packages/preset-dumi/src/routes/fixtures/locale/sub/abc.en-US.md',
         exact: true,
         meta: {
           group: { path: '/group', title: 'Group' },
@@ -153,7 +153,7 @@ describe('routes & menu: locales', () => {
       },
       {
         path: '/zh-CN/group/abc',
-        component: '../../packages/umi-plugin-dumi/src/routes/fixtures/locale/sub/abc.zh-CN.md',
+        component: '../../packages/preset-dumi/src/routes/fixtures/locale/sub/abc.zh-CN.md',
         exact: true,
         meta: {
           group: { path: '/zh-CN/group', title: 'Group' },
@@ -165,7 +165,7 @@ describe('routes & menu: locales', () => {
       },
       {
         path: '/sub',
-        component: '../../packages/umi-plugin-dumi/src/routes/fixtures/locale/sub/index.en-US.md',
+        component: '../../packages/preset-dumi/src/routes/fixtures/locale/sub/index.en-US.md',
         exact: true,
         meta: {
           group: { path: '/sub', title: 'Sub' },
@@ -177,7 +177,7 @@ describe('routes & menu: locales', () => {
       },
       {
         path: '/zh-CN/sub',
-        component: '../../packages/umi-plugin-dumi/src/routes/fixtures/locale/sub/index.zh-CN.md',
+        component: '../../packages/preset-dumi/src/routes/fixtures/locale/sub/index.zh-CN.md',
         exact: true,
         meta: {
           group: { path: '/zh-CN/sub', title: 'Sub' },
@@ -189,7 +189,7 @@ describe('routes & menu: locales', () => {
       },
       {
         path: '/zh-CN/missing/abc',
-        component: '../../packages/umi-plugin-dumi/src/routes/fixtures/locale/missing/abc.en-US.md',
+        component: '../../packages/preset-dumi/src/routes/fixtures/locale/missing/abc.en-US.md',
         exact: true,
         meta: {
           group: { path: '/zh-CN/missing', title: 'Missing' },

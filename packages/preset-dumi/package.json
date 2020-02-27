@@ -1,5 +1,5 @@
 {
-  "name": "@umijs/plugin-dumi",
+  "name": "@umijs/preset-dumi",
   "version": "1.0.0-beta.6",
   "description": "",
   "main": "lib/index.js",
@@ -11,7 +11,7 @@
   "repository": {
     "type": "git",
     "url": "http://github.com/umijs/dumi",
-    "directory": "umi-plugin-dumi"
+    "directory": "preset-dumi"
   },
   "homepage": "http://github.com/umijs/dumi",
   "bugs": "http://github.com/umijs/dumi/issues",

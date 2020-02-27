@@ -21,31 +21,31 @@ describe('routes & menu: site mode', () => {
     expect(routes).toEqual([
       {
         path: '/api',
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/site/api.md',
+        component: './packages/preset-dumi/src/routes/fixtures/site/api.md',
         exact: true,
       },
       {
         path: '/',
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/site/index.md',
+        component: './packages/preset-dumi/src/routes/fixtures/site/index.md',
         exact: true,
       },
       {
         path: '/zh-CN',
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/site/index.zh-CN.md',
+        component: './packages/preset-dumi/src/routes/fixtures/site/index.zh-CN.md',
         exact: true,
       },
       {
         path: '/config',
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/site/config/index.md',
+        component: './packages/preset-dumi/src/routes/fixtures/site/config/index.md',
         exact: true,
       },
       {
         path: '/config/others',
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/site/config/others.md',
+        component: './packages/preset-dumi/src/routes/fixtures/site/config/others.md',
         exact: true,
       },
       {
-        component: './packages/umi-plugin-dumi/src/routes/fixtures/site/rewrite/index.md',
+        component: './packages/preset-dumi/src/routes/fixtures/site/rewrite/index.md',
         exact: true,
         path: '/rewrite',
       },
@@ -67,7 +67,7 @@ describe('routes & menu: site mode', () => {
     expect(routes).toEqual([
       {
         path: '/api',
-        component: '../../packages/umi-plugin-dumi/src/routes/fixtures/site/api.md',
+        component: '../../packages/preset-dumi/src/routes/fixtures/site/api.md',
         exact: true,
         meta: {
           slugs: [
@@ -81,21 +81,21 @@ describe('routes & menu: site mode', () => {
       },
       {
         path: '/',
-        component: '../../packages/umi-plugin-dumi/src/routes/fixtures/site/index.md',
+        component: '../../packages/preset-dumi/src/routes/fixtures/site/index.md',
         exact: true,
         meta: { slugs: [], title: 'Index' },
         title: 'Index',
       },
       {
         path: '/zh-CN',
-        component: '../../packages/umi-plugin-dumi/src/routes/fixtures/site/index.zh-CN.md',
+        component: '../../packages/preset-dumi/src/routes/fixtures/site/index.zh-CN.md',
         exact: true,
         meta: { slugs: [], locale: 'zh-CN', title: 'Index' },
         title: 'Index',
       },
       {
         path: '/config',
-        component: '../../packages/umi-plugin-dumi/src/routes/fixtures/site/config/index.md',
+        component: '../../packages/preset-dumi/src/routes/fixtures/site/config/index.md',
         exact: true,
         meta: {
           slugs: [],
@@ -106,7 +106,7 @@ describe('routes & menu: site mode', () => {
       },
       {
         path: '/config/others',
-        component: '../../packages/umi-plugin-dumi/src/routes/fixtures/site/config/others.md',
+        component: '../../packages/preset-dumi/src/routes/fixtures/site/config/others.md',
         exact: true,
         meta: {
           slugs: [],
@@ -117,7 +117,7 @@ describe('routes & menu: site mode', () => {
       },
       {
         path: '/test-rewrite/rewrite',
-        component: '../../packages/umi-plugin-dumi/src/routes/fixtures/site/rewrite/index.md',
+        component: '../../packages/preset-dumi/src/routes/fixtures/site/rewrite/index.md',
         exact: true,
         meta: {
           nav: { path: '/test-rewrite', title: 'Test-rewrite' },
@@ -129,7 +129,7 @@ describe('routes & menu: site mode', () => {
       },
       {
         path: '/zh-CN/api',
-        component: '../../packages/umi-plugin-dumi/src/routes/fixtures/site/api.md',
+        component: '../../packages/preset-dumi/src/routes/fixtures/site/api.md',
         exact: true,
         meta: {
           slugs: [
@@ -144,7 +144,7 @@ describe('routes & menu: site mode', () => {
       },
       {
         path: '/zh-CN/config',
-        component: '../../packages/umi-plugin-dumi/src/routes/fixtures/site/config/index.md',
+        component: '../../packages/preset-dumi/src/routes/fixtures/site/config/index.md',
         exact: true,
         meta: {
           slugs: [],
@@ -156,7 +156,7 @@ describe('routes & menu: site mode', () => {
       },
       {
         path: '/zh-CN/config/others',
-        component: '../../packages/umi-plugin-dumi/src/routes/fixtures/site/config/others.md',
+        component: '../../packages/preset-dumi/src/routes/fixtures/site/config/others.md',
         exact: true,
         meta: {
           slugs: [],
@@ -168,7 +168,7 @@ describe('routes & menu: site mode', () => {
       },
       {
         path: '/zh-CN/test-rewrite/rewrite',
-        component: '../../packages/umi-plugin-dumi/src/routes/fixtures/site/rewrite/index.md',
+        component: '../../packages/preset-dumi/src/routes/fixtures/site/rewrite/index.md',
         exact: true,
         meta: {
           nav: { path: '/zh-CN/test-rewrite', title: 'Test-rewrite' },

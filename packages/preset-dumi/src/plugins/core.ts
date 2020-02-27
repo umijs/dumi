@@ -1,42 +1,39 @@
 import fs from 'fs';
 import path from 'path';
-import { IApi, IRoute } from '@umijs/types';
+import { IApi } from '@umijs/types';
 import symlink from 'symlink-dir';
 import hostedGit from 'hosted-git-info';
-import getRouteConfig from './routes/getRouteConfig';
-import getNavFromRoutes, { INavItem, INav } from './routes/getNavFromRoutes';
-import getMenuFromRoutes, { IMenuItem } from './routes/getMenuFromRoutes';
-import getLocaleFromRoutes from './routes/getLocaleFromRoutes';
-import getHostPkgAlias from './utils/getHostPkgAlias';
-import { setUserExtraBabelPlugin } from './transformer/demo';
+import getRouteConfig from '../routes/getRouteConfig';
+import getNavFromRoutes from '../routes/getNavFromRoutes';
+import getMenuFromRoutes from '../routes/getMenuFromRoutes';
+import getLocaleFromRoutes from '../routes/getLocaleFromRoutes';
+import getHostPkgAlias from '../utils/getHostPkgAlias';
+import { setUserExtraBabelPlugin } from '../transformer/demo';
+import { IDumiOpts } from '..';
 
-export interface IDumiOpts {
-  title?: string;
-  logo?: string;
-  mode?: 'doc' | 'site';
-  desc?: string;
-  include?: string[];
-  locales?: [string, string][];
-  previewLangs?: string[];
-  menus: { [key: string]: IMenuItem[] };
-  navs: INav | INavItem[];
-  routes?: {
-    path: IRoute['path'];
-    component: IRoute['component'];
-    redirect: IRoute['redirect'];
-    [key: string]: any;
-  }[];
-}
+function mergeUserConfig(defaultOpts: { [key: string]: any }, api: IApi): IDumiOpts {
+  const result = Object.assign({}, defaultOpts);
 
-function mergeUserConfig(
-  defaultOpts: { [key: string]: any },
-  api: IApi,
-  pluginOpts: IDumiOpts,
-): IDumiOpts {
-  const result = {} as IDumiOpts;
+  // has default value keys
+  ['mode', 'title', 'locales'].forEach(key => {
+    result[key] = api.userConfig[key] || result[key];
+  });
 
-  Object.assign(result, defaultOpts, api.config.doc || {}, pluginOpts || {});
+  // non-default values keys
+  ['description', 'logo', 'menus', 'navs'].forEach(key => {
+    if (api.userConfig[key]) {
+      result[key] = api.userConfig[key];
+    }
+  });
 
+  // nested resolve keys
+  ['includes', 'previewLangs'].forEach(key => {
+    if (api.userConfig.resolve?.[key]) {
+      result.resolve[key] = api.userConfig.resolve[key];
+    }
+  });
+
+  // use umi routes key
   if (api.userConfig.routes) {
     result.routes = api.userConfig.routes;
   }
@@ -44,16 +41,18 @@ function mergeUserConfig(
   return result;
 }
 
-export default function(api: IApi, pluginOpts: IDumiOpts) {
+export default function(api: IApi) {
   // apply default options
   const pkg = require(path.join(api.paths.cwd, 'package.json'));
   const defaultTitle = pkg.name || 'dumi';
   const hostPkgAlias = getHostPkgAlias(api.paths);
   const defaultOpts = {
     title: defaultTitle,
-    // default to include src, lerna pkg's src & docs folder
-    include: hostPkgAlias.map(([_, pkgPath]) => path.join(pkgPath, 'src')).concat(['docs']),
-    previewLangs: ['jsx', 'tsx'],
+    resolve: {
+      // default to include src, lerna pkg's src & docs folder
+      includes: hostPkgAlias.map(([_, pkgPath]) => path.join(pkgPath, 'src')).concat(['docs']),
+      previewLangs: ['jsx', 'tsx'],
+    },
     locales: [
       ['en-US', 'EN'],
       ['zh-CN', '中文'],
@@ -61,21 +60,9 @@ export default function(api: IApi, pluginOpts: IDumiOpts) {
     mode: 'doc',
   };
 
-  // register doc config on umi system config
-  api.describe({
-    key: 'doc',
-    config: {
-      default: {},
-      schema(joi) {
-        return joi.object();
-      },
-      onChange: api.ConfigChangeType.regenerateTmpFiles,
-    },
-  });
-
   // repalce default routes with generated routes
   api.modifyRoutes(routes => {
-    const opts = mergeUserConfig(defaultOpts, api, pluginOpts);
+    const opts = mergeUserConfig(defaultOpts, api);
     const result = getRouteConfig(api, opts);
     const childRoutes = result[0].routes;
     const meta = {
@@ -84,7 +71,7 @@ export default function(api: IApi, pluginOpts: IDumiOpts) {
       navs: getNavFromRoutes(childRoutes, opts, opts.navs),
       title: opts.title,
       logo: opts.logo,
-      desc: opts.desc,
+      desc: opts.description,
       mode: opts.mode,
       repoUrl: hostedGit.fromUrl(pkg.repository?.url || pkg.repository)?.browse(),
     };
@@ -118,14 +105,14 @@ export default function(api: IApi, pluginOpts: IDumiOpts) {
 
   // configure loader for .md file
   api.chainWebpack(config => {
-    const opts = mergeUserConfig(defaultOpts, api, pluginOpts);
+    const opts = mergeUserConfig(defaultOpts, api);
 
     config.module
       .rule('md')
       .test(/\.md$/)
       .use('dumi')
-      .loader(require.resolve('./loader'))
-      .options({ previewLangs: opts.previewLangs });
+      .loader(require.resolve('../loader'))
+      .options({ previewLangs: opts.resolve.previewLangs });
 
     // add alias for current package(s)
     hostPkgAlias
@@ -155,9 +142,9 @@ export default function(api: IApi, pluginOpts: IDumiOpts) {
 
   // watch .md files
   api.addTmpGenerateWatcherPaths(() => {
-    const opts = mergeUserConfig(defaultOpts, api, pluginOpts);
+    const opts = mergeUserConfig(defaultOpts, api);
 
-    return [...opts.include.map(key => path.join(api.paths.cwd, key, '**/*.md'))];
+    return [...opts.resolve.includes.map(key => path.join(api.paths.cwd, key, '**/*.md'))];
   });
 
   // sync user extra babel plugins for demo transformer
