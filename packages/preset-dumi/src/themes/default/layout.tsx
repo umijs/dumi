@@ -7,7 +7,8 @@ import { IMenu } from '../../routes/getMenuFromRoutes';
 import { ILocale } from '../../routes/getLocaleFromRoutes';
 import Navbar from './Navbar';
 import SideMenu from './SideMenu';
-import SlugList from './SlugList';
+import SlugList, { scrollToSlug } from './SlugList';
+import SearchBar from './SearchBar';
 import 'prismjs/themes/prism.css';
 import './layout.less';
 import isHashRoute from '../../utils/isHashRoute';
@@ -148,7 +149,11 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
 
   componentDidUpdate(prevProps) {
     if (this.props.location.pathname !== prevProps.location.pathname) {
-      window.scrollTo(0, 0);
+      if (this.props.location.hash) {
+        scrollToSlug(this.props.location.hash.replace('#', ''));
+      } else {
+        window.scrollTo(0, 0);
+      }
     }
   }
 
@@ -315,6 +320,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
           data-site-mode={siteMode}
         >
           <Navbar
+            navPrefix={<SearchBar routes={this.props.route.routes} />}
             onLocaleChange={this.handleLocaleChange}
             onMobileMenuClick={() => this.setState({ menuCollapsed: !menuCollapsed })}
           />

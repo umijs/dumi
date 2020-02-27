@@ -10,19 +10,23 @@ interface ISlugsListProps {
   className?: string;
 }
 
+export function scrollToSlug(slug) {
+  const title = document.getElementById(slug);
+
+  if (title) {
+    document.documentElement.scrollTop = title.offsetTop - 100;
+  }
+
+  return Boolean(title);
+}
+
 const SlugsList: FC<ISlugsListProps> = ({ className, slugs, base }) => {
   const { slug: currentSlug } = useContext(context);
   const listElm = useRef<HTMLUListElement>(null);
 
-  function scrollToSlug(ev, id) {
-    const titleElm = document.getElementById(id);
-
-    if (titleElm) {
-      document.documentElement.scrollTop = titleElm.offsetTop - 100;
-
-      if (listElm.current?.offsetParent.scrollTop < ev.target.offsetTop) {
-        listElm.current.offsetParent.scrollTop = ev.target.offsetTop;
-      }
+  function handleAnchorClick(ev, id) {
+    if (scrollToSlug(id) && listElm.current?.offsetParent.scrollTop < ev.target.offsetTop) {
+      listElm.current.offsetParent.scrollTop = ev.target.offsetTop;
     }
   }
 
@@ -36,7 +40,7 @@ const SlugsList: FC<ISlugsListProps> = ({ className, slugs, base }) => {
             title={slug.value}
             data-depth={slug.depth}
             className={currentSlug === slug.heading ? 'active' : ''}
-            onClick={ev => scrollToSlug(ev, slug.heading)}
+            onClick={ev => handleAnchorClick(ev, slug.heading)}
           >
             <Link to={getGotoPathName(base, slug.heading)}>{slug.value}</Link>
           </li>

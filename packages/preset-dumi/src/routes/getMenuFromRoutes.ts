@@ -60,6 +60,17 @@ function convertUserMenuChilds(
           path: route.path,
           title: route.title,
         };
+
+        if (!route.meta) {
+          route.meta = {};
+        }
+
+        // update original route group
+        route.meta.group = {
+          title: menu.title,
+          ...(menu.path ? { path: menu.path } : {}),
+          ...(route.meta?.group || {}),
+        };
       }
     });
   });

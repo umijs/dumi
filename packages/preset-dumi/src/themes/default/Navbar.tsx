@@ -4,11 +4,12 @@ import context from './context';
 import './Navbar.less';
 
 interface INavbarProps {
+  navPrefix?: React.ReactNode;
   onLocaleChange: (ev: ChangeEvent<HTMLSelectElement>) => void;
   onMobileMenuClick: (ev: MouseEvent<HTMLButtonElement>) => void;
 }
 
-const Navbar: FC<INavbarProps> = ({ onMobileMenuClick, onLocaleChange }) => {
+const Navbar: FC<INavbarProps> = ({ onMobileMenuClick, onLocaleChange, navPrefix }) => {
   const { locale, rootPath, mode, title, logo, locales, navs } = useContext(context);
 
   return (
@@ -26,6 +27,7 @@ const Navbar: FC<INavbarProps> = ({ onMobileMenuClick, onLocaleChange }) => {
         {title}
       </Link>
       <nav>
+        {navPrefix}
         {/* navs */}
         {navs.map(nav =>
           /^\/[\w-]/.test(nav.path) ? (
