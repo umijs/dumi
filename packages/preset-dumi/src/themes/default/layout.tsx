@@ -296,6 +296,13 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
       (currentRouteMeta.toc === 'content' || (currentRouteMeta.toc === undefined && !siteMode));
     const isCN =
       currentLocale === 'zh-CN' || (currentLocale === '*' && locales[0]?.name === 'zh-CN');
+    let updatedTime: any = new Date(currentRouteMeta.updatedTime);
+
+    try {
+      updatedTime = updatedTime.toLocaleString(currentLocale);
+    } catch {
+      updatedTime = updatedTime.toLocaleString();
+    }
 
     return (
       <Context.Provider
@@ -346,7 +353,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
                   </a>
                 )}
                 <span data-updated-text={isCN ? '最后更新时间：' : 'Last Update: '}>
-                  {new Date(currentRouteMeta.updatedTime).toLocaleString(currentLocale)}
+                  {updatedTime}
                 </span>
               </div>
             )}
