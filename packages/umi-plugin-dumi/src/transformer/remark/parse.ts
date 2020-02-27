@@ -28,7 +28,6 @@ const DISABLEABLE_TOKENIZERS = [
   'footnote',
   'definition',
   'table',
-  'escape',
   'autoLink',
   'url',
   'html',
