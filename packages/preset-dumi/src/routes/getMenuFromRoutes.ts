@@ -38,44 +38,53 @@ function convertUserMenuChilds(
   isDefaultLocale: boolean,
   includes: IDumiOpts['resolve']['includes'],
 ) {
-  menus.forEach(menu => {
-    if (menu.path && locale && !isDefaultLocale && !menu.path.startsWith(`/${locale}`)) {
-      menu.path = `/${locale}${menu.path}`;
+  return menus.map(menu => {
+    // copy menu config to avoid modify user config
+    const menuItem = Object.assign({}, menu);
+
+    if (menuItem.path && locale && !isDefaultLocale && !menuItem.path.startsWith(`/${locale}`)) {
+      menuItem.path = `/${locale}${menu.path}`;
     }
 
-    (menu.children || []).forEach((child, i) => {
-      if (typeof child === 'string') {
-        const route =
-          routes.find(route => {
-            if (
-              route.component &&
-              isSameRouteComponent(child, route.component, includes) &&
-              (route.meta?.locale === locale || (!route.meta?.locale && isDefaultLocale))
-            ) {
-              return true;
-            }
-          }) || {};
+    if (menuItem.children) {
+      menuItem.children = menu.children.map(child => {
+        let childItem = child;
 
-        menu.children[i] = {
-          path: route.path,
-          title: route.title,
-        };
+        if (typeof child === 'string') {
+          const route =
+            routes.find(route => {
+              if (
+                route.component &&
+                isSameRouteComponent(child, route.component, includes) &&
+                (route.meta?.locale === locale || (!route.meta?.locale && isDefaultLocale))
+              ) {
+                return true;
+              }
+            }) || {};
 
-        if (!route.meta) {
-          route.meta = {};
+          childItem = {
+            path: route.path,
+            title: route.title,
+          };
+
+          if (!route.meta) {
+            route.meta = {};
+          }
+
+          // update original route group
+          route.meta.group = {
+            title: menu.title,
+            ...(menu.path ? { path: menu.path } : {}),
+            ...(route.meta?.group || {}),
+          };
         }
 
-        // update original route group
-        route.meta.group = {
-          title: menu.title,
-          ...(menu.path ? { path: menu.path } : {}),
-          ...(route.meta?.group || {}),
-        };
-      }
-    });
-  });
+        return childItem;
+      });
+    }
 
-  return menus;
+    return menuItem;
+  });
 }
 
 export function menuSorter(prev, next) {
@@ -187,14 +196,15 @@ export default function getMenuFromRoutes(
       const localePrefix = isDefaultLocale ? '/' : `/${locale[0]}`;
 
       if (navPath.startsWith(localePrefix)) {
-        convertUserMenuChilds(
+        const convertedMenus = convertUserMenuChilds(
           userMenus[navPath],
           routes,
           locale[0],
           isDefaultLocale,
           opts.resolve.includes,
         );
-        localeMenus[locale[0]][navPath] = userMenus[navPath];
+
+        localeMenus[locale[0]][navPath] = convertedMenus;
 
         return true;
       }
