@@ -1,10 +1,8 @@
 export default {
   publicPath: '/dumi/',
   base: '/dumi',
-  doc: {
-    title: 'Dumi',
-    mode: 'site',
-  },
+  title: 'Dumi',
+  mode: 'site',
   extraBabelPlugins: [
     [
       'import',
