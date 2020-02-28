@@ -36,7 +36,7 @@ title: 多语言支持
 
 ```jsx | inline
 import React from 'react';
-import gif from './assets/locale-menu.gif';
+import gif from '../assets/locale-menu.gif';
 
 export default () => <img src={gif} width="250" />;
 ```

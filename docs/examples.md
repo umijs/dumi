@@ -1,6 +1,9 @@
 ---
 title: 文档示例
 legacy: /example
+nav:
+  order: 3
+  title: 示例
 ---
 
 # 文档示例
