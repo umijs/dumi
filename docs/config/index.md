@@ -1,9 +1,8 @@
 ---
-title: Config
 order: 1
 nav:
+  order: 2
   title: 配置项
-  order: 9
 ---
 
 # Config
@@ -17,9 +16,7 @@ export default {
 };
 ```
 
-## dumi 独有配置
-
-### doc.mode
+## mode
 
 - 类型：`doc | site`
 - 默认值：`doc`
@@ -27,39 +24,31 @@ export default {
 
 用于设定文档的展现模式，默认为文档模式（左侧菜单 + 右侧内容），配置为 `site` 时可无缝切换为站点模式（导航头 + 左侧菜单 + 右侧内容）。如果希望对导航菜单项展示的文本和顺序，可参考 frontmatter 配置中的 `nav` 配置项。
 
-### doc.title
+## title
 
 - 类型：`String`
 - 默认值：`package.name`
 - 详细：
 
-配置文档的名称，通常是所开发的组件的名称，等同于配置 Umi `title` 配置中的 `defaultTitle`，该配置除用于网站标题之外，还会显示在侧边栏菜单中。
+配置文档的名称，通常是所开发的组件的名称。
 
-### doc.desc
+## desc
 
 - 类型：`String`
 - 默认值：`null`
 - 详细：
 
-配置文档的介绍，会显示在侧边栏菜单标题的下方。
+配置文档的介绍，会显示在侧边栏菜单标题的下方，仅 `doc` 模式下可用。
 
-### doc.logo
+## logo
 
 - 类型：`String`
 - 默认值：Umi 的 LOGO
 - 详细：
 
-配置文档的 LOGO，会显示在侧边栏菜单标题上方。
+配置文档的 LOGO。
 
-### doc.include
-
-- 类型：`Array<String>`
-- 默认值：`['docs']`
-- 详细：
-
-配置默认会嗅探的除 `src` 目录以外的目录，该目录下的 `.md` 文件也会被加入进路由，而且优先级高于 `src` 目录。
-
-### doc.locales
+## locales
 
 - 类型：`Array<[String, String]>`
 - 默认值：`[['en-US', 'EN'], ['zh-CN', '中文']]`
@@ -71,18 +60,42 @@ export default {
 
 默认 locale 的文件名后缀是可选的，比如，在默认配置下，`index.md` 和 `index.en-US.md` 等价。
 
-## Umi 的配置
+## menus
 
-### routes
+- 类型：
+- 默认值：
+- 详细：
+
+## navs
+
+- 类型：
+- 默认值：
+- 详细：
+
+## resolve.includes
+
+- 类型：`Array<String>`
+- 默认值：`['docs', 'src', 'packages/pkg/src']`
+- 详细：
+
+配置 dumi 嗅探的文档目录，dumi 会尝试在配置的目录中递归寻找 markdown 文件，默认值为 `docs` 目录、`src` 目录（普通项目）、`packages/pkg/src` 目录（lerna 项目），通常不需要配置，除非自动嗅探出现了『误伤』。
+
+## resolve.previewLangs
+
+- 类型：`Array<String>`
+- 默认值：`['jsx', 'tsx']`
+- 详细：
+
+配置 dumi 默认会转换为 ReactComponent 组件渲染的代码块，如果不希望做任何转换，例如类似 Umi 官网的纯站点，那么将该项设置为空数组即可。
+
+## routes
 
 - 类型：`Array`
 - 默认值：`null`
 - 详细：
 
-<Alert>注意：暂不支持配置嵌套路由</Alert>
+配置式路由，配置方式与 Umi 一致，可通过 `meta` 属性传递支持的 [frontmatter](/config/frontmatter) 属性。
 
-配置式路由，配置方式与 Umi 一致，可通过 `meta` 属性传递支持的 <a href="#/config/frontmatter">FrontMatter</a> 属性。
-
-### 其他配置
+## 其他配置
 
 详见 Umi 的 [官方文档](https://umijs.org/config)。

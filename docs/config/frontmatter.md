@@ -4,7 +4,7 @@ title: FrontMatter
 
 # FrontMatter
 
-和大多数文档工具一样，为了使 Markdown 文件能发挥出配置能力，dumi 也不能免俗地提供了一些 FrontMatter 的配置；值得一提的是，dumi 不仅支持 Markdown 文件进行 FrontMatter 配置，也支持外部 Demo 引入的 TSX/JSX 文件的 FrontMatter 配置。
+和大多数文档工具一样，为了使 Markdown 文件能发挥出配置能力，dumi 也不能免俗地提供了一些 FrontMatter 的配置；有些特殊的是，dumi 不仅支持 Markdown 文件进行 FrontMatter 配置，也支持外部 Demo 引入的 TSX/JSX 文件的 FrontMatter 配置。
 
 Markdown 文件的 FrontMatter 编写方法如下：
 
@@ -41,13 +41,13 @@ TSX/JSX 文件的 FrontMatter 编写方法如下：
 
 控制侧边栏菜单的显示或隐藏。
 
-### slugs
+### toc
 
-- 类型：`Boolean`
-- 默认值：`true`
+- 类型：`false | 'content' | 'menu'`
+- 默认值：doc 模式下为 `content`，site 模式下为 `menu`
 - 详细：
 
-控制右侧 affix menu 的显示或隐藏。
+控制锚点目录的显示或位置，值为 `false` 时不展示，值为 `content` 时展示在内容区域的右侧（Affix Menu），值为 `menu` 时会将**当前路由的锚点目录**展示在左侧菜单中。
 
 ### order
 
@@ -55,7 +55,7 @@ TSX/JSX 文件的 FrontMatter 编写方法如下：
 - 默认值：`null`
 - 详细：
 
-控制该文档的显示顺序，数值越大排序越靠前。
+控制该文档的显示顺序，数值越小排序越靠前。
 
 ### legacy
 
@@ -84,11 +84,12 @@ TSX/JSX 文件的 FrontMatter 编写方法如下：
 
 dumi 会自动为 `index.md`、`a.md`、`b.md` 指定 `group.title` 为 `Components`、`group.path` 为 `/components`。并且我们可以通过 FrontMatter 对生成的默认配置进行**选择性复写**，比如：
 
-```md
+```yaml
 ---
 group:
   title: 组件
 ---
+
 ```
 
 则最终生成的 `group.path` 还是 `/components`，但 `group.title` 则变成了 `组件`。
@@ -135,6 +136,67 @@ group:
 
 略，与 `group.order` 一致。
 
+### hero
+
+- 类型：`Object`
+- 默认值：`null`
+- 详细：
+
+在 site 模式下可用，配置 hero 后，该页面将会以首页形式呈现。
+
+#### hero.title
+
+- 类型：`String`
+- 默认值：`null`
+- 详细：
+
+配置首页首屏区域的大标题。
+
+#### hero.desc
+
+- 类型：`String`
+- 默认值：`null`
+- 详细：
+
+配置首页首屏区域的简介文字。
+
+#### hero.actions
+
+- 类型：`Array`
+- 默认值：`null`
+- 详细：
+
+配置首页首屏区域的操作按钮，第一个按钮会作为主按钮展示，配置格式如下：
+
+```yaml
+hero:
+  actions:
+    - text: Getting Started
+      linn: /getting-started
+```
+
+### features
+
+- 类型：`Object`
+- 默认值：`null`
+- 详细：
+
+在 site 模式下可用，配置后该页面将会以首页形式呈现，用于每行 3 个的形式展示组件库的特性，配置格式如下：
+
+```yaml
+features:
+  - title: 性能强大
+    desc: 可以配置 `markdown` 文本
+```
+
+### translateHelp
+
+- 类型：`Boolean`
+- 默认值：`false`
+- 详细：
+
+是否在该页面顶部展示『帮助翻译』的提示框。
+
 ## TSX/JSX 支持的 FrontMatter 配置项
 
 ### title
@@ -147,11 +209,11 @@ group:
 
 ### desc
 
-- 类型：`String`
+- 类型：`Markdown`
 - 默认值：`null`
 - 详细：
 
-用于配置该外部 Demo 的简介，配置后会在 Demo 预览器中显示。
+用于配置该外部 Demo 的简介，配置后会在 Demo 预览器中显示，支持 Markdown 语法。
 
 ### inline
 
@@ -159,4 +221,20 @@ group:
 - 默认值：`false`
 - 详细：
 
-用于指示该 demo 为自由 demo，可参照 [好好写 demo - 自由 demo](#/write-demo?anchor=自由-demo)。
+用于指示该 demo 为自由 demo，将会直接在文档中嵌入渲染，不会被 demo 容器包裹，用户也无法查看源代码。
+
+### transform
+
+- 类型：`Boolean`
+- 默认值：`false`
+- 详细：
+
+用于控制 demo 的包裹容器是否设置 `transform` 的 CSS 值以控制 `position: fixed;` 的元素相对于 demo 容器定位。
+
+### 通过 `code` 标签控制
+
+所有 TSX/JSX 支持的配置项，在使用 `code` 标签引入外部 demo 时也可以使用，就像这样：
+
+```html
+<code title="标题" desc="说明文字" src="/path/to/demo" />
+```
