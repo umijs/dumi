@@ -348,7 +348,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
             {!showHero && !showFeatures && (
               <div className="__dumi-default-layout-footer-meta">
                 {/github\.com/.test(repoUrl) && (
-                  <a href={`${repoUrl}/edit/master/${currentRouteMeta.filePath}`}>
+                  <a target="_blank" href={`${repoUrl}/edit/master/${currentRouteMeta.filePath}`}>
                     {isCN ? '在 GitHub 上编辑这篇文档' : 'Edit this doc on GitHub'}
                   </a>
                 )}

@@ -52,7 +52,7 @@ function wrapperHtmlByComponent(html: string, meta: TransformResult['config']) {
         <>
           ${
             meta.translateHelp
-              ? "<Alert>This article has not been translated yet. Wan't to help us out? Click the Edit this page on GitHub at the end of the page.</Alert>"
+              ? "<Alert>This article has not been translated yet. Wan't to help us out? Click the Edit this doc on GitHub at the end of the page.</Alert>"
               : ''
           }
           ${html}
