@@ -55,7 +55,7 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, onLocaleChange }) => 
           <h1>{title}</h1>
           <p>{desc}</p>
           {/* github star badge */}
-          {/github\.com/.test(repoUrl) && (
+          {/github\.com/.test(repoUrl) && mode === 'doc' && (
             <p>
               <object
                 type="image/svg+xml"

@@ -16,20 +16,20 @@ function mergeUserConfig(defaultOpts: { [key: string]: any }, api: IApi): IDumiO
 
   // has default value keys
   ['mode', 'title', 'locales'].forEach(key => {
-    result[key] = api.userConfig[key] || result[key];
+    result[key] = api.config[key] || result[key];
   });
 
   // non-default values keys
   ['description', 'logo', 'menus', 'navs'].forEach(key => {
-    if (api.userConfig[key]) {
-      result[key] = api.userConfig[key];
+    if (api.config[key]) {
+      result[key] = api.config[key];
     }
   });
 
   // nested resolve keys
   ['includes', 'previewLangs'].forEach(key => {
-    if (api.userConfig.resolve?.[key]) {
-      result.resolve[key] = api.userConfig.resolve[key];
+    if (api.config.resolve?.[key]) {
+      result.resolve[key] = api.config.resolve[key];
     }
   });
 

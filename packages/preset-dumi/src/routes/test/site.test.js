@@ -76,10 +76,10 @@ describe('routes & menu: site mode', () => {
             { depth: 2, value: 'config.a', heading: 'configa' },
             { depth: 2, value: 'config.b', heading: 'configb' },
           ],
-          title: 'Api',
+          title: 'config.a',
           nav: { path: '/api', title: 'Api' },
         },
-        title: 'Api',
+        title: 'config.a',
       },
       {
         path: '/',
@@ -157,11 +157,11 @@ describe('routes & menu: site mode', () => {
             { depth: 2, value: 'config.a', heading: 'configa' },
             { depth: 2, value: 'config.b', heading: 'configb' },
           ],
-          title: 'Api',
+          title: 'config.a',
           nav: { path: '/zh-CN/api', title: 'Api' },
           locale: 'zh-CN',
         },
-        title: 'Api',
+        title: 'config.a',
       },
       {
         path: '/zh-CN/config',
@@ -246,7 +246,7 @@ describe('routes & menu: site mode', () => {
         '/api': [
           {
             path: '/api',
-            title: 'Api',
+            title: 'config.a',
             meta: {},
           },
         ],
@@ -295,7 +295,7 @@ describe('routes & menu: site mode', () => {
         '/zh-CN/api': [
           {
             path: '/zh-CN/api',
-            title: 'Api',
+            title: 'config.a',
             meta: {},
           },
         ],

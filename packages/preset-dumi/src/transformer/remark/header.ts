@@ -18,6 +18,10 @@ export default () => (ast, vFile) => {
         value: title,
         heading: (node.properties as any)?.id,
       });
+
+      if (!vFile.data.title) {
+        vFile.data.title = title;
+      }
     }
   });
 };
