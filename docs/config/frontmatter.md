@@ -44,7 +44,7 @@ TSX/JSX 文件的 FrontMatter 编写方法如下：
 ### toc
 
 - 类型：`false | 'content' | 'menu'`
-- 默认值：doc 模式下为 `content`，site 模式下为 `menu`
+- 默认值：`'content'`
 - 详细：
 
 控制锚点目录的显示或位置，值为 `false` 时不展示，值为 `content` 时展示在内容区域的右侧（Affix Menu），值为 `menu` 时会将**当前路由的锚点目录**展示在左侧菜单中。

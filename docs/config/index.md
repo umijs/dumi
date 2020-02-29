@@ -32,7 +32,7 @@ export default {
 
 配置文档的名称，通常是所开发的组件的名称。
 
-## desc
+## description
 
 - 类型：`String`
 - 默认值：`null`

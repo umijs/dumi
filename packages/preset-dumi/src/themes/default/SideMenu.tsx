@@ -94,7 +94,10 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed }) => {
             const hasSlugs = Boolean(routeMeta.slugs?.length);
             const hasChildren = item.children && Boolean(item.children.length);
             const show1LevelSlugs =
-              mode === 'site' && !hasChildren && hasSlugs && item.path === location.pathname;
+              routeMeta.toc === 'menu' &&
+              !hasChildren &&
+              hasSlugs &&
+              item.path === location.pathname;
 
             return (
               <li key={item.title}>
@@ -115,10 +118,7 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed }) => {
                         </NavLink>
                         {/* group children slugs */}
                         {Boolean(
-                          (routeMeta.toc === 'menu' ||
-                            (routeMeta.toc === undefined && mode === 'site')) &&
-                            child.path === location.pathname &&
-                            hasSlugs,
+                          routeMeta.toc === 'menu' && child.path === location.pathname && hasSlugs,
                         ) && <SlugList base={child.path} slugs={routeMeta.slugs} />}
                       </li>
                     ))}

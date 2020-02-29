@@ -47,6 +47,7 @@ body {
 
     .@{prefix}-layout-toc {
       top: 118px;
+      height: calc(90vh - 118px);
     }
   }
 
@@ -183,10 +184,13 @@ body {
     top: 50px;
     right: 0;
     width: @s-toc-width;
+    max-height: calc(90vh - 50px);
     margin: 0;
     padding: 0 24px 0 0;
     background-color: #fff;
     box-shadow: 0 0 16px 16px #fff;
+    box-sizing: content-box;
+    overflow: auto;
 
     @media @mobile {
       display: none;

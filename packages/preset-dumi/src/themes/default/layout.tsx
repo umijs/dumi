@@ -279,8 +279,10 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     const showFeatures = siteMode && currentRouteMeta.features;
     const showSideMenu = currentRouteMeta.sidemenu !== false && !showHero && !showFeatures;
     const showSlugs =
+      !showHero &&
+      !showFeatures &&
       Boolean(currentRouteMeta.slugs?.length) &&
-      (currentRouteMeta.toc === 'content' || (currentRouteMeta.toc === undefined && !siteMode));
+      (currentRouteMeta.toc === 'content' || currentRouteMeta.toc === undefined);
     const isCN =
       currentLocale === 'zh-CN' || (currentLocale === '*' && locales[0]?.name === 'zh-CN');
     let updatedTime: any = new Date(currentRouteMeta.updatedTime);
