@@ -40,6 +40,14 @@ export interface IPreviewerProps {
    * enable transform to change CSS containing block for demo
    */
   transform?: boolean;
+  /**
+   * modify background for demo area
+   */
+  background?: string;
+  /**
+   * collapse padding of demo area
+   */
+  compact?: string;
 }
 
 class Previewer extends Component<IPreviewerProps> {
@@ -140,7 +148,7 @@ ${issueLink}`,
   };
 
   render() {
-    const { children, source, title, desc, inline, transform } = this.props;
+    const { children, source, title, desc, inline, transform, background, compact } = this.props;
     const { showSource, sourceType, copyTimer, jsBase64, tsBase64 } = this.state;
 
     // render directly for inline mode
@@ -152,7 +160,11 @@ ${issueLink}`,
       <div className="__dumi-default-previewer">
         <div
           className="__dumi-default-previewer-demo"
-          style={{ transform: transform ? 'translate(0, 0)' : undefined }}
+          style={{
+            transform: transform ? 'translate(0, 0)' : undefined,
+            padding: compact ? '0' : undefined,
+            background,
+          }}
         >
           {children}
         </div>
