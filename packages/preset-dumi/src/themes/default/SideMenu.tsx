@@ -43,11 +43,9 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed }) => {
               />
             </p>
           )}
-          {/* locale select */}
-          <LocaleSelect />
         </div>
         {/* mobile nav list */}
-        {Boolean(navs.length) && (
+        {Boolean(navs.length) ? (
           <div className="__dumi-default-menu-mobile-area">
             <ul className="__dumi-default-menu-nav-list">
               {navs.map(nav => (
@@ -83,6 +81,12 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed }) => {
                 </li>
               ))}
             </ul>
+            {/* site mode locale select */}
+            <LocaleSelect />
+          </div>
+        ) : (
+          <div className="__dumi-default-menu-doc-locale">
+            {/* doc mode locale select */}
             <LocaleSelect />
           </div>
         )}
