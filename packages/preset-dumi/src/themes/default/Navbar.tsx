@@ -1,15 +1,15 @@
 import React, { useContext, FC, MouseEvent, ChangeEvent } from 'react';
 import { Link, NavLink } from 'umi';
+import LocaleSelect from './LocaleSelect';
 import context from './context';
 import './Navbar.less';
 
 interface INavbarProps {
   navPrefix?: React.ReactNode;
-  onLocaleChange: (ev: ChangeEvent<HTMLSelectElement>) => void;
   onMobileMenuClick: (ev: MouseEvent<HTMLButtonElement>) => void;
 }
 
-const Navbar: FC<INavbarProps> = ({ onMobileMenuClick, onLocaleChange, navPrefix }) => {
+const Navbar: FC<INavbarProps> = ({ onMobileMenuClick, navPrefix }) => {
   const { locale, rootPath, mode, title, logo, locales, navs } = useContext(context);
 
   return (
@@ -59,18 +59,7 @@ const Navbar: FC<INavbarProps> = ({ onMobileMenuClick, onLocaleChange, navPrefix
             </a>
           ),
         )}
-        {/* locale select */}
-        {Boolean(locales.length) && (
-          <div className="__dumi-default-navbar-locale">
-            <select value={locale} onChange={onLocaleChange}>
-              {locales.map(locale => (
-                <option value={locale.name} key={locale.name}>
-                  {locale.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
+        <LocaleSelect />
       </nav>
     </div>
   );

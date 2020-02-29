@@ -42,7 +42,9 @@ const SlugsList: FC<ISlugsListProps> = ({ className, slugs, base }) => {
             className={currentSlug === slug.heading ? 'active' : ''}
             onClick={ev => handleAnchorClick(ev, slug.heading)}
           >
-            <Link to={getGotoPathName(base, slug.heading)}>{slug.value}</Link>
+            <Link to={getGotoPathName(base, slug.heading)}>
+              <span>{slug.value}</span>
+            </Link>
           </li>
         ))}
     </ul>

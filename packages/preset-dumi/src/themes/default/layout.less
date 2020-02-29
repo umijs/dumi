@@ -51,83 +51,118 @@ body {
   }
 
   &-hero {
-    margin: -60px -58px 0;
-    padding: 100px 0 60px;
+    margin: -50px -58px 0;
+    padding: 100px 0;
     text-align: center;
-    background-color: #f9fafb;
+    background-color: #f5f6f8;
 
     @media @mobile {
-      margin: -50px -16px 0;
+      margin: -16px -16px 0;
+      padding: 48px 0;
     }
 
     h1 {
-      margin: 0 0 10px;
-      font-size: 46px;
-      line-height: 1;
-      color: @c-heading;
-      letter-spacing: 0;
+      margin: 0 0 16px;
+      font-size: 48px;
+      font-weight: 600;
+      line-height: 56px;
+      color: #080e29;
     }
 
     p {
-      margin: 10px 0 60px;
-      font-size: 18px;
+      margin: 16px 0 32px;
+      font-size: 16px;
+      line-height: 24px;
       color: @c-secondary;
     }
 
     button {
-      padding: 0 48px;
-      height: 58px;
-      color: #fff;
-      font-size: 20px;
-      background: #5982ae;
-      box-shadow: 0 10px 20px -8px rgba(70, 104, 174, 0.5);
-      border: 0;
+      margin-right: 16px;
+      padding: 0 32px;
+      height: 44px;
+      color: @c-primary;
+      font-size: 16px;
+      background: transparent;
+      border: 1px solid @c-primary;
+      border-radius: 22px;
+      box-sizing: border-box;
       cursor: pointer;
       outline: none;
       transition: all 0.3s;
 
       &:hover {
-        background: rgb(99, 143, 190);
-        box-shadow: 0 14px 20px -8px rgba(70, 104, 174, 0.5);
+        opacity: 0.8;
       }
+
+      &:active {
+        opacity: 0.9;
+      }
+    }
+
+    a:last-child button {
+      margin-right: 0;
+      color: #fff;
+      background: @c-primary;
     }
   }
 
   &-features {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-row-gap: 16px;
-    padding: 60px 0 30px;
+    grid-column-gap: 96px;
+    grid-row-gap: 56px;
+    padding: 72px 0;
 
     > dl {
       flex: 1;
+      margin: 0;
+      text-align: center;
+      background: no-repeat center top / auto 48px;
 
-      &:not(:last-child) {
-        margin-right: 60px;
+      &[style*='background-image'] {
+        padding-top: 64px;
       }
 
       dt {
-        margin-bottom: 20px;
-        font-size: 18px;
+        margin-bottom: 10px;
+        font-size: 16px;
+        line-height: 1;
         color: @c-heading;
       }
 
       dd {
-        margin-left: 0;
-        font-size: 16px;
-        color: @c-text;
+        margin: 0;
+
+        .markdown {
+          color: @c-secondary;
+          font-size: 13px;
+          line-height: 22px;
+
+          > p:first-child {
+            margin-top: 0;
+          }
+
+          > p:last-child {
+            margin-bottom: 0;
+          }
+        }
       }
     }
 
     @media @mobile {
       display: block;
-      padding: 24px 0;
+      padding: 40px 0;
 
       > dl {
-        margin-right: 0 !important;
+        text-align: left;
+        background-position: left top;
+
+        &[style*='background-image'] {
+          padding: 0 0 0 60px;
+        }
 
         + dl {
-          margin-top: 16px;
+          margin-top: 32px;
         }
       }
     }

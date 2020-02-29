@@ -54,7 +54,7 @@ export default function(api: IApi) {
       previewLangs: ['jsx', 'tsx'],
     },
     locales: [
-      ['en-US', 'EN'],
+      ['en-US', 'English'],
       ['zh-CN', '中文'],
     ],
     mode: 'doc',

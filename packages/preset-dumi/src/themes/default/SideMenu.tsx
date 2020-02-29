@@ -1,28 +1,18 @@
-import React, { FC, useContext, ChangeEvent } from 'react';
+import React, { FC, useContext } from 'react';
 import { Link, NavLink, history } from 'umi';
+import LocaleSelect from './LocaleSelect';
 import context from './context';
 import SlugList from './SlugList';
 import './SideMenu.less';
 
 interface INavbarProps {
   mobileMenuCollapsed: boolean;
-  onLocaleChange: (ev: ChangeEvent<HTMLSelectElement>) => void;
 }
 
-const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, onLocaleChange }) => {
-  const {
-    locale,
-    locales,
-    logo,
-    title,
-    desc,
-    menus,
-    navs,
-    repoUrl,
-    mode,
-    rootPath,
-    routeMeta,
-  } = useContext(context);
+const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed }) => {
+  const { logo, title, desc, menus, navs, repoUrl, mode, rootPath, routeMeta } = useContext(
+    context,
+  );
 
   return (
     <div
@@ -33,18 +23,6 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, onLocaleChange }) => 
     >
       <div className="__dumi-default-menu-inner">
         <div className="__dumi-default-menu-header">
-          {/* locale select */}
-          {Boolean(locales.length) && (
-            <div className="__dumi-default-menu-locale">
-              <select value={locale} onChange={onLocaleChange}>
-                {locales.map(locale => (
-                  <option value={locale.name} key={locale.name}>
-                    {locale.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
           <Link
             to={rootPath}
             className="__dumi-default-menu-logo"
@@ -65,16 +43,48 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, onLocaleChange }) => 
               />
             </p>
           )}
+          {/* locale select */}
+          <LocaleSelect />
         </div>
         {/* mobile nav list */}
         {Boolean(navs.length) && (
-          <ul className="__dumi-default-menu-nav-list">
-            {navs.map(nav => (
-              <li key={nav.path}>
-                <NavLink to={nav.path}>{nav.title}</NavLink>
-              </li>
-            ))}
-          </ul>
+          <div className="__dumi-default-menu-mobile-area">
+            <ul className="__dumi-default-menu-nav-list">
+              {navs.map(nav => (
+                <li key={nav.path}>
+                  {/^\/[\w-]/.test(nav.path) ? (
+                    <NavLink to={nav.path} key={nav.path}>
+                      {nav.title}
+                    </NavLink>
+                  ) : (
+                    <a target="_blank" href={nav.path} key={nav.path}>
+                      {nav.title}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
+                        x="0px"
+                        y="0px"
+                        viewBox="0 0 100 100"
+                        width="15"
+                        height="15"
+                        className="__dumi-default-external-link-icon"
+                      >
+                        <path
+                          fill="currentColor"
+                          d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"
+                        />
+                        <polygon
+                          fill="currentColor"
+                          points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"
+                        />
+                      </svg>
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ul>
+            <LocaleSelect />
+          </div>
         )}
         {/* menu list */}
         <ul className="__dumi-default-menu-list">
@@ -101,7 +111,7 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, onLocaleChange }) => 
                     {item.children.map(child => (
                       <li key={child.path}>
                         <NavLink to={child.path} exact>
-                          {child.title}
+                          <span>{child.title}</span>
                         </NavLink>
                         {/* group children slugs */}
                         {Boolean(

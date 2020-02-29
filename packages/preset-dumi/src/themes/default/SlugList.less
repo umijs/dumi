@@ -1,6 +1,11 @@
 @import (reference) './variables.less';
 
 ul[role='slug-list'] {
+  &:empty {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
   li {
     &.active a {
       color: #1561c4;

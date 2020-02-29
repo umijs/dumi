@@ -242,22 +242,6 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     }
   };
 
-  handleLocaleChange = ev => {
-    const {
-      location: { pathname },
-      locales,
-    } = this.props;
-    // clear locale prefix from the previous locale
-    let newPathname = pathname.replace(`/${this.state.currentLocale}`, '');
-
-    // append locale prefix to path if it is not the default locale
-    if (ev.target.value !== locales[0].name) {
-      newPathname = `/${ev.target.value}${newPathname}`.replace(/\/$/, '');
-    }
-
-    history.push(newPathname);
-  };
-
   renderHero = hero => (
     <>
       <div className="__dumi-default-layout-hero">
@@ -276,7 +260,10 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
   renderFeatures = features => (
     <div className="__dumi-default-layout-features">
       {features.map(feat => (
-        <dl key={feat.title}>
+        <dl
+          key={feat.title}
+          style={{ backgroundImage: feat.icon ? `url(${feat.icon})` : undefined }}
+        >
           <dt>{feat.title}</dt>
           <dd dangerouslySetInnerHTML={{ __html: feat.desc }} />
         </dl>
@@ -330,10 +317,9 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
         >
           <Navbar
             navPrefix={<SearchBar routes={this.props.route.routes} />}
-            onLocaleChange={this.handleLocaleChange}
             onMobileMenuClick={() => this.setState({ menuCollapsed: !menuCollapsed })}
           />
-          <SideMenu mobileMenuCollapsed={menuCollapsed} onLocaleChange={this.handleLocaleChange} />
+          <SideMenu mobileMenuCollapsed={menuCollapsed} />
           {showSlugs && (
             <SlugList
               base=""

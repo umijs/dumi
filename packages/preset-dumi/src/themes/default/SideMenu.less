@@ -45,38 +45,6 @@
     }
   }
 
-  &-locale {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    padding: 0 8px;
-    border: 1px solid @c-border;
-    cursor: pointer;
-
-    &::before {
-      content: '🌏';
-      color: #fff;
-    }
-
-    &::after {
-      content: '';
-      display: inline-block;
-      width: 0;
-      height: 0;
-      border: 3px solid transparent;
-      border-top-color: @c-text;
-    }
-
-    select {
-      padding: 4px 0;
-      color: @c-secondary;
-      appearance: none;
-      background: transparent;
-      border: 0;
-      outline: none;
-    }
-  }
-
   &-header {
     position: relative;
     padding-top: 40px;
@@ -131,20 +99,49 @@
 
       li {
         a {
+          position: relative;
           display: block;
           padding-right: 24px;
           color: @c-heading;
           line-height: 2.4;
           text-decoration: none;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
           outline: none;
           transition: color 0.3s, background 0.3s;
+
+          span {
+            display: block;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
 
           &:hover,
           &.active {
             color: @c-primary;
+          }
+
+          &::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -10px;
+            margin-top: -2.5px;
+            display: inline-block;
+            width: 5px;
+            height: 5px;
+            background-color: @c-primary;
+            border-radius: 50%;
+            opacity: 0;
+            transition: transform 0.2s, opacity 0.2s;
+            transform: scale(0) translateX(-10px);
+          }
+        }
+
+        &.active a,
+        a.active {
+          &::before {
+            opacity: 1;
+            transform: scale(1) translateX(0);
           }
         }
 
@@ -162,11 +159,17 @@
         line-height: 2.875;
 
         &:not([href]) {
+          padding-top: 24px;
+          line-height: 1;
           font-weight: 500;
           color: @c-heading !important;
           background: transparent !important;
           cursor: default;
         }
+      }
+
+      > li:first-child > a:not([href]) {
+        padding-top: 0;
       }
     }
 
@@ -176,20 +179,30 @@
         color: @c-secondary;
 
         &.active {
-          color: #1561c4;
+          color: @c-primary;
         }
+      }
+    }
+
+    .@{prefix}-menu-mobile-area {
+      display: none;
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+      text-align: center;
+      border-bottom: 1px solid @c-border;
+
+      @media @mobile {
+        display: block;
       }
     }
 
     // mobile nav list
     .@{prefix}-menu-nav-list {
-      display: none;
-      padding: 16px 16px 8px;
-      margin-bottom: 16px;
-      border-bottom: 1px solid @c-border;
+      padding: 16px 0;
 
-      @media @mobile {
-        display: block;
+      > li > a {
+        padding-right: 0;
+        line-height: 2.4;
       }
     }
 
@@ -202,16 +215,8 @@
 
         padding-left: 28px;
 
-        &:hover {
-          background: lighten(@c-active-bg, 2%);
-        }
-
-        &:active {
-          background: lighten(@c-active-bg, 1%);
-        }
-
         &.active {
-          background: #e8ecf4;
+          background: linear-gradient(to left, #e8ecf4, rgba(232, 236, 244, 0));
         }
 
         ~ ul {
@@ -223,7 +228,6 @@
           padding-left: 16px;
 
           ~ ul {
-            margin-top: 0px;
             margin-left: 16px;
           }
         }
@@ -243,10 +247,6 @@
       > li > a {
         position: relative;
 
-        &:hover {
-          background-color: #f8faff;
-        }
-
         &::after {
           content: '';
           position: absolute;
@@ -254,16 +254,17 @@
           bottom: 0;
           right: 0;
           display: block;
-          width: 4px;
+          width: 3px;
           background-color: @c-primary;
           visibility: hidden;
           opacity: 0;
           transition: all 0.3s;
+          border-radius: 1px;
         }
 
         &.active {
           z-index: 1;
-          background-color: #f8faff;
+          background: linear-gradient(to left, #f8faff, rgba(248, 250, 255, 0));
 
           &::after {
             opacity: 1;
@@ -274,8 +275,9 @@
     }
 
     @media @desktop {
-      top: @s-nav-height + 50;
+      top: @s-nav-height;
       width: @s-site-menu-width;
+      padding-top: 50px;
       background: transparent;
 
       .@{prefix}-menu-nav,
