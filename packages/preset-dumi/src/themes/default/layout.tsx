@@ -343,6 +343,12 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
                 </span>
               </div>
             )}
+            {(showHero || showFeatures) && currentRouteMeta.footer && (
+              <div
+                className="__dumi-default-layout-footer"
+                dangerouslySetInnerHTML={{ __html: currentRouteMeta.footer }}
+              />
+            )}
           </div>
         </div>
       </Context.Provider>

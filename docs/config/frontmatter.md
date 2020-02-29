@@ -190,6 +190,14 @@ features:
     desc: 可以配置 `markdown` 文本
 ```
 
+### footer
+
+- 类型：`Markdown`
+- 默认值：`null`
+- 详细：
+
+配置当前页面的 footer 区域，建议首页做配置即可，目前暂不支持统一对所有页面进行配置。
+
 ### translateHelp
 
 - 类型：`Boolean`

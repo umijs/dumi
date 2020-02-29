@@ -29,6 +29,11 @@ export default function yamlProcessor() {
         });
       }
 
+      // parse markdown for footer in home page
+      if (data.footer) {
+        data.footer = transformer.markdown(data.footer).html;
+      }
+
       // save frontmatter to data
       vFile.data = Object.assign(vFile.data || {}, data);
     });
