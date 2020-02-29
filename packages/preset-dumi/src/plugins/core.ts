@@ -123,11 +123,19 @@ export default function(api: IApi) {
 
         // use src path instead of main field in package.json if exists
         if (fs.existsSync(srcPath)) {
-          // exclude lib folder
-          config.resolve.alias.set(`${pkgName}/es`, `${pkgPath}/es`);
-          config.resolve.alias.set(`${pkgName}/lib`, `${pkgPath}/lib`);
-          config.resolve.alias.set(pkgName, srcPath);
-        } else {
+          // exclude es & lib folder
+          if (!config.resolve.alias.has(`${pkgName}/es`)) {
+            config.resolve.alias.set(`${pkgName}/es`, srcPath);
+          }
+
+          if (!config.resolve.alias.has(`${pkgName}/lib`)) {
+            config.resolve.alias.set(`${pkgName}/lib`, srcPath);
+          }
+
+          if (!config.resolve.alias.has(pkgName)) {
+            config.resolve.alias.set(pkgName, srcPath);
+          }
+        } else if (!config.resolve.alias.has(pkgName)) {
           config.resolve.alias.set(pkgName, pkgPath);
         }
 
