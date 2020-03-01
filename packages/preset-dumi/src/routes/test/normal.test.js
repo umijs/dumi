@@ -68,7 +68,7 @@ describe('routes & menu: normal', () => {
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/normal/index.md',
-          updatedTime: 1582970322000,
+          updatedTime: 1582794297000,
           slugs: [],
           title: 'Index',
         },
@@ -80,7 +80,7 @@ describe('routes & menu: normal', () => {
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/normal/intro.md',
-          updatedTime: 1582970322000,
+          updatedTime: 1582794297000,
           title: 'Intro',
           group: { path: '/test', title: 'Test' },
           slugs: [],
@@ -93,7 +93,7 @@ describe('routes & menu: normal', () => {
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/normal/index/readme.md',
-          updatedTime: 1582970322000,
+          updatedTime: 1582794297000,
           legacy: '/legacy/path/test',
           slugs: [],
           title: 'Readme',
@@ -107,7 +107,7 @@ describe('routes & menu: normal', () => {
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/normal/sub/HelloComponent.md',
-          updatedTime: 1582970322000,
+          updatedTime: 1582794297000,
           group: { title: 'Rename Sub', order: 10, path: '/sub' },
           slugs: [],
           title: 'HelloComponent',
@@ -120,7 +120,7 @@ describe('routes & menu: normal', () => {
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/normal/sub/README.md',
-          updatedTime: 1582970322000,
+          updatedTime: 1582794297000,
           group: { title: 'Rename Sub', order: 10, path: '/sub' },
           slugs: [],
           title: 'README',
@@ -133,7 +133,7 @@ describe('routes & menu: normal', () => {
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/normal/sub/subsub/stillHello.md',
-          updatedTime: 1582970322000,
+          updatedTime: 1582794297000,
           group: { path: '/rename-sub-sub', title: 'Rename-sub-sub' },
           slugs: [],
           title: 'StillHello',
@@ -146,7 +146,7 @@ describe('routes & menu: normal', () => {
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/normal/sub/subsub/yEnd.md',
-          updatedTime: 1582970322000,
+          updatedTime: 1582794297000,
           order: 1,
           group: { path: '/rename-sub-sub', title: 'Rename-sub-sub' },
           slugs: [],

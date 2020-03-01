@@ -1,7 +1,7 @@
-import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
 import slash from 'slash2';
+import { execSync } from 'child_process';
 import visit from 'unist-util-visit';
 import transformer from '../index';
 
@@ -13,7 +13,13 @@ export default function yamlProcessor() {
       // append file info
       Object.assign(vFile.data, {
         filePath,
-        updatedTime: Math.floor(fs.lstatSync(this.data('fileAbsPath')).ctimeMs),
+        updatedTime:
+          parseInt(
+            execSync(`git log -1 --format=%at ${this.data('fileAbsPath')}`, {
+              stdio: 'pipe',
+            }).toString(),
+            10,
+          ) * 1000,
       });
     }
 

@@ -119,7 +119,7 @@ describe('routes & menu: locales', () => {
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/locale/index.en-US.md',
-          updatedTime: 1582970322000,
+          updatedTime: 1582794297000,
           title: 'English',
           slugs: [],
           locale: 'en-US',
@@ -132,7 +132,7 @@ describe('routes & menu: locales', () => {
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/locale/index.zh-CN.md',
-          updatedTime: 1582970322000,
+          updatedTime: 1582794297000,
           title: '中文',
           slugs: [],
           locale: 'zh-CN',
@@ -145,7 +145,7 @@ describe('routes & menu: locales', () => {
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/locale/missing/abc.en-US.md',
-          updatedTime: 1582970322000,
+          updatedTime: 1582794297000,
           slugs: [],
           locale: 'en-US',
           title: 'Abc',
@@ -159,7 +159,7 @@ describe('routes & menu: locales', () => {
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/locale/sub/abc.en-US.md',
-          updatedTime: 1582970322000,
+          updatedTime: 1582794297000,
           group: { path: '/group', title: 'Group' },
           slugs: [],
           locale: 'en-US',
@@ -173,7 +173,7 @@ describe('routes & menu: locales', () => {
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/locale/sub/abc.zh-CN.md',
-          updatedTime: 1582970322000,
+          updatedTime: 1582794297000,
           group: { path: '/zh-CN/group', title: 'Group' },
           slugs: [],
           locale: 'zh-CN',
@@ -187,7 +187,7 @@ describe('routes & menu: locales', () => {
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/locale/sub/index.en-US.md',
-          updatedTime: 1582970322000,
+          updatedTime: 1582794297000,
           slugs: [],
           locale: 'en-US',
           title: 'Index',
@@ -201,7 +201,7 @@ describe('routes & menu: locales', () => {
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/locale/sub/index.zh-CN.md',
-          updatedTime: 1582970322000,
+          updatedTime: 1582794297000,
           slugs: [],
           locale: 'zh-CN',
           title: 'Index',
@@ -215,7 +215,7 @@ describe('routes & menu: locales', () => {
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/locale/missing/abc.en-US.md',
-          updatedTime: 1582970322000,
+          updatedTime: 1582794297000,
           slugs: [],
           locale: 'zh-CN',
           title: 'Abc',
