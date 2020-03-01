@@ -43,7 +43,14 @@ function mergeUserConfig(defaultOpts: { [key: string]: any }, api: IApi): IDumiO
 
 export default function(api: IApi) {
   // apply default options
-  const pkg = require(path.join(api.paths.cwd, 'package.json'));
+  let pkg;
+
+  try {
+    pkg = require(path.join(api.paths.cwd, 'package.json'));
+  } catch (err) {
+    pkg = {};
+  }
+
   const defaultTitle = pkg.name || 'dumi';
   const hostPkgAlias = getHostPkgAlias(api.paths);
   const defaultOpts = {
