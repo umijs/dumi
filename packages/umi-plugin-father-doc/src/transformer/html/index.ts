@@ -83,7 +83,7 @@ class StyleParser {
  */
 export default function(html) {
   html = html
-    .replace(/\sclass=/g, ' className=')
+    .replace(/class="/g, 'className="')
     .replace(/\sfor=/g, ' htmlFor=')
     // replace comments
     .replace(/<!--/g, '{/*')
