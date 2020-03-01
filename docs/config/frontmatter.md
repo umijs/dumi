@@ -1,5 +1,6 @@
 ---
 title: FrontMatter
+toc: menu
 ---
 
 # FrontMatter

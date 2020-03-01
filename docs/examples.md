@@ -4,6 +4,7 @@ legacy: /example
 nav:
   order: 3
   title: 示例
+toc: menu
 ---
 
 # 文档示例
