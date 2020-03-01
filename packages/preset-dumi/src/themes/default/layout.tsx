@@ -133,13 +133,13 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
 
         if (elm) {
           // 这里的 68 是顶栏的高度
-          document.documentElement.scrollTop = getOffsetTop(elm, document.documentElement) - 68;
+          document.documentElement.scrollTop = getOffsetTop(elm, document.documentElement) - 100;
         }
       }
-    });
 
-    window.addEventListener('scroll', this.debounceOnScroll, {
-      passive: true,
+      window.addEventListener('scroll', this.debounceOnScroll, {
+        passive: true,
+      });
     });
   }
 
@@ -224,8 +224,9 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
       });
 
     // clear heading if scroll top than first section
-    if (document.documentElement.scrollTop < 108) {
-      return history.push(location.pathname);
+    if (document.documentElement.scrollTop < 108 && location.hash) {
+      history.push(location.pathname);
+      return;
     }
 
     if (!linkSections.length) {
@@ -274,7 +275,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
   render() {
     const { mode, title, desc, logo, repoUrl, locales, children } = this.props;
     const { navs, menus, menuCollapsed, currentLocale, currentSlug, currentRouteMeta } = this.state;
-    const siteMode = Boolean(this.state.navs.length);
+    const siteMode = this.props.mode === 'site';
     const showHero = siteMode && currentRouteMeta.hero;
     const showFeatures = siteMode && currentRouteMeta.features;
     const showSideMenu = currentRouteMeta.sidemenu !== false && !showHero && !showFeatures;
