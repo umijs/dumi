@@ -1,6 +1,6 @@
 {
   "name": "@umijs/preset-dumi",
-  "version": "1.0.0-beta.13",
+  "version": "1.0.0-beta.14",
   "description": "",
   "main": "lib/index.js",
   "files": [
