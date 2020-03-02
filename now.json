@@ -1,6 +1,6 @@
 {
   "name": "dumi",
-  "scope": "umi",
+  "scope": "umijs",
   "version": 2,
   "builds": [
     {
