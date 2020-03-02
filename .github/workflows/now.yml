@@ -15,4 +15,4 @@ jobs:
           yarn bootstrap
           yarn build
           yarn doc:build
-          now --token=$ZEIT_TOKEN --prod --force --scope umijs
+          now --token=$ZEIT_TOKEN --prod --confirm --force --scope umijs
