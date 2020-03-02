@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "cross-env BROWSER=none node ./packages/dumi/bin/dumi.js dev",
     "watch": "father-build build --watch",
-    "now-build": "yarn bootstrap && yarn build && yarn docs:build",
+    "now-build": "yarn bootstrap && yarn build && yarn doc:build",
     "doc:build": "cross-env BROWSER=none node ./packages/dumi/bin/dumi.js build",
     "doc:deploy": "bash ./scripts/deploy_doc.sh",
     "bootstrap": "lerna bootstrap",
