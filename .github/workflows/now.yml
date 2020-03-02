@@ -1,4 +1,4 @@
-name: umi - deploy
+name: dumi - deploy
 on:
   push:
     branches:
