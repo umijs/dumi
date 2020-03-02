@@ -1,3 +1,4 @@
+import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
 import slash from 'slash2';
@@ -11,16 +12,19 @@ export default function yamlProcessor() {
       const filePath = slash(path.relative(process.cwd(), this.data('fileAbsPath')));
 
       // append file info
-      Object.assign(vFile.data, {
-        filePath,
-        updatedTime:
+      vFile.data.filePath = filePath;
+
+      try {
+        vFile.data.updatedTime =
           parseInt(
             execSync(`git log -1 --format=%at ${this.data('fileAbsPath')}`, {
               stdio: 'pipe',
             }).toString(),
             10,
-          ) * 1000,
-      });
+          ) * 1000;
+      } catch (err) {
+        vFile.data.updatedTime = Math.floor(fs.lstatSync(this.data('fileAbsPath')).mtimeMs);
+      }
     }
 
     visit(ast, 'yaml', node => {
