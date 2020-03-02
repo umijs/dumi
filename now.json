@@ -12,7 +12,7 @@
     { "src": "/.*", "dest": "/index.html" }
   ],
   "github": {
-    "silent": true
+    "enable": false
   },
   "alias": ["d.umijs.org"]
 }

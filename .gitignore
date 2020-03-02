@@ -15,3 +15,5 @@ dist
 /.vscode
 .eslintcache
 .umi
+
+.now
