@@ -24,52 +24,32 @@ $ npm i dumi -D
 
 ## 开始写文档
 
-dumi 默认会自动搜寻 `docs`、`src`（或各 lerna 包下的 `src`）目录下的 markdown 文件
-
-<!-- ## 小试牛刀
-
-dumi 默认会搜寻 `src` 及 `docs` 目录下的 `.md` 文件，然后根据文件目录结构及 FrontMatter 配置来生成路由，当然这些默认行为可以通过配置进行修改。
-
-我们先创建我们的第一个文档页面：
+dumi 默认会自动搜寻 `docs`、`src`（或各 lerna 包下的 `src`）目录下的 markdown 文件，我们先来一篇最简单的文档：
 
 ```bash
-$ echo '# Hello World!' > src/index.md
+$ mkdir src && echo "# Hello dumi!" > src/index.md
 ```
 
-然后直接执行：
+然后执行 `dumi dev`，文档将会呈现在你眼前：
 
-```bash
-$ dumi dev
-```
+![](https://gw.alipayobjects.com/zos/bmw-prod/ed83bd75-06c5-4aa5-a149-5918b072cbee/k7a3kkzb_w1978_h1330.png)
 
-我们将在浏览器中看到我们的第一个文档页面！
+## 写个 Demo 试试看
 
-## 嵌入 Demo
-
-但这只是普普通通的文档，接下来我们尝试在 `index.md` 中嵌入一个 Demo 试试看，输入：
+dumi 会将 `jsx/tsx` 代码块当做 React Component 进行渲染然后放入 Demo 包裹器中，我们将 `src/index.md` 修改为如下内容：
 
 <pre>
-``` jsx
-import React from 'react';
-
-export default () => &lt;button&gt;Hello World!&lt;/button&gt;
-```
-</pre>
-
-一个内容为 Hello World! 的 Button 将会出现在页面上，就像这样：
+# Hello dumi!
 
 ```jsx
 import React from 'react';
 
-export default () => <button>Hello World!</button>;
-```
-
-页面上所有的 jsx/tsx 代码块，都会被 dumi 自动转换为嵌入式 Demo，如果你确实希望展示一段 jsx/tsx 的代码块，可以使用 `pure` 修饰符，像这样：
-
-<pre>
-``` jsx | pure
-不希望被转换为 Demo 的代码
+export default () => &lt;h2&gt;First Demo&lt;/h2&gt;;
 ```
 </pre>
 
-看起来有点儿意思了，但写 Demo 可是件精细的活儿，想掌握更多编写 Demo 的技巧，请查看 <a href="#/write-demo">好好写 Demo</a>。 -->
+保存之后我们的第一个 Demo 就运行起来了：
+
+![](https://gw.alipayobjects.com/zos/bmw-prod/a74b9643-b1db-48b0-83b1-67d15e13b6fc/k7a3sl0s_w1988_h1310.png)
+
+是不是非常简单？但写 Demo 易写好 Demo 难，关于写 Demo 这件事，dumi 有些理念和原则，也想与你分享一下：[dumi 的 Demo 理念](/guide/demo-principle)。
