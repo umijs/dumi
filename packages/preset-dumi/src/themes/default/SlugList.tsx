@@ -25,7 +25,7 @@ const SlugsList: FC<ISlugsListProps> = ({ className, slugs, base }) => {
   const listElm = useRef<HTMLUListElement>(null);
 
   function handleAnchorClick(ev, id) {
-    if (scrollToSlug(id) && listElm.current?.offsetParent.scrollTop < ev.target.offsetTop) {
+    if (scrollToSlug(id) && listElm.current?.offsetParent?.scrollTop < ev.target.offsetTop) {
       listElm.current.offsetParent.scrollTop = ev.target.offsetTop;
     }
   }
