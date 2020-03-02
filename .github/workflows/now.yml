@@ -20,4 +20,4 @@ jobs:
           now-org-id: ${{ secrets.NOW_ORG_ID }}
           now-project-id: ${{ secrets.NOW_PROJECT_ID_ANGULAR }}
           working-directory: dist
-          now-args: '--prod '
+          now-args: '--prod'
