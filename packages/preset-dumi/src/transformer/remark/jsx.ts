@@ -33,25 +33,10 @@ const textVisitor = (node, ancestors) => {
     .find(ancestor => ancestor.tagName === 'code');
 
   // escape { & } for JSX
-  node.value = node.value.replace(/(.{3}|\n|^)([{}])(.{3}|\n|$)/g, (_, prefix, symbol, suffix) => {
-    let replacer;
-
-    // ignore escaped symbol
-    switch (symbol) {
-      case '{':
-        replacer = /\s*'/.test(suffix) ? symbol : "{'{'}";
-        break;
-
-      case '}':
-        replacer = /'\s*/.test(prefix) ? symbol : "{'}'}";
-        break;
-
-      default:
-        replacer = symbol;
-    }
-
-    return `${prefix || ''}${replacer}${suffix || ''}`;
-  });
+  // TODO: find a better way to avoid multi-times escape
+  if (!/'[{}]+'/.test(node.value)) {
+    node.value = node.value.replace(/([{}]+)/g, "{'$1'}");
+  }
 
   // convert \n to <br> in code block for JSX, for render indents & newlines
   if (
