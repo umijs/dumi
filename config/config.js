@@ -1,6 +1,4 @@
 export default {
-  publicPath: '/dumi/',
-  base: '/dumi',
   title: 'Dumi',
   mode: 'site',
   menus: {
