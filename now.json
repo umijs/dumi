@@ -1,5 +1,6 @@
 {
   "name": "dumi",
+  "scope": "umi",
   "version": 2,
   "builds": [
     {
