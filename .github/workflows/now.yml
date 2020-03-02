@@ -1,5 +1,8 @@
 name: dumi - deploy
-on: [push]
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   deploy:
