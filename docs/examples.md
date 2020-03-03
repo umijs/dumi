@@ -3,11 +3,13 @@ title: 文档示例
 legacy: /example
 nav:
   order: 3
-  title: 示例
+  title: 渲染示例
 toc: menu
 ---
 
 # 文档示例
+
+此页面列举了 dumi 渲染各项 Markdown 样式以及 Demo 的效果。
 
 ## Demo 嵌入
 

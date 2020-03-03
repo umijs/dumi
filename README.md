@@ -4,7 +4,7 @@
 
 ## Usage & Guide
 
-To check out live examples and docs, visit [dumi GitHub Pages](https://umijs.github.io/dumi).
+To check out live examples and docs, visit [dumi official site](https://d.umijs.org).
 
 ## Development
 

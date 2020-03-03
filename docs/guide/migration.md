@@ -1,10 +1,9 @@
 ---
-nav:
-  title: 从 father-doc 迁移
 toc: menu
+legacy: /migration
 ---
 
-# 迁移手册
+# 从 father-doc 迁移
 
 <Alert>注意，此处的 `father-doc` 并非原有 `father` 工具集中的 `father doc` 部分，本手册仅适用于 `father-doc` 的迁移</Alert>
 

@@ -27,7 +27,7 @@ $ npm i dumi -D
 dumi 默认会自动搜寻 `docs`、`src`（或各 lerna 包下的 `src`）目录下的 markdown 文件，我们先来一篇最简单的文档：
 
 ```bash
-$ mkdir src && echo "# Hello dumi!" > src/index.md
+$ mkdir src && echo '# Hello dumi!' > src/index.md
 ```
 
 然后执行 `dumi dev`，文档将会呈现在你眼前：
