@@ -17,7 +17,7 @@
   ],
   "dependencies": {
     "@umijs/preset-dumi": "1.0.0",
-    "umi": "^3.0.0-beta.22"
+    "umi": "^3.0.0"
   },
   "license": "MIT"
 }

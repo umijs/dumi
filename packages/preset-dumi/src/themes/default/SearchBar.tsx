@@ -46,11 +46,13 @@ const SearchBar: FC<ISearchBarProps> = ({ routes }) => {
 
           result.push(routeMetaItem);
           result.push(
-            ...(route.meta?.slugs || []).map(slug => ({
-              title: slug.value,
-              path: `${route.path}#${slug.heading}`,
-              parent: routeMetaItem,
-            })),
+            ...(route.meta?.slugs || [])
+              .filter(({ value }) => value !== route.title)
+              .map(slug => ({
+                title: slug.value,
+                path: `${route.path}#${slug.heading}`,
+                parent: routeMetaItem,
+              })),
           );
 
           return result;
