@@ -1,8 +1,8 @@
 ---
-title: 介绍
+title: dumi - 基于 Umi、为组件开发场景而生的文档工具
 order: 10
 hero:
-  title: Dumi
+  title: dumi
   desc: 基于 Umi、为组件开发场景而生的文档工具
   actions:
     - text: 快速上手
