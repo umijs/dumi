@@ -18,7 +18,9 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed }) => {
     <div
       className="__dumi-default-menu"
       data-mode={mode}
-      data-homepage={Boolean(routeMeta.hero || routeMeta.features) || undefined}
+      data-hidden={
+        Boolean(routeMeta.hero || routeMeta.features) || routeMeta.sidemenu === false || undefined
+      }
       data-mobile-show={!mobileMenuCollapsed || undefined}
     >
       <div className="__dumi-default-menu-inner">
