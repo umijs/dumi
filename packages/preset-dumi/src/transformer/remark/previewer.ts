@@ -22,7 +22,7 @@ function visitor(node, i, parent) {
     // use import way rather than source code way for external demo (for HMR & sourcemap)
     if (node.properties.filePath) {
       transformCode = `
-import React from 'react';
+import React, { useEffect } from 'react';
 import Demo from '${node.properties.filePath}';
 
 export default () => <Demo />;`;
@@ -30,29 +30,29 @@ export default () => <Demo />;`;
 
     const code = demoTransformer(transformCode, Boolean(tsx));
 
+    // save code into data then declare them on the top page component
+    this.vFile.data.demos = (this.vFile.data.demos || []).concat(
+      `const ${DEMO_COMPONENT_NAME}${(this.vFile.data.demos?.length || 0) +
+        1} = React.memo(${code});`,
+    );
+
     // replace original node
     parent.children[i] = {
       previewer: true,
       type: 'raw',
       value: `
-{(() => {
-  ${code}
-
-  return (
-    <DumiPreviewer
-      source={${JSON.stringify({ raw, jsx, tsx })}}
-      {...${JSON.stringify(yaml)}}
-    >
-      <${DEMO_COMPONENT_NAME} />
-    </DumiPreviewer>
-  );
-})()}`,
+<DumiPreviewer
+  source={${JSON.stringify({ raw, jsx, tsx })}}
+  {...${JSON.stringify(yaml)}}
+>
+  <${DEMO_COMPONENT_NAME}${this.vFile.data.demos.length} />
+</DumiPreviewer>`,
     };
   }
 }
 
 export default function previewer() {
-  return (ast: Node) => {
-    visit(ast, 'element', visitor);
+  return (ast: Node, vFile) => {
+    visit(ast, 'element', visitor.bind({ vFile }));
   };
 }

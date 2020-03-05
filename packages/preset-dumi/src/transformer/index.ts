@@ -47,6 +47,8 @@ function wrapperHtmlByComponent(html: string, meta: TransformResult['config']) {
       path.join(__dirname, '../themes/default/builtins/Previewer.js'),
     )}';
 
+    ${(meta.demos || []).join('\n')}
+
     export default function () {
       return (
         <>
@@ -78,6 +80,7 @@ export default {
       strategy: opts.onlyConfig ? 'data' : 'default',
       previewLangs: opts.previewLangs || [],
     });
+    const { demos, ...metas } = result.data as any;
     let content = '';
 
     if (!opts.onlyConfig) {
@@ -92,7 +95,7 @@ export default {
       content,
       html: result.contents as string,
       config: {
-        ...(result.data as TransformResult['config']),
+        ...(metas as TransformResult['config']),
       },
     };
   },
