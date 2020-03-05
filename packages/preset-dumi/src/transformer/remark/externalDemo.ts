@@ -5,6 +5,7 @@ import visit from 'unist-util-visit';
 import transformer, { TransformResult } from '../index';
 
 const DEMO_TOKEN_EXP = /<(code) ([^>]+?)\/?>/;
+const fileWatchers: { [key: string]: fs.FSWatcher[] } = {};
 
 /**
  * simple parser for parse HTML attributes
@@ -22,7 +23,22 @@ function HTMLAttrParser(str: string): { [key: string]: any } {
   return attrs;
 }
 
+function watchExternalDemoChange(demoPath: string, parentPath: string) {
+  fileWatchers[parentPath] = (fileWatchers[parentPath] || []).concat(
+    fs.watch(demoPath, () => {
+      // trigger parent file change to update frontmatter when demo file change
+      fs.writeFileSync(parentPath, fs.readFileSync(parentPath));
+    }),
+  );
+}
+
 export default function externalDemo() {
+  // clear exist watchers, use for unlink some demo from md file
+  fileWatchers[this.data('fileAbsPath')]?.forEach(watcher => {
+    watcher.close();
+  });
+  delete fileWatchers[this.data('fileAbsPath')];
+
   return ast => {
     visit(ast, 'html', (node, i, parent) => {
       if (typeof node.value === 'string') {
@@ -63,6 +79,8 @@ export default function externalDemo() {
                     ...result.config,
                   },
                 });
+
+                watchExternalDemoChange(absPath, this.data('fileAbsPath'));
               } else {
                 throw new Error(`[External-Demo Error]: unsupported file type: ${lang}`);
               }
