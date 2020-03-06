@@ -24,12 +24,15 @@ function HTMLAttrParser(str: string): { [key: string]: any } {
 }
 
 function watchExternalDemoChange(demoPath: string, parentPath: string) {
-  fileWatchers[parentPath] = (fileWatchers[parentPath] || []).concat(
-    fs.watch(demoPath, () => {
-      // trigger parent file change to update frontmatter when demo file change
-      fs.writeFileSync(parentPath, fs.readFileSync(parentPath));
-    }),
-  );
+  if (process.env.NODE_ENV === 'development') {
+    // only watch under development mode
+    fileWatchers[parentPath] = (fileWatchers[parentPath] || []).concat(
+      fs.watch(demoPath, () => {
+        // trigger parent file change to update frontmatter when demo file change
+        fs.writeFileSync(parentPath, fs.readFileSync(parentPath));
+      }),
+    );
+  }
 }
 
 export default function externalDemo() {
