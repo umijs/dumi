@@ -4,7 +4,7 @@
 /packages/*/node_modules
 /packages/*/.local
 /.local
-/packages/*/src/fixtures/**/node_modules/.cache
+/packages/**/node_modules
 /packages/preset-dumi/src/fixtures/build/*/dist
 /packages/preset-dumi/src/fixtures/e2e/normal/.doc
 /packages/preset-dumi/src/fixtures/e2e/normal/.docz

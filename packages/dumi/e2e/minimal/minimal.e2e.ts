@@ -2,7 +2,7 @@ import path from 'path';
 import { fork } from 'child_process';
 import puppeteer from 'puppeteer';
 
-const SCRIPT_PATH = path.join(__dirname, '../bin/dumi.js');
+const SCRIPT_PATH = path.join(__dirname, '../../bin/dumi.js');
 
 describe('minimal', () => {
   let child;
@@ -11,7 +11,7 @@ describe('minimal', () => {
 
   beforeAll(done => {
     child = fork(SCRIPT_PATH, ['dev'], {
-      cwd: path.join(__dirname, './minimal'),
+      cwd: __dirname,
       env: {
         ...process.env,
         PORT: '12341',
@@ -41,7 +41,7 @@ describe('minimal', () => {
 
   test('build', done => {
     fork(SCRIPT_PATH, ['build'], {
-      cwd: path.join(__dirname, './minimal'),
+      cwd: __dirname,
       env: {
         ...process.env,
         PORT: '12341',
