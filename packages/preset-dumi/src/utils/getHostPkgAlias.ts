@@ -21,13 +21,29 @@ export default (paths: IApi['paths']) => {
 
   if (isLerna) {
     // for lerna repo
-    JSON.parse(
-      execSync(`${path.join(paths.cwd, 'node_modules/.bin/lerna')} ls --json`, {
-        stdio: 'pipe',
-      }).toString(),
-    ).forEach(pkg => {
-      pkgs.push([pkg.name, pkg.location]);
-    });
+    const lernaVersion = execSync(
+      `${path.join(paths.cwd, 'node_modules/.bin/lerna')} -v`,
+    ).toString();
+
+    if (lernaVersion.startsWith('3')) {
+      JSON.parse(
+        execSync(`${path.join(paths.cwd, 'node_modules/.bin/lerna')} ls --json`, {
+          stdio: 'pipe',
+        }).toString(),
+      ).forEach(pkg => {
+        pkgs.push([pkg.name, pkg.location]);
+      });
+    } else if (require.resolve('lerna/lib/PackageUtilities', { paths: [paths.cwd] })) {
+      // reference: https://github.com/azz/lerna-get-packages/blob/master/index.js
+      var PackageUtilities = require(require.resolve('lerna/lib/PackageUtilities', {
+        paths: [paths.cwd],
+      }));
+      var Repository = require(require.resolve('lerna/lib/Repository', { paths: [paths.cwd] }));
+
+      PackageUtilities.getPackages(new Repository(paths.cwd)).forEach(pkg => {
+        pkgs.push([pkg._package.name, pkg._location]);
+      });
+    }
   } else {
     // for standard repo
     pkgs.push(getPkgAliasForPath(paths.cwd));
