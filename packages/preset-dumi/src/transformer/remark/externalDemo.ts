@@ -3,6 +3,7 @@ import path from 'path';
 import slash from 'slash2';
 import visit from 'unist-util-visit';
 import transformer, { TransformResult } from '../index';
+import { addDemoRoute } from '../../routes/getDemoRoutes';
 
 const DEMO_TOKEN_EXP = /<(code) ([^>]+?)\/?>/;
 const fileWatchers: { [key: string]: fs.FSWatcher[] } = {};
@@ -71,6 +72,9 @@ export default function externalDemo() {
                 const result: TransformResult = transformer[lang](
                   fs.readFileSync(absPath).toString(),
                 );
+
+                // add single route for external demo
+                inheritAttrs.path = addDemoRoute(absPath);
 
                 demos.push({
                   type: 'demo',

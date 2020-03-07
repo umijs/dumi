@@ -19,12 +19,10 @@ const { blockTokenizers, inlineTokenizers, setOptions } = parse.Parser.prototype
 const oFencedCode = blockTokenizers.fencedCode;
 const DISABLEABLE_TOKENIZERS = [
   'indentedCode',
-  'fencedCode',
   'blockquote',
   'thematicBreak',
   'list',
   'setextHeading',
-  'html',
   'footnote',
   'definition',
   'table',

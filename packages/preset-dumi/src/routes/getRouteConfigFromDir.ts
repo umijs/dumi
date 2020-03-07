@@ -19,7 +19,7 @@ function isValidPath(pathname: string) {
  * @param localePath  locale path (optional)
  * @param locales     current locale options (optional)
  */
-function normalizePath(
+export function normalizePath(
   oPath: string,
   localePath: string = '',
   locales: IDumiOpts['locales'] = [],

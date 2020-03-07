@@ -48,6 +48,10 @@ export interface IPreviewerProps {
    * collapse padding of demo area
    */
   compact?: string;
+  /**
+   * single route path (external demo only)
+   */
+  path?: string;
 }
 
 class Previewer extends Component<IPreviewerProps> {
@@ -148,7 +152,17 @@ ${issueLink}`,
   };
 
   render() {
-    const { children, source, title, desc, inline, transform, background, compact } = this.props;
+    const {
+      children,
+      source,
+      title,
+      desc,
+      inline,
+      transform,
+      background,
+      compact,
+      path,
+    } = this.props;
     const { showSource, sourceType, copyTimer, jsBase64, tsBase64 } = this.state;
 
     // render directly for inline mode
@@ -180,6 +194,11 @@ ${issueLink}`,
           >
             <button role="codesandbox" type="submit" />
           </CsbButton>
+          {path && (
+            <a target="_blank" href={path}>
+              <button role="open-demo" type="button" />
+            </a>
+          )}
           <span />
           <Clipboard
             button-role={copyTimer ? 'copied' : 'copy'}

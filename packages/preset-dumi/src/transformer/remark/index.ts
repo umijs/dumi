@@ -52,7 +52,16 @@ const PLUGIN_STRATEGIES = {
     [jsx],
     [isolation],
   ],
-  data: [[frontmatter], [yaml], [rehype], [stringify], [slug], [headings], [header]],
+  data: [
+    [frontmatter],
+    [yaml],
+    [externalDemo],
+    [rehype],
+    [stringify],
+    [slug],
+    [headings],
+    [header],
+  ],
 } as {
   [key: string]: [any][];
 };
