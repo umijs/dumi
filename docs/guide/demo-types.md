@@ -27,7 +27,7 @@ import React from 'react';
 export default () => <h1 style={{ color: '#555' }}>Hello World!</h1>;
 ```
 
-当然，如果你完全不希望 dumi 渲染代码块、又或者希望把别的代码块语言当做 React Component 渲染，可以通过 [`config.resolve.previewLangs`](/config#resolvepreviewlangs) 配置项进行配置。
+当然，如果你完全不希望 dumi 渲染代码块、又或者希望把别的代码块语言当做 React Component 渲染，可以通过 [`config.resolve.previewLangs`](/config#previewlangs) 配置项进行配置。
 
 ## 外部引入
 

@@ -6,6 +6,10 @@ nav:
 toc: menu
 ---
 
+<Alert>
+提示：dumi 基于 Umi，即除了本页提到的配置项以外，还支持 <a target="_blank" href="https://umijs.org/config">所有 Umi 的配置项</a>，并且也支持 <a target="_blank" href="https://umijs.org/plugins/preset-react">Umi 生态的插件</a>。
+</Alert>
+
 # Config
 
 dumi 基于 Umi，配置的方式与 Umi 项目一致，使用 `.umirc.js` 或 `config/config.js` 都可进行配置，内容大致如下：
@@ -63,17 +67,25 @@ export default {
 
 ## menus
 
-- 类型：
-- 默认值：
+- 类型：`Object`
+- 默认值：`自动生成的菜单`
 - 详细：
+
+该配置项用于自定义侧边菜单的展示，目前仅 `site` 模式下可用，分多语言模式和单语言模式，使用方式详见 [指南 - 配置式侧边菜单](/guide/control-menu-generate#配置式侧边菜单)。
 
 ## navs
 
-- 类型：
-- 默认值：
+- 类型：`Object | Array`
+- 默认值：`自动生成的导航`
 - 详细：
 
-## resolve.includes
+该配置项用于自定义导航栏的展示，仅 `site` 模式下可用，分多语言模式和单语言模式，使用方式详见 [指南 - 配置式导航菜单](/guide/control-nav-generate#配置式导航菜单)。
+
+## resolve
+
+`resolve` 是一个 `Object` 类型，包含如下配置：
+
+### includes
 
 - 类型：`Array<String>`
 - 默认值：`['docs', 'src', 'packages/pkg/src']`
@@ -81,7 +93,7 @@ export default {
 
 配置 dumi 嗅探的文档目录，dumi 会尝试在配置的目录中递归寻找 markdown 文件，默认值为 `docs` 目录、`src` 目录（普通项目）、`packages/pkg/src` 目录（lerna 项目），通常不需要配置，除非自动嗅探出现了『误伤』。
 
-## resolve.previewLangs
+### previewLangs
 
 - 类型：`Array<String>`
 - 默认值：`['jsx', 'tsx']`
