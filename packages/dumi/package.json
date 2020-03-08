@@ -2,7 +2,8 @@
   "name": "dumi",
   "version": "1.0.4",
   "description": "dumi",
-  "main": "lib/index.js",
+  "main": "index.js",
+  "module": "index.module.js",
   "bin": "bin/dumi.js",
   "repository": {
     "type": "git",
