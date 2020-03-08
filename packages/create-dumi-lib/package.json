@@ -1,0 +1,36 @@
+{
+  "name": "@umijs/create-dumi-lib",
+  "version": "1.0.4",
+  "description": "@umijs/create-dumi-lib",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "bin",
+    "templates"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/umijs/dumi"
+  },
+  "keywords": [
+    "dumi",
+    "father-build",
+    "umi"
+  ],
+  "authors": [
+    "Peach <scdzwyxst@gmail.com> (https://github.com/PeachScript)"
+  ],
+  "license": "MIT",
+  "bugs": "http://github.com/umijs/dumi/issues",
+  "homepage": "https://github.com/umijs/dumi/tree/master/packages/create-dumi-lib#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@umijs/utils": "^3.0.5"
+  },
+  "bin": {
+    "create-dumi-lib": "bin/create-dumi-lib.js"
+  }
+}
