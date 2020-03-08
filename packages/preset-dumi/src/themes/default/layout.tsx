@@ -278,6 +278,11 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     const siteMode = this.props.mode === 'site';
     const showHero = siteMode && currentRouteMeta.hero;
     const showFeatures = siteMode && currentRouteMeta.features;
+
+    /**
+     * 是否显示菜单
+     * 没有 hero, 没有 Features 且 sidemenu != false 时 才应该显示
+     */
     const showSideMenu = currentRouteMeta.sidemenu !== false && !showHero && !showFeatures;
     const showSlugs =
       !showHero &&
@@ -322,7 +327,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
             navPrefix={<SearchBar routes={this.props.route.routes} />}
             onMobileMenuClick={() => this.setState({ menuCollapsed: !menuCollapsed })}
           />
-          <SideMenu mobileMenuCollapsed={menuCollapsed} />
+          {showSideMenu && <SideMenu mobileMenuCollapsed={menuCollapsed} />}
           {showSlugs && (
             <SlugList
               base=""
@@ -337,7 +342,11 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
             {!showHero && !showFeatures && (
               <div className="__dumi-default-layout-footer-meta">
                 {/github\.com/.test(repoUrl) && (
-                  <a target="_blank" href={`${repoUrl}/edit/master/${currentRouteMeta.filePath}`}>
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={`${repoUrl}/edit/master/${currentRouteMeta.filePath}`}
+                  >
                     {isCN ? '在 GitHub 上编辑这篇文档' : 'Edit this doc on GitHub'}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
