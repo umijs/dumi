@@ -1,5 +1,4 @@
 ---
-toc: menu
 legacy: /migration
 ---
 
