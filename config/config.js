@@ -22,7 +22,11 @@ export default {
       },
       {
         title: '更多用法',
-        children: ['guide/mode', 'guide/multi-language', 'guide/migration'],
+        children: ['guide/mode', 'guide/multi-language'],
+      },
+      {
+        title: '其他',
+        children: ['guide/migration', 'guide/faq'],
       },
     ],
   },
