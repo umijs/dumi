@@ -172,6 +172,14 @@ export default function getMenuFromRoutes(
   Object.keys(localeMenusMapping).forEach(locale => {
     Object.keys(localeMenusMapping[locale]).forEach(nav => {
       const menus = Object.values(localeMenusMapping[locale][nav]).map((menu: IMenuItem) => {
+        // discard children if current menu only has 1 children
+        if (menu.children?.length === 1 && menu.title === menu.children[0].title) {
+          if (menu.children[0].meta?.order) {
+            menu.meta.order = menu.children[0].meta.order;
+          }
+          menu.children = [];
+        }
+
         // sort child menu items
         menu.children?.sort(menuSorter);
 
