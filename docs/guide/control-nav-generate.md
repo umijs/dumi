@@ -83,7 +83,7 @@ export default {
     null, // null 值代表保留约定式生成的导航，只做增量配置
     {
       title: 'GitHub',
-      link: 'https://github.com/umijs/dumi',
+      path: 'https://github.com/umijs/dumi',
     },
   ],
 
@@ -94,14 +94,14 @@ export default {
       null, // null 值代表保留约定式生成的导航，只做增量配置
       {
         title: 'GitHub',
-        link: 'https://github.com/umijs/dumi',
+        path: 'https://github.com/umijs/dumi',
       },
     ],
     'zh-CN': [
       null, // null 值代表保留约定式生成的导航，只做增量配置
       {
         title: 'GitHub',
-        link: 'https://github.com/umijs/dumi',
+        path: 'https://github.com/umijs/dumi',
       },
     ],
   },
