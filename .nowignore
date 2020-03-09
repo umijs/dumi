@@ -1,9 +1,0 @@
-.circleci
-node_modules
-.umi
-.github
-scripts
-packages
-docs
-scripts
-!dist

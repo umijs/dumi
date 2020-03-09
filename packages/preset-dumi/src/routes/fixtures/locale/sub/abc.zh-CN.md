@@ -1,4 +1,0 @@
----
-group:
-  path: /group
----
