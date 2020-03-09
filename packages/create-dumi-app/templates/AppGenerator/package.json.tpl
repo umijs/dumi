@@ -4,7 +4,7 @@
   "scripts": {
     "start": "dumi dev",
     "build": "dumi build",
-    "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
+    "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'"
   },
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -21,7 +21,6 @@
     ]
   },
   "dependencies": {
-    "@umijs/preset-react": "1.x",
     "dumi": "^{{{ version }}}",
     "lint-staged": "^10.0.7",
     "prettier": "^1.19.1",
