@@ -173,7 +173,7 @@ group:
 hero:
   actions:
     - text: Getting Started
-      linn: /getting-started
+      link: /getting-started
 ```
 
 ### features
