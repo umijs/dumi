@@ -38,10 +38,13 @@ function watchExternalDemoChange(demoPath: string, parentPath: string) {
 
 export default function externalDemo() {
   // clear exist watchers, use for unlink some demo from md file
-  fileWatchers[this.data('fileAbsPath')]?.forEach(watcher => {
-    watcher.close();
-  });
-  delete fileWatchers[this.data('fileAbsPath')];
+  if (fileWatchers[this.data('fileAbsPath')]) {
+    fileWatchers[this.data('fileAbsPath')].forEach(watcher => {
+      watcher.close();
+    });
+
+    delete fileWatchers[this.data('fileAbsPath')];
+  }
 
   return ast => {
     visit(ast, 'html', (node, i, parent) => {
@@ -50,7 +53,7 @@ export default function externalDemo() {
         const tags = node.value.match(/^\s*(<code.*?(<\/code>|\/?>))/g);
         const demos = [];
 
-        tags?.forEach(tag => {
+        (tags || []).forEach(tag => {
           const matches = tag.match(DEMO_TOKEN_EXP) || [];
           const { src, ...inheritAttrs } = HTMLAttrParser(matches[2]);
 

@@ -8,7 +8,7 @@ import getNavFromRoutes from '../routes/getNavFromRoutes';
 import getMenuFromRoutes from '../routes/getMenuFromRoutes';
 import getLocaleFromRoutes from '../routes/getLocaleFromRoutes';
 import getHostPkgAlias from '../utils/getHostPkgAlias';
-import getDemoRoutes, { clearDemoRoutes } from '../routes/getDemoRoutes';
+import getDemoRoutes from '../routes/getDemoRoutes';
 import { setUserExtraBabelPlugin } from '../transformer/demo';
 import { IDumiOpts } from '..';
 
@@ -70,7 +70,6 @@ export default function(api: IApi) {
 
   // repalce default routes with generated routes
   api.modifyRoutes(routes => {
-    clearDemoRoutes();
     const opts = mergeUserConfig(defaultOpts, api);
     const result = getRouteConfig(api, opts);
     const childRoutes = result[0].routes;
@@ -102,7 +101,6 @@ export default function(api: IApi) {
 
     // append single demo routes to top-level
     result.unshift(...getDemoRoutes(api.paths));
-    clearDemoRoutes();
 
     return result;
   });

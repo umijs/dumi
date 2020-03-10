@@ -2,8 +2,8 @@ import path from 'path';
 import { IRoute, IApi } from '@umijs/types';
 import { normalizePath } from './getRouteConfigFromDir';
 
-let singleRouteDemoSet: { [key: string]: string } = {};
-let demoPathNames: { [key: string]: number } = {};
+const singleRouteDemoSet: { [key: string]: string } = {};
+const demoPathNames: { [key: string]: number } = {};
 
 export function addDemoRoute(filePath: string): string {
   const demoPathName = normalizePath(path.parse(filePath).name);
@@ -19,14 +19,8 @@ export function addDemoRoute(filePath: string): string {
   return singleRouteDemoSet[filePath];
 }
 
-export function clearDemoRoutes() {
-  singleRouteDemoSet = {};
-  demoPathNames = {};
-}
-
-export default (paths: IApi['paths']): IRoute[] => {
-  return Object.entries(singleRouteDemoSet).map(([filePath, routePathName]) => ({
+export default (paths: IApi['paths']): IRoute[] =>
+  Object.entries(singleRouteDemoSet).map(([filePath, routePathName]) => ({
     path: routePathName,
-    component: path.relative(path.join(paths.absTmpPath, 'core'), path.join(paths.cwd, filePath)),
+    component: path.relative(path.join(paths.absTmpPath, 'core'), filePath),
   }));
-};
