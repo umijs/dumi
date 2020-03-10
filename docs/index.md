@@ -122,11 +122,19 @@ export default () => (
 
 ## 反馈与共建
 
-请访问 [GitHub](https://github.com/umijs/dumi) 或加入钉钉群：
+请访问 [GitHub](https://github.com/umijs/dumi) 或加入讨论群：
 
 ```jsx | inline
 import React from 'react';
 import gif from './assets/qrcode.jpg';
 
-export default () => <img src={gif} width="300" />;
+export default () => (
+  <>
+    <img src={gif} width="260" />
+    <img
+      src="https://gw.alipayobjects.com/zos/bmw-prod/c18bc2a5-719a-48ca-b225-c79ef88bfb43/k7m10ymd_w1004_h1346.jpeg"
+      width="260"
+    />
+  </>
+);
 ```

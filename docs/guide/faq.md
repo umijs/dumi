@@ -8,7 +8,7 @@ dumi 本体是一个 Umi 的 preset——@umijs/preset-dumi，也就是说，我
 
 ## 配置项只有这些吗？想实现更多的功能怎么办？
 
-dumi 基于 Umi，即除了自己提供的配置项以外，还支持[所有 Umi 的配置项](https://umijs.org/config)，并且也支持 [Umi 生态的插件](https://umijs.org/plugins/preset-react)，所以如果需要更多的功能，可以先看一下 Umi 的配置项和插件生态能否满足，如果仍旧不能，欢迎到[钉钉群](/guide#参与贡献)反馈或者 GitHub 上[提出 Feature Request](https://github.com/umijs/dumi/issues/new?labels=enhancement&template=feature_request.md&title=feat%3A+)
+dumi 基于 Umi，即除了自己提供的配置项以外，还支持[所有 Umi 的配置项](https://umijs.org/config)，并且也支持 [Umi 生态的插件](https://umijs.org/plugins/preset-react)，所以如果需要更多的功能，可以先看一下 Umi 的配置项和插件生态能否满足，如果仍旧不能，欢迎到[讨论群](/guide#参与贡献)反馈或者 GitHub 上[提出 Feature Request](https://github.com/umijs/dumi/issues/new?labels=enhancement&template=feature_request.md&title=feat%3A+)
 
 ## 为什么 `README.md` 会出现在文档的首页？
 

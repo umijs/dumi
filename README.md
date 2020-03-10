@@ -68,4 +68,7 @@ $ npm run dev
 
 ## Discuss
 
-<img src="./docs/assets/qrcode.jpg" width="300" />
+<div>
+  <img src="./docs/assets/qrcode.jpg" width="300" />
+  <img src="https://gw.alipayobjects.com/zos/bmw-prod/c18bc2a5-719a-48ca-b225-c79ef88bfb43/k7m10ymd_w1004_h1346.jpeg" width="300" />
+</div>
