@@ -36,7 +36,6 @@ export default (api: IApi, opts: IDumiOpts): IRoute[] => {
       }
     });
   }
-
   // decorate standard umi routes
   config[0].routes = decorateRoutes(config[0].routes, opts, api);
 

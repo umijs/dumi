@@ -4,8 +4,10 @@ import slash from 'slash2';
 import extractComments from 'esprima-extract-comments';
 import remark from './remark';
 import html from './html';
+import FileCache from '../utils/cache';
 
 const FRONT_COMMENT_EXP = /^\n*\/\*[^]+?\s*\*\/\n*/;
+const markdownCache = new FileCache();
 
 export interface TransformResult {
   content: string;
@@ -39,7 +41,7 @@ function getYamlConfig(code, componentFile = '') {
     }, {});
 }
 
-function wrapperHtmlByComponent(html: string, meta: TransformResult['config']) {
+function wrapperHtmlByComponent(jsx: string, meta: TransformResult['config']) {
   return `
     import React from 'react';
     import Alert from '${slash(path.join(__dirname, '../themes/default/builtins/Alert.js'))}';
@@ -57,7 +59,7 @@ function wrapperHtmlByComponent(html: string, meta: TransformResult['config']) {
               ? "<Alert>This article has not been translated yet. Wan't to help us out? Click the Edit this doc on GitHub at the end of the page.</Alert>"
               : ''
           }
-          ${html}
+          ${jsx}
         </>
       );
   }`;
@@ -75,13 +77,20 @@ export default {
     raw: string,
     opts: { fileAbsPath?: string; onlyConfig?: boolean; previewLangs?: string[] } = {},
   ): TransformResult {
-    const result = remark(raw, {
-      fileAbsPath: opts.fileAbsPath,
-      strategy: opts.onlyConfig ? 'data' : 'default',
-      previewLangs: opts.previewLangs || [],
-    });
+    const result =
+      // use cache first, for HMR performance
+      (opts.onlyConfig && markdownCache.get(opts.fileAbsPath)) ||
+      remark(raw, {
+        fileAbsPath: opts.fileAbsPath,
+        strategy: opts.onlyConfig ? 'data' : 'default',
+        previewLangs: opts.previewLangs || [],
+      });
     const { demos, ...metas } = result.data as any;
     let content = '';
+
+    if (opts.fileAbsPath) {
+      markdownCache.add(opts.fileAbsPath, result);
+    }
 
     if (!opts.onlyConfig) {
       // transform html string to jsx string
