@@ -129,11 +129,18 @@ export default function(api: IApi) {
     hostPkgAlias
       .filter(([pkgName]) => pkgName)
       .forEach(([pkgName, pkgPath]) => {
+        let srcModule;
         const srcPath = path.join(pkgPath, 'src');
         const linkPath = path.join(api.paths.cwd, 'node_modules', pkgName);
 
+        try {
+          srcModule = require(srcPath);
+        } catch (err) {
+          /* nothing */
+        }
+
         // use src path instead of main field in package.json if exists
-        if (fs.existsSync(srcPath)) {
+        if (srcModule) {
           // exclude es & lib folder
           if (!config.resolve.alias.has(`${pkgName}/es`)) {
             config.resolve.alias.set(`${pkgName}/es`, srcPath);
