@@ -25,6 +25,7 @@ export interface IDumiOpts {
 export default () => {
   return {
     plugins: [
+      require.resolve('./plugins/contributors'),
       require.resolve('./plugins/title'),
       require.resolve('./plugins/description'),
       require.resolve('./plugins/logo'),

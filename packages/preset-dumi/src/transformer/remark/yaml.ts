@@ -13,7 +13,6 @@ export default function yamlProcessor() {
 
       // append file info
       vFile.data.filePath = filePath;
-
       try {
         vFile.data.updatedTime =
           parseInt(
@@ -22,8 +21,13 @@ export default function yamlProcessor() {
             }).toString(),
             10,
           ) * 1000;
+        vFile.data.fileCommits =
+          execSync(`git log --format=%H ${this.data('fileAbsPath')}`, {
+            stdio: 'pipe',
+          }).toString().split('\n');
       } catch (err) {
         vFile.data.updatedTime = Math.floor(fs.lstatSync(this.data('fileAbsPath')).mtimeMs);
+        vFile.data.fileCommits = '';
       }
     }
 

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+// @ts-ignore
 import { Link, RouteProps, history } from 'umi';
 import Context from './context';
 import { IDumiOpts } from '../..';
@@ -14,6 +15,9 @@ import './layout.less';
 import isHashRoute from '../../utils/isHashRoute';
 import getGotoPathName from '../../utils/getGotoPathName';
 
+// @ts-ignore
+import * as GITHUB_COMMITS from '@@/dumi/github-commits.json';
+console.log(GITHUB_COMMITS);
 export interface ILayoutProps {
   title: string;
   logo?: string;
@@ -25,6 +29,21 @@ export interface ILayoutProps {
   repoUrl?: string;
 }
 
+const getFileContributors = fileCommits => {
+  console.log(fileCommits);
+  return Array.from(
+    new Set(
+      fileCommits
+        .map(
+          commit =>
+            // only add the user ID if we can find it based on the commit hash
+            GITHUB_COMMITS[commit] ? GITHUB_COMMITS[commit].id : null,
+          // filter out null users
+        )
+        .filter(user => !!user),
+    ),
+  );
+};
 /**
  * 从 route 中根据 pathname 来找到当前的选中 Meta 信息
  * @param route 所有的 router 列表
@@ -276,6 +295,8 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     const { mode, title, desc, logo, repoUrl, locales, children } = this.props;
     const { navs, menus, menuCollapsed, currentLocale, currentSlug, currentRouteMeta } = this.state;
     const siteMode = this.props.mode === 'site';
+    const fileCommits = currentRouteMeta.fileCommits;
+    const contributors = getFileContributors(fileCommits);
     const showHero = siteMode && currentRouteMeta.hero;
     const showFeatures = siteMode && currentRouteMeta.features;
     const showSideMenu = currentRouteMeta.sidemenu !== false && !showHero && !showFeatures;
@@ -336,6 +357,22 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
             {children}
             {!showHero && !showFeatures && (
               <div className="__dumi-default-layout-footer-meta">
+                <ul className="__dumi-default-layout-footer-ul">
+                  {contributors &&
+                    contributors.map(contributor => (
+                      <li key={`${contributor}`}>
+                        <a target="_blank" href={`https://github.com/${contributor}`}>
+                          <img
+                            width="40"
+                            height="40"
+                            src={`https://github.com/${contributor}.png?size=90`}
+                            title={`Contributor ${contributor}`}
+                            loading="lazy"
+                          />
+                        </a>
+                      </li>
+                    ))}
+                </ul>
                 {/github\.com/.test(repoUrl) && (
                   <a target="_blank" href={`${repoUrl}/edit/master/${currentRouteMeta.filePath}`}>
                     {isCN ? '在 GitHub 上编辑这篇文档' : 'Edit this doc on GitHub'}
@@ -360,7 +397,13 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
                     </svg>
                   </a>
                 )}
-                <span data-updated-text={isCN ? '最后更新时间：' : 'Last Update: '}>
+                <span
+                  data-updated-text={isCN ? '最后更新时间：' : 'Last Update: '}
+                  style={{
+                    marginLeft: 'auto',
+                    textDecoration: 'underline',
+                  }}
+                >
                   {updatedTime}
                 </span>
               </div>
