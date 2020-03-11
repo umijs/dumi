@@ -136,7 +136,9 @@ export default function(api: IApi) {
         try {
           srcModule = require(srcPath);
         } catch (err) {
-          /* nothing */
+          if (err.code !== 'MODULE_NOT_FOUND') {
+            srcModule = true;
+          }
         }
 
         // use src path instead of main field in package.json if exists
