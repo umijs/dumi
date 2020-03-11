@@ -14,10 +14,9 @@ import 'prismjs/themes/prism.css';
 import './layout.less';
 import isHashRoute from '../../utils/isHashRoute';
 import getGotoPathName from '../../utils/getGotoPathName';
-
 // @ts-ignore
 import * as GITHUB_COMMITS from '@@/dumi/github-commits.json';
-console.log(GITHUB_COMMITS);
+
 export interface ILayoutProps {
   title: string;
   logo?: string;
@@ -30,7 +29,6 @@ export interface ILayoutProps {
 }
 
 const getFileContributors = fileCommits => {
-  console.log(fileCommits);
   return Array.from(
     new Set(
       fileCommits
