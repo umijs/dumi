@@ -214,6 +214,17 @@ export default function getMenuFromRoutes(
 
         localeMenus[locale[0]][navPath] = convertedMenus;
 
+        // update original nav index page
+        routes.forEach(route => {
+          if (
+            route.path === slash(path.join(localePrefix, navPath)) &&
+            route.redirect &&
+            (convertedMenus[0].path || convertedMenus[0].children)
+          ) {
+            route.redirect = convertedMenus[0].path || convertedMenus[0].children[0].path;
+          }
+        });
+
         return true;
       }
     });
