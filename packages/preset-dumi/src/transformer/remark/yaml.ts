@@ -27,7 +27,7 @@ export default function yamlProcessor() {
           }).toString().split('\n');
       } catch (err) {
         vFile.data.updatedTime = Math.floor(fs.lstatSync(this.data('fileAbsPath')).mtimeMs);
-        vFile.data.fileCommits = '';
+        vFile.data.fileCommits = [];
       }
     }
 
