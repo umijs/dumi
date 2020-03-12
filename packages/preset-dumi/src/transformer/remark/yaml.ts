@@ -13,6 +13,7 @@ export default function yamlProcessor() {
 
       // append file info
       vFile.data.filePath = filePath;
+
       try {
         vFile.data.updatedTime =
           parseInt(

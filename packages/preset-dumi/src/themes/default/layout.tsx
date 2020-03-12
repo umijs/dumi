@@ -294,7 +294,8 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     const { navs, menus, menuCollapsed, currentLocale, currentSlug, currentRouteMeta } = this.state;
     const siteMode = this.props.mode === 'site';
     const fileCommits = currentRouteMeta.fileCommits;
-    const contributors = getFileContributors(fileCommits);
+    const aa = getFileContributors(fileCommits);
+    const contributors = aa.concat(aa).concat(aa)
     const showHero = siteMode && currentRouteMeta.hero;
     const showFeatures = siteMode && currentRouteMeta.features;
     const showSideMenu = currentRouteMeta.sidemenu !== false && !showHero && !showFeatures;
@@ -354,7 +355,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
           <div className="__dumi-default-layout-content">
             {children}
             {!showHero && !showFeatures && (
-              <div className="__dumi-default-layout-footer-meta">
+              <>
                 <ul className="__dumi-default-layout-footer-ul">
                   {contributors &&
                     contributors.map(contributor => (
@@ -364,47 +365,43 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
                             width="40"
                             height="40"
                             src={`https://github.com/${contributor}.png?size=90`}
-                            title={`Contributor ${contributor}`}
+                            title={`${contributor}`}
                             loading="lazy"
                           />
                         </a>
                       </li>
                     ))}
                 </ul>
-                {/github\.com/.test(repoUrl) && (
-                  <a target="_blank" href={`${repoUrl}/edit/master/${currentRouteMeta.filePath}`}>
-                    {isCN ? '在 GitHub 上编辑这篇文档' : 'Edit this doc on GitHub'}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      aria-hidden="true"
-                      x="0px"
-                      y="0px"
-                      viewBox="0 0 100 100"
-                      width="15"
-                      height="15"
-                      className="__dumi-default-external-link-icon"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"
-                      />
-                      <polygon
-                        fill="currentColor"
-                        points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"
-                      />
-                    </svg>
-                  </a>
-                )}
-                <span
-                  data-updated-text={isCN ? '最后更新时间：' : 'Last Update: '}
-                  style={{
-                    marginLeft: 'auto',
-                    textDecoration: 'underline',
-                  }}
-                >
-                  {updatedTime}
-                </span>
-              </div>
+                <div className="__dumi-default-layout-footer-meta">
+                  {/github\.com/.test(repoUrl) && (
+                    <a target="_blank" href={`${repoUrl}/edit/master/${currentRouteMeta.filePath}`}>
+                      {isCN ? '在 GitHub 上编辑这篇文档' : 'Edit this doc on GitHub'}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
+                        x="0px"
+                        y="0px"
+                        viewBox="0 0 100 100"
+                        width="15"
+                        height="15"
+                        className="__dumi-default-external-link-icon"
+                      >
+                        <path
+                          fill="currentColor"
+                          d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"
+                        />
+                        <polygon
+                          fill="currentColor"
+                          points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"
+                        />
+                      </svg>
+                    </a>
+                  )}
+                  <span data-updated-text={isCN ? '最后更新时间：' : 'Last Update: '}>
+                    {updatedTime}
+                  </span>
+                </div>
+              </>
             )}
             {(showHero || showFeatures) && currentRouteMeta.footer && (
               <div

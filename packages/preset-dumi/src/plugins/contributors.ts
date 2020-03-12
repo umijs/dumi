@@ -43,14 +43,7 @@ async function getAllGHCommits(repos, page = 1) {
 }
 
 export default (api: IApi) => {
-  let pkg;
-
-  try {
-    pkg = require(join(api.paths.cwd, 'package.json'));
-  } catch (err) {
-    pkg = {};
-  }
-  const repoUrl = hostedGit.fromUrl(pkg.repository?.url || pkg.repository)?.browse();
+  const repoUrl = hostedGit.fromUrl(api.pkg.repository?.url || api.pkg.repository)?.browse();
   const regex = /github\.com/;
   if (!regex.test(repoUrl)) {
     return;
@@ -58,11 +51,9 @@ export default (api: IApi) => {
   const github = repoUrl.match(/github\.com(\S*)/)[1];
   api.onGenerateFiles(async () => {
     const History = await getAllGHCommits(github);
-    if (Object.keys(History).length > 0) {
-      api.writeTmpFile({
-        path: RELATIVE_FILE_PATH,
-        content: JSON.stringify(History)
-      });
-    }
+    api.writeTmpFile({
+      path: RELATIVE_FILE_PATH,
+      content: JSON.stringify(Object.keys(History).length > 0 ? History : {})
+    });
   })
 };

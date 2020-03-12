@@ -44,15 +44,7 @@ function mergeUserConfig(defaultOpts: { [key: string]: any }, api: IApi): IDumiO
 
 export default function(api: IApi) {
   // apply default options
-  let pkg;
-
-  try {
-    pkg = require(path.join(api.paths.cwd, 'package.json'));
-  } catch (err) {
-    pkg = {};
-  }
-
-  const defaultTitle = pkg.name || 'dumi';
+  const defaultTitle = api.pkg.name || 'dumi';
   const hostPkgAlias = getHostPkgAlias(api.paths);
   const defaultOpts = {
     title: defaultTitle,
@@ -81,7 +73,7 @@ export default function(api: IApi) {
       logo: opts.logo,
       desc: opts.description,
       mode: opts.mode,
-      repoUrl: hostedGit.fromUrl(pkg.repository?.url || pkg.repository)?.browse(),
+      repoUrl: hostedGit.fromUrl(api.pkg.repository?.url || api.pkg.repository)?.browse(),
     };
 
     // append umi NotFound component to routes

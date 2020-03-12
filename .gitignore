@@ -15,5 +15,5 @@ dist
 /.vscode
 .eslintcache
 .umi
-
+.umi-production
 .now
