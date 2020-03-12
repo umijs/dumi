@@ -22,17 +22,21 @@ export default function yamlProcessor() {
             }).toString(),
             10,
           ) * 1000;
+      } catch (err) {
+        vFile.data.updatedTime = Math.floor(fs.lstatSync(this.data('fileAbsPath')).mtimeMs);
+      }
+
+      try {
         vFile.data.fileCommits =
           execSync(`git log --format=%H ${this.data('fileAbsPath')}`, {
             stdio: 'pipe',
           }).toString().split('\n');
       } catch (err) {
-        vFile.data.updatedTime = Math.floor(fs.lstatSync(this.data('fileAbsPath')).mtimeMs);
         vFile.data.fileCommits = [];
       }
 
       // test
-      if(process.env.NODE_ENV === 'test'){
+      if (process.env.NODE_ENV === 'test') {
         vFile.data.updatedTime = 999;
         vFile.data.fileCommits = [];
       }
