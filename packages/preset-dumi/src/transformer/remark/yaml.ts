@@ -31,8 +31,6 @@ export default function yamlProcessor() {
         vFile.data.fileCommits = [];
       }
 
-      console.log('process.env.NODE_ENV')
-      console.log(process.env.NODE_ENV)
       // test
       if(process.env.NODE_ENV === 'test'){
         vFile.data.updatedTime = 999;
