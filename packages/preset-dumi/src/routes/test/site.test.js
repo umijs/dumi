@@ -70,8 +70,9 @@ describe('routes & menu: site mode', () => {
         component: '../../packages/preset-dumi/src/routes/fixtures/site/api.md',
         exact: true,
         meta: {
+          fileCommits: [],
           filePath: 'packages/preset-dumi/src/routes/fixtures/site/api.md',
-          updatedTime: 1582794297000,
+          updatedTime: 999,
           slugs: [
             { depth: 2, value: 'config.a', heading: 'configa' },
             { depth: 2, value: 'config.b', heading: 'configb' },
@@ -86,8 +87,9 @@ describe('routes & menu: site mode', () => {
         component: '../../packages/preset-dumi/src/routes/fixtures/site/index.md',
         exact: true,
         meta: {
+          fileCommits: [],
           filePath: 'packages/preset-dumi/src/routes/fixtures/site/index.md',
-          updatedTime: 1582794297000,
+          updatedTime: 999,
           slugs: [],
           title: 'Index',
         },
@@ -98,8 +100,9 @@ describe('routes & menu: site mode', () => {
         component: '../../packages/preset-dumi/src/routes/fixtures/site/index.zh-CN.md',
         exact: true,
         meta: {
+          fileCommits: [],
           filePath: 'packages/preset-dumi/src/routes/fixtures/site/index.zh-CN.md',
-          updatedTime: 1582794297000,
+          updatedTime: 999,
           slugs: [],
           locale: 'zh-CN',
           title: 'Index',
@@ -111,8 +114,9 @@ describe('routes & menu: site mode', () => {
         component: '../../packages/preset-dumi/src/routes/fixtures/site/config/index.md',
         exact: true,
         meta: {
+          fileCommits: [],
           filePath: 'packages/preset-dumi/src/routes/fixtures/site/config/index.md',
-          updatedTime: 1582794297000,
+          updatedTime: 999,
           slugs: [],
           title: 'Index',
           nav: { path: '/config', title: 'Config' },
@@ -124,8 +128,9 @@ describe('routes & menu: site mode', () => {
         component: '../../packages/preset-dumi/src/routes/fixtures/site/config/others.md',
         exact: true,
         meta: {
+          fileCommits: [],
           filePath: 'packages/preset-dumi/src/routes/fixtures/site/config/others.md',
-          updatedTime: 1582794297000,
+          updatedTime: 999,
           slugs: [],
           title: 'Others',
           nav: { path: '/config', title: 'Config' },
@@ -137,8 +142,9 @@ describe('routes & menu: site mode', () => {
         component: '../../packages/preset-dumi/src/routes/fixtures/site/rewrite/index.md',
         exact: true,
         meta: {
+          fileCommits: [],
           filePath: 'packages/preset-dumi/src/routes/fixtures/site/rewrite/index.md',
-          updatedTime: 1582794297000,
+          updatedTime: 999,
           nav: { path: '/test-rewrite', title: 'Test-rewrite' },
           slugs: [],
           title: 'Index',
@@ -151,8 +157,9 @@ describe('routes & menu: site mode', () => {
         component: '../../packages/preset-dumi/src/routes/fixtures/site/api.md',
         exact: true,
         meta: {
+          fileCommits: [],
           filePath: 'packages/preset-dumi/src/routes/fixtures/site/api.md',
-          updatedTime: 1582794297000,
+          updatedTime: 999,
           slugs: [
             { depth: 2, value: 'config.a', heading: 'configa' },
             { depth: 2, value: 'config.b', heading: 'configb' },
@@ -168,8 +175,9 @@ describe('routes & menu: site mode', () => {
         component: '../../packages/preset-dumi/src/routes/fixtures/site/config/index.md',
         exact: true,
         meta: {
+          fileCommits: [],
           filePath: 'packages/preset-dumi/src/routes/fixtures/site/config/index.md',
-          updatedTime: 1582794297000,
+          updatedTime: 999,
           slugs: [],
           title: 'Index',
           nav: { path: '/zh-CN/config', title: 'Config' },
@@ -182,8 +190,9 @@ describe('routes & menu: site mode', () => {
         component: '../../packages/preset-dumi/src/routes/fixtures/site/config/others.md',
         exact: true,
         meta: {
+          fileCommits: [],
           filePath: 'packages/preset-dumi/src/routes/fixtures/site/config/others.md',
-          updatedTime: 1582794297000,
+          updatedTime: 999,
           slugs: [],
           title: 'Others',
           nav: { path: '/zh-CN/config', title: 'Config' },
@@ -196,8 +205,9 @@ describe('routes & menu: site mode', () => {
         component: '../../packages/preset-dumi/src/routes/fixtures/site/rewrite/index.md',
         exact: true,
         meta: {
+          fileCommits: [],
           filePath: 'packages/preset-dumi/src/routes/fixtures/site/rewrite/index.md',
-          updatedTime: 1582794297000,
+          updatedTime: 999,
           nav: { path: '/zh-CN/test-rewrite', title: 'Test-rewrite' },
           slugs: [],
           title: 'Index',

@@ -30,6 +30,12 @@ export default function yamlProcessor() {
         vFile.data.updatedTime = Math.floor(fs.lstatSync(this.data('fileAbsPath')).mtimeMs);
         vFile.data.fileCommits = [];
       }
+
+      // test
+      if(process.env.NODE_ENV === 'test'){
+        vFile.data.updatedTime = 999;
+        vFile.data.fileCommits = [];
+      }
     }
 
     visit(ast, 'yaml', node => {
