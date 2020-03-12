@@ -1,0 +1,7 @@
+{
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/umijs/dumi",
+    "directory": "dumi"
+  }
+}

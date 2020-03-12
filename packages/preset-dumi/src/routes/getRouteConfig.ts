@@ -1,16 +1,16 @@
 import fs from 'fs';
 import path from 'path';
-import slash from 'slash2';
 import { IApi, IRoute } from '@umijs/types';
 import getRouteConfigFromDir from './getRouteConfigFromDir';
 import decorateRoutes from './decorator';
 import { IDumiOpts } from '../index';
 
-export default (api: IApi, opts: IDumiOpts): IRoute[] => {
+export default (api: IApi, opts: IDumiOpts, RELATIVE_FILE: string): IRoute[] => {
+
   const config = [
     {
       path: '/',
-      component: slash(path.join(__dirname, '../themes/default/layout.js')),
+      component: api.utils.winPath(path.join(api.paths.absTmpPath || '', `${RELATIVE_FILE}.js`)),
       routes: [],
       title: opts.title,
     },
@@ -22,7 +22,7 @@ export default (api: IApi, opts: IDumiOpts): IRoute[] => {
     config[0].routes = opts.routes.map(({ component, ...routeOpts }) => ({
       component: path.isAbsolute(component as string)
         ? component
-        : slash(path.join(paths.absPagesPath, component as string)),
+        : api.utils.winPath(path.join(paths.absPagesPath, component as string)),
       ...routeOpts,
     }));
   } else {

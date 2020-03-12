@@ -14,8 +14,6 @@ import 'prismjs/themes/prism.css';
 import './layout.less';
 import isHashRoute from '../../utils/isHashRoute';
 import getGotoPathName from '../../utils/getGotoPathName';
-// @ts-ignore
-import * as GITHUB_COMMITS from '@@/dumi/github-commits.json';
 
 export interface ILayoutProps {
   title: string;
@@ -28,7 +26,10 @@ export interface ILayoutProps {
   repoUrl?: string;
 }
 
-const getFileContributors = fileCommits => {
+interface CommitProps {
+  id: string;
+}
+const getFileContributors = (fileCommits: [], GITHUB_COMMITS: CommitProps[]) => {
   return Array.from(
     new Set(
       fileCommits
@@ -290,12 +291,11 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
   );
 
   render() {
-    const { mode, title, desc, logo, repoUrl, locales, children } = this.props;
+    const { mode, title, desc, logo, repoUrl, locales, children, GITHUB_COMMITS } = this.props;
     const { navs, menus, menuCollapsed, currentLocale, currentSlug, currentRouteMeta } = this.state;
     const siteMode = this.props.mode === 'site';
     const fileCommits = currentRouteMeta.fileCommits;
-    const aa = getFileContributors(fileCommits);
-    const contributors = aa.concat(aa).concat(aa)
+    const contributors = getFileContributors(fileCommits, GITHUB_COMMITS);
     const showHero = siteMode && currentRouteMeta.hero;
     const showFeatures = siteMode && currentRouteMeta.features;
     const showSideMenu = currentRouteMeta.sidemenu !== false && !showHero && !showFeatures;

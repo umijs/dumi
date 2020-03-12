@@ -8,6 +8,7 @@ import getNavFromRoutes from '../routes/getNavFromRoutes';
 import getMenuFromRoutes from '../routes/getMenuFromRoutes';
 import getLocaleFromRoutes from '../routes/getLocaleFromRoutes';
 import getHostPkgAlias from '../utils/getHostPkgAlias';
+import getLayoutContent from '../utils/getLayoutContent';
 import getDemoRoutes from '../routes/getDemoRoutes';
 import { setUserExtraBabelPlugin } from '../transformer/demo';
 import { IDumiOpts } from '..';
@@ -42,6 +43,10 @@ function mergeUserConfig(defaultOpts: { [key: string]: any }, api: IApi): IDumiO
   return result;
 }
 
+const DIR_NAME = 'dumi';
+const FILE_NAME = 'DumiLayout';
+const RELATIVE_FILE = path.join(DIR_NAME, FILE_NAME);
+
 export default function(api: IApi) {
   // apply default options
   const defaultTitle = api.pkg.name || 'dumi';
@@ -63,7 +68,7 @@ export default function(api: IApi) {
   // repalce default routes with generated routes
   api.modifyRoutes(routes => {
     const opts = mergeUserConfig(defaultOpts, api);
-    const result = getRouteConfig(api, opts);
+    const result = getRouteConfig(api, opts,RELATIVE_FILE);
     const childRoutes = result[0].routes;
     const meta = {
       menus: getMenuFromRoutes(childRoutes, opts, opts.menus),
@@ -158,6 +163,13 @@ export default function(api: IApi) {
       });
 
     return config;
+  });
+
+  api.onGenerateFiles(() => {
+    api.writeTmpFile({
+      path: `${RELATIVE_FILE}.js`,
+      content: getLayoutContent(api.utils.winPath(path.join(__dirname, '../themes/default/layout.js'))),
+    });
   });
 
   // watch .md files
