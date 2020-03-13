@@ -4,6 +4,11 @@
   "version": 2,
   "builds": [{ "src": "dist/**/*", "use": "@now/static" }],
   "routes": [
+    {
+      "src": "/(.*[.js|.css])",
+      "headers": { "Cache-Control": "max-age=63072000" },
+      "continue": true
+    },
     { "src": "/(.*)", "dest": "/dist/$1" },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/dist/index.html" }
