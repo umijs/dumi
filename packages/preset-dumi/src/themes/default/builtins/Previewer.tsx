@@ -1,10 +1,11 @@
+/* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { Component } from 'react';
 import Clipboard from 'react-clipboard.js';
 import innertext from 'innertext';
 import finaliseCSB, { parseImport, issueLink } from '../../../utils/codesandbox';
 import localePropsHoc from '../localePropsHoc';
-import './Previewer.less';
 import CsbButton from '../csbButton';
+import './Previewer.less';
 
 export interface IPreviewerProps {
   /**
@@ -61,6 +62,7 @@ class Previewer extends Component<IPreviewerProps> {
     copyTimer: null,
     jsBase64: '',
     tsBase64: '',
+    showRiddle: false,
   };
 
   componentDidMount() {
@@ -140,6 +142,16 @@ ${issueLink}`,
 
     // prioritize display tsx
     this.setState({ sourceType: tsx ? 'tsx' : 'jsx', jsBase64, tsBase64 });
+
+    // detect network via img request
+    const img = document.createElement('img');
+
+    img.onload = () => {
+      this.setState({ showRiddle: true });
+    };
+
+    img.src =
+      'https://private-alipayobjects.alipay.com/alipay-rmsdeploy-image/rmsportal/RKuAiriJqrUhyqW.png';
   }
 
   handleCopied = () => {
@@ -150,6 +162,14 @@ ${issueLink}`,
       }, 2000),
     });
   };
+
+  /**
+   * convert export default to ReactDOM.render for riddle
+   */
+  convertRiddleJS = (raw: string) =>
+    raw
+      .replace('export default', 'const DumiDemo =')
+      .concat('\nReactDOM.render(<DumiDemo />, mountNode);');
 
   render() {
     const {
@@ -163,7 +183,7 @@ ${issueLink}`,
       compact,
       path,
     } = this.props;
-    const { showSource, sourceType, copyTimer, jsBase64, tsBase64 } = this.state;
+    const { showSource, sourceType, copyTimer, jsBase64, tsBase64, showRiddle } = this.state;
 
     // render directly for inline mode
     if (inline) {
@@ -194,8 +214,27 @@ ${issueLink}`,
           >
             <button role="codesandbox" type="submit" />
           </CsbButton>
+          {showRiddle && (
+            <form
+              action="//riddle.alibaba-inc.com/riddles/define"
+              method="POST"
+              target="_blank"
+              style={{ display: 'flex' }}
+            >
+              <button role="riddle" type="submit" />
+              <input
+                type="hidden"
+                name="data"
+                value={JSON.stringify({
+                  title,
+                  js: this.convertRiddleJS(source.raw),
+                  css: source.raw.includes('antd') ? "@import 'antd/dist/antd.css';" : '',
+                })}
+              />
+            </form>
+          )}
           {path && (
-            <a target="_blank" href={path}>
+            <a target="_blank" rel="noopener noreferrer" href={path}>
               <button role="open-demo" type="button" />
             </a>
           )}
