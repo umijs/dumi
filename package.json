@@ -3,7 +3,9 @@
   "scripts": {
     "dev": "cross-env BROWSER=none node ./packages/dumi/bin/dumi.js dev",
     "watch": "father-build build --watch",
-    "doc:build": "cross-env BROWSER=none node ./packages/dumi/bin/dumi.js build",
+    "github:commit":"cross-env node ./packages/dumi/bin/dumi.js github",
+    "build:doc": "cross-env BROWSER=none node ./packages/dumi/bin/dumi.js build",
+    "doc:build": "npm run github:commit && npm run build:doc",
     "doc:deploy": "bash ./scripts/deploy_doc.sh",
     "bootstrap": "lerna bootstrap",
     "build": "father-build",

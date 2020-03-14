@@ -47,7 +47,7 @@ const DIR_NAME = 'dumi';
 const FILE_NAME = 'DumiLayout';
 const RELATIVE_FILE = path.join(DIR_NAME, FILE_NAME);
 
-export default function(api: IApi) {
+export default function (api: IApi) {
   // apply default options
   const defaultTitle = api.pkg.name || 'dumi';
   const hostPkgAlias = getHostPkgAlias(api.paths);
@@ -68,7 +68,7 @@ export default function(api: IApi) {
   // repalce default routes with generated routes
   api.modifyRoutes(routes => {
     const opts = mergeUserConfig(defaultOpts, api);
-    const result = getRouteConfig(api, opts,RELATIVE_FILE);
+    const result = getRouteConfig(api, opts, RELATIVE_FILE);
     const childRoutes = result[0].routes;
     const meta = {
       menus: getMenuFromRoutes(childRoutes, opts, opts.menus),
@@ -87,11 +87,11 @@ export default function(api: IApi) {
     // pass props for layout
     result[0].component = `(props) => require('react').createElement(require('${
       result[0].component
-    }').default, {
+      }').default, {
       ...${
-        // escape " to ^ to avoid umi parse error, then umi will decode them
-        // see also: https://github.com/umijs/umi/blob/master/packages/umi-build-dev/src/routes/stripJSONQuote.js#L4
-        JSON.stringify(meta).replace(/"/g, '^')
+      // escape " to ^ to avoid umi parse error, then umi will decode them
+      // see also: https://github.com/umijs/umi/blob/master/packages/umi-build-dev/src/routes/stripJSONQuote.js#L4
+      JSON.stringify(meta).replace(/"/g, '^')
       },
       ...props,
     })`;
@@ -168,7 +168,7 @@ export default function(api: IApi) {
   api.onGenerateFiles(() => {
     api.writeTmpFile({
       path: `${RELATIVE_FILE}.js`,
-      content: getLayoutContent(api.utils.winPath(path.join(__dirname, '../themes/default/layout.js'))),
+      content: getLayoutContent(api.utils.winPath(path.join(__dirname, '../themes/default/layout.js')), api.paths.absNodeModulesPath),
     });
   });
 

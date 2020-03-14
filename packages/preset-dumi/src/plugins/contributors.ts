@@ -2,9 +2,11 @@ import { IApi } from '@umijs/types';
 import fetch from 'node-fetch';
 import url from 'url';
 import { join } from 'path';
+import { existsSync } from 'fs';
 import hostedGit from 'hosted-git-info';
+import { outputJson } from 'fs-extra';
 
-const DIR_NAME = 'dumi';
+const DIR_NAME = '.dumi';
 const FILE_NAME = 'github-commits';
 const RELATIVE_FILE = join(DIR_NAME, FILE_NAME);
 const RELATIVE_FILE_PATH = `${RELATIVE_FILE}.json`;
@@ -21,7 +23,6 @@ async function getAllGHCommits(repos, page = 1) {
         page
       }
     }));
-
     let commits = await request.json().then(list => list.reduce((obj, commit) => {
       obj[commit.sha] = {
         id: commit.author.login,
@@ -48,12 +49,17 @@ export default (api: IApi) => {
   if (!regex.test(repoUrl)) {
     return;
   }
+
   const github = repoUrl.match(/github\.com(\S*)/)[1];
-  api.onGenerateFiles(async () => {
-    const History = await getAllGHCommits(github);
-    api.writeTmpFile({
-      path: RELATIVE_FILE_PATH,
-      content: JSON.stringify(Object.keys(History).length > 0 ? History : {})
-    });
-  })
+  if (!existsSync(join(api.paths.absNodeModulesPath, RELATIVE_FILE_PATH))) {
+    outputJson(join(api.paths.absNodeModulesPath, RELATIVE_FILE_PATH), {}, { spaces: 2 });
+  }
+
+  api.registerCommand({
+    name: 'github',
+    fn: async () => {
+      const History = await getAllGHCommits(github);
+      outputJson(join(api.paths.absNodeModulesPath, RELATIVE_FILE_PATH), History, { spaces: 2 });
+    },
+  });
 };

@@ -1,8 +1,6 @@
-export default (
-  path: string,
-) => `import React from 'react';
+export default (path: string, nodeModulesPath: string) => `import React from 'react';
 // @ts-ignore
-import GITHUB_COMMITS from './github-commits.json';
+import GITHUB_COMMITS from '${nodeModulesPath}/.dumi/github-commits.json';
 
 export default (props) => {
   return React.createElement(require('${path}').default, {

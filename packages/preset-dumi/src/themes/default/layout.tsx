@@ -294,7 +294,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     const { mode, title, desc, logo, repoUrl, locales, children, GITHUB_COMMITS } = this.props;
     const { navs, menus, menuCollapsed, currentLocale, currentSlug, currentRouteMeta } = this.state;
     const siteMode = this.props.mode === 'site';
-    const fileCommits = currentRouteMeta.fileCommits;
+    const { fileCommits } = currentRouteMeta;
     const contributors = getFileContributors(fileCommits, GITHUB_COMMITS);
     const showHero = siteMode && currentRouteMeta.hero;
     const showFeatures = siteMode && currentRouteMeta.features;
