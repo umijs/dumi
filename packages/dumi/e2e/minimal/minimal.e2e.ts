@@ -1,4 +1,5 @@
 import path from 'path';
+import { utils } from 'umi';
 import { fork } from 'child_process';
 import puppeteer from 'puppeteer';
 
@@ -22,7 +23,7 @@ describe('minimal', () => {
 
     child.stdout.on('data', async data => {
       // TODO: find the reason why cannot received message via on('message')
-      if (data.indexOf('DONE') > -1) {
+      if (data.toString().includes('DONE')) {
         browser = await puppeteer.launch();
         done();
       }
@@ -57,5 +58,8 @@ describe('minimal', () => {
   afterAll(() => {
     browser.close();
     child.kill('SIGINT');
+    utils.rimraf.sync(path.join(__dirname, 'dist'));
+    utils.rimraf.sync(path.join(__dirname, '.umi'));
+    utils.rimraf.sync(path.join(__dirname, 'node_modules'));
   });
 });
