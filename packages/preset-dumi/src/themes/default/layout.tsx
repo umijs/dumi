@@ -287,6 +287,9 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     const isCN =
       currentLocale === 'zh-CN' || (currentLocale === '*' && locales[0]?.name === 'zh-CN');
     let updatedTime: any = new Date(currentRouteMeta.updatedTime);
+    const repoPlatform = { github: 'GitHub', gitlab: 'GitLab' }[
+      (repoUrl || '').match(/(github|gitlab)/)?.[1] || 'nothing'
+    ];
 
     try {
       updatedTime = updatedTime.toLocaleString(currentLocale);
@@ -336,9 +339,11 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
             {children}
             {!showHero && !showFeatures && (
               <div className="__dumi-default-layout-footer-meta">
-                {/github\.com/.test(repoUrl) && (
+                {repoPlatform && (
                   <a target="_blank" href={`${repoUrl}/edit/master/${currentRouteMeta.filePath}`}>
-                    {isCN ? '在 GitHub 上编辑这篇文档' : 'Edit this doc on GitHub'}
+                    {isCN
+                      ? `在 ${repoPlatform} 上编辑这篇文档`
+                      : `Edit this doc on ${repoPlatform}`}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       aria-hidden="true"
