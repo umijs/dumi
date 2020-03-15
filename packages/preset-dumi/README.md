@@ -1,25 +1,15 @@
-# @umijs/plugin-dumi
+# @umijs/preset-dumi
 
 ## Install
 
 ```bash
 # or yarn
-$ npm install
+$ npm install -D
 ```
 
 ## Usage
 
-Configure in `.umirc.js`,
-
-```js
-export default {
-  plugins: [['@umijs/plugin-dumi', options]],
-};
-```
-
-## Options
-
-TODO
+Just install it into `devDependencies`, Umi will load it automatically.
 
 ## LICENSE
 
