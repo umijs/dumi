@@ -28,7 +28,11 @@ export default (function nav(routes) {
 
       if (route.meta.nav?.path) {
         // add locale prefix for nav path
-        if (route.meta.locale && route.meta.locale !== defaultLocale) {
+        if (
+          route.meta.locale &&
+          route.meta.locale !== defaultLocale &&
+          !route.meta.nav.path.startsWith(`/${route.meta.locale}`)
+        ) {
           route.meta.nav.path = `/${route.meta.locale}${route.meta.nav.path}`;
         }
 

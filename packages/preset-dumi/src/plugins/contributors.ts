@@ -5,6 +5,7 @@ import { join } from 'path';
 import { existsSync } from 'fs';
 import hostedGit from 'hosted-git-info';
 import { outputJson } from 'fs-extra';
+import getRepoUrl from '../utils/getRepoUrl';
 
 const DIR_NAME = '.dumi';
 const FILE_NAME = 'github-commits';
@@ -44,7 +45,7 @@ async function getAllGHCommits(repos, page = 1) {
 }
 
 export default (api: IApi) => {
-  const repoUrl = hostedGit.fromUrl(api.pkg.repository?.url || api.pkg.repository)?.browse();
+  const repoUrl = getRepoUrl(api.pkg.repository?.url || api.pkg.repository);
   const regex = /github\.com/;
   if (!regex.test(repoUrl)) {
     return;

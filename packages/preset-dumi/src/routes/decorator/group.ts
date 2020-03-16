@@ -17,7 +17,9 @@ export default (function group(routes) {
     if (route.meta.nav?.path) {
       // discard nav prefix (include locale prefix)
       clearPath = clearPath.replace(route.meta.nav.path, '');
-    } else if (route.meta.locale) {
+    }
+
+    if (route.meta.locale) {
       // discard locale prefix
       clearPath = clearPath.replace(`/${route.meta.locale}`, '');
     }
@@ -48,9 +50,13 @@ export default (function group(routes) {
       route.meta.group = route.meta.group || {};
 
       // restore locale prefix or nav path
-      if (route.meta.nav?.path) {
+      if (route.meta.nav?.path && !groupPath.startsWith(route.meta.nav.path)) {
         groupPath = `${route.meta.nav.path}${groupPath}`;
-      } else if (route.meta.locale && route.meta.locale !== defaultLocale) {
+      } else if (
+        route.meta.locale &&
+        route.meta.locale !== defaultLocale &&
+        !groupPath.startsWith(`/${route.meta.locale}`)
+      ) {
         groupPath = `/${route.meta.locale}${groupPath}`;
       }
 

@@ -5,6 +5,10 @@
   "main": "index.js",
   "module": "index.module.js",
   "bin": "bin/dumi.js",
+  "files": [
+    "lib",
+    "bin"
+  ],
   "repository": {
     "type": "git",
     "url": "http://github.com/umijs/dumi",

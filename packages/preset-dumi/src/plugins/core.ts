@@ -2,7 +2,6 @@ import fs from 'fs';
 import path from 'path';
 import { IApi } from '@umijs/types';
 import symlink from 'symlink-dir';
-import hostedGit from 'hosted-git-info';
 import getRouteConfig from '../routes/getRouteConfig';
 import getNavFromRoutes from '../routes/getNavFromRoutes';
 import getMenuFromRoutes from '../routes/getMenuFromRoutes';
@@ -10,6 +9,7 @@ import getLocaleFromRoutes from '../routes/getLocaleFromRoutes';
 import getHostPkgAlias from '../utils/getHostPkgAlias';
 import getLayoutContent from '../utils/getLayoutContent';
 import getDemoRoutes from '../routes/getDemoRoutes';
+import getRepoUrl from '../utils/getRepoUrl';
 import { setUserExtraBabelPlugin } from '../transformer/demo';
 import { IDumiOpts } from '..';
 
@@ -78,7 +78,7 @@ export default function (api: IApi) {
       logo: opts.logo,
       desc: opts.description,
       mode: opts.mode,
-      repoUrl: hostedGit.fromUrl(api.pkg.repository?.url || api.pkg.repository)?.browse(),
+      repoUrl: getRepoUrl(api.pkg.repository?.url || api.pkg.repository),
     };
 
     // append umi NotFound component to routes
