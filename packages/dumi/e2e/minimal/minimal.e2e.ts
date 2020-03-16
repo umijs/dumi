@@ -15,7 +15,7 @@ describe('minimal', () => {
       cwd: __dirname,
       env: {
         ...process.env,
-        PORT: '12341',
+        PORT: '12346',
         BROWSER: 'none',
       },
       silent: true,
@@ -35,7 +35,7 @@ describe('minimal', () => {
   });
 
   test('dev server', async () => {
-    await page.goto('http://localhost:12341');
+    await page.goto('http://localhost:12346');
 
     expect(await page.evaluate(() => document.querySelector('h1').innerHTML)).toEqual('dumi');
   });
@@ -45,7 +45,7 @@ describe('minimal', () => {
       cwd: __dirname,
       env: {
         ...process.env,
-        PORT: '12341',
+        PORT: '12333',
         BROWSER: 'none',
       },
       silent: true,
