@@ -2,18 +2,16 @@
   "name": "dumi",
   "scope": "umijs",
   "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@now/static-build",
-      "config": {
-        "distDir": "dist"
-      }
-    }
-  ],
+  "builds": [{ "src": "dist/**/*", "use": "@now/static" }],
   "routes": [
+    {
+      "src": "/(.*[.js|.css])",
+      "headers": { "Cache-Control": "max-age=63072000" },
+      "continue": true
+    },
+    { "src": "/(.*)", "dest": "/dist/$1" },
     { "handle": "filesystem" },
-    { "src": "/.*", "dest": "/index.html" }
+    { "src": "/(.*)", "dest": "/dist/index.html" }
   ],
   "github": {
     "enable": false
