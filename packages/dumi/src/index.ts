@@ -17,6 +17,13 @@ module.exports = () => {
     process.exit(code);
   });
 
+  // for e2e test
+  child.on('message', args => {
+    if (process.send) {
+      process.send(args);
+    }
+  });
+
   process.on('SIGINT', () => {
     child.kill('SIGINT');
   });

@@ -21,9 +21,8 @@ describe('minimal', () => {
       silent: true,
     });
 
-    child.stdout.on('data', async data => {
-      // TODO: find the reason why cannot received message via on('message')
-      if (data.toString().includes('DONE')) {
+    child.on('message', async args => {
+      if (args.type === 'DONE') {
         browser = await puppeteer.launch();
         done();
       }
