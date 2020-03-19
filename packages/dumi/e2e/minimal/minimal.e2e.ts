@@ -23,7 +23,15 @@ describe('minimal', () => {
 
     child.on('message', async args => {
       if (args.type === 'DONE') {
-        browser = await puppeteer.launch();
+        browser = await puppeteer.launch({
+          args: [
+            '--disable-gpu',
+            '--disable-dev-shm-usage',
+            '--no-first-run',
+            '--no-zygote',
+            '--no-sandbox',
+          ],
+        });
         done();
       }
     });
@@ -34,7 +42,7 @@ describe('minimal', () => {
   });
 
   test('dev server', async () => {
-    await page.goto('http://localhost:12341');
+    await page.goto('http://localhost:12341', { waitUntil: 'networkidle2' });
 
     expect(await page.evaluate(() => document.querySelector('h1').innerHTML)).toEqual('dumi');
   });
