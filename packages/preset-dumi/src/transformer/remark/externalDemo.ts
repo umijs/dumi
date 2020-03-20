@@ -12,7 +12,7 @@ const fileWatchers: { [key: string]: fs.FSWatcher[] } = {};
  * simple parser for parse HTML attributes
  * @param str   attributes string on HTML tag
  */
-function HTMLAttrParser(str: string): { [key: string]: any } {
+export function HTMLAttrParser(str: string): { [key: string]: any } {
   const attrs = {};
 
   (str || '').replace(/([^=\s]+)(="([^"]+)")?/g, (_, name, content, value) => {

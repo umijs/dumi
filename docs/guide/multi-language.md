@@ -34,12 +34,7 @@ title: 多语言支持
 
 左侧菜单的将会随着 locale 的切换而变化：
 
-```jsx | inline
-import React from 'react';
-import gif from '../assets/locale-menu.gif';
-
-export default () => <img src={gif} width="250" />;
-```
+<img src="../assets/locale-menu.gif" width="250" />
 
 此时我们的最小多语言示例就完成了。
 

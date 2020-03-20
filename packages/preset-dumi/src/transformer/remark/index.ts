@@ -11,6 +11,7 @@ import yaml from './yaml';
 import header from './header';
 import externalDemo from './externalDemo';
 import link from './link';
+import img from './img';
 import previewer from './previewer';
 import jsx from './jsx';
 import isolation from './isolation';
@@ -46,6 +47,7 @@ const PLUGIN_STRATEGIES = {
     [headings],
     [header],
     [link],
+    [img],
     [comments, { removeConditional: true }],
     [prism],
     [previewer],
