@@ -1,6 +1,6 @@
 import path from 'path';
 import slash from 'slash2';
-import { IRoute } from '@umijs/types';
+import { IRoute, IApi } from '@umijs/types';
 import { IDumiOpts } from '..';
 
 export interface IMenuItem {
@@ -27,8 +27,15 @@ function isSameRouteComponent(
   fragment: string,
   component: string,
   includes: IDumiOpts['resolve']['includes'],
+  paths: IApi['paths'],
 ) {
-  return includes.some(dir => component.indexOf(slash(path.join(dir, fragment))) > -1);
+  return includes.some(dir => {
+    const cwdRelativeComponentPath = slash(
+      path.relative(paths.cwd, path.join(paths.absTmpPath, 'core', component)),
+    );
+
+    return cwdRelativeComponentPath.indexOf(slash(path.join(dir, fragment))) > -1;
+  });
 }
 
 function convertUserMenuChilds(
@@ -37,6 +44,7 @@ function convertUserMenuChilds(
   locale: string,
   isDefaultLocale: boolean,
   includes: IDumiOpts['resolve']['includes'],
+  paths: IApi['paths'],
 ) {
   return menus.map(menu => {
     // copy menu config to avoid modify user config
@@ -51,16 +59,21 @@ function convertUserMenuChilds(
         let childItem = child;
 
         if (typeof child === 'string') {
-          const route =
-            routes.find(route => {
-              if (
-                route.component &&
-                isSameRouteComponent(child, route.component, includes) &&
-                (route.meta?.locale === locale || (!route.meta?.locale && isDefaultLocale))
-              ) {
-                return true;
-              }
-            }) || {};
+          const route = routes.find(route => {
+            if (
+              route.component &&
+              isSameRouteComponent(child, route.component, includes, paths) &&
+              (route.meta?.locale === locale || (!route.meta?.locale && isDefaultLocale))
+            ) {
+              return true;
+            }
+          });
+
+          if (!route) {
+            throw new Error(
+              `[dumi]: cannot find ${child} from menu config, please make sure file exist!`,
+            );
+          }
 
           childItem = {
             path: route.path,
@@ -103,7 +116,7 @@ export function menuSorter(prev, next) {
 export default function getMenuFromRoutes(
   routes: IRoute[],
   opts: IDumiOpts,
-  userMenus: IDumiOpts['menus'] = {},
+  paths: IApi['paths'],
 ): IMenu {
   // temporary menus mapping
   const localeMenusMapping: {
@@ -116,6 +129,7 @@ export default function getMenuFromRoutes(
       };
     };
   } = {};
+  const { menus: userMenus = {} } = opts;
   let localeMenus: IMenu = {};
 
   routes.forEach(route => {
@@ -210,6 +224,7 @@ export default function getMenuFromRoutes(
           locale[0],
           isDefaultLocale,
           opts.resolve.includes,
+          paths,
         );
 
         localeMenus[locale[0]][navPath] = convertedMenus;

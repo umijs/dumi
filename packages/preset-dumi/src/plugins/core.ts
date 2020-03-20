@@ -58,7 +58,9 @@ export default function(api: IApi) {
     title: defaultTitle,
     resolve: {
       // default to include src, lerna pkg's src & docs folder
-      includes: hostPkgAlias.map(([_, pkgPath]) => path.join(pkgPath, 'src')).concat(['docs']),
+      includes: hostPkgAlias
+        .map(([_, pkgPath]) => path.relative(api.paths.cwd, path.join(pkgPath, 'src')))
+        .concat(['docs']),
       previewLangs: ['jsx', 'tsx'],
     },
     locales: [
@@ -74,7 +76,7 @@ export default function(api: IApi) {
     const result = getRouteConfig(api, opts);
     const childRoutes = result[0].routes;
     const meta = {
-      menus: getMenuFromRoutes(childRoutes, opts, opts.menus),
+      menus: getMenuFromRoutes(childRoutes, opts, api.paths),
       locales: getLocaleFromRoutes(childRoutes, opts),
       navs: getNavFromRoutes(childRoutes, opts, opts.navs),
       title: opts.title,
