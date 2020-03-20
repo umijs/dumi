@@ -11,7 +11,7 @@
     "clean": "lerna clean -y",
     "test": "npm run test:e2e && npm run test:unit",
     "test:unit": "umi-test 'test.(j|t)s' --coverage",
-    "test:e2e": "npm run build && umi-test 'e2e.(j|t)s'",
+    "test:e2e": "umi-test 'e2e.(j|t)s'",
     "debug": "umi-test",
     "lint": "eslint --cache --ext .js,.jsx,.ts,.tsx --format=pretty \"./packages/preset-dumi/src\"",
     "prettier": "prettier -c --write \"**/*\"",

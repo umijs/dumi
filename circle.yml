@@ -6,33 +6,43 @@ version: 2.0
 jobs:
   build:
     docker:
-      # specify the version you desire here
       - image: circleci/node:latest-browsers
+
     environment:
       CI: true
       NODE_ENV: test
-      NODE_OPTIONS: --max_old_space_size=4096
-      NPM_CONFIG_LOGLEVEL: error
-      JOBS: max # https://gist.github.com/ralphtheninja/f7c45bdee00784b41fed
-    branches:
-      ignore:
-        - gh-pages # list of branches to ignore
-        - /release\/.*/ # or ignore regexes
-    working_directory: ~/father
+
+    working_directory: ~/repo
 
     steps:
       - checkout
+
       - restore_cache:
           key: node-modules-{{ checksum "package.json" }}
-      - run: sudo npm install -g cnpm
-      - run: cnpm install --registry=https://registry.npmjs.org
-      - run: cnpm run bootstrap -- --npm-client=cnpm
-      - run: cnpm run build
+
       - run:
-          command: npm run test -- --forceExit --detectOpenHandles --runInBand --maxWorkers=2
-          no_output_timeout: 300m
-      - run: bash <(curl -s https://codecov.io/bash)
+          name: Install Dependencies
+          command: yarn --frozen-lockfile
+
+      - run:
+          name: Bootstrap
+          command: yarn bootstrap --npm-client=yarn
+
       - save_cache:
           key: node-modules-{{ checksum "package.json" }}
           paths:
             - ./node_modules
+            - ~/.cache/yarn
+
+      - run:
+          name: Run Build
+          command: yarn build
+
+      - run:
+          name: Run Tests
+          command: yarn test:unit -- --forceExit --detectOpenHandles --runInBand --maxWorkers=2
+          no_output_timeout: 300m
+
+      - run:
+          name: Generate coverage
+          command: bash <(curl -s https://codecov.io/bash)
