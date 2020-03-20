@@ -50,7 +50,7 @@ export default function externalDemo() {
     visit(ast, 'html', (node, i, parent) => {
       if (typeof node.value === 'string') {
         // split multiple code tag
-        const tags = node.value.match(/^\s*(<code.*?(<\/code>|\/?>))/g);
+        const tags = node.value.match(/<code.*?(<\/code>|\/?>)/g);
         const demos = [];
 
         (tags || []).forEach(tag => {
