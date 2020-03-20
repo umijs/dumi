@@ -43,6 +43,7 @@ function getYamlConfig(code, componentFile = '') {
 
 function wrapperHtmlByComponent(jsx: string, meta: TransformResult['config']) {
   return `
+    import { Link } from 'umi';
     import React from 'react';
     import Alert from '${slash(path.join(__dirname, '../themes/default/builtins/Alert.js'))}';
     import DumiPreviewer from '${slash(

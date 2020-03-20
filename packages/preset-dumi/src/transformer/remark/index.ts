@@ -10,7 +10,7 @@ import rehype from './rehype';
 import yaml from './yaml';
 import header from './header';
 import externalDemo from './externalDemo';
-import externalLink from './externalLink';
+import link from './link';
 import previewer from './previewer';
 import jsx from './jsx';
 import isolation from './isolation';
@@ -45,7 +45,7 @@ const PLUGIN_STRATEGIES = {
     [slug],
     [headings],
     [header],
-    [externalLink],
+    [link],
     [comments, { removeConditional: true }],
     [prism],
     [previewer],
