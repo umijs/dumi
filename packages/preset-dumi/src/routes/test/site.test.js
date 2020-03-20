@@ -357,20 +357,29 @@ describe('routes & menu: site mode', () => {
   it('getMenuFromRoutes: merge user config', () => {
     const menu = getMenu(
       routes,
-      { locales: DEFAULT_LOCALES, resolve: { includes: [''] } },
       {
-        '/api': [
-          {
-            title: 'test',
-            children: ['api'],
-          },
-        ],
-        '/config': [
-          {
-            title: 'Config Menu',
-            children: ['others', 'index'],
-          },
-        ],
+        locales: DEFAULT_LOCALES,
+        resolve: {
+          includes: [''],
+        },
+        menus: {
+          '/api': [
+            {
+              title: 'test',
+              children: ['api'],
+            },
+          ],
+          '/config': [
+            {
+              title: 'Config Menu',
+              children: ['others', 'index'],
+            },
+          ],
+        },
+      },
+      {
+        cwd: process.cwd(),
+        absTmpPath: path.join(process.cwd(), '.umi'),
       },
     );
 
