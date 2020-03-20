@@ -239,6 +239,30 @@ describe('routes & menu: site mode', () => {
     });
   });
 
+  it('getNavFromRoutes: merge user config', () => {
+    const navs = getNav(
+      routes,
+      { locales: DEFAULT_LOCALES, mode: 'site' },
+      {
+        'en-US': [null, { title: 'test', path: '/test' }],
+      },
+    );
+
+    expect(navs).toEqual({
+      'en-US': [
+        { path: '/api', title: 'Api' },
+        { path: '/config', title: 'Config' },
+        { path: '/test-rewrite', title: 'Test-rewrite' },
+        { path: '/test', title: 'test' },
+      ],
+      'zh-CN': [
+        { path: '/zh-CN/api', title: 'Api' },
+        { path: '/zh-CN/config', title: 'Config' },
+        { path: '/zh-CN/test-rewrite', title: 'Test-rewrite' },
+      ],
+    });
+  });
+
   it('getMenuFromRoutes', () => {
     const menu = getMenu(routes, { locales: DEFAULT_LOCALES });
 
@@ -311,6 +335,78 @@ describe('routes & menu: site mode', () => {
             title: 'Others',
             meta: {},
           },
+        ],
+        '/zh-CN/test-rewrite': [
+          {
+            title: 'Rewrite',
+            path: '/zh-CN/test-rewrite/rewrite',
+            meta: {},
+            children: [
+              {
+                path: '/zh-CN/test-rewrite/rewrite',
+                title: 'Index',
+                meta: {},
+              },
+            ],
+          },
+        ],
+      },
+    });
+  });
+
+  it('getMenuFromRoutes: merge user config', () => {
+    const menu = getMenu(
+      routes,
+      { locales: DEFAULT_LOCALES, resolve: { includes: [''] } },
+      {
+        '/api': [
+          {
+            title: 'test',
+            children: ['api'],
+          },
+        ],
+        '/config': [
+          {
+            title: 'Config Menu',
+            children: ['others', 'index'],
+          },
+        ],
+      },
+    );
+
+    expect(menu).toEqual({
+      'en-US': {
+        '/api': [
+          {
+            title: 'test',
+            children: [{ path: '/api', title: 'config.a' }],
+          },
+        ],
+        '*': [{ path: '/', title: 'Index', meta: {} }],
+        '/config': [
+          {
+            title: 'Config Menu',
+            children: [
+              { path: '/config/others', title: 'Others' },
+              { path: '/', title: 'Index' },
+            ],
+          },
+        ],
+        '/test-rewrite': [
+          {
+            title: 'Rewrite',
+            path: '/test-rewrite/rewrite',
+            meta: {},
+            children: [{ path: '/test-rewrite/rewrite', title: 'Index', meta: {} }],
+          },
+        ],
+      },
+      'zh-CN': {
+        '*': [{ path: '/zh-CN', title: 'Index', meta: {} }],
+        '/zh-CN/api': [{ path: '/zh-CN/api', title: 'config.a', meta: {} }],
+        '/zh-CN/config': [
+          { path: '/zh-CN/config', title: 'Index', meta: {} },
+          { path: '/zh-CN/config/others', title: 'Others', meta: {} },
         ],
         '/zh-CN/test-rewrite': [
           {
