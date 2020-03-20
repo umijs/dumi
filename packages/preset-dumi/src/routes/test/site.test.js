@@ -3,6 +3,7 @@ import getRoute from '../getRouteConfigFromDir';
 import decorateRoute from '../decorator';
 import getMenu from '../getMenuFromRoutes';
 import getNav from '../getNavFromRoutes';
+import getLocale from '../getLocaleFromRoutes';
 
 const FIXTURES_PATH = path.join(__dirname, '..', 'fixtures');
 const DEFAULT_LOCALES = [
@@ -327,5 +328,12 @@ describe('routes & menu: site mode', () => {
         ],
       },
     });
+  });
+
+  it('getLocaleFromRoutes', () => {
+    // test for unique locale discard logic
+    const locales = getLocale(routes, { locales: DEFAULT_LOCALES.reverse() });
+
+    expect(locales).toEqual([]);
   });
 });

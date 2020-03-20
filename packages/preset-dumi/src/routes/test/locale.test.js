@@ -2,6 +2,7 @@ import path from 'path';
 import getRoute from '../getRouteConfigFromDir';
 import decorateRoute from '../decorator';
 import getMenu from '../getMenuFromRoutes';
+import getLocale from '../getLocaleFromRoutes';
 
 const FIXTURES_PATH = path.join(__dirname, '..', 'fixtures');
 const DEFAULT_LOCALES = [
@@ -335,5 +336,14 @@ describe('routes & menu: locales', () => {
         ],
       },
     });
+  });
+
+  it('getLocaleFromRoutes', () => {
+    const locales = getLocale(routes, { locales: DEFAULT_LOCALES });
+
+    expect(locales).toEqual([
+      { name: 'en-US', label: 'EN' },
+      { name: 'zh-CN', label: '中文' },
+    ]);
   });
 });
