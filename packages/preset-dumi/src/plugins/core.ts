@@ -10,6 +10,7 @@ import getHostPkgAlias from '../utils/getHostPkgAlias';
 import getDemoRoutes from '../routes/getDemoRoutes';
 import getRepoUrl from '../utils/getRepoUrl';
 import { setUserExtraBabelPlugin } from '../transformer/demo';
+import { init as setContext } from '../context';
 import { IDumiOpts } from '..';
 
 function mergeUserConfig(defaultOpts: { [key: string]: any }, api: IApi): IDumiOpts {
@@ -73,6 +74,10 @@ export default function(api: IApi) {
   // repalce default routes with generated routes
   api.modifyRoutes(routes => {
     const opts = mergeUserConfig(defaultOpts, api);
+
+    // save umi api & opts into context
+    setContext(api, opts);
+
     const result = getRouteConfig(api, opts);
     const childRoutes = result[0].routes;
     const meta = {

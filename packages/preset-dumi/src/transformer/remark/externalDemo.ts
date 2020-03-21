@@ -1,7 +1,9 @@
 import fs from 'fs';
+import { utils } from 'dumi';
 import path from 'path';
-import slash from 'slash2';
 import visit from 'unist-util-visit';
+import resolve from 'enhanced-resolve';
+import ctx from '../../context';
 import transformer, { TransformResult } from '../index';
 import { addDemoRoute } from '../../routes/getDemoRoutes';
 
@@ -58,48 +60,35 @@ export default function externalDemo() {
           const { src, ...inheritAttrs } = HTMLAttrParser(matches[2]);
 
           if (src) {
-            let absPath = path.isAbsolute(src)
-              ? src
-              : slash(path.join(path.parse(this.data('fileAbsPath')).dir, src));
+            let absPath = utils.winPath(
+              resolve.create.sync({
+                extensions: ['.tsx', '.jsx'],
+                alias: ctx.umi?.config?.alias || {},
+              })(path.parse(this.data('fileAbsPath')).dir, src),
+            );
+            const lang = absPath.match(/\.(\w+)$/)[1];
 
-            // auto complete file extension
-            if (!/\.\w+$/.test(absPath)) {
-              absPath = fs.existsSync(`${absPath}.jsx`) ? `${absPath}.jsx` : `${absPath}.tsx`;
-            }
+            // read external demo content and convert node to demo node
+            const result: TransformResult = transformer[lang](fs.readFileSync(absPath).toString());
 
-            if (fs.existsSync(absPath)) {
-              const lang = absPath.match(/\.(\w+)$/)[1];
+            // add single route for external demo
+            inheritAttrs.path = addDemoRoute(absPath);
 
-              if (transformer[lang]) {
-                // read external demo content and convert node to demo node
-                const result: TransformResult = transformer[lang](
-                  fs.readFileSync(absPath).toString(),
-                );
+            demos.push({
+              type: 'demo',
+              lang,
+              value: result.content,
+              filePath: absPath,
+              meta: {
+                ...inheritAttrs,
+                ...result.config,
+              },
+            });
 
-                // add single route for external demo
-                inheritAttrs.path = addDemoRoute(absPath);
-
-                demos.push({
-                  type: 'demo',
-                  lang,
-                  value: result.content,
-                  filePath: absPath,
-                  meta: {
-                    ...inheritAttrs,
-                    ...result.config,
-                  },
-                });
-
-                watchExternalDemoChange(absPath, this.data('fileAbsPath'));
-              } else {
-                throw new Error(`[External-Demo Error]: unsupported file type: ${lang}`);
-              }
-            } else {
-              throw new Error(`[External-Demo Error]: cannot find demo in ${absPath}`);
-            }
+            watchExternalDemoChange(absPath, this.data('fileAbsPath'));
           } else if (matches[1]) {
-            throw new Error(
-              `[External-Demo Error]: expected a code element with valid src property but got ${node.value}`,
+            ctx.umi.logger.error(
+              `[dumi]: expected a code element with valid src property but got ${node.value}`,
             );
           }
         });
