@@ -124,11 +124,19 @@ export default function(api: IApi) {
   // configure loader for .md file
   api.chainWebpack(config => {
     const opts = mergeUserConfig(defaultOpts, api);
+    const babelLoader = config.module
+      .rule('js')
+      .use('babel-loader')
+      .entries();
 
     config.module
-      .rule('md')
+      .rule('dumi')
       .test(/\.md$/)
-      .use('dumi')
+      .use('babel-loader')
+      .loader(babelLoader.loader)
+      .options(babelLoader.options)
+      .end()
+      .use('dumi-loader')
       .loader(require.resolve('../loader'))
       .options({ previewLangs: opts.resolve.previewLangs });
 

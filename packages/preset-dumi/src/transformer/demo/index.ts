@@ -22,6 +22,7 @@ export default (raw: string, isTSX?: boolean) => {
     presets: [require.resolve('@babel/preset-react'), require.resolve('@babel/preset-env')],
     plugins: [
       require.resolve('@babel/plugin-proposal-class-properties'),
+      [require.resolve('@babel/plugin-transform-modules-commonjs'), { strict: true }],
       ...(isTSX ? [[require.resolve('@babel/plugin-transform-typescript'), { isTSX: true }]] : []),
       ...userExtraBabelPlugin,
     ],
@@ -55,29 +56,38 @@ export default (raw: string, isTSX?: boolean) => {
     AssignmentExpression(callPath) {
       const callPathNode = callPath.node;
 
-      // remove original export expression
       if (
         callPathNode.operator === '=' &&
         types.isMemberExpression(callPathNode.left) &&
         (callPathNode.left.property.value === 'default' || // exports["default"]
           callPathNode.left.property.name === 'default') && // exports.default
         types.isIdentifier(callPathNode.left.object) &&
-        callPathNode.left.object.name === 'exports' &&
-        types.isIdentifier(callPathNode.right) &&
-        callPathNode.right.name === '_default'
+        callPathNode.left.object.name === 'exports'
       ) {
-        // save export function as return statement arg
-        const reactIdentifier = reactVar
-          ? types.memberExpression(types.identifier(reactVar), types.stringLiteral('default'), true)
-          : types.identifier('React');
+        // remove original export expression
+        if (types.isIdentifier(callPathNode.right) && callPathNode.right.name === '_default') {
+          // save export function as return statement arg
+          const reactIdentifier = reactVar
+            ? types.memberExpression(
+                types.identifier(reactVar),
+                types.stringLiteral('default'),
+                true,
+              )
+            : types.identifier('React');
 
-        returnStatement = types.returnStatement(
-          types.callExpression(
-            types.memberExpression(reactIdentifier, types.identifier('createElement')),
-            [callPathNode.right],
-          ),
-        );
-        callPath.remove();
+          returnStatement = types.returnStatement(
+            types.callExpression(
+              types.memberExpression(reactIdentifier, types.identifier('createElement')),
+              [callPathNode.right],
+            ),
+          );
+          callPath.remove();
+        }
+
+        // remove uesless exports.default = void 0;
+        if (types.isUnaryExpression(callPathNode.right)) {
+          callPath.remove();
+        }
       }
     },
   });
