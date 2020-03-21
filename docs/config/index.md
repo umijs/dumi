@@ -58,7 +58,7 @@ export default {
 ## locales
 
 - 类型：`Array<[String, String]>`
-- 默认值：`[['en-US', 'EN'], ['zh-CN', '中文']]`
+- 默认值：`[['en-US', 'English'], ['zh-CN', '中文']]`
 - 详细：
 
 该配置为二维数组，第一项配置会作为站点默认的 locale。
