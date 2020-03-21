@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { utils } from 'dumi';
+import slash from 'slash2';
 import path from 'path';
 import visit from 'unist-util-visit';
 import resolve from 'enhanced-resolve';
@@ -60,7 +60,7 @@ export default function externalDemo() {
           const { src, ...inheritAttrs } = HTMLAttrParser(matches[2]);
 
           if (src) {
-            let absPath = utils.winPath(
+            let absPath = slash(
               resolve.create.sync({
                 extensions: ['.tsx', '.jsx'],
                 alias: ctx.umi?.config?.alias || {},
