@@ -124,11 +124,23 @@ export default function(api: IApi) {
   // configure loader for .md file
   api.chainWebpack(config => {
     const opts = mergeUserConfig(defaultOpts, api);
+    const oPlainTextTest = config.module.rule('plaintext').get('test');
     const babelLoader = config.module
       .rule('js')
       .use('babel-loader')
       .entries();
 
+    // remove md file test from umi
+    if (oPlainTextTest?.source?.includes('md')) {
+      config.module
+        .rule('plaintext')
+        .set(
+          'test',
+          new RegExp(oPlainTextTest.source.replace(/\|md|md\|/, ''), oPlainTextTest.flags),
+        );
+    }
+
+    // add md file loader
     config.module
       .rule('dumi')
       .test(/\.md$/)
