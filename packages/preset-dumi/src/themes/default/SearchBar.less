@@ -42,9 +42,6 @@
 
     li {
       font-size: 15px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
 
       a {
         display: block;
@@ -52,6 +49,9 @@
         color: @c-secondary;
         text-decoration: none;
         transition: background-color 0.3s;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
 
         &:hover {
           color: @c-primary;

@@ -141,6 +141,11 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
         passive: true,
       });
     });
+
+    // discard end slash for path
+    if (/\w\/$/.test(this.props.location.pathname)) {
+      history.replace(this.props.location.pathname.replace(/\/$/, ''));
+    }
   }
 
   componentWillUnmount() {
