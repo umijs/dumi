@@ -9,7 +9,6 @@ import getLocaleFromRoutes from '../routes/getLocaleFromRoutes';
 import getHostPkgAlias from '../utils/getHostPkgAlias';
 import getDemoRoutes from '../routes/getDemoRoutes';
 import getRepoUrl from '../utils/getRepoUrl';
-import { setUserExtraBabelPlugin } from '../transformer/demo';
 import { init as setContext } from '../context';
 import { IDumiOpts } from '..';
 
@@ -201,11 +200,6 @@ export default function(api: IApi) {
 
     return [...opts.resolve.includes.map(key => path.join(api.paths.cwd, key, '**/*.md'))];
   });
-
-  // sync user extra babel plugins for demo transformer
-  if (api.userConfig.extraBabelPlugins) {
-    setUserExtraBabelPlugin(api.userConfig.extraBabelPlugins);
-  }
 
   // TODO: CLI help info
   // TODO: site title support for routes

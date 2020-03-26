@@ -22,8 +22,6 @@ ReactDOM.render(
   document.getElementById('root')
 );`;
 
-export { parseImport } from './parseImport';
-
 export default ({ files, deps, devDependencies, desc }: any, config: any) => {
   if (!config) config = {};
   const { extraFiles, extraDependencies, name, template = 'create-react-app' } = config;

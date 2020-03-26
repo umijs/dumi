@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import Clipboard from 'react-clipboard.js';
 import innertext from 'innertext';
-import finaliseCSB, { parseImport, issueLink } from '../../../utils/codesandbox';
+import finaliseCSB, { issueLink } from '../../../utils/codesandbox';
 import localePropsHoc from '../localePropsHoc';
 import CsbButton from '../csbButton';
 import './Previewer.less';
@@ -53,6 +53,10 @@ export interface IPreviewerProps {
    * single route path (external demo only)
    */
   path?: string;
+  /**
+   * demo dependencies
+   */
+  dependencies: { [key: string]: string };
 }
 
 class Previewer extends Component<IPreviewerProps> {
@@ -66,13 +70,12 @@ class Previewer extends Component<IPreviewerProps> {
   };
 
   componentDidMount() {
-    const { source, desc, title } = this.props;
+    const { source, desc, title, dependencies: dep } = this.props;
     const { tsx = '', jsx = '', raw } = source;
     // generate csb base64 code;
     let tsData = {};
     let jsData = {};
     // tsx and jsx should have same dependencies, so only parse once
-    const dep = parseImport(raw);
 
     if (tsx) {
       tsData = {
@@ -164,12 +167,30 @@ ${issueLink}`,
   };
 
   /**
-   * convert export default to ReactDOM.render for riddle
+   * convert source code for riddle
    */
-  convertRiddleJS = (raw: string) =>
-    raw
+  convertRiddleJS = (raw: string) => {
+    const { dependencies } = this.props;
+    let result = raw;
+
+    // convert export default to ReactDOM.render for riddle
+    result = result
       .replace('export default', 'const DumiDemo =')
       .concat('\nReactDOM.render(<DumiDemo />, mountNode);');
+
+    // add version for dependencies
+    result = result.replace(/(from ')((?:@[^/'"]+)?[^/'"]+)/g, (_, $1, $2) => {
+      let dep = `${$1}${$2}`;
+
+      if (dependencies[$2]) {
+        dep += `@${dependencies[$2]}`;
+      }
+
+      return dep;
+    });
+
+    return result;
+  };
 
   render() {
     const {
@@ -182,6 +203,7 @@ ${issueLink}`,
       background,
       compact,
       path,
+      dependencies,
     } = this.props;
     const { showSource, sourceType, copyTimer, jsBase64, tsBase64, showRiddle } = this.state;
 
@@ -228,7 +250,9 @@ ${issueLink}`,
                 value={JSON.stringify({
                   title,
                   js: this.convertRiddleJS(source.raw),
-                  css: source.raw.includes('antd') ? "@import 'antd/dist/antd.css';" : '',
+                  css: dependencies.antd
+                    ? `@import 'antd${`@${dependencies.antd}`}/dist/antd.css';`
+                    : '',
                 })}
               />
             </form>

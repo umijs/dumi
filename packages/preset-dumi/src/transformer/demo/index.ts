@@ -2,39 +2,45 @@ import * as babel from '@babel/core';
 import * as types from '@babel/types';
 import traverse from '@babel/traverse';
 import generator from '@babel/generator';
+import { getModuleResolvePkg, getModuleResolvePath } from '../../utils/moduleResolver';
+import ctx from '../../context';
+
+interface IDemoTransformResult {
+  content: string;
+  dependencies: { [key: string]: string };
+}
 
 export const DEMO_COMPONENT_NAME = 'DumiDemo';
-let userExtraBabelPlugin = [];
-
-export function getUserExtraBabelPlugin() {
-  return userExtraBabelPlugin;
-}
-
-export function setUserExtraBabelPlugin(plugins: any[]) {
-  userExtraBabelPlugin = plugins;
-}
 
 /**
  * transform code block statments to preview
  */
-export default (raw: string, isTSX?: boolean) => {
+export default (
+  raw: string,
+  { isTSX, fileAbsPath }: { isTSX?: boolean; fileAbsPath: string },
+): IDemoTransformResult => {
   const code = babel.transformSync(raw, {
-    presets: [require.resolve('@babel/preset-react'), require.resolve('@babel/preset-env')],
+    presets: [
+      require.resolve('@babel/preset-react'),
+      require.resolve('@babel/preset-env'),
+      ...(ctx.umi?.config?.extraBabelPresets || []),
+    ],
     plugins: [
       require.resolve('@babel/plugin-proposal-class-properties'),
       [require.resolve('@babel/plugin-transform-modules-commonjs'), { strict: true }],
       ...(isTSX ? [[require.resolve('@babel/plugin-transform-typescript'), { isTSX: true }]] : []),
-      ...userExtraBabelPlugin,
+      ...(ctx.umi?.config?.extraBabelPlugins || []),
     ],
     ast: true,
     babelrc: false,
     configFile: false,
   });
   const body = code.ast.program.body as types.Statement[];
-  let reactVar;
-  let returnStatement;
+  const dependencies: IDemoTransformResult['dependencies'] = {};
+  let reactVar: string;
+  let returnStatement: types.ReturnStatement;
 
-  // traverse call expression
+  // traverse all expression
   traverse(code.ast, {
     VariableDeclaration(callPath) {
       const callPathNode = callPath.node;
@@ -51,6 +57,32 @@ export default (raw: string, isTSX?: boolean) => {
         callPathNode.declarations[0].init.arguments[0].arguments[0].value === 'react'
       ) {
         reactVar = callPathNode.declarations[0].id.name;
+      }
+    },
+    CallExpression(callPath) {
+      const callPathNode = callPath.node;
+
+      // tranverse all require statement
+      if (
+        types.isIdentifier(callPathNode.callee) &&
+        callPathNode.callee.name === 'require' &&
+        types.isStringLiteral(callPathNode.arguments[0])
+      ) {
+        const requireStr = callPathNode.arguments[0].value;
+        const resolvePath = getModuleResolvePath({
+          basePath: fileAbsPath,
+          sourcePath: requireStr,
+        });
+
+        if (resolvePath.includes('node_modules')) {
+          // save external deps
+          const pkg = getModuleResolvePkg({
+            basePath: fileAbsPath,
+            sourcePath: requireStr,
+          });
+
+          dependencies[pkg.name] = pkg.version;
+        }
       }
     },
     AssignmentExpression(callPath) {
@@ -111,5 +143,8 @@ export default (raw: string, isTSX?: boolean) => {
     types.blockStatement(body),
   );
 
-  return generator(types.program([demoFunction]), {}, raw).code;
+  return {
+    content: generator(types.program([demoFunction]), {}, raw).code,
+    dependencies,
+  };
 };
