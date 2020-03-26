@@ -35,6 +35,18 @@ describe('minimal', () => {
         done();
       }
     });
+
+    child.on('error', err => {
+      throw err;
+    });
+
+    child.on('exit', code => {
+      process.exit(code);
+    });
+
+    process.on('exit', () => {
+      child.kill('SIGINT');
+    });
   });
 
   beforeEach(async () => {
