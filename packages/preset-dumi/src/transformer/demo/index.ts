@@ -66,7 +66,8 @@ export default (
       if (
         types.isIdentifier(callPathNode.callee) &&
         callPathNode.callee.name === 'require' &&
-        types.isStringLiteral(callPathNode.arguments[0])
+        types.isStringLiteral(callPathNode.arguments[0]) &&
+        callPathNode.arguments[0].value !== 'react'
       ) {
         const requireStr = callPathNode.arguments[0].value;
         const resolvePath = getModuleResolvePath({
