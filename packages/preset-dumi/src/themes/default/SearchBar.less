@@ -60,12 +60,22 @@
       }
 
       span:first-child {
+        position: relative;
+        display: inline-block;
+        max-width: 50%;
+        padding-right: 26px;
+        vertical-align: -0.37em;
+        overflow: hidden;
+        text-overflow: ellipsis;
         opacity: 0.8;
 
         &::after {
           content: '>';
-          padding: 0 6px;
+          position: absolute;
+          top: 50%;
+          right: 6px;
           opacity: 0.6;
+          transform: translateY(-54%);
         }
       }
     }
