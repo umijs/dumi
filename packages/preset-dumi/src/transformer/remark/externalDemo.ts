@@ -1,9 +1,7 @@
 import fs from 'fs';
-import slash from 'slash2';
-import path from 'path';
 import visit from 'unist-util-visit';
-import resolve from 'enhanced-resolve';
 import ctx from '../../context';
+import { getModuleResolvePath } from '../../utils/moduleResolver';
 import transformer, { TransformResult } from '../index';
 import { addDemoRoute } from '../../routes/getDemoRoutes';
 
@@ -60,12 +58,11 @@ export default function externalDemo() {
           const { src, ...inheritAttrs } = HTMLAttrParser(matches[2]);
 
           if (src) {
-            let absPath = slash(
-              resolve.create.sync({
-                extensions: ['.tsx', '.jsx'],
-                alias: ctx.umi?.config?.alias || {},
-              })(path.parse(this.data('fileAbsPath')).dir, src),
-            );
+            let absPath = getModuleResolvePath({
+              basePath: this.data('fileAbsPath'),
+              sourcePath: src,
+              extensions: ['.tsx', '.jsx'],
+            });
             const lang = absPath.match(/\.(\w+)$/)[1];
 
             // read external demo content and convert node to demo node
