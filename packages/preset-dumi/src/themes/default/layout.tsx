@@ -229,8 +229,10 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
       });
 
     // clear heading if scroll top than first section
-    if (document.documentElement.scrollTop < 108 && location.hash) {
-      history.push(location.pathname);
+    if (document.documentElement.scrollTop === 0) {
+      if (location.hash) {
+        history.replace(location.pathname);
+      }
       return;
     }
 
@@ -242,9 +244,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     const maxSection = linkSections.reduce((prev, curr) => (curr.top > prev.top ? curr : prev));
 
     if (maxSection.heading !== currentSlug) {
-      history[currentSlug ? 'replace' : 'push'](
-        getGotoPathName(location.pathname, maxSection.heading),
-      );
+      history.replace(getGotoPathName(location.pathname, maxSection.heading));
     }
   };
 
