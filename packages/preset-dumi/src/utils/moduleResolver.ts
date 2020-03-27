@@ -25,10 +25,10 @@ export const getModuleResolvePath = ({
       resolve.create.sync({
         extensions,
         alias: ctx.umi?.config?.alias || {},
-      })(path.parse(basePath).dir, sourcePath),
+      })(fs.statSync(basePath).isDirectory() ? basePath : path.parse(basePath).dir, sourcePath),
     );
   } catch (err) {
-    ctx.umi.logger.error(`[dumi]: cannot resolve module ${sourcePath} from ${basePath}`);
+    ctx.umi?.logger.error(`[dumi]: cannot resolve module ${sourcePath} from ${basePath}`);
     throw err;
   }
 };
@@ -53,7 +53,7 @@ export const getModuleResolvePkg = ({
     version = pkg.version;
     name = pkg.name;
   } else {
-    ctx.umi.logger.error(`[dumi]: cannot find valid package.json for module ${modulePath}`);
+    ctx.umi?.logger.error(`[dumi]: cannot find valid package.json for module ${modulePath}`);
   }
 
   return { name, version };
