@@ -1,6 +1,6 @@
 {
   "name": "dumi",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "dumi",
   "main": "index.js",
   "module": "index.module.js",
@@ -21,7 +21,7 @@
     "PeachScript <scdzwyxst@gmail.com> (https://github.com/PeachScript)"
   ],
   "dependencies": {
-    "@umijs/preset-dumi": "1.0.12",
+    "@umijs/preset-dumi": "1.0.13",
     "umi": "^3.0.0"
   },
   "license": "MIT"
