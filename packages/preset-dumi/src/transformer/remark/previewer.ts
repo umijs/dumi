@@ -30,10 +30,10 @@ import Demo from '${node.properties.filePath}';
 export default () => <Demo />;`;
 
       // collect deps from source code if it is external demo
-      const transformResult = demoTransformer(
-        fs.readFileSync(node.properties.filePath).toString(),
-        { isTSX: Boolean(tsx), fileAbsPath: this.data('fileAbsPath') },
-      );
+      const transformResult = demoTransformer(raw, {
+        isTSX: Boolean(tsx),
+        fileAbsPath: node.properties.filePath,
+      });
 
       dependencies = transformResult.dependencies;
     }

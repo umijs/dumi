@@ -25,6 +25,8 @@ export const getModuleResolvePath = ({
       resolve.create.sync({
         extensions,
         alias: ctx.umi?.config?.alias || {},
+        symlinks: false,
+        mainFiles: ['index', 'package.json'],
       })(fs.statSync(basePath).isDirectory() ? basePath : path.parse(basePath).dir, sourcePath),
     );
   } catch (err) {
