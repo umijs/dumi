@@ -39,6 +39,11 @@ export default function yamlProcessor() {
         });
       }
 
+      // parse markdown for desc in home page
+      if (data.hero?.desc) {
+        data.hero.desc = transformer.markdown(data.hero.desc).html;
+      }
+
       // parse markdown for footer in home page
       if (data.footer) {
         data.footer = transformer.markdown(data.footer).html;
