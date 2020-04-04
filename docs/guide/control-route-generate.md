@@ -45,7 +45,7 @@ dumi 和 Umi 一样，有一套路由生成的约定。
 
 ## 配置式路由
 
-通常推荐直接使用约定式路由，倘若不能满足需要，也可以通过 [`config.routes`](http://localhost:8000/config#routes) 配置项来进行配置，用法和 Umi 一样，但有两点需要注意：
+通常推荐直接使用约定式路由，倘若不能满足需要，也可以通过 [`config.routes`](/config#routes) 配置项来进行配置，用法和 Umi 一样，但有两点需要注意：
 
 1. 目前仅支持配置 `.md` 作为路由组件，后续会进行扩展支持标准的 `module`
 2. 为了便于在运行时对路由进行遍历，dumi 会把所有嵌套式路由拉平，如果嵌套的路由有父级组件，会通过 Umi 的 [`wrappers`](https://umijs.org/docs/routing#wrappers) 路由配置项进行包裹
