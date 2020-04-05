@@ -39,3 +39,67 @@ dumi 基于 Umi，即除了自己提供的配置项以外，还支持[所有 Umi
 ## 如何添加统计脚本和全局 CSS 样式？
 
 可使用 Umi 的 [styles](https://umijs.org/config#styles) 和 [scripts](https://umijs.org/config#scripts) 配置项。
+
+## 部署到 Github Page
+
+### 手动部署
+
+借助 [gh-pages](https://github.com/tschaub/gh-pages) 可以轻松帮助我们部署文档到 Github Page
+
+```bash
+npm install gh-pages --save-dev
+```
+
+or
+
+```bash
+yarn add gh-pages -D
+```
+
+`package.json` 中添加
+
+```json
+"scripts": {
+  "deploy": "gh-pages -d dist"
+}
+```
+
+编译生成 `dist` 目录
+
+```bash
+npm run docs:build
+```
+
+一键发布
+
+```bash
+npm run deploy
+```
+
+### 自动部署
+
+利用 [Github Action](https://github.com/features/actions) 在每次 `master` 分支更新后自动部署
+
+新建 `.github/workflows/gh-pages.yml` 文件
+
+```yml
+name: github pages
+
+on:
+  push:
+    branches:
+      - master # default branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm install
+      - run: npm run docs:build
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+```
