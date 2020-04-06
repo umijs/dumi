@@ -26,7 +26,7 @@ jobs:
 
       - run:
           name: Bootstrap
-          command: yarn bootstrap --npm-client=yarn
+          command: yarn bootstrap
 
       - save_cache:
           key: node-modules-{{ checksum "package.json" }}

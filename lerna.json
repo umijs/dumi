@@ -16,5 +16,7 @@
       "exact": true
     }
   },
-  "version": "independent"
+  "version": "independent",
+  "npmClient": "yarn",
+  "npmClientArgs": ["--ignore-engines"]
 }
