@@ -149,6 +149,11 @@ ${issueLink}`,
     // detect network via img request
     const img = document.createElement('img');
 
+    // interrupt image pending after 200ms
+    setTimeout(() => {
+      img.src = '';
+    }, 200);
+
     img.onload = () => {
       this.setState({ showRiddle: true });
     };
