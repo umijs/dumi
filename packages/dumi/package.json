@@ -4,10 +4,12 @@
   "description": "dumi",
   "main": "index.js",
   "module": "index.module.js",
+  "types": "index.d.ts",
   "bin": "bin/dumi.js",
   "files": [
     "lib",
-    "bin"
+    "bin",
+    "index.d.ts"
   ],
   "repository": {
     "type": "git",
