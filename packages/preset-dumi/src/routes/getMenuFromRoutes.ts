@@ -105,12 +105,10 @@ export function menuSorter(prev, next) {
   const nextOrder = typeof next.meta?.order === 'number' ? next.meta.order : Infinity;
   // compare order meta config first
   const metaOrder = prevOrder === nextOrder ? 0 : prevOrder - nextOrder;
-  // last compare path length
-  const pathOrder = prev.path.length - next.path.length;
-  // then compare title ASCII
-  const ascOrder = prev.title > next.title ? 1 : prev.title < next.title ? -1 : 0;
+  // last compare path ASCII
+  const pathOrder = prev.path - next.path;
 
-  return metaOrder || pathOrder || ascOrder;
+  return metaOrder || pathOrder;
 }
 
 export default function getMenuFromRoutes(
@@ -134,7 +132,7 @@ export default function getMenuFromRoutes(
 
   routes.forEach(route => {
     if (isValidMenuRoutes(route)) {
-      const group = route.meta.group;
+      const { group } = route.meta;
       const nav = route.meta.nav?.path || '*';
       const locale = route.meta.locale || opts.locales[0]?.[0] || '*';
       const menuItem: IMenuItem = {
