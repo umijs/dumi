@@ -184,7 +184,11 @@ describe('routes & menu: normal', () => {
               },
             ],
           },
-          { path: '/', title: 'Index', meta: {} },
+          {
+            path: '/',
+            title: 'Index',
+            meta: {},
+          },
           {
             title: 'Index',
             path: '/index',
@@ -212,7 +216,13 @@ describe('routes & menu: normal', () => {
             title: 'Test',
             path: '/test',
             meta: {},
-            children: [{ path: '/test/intro', title: 'Intro', meta: {} }],
+            children: [
+              {
+                path: '/test/intro',
+                title: 'Intro',
+                meta: {},
+              },
+            ],
           },
         ],
       },

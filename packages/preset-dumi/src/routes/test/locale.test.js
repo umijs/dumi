@@ -247,47 +247,91 @@ describe('routes & menu: locales', () => {
     expect(menu).toEqual({
       'en-US': {
         '*': [
-          { path: '/', title: 'English', meta: {} },
+          {
+            path: '/',
+            title: 'English',
+            meta: {},
+          },
           {
             title: 'Group',
             path: '/group',
             meta: {},
-            children: [{ path: '/group/abc', title: 'Abc', meta: {} }],
+            children: [
+              {
+                path: '/group/abc',
+                title: 'Abc',
+                meta: {},
+              },
+            ],
           },
           {
             title: 'Missing',
             path: '/missing',
             meta: {},
-            children: [{ path: '/missing/abc', title: 'Abc', meta: {} }],
+            children: [
+              {
+                path: '/missing/abc',
+                title: 'Abc',
+                meta: {},
+              },
+            ],
           },
           {
             title: 'Sub',
             path: '/sub',
             meta: {},
-            children: [{ path: '/sub', title: 'Index', meta: {} }],
+            children: [
+              {
+                path: '/sub',
+                title: 'Index',
+                meta: {},
+              },
+            ],
           },
         ],
       },
       'zh-CN': {
         '*': [
-          { path: '/zh-CN', title: '中文', meta: {} },
+          {
+            path: '/zh-CN',
+            title: '中文',
+            meta: {},
+          },
           {
             title: 'Group',
             path: '/zh-CN/group',
             meta: {},
-            children: [{ path: '/zh-CN/group/abc', title: 'Abc', meta: {} }],
+            children: [
+              {
+                path: '/zh-CN/group/abc',
+                title: 'Abc',
+                meta: {},
+              },
+            ],
           },
           {
             title: 'Missing',
             path: '/zh-CN/missing',
             meta: {},
-            children: [{ path: '/zh-CN/missing/abc', title: 'Abc', meta: {} }],
+            children: [
+              {
+                path: '/zh-CN/missing/abc',
+                title: 'Abc',
+                meta: {},
+              },
+            ],
           },
           {
             title: 'Sub',
             path: '/zh-CN/sub',
             meta: {},
-            children: [{ path: '/zh-CN/sub', title: 'Index', meta: {} }],
+            children: [
+              {
+                path: '/zh-CN/sub',
+                title: 'Index',
+                meta: {},
+              },
+            ],
           },
         ],
       },
