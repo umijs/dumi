@@ -106,7 +106,7 @@ export function menuSorter(prev, next) {
   // compare order meta config first
   const metaOrder = prevOrder === nextOrder ? 0 : prevOrder - nextOrder;
   // last compare path ASCII
-  const pathOrder = prev.path - next.path;
+  const pathOrder = prev.path > next.path ? 1 : -1;
 
   return metaOrder || pathOrder;
 }
