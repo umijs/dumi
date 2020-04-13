@@ -176,11 +176,7 @@ describe('routes & menu: normal', () => {
             path: '/sub',
             meta: { order: 10 },
             children: [
-              {
-                path: '/sub',
-                title: 'README',
-                meta: {},
-              },
+              { path: '/sub', title: 'README', meta: {} },
               {
                 path: '/sub/hello-component',
                 title: 'HelloComponent',
@@ -188,34 +184,12 @@ describe('routes & menu: normal', () => {
               },
             ],
           },
-          {
-            path: '/',
-            title: 'Index',
-            meta: {},
-          },
-          {
-            title: 'Test',
-            path: '/test',
-            meta: {},
-            children: [
-              {
-                path: '/test/intro',
-                title: 'Intro',
-                meta: {},
-              },
-            ],
-          },
+          { path: '/', title: 'Index', meta: {} },
           {
             title: 'Index',
             path: '/index',
             meta: {},
-            children: [
-              {
-                path: '/index',
-                title: 'Readme',
-                meta: {},
-              },
-            ],
+            children: [{ path: '/index', title: 'Readme', meta: {} }],
           },
           {
             title: 'Rename-sub-sub',
@@ -225,9 +199,7 @@ describe('routes & menu: normal', () => {
               {
                 path: '/rename-sub-sub/y-end',
                 title: 'YEnd',
-                meta: {
-                  order: 1,
-                },
+                meta: { order: 1 },
               },
               {
                 path: '/rename-sub-sub/still-hello',
@@ -235,6 +207,12 @@ describe('routes & menu: normal', () => {
                 meta: {},
               },
             ],
+          },
+          {
+            title: 'Test',
+            path: '/test',
+            meta: {},
+            children: [{ path: '/test/intro', title: 'Intro', meta: {} }],
           },
         ],
       },
