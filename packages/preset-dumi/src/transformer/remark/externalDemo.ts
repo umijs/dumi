@@ -15,8 +15,8 @@ const fileWatchers: { [key: string]: fs.FSWatcher[] } = {};
 export function HTMLAttrParser(str: string): { [key: string]: any } {
   const attrs = {};
 
-  (str || '').replace(/([^=\s]+)(="([^"]+)")?/g, (_, name, content, value) => {
-    attrs[name] = content ? value : true;
+  (str || '').replace(/([^=\s]+)(="([^"]+)"|='([^']+)')?/g, (_, name, content, value1, value2) => {
+    attrs[name] = content ? value1 || value2 : true;
 
     return _;
   });
