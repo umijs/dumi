@@ -95,6 +95,7 @@ export default () => (
     </li>
     <li
       style={{
+        marginRight: 16,
         marginBottom: 8,
         border: '1px solid #eee',
         textAlign: 'center',
@@ -114,6 +115,29 @@ export default () => (
           src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
         />
         Pro Layout
+      </a>
+    </li>
+    <li
+      style={{
+        marginBottom: 8,
+        border: '1px solid #eee',
+        textAlign: 'center',
+        fontSize: 20,
+        fontWeight: 600,
+        borderRadius: 2,
+      }}
+    >
+      <a
+        style={{ display: 'block', color: '#666', padding: '18px 32px' }}
+        target="_blank"
+        href="https://protable.ant.design/"
+      >
+        <img
+          width="32"
+          style={{ verticalAlign: '-0.32em', marginRight: 8 }}
+          src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
+        />
+        Pro Table
       </a>
     </li>
   </ul>
