@@ -84,7 +84,7 @@ export default (function group(routes) {
     if (route.meta.group?.path && !route.meta.group.title) {
       route.meta.group.title =
         // use other same group path title first
-        userCustomGroupTitles[route.meta.group.title] ||
+        userCustomGroupTitles[route.meta.group.path] ||
         // fallback group title if there only has group path
         route.meta.group.path
           // discard nav prefix path or locale prefix path
