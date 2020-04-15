@@ -322,8 +322,8 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
       >
         <div
           className="__dumi-default-layout"
-          data-show-sidemenu={showSideMenu}
-          data-show-slugs={showSlugs}
+          data-show-sidemenu={String(showSideMenu)}
+          data-show-slugs={String(showSlugs)}
           data-site-mode={siteMode}
         >
           <Navbar
