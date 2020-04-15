@@ -141,27 +141,28 @@ export default function getMenuFromRoutes(
         meta: {},
       };
 
-      if (route.meta?.order) {
+      if (typeof route.meta?.order === 'number') {
         menuItem.meta.order = route.meta.order;
       }
 
       if (group?.path) {
         const { title, path, ...meta } = group;
+        const groupKey = group.path || group.title;
 
         // group route items by group path & locale
         localeMenusMapping[locale] = {
           ...(localeMenusMapping[locale] || {}),
           [nav]: {
             ...(localeMenusMapping[locale]?.[nav] || {}),
-            [group.path || group.title]: {
+            [groupKey]: {
               title,
               path,
               meta: {
                 // merge group meta
-                ...(localeMenusMapping[locale]?.[nav]?.[group.path]?.meta || {}),
+                ...(localeMenusMapping[locale]?.[nav]?.[groupKey]?.meta || {}),
                 ...meta,
               },
-              children: (localeMenusMapping[locale]?.[nav]?.[group.path]?.children || []).concat(
+              children: (localeMenusMapping[locale]?.[nav]?.[groupKey]?.children || []).concat(
                 menuItem,
               ),
             },
@@ -186,7 +187,7 @@ export default function getMenuFromRoutes(
       const menus = Object.values(localeMenusMapping[locale][nav]).map((menu: IMenuItem) => {
         // discard children if current menu only has 1 children
         if (menu.children?.length === 1 && menu.title === menu.children[0].title) {
-          if (menu.children[0].meta?.order) {
+          if (typeof menu.children[0].meta?.order === 'number') {
             menu.meta.order = menu.children[0].meta.order;
           }
           menu.children = [];
