@@ -158,6 +158,11 @@
     > pre {
       margin: 0;
       background: @c-light-bg;
+
+      .token-line:not(:last-child) .plain:empty {
+        display: inline-block;
+        min-height: 1em;
+      }
     }
   }
 }

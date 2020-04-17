@@ -42,6 +42,8 @@
     "loader-utils": "^1.4.0",
     "lz-string": "^1.4.4",
     "mdast-util-to-hast": "^7.0.0",
+    "prism-react-renderer": "^1.0.2",
+    "prismjs": "^1.20.0",
     "react-clipboard.js": "^2.0.16",
     "rehype-autolink-headings": "^2.0.5",
     "rehype-remove-comments": "^3.0.0",

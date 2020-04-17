@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import Clipboard from 'react-clipboard.js';
 import innertext from 'innertext';
+import Highlight, { defaultProps } from 'prism-react-renderer';
 import finaliseCSB, { issueLink } from '../../../utils/codesandbox';
 import localePropsHoc from '../localePropsHoc';
 import CsbButton from '../csbButton';
@@ -12,10 +13,6 @@ export interface IPreviewerProps {
    * demo sources
    */
   source?: {
-    /**
-     * unformatted source code, exsits definitely
-     */
-    raw?: string;
     /**
      * jsx source code, exsits definitely
      */
@@ -71,7 +68,7 @@ class Previewer extends Component<IPreviewerProps> {
 
   componentDidMount() {
     const { source, desc, title, dependencies: dep } = this.props;
-    const { tsx = '', jsx = '', raw } = source;
+    const { tsx = '', jsx = '' } = source;
     // generate csb base64 code;
     let tsData = {};
     let jsData = {};
@@ -84,7 +81,7 @@ class Previewer extends Component<IPreviewerProps> {
             content: '<div style="margin: 16px;" id="root"></div>',
           },
           'demo.tsx': {
-            content: raw,
+            content: tsx,
           },
           'index.tsx': {
             content: `import React from 'react';
@@ -115,7 +112,7 @@ ${issueLink}`,
             content: '<div style="margin: 16px;" id="root"></div>',
           },
           'demo.jsx': {
-            content: raw,
+            content: jsx,
           },
           'index.js': {
             content: `import React from 'react';
@@ -211,6 +208,7 @@ ${issueLink}`,
       dependencies,
     } = this.props;
     const { showSource, sourceType, copyTimer, jsBase64, tsBase64, showRiddle } = this.state;
+    const raw = source[sourceType];
 
     // render directly for inline mode
     if (inline) {
@@ -254,7 +252,7 @@ ${issueLink}`,
                 name="data"
                 value={JSON.stringify({
                   title,
-                  js: this.convertRiddleJS(source.raw),
+                  js: this.convertRiddleJS(raw),
                   css: dependencies.antd
                     ? `@import 'antd${`@${dependencies.antd}`}/dist/antd.css';`
                     : '',
@@ -270,7 +268,7 @@ ${issueLink}`,
           <span />
           <Clipboard
             button-role={copyTimer ? 'copied' : 'copy'}
-            data-clipboard-text={source.raw}
+            data-clipboard-text={raw}
             onSuccess={this.handleCopied}
           />
           {source.tsx && showSource && (
@@ -291,10 +289,21 @@ ${issueLink}`,
           />
         </div>
         {showSource && (
-          <div
-            className="__dumi-default-previewer-source"
-            dangerouslySetInnerHTML={{ __html: source[sourceType] }}
-          />
+          <div className="__dumi-default-previewer-source">
+            <Highlight {...defaultProps} code={raw} language="jsx" theme={undefined}>
+              {({ className, style, tokens, getLineProps, getTokenProps }) => (
+                <pre className={className} style={style}>
+                  {tokens.map((line, i) => (
+                    <div {...getLineProps({ line, key: i })}>
+                      {line.map((token, key) => (
+                        <span {...getTokenProps({ token, key })} />
+                      ))}
+                    </div>
+                  ))}
+                </pre>
+              )}
+            </Highlight>
+          </div>
         )}
       </div>
     );

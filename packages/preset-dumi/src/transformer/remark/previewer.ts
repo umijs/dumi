@@ -7,10 +7,9 @@ import transformer from '../index';
 
 function visitor(node, i, parent) {
   if (node.tagName === 'div' && node.properties?.type === 'previewer') {
-    const raw = node.children?.[0]?.value;
-    const jsx = (node.children?.[1] && toHtml(node.children?.[1])) || undefined;
-    const tsx = (node.children?.[2] && toHtml(node.children?.[2])) || undefined;
+    const source = node.properties?.source || {};
     const yaml = node.properties?.meta || {};
+    const raw = source.tsx || source.jsx;
     let transformCode = raw;
     let dependencies;
 
@@ -31,7 +30,7 @@ export default () => <Demo />;`;
 
       // collect deps from source code if it is external demo
       const transformResult = demoTransformer(raw, {
-        isTSX: Boolean(tsx),
+        isTSX: Boolean(source.tsx),
         fileAbsPath: node.properties.filePath,
       });
 
@@ -40,7 +39,7 @@ export default () => <Demo />;`;
 
     // transform demo source code
     const { content: code, ...demoTransformResult } = demoTransformer(transformCode, {
-      isTSX: Boolean(tsx),
+      isTSX: Boolean(source.tsx),
       fileAbsPath: this.data('fileAbsPath'),
     });
 
@@ -59,7 +58,7 @@ export default () => <Demo />;`;
       type: 'raw',
       value: `
 <DumiPreviewer
-  source={${JSON.stringify({ raw, jsx, tsx })}}
+  source={${JSON.stringify(source)}}
   {...${JSON.stringify({ ...yaml, dependencies })}}
 >
   <${DEMO_COMPONENT_NAME}${this.vFile.data.demos.length} />

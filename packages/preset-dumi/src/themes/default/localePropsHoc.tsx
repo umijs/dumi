@@ -5,7 +5,7 @@ function splitLocaleFromPropsName(name: string) {
   return (name.match(/^(.+)\.([^.]+)$/) || []).slice(1);
 }
 
-export default (Component) => (props) => (
+export default Component => props => (
   <Context.Consumer>
     {({ locale: currentLocale }) => {
       let localeProps = {};

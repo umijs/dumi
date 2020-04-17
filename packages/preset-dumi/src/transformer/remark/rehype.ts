@@ -7,35 +7,24 @@ import codeHandler from 'mdast-util-to-hast/lib/handlers/code';
  * handle demo type node from parse
  */
 function demoHandler(h, { type, lang, value, position, ...props }) {
-  // split source codes & raw code for previewer
+  // split source codes for previewer
   const clonedNode = { lang, value };
-  const sources = [];
+  const source = {};
 
-  // push original source code node
-  sources.push(codeHandler(h, clonedNode));
-
-  // push transformed source code node for tsx demo (use unshift to keep jsx first)
+  // set source code
   if (lang === 'tsx') {
-    clonedNode.lang = 'jsx';
-    clonedNode.value = parseText(clonedNode.value);
-    sources.unshift(codeHandler(h, clonedNode));
+    source.tsx = clonedNode.value;
+    source.jsx = parseText(clonedNode.value);
+  } else {
+    source.jsx = clonedNode.value;
   }
 
-  return h(
-    position,
-    'div',
-    {
-      type: 'previewer',
-      lang,
-      ...props,
-    },
-    [
-      // append raw code node
-      unist('raw', value),
-      // append source code nodes
-      ...sources,
-    ],
-  );
+  return h(position, 'div', {
+    type: 'previewer',
+    lang,
+    source,
+    ...props,
+  });
 }
 
 export default () =>
