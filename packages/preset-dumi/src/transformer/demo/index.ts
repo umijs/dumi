@@ -119,14 +119,16 @@ export default (
           };
 
           // watch deps change
-          if (fileWatchers[resolvePath]) {
-            fileWatchers[resolvePath].close();
-          }
+          if (process.env.NODE_ENV === 'development') {
+            if (fileWatchers[resolvePath]) {
+              fileWatchers[resolvePath].close();
+            }
 
-          fileWatchers[resolvePath] = fs.watch(resolvePath, () => {
-            // trigger parent file change to update frontmatter when dep file change
-            fs.writeFileSync(fileAbsPath, fs.readFileSync(fileAbsPath));
-          });
+            fileWatchers[resolvePath] = fs.watch(resolvePath, () => {
+              // trigger parent file change to update frontmatter when dep file change
+              fs.writeFileSync(fileAbsPath, fs.readFileSync(fileAbsPath));
+            });
+          }
         }
       }
     },
