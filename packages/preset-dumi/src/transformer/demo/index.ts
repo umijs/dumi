@@ -1,16 +1,39 @@
+import fs from 'fs';
+import path from 'path';
+import slash from 'slash2';
 import * as babel from '@babel/core';
 import * as types from '@babel/types';
 import traverse from '@babel/traverse';
 import generator from '@babel/generator';
-import { getModuleResolvePkg, getModuleResolvePath } from '../../utils/moduleResolver';
+import {
+  getModuleResolvePkg,
+  getModuleResolvePath,
+  getModuleResolveContent,
+} from '../../utils/moduleResolver';
 import ctx from '../../context';
 
 interface IDemoTransformResult {
   content: string;
   dependencies: { [key: string]: string };
+  files: { [key: string]: { path: string; content: string } };
 }
 
 export const DEMO_COMPONENT_NAME = 'DumiDemo';
+// locale dependency extensions which will be collected
+export const LOCAL_DEP_EXT = [
+  '.jsx',
+  '.tsx',
+  '.js',
+  '.ts',
+  '.json',
+  '.less',
+  '.css',
+  '.scss',
+  '.sass',
+  '.styl',
+];
+
+const fileWatchers: { [key: string]: fs.FSWatcher } = {};
 
 /**
  * transform code block statments to preview
@@ -37,6 +60,7 @@ export default (
   });
   const body = code.ast.program.body as types.Statement[];
   const dependencies: IDemoTransformResult['dependencies'] = {};
+  const files: IDemoTransformResult['files'] = {};
   let reactVar: string;
   let returnStatement: types.ReturnStatement;
 
@@ -74,6 +98,7 @@ export default (
           basePath: fileAbsPath,
           sourcePath: requireStr,
         });
+        const resolvePathParsed = path.parse(resolvePath);
 
         if (resolvePath.includes('node_modules')) {
           // save external deps
@@ -83,6 +108,25 @@ export default (
           });
 
           dependencies[pkg.name] = pkg.version;
+        } else if (LOCAL_DEP_EXT.includes(resolvePathParsed.ext)) {
+          // save local deps
+          files[slash(path.relative(fileAbsPath, resolvePath)).replace(/(\.\/|\..\/)/g, '')] = {
+            path: requireStr,
+            content: getModuleResolveContent({
+              basePath: fileAbsPath,
+              sourcePath: requireStr,
+            }),
+          };
+
+          // watch deps change
+          if (fileWatchers[resolvePath]) {
+            fileWatchers[resolvePath].close();
+          }
+
+          fileWatchers[resolvePath] = fs.watch(resolvePath, () => {
+            // trigger parent file change to update frontmatter when dep file change
+            fs.writeFileSync(fileAbsPath, fs.readFileSync(fileAbsPath));
+          });
         }
       }
     },
@@ -147,5 +191,6 @@ export default (
   return {
     content: generator(types.program([demoFunction]), {}, raw).code,
     dependencies,
+    files,
   };
 };

@@ -1,7 +1,5 @@
-import fs from 'fs';
 import { Node } from 'unist';
 import visit from 'unist-util-visit';
-import toHtml from 'hast-util-to-html';
 import demoTransformer, { DEMO_COMPONENT_NAME } from '../demo';
 import transformer from '../index';
 
@@ -12,6 +10,7 @@ function visitor(node, i, parent) {
     const raw = source.tsx || source.jsx;
     let transformCode = raw;
     let dependencies;
+    let files;
 
     // transform markdown for previewer desc field
     Object.keys(yaml).forEach(key => {
@@ -35,6 +34,7 @@ export default () => <Demo />;`;
       });
 
       dependencies = transformResult.dependencies;
+      files = transformResult.files;
     }
 
     // transform demo source code
@@ -45,6 +45,7 @@ export default () => <Demo />;`;
 
     // fallback to demo code dependencies
     dependencies = dependencies || demoTransformResult.dependencies;
+    files = files || demoTransformResult.files;
 
     // save code into data then declare them on the top page component
     this.vFile.data.demos = (this.vFile.data.demos || []).concat(
@@ -59,7 +60,7 @@ export default () => <Demo />;`;
       value: `
 <DumiPreviewer
   source={${JSON.stringify(source)}}
-  {...${JSON.stringify({ ...yaml, dependencies })}}
+  {...${JSON.stringify({ ...yaml, dependencies, files })}}
 >
   <${DEMO_COMPONENT_NAME}${this.vFile.data.demos.length} />
 </DumiPreviewer>`,
