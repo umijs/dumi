@@ -164,5 +164,72 @@
         min-height: 1em;
       }
     }
+
+    &-tab {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      border-top: 1px dashed @c-border;
+
+      li {
+        float: left;
+
+        button {
+          position: relative;
+          padding: 0 16px 0 32px;
+          font-size: 14px;
+          line-height: 36px;
+          border: 0;
+          border-top: 2px solid transparent;
+          border-bottom: 2px solid transparent;
+          outline: none;
+          background: transparent;
+          box-sizing: border-box;
+          cursor: pointer;
+          transition: all 0.3s;
+
+          &::before,
+          &::after {
+            content: '';
+            position: absolute;
+            margin-right: 4px;
+            display: inline-block;
+          }
+
+          &::before {
+            left: 16px;
+            top: 50%;
+            margin-top: -6px;
+            width: 10px;
+            height: 12px;
+            border: 1px solid @c-secondary;
+          }
+
+          &::after {
+            top: 50%;
+            left: 23px;
+            margin-top: -7px;
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            border-bottom: 1px solid @c-secondary;
+            transform: rotate(45deg);
+          }
+        }
+
+        &:hover {
+          button {
+            color: @c-primary;
+          }
+        }
+
+        &.active {
+          button {
+            border-bottom-color: @c-primary;
+          }
+        }
+      }
+    }
   }
 }

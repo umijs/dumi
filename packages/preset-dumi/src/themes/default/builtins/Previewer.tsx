@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import Clipboard from 'react-clipboard.js';
 import innertext from 'innertext';
-import Highlight, { defaultProps } from 'prism-react-renderer';
+import Highlight, { defaultProps, Language } from 'prism-react-renderer';
 import finaliseCSB, { issueLink } from '../../../utils/codesandbox';
 import localePropsHoc from '../localePropsHoc';
 import CsbButton from '../csbButton';
@@ -54,6 +54,15 @@ export interface IPreviewerProps {
    * demo dependencies
    */
   dependencies: { [key: string]: string };
+  /**
+   * 1-level files that include by demo
+   */
+  files: {
+    [key: string]: {
+      path: string;
+      content: string;
+    };
+  };
 }
 
 class Previewer extends Component<IPreviewerProps> {
@@ -61,87 +70,20 @@ class Previewer extends Component<IPreviewerProps> {
     showSource: false,
     sourceType: '',
     copyTimer: null,
-    jsBase64: '',
-    tsBase64: '',
+    // data for codesandbox
+    CSBData: '',
     showRiddle: false,
+    currentFile: '',
   };
 
   componentDidMount() {
-    const { source, desc, title, dependencies: dep } = this.props;
-    const { tsx = '', jsx = '' } = source;
-    // generate csb base64 code;
-    let tsData = {};
-    let jsData = {};
-    // tsx and jsx should have same dependencies, so only parse once
+    const { source } = this.props;
 
-    if (tsx) {
-      tsData = {
-        files: {
-          'index.html': {
-            content: '<div style="margin: 16px;" id="root"></div>',
-          },
-          'demo.tsx': {
-            content: tsx,
-          },
-          'index.tsx': {
-            content: `import React from 'react';
-import ReactDOM from 'react-dom';
-${dep.antd ? "import 'antd/dist/antd.css';" : ''}
-import App from './demo';
-
-${issueLink}`,
-          },
-        },
-        deps: {
-          ...dep,
-          react: '^16.8.0',
-          '@babel/runtime': '^7.6.3',
-        },
-        devDependencies: {
-          typescript: '3.3.3',
-        },
-        desc: innertext(desc || ''),
-        template: 'create-react-app-typescript',
-        fileName: 'demo.tsx',
-      };
-    }
-    if (jsx) {
-      jsData = {
-        files: {
-          'index.html': {
-            content: '<div style="margin: 16px;" id="root"></div>',
-          },
-          'demo.jsx': {
-            content: jsx,
-          },
-          'index.js': {
-            content: `import React from 'react';
-import ReactDOM from 'react-dom';
-${dep.antd ? "import 'antd/dist/antd.css';" : ''}
-import App from './demo';
-
-${issueLink}`,
-          },
-        },
-        deps: {
-          ...dep,
-          react: '^16.8.0',
-          '@babel/runtime': '^7.6.3',
-        },
-        devDependencies: {
-          typescript: '3.3.3',
-        },
-        desc: innertext(desc || ''),
-        template: 'create-react-app',
-        fileName: 'demo.jsx',
-      };
-    }
-
-    const jsBase64 = finaliseCSB(jsData, { name: title || 'dumi-demo' }).parameters;
-    const tsBase64 = finaliseCSB(tsData, { name: title || 'dumi-demo' }).parameters;
+    // init data for codesandbox
+    this.initCSBData();
 
     // prioritize display tsx
-    this.setState({ sourceType: tsx ? 'tsx' : 'jsx', jsBase64, tsBase64 });
+    this.setState({ sourceType: source.tsx ? 'tsx' : 'jsx' });
 
     // detect network via img request
     const img = document.createElement('img');
@@ -159,6 +101,45 @@ ${issueLink}`,
       'https://private-alipayobjects.alipay.com/alipay-rmsdeploy-image/rmsportal/RKuAiriJqrUhyqW.png';
   }
 
+  initCSBData = () => {
+    const { source, desc = '', title, dependencies, files } = this.props;
+    const isTSX = Boolean(source.tsx);
+    const entryExt = isTSX ? 'tsx' : 'jsx';
+    const CSBData = {
+      files: {
+        'index.html': {
+          content: '<div style="margin: 16px;" id="root"></div>',
+        },
+        [`demo.${entryExt}`]: {
+          content: source.tsx || source.jsx,
+        },
+        [`index.${entryExt}`]: {
+          content: `import React from 'react';
+import ReactDOM from 'react-dom';
+${dependencies.antd ? "import 'antd/dist/antd.css';" : ''}
+import App from './demo';
+
+${issueLink}`,
+        },
+        ...files,
+      },
+      deps: {
+        ...dependencies,
+        react: '^16.8.0',
+      },
+      devDependencies: isTSX
+        ? {
+            typescript: '^3.8.0',
+          }
+        : {},
+      desc: innertext(desc),
+      template: `create-react-app${isTSX ? '-typescript' : ''}`,
+      fileName: `demo.${entryExt}`,
+    };
+
+    this.setState({ CSBData: finaliseCSB(CSBData, { name: title || 'dumi-demo' }).parameters });
+  };
+
   handleCopied = () => {
     clearTimeout(this.state.copyTimer);
     this.setState({
@@ -166,6 +147,23 @@ ${issueLink}`,
         this.setState({ copyTimer: null });
       }, 2000),
     });
+  };
+
+  /**
+   * transform local external dependencies
+   */
+  getSafeEntryCode = () => {
+    const { source, files } = this.props;
+    let result = source.tsx || source.jsx;
+
+    // to avoid import from '../'
+    Object.keys(files).forEach(safeName => {
+      const file = files[safeName];
+
+      result.replace(file.path, `./${safeName}`);
+    });
+
+    return result;
   };
 
   /**
@@ -206,9 +204,12 @@ ${issueLink}`,
       compact,
       path,
       dependencies,
+      files,
     } = this.props;
-    const { showSource, sourceType, copyTimer, jsBase64, tsBase64, showRiddle } = this.state;
+    const { showSource, sourceType, copyTimer, showRiddle, currentFile } = this.state;
     const raw = source[sourceType];
+    const hasExternalFile = Boolean(Object.keys(files).length);
+    const sourceFileType = currentFile ? currentFile.match(/\.(\w+)$/)[1] : sourceType;
 
     // render directly for inline mode
     if (inline) {
@@ -233,32 +234,33 @@ ${issueLink}`,
           dangerouslySetInnerHTML={{ __html: desc }}
         />
         <div className="__dumi-default-previewer-actions">
-          <CsbButton
-            type={this.props.source.tsx ? 'tsx' : 'jsx'}
-            base64={this.props.source.tsx ? tsBase64 : jsBase64}
-          >
-            <button role="codesandbox" type="submit" />
-          </CsbButton>
-          {showRiddle && (
-            <form
-              action="//riddle.alibaba-inc.com/riddles/define"
-              method="POST"
-              target="_blank"
-              style={{ display: 'flex' }}
-            >
-              <button role="riddle" type="submit" />
-              <input
-                type="hidden"
-                name="data"
-                value={JSON.stringify({
-                  title,
-                  js: this.convertRiddleJS(raw),
-                  css: dependencies.antd
-                    ? `@import 'antd${`@${dependencies.antd}`}/dist/antd.css';`
-                    : '',
-                })}
-              />
-            </form>
+          {!hasExternalFile && (
+            <>
+              <CsbButton type={this.props.source.tsx ? 'tsx' : 'jsx'} base64={this.state.CSBData}>
+                <button role="codesandbox" type="submit" />
+              </CsbButton>
+              {showRiddle && (
+                <form
+                  action="//riddle.alibaba-inc.com/riddles/define"
+                  method="POST"
+                  target="_blank"
+                  style={{ display: 'flex' }}
+                >
+                  <button role="riddle" type="submit" />
+                  <input
+                    type="hidden"
+                    name="data"
+                    value={JSON.stringify({
+                      title,
+                      js: this.convertRiddleJS(raw),
+                      css: dependencies.antd
+                        ? `@import 'antd${`@${dependencies.antd}`}/dist/antd.css';`
+                        : '',
+                    })}
+                  />
+                </form>
+              )}
+            </>
           )}
           {path && (
             <a target="_blank" rel="noopener noreferrer" href={path}>
@@ -268,10 +270,10 @@ ${issueLink}`,
           <span />
           <Clipboard
             button-role={copyTimer ? 'copied' : 'copy'}
-            data-clipboard-text={raw}
+            data-clipboard-text={files[currentFile]?.content || raw}
             onSuccess={this.handleCopied}
           />
-          {source.tsx && showSource && (
+          {source.tsx && showSource && !hasExternalFile && (
             <button
               role={`change-${sourceType}`}
               type="button"
@@ -289,20 +291,43 @@ ${issueLink}`,
           />
         </div>
         {showSource && (
-          <div className="__dumi-default-previewer-source">
-            <Highlight {...defaultProps} code={raw} language="jsx" theme={undefined}>
-              {({ className, style, tokens, getLineProps, getTokenProps }) => (
-                <pre className={className} style={style}>
-                  {tokens.map((line, i) => (
-                    <div {...getLineProps({ line, key: i })}>
-                      {line.map((token, key) => (
-                        <span {...getTokenProps({ token, key })} />
-                      ))}
-                    </div>
-                  ))}
-                </pre>
-              )}
-            </Highlight>
+          <div className="__dumi-default-previewer-source-wrapper">
+            {hasExternalFile && (
+              <ul className="__dumi-default-previewer-source-tab">
+                <li className={!currentFile ? 'active' : ''}>
+                  <button onClick={() => this.setState({ currentFile: '' })}>
+                    index.{sourceType}
+                  </button>
+                </li>
+                {Object.keys(files).map(fileName => (
+                  <li className={currentFile === fileName ? 'active' : ''} key={fileName}>
+                    <button onClick={() => this.setState({ currentFile: fileName })}>
+                      {fileName}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <div className="__dumi-default-previewer-source">
+              <Highlight
+                {...defaultProps}
+                code={files[currentFile]?.content || raw}
+                language={sourceFileType as Language}
+                theme={undefined}
+              >
+                {({ className, style, tokens, getLineProps, getTokenProps }) => (
+                  <pre className={className} style={style}>
+                    {tokens.map((line, i) => (
+                      <div {...getLineProps({ line, key: i })}>
+                        {line.map((token, key) => (
+                          <span {...getTokenProps({ token, key })} />
+                        ))}
+                      </div>
+                    ))}
+                  </pre>
+                )}
+              </Highlight>
+            </div>
           </div>
         )}
       </div>
