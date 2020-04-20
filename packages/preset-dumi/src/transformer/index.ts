@@ -4,7 +4,7 @@ import slash from 'slash2';
 import extractComments from 'esprima-extract-comments';
 import remark from './remark';
 import html from './html';
-import demo from './demo';
+import demo, { getDepsForDemo } from './demo';
 import FileCache from '../utils/cache';
 
 const FRONT_COMMENT_EXP = /^\n*\/\*[^]+?\s*\*\/\n*/;
@@ -131,12 +131,13 @@ export default {
   /**
    * transform code block (j|t)sx demo to js
    */
-  demo(raw: string, opts: { isTsx: boolean; fileAbsPath: string }): TransformResult {
-    const { content, ...config } = demo(raw, opts);
+  demo(raw: string, opts: { isTSX: boolean; fileAbsPath: string }): TransformResult {
+    const { content, ast } = demo(raw, { isTSX: opts.isTSX });
+    const deps = getDepsForDemo(ast, opts);
 
     return {
       content,
-      config,
+      config: deps,
     };
   },
 };

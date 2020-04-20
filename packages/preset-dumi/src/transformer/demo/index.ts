@@ -1,66 +1,24 @@
-import fs from 'fs';
-import path from 'path';
-import slash from 'slash2';
 import * as babel from '@babel/core';
 import * as types from '@babel/types';
 import traverse from '@babel/traverse';
 import generator from '@babel/generator';
-import {
-  getModuleResolvePkg,
-  getModuleResolvePath,
-  getModuleResolveContent,
-} from '../../utils/moduleResolver';
-import ctx from '../../context';
+import { getBabelOptions } from './options';
 
 interface IDemoTransformResult {
   content: string;
-  dependencies: { [key: string]: string };
-  files: { [key: string]: { path: string; content: string } };
+  ast: babel.BabelFileResult['ast'];
 }
 
-export const DEMO_COMPONENT_NAME = 'DumiDemo';
-// locale dependency extensions which will be collected
-export const LOCAL_DEP_EXT = [
-  '.jsx',
-  '.tsx',
-  '.js',
-  '.ts',
-  '.json',
-  '.less',
-  '.css',
-  '.scss',
-  '.sass',
-  '.styl',
-];
+export { default as getDepsForDemo } from './dependencies';
 
-const fileWatchers: { [key: string]: fs.FSWatcher } = {};
+export const DEMO_COMPONENT_NAME = 'DumiDemo';
 
 /**
  * transform code block statments to preview
  */
-export default (
-  raw: string,
-  { isTSX, fileAbsPath }: { isTSX?: boolean; fileAbsPath: string },
-): IDemoTransformResult => {
-  const code = babel.transformSync(raw, {
-    presets: [
-      require.resolve('@babel/preset-react'),
-      require.resolve('@babel/preset-env'),
-      ...(ctx.umi?.config?.extraBabelPresets || []),
-    ],
-    plugins: [
-      require.resolve('@babel/plugin-proposal-class-properties'),
-      [require.resolve('@babel/plugin-transform-modules-commonjs'), { strict: true }],
-      ...(isTSX ? [[require.resolve('@babel/plugin-transform-typescript'), { isTSX: true }]] : []),
-      ...(ctx.umi?.config?.extraBabelPlugins || []),
-    ],
-    ast: true,
-    babelrc: false,
-    configFile: false,
-  });
+export default (raw: string, { isTSX }: { isTSX?: boolean } = {}): IDemoTransformResult => {
+  const code = babel.transformSync(raw, getBabelOptions(isTSX));
   const body = code.ast.program.body as types.Statement[];
-  const dependencies: IDemoTransformResult['dependencies'] = {};
-  const files: IDemoTransformResult['files'] = {};
   let reactVar: string;
   let returnStatement: types.ReturnStatement;
 
@@ -81,55 +39,6 @@ export default (
         callPathNode.declarations[0].init.arguments[0].arguments[0].value === 'react'
       ) {
         reactVar = callPathNode.declarations[0].id.name;
-      }
-    },
-    CallExpression(callPath) {
-      const callPathNode = callPath.node;
-
-      // tranverse all require statement
-      if (
-        types.isIdentifier(callPathNode.callee) &&
-        callPathNode.callee.name === 'require' &&
-        types.isStringLiteral(callPathNode.arguments[0]) &&
-        callPathNode.arguments[0].value !== 'react'
-      ) {
-        const requireStr = callPathNode.arguments[0].value;
-        const resolvePath = getModuleResolvePath({
-          basePath: fileAbsPath,
-          sourcePath: requireStr,
-        });
-        const resolvePathParsed = path.parse(resolvePath);
-
-        if (resolvePath.includes('node_modules')) {
-          // save external deps
-          const pkg = getModuleResolvePkg({
-            basePath: fileAbsPath,
-            sourcePath: requireStr,
-          });
-
-          dependencies[pkg.name] = pkg.version;
-        } else if (LOCAL_DEP_EXT.includes(resolvePathParsed.ext)) {
-          // save local deps
-          files[slash(path.relative(fileAbsPath, resolvePath)).replace(/(\.\/|\..\/)/g, '')] = {
-            path: requireStr,
-            content: getModuleResolveContent({
-              basePath: fileAbsPath,
-              sourcePath: requireStr,
-            }),
-          };
-
-          // watch deps change
-          if (process.env.NODE_ENV === 'development') {
-            if (fileWatchers[resolvePath]) {
-              fileWatchers[resolvePath].close();
-            }
-
-            fileWatchers[resolvePath] = fs.watch(resolvePath, () => {
-              // trigger parent file change to update frontmatter when dep file change
-              fs.writeFileSync(fileAbsPath, fs.readFileSync(fileAbsPath));
-            });
-          }
-        }
       }
     },
     AssignmentExpression(callPath) {
@@ -191,8 +100,7 @@ export default (
   );
 
   return {
+    ast: code.ast,
     content: generator(types.program([demoFunction]), {}, raw).code,
-    dependencies,
-    files,
   };
 };

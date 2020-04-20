@@ -1,6 +1,6 @@
 import { Node } from 'unist';
 import visit from 'unist-util-visit';
-import demoTransformer, { DEMO_COMPONENT_NAME } from '../demo';
+import demoTransformer, { DEMO_COMPONENT_NAME, getDepsForDemo } from '../demo';
 import transformer from '../index';
 
 function visitor(node, i, parent) {
@@ -8,9 +8,8 @@ function visitor(node, i, parent) {
     const source = node.properties?.source || {};
     const yaml = node.properties?.meta || {};
     const raw = source.tsx || source.jsx;
+    const isTSX = Boolean(source.tsx);
     let transformCode = raw;
-    let dependencies;
-    let files;
 
     // transform markdown for previewer desc field
     Object.keys(yaml).forEach(key => {
@@ -26,26 +25,20 @@ import React, { useEffect } from 'react';
 import Demo from '${node.properties.filePath}';
 
 export default () => <Demo />;`;
-
-      // collect deps from source code if it is external demo
-      const transformResult = demoTransformer(raw, {
-        isTSX: Boolean(source.tsx),
-        fileAbsPath: node.properties.filePath,
-      });
-
-      dependencies = transformResult.dependencies;
-      files = transformResult.files;
     }
 
     // transform demo source code
-    const { content: code, ...demoTransformResult } = demoTransformer(transformCode, {
+    const { content: code } = demoTransformer(transformCode, {
       isTSX: Boolean(source.tsx),
-      fileAbsPath: this.data('fileAbsPath'),
     });
-
-    // fallback to demo code dependencies
-    dependencies = dependencies || demoTransformResult.dependencies;
-    files = files || demoTransformResult.files;
+    const { dependencies, files } = getDepsForDemo(raw, {
+      isTSX,
+      fileAbsPath:
+        // for external demo
+        node.properties.filePath ||
+        // for embed demo
+        this.data('fileAbsPath'),
+    });
 
     // save code into data then declare them on the top page component
     this.vFile.data.demos = (this.vFile.data.demos || []).concat(
