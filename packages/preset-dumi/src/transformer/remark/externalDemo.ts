@@ -4,9 +4,9 @@ import ctx from '../../context';
 import { getModuleResolvePath } from '../../utils/moduleResolver';
 import transformer, { TransformResult } from '../index';
 import { addDemoRoute } from '../../routes/getDemoRoutes';
+import { saveFileOnDepChange, closeWatchersForFile } from '../../utils/watcher';
 
 const DEMO_TOKEN_EXP = /<(code) ([^>]+?)\/?>/;
-const fileWatchers: { [key: string]: fs.FSWatcher[] } = {};
 
 /**
  * simple parser for parse HTML attributes
@@ -24,27 +24,9 @@ export function HTMLAttrParser(str: string): { [key: string]: any } {
   return attrs;
 }
 
-function watchExternalDemoChange(demoPath: string, parentPath: string) {
-  if (process.env.NODE_ENV === 'development') {
-    // only watch under development mode
-    fileWatchers[parentPath] = (fileWatchers[parentPath] || []).concat(
-      fs.watch(demoPath, () => {
-        // trigger parent file change to update frontmatter when demo file change
-        fs.writeFileSync(parentPath, fs.readFileSync(parentPath));
-      }),
-    );
-  }
-}
-
 export default function externalDemo() {
   // clear exist watchers, use for unlink some demo from md file
-  if (fileWatchers[this.data('fileAbsPath')]) {
-    fileWatchers[this.data('fileAbsPath')].forEach(watcher => {
-      watcher.close();
-    });
-
-    delete fileWatchers[this.data('fileAbsPath')];
-  }
+  closeWatchersForFile(this.data('fileAbsPath'));
 
   return ast => {
     visit(ast, 'html', (node, i, parent) => {
@@ -82,7 +64,7 @@ export default function externalDemo() {
               },
             });
 
-            watchExternalDemoChange(absPath, this.data('fileAbsPath'));
+            saveFileOnDepChange(this.data('fileAbsPath'), absPath);
           } else if (matches[1]) {
             ctx.umi.logger.error(
               `[dumi]: expected a code element with valid src property but got ${node.value}`,
