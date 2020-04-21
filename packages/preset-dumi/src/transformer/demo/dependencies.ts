@@ -16,12 +16,11 @@ interface IDepAnalyzeResult {
   files: { [key: string]: { path: string; content: string } };
 }
 
+export const LOCAL_DEP_EXT = ['.jsx', '.tsx', '.js', '.ts'];
+
 // local dependency extensions which will be collected
-export const LOCAL_DEP_EXT = [
-  '.jsx',
-  '.tsx',
-  '.js',
-  '.ts',
+export const PLAIN_TEXT_EXT = [
+  ...LOCAL_DEP_EXT,
   '.json',
   '.less',
   '.css',
@@ -73,7 +72,7 @@ function analyzeDeps(
           dependencies[pkg.name] = pkg.version;
         } else if (
           // only analysis for valid local file type
-          LOCAL_DEP_EXT.includes(resolvePathParsed.ext) &&
+          PLAIN_TEXT_EXT.includes(resolvePathParsed.ext) &&
           // do not collect entry file
           resolvePath !== entryAbsPath
         ) {
@@ -94,18 +93,20 @@ function analyzeDeps(
             };
 
             // continue to collect deps for dep
-            const result = analyzeDeps(
-              files[fileName].content,
-              {
-                isTSX: /\.tsx?/.test(resolvePathParsed.ext),
-                fileAbsPath: resolvePath,
-                entryAbsPath: entryAbsPath || fileAbsPath,
-              },
-              files,
-            );
+            if (LOCAL_DEP_EXT.includes(resolvePathParsed.ext)) {
+              const result = analyzeDeps(
+                files[fileName].content,
+                {
+                  isTSX: /\.tsx?/.test(resolvePathParsed.ext),
+                  fileAbsPath: resolvePath,
+                  entryAbsPath: entryAbsPath || fileAbsPath,
+                },
+                files,
+              );
 
-            Object.assign(files, result.files);
-            Object.assign(dependencies, result.dependencies);
+              Object.assign(files, result.files);
+              Object.assign(dependencies, result.dependencies);
+            }
 
             // trigger parent file change to update frontmatter when dep file change
             saveFileOnDepChange(fileAbsPath, resolvePath);
