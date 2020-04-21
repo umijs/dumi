@@ -10,6 +10,7 @@ import SideMenu from './SideMenu';
 import SlugList, { scrollToSlug } from './SlugList';
 import SearchBar from './SearchBar';
 import 'prismjs/themes/prism.css';
+import 'katex/dist/katex.min.css';
 import './layout.less';
 import isHashRoute from '../../utils/isHashRoute';
 import getGotoPathName from '../../utils/getGotoPathName';

@@ -4,6 +4,8 @@ import stringify from 'rehype-stringify';
 import slug from 'rehype-slug';
 import headings from 'rehype-autolink-headings';
 import comments from 'rehype-remove-comments';
+import math from 'remark-math';
+import katex from 'rehype-katex';
 import prism from '@mapbox/rehype-prism';
 import parse, { IParseProps } from './parse';
 import rehype from './rehype';
@@ -41,7 +43,9 @@ const PLUGIN_STRATEGIES = {
     [frontmatter],
     [yaml],
     [externalDemo],
+    [math],
     [rehype],
+    [katex],
     [stringify, { allowDangerousHTML: true, closeSelfClosing: true }],
     [slug],
     [headings],
