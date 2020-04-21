@@ -5,6 +5,8 @@
 
 import React from 'react';
 import { Button, Modal } from 'antd';
+import ModalContent from './modal-content';
+import './modal.less';
 
 class App extends React.Component {
   state = { visible: false };
@@ -40,10 +42,9 @@ class App extends React.Component {
           visible={this.state.visible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
+          className="example-modal-content"
         >
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
+          <ModalContent />
         </Modal>
       </div>
     );

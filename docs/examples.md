@@ -11,7 +11,9 @@ toc: menu
 
 此页面列举了 dumi 渲染各项 Markdown 样式以及 Demo 的效果。
 
-## Demo 嵌入
+## 渲染 Demo
+
+### 代码块嵌入
 
 ```jsx
 import React from 'react';
@@ -20,13 +22,13 @@ import { Button } from 'antd';
 export default () => <Button type="primary">我是 antd 的按钮</Button>;
 ```
 
-## 外部 Demo
-
-<code src="./demo/modal.jsx" />
-
 ## TS 转 JS
 
 <code src="./demo/typescript.tsx" />
+
+## 多文件依赖
+
+<code src="./demo/modal.jsx" />
 
 # 一级标题
 
@@ -87,6 +89,14 @@ _斜体样式_
 ```js
 console.log('Hello World!');
 ```
+
+## 数学公式
+
+Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation.
+
+$$
+L = \frac{1}{2} \rho v^2 S C_L
+$$
 
 ## 表格
 
