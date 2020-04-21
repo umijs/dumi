@@ -56,7 +56,7 @@ describe('routes & menu: normal', () => {
       {
         paths: {
           cwd: process.cwd(),
-          absTmpPath: path.join(process.cwd(), '.umi'),
+          absPagesPath: path.join(process.cwd(), 'src/pages'),
         },
       },
     );

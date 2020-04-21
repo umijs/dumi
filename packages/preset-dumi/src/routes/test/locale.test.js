@@ -108,7 +108,7 @@ describe('routes & menu: locales', () => {
       {
         paths: {
           cwd: process.cwd(),
-          absTmpPath: path.join(process.cwd(), '.umi'),
+          absPagesPath: path.join(process.cwd(), 'src/pages'),
         },
       },
     );

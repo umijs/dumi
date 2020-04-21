@@ -21,8 +21,8 @@ export default (api: IApi, opts: IDumiOpts): IRoute[] => {
     // only apply user's routes if there has routes config
     config[0].routes = opts.routes.map(({ component, ...routeOpts }) => ({
       component: path.isAbsolute(component as string)
-        ? component
-        : slash(path.join(paths.absPagesPath, component as string)),
+        ? slash(path.relative(paths.cwd, component))
+        : component,
       ...routeOpts,
     }));
   } else {

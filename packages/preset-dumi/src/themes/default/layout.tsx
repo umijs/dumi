@@ -114,7 +114,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
       for (let i = navs[state.currentLocale].length - 1; i >= 0; i -= 1) {
         const nav = navs[state.currentLocale][i];
 
-        if (new RegExp(`^${nav.path}(/|$)`).test(location.pathname)) {
+        if (new RegExp(`^${nav.path.replace(/\.html$/, '')}(/|\.|$)`).test(location.pathname)) {
           navPath = nav.path;
           break;
         }

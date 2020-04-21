@@ -6,22 +6,20 @@ import getDemoRoutes from '../getDemoRoutes';
 const FIXTURES_PATH = path.join(__dirname, '..', 'fixtures');
 
 describe('routes: demo', () => {
-  let routes;
-
   it('getDemoRoutes', () => {
-    routes = getRoute(path.join(FIXTURES_PATH, 'demo'), { locales: [] });
-    routes = decorateRoute(
+    const routes = getRoute(path.join(FIXTURES_PATH, 'demo'), { locales: [] });
+    decorateRoute(
       routes,
       { locales: [] },
       {
         paths: {
           cwd: process.cwd(),
-          absTmpPath: path.join(process.cwd(), '.umi'),
+          absPagesPath: path.join(process.cwd(), 'src/pages'),
         },
       },
     );
 
-    expect(getDemoRoutes({ absTmpPath: path.join(process.cwd(), '.umi') })).toEqual([
+    expect(getDemoRoutes({ absPagesPath: path.join(process.cwd(), 'src/pages') })).toEqual([
       {
         path: '/_demos/demo',
         component: '../../packages/preset-dumi/src/routes/fixtures/demo/1/demo.tsx',

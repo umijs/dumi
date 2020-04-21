@@ -71,14 +71,32 @@ export default function(api: IApi) {
   };
 
   // repalce default routes with generated routes
+  api.onPatchRoutesBefore(({ routes, parentRoute }) => {
+    // only deal with the top level routes
+    if (!parentRoute) {
+      const opts = mergeUserConfig(defaultOpts, api);
+
+      // save umi api & opts into context
+      setContext(api, opts);
+
+      const result = getRouteConfig(api, opts);
+
+      // clear original routes
+      routes.splice(0, routes.length);
+
+      // append single demo routes to top-level
+      result.unshift(...getDemoRoutes(api.paths));
+
+      // append new routes
+      routes.push(...result);
+    }
+  });
+
+  // repalce default routes with generated routes
   api.modifyRoutes(routes => {
     const opts = mergeUserConfig(defaultOpts, api);
-
-    // save umi api & opts into context
-    setContext(api, opts);
-
-    const result = getRouteConfig(api, opts);
-    const childRoutes = result[0].routes;
+    const root = routes.find(route => route.path === '/');
+    const childRoutes = root.routes;
     const meta = {
       menus: getMenuFromRoutes(childRoutes, opts, api.paths),
       locales: getLocaleFromRoutes(childRoutes, opts),
@@ -90,12 +108,9 @@ export default function(api: IApi) {
       repoUrl: getRepoUrl(pkg.repository?.url || pkg.repository),
     };
 
-    // append umi NotFound component to routes
-    childRoutes.push(...routes.filter(({ path: routerPath }) => !routerPath));
-
     // pass props for layout
-    result[0].component = `(props) => require('react').createElement(require('${
-      result[0].component
+    root.component = `(props) => require('react').createElement(require('${
+      root.component
     }').default, {
       ...${
         // escape " to ^ to avoid umi parse error, then umi will decode them
@@ -105,10 +120,7 @@ export default function(api: IApi) {
       ...props,
     })`;
 
-    // append single demo routes to top-level
-    result.unshift(...getDemoRoutes(api.paths));
-
-    return result;
+    return routes;
   });
 
   // exclude .md file for url-loader

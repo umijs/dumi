@@ -1,4 +1,5 @@
 import { IRoute } from '@umijs/types';
+import { addHtmlSuffix } from './getMenuFromRoutes';
 import { IDumiOpts } from '..';
 
 export interface INavItem {
@@ -23,12 +24,14 @@ export default (routes: IRoute[], opts: IDumiOpts, userCustomNavs: INav | INavIt
   routes.forEach(route => {
     if (route.meta?.nav) {
       const locale = route.meta.locale || opts.locales[0]?.[0] || '*';
+      const navPath = addHtmlSuffix(route.meta.nav.path);
 
       localeNavs[locale] = {
         ...(localeNavs[locale] || {}),
-        [route.meta.nav.path]: {
-          ...(localeNavs[locale]?.[route.meta.nav.path] || {}),
+        [navPath]: {
+          ...(localeNavs[locale]?.[navPath] || {}),
           ...(route.meta.nav || {}),
+          path: navPath,
         },
       };
     }

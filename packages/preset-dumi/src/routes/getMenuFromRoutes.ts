@@ -1,6 +1,7 @@
 import path from 'path';
 import slash from 'slash2';
 import { IRoute, IApi } from '@umijs/types';
+import ctx from '../context';
 import { IDumiOpts } from '..';
 
 export interface IMenuItem {
@@ -100,6 +101,14 @@ function convertUserMenuChilds(
   });
 }
 
+export function addHtmlSuffix(oPath: string) {
+  if (oPath && ctx.umi?.config?.exportStatic?.htmlSuffix) {
+    return `${oPath}.html`;
+  }
+
+  return oPath;
+}
+
 export function menuSorter(prev, next) {
   const prevOrder = typeof prev.meta?.order === 'number' ? prev.meta.order : Infinity;
   const nextOrder = typeof next.meta?.order === 'number' ? next.meta.order : Infinity;
@@ -133,7 +142,7 @@ export default function getMenuFromRoutes(
   routes.forEach(route => {
     if (isValidMenuRoutes(route)) {
       const { group } = route.meta;
-      const nav = route.meta.nav?.path || '*';
+      const nav = addHtmlSuffix(route.meta.nav?.path) || '*';
       const locale = route.meta.locale || opts.locales[0]?.[0] || '*';
       const menuItem: IMenuItem = {
         path: route.path,
@@ -147,7 +156,7 @@ export default function getMenuFromRoutes(
 
       if (group?.path) {
         const { title, path, ...meta } = group;
-        const groupKey = group.path || group.title;
+        const groupKey = addHtmlSuffix(group.path) || group.title;
 
         // group route items by group path & locale
         localeMenusMapping[locale] = {
