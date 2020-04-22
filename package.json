@@ -1,5 +1,4 @@
 {
-  "private": true,
   "scripts": {
     "dev": "cross-env BROWSER=none node ./packages/dumi/bin/dumi.js dev",
     "watch": "father-build build --watch",
@@ -24,6 +23,8 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.6.0",
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
     "@types/jest": "^24.0.13",
     "@umijs/fabric": "^2.0.0-beta.4",
     "@umijs/test": "^3.0.3",
@@ -32,9 +33,34 @@
     "cross-env": "^6.0.3",
     "eslint": "^6.7.2",
     "father-build": "^1.14.2",
+    "husky": "^4.2.5",
     "lerna": "^3.6.0",
     "lerna-changelog": "^0.8.2",
     "prettier": "^1.19.1",
     "puppeteer": "^2.1.1"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
+    "rules": {
+      "scope-enum": [
+        2,
+        "always",
+        [
+          "scaffold",
+          "theme",
+          "bin",
+          "preset",
+          "routes",
+          "transformer"
+        ]
+      ]
+    }
   }
 }
