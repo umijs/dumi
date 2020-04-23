@@ -1,15 +1,18 @@
 import ctx from '../../context';
 
-export const getBabelOptions = (isTSX: boolean) => ({
+export interface IDemoOpts {
+  isTSX: boolean;
+  fileAbsPath: string;
+}
+
+export const getBabelOptions = ({ isTSX, fileAbsPath }: IDemoOpts) => ({
+  filename: fileAbsPath,
   presets: [
-    require.resolve('@babel/preset-react'),
-    require.resolve('@babel/preset-env'),
+    [require.resolve('@umijs/babel-preset-umi/app'), { reactRequire: false, typescript: isTSX }],
     ...(ctx.umi?.config?.extraBabelPresets || []),
   ],
   plugins: [
-    require.resolve('@babel/plugin-proposal-class-properties'),
     [require.resolve('@babel/plugin-transform-modules-commonjs'), { strict: true }],
-    ...(isTSX ? [[require.resolve('@babel/plugin-transform-typescript'), { isTSX: true }]] : []),
     ...(ctx.umi?.config?.extraBabelPlugins || []),
   ],
   ast: true,

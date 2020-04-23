@@ -2,7 +2,7 @@ import * as babel from '@babel/core';
 import * as types from '@babel/types';
 import traverse from '@babel/traverse';
 import generator from '@babel/generator';
-import { getBabelOptions } from './options';
+import { getBabelOptions, IDemoOpts } from './options';
 
 interface IDemoTransformResult {
   content: string;
@@ -16,8 +16,8 @@ export const DEMO_COMPONENT_NAME = 'DumiDemo';
 /**
  * transform code block statments to preview
  */
-export default (raw: string, { isTSX }: { isTSX?: boolean } = {}): IDemoTransformResult => {
-  const code = babel.transformSync(raw, getBabelOptions(isTSX));
+export default (raw: string, opts: IDemoOpts): IDemoTransformResult => {
+  const code = babel.transformSync(raw, getBabelOptions(opts));
   const body = code.ast.program.body as types.Statement[];
   let reactVar: string;
   let returnStatement: types.ReturnStatement;

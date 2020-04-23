@@ -24,7 +24,7 @@ function getYamlConfig(code, componentFile = '') {
 
   return comments
     .slice(0, 1)
-    .filter(c => c.value.includes(':') && c.loc.start.line === 1)
+    .filter((c) => c.value.includes(':') && c.loc.start.line === 1)
     .reduce((memo, item) => {
       const { value } = item;
       const v = value.replace(/^(\s+)?\*/gm, '');
@@ -132,7 +132,7 @@ export default {
    * transform code block (j|t)sx demo to js
    */
   demo(raw: string, opts: { isTSX: boolean; fileAbsPath: string }): TransformResult {
-    const { content, ast } = demo(raw, { isTSX: opts.isTSX });
+    const { content, ast } = demo(raw, opts);
     const deps = getDepsForDemo(ast, opts);
 
     return {

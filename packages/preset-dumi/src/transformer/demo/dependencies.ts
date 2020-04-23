@@ -9,7 +9,7 @@ import {
   getModuleResolveContent,
 } from '../../utils/moduleResolver';
 import { saveFileOnDepChange } from '../../utils/watcher';
-import { getBabelOptions } from './options';
+import { getBabelOptions, IDemoOpts } from './options';
 
 interface IDepAnalyzeResult {
   dependencies: { [key: string]: string };
@@ -31,15 +31,14 @@ export const PLAIN_TEXT_EXT = [
 
 function analyzeDeps(
   raw: babel.BabelFileResult['ast'] | string,
-  {
-    isTSX,
-    fileAbsPath,
-    entryAbsPath,
-  }: { isTSX: boolean; fileAbsPath: string; entryAbsPath?: string },
+  { isTSX, fileAbsPath, entryAbsPath }: IDemoOpts & { entryAbsPath?: string },
   totalFiles?: IDepAnalyzeResult['files'],
 ): IDepAnalyzeResult {
   // support to pass babel transform result directly
-  const ast = typeof raw === 'string' ? babel.transformSync(raw, getBabelOptions(isTSX)).ast : raw;
+  const ast =
+    typeof raw === 'string'
+      ? babel.transformSync(raw, getBabelOptions({ isTSX, fileAbsPath })).ast
+      : raw;
   const files = totalFiles || {};
   const dependencies = {};
 
