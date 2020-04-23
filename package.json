@@ -14,7 +14,7 @@
     "debug": "umi-test",
     "lint": "eslint --cache --ext .js,.jsx,.ts,.tsx --format=pretty \"./packages/preset-dumi/src\"",
     "prettier": "prettier -c --write \"**/*\"",
-    "publish": "umi-test && npm run changelog && npm run build && lerna publish",
+    "publish": "umi-test && npm run changelog && npm run build && lerna publish -m \"chore: publish\"",
     "now-build": "echo \"hello\""
   },
   "repository": {
