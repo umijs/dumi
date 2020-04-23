@@ -73,6 +73,17 @@ $ npm run dev
           <strong>Pro Table</strong>
         </a>
       </td>
+      <td align="center">
+        <a target="_blank" href="https://ggeditor.com">
+          <img
+            width="32"
+            style="vertical-align: -0.32em; margin-right: 8px;"
+            src="https://img.alicdn.com/tfs/TB1FFA1CFP7gK0jSZFjXXc5aXXa-214-200.png"
+          />
+          <br>
+          <strong>GGEditor</strong>
+        </a>
+      </td>
     </tr>
   </tbody>
 </table>
