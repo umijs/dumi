@@ -7,15 +7,17 @@ import decorateRoutes from './decorator';
 import { IDumiOpts } from '../index';
 
 export default (api: IApi, opts: IDumiOpts): IRoute[] => {
+  const { paths } = api;
   const config = [
     {
       path: '/',
-      component: slash(path.join(__dirname, '../themes/default/layout.js')),
+      component: slash(
+        path.relative(paths.absPagesPath, path.join(__dirname, '../themes/default/layout.js')),
+      ),
       routes: [],
       title: opts.title,
     },
   ];
-  const { paths } = api;
 
   if (opts.routes) {
     // only apply user's routes if there has routes config
@@ -28,7 +30,7 @@ export default (api: IApi, opts: IDumiOpts): IRoute[] => {
   } else {
     // generate routes automatically if there has no routes config
     // find routes from include path
-    opts.resolve.includes.forEach(item => {
+    opts.resolve.includes.forEach((item) => {
       const docsPath = path.isAbsolute(item) ? item : path.join(paths.cwd, item);
 
       if (fs.existsSync(docsPath) && fs.statSync(docsPath).isDirectory()) {
