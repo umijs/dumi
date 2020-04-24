@@ -24,10 +24,6 @@ jobs:
           name: Install Dependencies
           command: yarn --frozen-lockfile
 
-      - run:
-          name: Bootstrap
-          command: yarn bootstrap
-
       - save_cache:
           key: node-modules-{{ checksum "package.json" }}
           paths:

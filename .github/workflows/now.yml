@@ -15,7 +15,6 @@ jobs:
           ZEIT_TOKEN: ${{ secrets.ZEIT_TOKEN }}
         run: |
           yarn install
-          yarn bootstrap
           yarn build
           yarn doc:build
           now --token=$ZEIT_TOKEN --prod --confirm --force --scope umijs
