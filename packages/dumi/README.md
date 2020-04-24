@@ -20,8 +20,8 @@ To check out live examples and docs, visit [dumi official site](https://d.umijs.
 
 ```bash
 $ yarn
-$ npm run build -- -w
-$ npm run dev
+$ yarn build -w
+$ yarn dev
 ```
 
 ## Who is using dumi?
