@@ -2,6 +2,7 @@
   "workspaces": [
     "packages/*"
   ],
+  "private": true,
   "scripts": {
     "dev": "cross-env BROWSER=none node ./packages/dumi/bin/dumi.js dev",
     "watch": "father-build build --watch",
