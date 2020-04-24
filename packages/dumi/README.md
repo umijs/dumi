@@ -19,8 +19,7 @@ To check out live examples and docs, visit [dumi official site](https://d.umijs.
 ## Development
 
 ```bash
-$ npm install
-$ npm run bootstrap
+$ yarn
 $ npm run build -- -w
 $ npm run dev
 ```
