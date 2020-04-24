@@ -103,7 +103,7 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed }) => {
               routeMeta.toc === 'menu' &&
               !hasChildren &&
               hasSlugs &&
-              (typeof window !== 'undefined' && item.path === location.pathname);
+              (typeof window !== 'undefined' ? item.path === location.pathname : true);
 
             return (
               <li key={item.path || item.title}>
