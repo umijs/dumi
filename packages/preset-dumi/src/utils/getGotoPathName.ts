@@ -8,7 +8,7 @@ import isHashRoute from './isHashRoute';
  * @param slug
  */
 const getGotoPathName = (pathName: string, slug: string) => {
-  const { search } = window.location;
+  const { search } = typeof window !== 'undefined' ? window.location : {};
   const pathArray = [];
   if (isHashRoute()) {
     pathArray.push(`?anchor=${slug}`);

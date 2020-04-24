@@ -331,7 +331,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
             navPrefix={<SearchBar routes={this.props.route.routes} />}
             onMobileMenuClick={() => this.setState({ menuCollapsed: !menuCollapsed })}
           />
-          <SideMenu mobileMenuCollapsed={menuCollapsed} />
+          <SideMenu mobileMenuCollapsed={menuCollapsed} location={this.props.location} />
           {showSlugs && (
             <SlugList
               base=""

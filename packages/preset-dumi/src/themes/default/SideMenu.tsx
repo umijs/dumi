@@ -1,5 +1,5 @@
 import React, { FC, useContext } from 'react';
-import { Link, NavLink, history } from 'umi';
+import { Link, NavLink } from 'umi';
 import LocaleSelect from './LocaleSelect';
 import context from './context';
 import SlugList from './SlugList';
@@ -7,6 +7,7 @@ import './SideMenu.less';
 
 interface INavbarProps {
   mobileMenuCollapsed: boolean;
+  location: any;
 }
 
 const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed }) => {
@@ -95,7 +96,6 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed }) => {
         {/* menu list */}
         <ul className="__dumi-default-menu-list">
           {menus.map(item => {
-            const location = history.location;
             // always use meta from routes to reduce menu data size
             const hasSlugs = Boolean(routeMeta.slugs?.length);
             const hasChildren = item.children && Boolean(item.children.length);
@@ -103,7 +103,7 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed }) => {
               routeMeta.toc === 'menu' &&
               !hasChildren &&
               hasSlugs &&
-              item.path === location.pathname;
+              (typeof window !== 'undefined' && item.path === location.pathname);
 
             return (
               <li key={item.path || item.title}>
@@ -124,7 +124,7 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed }) => {
                         </NavLink>
                         {/* group children slugs */}
                         {Boolean(
-                          routeMeta.toc === 'menu' && child.path === location.pathname && hasSlugs,
+                          routeMeta.toc === 'menu' && typeof window !== 'undefined' && child.path === location.pathname && hasSlugs,
                         ) && <SlugList base={child.path} slugs={routeMeta.slugs} />}
                       </li>
                     ))}
