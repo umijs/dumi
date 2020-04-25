@@ -8,6 +8,7 @@ interface ISlugsListProps {
   base: string;
   slugs: any[];
   className?: string;
+  location: any;
 }
 
 export function scrollToSlug(slug) {
@@ -20,7 +21,7 @@ export function scrollToSlug(slug) {
   return Boolean(title);
 }
 
-const SlugsList: FC<ISlugsListProps> = ({ className, slugs, base }) => {
+const SlugsList: FC<ISlugsListProps> = ({ className, slugs, base, location }) => {
   const { slug: currentSlug } = useContext(context);
   const listElm = useRef<HTMLUListElement>(null);
 
@@ -42,7 +43,7 @@ const SlugsList: FC<ISlugsListProps> = ({ className, slugs, base }) => {
             className={currentSlug === slug.heading ? 'active' : ''}
             onClick={ev => handleAnchorClick(ev, slug.heading)}
           >
-            <Link to={getGotoPathName(base, slug.heading)}>
+            <Link to={getGotoPathName(base, slug.heading, location)}>
               <span>{slug.value}</span>
             </Link>
           </li>

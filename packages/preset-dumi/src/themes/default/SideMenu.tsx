@@ -10,7 +10,7 @@ interface INavbarProps {
   location: any;
 }
 
-const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed }) => {
+const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location }) => {
   const { logo, title, desc, menus, navs, repoUrl, mode, rootPath, routeMeta } = useContext(
     context,
   );
@@ -48,7 +48,7 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed }) => {
           )}
         </div>
         {/* mobile nav list */}
-        {Boolean(navs.length) ? (
+        {navs.length ? (
           <div className="__dumi-default-menu-mobile-area">
             <ul className="__dumi-default-menu-nav-list">
               {navs.map(nav => (
@@ -103,7 +103,7 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed }) => {
               routeMeta.toc === 'menu' &&
               !hasChildren &&
               hasSlugs &&
-              (typeof window !== 'undefined' ? item.path === location.pathname : true);
+              item.path === location.pathname;
 
             return (
               <li key={item.path || item.title}>
@@ -125,13 +125,13 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed }) => {
                         {/* group children slugs */}
                         {Boolean(
                           routeMeta.toc === 'menu' && typeof window !== 'undefined' && child.path === location.pathname && hasSlugs,
-                        ) && <SlugList base={child.path} slugs={routeMeta.slugs} />}
+                        ) && <SlugList base={child.path} slugs={routeMeta.slugs} location={location} />}
                       </li>
                     ))}
                   </ul>
                 )}
                 {/* group slugs */}
-                {show1LevelSlugs && <SlugList base={item.path} slugs={routeMeta.slugs} />}
+                {show1LevelSlugs && <SlugList base={item.path} slugs={routeMeta.slugs} location={location} />}
               </li>
             );
           })}

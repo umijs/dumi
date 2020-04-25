@@ -93,7 +93,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     const state = {
       currentLocale: (locales[0] || { name: '*' }).name,
       currentRouteMeta: findCurrentRouteMeta(route, location),
-      currentSlug: isHashRoute()
+      currentSlug: isHashRoute(location)
         ? location.query.anchor
         : decodeURIComponent(location.hash).replace('#', ''),
       navs: [],
@@ -253,7 +253,8 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     <>
       <div className="__dumi-default-layout-hero">
         <h1>{hero.title}</h1>
-        <p dangerouslySetInnerHTML={{ __html: hero.desc }} />
+        {/* SSR 下只有 div 的 div dangerouslySetInnerHTML 才能渲染 */}
+        <div dangerouslySetInnerHTML={{ __html: hero.desc }} />
         {hero.actions &&
           hero.actions.map(action => (
             <Link to={action.link} key={action.text}>
@@ -336,6 +337,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
             <SlugList
               base=""
               slugs={currentRouteMeta.slugs}
+              location={this.props.location}
               className="__dumi-default-layout-toc"
             />
           )}
