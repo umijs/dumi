@@ -68,13 +68,15 @@ body {
       font-weight: 600;
       line-height: 56px;
       color: #080e29;
-    }
 
-    p {
-      margin: 16px 0 32px;
-      font-size: 16px;
-      line-height: 24px;
-      color: @c-secondary;
+      + div {
+        margin: 16px 0 32px;
+        opacity: 0.78;
+
+        .markdown {
+          font-size: 16px;
+        }
+      }
     }
 
     button {
