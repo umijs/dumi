@@ -1,5 +1,5 @@
 import React, { FC, useContext } from 'react';
-import { Link, NavLink, history } from 'umi';
+import { Link, NavLink } from 'umi';
 import LocaleSelect from './LocaleSelect';
 import context from './context';
 import SlugList from './SlugList';
@@ -7,9 +7,10 @@ import './SideMenu.less';
 
 interface INavbarProps {
   mobileMenuCollapsed: boolean;
+  location: any;
 }
 
-const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed }) => {
+const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location }) => {
   const { logo, title, desc, menus, navs, repoUrl, mode, rootPath, routeMeta } = useContext(
     context,
   );
@@ -47,7 +48,7 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed }) => {
           )}
         </div>
         {/* mobile nav list */}
-        {Boolean(navs.length) ? (
+        {navs.length ? (
           <div className="__dumi-default-menu-mobile-area">
             <ul className="__dumi-default-menu-nav-list">
               {navs.map(nav => (
@@ -95,7 +96,6 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed }) => {
         {/* menu list */}
         <ul className="__dumi-default-menu-list">
           {menus.map(item => {
-            const location = history.location;
             // always use meta from routes to reduce menu data size
             const hasSlugs = Boolean(routeMeta.slugs?.length);
             const hasChildren = item.children && Boolean(item.children.length);
@@ -124,14 +124,14 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed }) => {
                         </NavLink>
                         {/* group children slugs */}
                         {Boolean(
-                          routeMeta.toc === 'menu' && child.path === location.pathname && hasSlugs,
-                        ) && <SlugList base={child.path} slugs={routeMeta.slugs} />}
+                          routeMeta.toc === 'menu' && typeof window !== 'undefined' && child.path === location.pathname && hasSlugs,
+                        ) && <SlugList base={child.path} slugs={routeMeta.slugs} location={location} />}
                       </li>
                     ))}
                   </ul>
                 )}
                 {/* group slugs */}
-                {show1LevelSlugs && <SlugList base={item.path} slugs={routeMeta.slugs} />}
+                {show1LevelSlugs && <SlugList base={item.path} slugs={routeMeta.slugs} location={location} />}
               </li>
             );
           })}

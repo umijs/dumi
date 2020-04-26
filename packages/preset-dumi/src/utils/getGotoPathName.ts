@@ -7,10 +7,10 @@ import isHashRoute from './isHashRoute';
  * @param pathName
  * @param slug
  */
-const getGotoPathName = (pathName: string, slug: string) => {
-  const { search } = window.location;
+const getGotoPathName = (pathName: string, slug: string, location = window.location) => {
+  const { search } = location;
   const pathArray = [];
-  if (isHashRoute()) {
+  if (isHashRoute(location)) {
     pathArray.push(`?anchor=${slug}`);
     if (search) {
       pathArray.push(`&${search.replace('?', '')}`);
