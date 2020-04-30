@@ -9,7 +9,7 @@ describe('routes & menu: normal', () => {
   let routes;
 
   it('getRouteConfigFromDir', () => {
-    routes = getRoute(path.join(FIXTURES_PATH, 'normal'), { locales: [] });
+    routes = getRoute(process.cwd(), path.join(FIXTURES_PATH, 'normal'), { locales: [] });
     expect(routes).toEqual([
       {
         path: '/',

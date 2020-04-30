@@ -34,6 +34,8 @@ dumi 基于 Umi，即除了自己提供的配置项以外，还支持[所有 Umi
 
 ## 如何在cra等非 umi 项目中使用 dumi？
 
+[源码示例](https://github.com/xiaohuoni/dumi-demo-cra)
+
 安装模块。
 
 ```bash

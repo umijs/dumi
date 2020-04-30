@@ -14,7 +14,7 @@ describe('routes & menu: locales', () => {
   let routes;
 
   it('getRouteConfigFromDir: custom', () => {
-    routes = getRoute(path.join(FIXTURES_PATH, 'locale'), {
+    routes = getRoute(process.cwd(), path.join(FIXTURES_PATH, 'locale'), {
       locales: DEFAULT_LOCALES.slice().reverse(),
     });
 
@@ -58,7 +58,7 @@ describe('routes & menu: locales', () => {
   });
 
   it('getRouteConfigFromDir: default', () => {
-    routes = getRoute(path.join(FIXTURES_PATH, 'locale'), {
+    routes = getRoute(process.cwd(), path.join(FIXTURES_PATH, 'locale'), {
       locales: DEFAULT_LOCALES,
     });
 

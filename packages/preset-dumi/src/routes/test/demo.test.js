@@ -7,7 +7,7 @@ const FIXTURES_PATH = path.join(__dirname, '..', 'fixtures');
 
 describe('routes: demo', () => {
   it('getDemoRoutes', () => {
-    const routes = getRoute(path.join(FIXTURES_PATH, 'demo'), { locales: [] });
+    const routes = getRoute(process.cwd(), path.join(FIXTURES_PATH, 'demo'), { locales: [] });
     decorateRoute(
       routes,
       { locales: [] },

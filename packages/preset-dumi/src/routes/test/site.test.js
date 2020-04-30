@@ -6,6 +6,7 @@ import getNav from '../getNavFromRoutes';
 import getLocale from '../getLocaleFromRoutes';
 
 const FIXTURES_PATH = path.join(__dirname, '..', 'fixtures');
+
 const DEFAULT_LOCALES = [
   ['en-US', 'EN'],
   ['zh-CN', '中文'],
@@ -15,7 +16,7 @@ describe('routes & menu: site mode', () => {
   let routes;
 
   it('getRouteConfigFromDir', () => {
-    routes = getRoute(path.join(FIXTURES_PATH, 'site'), {
+    routes = getRoute(process.cwd(), path.join(FIXTURES_PATH, 'site'), {
       locales: DEFAULT_LOCALES,
     });
 
