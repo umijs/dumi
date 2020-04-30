@@ -43,6 +43,8 @@ function mergeUserConfig(defaultOpts: { [key: string]: any }, api: IApi): IDumiO
 }
 
 export default function(api: IApi) {
+  // transformer use it.
+  process.env.UMI_CWD = api.cwd;
   // apply default options
   let pkg;
 
