@@ -34,7 +34,7 @@ export default (api: IApi, opts: IDumiOpts): IRoute[] => {
       const docsPath = path.isAbsolute(item) ? item : path.join(paths.cwd, item);
 
       if (fs.existsSync(docsPath) && fs.statSync(docsPath).isDirectory()) {
-        config[0].routes.push(...getRouteConfigFromDir(docsPath, opts));
+        config[0].routes.push(...getRouteConfigFromDir(api.cwd, docsPath, opts));
       }
     });
   }

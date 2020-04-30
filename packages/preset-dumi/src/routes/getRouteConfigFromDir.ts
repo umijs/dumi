@@ -66,6 +66,7 @@ function splitLocalePathFromFilename(filename: string, locales: IDumiOpts['local
  * @param parentRoutePath   route path that need prefix for current
  */
 function findChildRoutes(
+  cwd: string,
   absPath: string,
   opts: IDumiOpts,
   parentRoutePath: string = '/',
@@ -97,7 +98,7 @@ function findChildRoutes(
       case '.md':
         routes.push({
           path: normalizePath(routePath, localePath, opts.locales),
-          component: `./${slash(path.relative(process.cwd(), filePath))}`,
+          component: `./${slash(path.relative(cwd, filePath))}`,
           exact: true,
         });
         break;
@@ -108,16 +109,16 @@ function findChildRoutes(
 
   // continue to find child routes
   dirs.forEach(dir => {
-    routes.push(...findChildRoutes(path.join(absPath, dir), opts, path.join(parentRoutePath, dir)));
+    routes.push(...findChildRoutes(cwd, path.join(absPath, dir), opts, path.join(parentRoutePath, dir)));
   });
 
   return routes;
 }
 
-export default (absPath: string, opts: IDumiOpts): IRoute[] => {
+export default (cwd: string, absPath: string, opts: IDumiOpts): IRoute[] => {
   const routes = [];
   if (fs.existsSync(absPath)) {
-    routes.push(...findChildRoutes(absPath, opts));
+    routes.push(...findChildRoutes(cwd, absPath, opts));
   }
 
   return routes;

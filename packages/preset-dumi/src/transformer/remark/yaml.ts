@@ -9,7 +9,7 @@ import transformer from '../index';
 export default function yamlProcessor() {
   return (ast, vFile) => {
     if (this.data('fileAbsPath')) {
-      const filePath = slash(path.relative(process.cwd(), this.data('fileAbsPath')));
+      const filePath = slash(path.relative(process.env.UMI_CWD || process.cwd(), this.data('fileAbsPath')));
 
       // append file info
       vFile.data.filePath = filePath;
