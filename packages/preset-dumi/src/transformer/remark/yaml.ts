@@ -5,11 +5,14 @@ import slash from 'slash2';
 import { execSync } from 'child_process';
 import visit from 'unist-util-visit';
 import transformer from '../index';
+import ctx from '../../context';
 
 export default function yamlProcessor() {
   return (ast, vFile) => {
     if (this.data('fileAbsPath')) {
-      const filePath = slash(path.relative(process.cwd(), this.data('fileAbsPath')));
+      const filePath = slash(
+        path.relative(ctx.umi?.cwd || process.cwd(), this.data('fileAbsPath')),
+      );
 
       // append file info
       vFile.data.filePath = filePath;

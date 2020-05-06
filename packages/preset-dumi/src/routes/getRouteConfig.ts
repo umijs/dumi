@@ -30,7 +30,7 @@ export default (api: IApi, opts: IDumiOpts): IRoute[] => {
   } else {
     // generate routes automatically if there has no routes config
     // find routes from include path
-    opts.resolve.includes.forEach((item) => {
+    opts.resolve.includes.forEach(item => {
       const docsPath = path.isAbsolute(item) ? item : path.join(paths.cwd, item);
 
       if (fs.existsSync(docsPath) && fs.statSync(docsPath).isDirectory()) {

@@ -32,6 +32,49 @@ dumi 基于 Umi，即除了自己提供的配置项以外，还支持[所有 Umi
 
 暂不支持。
 
+## 如何在cra等非 umi 项目中使用 dumi？
+
+[源码示例](https://github.com/xiaohuoni/dumi-demo-cra)
+
+安装模块。
+
+```bash
+yarn add dumi cross-env -D
+```
+
+增加启动命令，修改 `package.json`。
+
+```json
+  "scripts": {
+    "dumi": "cross-env APP_ROOT=dumi dumi dev",
+    "dumi-build": "cross-env APP_ROOT=dumi dumi build"
+  },
+```
+
+增加配置，新建 `config/config.js`。
+
+```js
+export default {
+    chainWebpack(memo) {
+        memo.plugins.delete('copy');
+    },
+}
+```
+
+新建文档目录 `dumi/docs/`，这里的 `dumi` 目录即第二步中配置的环境变量，你可以随意同步修改。
+
+新建文档 `dumi/docs/index.md`。
+
+```markdown
+# 这是一个 Dumi 结合 create-react-app 的 Demo
+```
+
+将 dumi 的临时文件添加到 `.gitignore` 中。
+
+```
+.umi
+```
+
 ## dumi 支持基于其他技术框架、例如 Vue、Angular 编写文档和 Demo 吗？
 
 暂不支持；但 Umi 3 在架构上对 renderer 做了抽离，后续如果有其他的 renderer，dumi 也会进行跟进。

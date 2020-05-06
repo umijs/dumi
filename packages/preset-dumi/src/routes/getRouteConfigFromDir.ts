@@ -1,8 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import slash from 'slash2';
-import { IRoute, IApi } from '@umijs/types';
+import { IRoute } from '@umijs/types';
 import { IDumiOpts } from '../index';
+import ctx from '../context';
 
 const IGNORE_DIR = ['node_modules', 'fixtures'];
 
@@ -97,7 +98,7 @@ function findChildRoutes(
       case '.md':
         routes.push({
           path: normalizePath(routePath, localePath, opts.locales),
-          component: `./${slash(path.relative(process.cwd(), filePath))}`,
+          component: `./${slash(path.relative(ctx.umi?.cwd || process.cwd(), filePath))}`,
           exact: true,
         });
         break;

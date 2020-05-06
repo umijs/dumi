@@ -6,6 +6,7 @@ import getNav from '../getNavFromRoutes';
 import getLocale from '../getLocaleFromRoutes';
 
 const FIXTURES_PATH = path.join(__dirname, '..', 'fixtures');
+
 const DEFAULT_LOCALES = [
   ['en-US', 'EN'],
   ['zh-CN', '中文'],
