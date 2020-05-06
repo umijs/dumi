@@ -30,6 +30,11 @@ const USERS = [
     link: 'https://ggeditor.com',
     logo: 'https://img.alicdn.com/tfs/TB1FFA1CFP7gK0jSZFjXXc5aXXa-214-200.png',
   },
+  {
+    name: 'Remax',
+    link: 'https://remaxjs.org',
+    logo: 'https://gw.alipayobjects.com/mdn/rms_b5fcc5/afts/img/A*1NHAQYduQiQAAAAAAAAAAABkARQnAQ',
+  },
 ];
 
 export default () => {
