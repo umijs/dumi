@@ -83,6 +83,17 @@ $ yarn dev
           <strong>GGEditor</strong>
         </a>
       </td>
+      <td align="center">
+        <a target="_blank" href="https://remaxjs.org">
+          <img
+            width="32"
+            style="vertical-align: -0.32em; margin-right: 8px;"
+            src="https://gw.alipayobjects.com/mdn/rms_b5fcc5/afts/img/A*1NHAQYduQiQAAAAAAAAAAABkARQnAQ"
+          />
+          <br>
+          <strong>Remax</strong>
+        </a>
+      </td>
     </tr>
   </tbody>
 </table>
