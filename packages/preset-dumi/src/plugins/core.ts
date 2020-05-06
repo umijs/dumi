@@ -9,7 +9,7 @@ import getLocaleFromRoutes from '../routes/getLocaleFromRoutes';
 import getHostPkgAlias from '../utils/getHostPkgAlias';
 import getDemoRoutes from '../routes/getDemoRoutes';
 import getRepoUrl from '../utils/getRepoUrl';
-import { init as setContext } from '../context';
+import ctx, { init as setContext } from '../context';
 import { IDumiOpts } from '..';
 
 function mergeUserConfig(defaultOpts: { [key: string]: any }, api: IApi): IDumiOpts {
@@ -43,8 +43,6 @@ function mergeUserConfig(defaultOpts: { [key: string]: any }, api: IApi): IDumiO
 }
 
 export default function(api: IApi) {
-  // transformer use it.
-  process.env.UMI_CWD = api.cwd;
   // apply default options
   let pkg;
 
@@ -71,17 +69,20 @@ export default function(api: IApi) {
     ],
     mode: 'doc',
   };
+  // save umi api & opts into context
+  const updateContext = () => setContext(api, mergeUserConfig(defaultOpts, api));
+
+  // initial context
+  api.onStart(updateContext);
+
+  // for update context when config change
+  api.onGenerateFiles(updateContext);
 
   // repalce default routes with generated routes
   api.onPatchRoutesBefore(({ routes, parentRoute }) => {
     // only deal with the top level routes
     if (!parentRoute) {
-      const opts = mergeUserConfig(defaultOpts, api);
-
-      // save umi api & opts into context
-      setContext(api, opts);
-
-      const result = getRouteConfig(api, opts);
+      const result = getRouteConfig(api, ctx.opts);
 
       // clear original routes
       routes.splice(0, routes.length);
@@ -136,7 +137,6 @@ export default function(api: IApi) {
 
   // configure loader for .md file
   api.chainWebpack(config => {
-    const opts = mergeUserConfig(defaultOpts, api);
     const oPlainTextTest = config.module.rule('plaintext').get('test');
     const babelLoader = config.module
       .rule('js')
@@ -163,7 +163,7 @@ export default function(api: IApi) {
       .end()
       .use('dumi-loader')
       .loader(require.resolve('../loader'))
-      .options({ previewLangs: opts.resolve.previewLangs });
+      .options({ previewLangs: ctx.opts.resolve.previewLangs });
 
     // add alias for current package(s)
     hostPkgAlias
