@@ -6,7 +6,8 @@ export interface IDemoOpts {
 }
 
 export const getBabelOptions = ({ isTSX, fileAbsPath }: IDemoOpts) => ({
-  filename: fileAbsPath,
+  // rename filename.md to filename.tsx to prevent babel transform failed
+  filename: isTSX ? fileAbsPath.replace(/\.\w+$/, '.tsx') : fileAbsPath,
   presets: [
     [require.resolve('@umijs/babel-preset-umi/app'), { reactRequire: false, typescript: isTSX }],
     ...(ctx.umi?.config?.extraBabelPresets || []),
