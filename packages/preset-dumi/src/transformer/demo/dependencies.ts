@@ -18,16 +18,10 @@ interface IDepAnalyzeResult {
 
 export const LOCAL_DEP_EXT = ['.jsx', '.tsx', '.js', '.ts'];
 
+export const LOCAL_MODULE_EXT = [...LOCAL_DEP_EXT, '.json'];
+
 // local dependency extensions which will be collected
-export const PLAIN_TEXT_EXT = [
-  ...LOCAL_DEP_EXT,
-  '.json',
-  '.less',
-  '.css',
-  '.scss',
-  '.sass',
-  '.styl',
-];
+export const PLAIN_TEXT_EXT = [...LOCAL_MODULE_EXT, '.less', '.css', '.scss', '.sass', '.styl'];
 
 function analyzeDeps(
   raw: babel.BabelFileResult['ast'] | string,
@@ -58,6 +52,7 @@ function analyzeDeps(
         const resolvePath = getModuleResolvePath({
           basePath: fileAbsPath,
           sourcePath: requireStr,
+          extensions: LOCAL_MODULE_EXT,
         });
         const resolvePathParsed = path.parse(resolvePath);
 
@@ -66,6 +61,7 @@ function analyzeDeps(
           const pkg = getModuleResolvePkg({
             basePath: fileAbsPath,
             sourcePath: requireStr,
+            extensions: LOCAL_MODULE_EXT,
           });
 
           dependencies[pkg.name] = pkg.version;
@@ -88,6 +84,7 @@ function analyzeDeps(
               content: getModuleResolveContent({
                 basePath: fileAbsPath,
                 sourcePath: requireStr,
+                extensions: LOCAL_MODULE_EXT,
               }),
             };
 
