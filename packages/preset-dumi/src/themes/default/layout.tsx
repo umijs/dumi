@@ -345,7 +345,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
           {showFeatures && this.renderFeatures(currentRouteMeta.features)}
           <div className="__dumi-default-layout-content">
             {children}
-            {!showHero && !showFeatures && (
+            {!showHero && !showFeatures && currentRouteMeta.filePath && (
               <div className="__dumi-default-layout-footer-meta">
                 {repoPlatform && (
                   <a target="_blank" href={`${repoUrl}/edit/master/${currentRouteMeta.filePath}`}>

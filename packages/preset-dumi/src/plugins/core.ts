@@ -28,7 +28,7 @@ function mergeUserConfig(defaultOpts: { [key: string]: any }, api: IApi): IDumiO
   });
 
   // nested resolve keys
-  ['includes', 'previewLangs'].forEach(key => {
+  ['includes', 'previewLangs', 'examples'].forEach(key => {
     if (api.config.resolve?.[key]) {
       result.resolve[key] = api.config.resolve[key];
     }
@@ -42,7 +42,7 @@ function mergeUserConfig(defaultOpts: { [key: string]: any }, api: IApi): IDumiO
   return result;
 }
 
-export default function(api: IApi) {
+export default function (api: IApi) {
   // apply default options
   let pkg;
 
@@ -62,6 +62,7 @@ export default function(api: IApi) {
         .map(([_, pkgPath]) => path.relative(api.paths.cwd, path.join(pkgPath, 'src')))
         .concat(['docs']),
       previewLangs: ['jsx', 'tsx'],
+      examples: ['examples'],
     },
     locales: [
       ['en-US', 'English'],
@@ -138,10 +139,7 @@ export default function(api: IApi) {
   // configure loader for .md file
   api.chainWebpack(config => {
     const oPlainTextTest = config.module.rule('plaintext').get('test');
-    const babelLoader = config.module
-      .rule('js')
-      .use('babel-loader')
-      .entries();
+    const babelLoader = config.module.rule('js').use('babel-loader').entries();
 
     // remove md file test from umi
     if (oPlainTextTest?.source?.includes('md')) {
@@ -212,7 +210,10 @@ export default function(api: IApi) {
   api.addTmpGenerateWatcherPaths(() => {
     const opts = mergeUserConfig(defaultOpts, api);
 
-    return [...opts.resolve.includes.map(key => path.join(api.paths.cwd, key, '**/*.md'))];
+    return [
+      ...opts.resolve.includes.map(key => path.join(api.paths.cwd, key, '**/*.md')),
+      ...opts.resolve.examples.map(key => path.join(api.paths.cwd, key, '*.{tsx,jsx}')),
+    ];
   });
 
   // TODO: CLI help info

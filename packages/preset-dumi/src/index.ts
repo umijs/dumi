@@ -11,6 +11,7 @@ export interface IDumiOpts {
   resolve?: {
     previewLangs?: string[];
     includes?: string[];
+    examples?: string[];
   };
   menus?: { [key: string]: IMenuItem[] };
   navs?: INav | INavItem[];

@@ -237,7 +237,7 @@ ${issueLink}`,
           {!hasExternalFile && (
             <>
               <CsbButton type={this.props.source.tsx ? 'tsx' : 'jsx'} base64={this.state.CSBData}>
-                <button role="codesandbox" type="submit" />
+                <button className="__dumi-default-icon" role="codesandbox" type="submit" />
               </CsbButton>
               {showRiddle && (
                 <form
@@ -246,7 +246,7 @@ ${issueLink}`,
                   target="_blank"
                   style={{ display: 'flex' }}
                 >
-                  <button role="riddle" type="submit" />
+                  <button className="__dumi-default-icon" role="riddle" type="submit" />
                   <input
                     type="hidden"
                     name="data"
@@ -264,17 +264,19 @@ ${issueLink}`,
           )}
           {path && (
             <a target="_blank" rel="noopener noreferrer" href={path}>
-              <button role="open-demo" type="button" />
+              <button className="__dumi-default-icon" role="open-demo" type="button" />
             </a>
           )}
           <span />
           <Clipboard
+            button-class="__dumi-default-icon"
             button-role={copyTimer ? 'copied' : 'copy'}
             data-clipboard-text={files[currentFile]?.content || raw}
             onSuccess={this.handleCopied}
           />
           {source.tsx && showSource && !hasExternalFile && (
             <button
+              className="__dumi-default-icon"
               role={`change-${sourceType}`}
               type="button"
               onClick={() =>
@@ -285,6 +287,7 @@ ${issueLink}`,
             />
           )}
           <button
+            className="__dumi-default-icon"
             role="source"
             type="button"
             onClick={() => this.setState({ showSource: !showSource })}
