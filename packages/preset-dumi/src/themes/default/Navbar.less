@@ -101,6 +101,42 @@
         background-color: @c-primary;
         border-radius: 1px;
       }
+
+      // second nav
+      > ul {
+        list-style: none;
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin: 0;
+        min-width: 100px;
+        padding: 8px 18px;
+        line-height: 2;
+        background-color: #fff;
+        box-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.08);
+        transform: translate(-50%);
+        transform-origin: top;
+        border-radius: 1px;
+        transition: all 0.2s;
+
+        a {
+          position: relative;
+          display: block;
+          color: @c-text;
+
+          &:hover,
+          &.active {
+            color: @c-primary;
+          }
+        }
+      }
+
+      &:not(:hover) > ul {
+        visibility: hidden;
+        pointer-events: none;
+        transform: translate(-50%) scaleY(0.9);
+        opacity: 0;
+      }
     }
 
     @media @mobile {

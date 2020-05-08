@@ -4,8 +4,9 @@ import { IDumiOpts } from '..';
 
 export interface INavItem {
   title: string;
-  path: string;
+  path?: string;
   [key: string]: any;
+  children: INavItem[];
 }
 
 export interface INav {
