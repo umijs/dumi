@@ -14,10 +14,7 @@ export default function img() {
       if (is(node, 'img') && has(node, 'src') && isRelativeUrl(node.properties.src)) {
         parent.children[i] = {
           type: 'raw',
-          value: `<img src={require('${path.join(
-            path.parse(this.data('fileAbsPath')).dir,
-            node.properties.src,
-          )}')}>`,
+          value: `<img src={require('${node.properties.src}')}>`,
         };
       }
     });
@@ -25,14 +22,14 @@ export default function img() {
     visit(ast, 'raw', node => {
       if (typeof node.value === 'string') {
         node.value = node.value.replace(/<img.*?\/?>/g, tag => {
-          const matches = tag.match(/<img ([^>]+?)\/?>/) || [];
-          const { src, ...inheritAttrs } = HTMLAttrParser(matches[1]);
+          // FIX ME: raw visitor will execute repeat after element visit on Windows OS, temporary way to solve it
+          if (!tag.includes('src={require')) {
+            const matches = tag.match(/<img ([^>]+?)\/?>/) || [];
+            const { src, ...inheritAttrs } = HTMLAttrParser(matches[1]);
 
-          if (isRelativeUrl(src)) {
-            return `<img src={require('${path.join(
-              path.parse(this.data('fileAbsPath')).dir,
-              src,
-            )}')} {...${JSON.stringify(inheritAttrs)}}>`;
+            if (isRelativeUrl(src)) {
+              return `<img src={require('${src}')} {...${JSON.stringify(inheritAttrs)}}>`;
+            }
           }
 
           return tag;

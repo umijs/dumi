@@ -10,10 +10,7 @@ describe('img example', () => {
       fileAbsPath: FILE_PATH,
       strategy: 'default',
       previewLangs: [],
-    })
-      .contents.toString()
-      // replace real abs path for equal
-      .replace(new RegExp(path.parse(FILE_PATH).dir, 'g'), '/path/to');
+    }).contents.toString();
 
     // compare transform content
     expect(result).toEqual(
