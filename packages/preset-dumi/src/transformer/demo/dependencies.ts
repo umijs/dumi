@@ -31,7 +31,8 @@ function analyzeDeps(
   // support to pass babel transform result directly
   const ast =
     typeof raw === 'string'
-      ? babel.transformSync(raw, getBabelOptions({ isTSX, fileAbsPath })).ast
+      ? babel.transformSync(raw, getBabelOptions({ isTSX, fileAbsPath, transformRuntime: false }))
+          .ast
       : raw;
   const files = totalFiles || {};
   const dependencies = {};
