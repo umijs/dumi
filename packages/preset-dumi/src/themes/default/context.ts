@@ -17,6 +17,11 @@ interface IContext {
   desc: IDumiOpts['description'];
   repoUrl: string;
   routeMeta: { [key: string]: any };
+  algolia?: {
+    apiKey: string;
+    indexName: string;
+    debug?: boolean;
+  }
 }
 
 export default React.createContext<IContext>({

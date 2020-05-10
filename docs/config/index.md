@@ -111,6 +111,25 @@ export default {
 
 配置式路由，配置方式与 Umi 一致，可通过 `meta` 属性传递支持的 [frontmatter](/config/frontmatter) 属性。
 
+## algolia
+
+- 类型: `Object`
+- 默认值：`null`
+- 详细：
+
+配置 Algolia 的 [DocSearch](https://docsearch.algolia.com/) 服务。
+
+示例：
+
+```js
+{
+  algolia: {
+    apiKey: 'yourapikey',
+    indexName: 'dumi',
+  }
+}
+```
+
 ## 其他配置
 
 详见 Umi 的 [官方文档](https://umijs.org/config)。

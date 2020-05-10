@@ -21,6 +21,11 @@ export interface IDumiOpts {
     redirect: IRoute['redirect'];
     [key: string]: any;
   }[];
+  algolia?: {
+    apiKey: string;
+    indexName: string;
+    debug?: boolean;
+  }
 }
 
 export default () => {
@@ -35,6 +40,7 @@ export default () => {
       require.resolve('./plugins/navs'),
       require.resolve('./plugins/resolve'),
       require.resolve('./plugins/core'),
+      require.resolve('./plugins/algolia'),
     ],
   };
 };

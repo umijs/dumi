@@ -39,6 +39,8 @@ function mergeUserConfig(defaultOpts: { [key: string]: any }, api: IApi): IDumiO
     result.routes = api.userConfig.routes;
   }
 
+  result.algolia = api.userConfig.algolia;
+
   return result;
 }
 
@@ -110,6 +112,7 @@ export default function (api: IApi) {
       desc: opts.description,
       mode: opts.mode,
       repoUrl: getRepoUrl(pkg.repository?.url || pkg.repository),
+      algolia: opts.algolia,
     };
 
     // pass props for layout

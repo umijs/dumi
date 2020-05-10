@@ -283,7 +283,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
   );
 
   render() {
-    const { mode, title, desc, logo, repoUrl, locales, children } = this.props;
+    const { mode, title, desc, logo, repoUrl, locales, algolia, children } = this.props;
     const { navs, menus, menuCollapsed, currentLocale, currentSlug, currentRouteMeta } = this.state;
     const siteMode = this.props.mode === 'site';
     const showHero = siteMode && currentRouteMeta.hero;
@@ -323,6 +323,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
           routeMeta: currentRouteMeta,
           rootPath:
             !locales.length || currentLocale === locales[0].name ? '/' : `/${currentLocale}`,
+          algolia
         }}
       >
         <div
