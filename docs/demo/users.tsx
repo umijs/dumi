@@ -35,6 +35,12 @@ const USERS = [
     link: 'https://remaxjs.org',
     logo: 'https://gw.alipayobjects.com/mdn/rms_b5fcc5/afts/img/A*1NHAQYduQiQAAAAAAAAAAABkARQnAQ',
   },
+  {
+    name: 'LightProxy',
+    link: 'https://lightproxy.org',
+    logo:
+      'https://user-images.githubusercontent.com/5436704/81501184-754a1700-9309-11ea-821a-f7bc5e32ecf6.png',
+  },
 ];
 
 export default () => {
