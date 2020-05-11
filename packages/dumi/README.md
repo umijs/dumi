@@ -99,7 +99,7 @@ $ yarn dev
           <img
             width="32"
             style="vertical-align: -0.32em; margin-right: 8px;"
-            src="https://user-images.githubusercontent.com/5436704/81501184-754a1700-9309-11ea-821a-f7bc5e32ecf6.png"
+            src="https://user-images.githubusercontent.com/5436704/81533849-83e00f00-9399-11ea-943d-ac5fd4653906.png"
           />
           <br>
           <strong>LightProxy</strong>
