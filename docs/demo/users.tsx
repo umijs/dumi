@@ -39,7 +39,7 @@ const USERS = [
     name: 'LightProxy',
     link: 'https://lightproxy.org',
     logo:
-      'https://user-images.githubusercontent.com/5436704/81501184-754a1700-9309-11ea-821a-f7bc5e32ecf6.png',
+      'https://user-images.githubusercontent.com/5436704/81533849-83e00f00-9399-11ea-943d-ac5fd4653906.png',
   },
 ];
 
