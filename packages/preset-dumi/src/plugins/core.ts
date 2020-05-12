@@ -44,7 +44,7 @@ function mergeUserConfig(defaultOpts: { [key: string]: any }, api: IApi): IDumiO
   return result;
 }
 
-export default function (api: IApi) {
+export default function(api: IApi) {
   // apply default options
   let pkg;
 
@@ -98,6 +98,15 @@ export default function (api: IApi) {
     }
   });
 
+  // remove useless /index.html from exportStatic feature
+  api.onPatchRoutes(({ routes, parentRoute }) => {
+    if (api.config.exportStatic && parentRoute?.path === '/') {
+      const rootHtmlIndex = routes.findIndex(route => route.path === '/index.html');
+
+      routes.splice(rootHtmlIndex, 1);
+    }
+  });
+
   // repalce default routes with generated routes
   api.modifyRoutes(routes => {
     const opts = mergeUserConfig(defaultOpts, api);
@@ -142,7 +151,10 @@ export default function (api: IApi) {
   // configure loader for .md file
   api.chainWebpack(config => {
     const oPlainTextTest = config.module.rule('plaintext').get('test');
-    const babelLoader = config.module.rule('js').use('babel-loader').entries();
+    const babelLoader = config.module
+      .rule('js')
+      .use('babel-loader')
+      .entries();
 
     // remove md file test from umi
     if (oPlainTextTest?.source?.includes('md')) {
