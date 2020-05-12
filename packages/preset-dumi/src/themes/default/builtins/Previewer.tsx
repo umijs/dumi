@@ -269,7 +269,7 @@ ${issueLink}`,
           )}
           <span />
           <Clipboard
-            button-class="__dumi-default-icon"
+            button-className="__dumi-default-icon"
             button-role={copyTimer ? 'copied' : 'copy'}
             data-clipboard-text={files[currentFile]?.content || raw}
             onSuccess={this.handleCopied}

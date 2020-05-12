@@ -48,6 +48,7 @@ export default () => {
     <ul style={{ display: 'flex', flexWrap: 'wrap', margin: 0, padding: 0, listStyle: 'none' }}>
       {USERS.map((user, i) => (
         <li
+          key={user.link}
           style={{
             marginRight: i === USERS.length - 1 ? 0 : 16,
             marginBottom: 8,
