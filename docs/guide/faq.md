@@ -32,7 +32,7 @@ dumi 基于 Umi，即除了自己提供的配置项以外，还支持[所有 Umi
 
 暂不支持。
 
-## 如何在cra等非 umi 项目中使用 dumi？
+## 如何在 cra 等非 umi 项目中使用 dumi？
 
 [源码示例](https://github.com/xiaohuoni/dumi-demo-cra)
 
@@ -55,10 +55,10 @@ yarn add dumi cross-env -D
 
 ```js
 export default {
-    chainWebpack(memo) {
-        memo.plugins.delete('copy');
-    },
-}
+  chainWebpack(memo) {
+    memo.plugins.delete('copy');
+  },
+};
 ```
 
 新建文档目录 `dumi/docs/`，这里的 `dumi` 目录即第二步中配置的环境变量，你可以随意同步修改。
@@ -83,7 +83,18 @@ export default {
 
 可使用 Umi 的 [styles](https://umijs.org/config#styles) 和 [scripts](https://umijs.org/config#scripts) 配置项。
 
-## 部署到 Github Page
+## 部署到 Github Pages
+
+由于 GitHub Pages 是非域名根路径部署，部署之前请先确保设置了 `base` 和 `publicPath` 配置项为仓库名称：
+
+```ts
+export default {
+  base: '/仓库名称',
+  publicPath: '/仓库名称/',
+  exportStatic: {}, // 将所有路由输出为 HTML 目录结构，以免刷新页面时 404
+  // 其他配置
+};
+```
 
 ### 手动部署
 
