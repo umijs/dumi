@@ -53,7 +53,7 @@ export default (raw: string, opts: IDemoOpts): IDemoTransformResult => {
         callPathNode.left.object.name === 'exports'
       ) {
         // remove original export expression
-        if (types.isIdentifier(callPathNode.right) && callPathNode.right.name === '_default') {
+        if (types.isIdentifier(callPathNode.right)) {
           // save export function as return statement arg
           const reactIdentifier = reactVar
             ? types.memberExpression(
