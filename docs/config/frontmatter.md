@@ -241,6 +241,14 @@ features:
 
 用于控制 demo 的包裹容器是否设置 `transform` 的 CSS 值以控制 `position: fixed;` 的元素相对于 demo 容器定位。
 
+### defaultShowCode
+
+- 类型：`Boolean`
+- 默认值：`false`
+- 详细：
+
+用于控制当前 demo 的包裹容器是否默认展开源代码显示。
+
 ### 通过 `code` 标签控制
 
 所有 TSX/JSX 支持的配置项，在使用 `code` 标签引入外部 demo 时也可以使用，就像这样：

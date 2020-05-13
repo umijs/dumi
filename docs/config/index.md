@@ -83,6 +83,23 @@ export default {
 
 该配置项用于自定义导航栏的展示，仅 `site` 模式下可用，分多语言模式和单语言模式，使用方式详见 [指南 - 配置式导航菜单](/guide/control-nav-generate#配置式导航菜单)。
 
+可通过如下形式嵌套二级导航菜单，目前暂不支持更多层级嵌套：
+
+```js
+export default {
+  navs: [
+    {
+      title: '我有二级导航',
+      path: '链接是可选的',
+      children: [
+        { title: '第一项', path: 'https://d.umijs.org' },
+        { title: '第二项', path: '/guide' },
+      ],
+    },
+  ],
+};
+```
+
 ## resolve
 
 `resolve` 是一个 `Object` 类型，包含如下配置：
