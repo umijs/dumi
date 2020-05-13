@@ -63,6 +63,10 @@ export interface IPreviewerProps {
       content: string;
     };
   };
+  /**
+   * show source code by default
+   */
+  defaultShowCode?: boolean;
 }
 
 class Previewer extends Component<IPreviewerProps> {
@@ -76,13 +80,13 @@ class Previewer extends Component<IPreviewerProps> {
   };
 
   componentDidMount() {
-    const { source } = this.props;
+    const { source, defaultShowCode = false } = this.props;
 
     // init data for codesandbox
     this.initCSBData();
 
     // prioritize display tsx
-    this.setState({ sourceType: source.tsx ? 'tsx' : 'jsx' });
+    this.setState({ sourceType: source.tsx ? 'tsx' : 'jsx', showSource: defaultShowCode });
 
     // detect network via img request
     const img = document.createElement('img');
