@@ -21,43 +21,11 @@ const SINGLE_TAGS_EXPS = [
   'wbr',
 ].map(tag => new RegExp(`<(${tag}[^>]*?)>`, 'g'));
 
-function hasSubClassName(className: string[], subCls: string) {
-  return (className || []).find(cls => cls.indexOf(subCls) > -1);
-}
-
-const textVisitor = (node, ancestors) => {
-  const parentNode = ancestors[ancestors.length - 1];
-  const closestCodeAncestor = ancestors
-    .slice()
-    .reverse()
-    .find(ancestor => ancestor.tagName === 'code');
-
+const textVisitor = node => {
   // escape { & } for JSX
   // TODO: find a better way to avoid multi-times escape
   if (!/'[{}]+'/.test(node.value)) {
     node.value = node.value.replace(/([{}]+)/g, "{'$1'}");
-  }
-
-  // convert \n to <br> in code block for JSX, for render indents & newlines
-  if (
-    closestCodeAncestor &&
-    (hasSubClassName(closestCodeAncestor.properties.className, 'language-') ||
-      ancestors[ancestors.length - 2].tagName === 'pre')
-  ) {
-    const replace = node.value.split('\n').reduce((result, str, isNotFirst) => {
-      if (isNotFirst) {
-        result.push({ type: 'raw', value: '<br />' });
-      }
-
-      if (str) {
-        result.push({ type: 'text', value: str });
-      }
-
-      return result;
-    }, []);
-
-    // replace original children
-    parentNode.children.splice(parentNode.children.indexOf(node), 1, ...replace);
   }
 };
 

@@ -6,7 +6,6 @@ import headings from 'rehype-autolink-headings';
 import comments from 'rehype-remove-comments';
 import math from 'remark-math';
 import katex from 'rehype-katex';
-import prism from '@mapbox/rehype-prism';
 import parse, { IParseProps } from './parse';
 import rehype from './rehype';
 import yaml from './yaml';
@@ -17,6 +16,7 @@ import img from './img';
 import previewer from './previewer';
 import jsx from './jsx';
 import isolation from './isolation';
+import sourceCode from './sourceCode';
 
 export interface IRemarkOpts {
   /**
@@ -53,7 +53,7 @@ const PLUGIN_STRATEGIES = {
     [link],
     [img],
     [comments, { removeConditional: true }],
-    [prism],
+    [sourceCode],
     [previewer],
     [jsx],
     [isolation],

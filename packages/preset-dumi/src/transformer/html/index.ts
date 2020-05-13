@@ -82,12 +82,7 @@ class StyleParser {
  * ref: https://github.com/umijs/umi/blob/fda1ad295dfdfaaadff2178cca42ceeed940fff6/packages/umi-build-dev/src/htmlToJSX.js
  */
 export default function(html) {
-  html = html
-    .replace(/class="/g, 'className="')
-    .replace(/\sfor=/g, ' htmlFor=')
-    // replace comments
-    .replace(/<!--/g, '{/*')
-    .replace(/-->/g, '*/}');
+  html = html.replace(/class="/g, 'className="').replace(/\sfor=/g, ' htmlFor=');
 
   html = html.replace('<!DOCTYPE html>', '');
 

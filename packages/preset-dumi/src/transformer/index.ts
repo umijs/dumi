@@ -24,7 +24,7 @@ function getYamlConfig(code, componentFile = '') {
 
   return comments
     .slice(0, 1)
-    .filter((c) => c.value.includes(':') && c.loc.start.line === 1)
+    .filter(c => c.value.includes(':') && c.loc.start.line === 1)
     .reduce((memo, item) => {
       const { value } = item;
       const v = value.replace(/^(\s+)?\*/gm, '');
@@ -48,6 +48,9 @@ function wrapperHtmlByComponent(jsx: string, meta: TransformResult['config']) {
     import React from 'react';
     import Alert from '${slash(path.join(__dirname, '../themes/default/builtins/Alert.js'))}';
     import Badge from '${slash(path.join(__dirname, '../themes/default/builtins/Badge.js'))}';
+    import SourceCode from '${slash(
+      path.join(__dirname, '../themes/default/builtins/SourceCode.js'),
+    )}';
     import DumiPreviewer from '${slash(
       path.join(__dirname, '../themes/default/builtins/Previewer.js'),
     )}';
