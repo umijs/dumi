@@ -115,16 +115,6 @@
         background-position: -36px 0;
       }
 
-      &[role='copy'] {
-        background-position: -54px 0;
-      }
-
-      &[role='copied'] {
-        opacity: 1;
-        pointer-events: none;
-        background-position: -54px -16px;
-      }
-
       &[role='source'] {
         background-position: -72px 0;
       }
@@ -151,16 +141,6 @@
 
   &-source {
     border-top: 1px dashed @c-border;
-
-    > pre {
-      margin: 0;
-      background: @c-light-bg;
-
-      .token-line:not(:last-child) .plain:empty {
-        display: inline-block;
-        min-height: 1em;
-      }
-    }
 
     &-tab {
       list-style: none;

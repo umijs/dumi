@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { Component } from 'react';
-import Clipboard from 'react-clipboard.js';
 import innertext from 'innertext';
-import Highlight, { defaultProps, Language } from 'prism-react-renderer';
+import CopyButton from '../CopyButton';
+import SourceCode from './SourceCode';
 import finaliseCSB, { issueLink } from '../../../utils/codesandbox';
 import localePropsHoc from '../localePropsHoc';
 import CsbButton from '../csbButton';
@@ -69,7 +69,6 @@ class Previewer extends Component<IPreviewerProps> {
   state = {
     showSource: false,
     sourceType: '',
-    copyTimer: null,
     // data for codesandbox
     CSBData: '',
     showRiddle: false,
@@ -140,21 +139,12 @@ ${issueLink}`,
     this.setState({ CSBData: finaliseCSB(CSBData, { name: title || 'dumi-demo' }).parameters });
   };
 
-  handleCopied = () => {
-    clearTimeout(this.state.copyTimer);
-    this.setState({
-      copyTimer: setTimeout(() => {
-        this.setState({ copyTimer: null });
-      }, 2000),
-    });
-  };
-
   /**
    * transform local external dependencies
    */
   getSafeEntryCode = () => {
     const { source, files } = this.props;
-    let result = source.tsx || source.jsx;
+    const result = source.tsx || source.jsx;
 
     // to avoid import from '../'
     Object.keys(files).forEach(safeName => {
@@ -206,7 +196,7 @@ ${issueLink}`,
       dependencies,
       files,
     } = this.props;
-    const { showSource, sourceType, copyTimer, showRiddle, currentFile } = this.state;
+    const { showSource, sourceType, showRiddle, currentFile } = this.state;
     const raw = source[sourceType];
     const hasExternalFile = Boolean(Object.keys(files).length);
     const sourceFileType = currentFile ? currentFile.match(/\.(\w+)$/)[1] : sourceType;
@@ -231,6 +221,7 @@ ${issueLink}`,
         <div
           className="__dumi-default-previewer-desc"
           title={title}
+          // eslint-disable-next-line
           dangerouslySetInnerHTML={{ __html: desc }}
         />
         <div className="__dumi-default-previewer-actions">
@@ -268,12 +259,7 @@ ${issueLink}`,
             </a>
           )}
           <span />
-          <Clipboard
-            button-className="__dumi-default-icon"
-            button-role={copyTimer ? 'copied' : 'copy'}
-            data-clipboard-text={files[currentFile]?.content || raw}
-            onSuccess={this.handleCopied}
-          />
+          <CopyButton text={files[currentFile]?.content || raw} />
           {source.tsx && showSource && !hasExternalFile && (
             <button
               className="__dumi-default-icon"
@@ -298,13 +284,13 @@ ${issueLink}`,
             {hasExternalFile && (
               <ul className="__dumi-default-previewer-source-tab">
                 <li className={!currentFile ? 'active' : ''}>
-                  <button onClick={() => this.setState({ currentFile: '' })}>
+                  <button type="button" onClick={() => this.setState({ currentFile: '' })}>
                     index.{sourceType}
                   </button>
                 </li>
                 {Object.keys(files).map(fileName => (
                   <li className={currentFile === fileName ? 'active' : ''} key={fileName}>
-                    <button onClick={() => this.setState({ currentFile: fileName })}>
+                    <button type="button" onClick={() => this.setState({ currentFile: fileName })}>
                       {fileName}
                     </button>
                   </li>
@@ -312,24 +298,11 @@ ${issueLink}`,
               </ul>
             )}
             <div className="__dumi-default-previewer-source">
-              <Highlight
-                {...defaultProps}
+              <SourceCode
                 code={files[currentFile]?.content || raw}
-                language={sourceFileType as Language}
-                theme={undefined}
-              >
-                {({ className, style, tokens, getLineProps, getTokenProps }) => (
-                  <pre className={className} style={style}>
-                    {tokens.map((line, i) => (
-                      <div {...getLineProps({ line, key: i })}>
-                        {line.map((token, key) => (
-                          <span {...getTokenProps({ token, key })} />
-                        ))}
-                      </div>
-                    ))}
-                  </pre>
-                )}
-              </Highlight>
+                lang={sourceFileType as 'tsx' | 'jsx'}
+                showCopy={false}
+              />
             </div>
           </div>
         )}

@@ -1,0 +1,30 @@
+@import (reference) './variables.less';
+
+.@{prefix}-btn-copy {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 0;
+  outline: none;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s, background 0.2s;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &:active {
+    opacity: 0.9;
+  }
+
+  &[data-status='copy'] {
+    background-position: -54px 0;
+  }
+
+  &[data-status='copied'] {
+    opacity: 1;
+    pointer-events: none;
+    background-position: -54px -16px;
+  }
+}
