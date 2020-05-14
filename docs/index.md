@@ -35,7 +35,7 @@ $ npm i dumi
 $ mkdir docs && echo '# Hello dumi!' > docs/index.md
 
 // 预览文档
-$ dumi dev
+$ npx dumi dev
 ```
 
 ## 谁在使用
