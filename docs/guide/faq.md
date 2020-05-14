@@ -83,6 +83,14 @@ export default {
 
 可使用 Umi 的 [styles](https://umijs.org/config#styles) 和 [scripts](https://umijs.org/config#scripts) 配置项。
 
+## 本地开发没问题，但部署完成后访问子页面再刷新就 404 了
+
+默认只输出一个 `index.html` 作为入口 HTML 文件，服务器在 serve `/` 时可以找到文件但 `/some-route` 却没有对应的 `/some-route/index.html`，所以会出现 404。设置 `config.exportStatic` 为 `{}` 根据路由按文件夹结构输出所有 HTML 问价即可，此配置项的更多用法可参考 Umi 文档：[Config - exportStatic](https://umijs.org/zh-CN/config#exportstatic)。
+
+## 文档构建后的 bundle 太大了，导致网站访问速度很慢，如何实现按需加载？
+
+配置 `config.dynamicImport` 为 `{}`，此配置项的更多用法可参考 Umi 文档：[Config - dynamicImport](https://umijs.org/zh-CN/config#dynamicimport)。
+
 ## 部署到 Github Pages
 
 由于 GitHub Pages 是非域名根路径部署，部署之前请先确保设置了 `base` 和 `publicPath` 配置项为仓库名称：
