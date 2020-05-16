@@ -2,6 +2,7 @@ import visit from 'unist-util-visit';
 import toHtml from 'hast-util-to-html';
 import has from 'hast-util-has-property';
 import is from 'hast-util-is-element';
+import url from 'url'
 
 function isAbsoluteUrl(url) {
   return /^(?:https?:)?\/\//.test(url);
@@ -60,9 +61,13 @@ export default () => ast => {
           ],
         });
       } else if (/^(\.|\/)/.test(node.properties.href)) {
+        // compatible with normal markdown link 
+        // see https://github.com/umijs/dumi/issues/181
+        const currentURL = url.parse(node.properties.href)
+        currentURL.pathname = currentURL.pathname.replace(/(\.md)$/ig, '')
         parent.children[i] = {
           type: 'raw',
-          value: `<Link to="${node.properties.href}">${(node.children || [])
+          value: `<Link to="${url.format(currentURL)}">${(node.children || [])
             .map(n => toHtml(n))
             .join('')}</Link>`,
         };
