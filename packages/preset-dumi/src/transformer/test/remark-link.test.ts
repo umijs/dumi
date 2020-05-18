@@ -11,7 +11,6 @@ describe('link example', () => {
       strategy: 'default',
       previewLangs: [],
     }).contents.toString();
-    // console.log(result)
     // compare transform content
     expect(result).toEqual(
       fs.readFileSync(path.join(__dirname, '../fixtures/expect/remark-link.html')).toString(),

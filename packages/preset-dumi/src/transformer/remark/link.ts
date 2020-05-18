@@ -64,7 +64,7 @@ export default () => ast => {
         // compatible with normal markdown link 
         // see https://github.com/umijs/dumi/issues/181
         const currentURL = url.parse(node.properties.href)
-        currentURL.pathname = currentURL.pathname.replace(/(\.md)$/ig, '')
+        currentURL.pathname = currentURL.pathname.replace(/\.md$/i, '')
         parent.children[i] = {
           type: 'raw',
           value: `<Link to="${url.format(currentURL)}">${(node.children || [])
