@@ -1,4 +1,5 @@
 export default {
+  ssr: {},
   hash: true,
   title: 'dumi',
   mode: 'site',
