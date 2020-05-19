@@ -20,7 +20,7 @@
       "prettier --parser=typescript --write"
     ]
   },
-  "dependencies": {
+  "devDependencies": {
     "dumi": "^{{{ version }}}",
     "lint-staged": "^10.0.7",
     "prettier": "^1.19.1",
