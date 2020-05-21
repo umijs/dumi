@@ -5,7 +5,7 @@
     "start": "dumi dev",
     "docs:build": "dumi build",
     "build": "father-build",
-    "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
+    "prettier": "prettier --write \"**/*.{js,jsx,tsx,ts,less,md,json}\"",
     "test": "umi-test",
     "test:coverage": "umi-test --coverage"
   },
