@@ -288,12 +288,17 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     const siteMode = this.props.mode === 'site';
     const showHero = siteMode && currentRouteMeta.hero;
     const showFeatures = siteMode && currentRouteMeta.features;
-    const showSideMenu = currentRouteMeta.sidemenu !== false && !showHero && !showFeatures;
+    const showSideMenu =
+      currentRouteMeta.sidemenu !== false &&
+      !showHero &&
+      !showFeatures &&
+      !currentRouteMeta.gapless;
     const showSlugs =
       !showHero &&
       !showFeatures &&
       Boolean(currentRouteMeta.slugs?.length) &&
-      (currentRouteMeta.toc === 'content' || currentRouteMeta.toc === undefined);
+      (currentRouteMeta.toc === 'content' || currentRouteMeta.toc === undefined) &&
+      !currentRouteMeta.gapless;
     const isCN =
       currentLocale === 'zh-CN' || (currentLocale === '*' && locales[0]?.name === 'zh-CN');
     let updatedTime: any = new Date(currentRouteMeta.updatedTime);
@@ -323,7 +328,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
           routeMeta: currentRouteMeta,
           rootPath:
             !locales.length || currentLocale === locales[0].name ? '/' : `/${currentLocale}`,
-          algolia
+          algolia,
         }}
       >
         <div
@@ -331,6 +336,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
           data-show-sidemenu={String(showSideMenu)}
           data-show-slugs={String(showSlugs)}
           data-site-mode={siteMode}
+          data-gapless={String(!!currentRouteMeta.gapless)}
         >
           <Navbar
             navPrefix={<SearchBar routes={this.props.route.routes} />}
@@ -349,7 +355,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
           {showFeatures && this.renderFeatures(currentRouteMeta.features)}
           <div className="__dumi-default-layout-content">
             {children}
-            {!showHero && !showFeatures && currentRouteMeta.filePath && (
+            {!showHero && !showFeatures && currentRouteMeta.filePath && !currentRouteMeta.gapless && (
               <div className="__dumi-default-layout-footer-meta">
                 {repoPlatform && (
                   <a target="_blank" href={`${repoUrl}/edit/master/${currentRouteMeta.filePath}`}>

@@ -22,6 +22,16 @@ body {
     padding-right: 16px !important;
   }
 
+  &[data-gapless='true'] {
+    padding-top: @s-nav-height !important;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+
+    @media @mobile {
+      padding-top: @s-mobile-nav-height !important;
+    }
+  }
+
   &[data-show-sidemenu='false'] {
     padding-left: @s-content-margin;
   }
