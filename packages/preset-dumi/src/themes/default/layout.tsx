@@ -148,7 +148,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
 
     // discard end slash for path
     if (/\w\/$/.test(this.props.location.pathname)) {
-      history.replace(this.props.location.pathname.replace(/\/$/, ''));
+      history.replace(this.props.location.pathname.replace(/\/$/, '') + this.props.location.hash);
     }
   }
 
