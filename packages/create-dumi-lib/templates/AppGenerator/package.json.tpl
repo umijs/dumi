@@ -24,13 +24,15 @@
     ]
   },
   "dependencies": {
+    "react": "^16.12.0"
+  },
+  "devDependencies": {
     "@umijs/preset-react": "1.x",
     "@umijs/test": "^3.0.5",
     "dumi": "^{{{ version }}}",
     "father-build": "^1.17.2",
     "lint-staged": "^10.0.7",
     "prettier": "^1.19.1",
-    "react": "^16.12.0",
     "yorkie": "^2.0.0"
   }
 }
