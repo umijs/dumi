@@ -22,6 +22,7 @@ export default (props: IRouteProps & { route: any }) => {
             />
             <a
               target="_blank"
+              rel="noopener noreferrer"
               href={props.route.meta.examplePath}
               className="__dumi-default-icon"
             />

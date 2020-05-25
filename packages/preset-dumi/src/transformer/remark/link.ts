@@ -2,7 +2,7 @@ import visit from 'unist-util-visit';
 import toHtml from 'hast-util-to-html';
 import has from 'hast-util-has-property';
 import is from 'hast-util-is-element';
-import url from 'url'
+import url from 'url';
 
 function isAbsoluteUrl(url) {
   return /^(?:https?:)?\/\//.test(url);
@@ -16,6 +16,7 @@ export default () => ast => {
 
         Object.assign(node.properties, {
           target: '_blank',
+          rel: 'noopener noreferrer',
         });
 
         // remove nested hyperlink, this is a bug from something
@@ -61,10 +62,10 @@ export default () => ast => {
           ],
         });
       } else if (/^(\.|\/)/.test(node.properties.href)) {
-        // compatible with normal markdown link 
+        // compatible with normal markdown link
         // see https://github.com/umijs/dumi/issues/181
-        const currentURL = url.parse(node.properties.href)
-        currentURL.pathname = currentURL.pathname.replace(/\.md$/i, '')
+        const currentURL = url.parse(node.properties.href);
+        currentURL.pathname = currentURL.pathname.replace(/\.md$/i, '');
         parent.children[i] = {
           type: 'raw',
           value: `<Link to="${url.format(currentURL)}">${(node.children || [])

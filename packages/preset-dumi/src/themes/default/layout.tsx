@@ -358,7 +358,11 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
             {!showHero && !showFeatures && currentRouteMeta.filePath && !currentRouteMeta.gapless && (
               <div className="__dumi-default-layout-footer-meta">
                 {repoPlatform && (
-                  <a target="_blank" href={`${repoUrl}/edit/master/${currentRouteMeta.filePath}`}>
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={`${repoUrl}/edit/master/${currentRouteMeta.filePath}`}
+                  >
                     {isCN
                       ? `在 ${repoPlatform} 上编辑这篇文档`
                       : `Edit this doc on ${repoPlatform}`}
