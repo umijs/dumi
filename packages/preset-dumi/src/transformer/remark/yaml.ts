@@ -18,13 +18,17 @@ export default function yamlProcessor() {
       vFile.data.filePath = filePath;
 
       try {
-        vFile.data.updatedTime =
+        const updatedTime =
           parseInt(
             execSync(`git log -1 --format=%at ${this.data('fileAbsPath')}`, {
               stdio: 'pipe',
             }).toString(),
             10,
           ) * 1000;
+        if (Number.isNaN(updatedTime)) {
+          throw 'get updatedTime failed';
+        }
+        vFile.data.updatedTime = updatedTime;
       } catch (err) {
         vFile.data.updatedTime = Math.floor(fs.lstatSync(this.data('fileAbsPath')).mtimeMs);
       }
