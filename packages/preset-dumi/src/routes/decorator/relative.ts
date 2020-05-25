@@ -8,9 +8,7 @@ import { RouteProcessor } from '.';
 export default (function relative(routes) {
   return routes.map(route => {
     if (route.component && !path.isAbsolute(route.component)) {
-      route.component = slash(
-        path.relative(this.umi.paths.absPagesPath, path.join(this.umi.paths.cwd, route.component)),
-      );
+      route.component = slash(path.join(this.umi.paths.cwd, route.component));
     }
 
     return route;

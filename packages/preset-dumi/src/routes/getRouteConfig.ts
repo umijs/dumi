@@ -37,9 +37,7 @@ export default (api: IApi, opts: IDumiOpts): IRoute[] => {
   // add main routes
   config.push({
     path: '/',
-    component: slash(
-      path.relative(paths.absPagesPath, path.join(__dirname, '../themes/default/layout.js')),
-    ),
+    component: slash(path.join(__dirname, '../themes/default/layout.js')),
     // decorate standard umi routes
     routes: decorateRoutes(childRoutes, opts, api),
     title: opts.title,
@@ -58,10 +56,7 @@ export default (api: IApi, opts: IDumiOpts): IRoute[] => {
       });
 
       // use example component as original example component
-      route.component = path.relative(
-        paths.absPagesPath,
-        path.join(__dirname, '../themes/default/builtins/Example.js'),
-      );
+      route.component = slash(path.join(__dirname, '../themes/default/builtins/Example.js'));
       route.meta.examplePath = examplePath;
     }
   });

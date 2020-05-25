@@ -4,6 +4,7 @@ import decorateRoute from '../decorator';
 import getMenu from '../getMenuFromRoutes';
 import getNav from '../getNavFromRoutes';
 import getLocale from '../getLocaleFromRoutes';
+import getAbsolutePath from '../../utils/getAbsolutePath';
 
 const FIXTURES_PATH = path.join(__dirname, '..', 'fixtures');
 
@@ -69,7 +70,7 @@ describe('routes & menu: site mode', () => {
     expect(routes).toEqual([
       {
         path: '/api',
-        component: '../../packages/preset-dumi/src/routes/fixtures/site/api.md',
+        component: getAbsolutePath('./packages/preset-dumi/src/routes/fixtures/site/api.md'),
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/site/api.md',
@@ -85,7 +86,7 @@ describe('routes & menu: site mode', () => {
       },
       {
         path: '/',
-        component: '../../packages/preset-dumi/src/routes/fixtures/site/index.md',
+        component: getAbsolutePath('./packages/preset-dumi/src/routes/fixtures/site/index.md'),
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/site/index.md',
@@ -97,7 +98,9 @@ describe('routes & menu: site mode', () => {
       },
       {
         path: '/zh-CN',
-        component: '../../packages/preset-dumi/src/routes/fixtures/site/index.zh-CN.md',
+        component: getAbsolutePath(
+          './packages/preset-dumi/src/routes/fixtures/site/index.zh-CN.md',
+        ),
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/site/index.zh-CN.md',
@@ -110,7 +113,9 @@ describe('routes & menu: site mode', () => {
       },
       {
         path: '/config',
-        component: '../../packages/preset-dumi/src/routes/fixtures/site/config/index.md',
+        component: getAbsolutePath(
+          './packages/preset-dumi/src/routes/fixtures/site/config/index.md',
+        ),
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/site/config/index.md',
@@ -123,7 +128,9 @@ describe('routes & menu: site mode', () => {
       },
       {
         path: '/config/others',
-        component: '../../packages/preset-dumi/src/routes/fixtures/site/config/others.md',
+        component: getAbsolutePath(
+          './packages/preset-dumi/src/routes/fixtures/site/config/others.md',
+        ),
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/site/config/others.md',
@@ -136,7 +143,9 @@ describe('routes & menu: site mode', () => {
       },
       {
         path: '/test-rewrite/rewrite',
-        component: '../../packages/preset-dumi/src/routes/fixtures/site/rewrite/index.md',
+        component: getAbsolutePath(
+          './packages/preset-dumi/src/routes/fixtures/site/rewrite/index.md',
+        ),
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/site/rewrite/index.md',
@@ -150,7 +159,7 @@ describe('routes & menu: site mode', () => {
       },
       {
         path: '/zh-CN/api',
-        component: '../../packages/preset-dumi/src/routes/fixtures/site/api.md',
+        component: getAbsolutePath('./packages/preset-dumi/src/routes/fixtures/site/api.md'),
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/site/api.md',
@@ -167,7 +176,9 @@ describe('routes & menu: site mode', () => {
       },
       {
         path: '/zh-CN/config',
-        component: '../../packages/preset-dumi/src/routes/fixtures/site/config/index.md',
+        component: getAbsolutePath(
+          './packages/preset-dumi/src/routes/fixtures/site/config/index.md',
+        ),
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/site/config/index.md',
@@ -181,7 +192,9 @@ describe('routes & menu: site mode', () => {
       },
       {
         path: '/zh-CN/config/others',
-        component: '../../packages/preset-dumi/src/routes/fixtures/site/config/others.md',
+        component: getAbsolutePath(
+          './packages/preset-dumi/src/routes/fixtures/site/config/others.md',
+        ),
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/site/config/others.md',
@@ -195,7 +208,9 @@ describe('routes & menu: site mode', () => {
       },
       {
         path: '/zh-CN/test-rewrite/rewrite',
-        component: '../../packages/preset-dumi/src/routes/fixtures/site/rewrite/index.md',
+        component: getAbsolutePath(
+          './packages/preset-dumi/src/routes/fixtures/site/rewrite/index.md',
+        ),
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/site/rewrite/index.md',

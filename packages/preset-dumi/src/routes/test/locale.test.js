@@ -3,6 +3,7 @@ import getRoute from '../getRouteConfigFromDir';
 import decorateRoute from '../decorator';
 import getMenu from '../getMenuFromRoutes';
 import getLocale from '../getLocaleFromRoutes';
+import getAbsolutePath from "../../utils/getAbsolutePath";
 
 const FIXTURES_PATH = path.join(__dirname, '..', 'fixtures');
 const DEFAULT_LOCALES = [
@@ -116,7 +117,7 @@ describe('routes & menu: locales', () => {
     expect(routes).toEqual([
       {
         path: '/',
-        component: '../../packages/preset-dumi/src/routes/fixtures/locale/index.en-US.md',
+        component: getAbsolutePath('./packages/preset-dumi/src/routes/fixtures/locale/index.en-US.md'),
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/locale/index.en-US.md',
@@ -129,7 +130,7 @@ describe('routes & menu: locales', () => {
       },
       {
         path: '/zh-CN',
-        component: '../../packages/preset-dumi/src/routes/fixtures/locale/index.zh-CN.md',
+        component: getAbsolutePath('./packages/preset-dumi/src/routes/fixtures/locale/index.zh-CN.md'),
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/locale/index.zh-CN.md',
@@ -142,7 +143,7 @@ describe('routes & menu: locales', () => {
       },
       {
         path: '/missing/abc',
-        component: '../../packages/preset-dumi/src/routes/fixtures/locale/missing/abc.en-US.md',
+        component: getAbsolutePath('./packages/preset-dumi/src/routes/fixtures/locale/missing/abc.en-US.md'),
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/locale/missing/abc.en-US.md',
@@ -156,7 +157,7 @@ describe('routes & menu: locales', () => {
       },
       {
         path: '/group/abc',
-        component: '../../packages/preset-dumi/src/routes/fixtures/locale/sub/abc.en-US.md',
+        component: getAbsolutePath('./packages/preset-dumi/src/routes/fixtures/locale/sub/abc.en-US.md'),
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/locale/sub/abc.en-US.md',
@@ -170,7 +171,7 @@ describe('routes & menu: locales', () => {
       },
       {
         path: '/zh-CN/group/abc',
-        component: '../../packages/preset-dumi/src/routes/fixtures/locale/sub/abc.zh-CN.md',
+        component: getAbsolutePath('./packages/preset-dumi/src/routes/fixtures/locale/sub/abc.zh-CN.md'),
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/locale/sub/abc.zh-CN.md',
@@ -184,7 +185,7 @@ describe('routes & menu: locales', () => {
       },
       {
         path: '/sub',
-        component: '../../packages/preset-dumi/src/routes/fixtures/locale/sub/index.en-US.md',
+        component: getAbsolutePath('./packages/preset-dumi/src/routes/fixtures/locale/sub/index.en-US.md'),
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/locale/sub/index.en-US.md',
@@ -198,7 +199,7 @@ describe('routes & menu: locales', () => {
       },
       {
         path: '/zh-CN/sub',
-        component: '../../packages/preset-dumi/src/routes/fixtures/locale/sub/index.zh-CN.md',
+        component: getAbsolutePath('./packages/preset-dumi/src/routes/fixtures/locale/sub/index.zh-CN.md'),
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/locale/sub/index.zh-CN.md',
@@ -212,7 +213,7 @@ describe('routes & menu: locales', () => {
       },
       {
         path: '/zh-CN/missing/abc',
-        component: '../../packages/preset-dumi/src/routes/fixtures/locale/missing/abc.en-US.md',
+        component: getAbsolutePath('./packages/preset-dumi/src/routes/fixtures/locale/missing/abc.en-US.md'),
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/locale/missing/abc.en-US.md',
