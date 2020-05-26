@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "dumi-lib",
+  "name": "{{{ packageName }}}",
   "scripts": {
     "start": "dumi dev",
     "docs:build": "dumi build",

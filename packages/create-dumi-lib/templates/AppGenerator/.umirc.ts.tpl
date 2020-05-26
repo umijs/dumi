@@ -1,7 +1,7 @@
 import { defineConfig } from 'dumi';
 
 export default defineConfig({
-  title: 'Library Name',
+  title: '{{{ packageName }}}',
 {{ #siteMode }}
   mode: 'site',
 {{ /siteMode }}
