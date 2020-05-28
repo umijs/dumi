@@ -20,4 +20,4 @@ footer: Open-source MIT Licensed | Copyright © 2020<br />Powered by [dumi](http
 ---
 {{ /siteMode }}
 
-## Hello dumi!
+## Hello {{{ packageName }}}!

@@ -1,4 +1,4 @@
-# dumi library
+# {{{ packageName }}}
 
 ## Getting Started
 
