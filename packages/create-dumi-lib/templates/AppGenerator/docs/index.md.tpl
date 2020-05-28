@@ -1,8 +1,8 @@
 {{ #siteMode }}
 ---
 hero:
-  title: Library Name
-  desc: dumi library site example
+  title: {{{ packageName }}}
+  desc: {{{ packageName }}} site example
   actions:
     - text: Getting Started
       link: /components
