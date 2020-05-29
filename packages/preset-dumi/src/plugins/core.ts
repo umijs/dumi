@@ -22,7 +22,7 @@ function mergeUserConfig(defaultOpts: { [key: string]: any }, api: IApi): IDumiO
 
   // non-default values keys
   ['description', 'logo', 'menus', 'navs'].forEach(key => {
-    if (api.config[key]) {
+    if (api.config[key] !== undefined) {
       result[key] = api.config[key];
     }
   });

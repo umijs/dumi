@@ -54,6 +54,7 @@ const Navbar: FC<INavbarProps> = ({ onMobileMenuClick, navPrefix }) => {
           backgroundImage: logo && `url('${logo}')`,
         }}
         to={rootPath}
+        data-plaintext={logo === false || undefined}
       >
         {title}
       </Link>

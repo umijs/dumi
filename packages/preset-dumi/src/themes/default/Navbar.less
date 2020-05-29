@@ -40,14 +40,17 @@
 
   &-logo {
     display: inline-block;
-    padding-left: 56px;
     height: 40px;
     color: #080e29;
     font-weight: 500;
     text-decoration: none;
     font-size: 24px;
     line-height: 40px;
-    background: url(@img-logo) no-repeat 0 / contain;
+
+    &:not([data-plaintext]) {
+      padding-left: 56px;
+      background: url(@img-logo) no-repeat 0 / contain;
+    }
 
     &:active,
     &:hover {
@@ -56,8 +59,11 @@
 
     @media @mobile {
       height: 28px;
-      padding-left: 36px;
       line-height: 28px;
+
+      &:not([data-plaintext]) {
+        padding-left: 36px;
+      }
     }
   }
 
