@@ -33,13 +33,9 @@ export interface ILayoutProps {
  * @returns { slugs = [] }
  */
 const findCurrentRouteMeta = (route, location) => {
-  const currentRouteMeta = (route as any).routes.find(
-    currentRoute => currentRoute.path === location.pathname,
-  )?.meta;
-  if (currentRouteMeta) {
-    return currentRouteMeta;
-  }
-  return {};
+  const currentRoute = (route as any).routes.find(item => item.path === location.pathname);
+
+  return currentRoute ? currentRoute.meta || {} : null;
 };
 
 function getOffsetTop(target: HTMLElement, container: HTMLElement | Window): number {
@@ -100,7 +96,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
       menus: [],
     };
 
-    // find menu in reverse way to fallback to the first menu
+    // find locale in reverse way
     for (let i = locales.length - 1; i >= 0; i -= 1) {
       const localeName = (locales[i] || { name: '' }).name;
 
@@ -108,6 +104,18 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
         state.currentLocale = localeName;
         break;
       }
+    }
+
+    // redirect to home page if there has no matched route
+    if (!state.currentRouteMeta) {
+      const isPrefixLocale =
+        state.currentLocale !== locales[0]?.name && state.currentLocale !== '*';
+      const rootPath = isPrefixLocale ? `/${state.currentLocale}` : '/';
+
+      window.location.replace(rootPath);
+
+      // just to avoid throw error
+      state.currentRouteMeta = {};
     }
 
     // find nav in reverse way to fallback to the first nav
