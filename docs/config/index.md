@@ -81,7 +81,7 @@ export default {
 - 默认值：`默认主题`
 - 详细：
 
-主题颜色变量名称参照 `node_modules/@umijs/preset-dumi/lib/themes/default/variables.less`
+主题颜色变量名称参照 [https://github.com/umijs/dumi/blob/master/packages/preset-dumi/src/themes/default/variables.less](https://github.com/umijs/dumi/blob/master/packages/preset-dumi/src/themes/default/variables.less)
 
 ```js
   theme: {
