@@ -75,6 +75,20 @@ export default {
 
 该配置项用于自定义侧边菜单的展示，目前仅 `site` 模式下可用，分多语言模式和单语言模式，使用方式详见 [指南 - 配置式侧边菜单](/guide/control-menu-generate#配置式侧边菜单)。
 
+## theme
+
+- 类型：`Object`
+- 默认值：`默认主题`
+- 详细：
+
+主题颜色变量名称参照 `node_modules/@umijs/preset-dumi/lib/themes/default/variables.less`
+
+```js
+  theme: {
+    '@c-primary': '#ff652f',
+  }
+```
+
 ## navs
 
 - 类型：`Object | Array`
