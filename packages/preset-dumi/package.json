@@ -30,6 +30,7 @@
     "@babel/traverse": "^7.7.2",
     "@babel/types": "^7.7.2",
     "@umijs/babel-preset-umi": "3.x",
+    "@umijs/plugin-analytics": "^0.2.2",
     "@umijs/types": "3.x",
     "deepmerge": "^4.2.2",
     "enhanced-resolve": "^4.1.1",
