@@ -5,11 +5,12 @@
   "scripts": {
     "start": "dumi dev",
     "docs:build": "dumi build",
+    "docs:deploy": "bash ./scripts/deploy_doc.sh",
     "build": "father-build",
+    "deploy": "npm run build && npm publish"
     "prettier": "prettier --write \"**/*.{js,jsx,tsx,ts,less,md,json}\"",
     "test": "umi-test",
-    "test:coverage": "umi-test --coverage",
-    "pub": "npm run build && npm publish"
+    "test:coverage": "umi-test --coverage"
   },
   "main": "dist/index.js",
   "files": [
