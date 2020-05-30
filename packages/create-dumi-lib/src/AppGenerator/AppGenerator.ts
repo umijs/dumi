@@ -4,11 +4,13 @@ import { join } from 'path';
 export default class AppGenerator extends Generator {
   async writing() {
     const cwd = winPath(this.cwd);
+    const packageName = this.args.name || cwd.split('/').pop();
+    console.log('txp', packageName);
     this.copyDirectory({
       context: {
         version: require('../../package').version,
         siteMode: this.args.site,
-        packageName: cwd.split('/').pop(),
+        packageName,
       },
       path: join(__dirname, '../../templates/AppGenerator'),
       target: this.cwd,

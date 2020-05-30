@@ -1,15 +1,20 @@
 {
   "private": true,
   "name": "{{{ packageName }}}",
+  "version": "1.0.0",
   "scripts": {
     "start": "dumi dev",
     "docs:build": "dumi build",
     "build": "father-build",
     "prettier": "prettier --write \"**/*.{js,jsx,tsx,ts,less,md,json}\"",
     "test": "umi-test",
-    "test:coverage": "umi-test --coverage"
+    "test:coverage": "umi-test --coverage",
+    "pub": "npm run build && npm publish"
   },
   "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
   "module": "dist/index.esm.js",
   "typings": "dist/index.d.ts",
   "gitHooks": {
