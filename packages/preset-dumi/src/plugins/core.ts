@@ -231,6 +231,11 @@ export default function(api: IApi) {
     ];
   });
 
+  // register plugin-analytics
+  if (!api.hasPlugins(['@umijs/plugin-analytics'])) {
+    api.registerPlugins([require.resolve('@umijs/plugin-analytics')]);
+  }
+
   // TODO: CLI help info
   // TODO: site title support for routes
 }
