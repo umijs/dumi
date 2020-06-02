@@ -122,12 +122,15 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     if (navs[state.currentLocale]) {
       for (let i = navs[state.currentLocale].length - 1; i >= 0; i -= 1) {
         const nav = navs[state.currentLocale][i];
+        const items = [nav].concat(nav.children).filter(Boolean);
+        const matched = items.find(
+          item =>
+            item.path &&
+            new RegExp(`^${item.path.replace(/\.html$/, '')}(/|\.|$)`).test(location.pathname),
+        );
 
-        if (
-          nav.path &&
-          new RegExp(`^${nav.path.replace(/\.html$/, '')}(/|\.|$)`).test(location.pathname)
-        ) {
-          navPath = nav.path;
+        if (matched) {
+          navPath = matched.path;
           break;
         }
       }

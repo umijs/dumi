@@ -73,7 +73,7 @@ const Navbar: FC<INavbarProps> = ({ onMobileMenuClick, navPrefix }) => {
           );
 
           return (
-            <NavbarLink href={nav.path} key={nav.path}>
+            <NavbarLink href={nav.path} key={nav.path || nav.title}>
               {nav.title}
               {child}
             </NavbarLink>

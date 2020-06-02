@@ -55,7 +55,7 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location }) => {
           <div className="__dumi-default-menu-mobile-area">
             <ul className="__dumi-default-menu-nav-list">
               {navs.map(nav => (
-                <li key={nav.path}>
+                <li key={nav.path || nav.title}>
                   <NavbarLink href={nav.path}>
                     {nav.title}
                     {Boolean(nav.children?.length) && (
