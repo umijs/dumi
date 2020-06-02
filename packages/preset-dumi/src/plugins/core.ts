@@ -232,7 +232,11 @@ export default function(api: IApi) {
   });
 
   // register plugin-analytics
-  if (!api.hasPlugins(['@umijs/plugin-analytics'])) {
+  if (
+    !api.hasPlugins(['@umijs/plugin-analytics']) &&
+    // search plugins of other presets
+    api.service._extraPlugins.every(({ id }) => id !== '@umijs/plugin-analytics')
+  ) {
     api.registerPlugins([require.resolve('@umijs/plugin-analytics')]);
   }
 
