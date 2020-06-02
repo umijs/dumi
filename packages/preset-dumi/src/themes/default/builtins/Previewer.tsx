@@ -67,6 +67,7 @@ export interface IPreviewerProps {
    * show source code by default
    */
   defaultShowCode?: boolean;
+  className?: string;
 }
 
 class Previewer extends Component<IPreviewerProps> {
@@ -199,6 +200,7 @@ ${issueLink}`,
       path,
       dependencies,
       files,
+      ...props
     } = this.props;
     const { showSource, sourceType, showRiddle, currentFile } = this.state;
     const raw = source[sourceType];
@@ -211,7 +213,7 @@ ${issueLink}`,
     }
 
     return (
-      <div className="__dumi-default-previewer">
+      <div {...props} className={['__dumi-default-previewer', props.className].join(' ')}>
         <div
           className="__dumi-default-previewer-demo"
           style={{
