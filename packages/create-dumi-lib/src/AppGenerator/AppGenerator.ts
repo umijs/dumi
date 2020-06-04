@@ -5,7 +5,6 @@ export default class AppGenerator extends Generator {
   async writing() {
     const cwd = winPath(this.cwd);
     const packageName = this.args.name || cwd.split('/').pop();
-    console.log('txp', packageName);
     this.copyDirectory({
       context: {
         version: require('../../package').version,
