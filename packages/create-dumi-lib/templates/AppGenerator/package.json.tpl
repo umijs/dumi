@@ -5,9 +5,10 @@
   "scripts": {
     "start": "dumi dev",
     "docs:build": "dumi build",
-    "docs:deploy": "bash ./scripts/deploy_doc.sh",
+    "docs:deploy": "gh-pages -d dist",
     "build": "father-build",
-    "deploy": "npm run build && npm publish"
+    "deploy": "npm run docs:build && npm run docs:deploy",
+    "release": "npm run build && npm publish",
     "prettier": "prettier --write \"**/*.{js,jsx,tsx,ts,less,md,json}\"",
     "test": "umi-test",
     "test:coverage": "umi-test --coverage"
@@ -37,6 +38,7 @@
     "@umijs/test": "^3.0.5",
     "dumi": "^{{{ version }}}",
     "father-build": "^1.17.2",
+    "gh-pages": "^3.0.0",
     "lint-staged": "^10.0.7",
     "prettier": "^1.19.1",
     "yorkie": "^2.0.0"
