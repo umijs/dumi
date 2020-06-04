@@ -24,7 +24,7 @@ export default {
       },
       {
         title: '更多用法',
-        children: ['guide/mode', 'guide/multi-language'],
+        children: ['guide/mode', 'guide/multi-language', 'guide/seo'],
       },
       {
         title: '其他',
