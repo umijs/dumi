@@ -14,19 +14,19 @@ describe('routes: demo', () => {
       {
         paths: {
           cwd: process.cwd(),
-          absPagesPath: path.join(process.cwd(), 'src/pages'),
+          absTmpPath: path.join(process.cwd(), 'src/.umi'),
         },
       },
     );
 
-    expect(getDemoRoutes({ absPagesPath: path.join(process.cwd(), 'src/pages') })).toEqual([
+    expect(getDemoRoutes({ absTmpPath: path.join(process.cwd(), 'src/.umi') })).toEqual([
       {
         path: '/_demos/demo',
-        component: '../../packages/preset-dumi/src/routes/fixtures/demo/1/demo.tsx',
+        component: '../../../packages/preset-dumi/src/routes/fixtures/demo/1/demo.tsx',
       },
       {
         path: '/_demos/demo-1',
-        component: '../../packages/preset-dumi/src/routes/fixtures/demo/2/demo.tsx',
+        component: '../../../packages/preset-dumi/src/routes/fixtures/demo/2/demo.tsx',
       },
     ]);
   });

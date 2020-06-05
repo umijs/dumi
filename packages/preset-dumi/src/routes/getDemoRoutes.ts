@@ -22,5 +22,5 @@ export function addDemoRoute(filePath: string): string {
 export default (paths: IApi['paths']): IRoute[] =>
   Object.entries(singleRouteDemoSet).map(([filePath, routePathName]) => ({
     path: routePathName,
-    component: path.relative(paths.absPagesPath, filePath),
+    component: path.relative(path.join(paths.absTmpPath, 'core'), filePath),
   }));

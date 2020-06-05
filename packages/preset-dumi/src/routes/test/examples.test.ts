@@ -21,7 +21,7 @@ describe('routes: examples', () => {
       {
         paths: {
           cwd,
-          absPagesPath: path.join(cwd, 'src/pages'),
+          absTmpPath: path.join(cwd, 'src/.umi'),
         },
       } as IApi,
       {
@@ -36,16 +36,16 @@ describe('routes: examples', () => {
     expect(routes).toEqual([
       {
         path: '/_examples/test',
-        component: '../../examples/test.tsx',
+        component: '../../../examples/test.tsx',
         title: 'testing example frontmatter',
       },
       {
         path: '/',
-        component: '../../../../../themes/default/layout.js',
+        component: '../../../../../../themes/default/layout.js',
         routes: [
           {
             path: '/',
-            component: '../../examples/index.md',
+            component: '../../../examples/index.md',
             exact: true,
             meta: {
               filePath: 'examples/index.md',
@@ -57,7 +57,7 @@ describe('routes: examples', () => {
           },
           {
             path: '/test',
-            component: '../../../../../themes/default/builtins/Example.js',
+            component: '../../../../../../themes/default/builtins/Example.js',
             exact: true,
             meta: {
               title: 'testing example frontmatter',

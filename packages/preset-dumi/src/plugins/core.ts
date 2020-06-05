@@ -145,7 +145,7 @@ export default function(api: IApi) {
     urlLoaderExcludes: [/\.md$/],
     // pass empty routes if pages path does not exist and no routes config
     // to avoid umi throw src directory not exists error
-    routes: fs.existsSync(api.paths.absPagesPath) && !api.userConfig.routes ? undefined : [],
+    routes: fs.existsSync(api.paths.absSrcPath) && !api.userConfig.routes ? undefined : [],
   }));
 
   // configure loader for .md file

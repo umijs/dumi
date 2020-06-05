@@ -56,7 +56,7 @@ describe('routes & menu: normal', () => {
       {
         paths: {
           cwd: process.cwd(),
-          absPagesPath: path.join(process.cwd(), 'src/pages'),
+          absTmpPath: path.join(process.cwd(), 'src/.umi'),
         },
       },
     );
@@ -64,7 +64,7 @@ describe('routes & menu: normal', () => {
     expect(routes).toEqual([
       {
         path: '/',
-        component: '../../packages/preset-dumi/src/routes/fixtures/normal/index.md',
+        component: '../../../packages/preset-dumi/src/routes/fixtures/normal/index.md',
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/normal/index.md',
@@ -76,7 +76,7 @@ describe('routes & menu: normal', () => {
       },
       {
         path: '/test/intro',
-        component: '../../packages/preset-dumi/src/routes/fixtures/normal/intro.md',
+        component: '../../../packages/preset-dumi/src/routes/fixtures/normal/intro.md',
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/normal/intro.md',
@@ -89,7 +89,7 @@ describe('routes & menu: normal', () => {
       },
       {
         path: '/index',
-        component: '../../packages/preset-dumi/src/routes/fixtures/normal/index/readme.md',
+        component: '../../../packages/preset-dumi/src/routes/fixtures/normal/index/readme.md',
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/normal/index/readme.md',
@@ -103,7 +103,7 @@ describe('routes & menu: normal', () => {
       },
       {
         path: '/sub/hello-component',
-        component: '../../packages/preset-dumi/src/routes/fixtures/normal/sub/HelloComponent.md',
+        component: '../../../packages/preset-dumi/src/routes/fixtures/normal/sub/HelloComponent.md',
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/normal/sub/HelloComponent.md',
@@ -116,7 +116,7 @@ describe('routes & menu: normal', () => {
       },
       {
         path: '/sub',
-        component: '../../packages/preset-dumi/src/routes/fixtures/normal/sub/README.md',
+        component: '../../../packages/preset-dumi/src/routes/fixtures/normal/sub/README.md',
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/normal/sub/README.md',
@@ -129,7 +129,8 @@ describe('routes & menu: normal', () => {
       },
       {
         path: '/rename-sub-sub/still-hello',
-        component: '../../packages/preset-dumi/src/routes/fixtures/normal/sub/subsub/stillHello.md',
+        component:
+          '../../../packages/preset-dumi/src/routes/fixtures/normal/sub/subsub/stillHello.md',
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/normal/sub/subsub/stillHello.md',
@@ -142,7 +143,7 @@ describe('routes & menu: normal', () => {
       },
       {
         path: '/rename-sub-sub/y-end',
-        component: '../../packages/preset-dumi/src/routes/fixtures/normal/sub/subsub/yEnd.md',
+        component: '../../../packages/preset-dumi/src/routes/fixtures/normal/sub/subsub/yEnd.md',
         exact: true,
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/normal/sub/subsub/yEnd.md',
