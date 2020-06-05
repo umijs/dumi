@@ -1,15 +1,22 @@
 {
   "private": true,
-  "name": "dumi-lib",
+  "name": "{{{ packageName }}}",
+  "version": "1.0.0",
   "scripts": {
     "start": "dumi dev",
     "docs:build": "dumi build",
+    "docs:deploy": "gh-pages -d dist",
     "build": "father-build",
+    "deploy": "npm run docs:build && npm run docs:deploy",
+    "release": "npm run build && npm publish",
     "prettier": "prettier --write \"**/*.{js,jsx,tsx,ts,less,md,json}\"",
     "test": "umi-test",
     "test:coverage": "umi-test --coverage"
   },
   "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
   "module": "dist/index.esm.js",
   "typings": "dist/index.d.ts",
   "gitHooks": {
@@ -31,6 +38,7 @@
     "@umijs/test": "^3.0.5",
     "dumi": "^{{{ version }}}",
     "father-build": "^1.17.2",
+    "gh-pages": "^3.0.0",
     "lint-staged": "^10.0.7",
     "prettier": "^1.19.1",
     "yorkie": "^2.0.0"

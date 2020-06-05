@@ -1,8 +1,8 @@
 {{ #siteMode }}
 ---
 hero:
-  title: Library Name
-  desc: dumi library site example
+  title: {{{ packageName }}}
+  desc: {{{ packageName }}} site example
   actions:
     - text: Getting Started
       link: /components
@@ -20,4 +20,4 @@ footer: Open-source MIT Licensed | Copyright © 2020<br />Powered by [dumi](http
 ---
 {{ /siteMode }}
 
-## Hello dumi!
+## Hello {{{ packageName }}}!
