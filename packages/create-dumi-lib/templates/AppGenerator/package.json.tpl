@@ -5,7 +5,7 @@
   "scripts": {
     "start": "dumi dev",
     "docs:build": "dumi build",
-    "docs:deploy": "gh-pages -d dist",
+    "docs:deploy": "gh-pages -d docs-dist",
     "build": "father-build",
     "deploy": "npm run docs:build && npm run docs:deploy",
     "release": "npm run build && npm publish",
@@ -14,9 +14,6 @@
     "test:coverage": "umi-test --coverage"
   },
   "main": "dist/index.js",
-  "files": [
-    "dist"
-  ],
   "module": "dist/index.esm.js",
   "typings": "dist/index.d.ts",
   "gitHooks": {
