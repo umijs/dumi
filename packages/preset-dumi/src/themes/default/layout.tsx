@@ -33,7 +33,9 @@ export interface ILayoutProps {
  * @returns { slugs = [] }
  */
 const findCurrentRouteMeta = (route, location) => {
-  const currentRoute = (route as any).routes.find(item => item.path === location.pathname);
+  // remove suffix '/' from pathname
+  const pathWithoutSuffix = location.pathname.replace(/(.)\/$/, '$1');
+  const currentRoute = (route as any).routes.find(item => item.path === pathWithoutSuffix);
 
   return currentRoute ? currentRoute.meta || {} : null;
 };
