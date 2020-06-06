@@ -106,32 +106,6 @@ export default {
 
 ### 手动部署
 
-借助 [gh-pages](https://github.com/tschaub/gh-pages) 可以轻松帮助我们部署文档到 Github Page
-
-```bash
-npm install gh-pages --save-dev
-```
-
-or
-
-```bash
-yarn add gh-pages -D
-```
-
-`package.json` 中添加
-
-```json
-"scripts": {
-  "deploy": "gh-pages -d dist"
-}
-```
-
-编译生成 `dist` 目录
-
-```bash
-npm run docs:build
-```
-
 一键发布
 
 ```bash
@@ -163,5 +137,5 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          publish_dir: ./docs-dist
 ```
