@@ -30,6 +30,9 @@ export default () => <Button type="primary">我是 antd 的按钮</Button>;
 
 <code src="./demo/modal.jsx" />
 
+## 左下角按钮显示状态
+<code src="./demo/show-preview.tsx" showCSB />
+
 # 一级标题
 
 ## 二级标题

@@ -64,6 +64,14 @@ export interface IPreviewerProps {
     };
   };
   /**
+   * show codesandbox button or not
+   */
+  showCSB?: boolean;
+  /**
+   * show preview button or not
+   */
+  showPreview?: boolean;
+  /**
    * show source code by default
    */
   defaultShowCode?: boolean;
@@ -81,10 +89,10 @@ class Previewer extends Component<IPreviewerProps> {
   };
 
   componentDidMount() {
-    const { source, defaultShowCode = false } = this.props;
+    const { source, defaultShowCode = false, showCSB = false } = this.props;
 
     // init data for codesandbox
-    this.initCSBData();
+    showCSB && this.initCSBData();
 
     // prioritize display tsx
     this.setState({ sourceType: source.tsx ? 'tsx' : 'jsx', showSource: defaultShowCode });
@@ -200,6 +208,8 @@ ${issueLink}`,
       path,
       dependencies,
       files,
+      showCSB = false,
+      showPreview = false,
       ...props
     } = this.props;
     const { showSource, sourceType, showRiddle, currentFile } = this.state;
@@ -231,7 +241,7 @@ ${issueLink}`,
           dangerouslySetInnerHTML={{ __html: desc }}
         />
         <div className="__dumi-default-previewer-actions">
-          {!hasExternalFile && (
+          {showCSB && !hasExternalFile && (
             <>
               <CsbButton type={this.props.source.tsx ? 'tsx' : 'jsx'} base64={this.state.CSBData}>
                 <button className="__dumi-default-icon" role="codesandbox" type="submit" />
@@ -259,7 +269,7 @@ ${issueLink}`,
               )}
             </>
           )}
-          {path && (
+          {showPreview && path && (
             <a target="_blank" rel="noopener noreferrer" href={path}>
               <button className="__dumi-default-icon" role="open-demo" type="button" />
             </a>
