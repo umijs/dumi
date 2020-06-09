@@ -220,7 +220,7 @@ extraBabelPlugins: [
   ]
 ]
 ```
-在 md 中引入组件：：
+在 md 中引入组件：
 
 ```tsx
 import { Button } from 'lean'; // 这里会按需引入样式
