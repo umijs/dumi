@@ -165,3 +165,63 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
 ```
+
+## 开发阶段，如何配置 md 文件中的样式按需引入？
+
+dumi 会对 pkgName/es、pkgName/lib 做 alias，[详情见](https://github.com/umijs/dumi/blob/master/packages/preset-dumi/src/plugins/core.ts#L198)
+
+配置 `extraBabelPlugins` (注意是 `.umirc.ts` 的配置项，不是 `.fatherrc.ts`)，加入 [`babel-plugin-import`](https://github.com/ant-design/babel-plugin-import)，根据目录结构合理配置
+
+例如：
+
+目录结构：
+```shell
+.
+├── scripts
+│   └── hack-depend.js
+├── src
+│   ├── Button
+│   │   ├── style
+│   │   │   ├── index.less
+│   │   │   └── mixin.less
+│   │   ├── index.md
+│   │   └── index.tsx
+│   ├── style
+│   │   ├── base.less
+│   │   ├── color.less
+│   │   └── mixin.less
+│   └── index.ts
+├── .editorconfig
+├── .fatherrc.ts
+├── .gitignore
+├── .prettierignore
+├── .prettierrc
+├── .umirc.ts
+├── README.md
+├── package.json
+├── tsconfig.json
+├── typings.d.ts
+└── yarn.lock
+```
+
+配置 .umirc.ts：
+```tsx
+extraBabelPlugins: [
+  [
+    'import',
+    {
+      libraryName: 'lean',
+      camel2DashComponentName: false,
+      customStyleName: (name) => {
+        return `./style/index.less` // 注意：这里 ./ 不可省略
+      }
+    },
+    'lean'
+  ]
+]
+```
+在 md 中引入组件：
+
+```tsx
+import { Button } from 'lean'; // 这里会按需引入样式
+```
