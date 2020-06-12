@@ -25,6 +25,15 @@ function visitor(node, i, parent: Node) {
       }
     });
 
+    // If hideActions exist in YAML, need to convert
+    if ('hideActions' in yaml) {
+      try {
+        yaml.hideActions = JSON.parse(yaml['hideActions'])
+      } catch (error) {
+        yaml.hideActions = []
+      }
+    }
+
     // use import way rather than source code way for external demo (for HMR & sourcemap)
     if (node.properties.filePath) {
       transformCode = `
