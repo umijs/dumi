@@ -30,14 +30,14 @@ export default () => <Button type="primary">我是 antd 的按钮</Button>;
 
 <code src="./demo/modal.jsx" />
 
-## 左下角按钮控制
+## codesandbox与预览按钮显示控制
 
 <code src="./demo/show-preview.tsx" hideActions='["CSB", "EXTERNAL"]' />
 
-## 代码块左下角按钮控制
-
 ```jsx
 /**
+ * title: 代码块
+ * desc: 代码块中通过块注释指定，例：hideActions： '["CSB", "EXTERNAL"]'
  * hideActions: '["CSB", "EXTERNAL"]'
  **/
 import React from 'react';

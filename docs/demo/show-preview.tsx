@@ -1,5 +1,6 @@
 /**
- * title: 左下角按钮显示隐藏
+ * title: 通过code标签引入
+ * desc: 设置 hideAction 属性，例：hideActions='["CSB", "EXTERNAL"]'
  */
 
 import React from 'react';

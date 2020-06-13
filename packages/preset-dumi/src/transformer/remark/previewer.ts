@@ -25,12 +25,13 @@ function visitor(node, i, parent: Node) {
       }
     });
 
-    // If hideActions exist in YAML, need to convert
+    // If hideActions property exist in yaml, need to convert
     if ('hideActions' in yaml) {
       try {
-        yaml.hideActions = JSON.parse(yaml['hideActions'])
+        const hideActionsJson = JSON.parse(yaml.hideActions);
+        yaml.hideActions = Array.isArray(hideActionsJson) ? hideActionsJson : [];
       } catch (error) {
-        yaml.hideActions = []
+        yaml.hideActions = [];
       }
     }
 
