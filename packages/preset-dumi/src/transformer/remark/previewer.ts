@@ -19,21 +19,11 @@ function visitor(node, i, parent: Node) {
     let transformCode = raw;
 
     // transform markdown for previewer desc field
-    Object.keys(yaml).forEach((key) => {
+    Object.keys(yaml).forEach(key => {
       if (/^desc(\.|$)/.test(key)) {
         yaml[key] = transformer.markdown(yaml[key]).html;
       }
     });
-
-    // If hideActions property exist in yaml, need to convert
-    if ('hideActions' in yaml) {
-      try {
-        const hideActionsJson = JSON.parse(yaml.hideActions);
-        yaml.hideActions = Array.isArray(hideActionsJson) ? hideActionsJson : [];
-      } catch (error) {
-        yaml.hideActions = [];
-      }
-    }
 
     // use import way rather than source code way for external demo (for HMR & sourcemap)
     if (node.properties.filePath) {
@@ -50,9 +40,8 @@ export default () => <Demo />;`;
 
     // save code into data then declare them on the top page component
     this.vFile.data.demos = (this.vFile.data.demos || []).concat(
-      `const ${DEMO_COMPONENT_NAME}${
-        (this.vFile.data.demos?.length || 0) + 1
-      } = React.memo(${code});`,
+      `const ${DEMO_COMPONENT_NAME}${(this.vFile.data.demos?.length || 0) +
+        1} = React.memo(${code});`,
     );
 
     // replace original node

@@ -18,6 +18,15 @@ export function HTMLAttrParser(str: string): { [key: string]: any } {
   (str || '').replace(/([^=\s]+)(="([^"]+)"|='([^']+)')?/g, (_, name, content, value1, value2) => {
     attrs[name] = content ? value1 || value2 : true;
 
+    // try to parse JSON field value
+    if (/^(\[|{)[^]*(]|})$/.test(attrs[name])) {
+      try {
+        attrs[name] = JSON.parse(attrs[name]);
+      } catch (err) {
+        /* nothing */
+      }
+    }
+
     return _;
   });
 
