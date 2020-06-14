@@ -9,7 +9,7 @@ describe('demo example', () => {
     const result = remark(fs.readFileSync(FILE_PATH).toString(), {
       fileAbsPath: FILE_PATH,
       strategy: 'default',
-      previewLangs: [],
+      previewLangs: ['jsx'],
     }).contents.toString();
 
     // compare transform content

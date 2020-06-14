@@ -1,8 +1,15 @@
 <div class="markdown"><SourceCode code={"import React from 'react';\n\nexport default () => <h1>Hello World!</h1>\n"} lang="jsx" />
 </div>
 <DumiPreviewer
-  source={{"tsx":"export default () => <></>;","jsx":"export default () => <></>;\n"}}
-  {...{"path":"/_demos/demo-missing-react","dependencies":{},"files":{}}}
+  source={{"jsx":"import React from 'react';\n\nexport default () => <h1>Hello World!</h1>"}}
+  {...{"desc":"<div class=\"markdown\"><p>testing</p></div>","dependencies":{},"files":{}}}
 >
   <DumiDemo1 />
+</DumiPreviewer><div class="markdown">
+</div>
+<DumiPreviewer
+  source={{"tsx":"export default () => <></>;","jsx":"export default () => <></>;\n"}}
+  {...{"hideActions":["CSB"],"path":"/_demos/demo-missing-react","dependencies":{},"files":{}}}
+>
+  <DumiDemo2 />
 </DumiPreviewer>

@@ -48,6 +48,11 @@ _斜体样式_
 console.log('Hello World!');
 ```
 
+<pre>
+$ npm i dumi
+$ npx dumi dev
+</pre>
+
 | 名词   | 解释                                                                         |
 | ------ | ---------------------------------------------------------------------------- |
 | father | Library toolkit based on rollup, docz, storybook, jest, prettier and eslint. |
@@ -63,3 +68,5 @@ console.log('Hello World!');
 [前往 Umi 官网](https://umijs.org)
 
 自动转换超链接 https://umijs.org
+
+[内部 Markdown 链接](./test.md)
