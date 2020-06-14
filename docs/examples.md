@@ -30,7 +30,7 @@ export default () => <Button type="primary">我是 antd 的按钮</Button>;
 
 <code src="./demo/modal.jsx" />
 
-## codesandbox与预览按钮显示控制
+## 控制 Demo 预览器的功能按钮
 
 <code src="./demo/show-preview.tsx" hideActions='["CSB", "EXTERNAL"]' />
 

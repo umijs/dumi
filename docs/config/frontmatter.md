@@ -249,6 +249,33 @@ features:
 
 用于控制当前 demo 的包裹容器是否默认展开源代码显示。
 
+### hideActions
+
+- 类型：`String | Array`
+- 默认值：`[]`
+- 详细：
+
+用于控制 Demo 预览器部分功能按钮的隐藏。
+
+通过 code 标签的属性配置：
+
+```html
+<!-- 注意，单引号为必备，要确保值为有效 JSON 字符串 -->
+<code hideActions='["CSB"]' />
+```
+
+通过 frontmatter 配置：
+
+```ts
+/**
+ * hideActions: ["CSB"]
+ * hideActions:
+ *   - CSB
+ */
+
+// 以上两种方式均可识别
+```
+
 ### 通过 `code` 标签控制
 
 所有 TSX/JSX 支持的配置项，在使用 `code` 标签引入外部 demo 时也可以使用，就像这样：
