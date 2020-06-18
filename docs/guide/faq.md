@@ -163,7 +163,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          publish_dir: ./docs-dist
 ```
 
 ## 开发阶段，如何配置 md 文件中的样式按需引入？
