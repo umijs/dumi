@@ -57,6 +57,7 @@
         "always",
         [
           "scaffold",
+          "assets",
           "theme",
           "bin",
           "preset",
