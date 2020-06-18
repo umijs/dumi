@@ -17,6 +17,10 @@ export interface ExampleBaseAsset {
    */
   description?: string;
   'description.en-US'?: string;
+  /**
+   * Preview URL
+   */
+  previewUrl?: string;
 }
 
 /**

@@ -3,6 +3,7 @@ import AssetsPackage from './typings';
 const examplePackage: AssetsPackage = {
   name: 'Ant Design',
   package: 'antd',
+  homepage: 'https://ant.design',
   assets: {
     atoms: [
       {
@@ -19,6 +20,7 @@ const examplePackage: AssetsPackage = {
         designId: '1.按钮/1.危险按钮',
         name: '危险按钮',
         'name.en-US': 'Danger Button',
+        previewUrl: 'https://ant.design/components/button-cn/#components-button-demo-basic',
         props: {
           type: 'danger',
           children: '危险按钮',
@@ -30,6 +32,7 @@ const examplePackage: AssetsPackage = {
         designId: '1.按钮/2.和输入框一起使用',
         name: '和输入框一起使用',
         'name.en-US': 'Use with Input component',
+        previewUrl: 'https://ant.design/components/button-cn/#components-button-demo-icon',
         dependencies: {
           'index.tsx': {
             type: 'FILE',
