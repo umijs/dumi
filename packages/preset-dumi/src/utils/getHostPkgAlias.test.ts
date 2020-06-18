@@ -13,6 +13,7 @@ describe('getHostPkgAlias', () => {
     const alias = getHostPkgAlias({ cwd: path.join(__dirname, '../../../../') });
 
     expect(alias.map(([name]) => name)).toEqual([
+      'dumi-assets-types',
       '@umijs/create-dumi-app',
       '@umijs/create-dumi-lib',
       'dumi',
