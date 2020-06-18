@@ -27,7 +27,7 @@ const examplePackage: AssetsPackage = {
         },
       },
       {
-        type: 'BLOCK',
+        type: 'TMPL',
         atomAssetId: 'Button',
         designId: '1.按钮/2.和输入框一起使用',
         name: '和输入框一起使用',
