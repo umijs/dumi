@@ -6,6 +6,7 @@ import remark from './remark';
 import html from './html';
 import demo, { getDepsForDemo } from './demo';
 import FileCache from '../utils/cache';
+import ctx from '../context';
 
 const FRONT_COMMENT_EXP = /^\n*\/\*[^]+?\s*\*\/\n*/;
 const markdownCache = new FileCache();
@@ -62,7 +63,7 @@ function wrapperHtmlByComponent(jsx: string, meta: TransformResult['config']) {
         <>
           ${
             meta.translateHelp
-              ? "<Alert>This article has not been translated yet. Want to help us out? Click the Edit this doc on GitHub at the end of the page.</Alert>"
+              ? '<Alert>This article has not been translated yet. Want to help us out? Click the Edit this doc on GitHub at the end of the page.</Alert>'
               : ''
           }
           ${jsx}
@@ -89,7 +90,7 @@ export default {
       remark(raw, {
         fileAbsPath: opts.fileAbsPath,
         strategy: opts.onlyConfig ? 'data' : 'default',
-        previewLangs: opts.previewLangs || [],
+        previewLangs: opts.previewLangs || ctx.opts?.resolve?.previewLangs || [],
       });
     const { demos, ...metas } = result.data as any;
     let content = '';

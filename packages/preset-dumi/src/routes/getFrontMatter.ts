@@ -19,7 +19,12 @@ export default (fileAbsPath: string): { [key: string]: any } => {
       break;
 
     case '.md':
-      result = transformer.markdown(content, { fileAbsPath, onlyConfig: true }).config;
+      result = transformer.markdown(content, {
+        fileAbsPath,
+        // enable full-parse for assets command
+        // FIXME: use shared context instead, and use new way to parse frontmatter for routes
+        onlyConfig: !process.argv.includes('assets'),
+      }).config;
       break;
 
     default:
