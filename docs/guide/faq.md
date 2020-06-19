@@ -175,6 +175,7 @@ dumi 会对 pkgName/es、pkgName/lib 做 alias，[详情见](https://github.com/
 例如：
 
 目录结构：
+
 ```shell
 .
 ├── scripts
@@ -205,23 +206,25 @@ dumi 会对 pkgName/es、pkgName/lib 做 alias，[详情见](https://github.com/
 ```
 
 配置 .umirc.ts：
-```tsx
+
+```tsx | pure
 extraBabelPlugins: [
   [
     'import',
     {
       libraryName: 'lean',
       camel2DashComponentName: false,
-      customStyleName: (name) => {
-        return `./style/index.less` // 注意：这里 ./ 不可省略
-      }
+      customStyleName: name => {
+        return `./style/index.less`; // 注意：这里 ./ 不可省略
+      },
     },
-    'lean'
-  ]
-]
+    'lean',
+  ],
+];
 ```
+
 在 md 中引入组件：
 
-```tsx
+```tsx | pure
 import { Button } from 'lean'; // 这里会按需引入样式
 ```
