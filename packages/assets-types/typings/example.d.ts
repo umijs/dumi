@@ -24,11 +24,11 @@ export interface ExampleBaseAsset {
 }
 
 /**
- * Template example asset type definition
- * @note  for example, a danger Button component with form is a template exmaple asset
+ * Block example asset type definition
+ * @note  for example, a danger Button component with form is a block exmaple asset
  */
-export interface ExampleTmplAsset extends ExampleBaseAsset {
-  type: 'TMPL';
+export interface ExampleBlockAsset extends ExampleBaseAsset {
+  type: 'BLOCK';
   /**
    * The dependencies of example asset
    * @note  a npm package can be used as a dependency, a local file alse can be used as a dependency
@@ -63,6 +63,6 @@ export interface ExampleComponentAsset extends ExampleBaseAsset {
   props: any;
 }
 
-type ExampleAsset = ExampleComponentAsset | ExampleTmplAsset;
+type ExampleAsset = ExampleComponentAsset | ExampleBlockAsset;
 
 export default ExampleAsset;
