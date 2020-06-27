@@ -1,15 +1,3 @@
-<div class="markdown"><SourceCode code={"import React from 'react';\n\nexport default () => <h1>Hello World!</h1>\n"} lang="jsx" />
-</div>
-<DumiPreviewer
-  source={{"jsx":"import React from 'react';\n\nexport default () => <h1>Hello World!</h1>"}}
-  {...{"desc":"<div class=\"markdown\"><p>testing</p></div>","dependencies":{},"files":{}}}
->
-  <DumiDemo1 />
-</DumiPreviewer><div class="markdown">
-</div>
-<DumiPreviewer
-  source={{"tsx":"export default () => <></>;","jsx":"export default () => <></>;\n"}}
-  {...{"hideActions":["CSB"],"path":"/_demos/demo-missing-react","dependencies":{},"files":{}}}
->
-  <DumiDemo2 />
-</DumiPreviewer>
+<React.Fragment><div className="markdown"><SourceCode code={"import React from 'react';\n\nexport default () => <h1>Hello World!</h1>;\n"} lang="jsx" />
+</div><DumiPreviewer source={{"jsx":"import React from 'react';\n\nexport default () => <h1>Hello World!</h1>;\n","tsx":"import React from 'react';\n\nexport default () => <h1>Hello World!</h1>;"}} files={{}} dependencies={{"@babel/runtime":"7.9.2"}} desc="<div class=&#x22;markdown&#x22;><p>testing</p></div>"><DumiDemo1 /></DumiPreviewer><div className="markdown">
+</div><DumiPreviewer source={{"jsx":"export default () => <></>;\n","tsx":"export default () => <></>;"}} files={{}} dependencies={{}} hideactions={["CSB"]} path="/_demos/demo-missing-react"><DumiDemo2 /></DumiPreviewer></React.Fragment>

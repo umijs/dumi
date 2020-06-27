@@ -1,86 +1,53 @@
 import unified from 'unified';
 import frontmatter from 'remark-frontmatter';
-import stringify from 'rehype-stringify';
-import slug from 'rehype-slug';
-import headings from 'rehype-autolink-headings';
-import comments from 'rehype-remove-comments';
 import math from 'remark-math';
 import katex from 'rehype-katex';
-import parse, { IParseProps } from './parse';
+import headings from 'rehype-autolink-headings';
+import comments from 'rehype-remove-comments';
+import stringify from 'rehype-stringify';
+import parse from './parse';
 import rehype from './rehype';
-import yaml from './yaml';
-import header from './header';
-import externalDemo from './externalDemo';
+import slug from './slug';
+import meta from './meta';
+import code from './code';
 import link from './link';
 import img from './img';
 import previewer from './previewer';
-import jsx from './jsx';
+import raw from './raw';
+import jsxify from './jsxify';
 import isolation from './isolation';
 import sourceCode from './sourceCode';
 
-export interface IRemarkOpts {
-  /**
-   * the path of file which will be transformed
-   */
-  fileAbsPath?: string;
-  /**
-   * transform strategy
-   * @note  both md & data will be transformed by default
-   *        only return data (FrontMatter & other vFile data) if pass 'data'
-   */
-  strategy: IParseProps['strategy'];
-  /**
-   * which code block languages will be parse to previewer
-   */
-  previewLangs: IParseProps['langs'];
-}
-
-/**
- * strategy mapping for different transform strategy
- */
-const PLUGIN_STRATEGIES = {
-  default: [
-    [frontmatter],
-    [yaml],
-    [externalDemo],
-    [math],
-    [rehype],
-    [katex],
-    [stringify, { allowDangerousHTML: true, closeSelfClosing: true }],
-    [slug],
-    [headings],
-    [header],
-    [link],
-    [img],
-    [comments, { removeConditional: true }],
-    [sourceCode],
-    [previewer],
-    [jsx],
-    [isolation],
-  ],
-  data: [
-    [frontmatter],
-    [yaml],
-    [externalDemo],
-    [rehype],
-    [stringify],
-    [slug],
-    [headings],
-    [header],
-  ],
-} as {
-  [key: string]: [any][];
-};
-
-export default (raw: string, opts: IRemarkOpts) => {
+export default (source: string, fileAbsPath: string, type: 'jsx' | 'html') => {
+  const rehypeCompiler = {
+    jsx: [jsxify],
+    html: [stringify, { allowDangerousHTML: true, closeSelfClosing: true }],
+  }[type];
   const processor = unified()
-    .use(parse, { strategy: opts.strategy || 'default', langs: opts.previewLangs })
-    .data('fileAbsPath', opts.fileAbsPath);
+    // parse to remark
+    .use(parse)
+    // remark plugins
+    .use(frontmatter)
+    .use(math)
+    .use(meta)
+    // remark to rehype
+    .use(rehype)
+    // rehype plugins
+    .use(katex)
+    .use(slug)
+    .use(headings)
+    .use(comments, { removeConditional: true })
+    .use(link)
+    .use(sourceCode)
+    .use(raw)
+    .use(img)
+    .use(code)
+    .use(previewer)
+    .use(isolation)
+    .data('fileAbsPath', fileAbsPath);
 
-  // apply plugins through strategy
-  PLUGIN_STRATEGIES[opts.strategy].forEach(plugin => {
-    processor.use(...plugin);
-  });
+  // apply compiler via type
+  processor.use(rehypeCompiler[0], rehypeCompiler[1]);
 
-  return processor.processSync(raw);
+  return processor.processSync(source);
 };

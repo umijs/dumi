@@ -1,19 +1,15 @@
 import fs from 'fs';
 import path from 'path';
-import remark from '../remark';
+import transformer from '..';
 
 describe('basic example', () => {
   const FILE_PATH = path.join(__dirname, '../fixtures/raw/remark-basic.md');
 
   it('transform md to jsx', () => {
-    const result = remark(fs.readFileSync(FILE_PATH).toString(), {
-      fileAbsPath: FILE_PATH,
-      strategy: 'default',
-      previewLangs: [],
-    });
+    const result = transformer.markdown(fs.readFileSync(FILE_PATH).toString(), FILE_PATH);
 
     // compare transform content
-    expect(result.contents).toEqual(
+    expect(result.content).toEqual(
       fs.readFileSync(path.join(__dirname, '../fixtures/expect/remark-basic.html')).toString(),
     );
   });

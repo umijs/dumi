@@ -2,7 +2,7 @@ import { Node } from 'unist';
 import visit from 'unist-util-visit';
 import ctx from '../../context';
 import demoTransformer, { DEMO_COMPONENT_NAME, getDepsForDemo } from '../demo';
-import transformer from '../index';
+import transformer from '..';
 
 function visitor(node, i, parent: Node) {
   if (node.tagName === 'div' && node.properties?.type === 'previewer') {
@@ -22,7 +22,7 @@ function visitor(node, i, parent: Node) {
     // transform markdown for previewer desc field
     Object.keys(yaml).forEach(key => {
       if (/^desc(\.|$)/.test(key)) {
-        yaml[key] = transformer.markdown(yaml[key]).html;
+        yaml[key] = transformer.markdown(yaml[key], null, { type: 'html' }).content;
       }
     });
 
@@ -36,8 +36,9 @@ export default () => <Demo />;`;
     }
 
     // transform demo source code
-    const { content: code } = demoTransformer(transformCode, demoOpts);
-    const { dependencies, files } = getDepsForDemo(raw, demoOpts);
+    const { content: code, ast: demoAST } = demoTransformer(transformCode, demoOpts);
+    // use AST for deps analyze if transform code same as raw
+    const { dependencies, files } = getDepsForDemo(raw === transformCode ? demoAST : raw, demoOpts);
 
     // apply for assets command
     if (ctx.umi?.applyPlugins && !yaml.inline) {
@@ -92,14 +93,21 @@ export default () => <Demo />;`;
     // replace original node
     parent.children[i] = {
       previewer: true,
-      type: 'raw',
-      value: `
-<DumiPreviewer
-  source={${JSON.stringify(source)}}
-  {...${JSON.stringify({ ...yaml, dependencies, files })}}
->
-  <${DEMO_COMPONENT_NAME}${this.vFile.data.demos.length} />
-</DumiPreviewer>`,
+      type: 'element',
+      tagName: 'DumiPreviewer',
+      properties: {
+        source,
+        files,
+        dependencies,
+        ...yaml,
+      },
+      children: [
+        {
+          type: 'element',
+          tagName: `${DEMO_COMPONENT_NAME}${this.vFile.data.demos.length}`,
+          properties: {},
+        },
+      ],
     };
   }
 }

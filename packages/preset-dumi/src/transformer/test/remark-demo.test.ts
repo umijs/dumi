@@ -1,16 +1,21 @@
 import fs from 'fs';
 import path from 'path';
-import remark from '../remark';
+import { init } from '../../context';
+import transformer from '..';
 
 describe('demo example', () => {
   const FILE_PATH = path.join(__dirname, '../fixtures/raw/remark-demo.md');
 
+  beforeAll(() => {
+    init(null, { resolve: { previewLangs: ['tsx'] } });
+  });
+
+  afterAll(() => {
+    init(null, null);
+  });
+
   it('transform md to jsx', () => {
-    const result = remark(fs.readFileSync(FILE_PATH).toString(), {
-      fileAbsPath: FILE_PATH,
-      strategy: 'default',
-      previewLangs: ['jsx'],
-    }).contents.toString();
+    const result = transformer.markdown(fs.readFileSync(FILE_PATH).toString(), FILE_PATH).content;
 
     // compare transform content
     expect(result).toEqual(

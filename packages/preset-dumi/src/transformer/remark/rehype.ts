@@ -1,7 +1,5 @@
 import rehype from 'remark-rehype';
-import unist from 'unist-builder';
 import { parseText } from 'sylvanas';
-import codeHandler from 'mdast-util-to-hast/lib/handlers/code';
 
 /**
  * handle demo type node from parse
@@ -9,14 +7,12 @@ import codeHandler from 'mdast-util-to-hast/lib/handlers/code';
 function demoHandler(h, { type, lang, value, position, ...props }) {
   // split source codes for previewer
   const clonedNode = { lang, value };
-  const source = {};
+  const source: { jsx: string; tsx?: string } = { jsx: clonedNode.value };
 
   // set source code
   if (lang === 'tsx') {
-    source.tsx = clonedNode.value;
-    source.jsx = parseText(clonedNode.value);
-  } else {
-    source.jsx = clonedNode.value;
+    source.tsx = source.jsx;
+    source.jsx = parseText(source.tsx);
   }
 
   return h(position, 'div', {

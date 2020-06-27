@@ -8,5 +8,6 @@ module.exports = {
     'import/no-dynamic-require': 0,
     'react/sort-comp': 0,
     'jsx-a11y/aria-role': 0,
+    'no-param-reassign': 0,
   },
 };
