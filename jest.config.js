@@ -1,3 +1,7 @@
 module.exports = {
-  testPathIgnorePatterns: ['/packages/dumi/lib/', '/packages/preset-dumi/lib/'],
+  coveragePathIgnorePatterns: [
+    '/packages/dumi/src/index.ts',
+    '/packages/create-dumi-lib/src/cli.ts',
+    '/packages/create-dumi-app/src/cli.ts',
+  ],
 };
