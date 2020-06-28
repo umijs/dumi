@@ -1,147 +1,59 @@
-import path from 'path';
 import yaml from 'js-yaml';
-import slash from 'slash2';
-import extractComments from 'esprima-extract-comments';
 import remark from './remark';
-import html from './html';
-import demo, { getDepsForDemo } from './demo';
 import FileCache from '../utils/cache';
-import ctx from '../context';
-
-const FRONT_COMMENT_EXP = /^\n*\/\*[^]+?\s*\*\/\n*/;
-const markdownCache = new FileCache();
 
 export interface TransformResult {
   content: string;
-  html?: string;
-  config: {
-    [key: string]: any;
-  };
+  meta: { [key: string]: any };
 }
 
-// From: https://github.com/umijs/umi/blob/master/packages/umi-build-dev/src/routes/getYamlConfig.js
-function getYamlConfig(code, componentFile = '') {
-  const comments = extractComments(code);
-
-  return comments
-    .slice(0, 1)
-    .filter(c => c.value.includes(':') && c.loc.start.line === 1)
-    .reduce((memo, item) => {
-      const { value } = item;
-      const v = value.replace(/^(\s+)?\*/gm, '');
-
-      try {
-        const yamlResult = yaml.safeLoad(v);
-        return {
-          ...memo,
-          ...yamlResult,
-        };
-      } catch (e) {
-        console.warn(`Annotation fails to parse - ${componentFile}: ${e}`);
-      }
-      return memo;
-    }, {});
-}
-
-function wrapperHtmlByComponent(jsx: string, meta: TransformResult['config']) {
-  return `
-    import { Link } from 'umi';
-    import React from 'react';
-    import Alert from '${slash(path.join(__dirname, '../themes/default/builtins/Alert.js'))}';
-    import Badge from '${slash(path.join(__dirname, '../themes/default/builtins/Badge.js'))}';
-    import SourceCode from '${slash(
-      path.join(__dirname, '../themes/default/builtins/SourceCode.js'),
-    )}';
-    import DumiPreviewer from '${slash(
-      path.join(__dirname, '../themes/default/builtins/Previewer.js'),
-    )}';
-
-    ${(meta.demos || []).join('\n')}
-
-    export default function () {
-      return (
-        <>
-          ${
-            meta.translateHelp
-              ? '<Alert>This article has not been translated yet. Want to help us out? Click the Edit this doc on GitHub at the end of the page.</Alert>'
-              : ''
-          }
-          ${jsx}
-        </>
-      );
-  }`;
-}
+const cachers = {
+  markdown: new FileCache(),
+};
 
 export default {
   /**
-   * transform markdown content to jsx & meta data
-   * @param raw         content
+   * transform markdown to jsx & metas
+   * @param raw         raw content
+   * @param fileAbsPath source file path
    * @param opts        transform options
-   * @param fileAbsPath  absolute path of markdown file
-   * @param onlyConfig  whether transform meta data only
    */
   markdown(
     raw: string,
-    opts: { fileAbsPath?: string; onlyConfig?: boolean; previewLangs?: string[] } = {},
+    fileAbsPath: string | null,
+    opts: { type: 'jsx' | 'html' } = { type: 'jsx' },
   ): TransformResult {
+    // use cache first
     const result =
-      // use cache first, for HMR performance
-      (opts.onlyConfig && markdownCache.get(opts.fileAbsPath)) ||
-      remark(raw, {
-        fileAbsPath: opts.fileAbsPath,
-        strategy: opts.onlyConfig ? 'data' : 'default',
-        previewLangs: opts.previewLangs || ctx.opts?.resolve?.previewLangs || [],
-      });
-    const { demos, ...metas } = result.data as any;
-    let content = '';
+      (fileAbsPath && cachers.markdown.get(fileAbsPath)) || remark(raw, fileAbsPath, opts.type);
 
-    if (opts.fileAbsPath) {
-      markdownCache.add(opts.fileAbsPath, result);
-    }
-
-    if (!opts.onlyConfig) {
-      // transform html string to jsx string
-      content = this.html(result.contents as string);
-
-      // wrap by page component
-      content = wrapperHtmlByComponent(content, result.data);
+    // save cache for the content which has real path
+    if (fileAbsPath) {
+      cachers.markdown.add(fileAbsPath, result);
     }
 
     return {
-      content,
-      html: result.contents as string,
-      config: {
-        ...(metas as TransformResult['config']),
-      },
-    };
-  },
-  jsx(raw: string): TransformResult {
-    return {
-      // discard frontmatter for source code display
-      content: raw.replace(FRONT_COMMENT_EXP, ''),
-      config: getYamlConfig(raw),
-    };
-  },
-  tsx(raw: string): TransformResult {
-    return this.jsx(raw);
+      content: result.contents,
+      meta: result.data,
+    } as TransformResult;
   },
   /**
-   * transform html string to jsx string
-   * @param raw   html string
+   * split frontmatters & content for code block
+   * @param raw   raw content
    */
-  html(raw: string): TransformResult {
-    return html(raw);
-  },
-  /**
-   * transform code block (j|t)sx demo to js
-   */
-  demo(raw: string, opts: { isTSX: boolean; fileAbsPath: string }): TransformResult {
-    const { content, ast } = demo(raw, opts);
-    const deps = getDepsForDemo(ast, opts);
+  code(raw: string): TransformResult {
+    const [, comments = '', content = ''] = raw
+      // clear head break lines
+      .replace(/^\n\s*/, '')
+      // split head comments & remaining code
+      .match(/^(\/\*\*[^]*?\n\s*\*\/)?(?:\s|\n)*([^]+)?$/);
 
-    return {
-      content,
-      config: deps,
-    };
+    const frontmatter = comments
+      // clear / from head & foot for comment
+      .replace(/^\/|\/$/g, '')
+      // remove * from comments
+      .replace(/(^|\n)\s*\*+/g, '$1');
+
+    return { content, meta: yaml.safeLoad(frontmatter) };
   },
 };

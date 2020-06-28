@@ -1,16 +1,12 @@
 import fs from 'fs';
 import path from 'path';
-import remark from '../remark';
+import transformer from '..';
 
 describe('home example', () => {
   const FILE_PATH = path.join(__dirname, '../fixtures/raw/remark-home.md');
 
   it('transform md to jsx', () => {
-    const result = remark(fs.readFileSync(FILE_PATH).toString(), {
-      fileAbsPath: FILE_PATH,
-      strategy: 'default',
-      previewLangs: [],
-    }).data as any;
+    const result = transformer.markdown(fs.readFileSync(FILE_PATH).toString(), FILE_PATH).meta;
     // compare transform content
     expect(result.hero).not.toBeUndefined();
     expect(result.features).not.toBeUndefined();
