@@ -7,7 +7,7 @@ describe('demo example', () => {
   const FILE_PATH = path.join(__dirname, '../fixtures/raw/remark-demo.md');
 
   beforeAll(() => {
-    init(null, { resolve: { previewLangs: ['tsx'] } });
+    init(null, { resolve: { previewLangs: ['jsx', 'tsx'] } });
   });
 
   afterAll(() => {
