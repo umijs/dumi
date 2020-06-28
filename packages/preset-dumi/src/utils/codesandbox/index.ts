@@ -31,7 +31,7 @@ export default ({ files, deps, devDependencies, desc }: any, config: any) => {
     ...extraDependencies,
   };
 
-  main = !main && template === 'create-react-app-typescript' ? 'index.tsx' : 'index.js';
+  main = !main && template === 'create-react-app-typescript' ? 'index.tsx' : 'index.jsx';
 
   ensureReact(dependencies);
 
