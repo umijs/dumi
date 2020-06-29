@@ -229,11 +229,11 @@ extraBabelPlugins: [
 import { Button } from 'lean'; // 这里会按需引入样式
 ```
 
-## dumi 如何支持对 swift、C#、Kotlin等语言的语法高亮？
+## dumi 如何支持对 Swift、C#、Kotlin 等语言的语法高亮？
 
-dumi语法高亮使用的 [prism-react-renderer](https://github.com/FormidableLabs/prism-react-renderer) ，`prism-react-renderer` 是在 [PrismJS](https://github.com/PrismJS/prism)  的基础上进行实现的react组建。 `PrismJS` 本身就是默认支持众多语言的高亮，但是 `prism-react-renderer` 在实现的时候对部分语言进行了移除，其具体原因可以查看 [Adding Out of the Box Languages](https://github.com/FormidableLabs/prism-react-renderer/issues/53#issuecomment-546653848)。
+dumi 语法高亮使用的 [prism-react-renderer](https://github.com/FormidableLabs/prism-react-renderer) ，是一款基于 [PrismJS](https://github.com/PrismJS/prism) 实现的 React 组件。 `PrismJS` 支持的语言种类很多，但 `prism-react-renderer` 在实现的时候对部分语言进行了移除，其具体原因可以查看 [Adding Out of the Box Languages](https://github.com/FormidableLabs/prism-react-renderer/issues/53#issuecomment-546653848)。
 
-那么我们在 dumi 中可以通过下面的方式，添加对其他语言的支持：
+我们在 dumi 中可以通过下面的方式，添加对其他语言的支持：
 
 ```tsx | pure
 // src/app.ts
