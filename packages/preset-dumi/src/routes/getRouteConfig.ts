@@ -40,7 +40,7 @@ export default (api: IApi, opts: IDumiOpts): IRoute[] => {
     component: slash(
       path.relative(
         path.join(paths.absTmpPath, 'core'),
-        path.join(__dirname, '../themes/default/layout.js'),
+        path.join(__dirname, '../themes/default/layout'),
       ),
     ),
     // decorate standard umi routes
@@ -63,7 +63,7 @@ export default (api: IApi, opts: IDumiOpts): IRoute[] => {
       // use example component as original example component
       route.component = path.relative(
         path.join(paths.absTmpPath, 'core'),
-        path.join(__dirname, '../themes/default/builtins/Example.js'),
+        path.join(__dirname, '../themes/default/builtins/Example'),
       );
       route.meta.examplePath = examplePath;
     }

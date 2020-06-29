@@ -16,4 +16,5 @@ dist
 .eslintcache
 .umi
 .umi-production
+.umi-test
 .now

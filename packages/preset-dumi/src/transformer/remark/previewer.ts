@@ -36,9 +36,9 @@ export default () => <Demo />;`;
     }
 
     // transform demo source code
-    const { content: code, ast: demoAST } = demoTransformer(transformCode, demoOpts);
-    // use AST for deps analyze if transform code same as raw
-    const { dependencies, files } = getDepsForDemo(raw === transformCode ? demoAST : raw, demoOpts);
+    const { content: code } = demoTransformer(transformCode, demoOpts);
+    // use raw to ignore babel runtime deps
+    const { dependencies, files } = getDepsForDemo(raw, demoOpts);
 
     // apply for assets command
     if (ctx.umi?.applyPlugins && !yaml.inline) {

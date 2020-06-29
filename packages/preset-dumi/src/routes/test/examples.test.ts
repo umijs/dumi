@@ -41,7 +41,7 @@ describe('routes: examples', () => {
       },
       {
         path: '/',
-        component: '../../../../../../themes/default/layout.js',
+        component: '../../../../../../themes/default/layout',
         routes: [
           {
             path: '/',
@@ -57,7 +57,7 @@ describe('routes: examples', () => {
           },
           {
             path: '/test',
-            component: '../../../../../../themes/default/builtins/Example.js',
+            component: '../../../../../../themes/default/builtins/Example',
             exact: true,
             meta: {
               title: 'testing example frontmatter',
