@@ -1,6 +1,10 @@
 import AtomAsset from './atom';
 import ExampleAsset from './example';
 
+export { default as AtomAsset } from './atom';
+export { default as ExampleAsset } from './example';
+export * from './example';
+
 export default interface AssetsPackage {
   /**
    * Assets package name

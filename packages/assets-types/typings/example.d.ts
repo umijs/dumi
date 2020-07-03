@@ -21,6 +21,10 @@ export interface ExampleBaseAsset {
    * Preview URL
    */
   previewUrl?: string;
+  /**
+   * Thumbnail URL
+   */
+  thumbnail?: string;
 }
 
 /**
