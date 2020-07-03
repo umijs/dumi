@@ -22,15 +22,16 @@ export default (api: IApi) => {
    */
   api.registerCommand({
     name: 'assets',
-    fn() {
-      const assetsOutputPath = path.join(api.paths.absOutputPath, 'assets.json');
+    fn({ args }) {
+      const assetsOutputPath = path.resolve(api.paths.cwd, args._[0] || 'assets.json');
+      const fileName = path.parse(assetsOutputPath).base;
 
-      api.logger.log('Start to generate assets.json...');
+      api.logger.log(`Start to generate ${fileName}...`);
 
       getRouteConfig(api, ctx.opts);
       fs.writeFileSync(assetsOutputPath, JSON.stringify(assetsPkg, null, 2));
 
-      api.logger.log('Generate assets.json successfully!');
+      api.logger.log(`Generate ${fileName} successfully!`);
     },
   });
 
@@ -38,7 +39,9 @@ export default (api: IApi) => {
     api.register({
       key: 'dumi.detectCodeBlock',
       fn(block: ExampleBlockAsset) {
-        assetsPkg.assets.examples.push(block);
+        if (block.name) {
+          assetsPkg.assets.examples.push(block);
+        }
       },
     });
   }

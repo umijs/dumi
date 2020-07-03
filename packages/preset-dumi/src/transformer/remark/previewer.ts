@@ -47,7 +47,7 @@ export default () => <Demo />;`;
         type: ctx.umi.ApplyPluginsType.event,
         args: {
           type: 'BLOCK',
-          name: yaml.title || 'Code Block',
+          name: yaml.title,
           description: yaml.desc,
           thumbnail: yaml.thumbnail,
           dependencies: {
