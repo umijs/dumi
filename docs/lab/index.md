@@ -29,7 +29,6 @@ sidemenu: false
 ```jsx
 /**
  * title: Demo 的名称
- * identifier: dumi-demo（注：该配置项会被 Umi UI 用于创建区块文件夹，当前需手动配置，dumi 1.1 正式版之前会支持自动生成）
  * thumbnail: Demo 的预览缩略图地址
  */
 
@@ -43,7 +42,7 @@ sidemenu: false
 <code src="/path/to/demo.tsx" title="Demo 的名称" thumbnail="Demo 的预览缩略图地址" />
 ```
 
-#### 2. 添加资产元数据到构建产物中
+#### 2. 在 publish 前生成资产元数据
 
 然后在 `package.json` 中添加一条 npm script：
 
