@@ -1,0 +1,24 @@
+{
+  "name": "dumi-theme-default",
+  "version": "0.0.0",
+  "description": "",
+  "files": [
+    "es",
+    "src"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/umijs/dumi",
+    "directory": "dumi-theme-default"
+  },
+  "homepage": "http://github.com/umijs/dumi",
+  "bugs": "http://github.com/umijs/dumi/issues",
+  "authors": [],
+  "peerDependencies": {
+    "@umijs/preset-dumi": "1.x"
+  },
+  "optionalDependencies": {
+    "dumi": "1.x"
+  },
+  "license": "MIT"
+}
