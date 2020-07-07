@@ -97,6 +97,8 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
       navs: [],
       menus: [],
     };
+    const isPrefixLocale = state.currentLocale !== locales[0]?.name && state.currentLocale !== '*';
+    const rootPath = isPrefixLocale ? `/${state.currentLocale}` : '/';
 
     // find locale in reverse way
     for (let i = locales.length - 1; i >= 0; i -= 1) {
@@ -109,11 +111,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     }
 
     // redirect to home page if there has no matched route
-    if (!state.currentRouteMeta) {
-      const isPrefixLocale =
-        state.currentLocale !== locales[0]?.name && state.currentLocale !== '*';
-      const rootPath = isPrefixLocale ? `/${state.currentLocale}` : '/';
-
+    if (!state.currentRouteMeta && location.pathname !== rootPath) {
       window.location.replace(rootPath);
 
       // just to avoid throw error
@@ -121,14 +119,16 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     }
 
     // find nav in reverse way to fallback to the first nav
-    if (navs[state.currentLocale]) {
+    if (location.pathname === rootPath) {
+      navPath = rootPath;
+    } else if (navs[state.currentLocale]) {
       for (let i = navs[state.currentLocale].length - 1; i >= 0; i -= 1) {
         const nav = navs[state.currentLocale][i];
         const items = [nav].concat(nav.children).filter(Boolean);
         const matched = items.find(
           item =>
             item.path &&
-            new RegExp(`^${item.path.replace(/\.html$/, '')}(/|\.|$)`).test(location.pathname),
+            new RegExp(`^${item.path.replace(/\.html$/, '')}(/|.|$)`).test(location.pathname),
         );
 
         if (matched) {
