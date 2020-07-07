@@ -23,7 +23,10 @@ export interface ILayoutProps {
   menus: IMenu[];
   locales: ILocale[];
   mode: IDumiOpts['mode'];
-  repoUrl?: string;
+  repository?: {
+    url: string;
+    branch?: string;
+  };
 }
 
 /**
@@ -296,7 +299,8 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
   );
 
   render() {
-    const { mode, title, desc, logo, repoUrl, locales, algolia, children } = this.props;
+    const { mode, title, desc, logo, repository, locales, algolia, children } = this.props;
+    const { url: repoUrl, branch } = repository;
     const { navs, menus, menuCollapsed, currentLocale, currentSlug, currentRouteMeta } = this.state;
     const siteMode = this.props.mode === 'site';
     const showHero = siteMode && currentRouteMeta.hero;
@@ -374,7 +378,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
                   <a
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={`${repoUrl}/edit/master/${currentRouteMeta.filePath}`}
+                    href={`${repoUrl}/edit/${branch}/${currentRouteMeta.filePath}`}
                   >
                     {isCN
                       ? `在 ${repoPlatform} 上编辑这篇文档`

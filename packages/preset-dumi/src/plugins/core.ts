@@ -120,7 +120,10 @@ export default function(api: IApi) {
       logo: opts.logo,
       desc: opts.description,
       mode: opts.mode,
-      repoUrl: getRepoUrl(pkg.repository?.url || pkg.repository),
+      repository: {
+        url: getRepoUrl(pkg.repository?.url || pkg.repository),
+        branch: pkg.repository?.branch || 'master',
+      },
       algolia: opts.algolia,
     };
 
