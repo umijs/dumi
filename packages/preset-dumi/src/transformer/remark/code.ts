@@ -8,6 +8,11 @@ import { saveFileOnDepChange } from '../../utils/watcher';
 import { addDemoRoute } from '../../routes/getDemoRoutes';
 import transformer from '..';
 
+const ATTR_MAPPING = {
+  hideactions: 'hideActions',
+  defaultshowcode: 'defaultShowCode',
+};
+
 /**
  * remark plugin for parse code tag to external demo
  */
@@ -25,6 +30,14 @@ export default function code() {
 
         // read external demo content and convert node to demo node
         const result = transformer.code(fs.readFileSync(absPath).toString());
+
+        // restore camelCase attrs, because hast-util-raw will transform camlCase to lowercase
+        Object.entries(ATTR_MAPPING).forEach(([mark, attr]) => {
+          if (attrs[mark]) {
+            attrs[attr] = attrs[mark];
+            delete attrs[mark];
+          }
+        });
 
         // add single route for external demo
         attrs.path = addDemoRoute(absPath);
