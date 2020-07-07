@@ -14,7 +14,11 @@ export const formatJSXProps = (props: { [key: string]: any }): { [key: string]: 
 
     // use wrapper object for workaround implement raw props render
     // https://github.com/mapbox/jsxtreme-markdown/blob/main/packages/hast-util-to-jsx/index.js#L167
-    if (props[key] !== null && (typeof props[key] === 'object' || Array.isArray(props[key]))) {
+    if (
+      !(props[key] instanceof String) &&
+      props[key] !== null &&
+      (typeof props[key] === 'object' || Array.isArray(props[key]))
+    ) {
       result[key] = new String(JSON.stringify(props[key]));
     }
 

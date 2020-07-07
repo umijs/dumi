@@ -11,7 +11,7 @@ function createSourceCode(lang: string, code: string, position: any) {
       // use wrapper element to workaround for skip props escape
       // https://github.com/mapbox/jsxtreme-markdown/blob/main/packages/hast-util-to-jsx/index.js#L159
       // eslint-disable-next-line no-new-wrappers
-      code: new String(code),
+      code: new String(JSON.stringify(code)),
       lang: lang || 'unknown',
     },
   };
