@@ -139,7 +139,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     }
 
     state.navs = navs[state.currentLocale] || [];
-    state.menus = menus[state.currentLocale]?.[navPath] || [];
+    state.menus = menus[state.currentLocale]?.[navPath] || menus[state.currentLocale]?.['*'] || [];
     return state;
   }
 
