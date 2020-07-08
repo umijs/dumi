@@ -17,7 +17,7 @@ sidemenu: false
 
 <p style="text-align: center;">
   <img src="https://gw.alipayobjects.com/zos/bmw-prod/a873195d-32fe-427d-9756-a002d7644d85/kc5y7qpk_w2078_h1757.png" width="800" >
-</a>
+</p>
 
 ### 使用方式
 
