@@ -39,6 +39,13 @@ export default function code() {
           }
         });
 
+        // convert empty string to boolean
+        Object.keys(attrs).forEach(attr => {
+          if (attrs[attr] === '') {
+            attrs[attr] = true;
+          }
+        });
+
         // add single route for external demo
         attrs.path = addDemoRoute(absPath);
 
