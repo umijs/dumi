@@ -37,9 +37,9 @@ export default () => <Button type="primary">我是 antd 的按钮</Button>;
 ```jsx
 /**
  * title: 代码块
- * desc: 代码块中通过块注释指定，例：hideActions： '["CSB", "EXTERNAL"]'
- * hideActions: '["CSB", "EXTERNAL"]'
- **/
+ * desc: '代码块中通过块注释指定，例：hideActions: ["CSB", "EXTERNAL"]'
+ * hideActions: ["CSB", "EXTERNAL"]
+ */
 import React from 'react';
 import { Button } from 'antd';
 

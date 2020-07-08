@@ -251,11 +251,14 @@ features:
 
 ### hideActions
 
-- 类型：`String | Array`
+- 类型：`Array<'CSB' | 'EXTERNAL'>`
 - 默认值：`[]`
 - 详细：
 
-用于控制 Demo 预览器部分功能按钮的隐藏。
+用于控制 Demo 预览器部分功能按钮的隐藏，配置值含义如下：
+
+- CSB: 隐藏『在 codesandbox.io 中打开』的按钮
+- EXTERNAL: 隐藏『在新窗口打开』的按钮
 
 通过 code 标签的属性配置：
 
