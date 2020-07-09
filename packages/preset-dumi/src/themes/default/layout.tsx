@@ -112,7 +112,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     }
 
     // redirect to home page if there has no matched route
-    if (!state.currentRouteMeta && typeof window !== undefined) {
+    if (!state.currentRouteMeta && typeof window !== 'undefined') {
       const isPrefixLocale =
         state.currentLocale !== locales[0]?.name && state.currentLocale !== '*';
       const rootPath = isPrefixLocale ? `/${state.currentLocale}` : '/';

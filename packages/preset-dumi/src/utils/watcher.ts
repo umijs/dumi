@@ -10,7 +10,37 @@ interface IWatcherItem {
 }
 
 const isDev = () => process.env.NODE_ENV === 'development' || process.env.TEST_WATCHER;
-let watchers: IWatcherItem[] = [];
+const watchers: IWatcherItem[] = [];
+
+export const triggerFileChange = (filePath: string) => {
+  fs.writeFileSync(filePath, fs.readFileSync(filePath));
+};
+
+
+export const getWatchersForFile = (filePath: string) => {
+  const result = new Set<IWatcherItem>();
+
+  function loop(loopFilePath: string) {
+    // find all related watchers, include dep file
+    watchers.forEach(item => {
+      if (
+        item.options.watchFilePath === loopFilePath ||
+        item.options.parentFilePath === loopFilePath
+      ) {
+        result.add(item);
+
+        // continue to close watcher for related files
+        if (item.options.watchFilePath !== loopFilePath) {
+          loop(item.options.watchFilePath);
+        }
+      }
+    });
+  }
+
+  loop(filePath);
+
+  return Array.from(result);
+};
 
 export const watchFileChange = (
   filePath: string,
@@ -51,31 +81,3 @@ export const closeWatchersForFile = (filePath: string) => {
   relatedWatchers.forEach(item => closeWatcher(item));
 };
 
-export const getWatchersForFile = (filePath: string) => {
-  const result = new Set<IWatcherItem>();
-
-  function loop(loopFilePath: string) {
-    // find all related watchers, include dep file
-    watchers.forEach(item => {
-      if (
-        item.options.watchFilePath === loopFilePath ||
-        item.options.parentFilePath === loopFilePath
-      ) {
-        result.add(item);
-
-        // continue to close watcher for related files
-        if (item.options.watchFilePath !== loopFilePath) {
-          loop(item.options.watchFilePath);
-        }
-      }
-    });
-  }
-
-  loop(filePath);
-
-  return Array.from(result);
-};
-
-export const triggerFileChange = (filePath: string) => {
-  fs.writeFileSync(filePath, fs.readFileSync(filePath));
-};

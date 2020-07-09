@@ -4,8 +4,8 @@ import has from 'hast-util-has-property';
 import is from 'hast-util-is-element';
 import url from 'url';
 
-function isAbsoluteUrl(url) {
-  return /^(?:https?:)?\/\//.test(url);
+function isAbsoluteUrl(val) {
+  return /^(?:https?:)?\/\//.test(val);
 }
 
 export default () => ast => {
@@ -20,9 +20,9 @@ export default () => ast => {
         });
 
         // remove nested hyperlink, this is a bug from something
-        node.children.forEach((child, i) => {
+        node.children.forEach((child, index) => {
           if (child.tagName === 'a') {
-            node.children.splice(i, 1, ...child.children);
+            node.children.splice(index, 1, ...child.children);
           }
         });
 
