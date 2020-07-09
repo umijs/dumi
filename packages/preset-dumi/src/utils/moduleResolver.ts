@@ -43,9 +43,9 @@ export const getModuleResolvePkg = ({
   sourcePath,
   extensions = DEFAULT_EXT,
 }: IModuleResolverOpts) => {
-  let version: string | null = null;
-  let name: string | null = null;
-  let peerDependencies: any[] | null = [];
+  let version: string | null;
+  let name: string | null;
+  let peerDependencies: any | null;
   const resolvePath = getModuleResolvePath({ basePath, sourcePath, extensions });
   const modulePath = resolvePath.match(/^(.*?node_modules\/(?:@[^/]+\/)?[^/]+)/)?.[1];
   const pkgPath = path.join(modulePath, 'package.json');

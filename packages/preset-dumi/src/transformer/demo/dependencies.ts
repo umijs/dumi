@@ -66,7 +66,7 @@ function analyzeDeps(
           });
 
           if (pkg.peerDependencies) {
-            Object.keys(pkg.peerDependencies).forEach(item => dependencies[item] = pkg.peerDependencies[item]);
+            Object.assign(dependencies, pkg.peerDependencies)
           }
 
           dependencies[pkg.name] = pkg.version;
