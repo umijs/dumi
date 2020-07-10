@@ -11,7 +11,7 @@ export default (function group(routes) {
   routes.map(route => {
     const defaultLocale = this.options.locales[0]?.[0];
     let groupPath: string = route.meta.group?.path;
-    let groupTitle: string = route.meta.group?.title;
+    const groupTitle: string = route.meta.group?.title;
     let clearPath = route.path;
 
     if (route.meta.nav?.path) {

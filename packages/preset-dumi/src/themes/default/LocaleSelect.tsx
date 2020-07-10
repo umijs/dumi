@@ -23,9 +23,9 @@ const LocaleSelect: FC = () => {
       <div className="__dumi-default-locale-select" data-locale-count={locales.length}>
         {locales.length > 2 ? (
           <select value={locale} onChange={handleLocaleChange}>
-            {locales.map(locale => (
-              <option value={locale.name} key={locale.name}>
-                {locale.label}
+            {locales.map(localeItem => (
+              <option value={localeItem.name} key={localeItem.name}>
+                {localeItem.label}
               </option>
             ))}
           </select>

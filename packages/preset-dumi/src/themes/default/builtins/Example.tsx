@@ -28,7 +28,7 @@ export default (props: IRouteProps & { route: any }) => {
             />
           </span>
         </div>
-        <iframe src={props.route.meta.examplePath} ref={elm} style={{ height }} />
+        <iframe src={props.route.meta.examplePath} ref={elm} style={{ height }} title="dumi"/>
       </div>
     )
   );

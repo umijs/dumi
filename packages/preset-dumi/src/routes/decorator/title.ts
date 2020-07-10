@@ -1,5 +1,4 @@
 import path from 'path';
-import slash from 'slash2';
 import { RouteProcessor } from '.';
 
 /**

@@ -35,10 +35,10 @@ export default (paths: IApi['paths']) => {
       });
     } else if (require.resolve('lerna/lib/PackageUtilities', { paths: [paths.cwd] })) {
       // reference: https://github.com/azz/lerna-get-packages/blob/master/index.js
-      var PackageUtilities = require(require.resolve('lerna/lib/PackageUtilities', {
+      const PackageUtilities = require(require.resolve('lerna/lib/PackageUtilities', {
         paths: [paths.cwd],
       }));
-      var Repository = require(require.resolve('lerna/lib/Repository', { paths: [paths.cwd] }));
+      const Repository = require(require.resolve('lerna/lib/Repository', { paths: [paths.cwd] }));
 
       PackageUtilities.getPackages(new Repository(paths.cwd)).forEach(pkg => {
         pkgs.push([pkg._package.name, pkg._location]);
