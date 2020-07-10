@@ -21,54 +21,74 @@ sidemenu: false
 
 ### 使用方式
 
-#### 1. 添加 Demo 元信息
+#### 1. 初始化 dumi 组件开发项目
 
-在使用 dumi 做组件研发的同时，给组件的 Demo 添加一些元信息：
+```bash
+$ mkdir dumi-lib && cd dumi-lib
+$ npx @umijs/create-dumi-lib
+```
 
-<pre>
+#### 2. 为 Demo 添加资产元信息
+
+以初始化项目的 Demo 为例，打开 `src/Foo/index.md`，添加如下 frontmatter 配置：
+
+<pre lang="diff">
+// src/Foo/index.md
+
 ```jsx
-/**
- * title: Demo 的名称
- * thumbnail: Demo 的预览缩略图地址
- */
++ /**
++  * title: Foo Demo
++  * thumbnail: [缩略图的 URL 地址]
++  */
+import React from 'react';
+import { Foo } from 'dumi-lib';
 
-// 正常的 Demo 源代码
+export default () => <Foo title="First Demo" />;
 ```
 </pre>
 
-或者
+除了在源代码中编写 frontmatter 以外，给外部 Demo 的 `code` 标签添加属性，也能实现元信息的添加：
 
 ```html
 <code src="/path/to/demo.tsx" title="Demo 的名称" thumbnail="Demo 的预览缩略图地址" />
 ```
 
-#### 2. 在 publish 前生成资产元数据
+#### 3. 启用元数据生成能力
 
-然后在 `package.json` 中添加一条 npm script：
+在 `package.json` 中添加一条 npm script，并声明 `dumiAssets` 字段，Umi UI 会根据此字段查找资产元数据文件：
 
-```json
+```diff
 {
   "scripts": {
-    "postversion": "dumi assets"
-  }
++   "postversion": "dumi assets"
+  },
++ "dumiAssets": "assets.json"
 }
 ```
 
-并且在 `gitignore` 中添加 `assets.json`。
+由于 `assets.json` 不需要参与版本控制，请在 `gitignore` 中添加 `assets.json`。
 
-#### 3. 添加资产元数据字段
+#### 4. 构建并生成资产元数据
 
-在 `package.json` 中添加 `dumiAssets` 字段：
+如果只是用于测试，可以用 `npm version` 来代替 `npm publish`，随后用 link 进行本地玩耍：
 
-```json
-{
-  "dumiAssets": "assets.json"
-}
+```bash
+$ npm run build
+$ npm version patch -m "build: bump version to %s"
 ```
 
-#### 4. 在 Umi UI 中使用
+#### 5. 在 Umi UI 中使用
 
-走完正常的 npm 发布流程后，将组件库安装到使用 Umi UI 的项目中，即可在 Umi UI 的资产列表中看到基于 dumi 研发的资产列表，并可直接插入到页面中进行使用：
+初始化 Umi 应用，安装 Umi UI 并 link 我们刚刚的组件库：
+
+```bash
+$ mkdir umi-app && cd umi-app
+$ npx @umijs/create-dumi-app
+$ npm i @umijs/preset-ui -D
+$ npm link path/to/dumi/lib
+```
+
+然后和往常一样启动 Umi 项目，即可在 Umi UI 的迷你气泡中看到 dumi-lib 项目中的 Demo 资产，并可直接插入到页面中使用：
 
 <p style="text-align: center;">
   <img src="https://gw.alipayobjects.com/zos/bmw-prod/4102a494-e4d8-494e-a790-1a7a5562da51/kc6gnqjd_w680_h387.gif" width="680">
