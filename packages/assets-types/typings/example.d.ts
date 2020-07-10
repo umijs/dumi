@@ -25,6 +25,10 @@ export interface ExampleBaseAsset {
    * Thumbnail URL
    */
   thumbnail?: string;
+  /**
+   * Example tags
+   */
+  tags?: string[];
 }
 
 /**

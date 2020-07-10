@@ -50,6 +50,7 @@ export default () => <Demo />;`;
           name: yaml.title,
           description: yaml.desc,
           thumbnail: yaml.thumbnail,
+          tags: yaml.tags,
           dependencies: {
             // append npm dependencies
             ...Object.entries(dependencies).reduce(

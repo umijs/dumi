@@ -6,7 +6,7 @@
 export const formatJSXProps = (props: { [key: string]: any }): { [key: string]: any } => {
   const OMIT_NULL_PROPS = ['alt', 'align'];
 
-  return Object.keys(props).reduce((result, key) => {
+  return Object.keys(props || {}).reduce((result, key) => {
     // ignore useless empty props
     if (props[key] !== null || !OMIT_NULL_PROPS.includes(key)) {
       result[key] = props[key];

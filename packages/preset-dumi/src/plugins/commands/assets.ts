@@ -7,10 +7,11 @@ import AssetsPackage from '../../../../assets-types/typings';
 import { ExampleBlockAsset } from '../../../../assets-types/typings/example';
 
 export default (api: IApi) => {
-  const isAssetCmd = process.argv[process.argv.length - 1] === 'assets';
+  const isAssetCmd = process.argv.includes('assets');
   const assetsPkg: AssetsPackage = {
     name: api.userConfig.title || api.pkg.name,
     package: api.pkg.name,
+    logo: api.userConfig.logo,
     assets: {
       atoms: [],
       examples: [],
