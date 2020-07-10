@@ -1,6 +1,6 @@
 {
   "name": "dumi-assets-types",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "description": "Type definition for UI assets that build from dumi",
   "types": "typings/index.d.ts",
   "files": [
