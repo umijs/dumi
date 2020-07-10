@@ -287,7 +287,7 @@ ${issueLink}`,
             />
           )}
           <button
-            className="__dumi-default-icon"
+            className={`__dumi-default-icon${showSource ? ' __dumi-default-btn-expand' : ''}`}
             role="source"
             type="button"
             onClick={() => this.setState({ showSource: !showSource })}
