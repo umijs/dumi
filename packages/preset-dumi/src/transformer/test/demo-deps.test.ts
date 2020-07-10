@@ -38,4 +38,14 @@ describe('demo transformer: dependencies', () => {
     expect(Object.keys(result.files).length).toEqual(1);
     expect(result.dependencies['js-yaml']).not.toBeUndefined();
   });
+
+  it("merge dep's peerDependencies", () => {
+    const filePath = path.join(__dirname, '../fixtures/demo-deps/peer/index.ts');
+    const result = analyzeDeps(fs.readFileSync(filePath).toString(), {
+      isTSX: false,
+      fileAbsPath: filePath,
+    });
+
+    expect(result.dependencies.react).not.toBeUndefined();
+  });
 });
