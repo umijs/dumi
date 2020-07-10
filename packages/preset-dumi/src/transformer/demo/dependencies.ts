@@ -65,6 +65,10 @@ function analyzeDeps(
             extensions: LOCAL_MODULE_EXT,
           });
 
+          if (pkg.peerDependencies) {
+            Object.assign(dependencies, pkg.peerDependencies);
+          }
+
           dependencies[pkg.name] = pkg.version;
         } else if (
           // only analysis for valid local file type

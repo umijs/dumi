@@ -43,8 +43,9 @@ export const getModuleResolvePkg = ({
   sourcePath,
   extensions = DEFAULT_EXT,
 }: IModuleResolverOpts) => {
-  let version: string | null = null;
-  let name: string | null = null;
+  let version: string | null;
+  let name: string | null;
+  let peerDependencies: any | null;
   const resolvePath = getModuleResolvePath({ basePath, sourcePath, extensions });
   const modulePath = resolvePath.match(/^(.*?node_modules\/(?:@[^/]+\/)?[^/]+)/)?.[1];
   const pkgPath = path.join(modulePath, 'package.json');
@@ -54,11 +55,12 @@ export const getModuleResolvePkg = ({
 
     version = pkg.version;
     name = pkg.name;
+    peerDependencies = pkg.peerDependencies;
   } else {
     ctx.umi?.logger.error(`[dumi]: cannot find valid package.json for module ${modulePath}`);
   }
 
-  return { name, version };
+  return { name, version, peerDependencies };
 };
 
 /**
