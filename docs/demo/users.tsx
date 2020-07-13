@@ -50,6 +50,7 @@ export default () => {
         <li
           key={user.link}
           style={{
+            width: 224,
             marginRight: i === USERS.length - 1 ? 0 : 16,
             marginBottom: 8,
             border: '1px solid #eee',
