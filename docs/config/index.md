@@ -98,7 +98,7 @@ export default {
 
 配置文档的 LOGO。
 
-> 如果是使用本地图片，比如：/public/images/xxx.png，那么配置时/images/xx.png引入即可。
+> 如果是使用本地图片，比如：`/public/images/xxx.png`，那么配置 `/images/xx.png` 引入即可。
 
 ## locales
 
