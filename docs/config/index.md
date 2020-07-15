@@ -162,10 +162,10 @@ export default {
 ### includes
 
 - 类型：`Array<String>`
-- 默认值：`['docs', 'src', 'packages/pkg/src']`
+- 默认值：`['docs', 'src']` or `['docs', 'packages/pkg/src']`
 - 详细：
 
-配置 dumi 嗅探的文档目录，dumi 会尝试在配置的目录中递归寻找 markdown 文件，默认值为 `docs` 目录、`src` 目录（普通项目）、`packages/pkg/src` 目录（lerna 项目），通常不需要配置，除非自动嗅探出现了『误伤』。
+配置 dumi 嗅探的文档目录，dumi 会尝试在配置的目录中递归寻找 markdown 文件，默认值为 `docs` 目录、`src` 目录（普通项目），如果环境为 lerna 项目，则 `src` 目录变为 `packages/pkg/src` 目录，通常不需要配置，除非自动嗅探出现了『误伤』。
 
 ### previewLangs
 
