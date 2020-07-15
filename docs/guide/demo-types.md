@@ -1,6 +1,6 @@
 ---
 group:
-  title: 开始写组件 Demo
+  title: 开始写组件 Demo666
 ---
 
 # Demo 的类型
