@@ -1,11 +1,13 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { Component } from 'react';
+import { history } from 'umi';
 import innertext from 'innertext';
 import CopyButton from '../CopyButton';
 import SourceCode from './SourceCode';
 import finaliseCSB, { issueLink } from '../../../utils/codesandbox';
 import localePropsHoc from '../localePropsHoc';
 import CsbButton from '../csbButton';
+import { scrollToSlug } from '../SlugList';
 import './Previewer.less';
 
 export interface IPreviewerProps {
@@ -112,6 +114,12 @@ class Previewer extends Component<IPreviewerProps> {
         'https://private-alipayobjects.alipay.com/alipay-rmsdeploy-image/rmsportal/RKuAiriJqrUhyqW.png';
     }
   }
+
+  handleAnchorClick = (title: string) => {
+    const demoAnchor = `${history.location.pathname}#${title}`;
+    history.push(demoAnchor);
+    scrollToSlug(title);
+  };
 
   initCSBData = () => {
     const { source, desc = '', title, dependencies, files } = this.props;
@@ -221,7 +229,19 @@ ${issueLink}`,
     }
 
     return (
-      <div {...props} className={['__dumi-default-previewer', props.className].join(' ')}>
+      <div
+        {...props}
+        className={[
+          '__dumi-default-previewer',
+          decodeURI(history.location.hash.replace('#', '')) === title
+            ? '__dumi-default-previewer-target'
+            : '',
+          props.className,
+        ]
+          .filter(c => c)
+          .join(' ')}
+        id={title}
+      >
         <div
           className="__dumi-default-previewer-demo"
           style={{
@@ -234,6 +254,7 @@ ${issueLink}`,
         </div>
         <div
           className="__dumi-default-previewer-desc"
+          onClick={() => this.handleAnchorClick(title)}
           title={title}
           // eslint-disable-next-line
           dangerouslySetInnerHTML={{ __html: desc }}

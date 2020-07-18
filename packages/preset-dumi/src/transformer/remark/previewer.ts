@@ -91,6 +91,15 @@ export default () => <Demo />;`;
         1} = React.memo(${code});`,
     );
 
+    // save demos which have title into slugs
+    if (yaml.title) {
+      this.vFile.data.slugs.push({
+        depth: 5,
+        value: yaml.title,
+        heading: yaml.title,
+      });
+    }
+
     // replace original node
     parent.children[i] = {
       previewer: true,

@@ -12,6 +12,10 @@
     padding: 40px 24px;
   }
 
+  &-target {
+    border-color: #3d62d2;
+  }
+
   &-desc {
     &:not(:empty) {
       padding: 1em;
@@ -30,6 +34,7 @@
     &[title] {
       position: relative;
       padding-top: 1.2em;
+      pointer-events: none;
 
       &::before {
         content: attr(title);
@@ -42,6 +47,8 @@
         font-weight: 500;
         background-color: #fff;
         transform: translateY(-50%);
+        pointer-events: auto;
+        cursor: pointer;
       }
 
       &:empty {
