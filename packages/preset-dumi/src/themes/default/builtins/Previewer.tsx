@@ -57,6 +57,10 @@ export interface IPreviewerProps {
    */
   dependencies: { [key: string]: string };
   /**
+   * demo anchor id
+   */
+  id?: string;
+  /**
    * 1-level files that include by demo
    */
   files: {
@@ -115,10 +119,10 @@ class Previewer extends Component<IPreviewerProps> {
     }
   }
 
-  handleAnchorClick = (title: string) => {
-    const demoAnchor = `${history.location.pathname}#${title}`;
+  handleAnchorClick = (id: string) => {
+    const demoAnchor = `${history.location.pathname}#${id}`;
     history.push(demoAnchor);
-    scrollToSlug(title);
+    scrollToSlug(id);
   };
 
   initCSBData = () => {
@@ -216,6 +220,7 @@ ${issueLink}`,
       path,
       dependencies,
       files,
+      id,
       ...props
     } = this.props;
     const { showSource, sourceType, showRiddle, currentFile } = this.state;
@@ -233,14 +238,14 @@ ${issueLink}`,
         {...props}
         className={[
           '__dumi-default-previewer',
-          decodeURI(history.location.hash.replace('#', '')) === title
+          decodeURI(history.location.hash.replace('#', '')) === id
             ? '__dumi-default-previewer-target'
             : '',
           props.className,
         ]
           .filter(c => c)
           .join(' ')}
-        id={title}
+        id={id}
       >
         <div
           className="__dumi-default-previewer-demo"
@@ -254,7 +259,7 @@ ${issueLink}`,
         </div>
         <div
           className="__dumi-default-previewer-desc"
-          onClick={() => this.handleAnchorClick(title)}
+          onClick={() => this.handleAnchorClick(id)}
           title={title}
           // eslint-disable-next-line
           dangerouslySetInnerHTML={{ __html: desc }}
