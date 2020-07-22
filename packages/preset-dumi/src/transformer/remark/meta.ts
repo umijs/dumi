@@ -44,7 +44,7 @@ export default function yamlProcessor() {
       const data = yaml.safeLoad(node.value as string);
 
       // parse markdown for features in home page
-      if (data.features) {
+      if (data?.features) {
         data.features.forEach(feat => {
           if (feat.desc) {
             feat.desc = transformer.markdown(feat.desc, null, { type: 'html' }).content;
@@ -53,12 +53,12 @@ export default function yamlProcessor() {
       }
 
       // parse markdown for desc in home page
-      if (data.hero?.desc) {
+      if (data?.hero?.desc) {
         data.hero.desc = transformer.markdown(data.hero.desc, null, { type: 'html' }).content;
       }
 
       // parse markdown for footer in home page
-      if (data.footer) {
+      if (data?.footer) {
         data.footer = transformer.markdown(data.footer, null, { type: 'html' }).content;
       }
 
