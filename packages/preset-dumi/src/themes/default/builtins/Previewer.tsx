@@ -238,7 +238,7 @@ ${issueLink}`,
         {...props}
         className={[
           '__dumi-default-previewer',
-          decodeURI(history.location.hash.replace('#', '')) === id
+          decodeURI(history.location.hash.replace('#', '')) === id && title
             ? '__dumi-default-previewer-target'
             : '',
           props.className,

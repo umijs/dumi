@@ -132,6 +132,7 @@ export default () => <Demo />;`;
 
 export default function previewer() {
   return (ast: Node, vFile) => {
+    slugs.reset();
     visit(ast, 'element', visitor.bind({ vFile, data: this.data }));
   };
 }
