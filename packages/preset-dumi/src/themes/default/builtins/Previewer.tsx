@@ -1,11 +1,13 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { Component } from 'react';
+import { history } from 'umi';
 import innertext from 'innertext';
 import CopyButton from '../CopyButton';
 import SourceCode from './SourceCode';
 import finaliseCSB, { issueLink } from '../../../utils/codesandbox';
 import localePropsHoc from '../localePropsHoc';
 import CsbButton from '../csbButton';
+import { scrollToSlug } from '../SlugList';
 import './Previewer.less';
 
 export interface IPreviewerProps {
@@ -54,6 +56,10 @@ export interface IPreviewerProps {
    * demo dependencies
    */
   dependencies: { [key: string]: string };
+  /**
+   * demo anchor id
+   */
+  id?: string;
   /**
    * 1-level files that include by demo
    */
@@ -112,6 +118,12 @@ class Previewer extends Component<IPreviewerProps> {
         'https://private-alipayobjects.alipay.com/alipay-rmsdeploy-image/rmsportal/RKuAiriJqrUhyqW.png';
     }
   }
+
+  handleAnchorClick = (id: string) => {
+    const demoAnchor = `${history.location.pathname}#${id}`;
+    history.push(demoAnchor);
+    scrollToSlug(id);
+  };
 
   initCSBData = () => {
     const { source, desc = '', title, dependencies, files } = this.props;
@@ -208,6 +220,7 @@ ${issueLink}`,
       path,
       dependencies,
       files,
+      id,
       ...props
     } = this.props;
     const { showSource, sourceType, showRiddle, currentFile } = this.state;
@@ -221,7 +234,19 @@ ${issueLink}`,
     }
 
     return (
-      <div {...props} className={['__dumi-default-previewer', props.className].join(' ')}>
+      <div
+        {...props}
+        className={[
+          '__dumi-default-previewer',
+          decodeURI(history.location.hash.replace('#', '')) === id && title
+            ? '__dumi-default-previewer-target'
+            : '',
+          props.className,
+        ]
+          .filter(c => c)
+          .join(' ')}
+        id={id}
+      >
         <div
           className="__dumi-default-previewer-demo"
           style={{
@@ -234,6 +259,7 @@ ${issueLink}`,
         </div>
         <div
           className="__dumi-default-previewer-desc"
+          onClick={() => this.handleAnchorClick(id)}
           title={title}
           // eslint-disable-next-line
           dangerouslySetInnerHTML={{ __html: desc }}

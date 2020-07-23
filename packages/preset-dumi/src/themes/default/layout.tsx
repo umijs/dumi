@@ -220,6 +220,9 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     const { slugs = [] } = this.state.currentRouteMeta;
     const { currentSlug } = this.state;
     // 如果当前的 slugs 不含 currentSlug, 就去更新
+    if (slugs.find(slug => slug.heading === currentSlug)) {
+      return;
+    }
     const container = window;
     const linkSections: Array<{ heading: string; top: number }> = [];
     [...slugs]

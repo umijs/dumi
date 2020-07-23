@@ -1,8 +1,12 @@
 import { Node } from 'unist';
+import slugger from 'github-slugger';
 import visit from 'unist-util-visit';
+import has from 'hast-util-has-property';
 import ctx from '../../context';
 import demoTransformer, { DEMO_COMPONENT_NAME, getDepsForDemo } from '../demo';
 import transformer from '..';
+
+const slugs = slugger();
 
 function visitor(node, i, parent: Node) {
   if (node.tagName === 'div' && node.properties?.type === 'previewer') {
@@ -91,6 +95,18 @@ export default () => <Demo />;`;
         1} = React.memo(${code});`,
     );
 
+    if (!has(node, 'id')) {
+      (node.properties as any).id = slugs.slug(yaml.title);
+    }
+    // save demos which have title into slugs
+    if (yaml.title) {
+      this.vFile.data.slugs.push({
+        depth: 5,
+        value: yaml.title,
+        heading: node.properties.id,
+      });
+    }
+
     // replace original node
     parent.children[i] = {
       previewer: true,
@@ -100,6 +116,7 @@ export default () => <Demo />;`;
         source,
         files,
         dependencies,
+        id: node.properties.id,
         ...yaml,
       },
       children: [
@@ -115,6 +132,7 @@ export default () => <Demo />;`;
 
 export default function previewer() {
   return (ast: Node, vFile) => {
+    slugs.reset();
     visit(ast, 'element', visitor.bind({ vFile, data: this.data }));
   };
 }
