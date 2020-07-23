@@ -9,6 +9,7 @@ import Navbar from './Navbar';
 import SideMenu from './SideMenu';
 import SlugList, { scrollToSlug } from './SlugList';
 import SearchBar from './SearchBar';
+import Device from './device';
 import 'prismjs/themes/prism.css';
 import 'katex/dist/katex.min.css';
 import './layout.less';
@@ -301,8 +302,16 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
   render() {
     const { mode, title, desc, logo, repository, locales, algolia, children } = this.props;
     const { url: repoUrl, branch } = repository;
-    const { navs, menus, menuCollapsed, currentLocale, currentSlug, currentRouteMeta } = this.state;
+    const {
+      navs,
+      menus,
+      menuCollapsed,
+      currentLocale,
+      currentSlug,
+      currentRouteMeta = {},
+    } = this.state;
     const siteMode = this.props.mode === 'site';
+    const showMobileDemo = !!currentRouteMeta.demoUrl;
     const showHero = siteMode && currentRouteMeta.hero;
     const showFeatures = siteMode && currentRouteMeta.features;
     const showSideMenu =
@@ -313,6 +322,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     const showSlugs =
       !showHero &&
       !showFeatures &&
+      !showMobileDemo &&
       Boolean(currentRouteMeta.slugs?.length) &&
       (currentRouteMeta.toc === 'content' || currentRouteMeta.toc === undefined) &&
       !currentRouteMeta.gapless;
@@ -371,7 +381,12 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
           {showHero && this.renderHero(currentRouteMeta.hero)}
           {showFeatures && this.renderFeatures(currentRouteMeta.features)}
           <div className="__dumi-default-layout-content">
-            {children}
+            <div className="__dumi-default-layout-col">
+              <div className="__dumi-default-layout-article">{children}</div>
+              {showMobileDemo && (
+                <Device url={currentRouteMeta.demoUrl} source={currentRouteMeta.demoSourceUrl} />
+              )}
+            </div>
             {!showHero && !showFeatures && currentRouteMeta.filePath && !currentRouteMeta.gapless && (
               <div className="__dumi-default-layout-footer-meta">
                 {repoPlatform && (

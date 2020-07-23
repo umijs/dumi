@@ -1,6 +1,8 @@
 ---
 title: 文档示例
 legacy: /example
+demoUrl: 'https://d.umijs.org'
+demoSourceUrl: 'https://github.com/umijs/dumi'
 nav:
   order: 3
   title: 渲染示例
@@ -133,3 +135,14 @@ $$
 [前往 Umi 官网](https://umijs.org)
 
 自动转换超链接 https://umijs.org
+
+## 移动端组件展示
+
+只需要在 yaml 中写明 demoUrl 和 demoSourceUrl 即可，demoUrl 用于展示页面，demoSourceUrl 一般为 demo 的源码地址。
+
+```
+---
+demoUrl: 'https://d.umijs.org'
+demoSourceUrl: 'https://github.com/umijs/dumi'
+---
+```
