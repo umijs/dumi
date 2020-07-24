@@ -254,7 +254,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     // clear heading if scroll top than first section
     if (document.documentElement.scrollTop === 0) {
       if (location.hash) {
-        history.replace(location.pathname);
+        history.replace(location.href.split('#')[0]);
       }
       return;
     }
