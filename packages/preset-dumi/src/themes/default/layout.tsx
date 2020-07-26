@@ -94,9 +94,6 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     const state = {
       currentLocale: (locales[0] || { name: '*' }).name,
       currentRouteMeta: findCurrentRouteMeta(route, location),
-      currentSlug: isHashRoute(location)
-        ? location.query.anchor
-        : decodeURIComponent(location.hash).replace('#', ''),
       navs: [],
       menus: [],
     };
@@ -216,15 +213,11 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     if (typeof document === 'undefined') {
       return;
     }
-    const { location } = this.props;
+
     const { slugs = [] } = this.state.currentRouteMeta;
-    const { currentSlug } = this.state;
-    // 如果当前的 slugs 不含 currentSlug, 就去更新
-    if (slugs.find(slug => slug.heading === currentSlug)) {
-      return;
-    }
     const container = window;
     const linkSections: Array<{ heading: string; top: number }> = [];
+
     [...slugs]
       .filter(({ depth }) => depth > 1)
       // 优先匹配深度比较深的
@@ -251,24 +244,15 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
         });
       });
 
-    // clear heading if scroll top than first section
-    if (document.documentElement.scrollTop === 0) {
-      if (location.hash) {
-        history.replace(location.pathname);
-      }
-      return;
-    }
-
     if (!linkSections.length) {
       return;
     }
 
     // 在符合的要求的里面选一个最小的
     const maxSection = linkSections.reduce((prev, curr) => (curr.top > prev.top ? curr : prev));
-
-    if (maxSection.heading !== currentSlug) {
-      history.replace(getGotoPathName(location.pathname, maxSection.heading));
-    }
+    this.setState({
+      currentSlug: maxSection.heading,
+    });
   };
 
   renderHero = hero => (
