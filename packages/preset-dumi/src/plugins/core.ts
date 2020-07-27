@@ -55,7 +55,7 @@ export default function(api: IApi) {
   }
 
   const defaultTitle = pkg.name || 'dumi';
-  const hostPkgAlias = getHostPkgAlias(api.paths);
+  const hostPkgAlias = getHostPkgAlias(api.paths).filter(([pkgName]) => pkgName);
   const defaultOpts = {
     title: defaultTitle,
     resolve: {
@@ -74,6 +74,16 @@ export default function(api: IApi) {
   };
   // save umi api & opts into context
   const updateContext = () => setContext(api, mergeUserConfig(defaultOpts, api));
+
+  // create symlink for packages
+  hostPkgAlias.forEach(([pkgName, pkgPath]) => {
+    const linkPath = path.join(api.paths.cwd, 'node_modules', pkgName);
+
+    // link current pkgs into node_modules, for import module resolve when writing demo
+    if (!fs.existsSync(linkPath)) {
+      symlink(pkgPath, linkPath);
+    }
+  });
 
   // initial context
   api.onStart(updateContext);
@@ -182,44 +192,36 @@ export default function(api: IApi) {
       .options({ previewLangs: ctx.opts.resolve.previewLangs });
 
     // add alias for current package(s)
-    hostPkgAlias
-      .filter(([pkgName]) => pkgName)
-      .forEach(([pkgName, pkgPath]) => {
-        let srcModule;
-        const srcPath = path.join(pkgPath, 'src');
-        const linkPath = path.join(api.paths.cwd, 'node_modules', pkgName);
+    hostPkgAlias.forEach(([pkgName, pkgPath]) => {
+      let srcModule;
+      const srcPath = path.join(pkgPath, 'src');
 
-        try {
-          srcModule = require(srcPath);
-        } catch (err) {
-          if (err.code !== 'MODULE_NOT_FOUND') {
-            srcModule = true;
-          }
+      try {
+        srcModule = require(srcPath);
+      } catch (err) {
+        if (err.code !== 'MODULE_NOT_FOUND') {
+          srcModule = true;
+        }
+      }
+
+      // use src path instead of main field in package.json if exists
+      if (srcModule) {
+        // exclude es & lib folder
+        if (!config.resolve.alias.has(`${pkgName}/es`)) {
+          config.resolve.alias.set(`${pkgName}/es`, srcPath);
         }
 
-        // use src path instead of main field in package.json if exists
-        if (srcModule) {
-          // exclude es & lib folder
-          if (!config.resolve.alias.has(`${pkgName}/es`)) {
-            config.resolve.alias.set(`${pkgName}/es`, srcPath);
-          }
-
-          if (!config.resolve.alias.has(`${pkgName}/lib`)) {
-            config.resolve.alias.set(`${pkgName}/lib`, srcPath);
-          }
-
-          if (!config.resolve.alias.has(pkgName)) {
-            config.resolve.alias.set(pkgName, srcPath);
-          }
-        } else if (!config.resolve.alias.has(pkgName)) {
-          config.resolve.alias.set(pkgName, pkgPath);
+        if (!config.resolve.alias.has(`${pkgName}/lib`)) {
+          config.resolve.alias.set(`${pkgName}/lib`, srcPath);
         }
 
-        // link current pkgs into node_modules, for import module resolve when writing demo
-        if (!fs.existsSync(linkPath)) {
-          symlink(pkgPath, linkPath);
+        if (!config.resolve.alias.has(pkgName)) {
+          config.resolve.alias.set(pkgName, srcPath);
         }
-      });
+      } else if (!config.resolve.alias.has(pkgName)) {
+        config.resolve.alias.set(pkgName, pkgPath);
+      }
+    });
 
     return config;
   });
