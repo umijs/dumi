@@ -95,7 +95,7 @@ export default () => <Demo />;`;
         1} = React.memo(${code});`,
     );
 
-    if (!has(node, 'id')) {
+    if (!has(node, 'id') && yaml.title) {
       (node.properties as any).id = slugs.slug(yaml.title);
     }
     // save demos which have title into slugs
