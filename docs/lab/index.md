@@ -93,10 +93,9 @@ $ npm link path/to/dumi/lib
 ```diff
 {
   "dependencies": {
-    "...": "..."
-+   "your-lib-package-name": "*",
-    "...": "..."
-  },
+    // 其他依赖
++   "your-lib-package-name": "*"
+  }
 }
 ```
 
