@@ -88,6 +88,17 @@ $ npm i @umijs/preset-ui -D
 $ npm link path/to/dumi/lib
 ```
 
+在 Umi 应用的 `package.json` 中，手动添加组件库为依赖：
+
+```diff
+{
+  "dependencies": {
+    // 其他依赖
++   "your-lib-package-name": "*"
+  }
+}
+```
+
 然后和往常一样启动 Umi 项目，即可在 Umi UI 的迷你气泡中看到 dumi-lib 项目中的 Demo 资产，并可直接插入到页面中使用：
 
 <p style="text-align: center;">
