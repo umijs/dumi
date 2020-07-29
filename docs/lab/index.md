@@ -88,13 +88,13 @@ $ npm i @umijs/preset-ui -D
 $ npm link path/to/dumi/lib
 ```
 
-在umi-app的package.json中，手动添加依赖
+在 Umi 应用的 `package.json` 中，手动添加组件库为依赖：
 
 ```diff
 {
   "dependencies": {
     "...": "..."
-+   "dumi-lib": "^1.0.1"
++   "your-lib-package-name": "*",
     "...": "..."
   },
 }
