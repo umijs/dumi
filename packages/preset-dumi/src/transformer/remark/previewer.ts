@@ -1,6 +1,6 @@
 import { Node } from 'unist';
 import visit from 'unist-util-visit';
-import demoTransformer, { DEMO_COMPONENT_NAME, getDepsForDemo } from '../demo';
+import demoTransformer, { DEMO_COMPONENT_NAME, getDepsForDemo, getCSSForDeps } from '../demo';
 import transformer from '../index';
 
 function visitor(node, i, parent: Node) {
@@ -37,6 +37,12 @@ export default () => <Demo />;`;
     // transform demo source code
     const { content: code } = demoTransformer(transformCode, demoOpts);
     const { dependencies, files } = getDepsForDemo(raw, demoOpts);
+    const CSSInDeps = getCSSForDeps(dependencies);
+
+    // save css in dependencies, such as antd.css
+    if (CSSInDeps.length) {
+      yaml.CSSInDependencies = CSSInDeps;
+    }
 
     // save code into data then declare them on the top page component
     this.vFile.data.demos = (this.vFile.data.demos || []).concat(

@@ -1,8 +1,8 @@
 <div class="markdown"><SourceCode code={"import React from 'react';\n\nexport default () => <h1>Hello World!</h1>\n"} lang="jsx" />
 </div>
 <DumiPreviewer
-  source={{"jsx":"import React from 'react';\n\nexport default () => <h1>Hello World!</h1>"}}
-  {...{"desc":"<div class=\"markdown\"><p>testing</p></div>","dependencies":{},"files":{}}}
+  source={{"jsx":"import React from 'react';\nimport katex from 'katex';\n\nconsole.log(katex);\n\nexport default () => <h1>Hello World!</h1>"}}
+  {...{"desc":"<div class=\"markdown\"><p>test css in dependencies</p></div>","CSSInDependencies":["katex/dist/katex.css"],"dependencies":{"katex":"0.11.1"},"files":{}}}
 >
   <DumiDemo1 />
 </DumiPreviewer><div class="markdown">
