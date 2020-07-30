@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import analyzeDeps from '../demo/dependencies';
+import analyzeDeps, { getCSSForDeps } from '../demo/dependencies';
 
 describe('demo transformer: dependencies', () => {
   it('basic analysis', () => {
@@ -47,5 +47,17 @@ describe('demo transformer: dependencies', () => {
     });
 
     expect(result.dependencies.react).not.toBeUndefined();
+  });
+
+  it('detect CSS files for dependencies', () => {
+    expect(
+      getCSSForDeps({
+        // has css file
+        antd: '*',
+        katex: '*',
+        // has not css file
+        'js-yaml': '*',
+      }),
+    ).toHaveLength(2);
   });
 });

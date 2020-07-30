@@ -3,7 +3,7 @@ import slugger from 'github-slugger';
 import visit from 'unist-util-visit';
 import has from 'hast-util-has-property';
 import ctx from '../../context';
-import demoTransformer, { DEMO_COMPONENT_NAME, getDepsForDemo } from '../demo';
+import demoTransformer, { DEMO_COMPONENT_NAME, getDepsForDemo, getCSSForDeps } from '../demo';
 import transformer from '..';
 
 const slugs = slugger();
@@ -43,6 +43,12 @@ export default () => <Demo />;`;
     const { content: code } = demoTransformer(transformCode, demoOpts);
     // use raw to ignore babel runtime deps
     const { dependencies, files } = getDepsForDemo(raw, demoOpts);
+    const CSSInDeps = getCSSForDeps(dependencies);
+
+    // save css in dependencies, such as antd.css
+    if (CSSInDeps.length) {
+      yaml['css-in-dependencies'] = CSSInDeps;
+    }
 
     // apply for assets command
     if (ctx.umi?.applyPlugins && !yaml.inline) {

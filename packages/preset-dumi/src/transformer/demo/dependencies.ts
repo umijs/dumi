@@ -126,24 +126,33 @@ function analyzeDeps(
 
 export function getCSSForDeps(dependencies: IDepAnalyzeResult['dependencies']) {
   return Object.keys(dependencies).reduce((result, dep) => {
-    const basePath = path.join(require.resolve(dep), 'dist');
     const pkgWithoutGroup = dep.match(/([^\/]+)$/)[1];
-    const guestFiles = [
-      'main',
-      'index',
+    const guessFiles = [
       // @group/pkg-suffic => pkg-suffix
       `${pkgWithoutGroup}`,
       // @group/pkg-suffix => pkgsuffix
       ...(pkgWithoutGroup.includes('-') ? [pkgWithoutGroup.replace(/-/g, '')] : []),
+      // guess normal css files
+      'main',
+      'index',
     ].reduce((files, name) => files.concat([`${name}.css`, `${name}.min.css`]), []);
 
-    // detect guest css files
-    guestFiles.some(file => {
-      const guestFilePath = path.join(basePath, file);
+    // detect guess css files
+    guessFiles.some(file => {
+      try {
+        // try to resolve CSS file
+        const gussFilePath = `${dep}/dist/${file}`;
 
-      if (fs.existsSync(guestFilePath)) {
-        result.push(guestFilePath);
+        getModuleResolvePath({
+          basePath: process.cwd(),
+          sourcePath: gussFilePath,
+          silent: true,
+        });
+        result.push(gussFilePath);
+
         return true;
+      } catch (err) {
+        /* nothing */
       }
     });
 

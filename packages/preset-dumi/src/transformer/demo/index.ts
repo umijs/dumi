@@ -10,6 +10,7 @@ interface IDemoTransformResult {
 }
 
 export { default as getDepsForDemo } from './dependencies';
+export { getCSSForDeps } from './dependencies';
 
 export const DEMO_COMPONENT_NAME = 'DumiDemo';
 
