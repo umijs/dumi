@@ -1,8 +1,10 @@
+import fs from 'fs';
 import path from 'path';
 import slash from 'slash';
 import * as babel from '@babel/core';
 import * as types from '@babel/types';
 import traverse from '@babel/traverse';
+import { winPath } from '@umijs/utils';
 import {
   getModuleResolvePkg,
   getModuleResolvePath,
@@ -120,6 +122,33 @@ function analyzeDeps(
   });
 
   return { files, dependencies };
+}
+
+export function getCSSForDeps(dependencies: IDepAnalyzeResult['dependencies']) {
+  return Object.keys(dependencies).reduce((result, dep) => {
+    const basePath = path.join(require.resolve(dep), 'dist');
+    const pkgWithoutGroup = dep.match(/([^\/]+)$/)[1];
+    const guestFiles = [
+      'main',
+      'index',
+      // @group/pkg-suffic => pkg-suffix
+      `${pkgWithoutGroup}`,
+      // @group/pkg-suffix => pkgsuffix
+      ...(pkgWithoutGroup.includes('-') ? [pkgWithoutGroup.replace(/-/g, '')] : []),
+    ].reduce((files, name) => files.concat([`${name}.css`, `${name}.min.css`]), []);
+
+    // detect guest css files
+    guestFiles.some(file => {
+      const guestFilePath = path.join(basePath, file);
+
+      if (fs.existsSync(guestFilePath)) {
+        result.push(guestFilePath);
+        return true;
+      }
+    });
+
+    return result;
+  }, [] as string[]);
 }
 
 export default analyzeDeps;
