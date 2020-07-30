@@ -55,6 +55,10 @@ export interface IPreviewerProps {
    */
   dependencies: { [key: string]: string };
   /**
+   * builtin CSS of demo dependencies, such as antd/dist/antd.css
+   */
+  CSSInDependencies: string[];
+  /**
    * 1-level files that include by demo
    */
   files: {
@@ -114,7 +118,7 @@ class Previewer extends Component<IPreviewerProps> {
   }
 
   initCSBData = () => {
-    const { source, desc = '', title, dependencies, files } = this.props;
+    const { source, desc = '', title, dependencies, files, CSSInDependencies } = this.props;
     const isTSX = Boolean(source.tsx);
     const entryExt = isTSX ? 'tsx' : 'jsx';
     const CSBData = {
@@ -128,7 +132,7 @@ class Previewer extends Component<IPreviewerProps> {
         [`index.${entryExt}`]: {
           content: `import React from 'react';
 import ReactDOM from 'react-dom';
-${dependencies.antd ? "import 'antd/dist/antd.css';" : ''}
+${(CSSInDependencies || []).map(css => `import '${css}';`).join('\n')}
 import App from './demo';
 
 ${issueLink}`,
@@ -208,6 +212,7 @@ ${issueLink}`,
       path,
       dependencies,
       files,
+      CSSInDependencies,
       ...props
     } = this.props;
     const { showSource, sourceType, showRiddle, currentFile } = this.state;
@@ -258,9 +263,7 @@ ${issueLink}`,
                     value={JSON.stringify({
                       title,
                       js: this.convertRiddleJS(raw),
-                      css: dependencies.antd
-                        ? `@import 'antd${`@${dependencies.antd}`}/dist/antd.css';`
-                        : '',
+                      css: (CSSInDependencies || []).map(css => `@import '${css}';`).join('\n'),
                     })}
                   />
                 </form>
