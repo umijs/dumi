@@ -10,6 +10,7 @@ interface IModuleResolverOpts {
   basePath: string;
   sourcePath: string;
   extensions?: string[];
+  silent?: boolean;
 }
 
 /**
@@ -19,6 +20,7 @@ export const getModuleResolvePath = ({
   basePath,
   sourcePath,
   extensions = DEFAULT_EXT,
+  silent,
 }: IModuleResolverOpts) => {
   try {
     return slash(
@@ -30,7 +32,10 @@ export const getModuleResolvePath = ({
       })(fs.statSync(basePath).isDirectory() ? basePath : path.parse(basePath).dir, sourcePath),
     );
   } catch (err) {
-    ctx.umi?.logger.error(`[dumi]: cannot resolve module ${sourcePath} from ${basePath}`);
+    if (!silent) {
+      ctx.umi?.logger.error(`[dumi]: cannot resolve module ${sourcePath} from ${basePath}`);
+    }
+
     throw err;
   }
 };
