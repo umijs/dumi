@@ -3,7 +3,7 @@ import path from 'path';
 import { IApi } from '@umijs/types';
 import ctx from '../../context';
 import getRouteConfig from '../../routes/getRouteConfig';
-import AssetsPackage from '../../../../assets-types/typings';
+import AssetsPackage, { AtomAsset } from '../../../../assets-types/typings';
 import { ExampleBlockAsset } from '../../../../assets-types/typings/example';
 
 export default (api: IApi) => {
@@ -41,6 +41,13 @@ export default (api: IApi) => {
       if (block.name) {
         assetsPkg.assets.examples.push(block);
       }
+    },
+  });
+
+  api.register({
+    key: 'dumi.detectAtomAsset',
+    fn(atom: AtomAsset) {
+      assetsPkg.assets.atoms.push(atom);
     },
   });
 };
