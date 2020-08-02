@@ -17,6 +17,10 @@ export default interface AtomAsset {
    */
   'name.en-US'?: string;
   /**
+   * atom uuid
+   */
+  uuid?: string;
+  /**
    * TODO: the API spec of atom asset
    */
   props: any;

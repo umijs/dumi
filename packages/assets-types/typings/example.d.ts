@@ -8,6 +8,10 @@ export interface ExampleBaseAsset {
    */
   designId?: string;
   /**
+   * uuid for asset
+   */
+  uuid?: string;
+  /**
    * Example asset name
    */
   name: string;
