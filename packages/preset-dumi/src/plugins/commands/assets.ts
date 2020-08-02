@@ -7,7 +7,6 @@ import AssetsPackage from '../../../../assets-types/typings';
 import { ExampleBlockAsset } from '../../../../assets-types/typings/example';
 
 export default (api: IApi) => {
-  const isAssetCmd = process.argv.includes('assets');
   const assetsPkg: AssetsPackage = {
     name: api.userConfig.title || api.pkg.name,
     package: api.pkg.name,
@@ -36,14 +35,12 @@ export default (api: IApi) => {
     },
   });
 
-  if (isAssetCmd) {
-    api.register({
-      key: 'dumi.detectCodeBlock',
-      fn(block: ExampleBlockAsset) {
-        if (block.name) {
-          assetsPkg.assets.examples.push(block);
-        }
-      },
-    });
-  }
+  api.register({
+    key: 'dumi.detectCodeBlock',
+    fn(block: ExampleBlockAsset) {
+      if (block.name) {
+        assetsPkg.assets.examples.push(block);
+      }
+    },
+  });
 };
