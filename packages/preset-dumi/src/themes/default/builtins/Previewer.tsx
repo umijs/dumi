@@ -270,7 +270,7 @@ ${issueLink}`,
           dangerouslySetInnerHTML={{ __html: desc }}
         />
         <div className="__dumi-default-previewer-actions">
-          {!this.props.hideActions?.includes('EXTERNAL') && !hasExternalFile && (
+          {!this.props.hideActions?.includes('CSB') && !hasExternalFile && (
             <>
               <CsbButton type={this.props.source.tsx ? 'tsx' : 'jsx'} base64={this.state.CSBData}>
                 <button className="__dumi-default-icon" role="codesandbox" type="submit" />
@@ -296,7 +296,7 @@ ${issueLink}`,
               )}
             </>
           )}
-          {!this.props.hideActions?.includes('CSB') && path && (
+          {!this.props.hideActions?.includes('EXTERNAL') && path && (
             <a target="_blank" rel="noopener noreferrer" href={path}>
               <button className="__dumi-default-icon" role="open-demo" type="button" />
             </a>
