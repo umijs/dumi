@@ -7,7 +7,6 @@ import getNavFromRoutes from '../routes/getNavFromRoutes';
 import getMenuFromRoutes from '../routes/getMenuFromRoutes';
 import getLocaleFromRoutes from '../routes/getLocaleFromRoutes';
 import getHostPkgAlias from '../utils/getHostPkgAlias';
-import getDemoRoutes from '../routes/getDemoRoutes';
 import getRepoUrl from '../utils/getRepoUrl';
 import ctx, { init as setContext } from '../context';
 import { IDumiOpts } from '..';
@@ -99,9 +98,6 @@ export default function(api: IApi) {
 
       // clear original routes
       routes.splice(0, routes.length);
-
-      // append single demo routes to top-level
-      result.unshift(...getDemoRoutes(api.paths));
 
       // append new routes
       routes.push(...result);

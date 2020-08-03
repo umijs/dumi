@@ -5,7 +5,6 @@ import visit from 'unist-util-visit';
 import { parseText } from 'sylvanas';
 import { getModuleResolvePath } from '../../utils/moduleResolver';
 import { saveFileOnDepChange } from '../../utils/watcher';
-import { addDemoRoute } from '../../routes/getDemoRoutes';
 import transformer from '..';
 
 const ATTR_MAPPING = {
@@ -45,9 +44,6 @@ export default function code() {
             attrs[attr] = true;
           }
         });
-
-        // add single route for external demo
-        attrs.path = addDemoRoute(absPath);
 
         // try to parse JSON field value
         Object.keys(attrs).forEach(attr => {

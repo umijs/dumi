@@ -1,3 +1,4 @@
+import path from 'path';
 import { Node } from 'unist';
 import slugger from 'github-slugger';
 import visit from 'unist-util-visit';
@@ -7,6 +8,7 @@ import demoTransformer, { DEMO_COMPONENT_NAME, getDepsForDemo, getCSSForDeps } f
 import transformer from '..';
 
 const slugs = slugger();
+let demoSinglePaths: Object = {};
 
 function visitor(node, i, parent: Node) {
   if (node.tagName === 'div' && node.properties?.type === 'previewer') {
@@ -50,8 +52,8 @@ export default () => <Demo />;`;
       yaml['css-in-dependencies'] = CSSInDeps;
     }
 
-    // apply for assets command
     if (ctx.umi?.applyPlugins && !yaml.inline) {
+      // apply for assets command
       ctx.umi.applyPlugins({
         key: 'dumi.detectCodeBlock',
         type: ctx.umi.ApplyPluginsType.event,
@@ -61,6 +63,8 @@ export default () => <Demo />;`;
           description: yaml.desc,
           thumbnail: yaml.thumbnail,
           tags: yaml.tags,
+          // for HiTu DSM
+          uuid: yaml.uuid,
           dependencies: {
             // append npm dependencies
             ...Object.entries(dependencies).reduce(
@@ -93,6 +97,35 @@ export default () => <Demo />;`;
           },
         },
       });
+
+      // apply for single-route demo feature
+      const singlePaths = demoSinglePaths[this.data('fileAbsPath')];
+      const singlePathId =
+        yaml.path || yaml.uuid || yaml.componentName || path.parse(demoOpts.fileAbsPath).name;
+
+      // rewrite demo path
+      yaml.path = `${singlePathId}${
+        singlePaths[singlePathId] ? `-${singlePaths[singlePathId]}` : ''
+      }`;
+
+      // record demo ids to avoid conflict
+      singlePaths[singlePathId] = (singlePaths[singlePathId] || 0) + 1;
+
+      // TODO: create unified demo renderer to reduce bundle size
+      ctx.umi.applyPlugins({
+        key: 'dumi.detectDemo',
+        type: ctx.umi.ApplyPluginsType.event,
+        args: {
+          uuid: yaml.path,
+          code,
+          previewerProps: {
+            ...yaml,
+            source,
+            dependencies,
+            files,
+          },
+        },
+      });
     }
 
     // save code into data then declare them on the top page component
@@ -104,6 +137,7 @@ export default () => <Demo />;`;
     if (!has(node, 'id') && yaml.title) {
       (node.properties as any).id = slugs.slug(yaml.title);
     }
+
     // save demos which have title into slugs
     if (yaml.title) {
       this.vFile.data.slugs.push({
@@ -119,11 +153,12 @@ export default () => <Demo />;`;
       type: 'element',
       tagName: 'DumiPreviewer',
       properties: {
+        ...yaml,
         source,
         files,
         dependencies,
         id: node.properties.id,
-        ...yaml,
+        path: `~demos/${yaml.path}`,
       },
       children: [
         {
@@ -137,6 +172,11 @@ export default () => <Demo />;`;
 }
 
 export default function previewer() {
+  // clear single paths for a new transform flow
+  if (this.data('fileAbsPath')) {
+    demoSinglePaths[this.data('fileAbsPath')] = {};
+  }
+
   return (ast: Node, vFile) => {
     slugs.reset();
     visit(ast, 'element', visitor.bind({ vFile, data: this.data }));
