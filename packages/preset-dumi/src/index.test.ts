@@ -6,6 +6,12 @@ import { render } from '@testing-library/react';
 describe('preset-dumi', () => {
   const fixtures = path.join(__dirname, 'fixtures');
 
+  afterAll(() => {
+    // to avoid circle-deps error when npm publish
+    fs.unlinkSync(path.join(fixtures, 'basic', 'node_modules'));
+    fs.unlinkSync(path.join(fixtures, 'algolia', 'node_modules'));
+  });
+
   it('init', async () => {
     const service = new Service({
       cwd: fixtures,
