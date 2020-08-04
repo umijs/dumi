@@ -13,7 +13,7 @@ export default (api: IApi) => {
   const demos: ISingleRoutetDemos = {};
 
   // write all demos into .umi dir
-  api.onGenerateFiles(() => {
+  api.onGenerateFiles(async () => {
     const items = Object.keys(demos).map(
       uuid => ` '${uuid}': {
     previewerProps: ${JSON.stringify(demos[uuid].previewerProps)},
@@ -21,9 +21,19 @@ export default (api: IApi) => {
   },`,
     );
 
+    let builtins =
+      (await api.applyPlugins({
+        key: 'dumi.modifyThemeBuiltins',
+        type: api.ApplyPluginsType.modify,
+        initialValue: [],
+      })) || [];
+
     api.writeTmpFile({
       path: 'dumi/demos.ts',
       content: `import React from 'react';
+${builtins
+  .map(component => `import ${component.identifier} from '${component.source}';`)
+  .join('\n')}
 export default {
   ${items.join('\n')}
 }`,
