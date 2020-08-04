@@ -63,6 +63,7 @@ export default () => <Demo />;`;
           description: yaml.desc,
           thumbnail: yaml.thumbnail,
           tags: yaml.tags,
+          atomAssetId: this.vFile.data.componentName,
           // for HiTu DSM
           uuid: yaml.uuid,
           dependencies: {

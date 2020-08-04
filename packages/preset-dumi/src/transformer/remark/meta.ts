@@ -80,6 +80,11 @@ export default function yamlProcessor() {
         data.footer = transformer.markdown(data.footer, null, { type: 'html' }).content;
       }
 
+      // force string for uuid
+      if (data?.uuid) {
+        data.uuid = String(data.uuid);
+      }
+
       // save frontmatter to data
       vFile.data = Object.assign(vFile.data || {}, data);
     });
