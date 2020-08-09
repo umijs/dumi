@@ -1,4 +1,7 @@
 import React from 'react';
+import { INav } from '../routes/getNavFromRoutes';
+import { IMenu } from '../routes/getMenuFromRoutes';
+import { ILocale } from '../routes/getLocaleFromRoutes';
 import { IDumiOpts } from '..';
 
 export interface IThemeContext {
@@ -6,6 +9,10 @@ export interface IThemeContext {
    * documentation config
    */
   config: {
+    /**
+     * mode type
+     */
+    mode: 'doc' | 'site';
     /**
      * site title
      */
@@ -17,7 +24,10 @@ export interface IThemeContext {
     /**
      * documentation repository URL
      */
-    repoUrl?: string;
+    repository?: {
+      url: string;
+      branch: string;
+    };
     /**
      * logo image URL
      */
@@ -25,15 +35,15 @@ export interface IThemeContext {
     /**
      * navigation configurations
      */
-    navs: IDumiOpts['navs'];
+    navs: INav;
     /**
      * sidemenu configurations
      */
-    menus: IDumiOpts['menus'];
+    menus: IMenu;
     /**
      * locale configurations
      */
-    locales: IDumiOpts['locales'];
+    locales: ILocale[];
     /**
      * algolia configurations
      */
@@ -62,9 +72,24 @@ export interface IThemeContext {
    * current locale
    */
   locale?: string;
+  /**
+   * current menu
+   */
+  menu: IMenu['locale']['path'];
+  /**
+   * current nav
+   */
+  nav: INav['locale'];
+  /**
+   * base path
+   */
+  base: string;
 }
 
 export default React.createContext<IThemeContext>({
-  config: { title: '', navs: [], menus: {}, locales: [] },
+  config: { mode: 'doc', title: '', navs: {}, menus: {}, locales: [] },
   meta: { title: '' },
+  menu: [],
+  nav: [],
+  base: '',
 });

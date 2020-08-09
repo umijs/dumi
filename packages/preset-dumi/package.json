@@ -28,6 +28,7 @@
     "@mapbox/hast-util-to-jsx": "^1.0.0",
     "@umijs/babel-preset-umi": "3.x",
     "@umijs/plugin-analytics": "^0.2.2",
+    "@umijs/runtime": "^3.2.14",
     "@umijs/types": "3.x",
     "deepmerge": "^4.2.2",
     "enhanced-resolve": "^4.1.1",
