@@ -123,6 +123,7 @@ const OuterLayout: React.FC<IOuterLayoutProps & IRouteComponentProps> = props =>
         nav: config.navs[locale] || [],
         menu,
         base: !config.locales.length || locale === config.locales[0].name ? '/' : `/${locale}`,
+        routes: (route.routes as unknown) as IThemeContext['routes'],
       }}
     >
       {children}

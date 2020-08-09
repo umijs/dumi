@@ -1,4 +1,5 @@
 import React from 'react';
+import { IRoute } from '@umijs/types';
 import { INav } from '../routes/getNavFromRoutes';
 import { IMenu } from '../routes/getMenuFromRoutes';
 import { ILocale } from '../routes/getLocaleFromRoutes';
@@ -84,6 +85,10 @@ export interface IThemeContext {
    * base path
    */
   base: string;
+  /**
+   * documentation routes
+   */
+  routes: (IRoute & { meta: any })[];
 }
 
 export default React.createContext<IThemeContext>({
@@ -92,4 +97,5 @@ export default React.createContext<IThemeContext>({
   menu: [],
   nav: [],
   base: '',
+  routes: [],
 });
