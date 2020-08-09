@@ -152,7 +152,7 @@ export default () => <Demo />;`;
     parent.children[i] = {
       previewer: true,
       type: 'element',
-      tagName: 'DumiPreviewer',
+      tagName: 'Previewer',
       properties: {
         ...yaml,
         source,

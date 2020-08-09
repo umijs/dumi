@@ -1,6 +1,6 @@
-import path from 'path';
 import React from 'react';
 import { IApi } from '@umijs/types';
+import getTheme from '../../theme/loader';
 
 interface ISingleRoutetDemos {
   [key: string]: {
@@ -53,6 +53,8 @@ export default {
 
   // add single demo render route
   api.modifyRoutes(routes => {
+    const Previewer = getTheme().builtins.find(({ identifier }) => identifier === 'Previewer');
+
     routes.unshift(
       {
         path: '/~demos/:uuid',
@@ -64,10 +66,7 @@ export default {
 
           if (demo) {
             return require('react').createElement(
-              require('${path.join(
-                __dirname,
-                '../../themes/default/builtins/Previewer.js',
-              )}').default,
+              require('${Previewer.source}').default,
               {
                 ...demo.previewerProps,
                 inline,

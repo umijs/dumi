@@ -18,6 +18,7 @@ describe('getHostPkgAlias', () => {
       '@umijs/create-dumi-lib',
       'dumi',
       '@umijs/preset-dumi',
+      'dumi-theme-default',
     ]);
   });
 });

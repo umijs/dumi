@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import symlink from 'symlink-dir';
 import { Service } from '@umijs/core';
 import { render } from '@testing-library/react';
 
@@ -10,6 +11,7 @@ describe('preset-dumi', () => {
     // to avoid circle-deps error when npm publish
     fs.unlinkSync(path.join(fixtures, 'basic', 'node_modules'));
     fs.unlinkSync(path.join(fixtures, 'algolia', 'node_modules'));
+    fs.unlinkSync(path.join(fixtures, 'node_modules'));
   });
 
   it('init', async () => {
@@ -30,6 +32,11 @@ describe('preset-dumi', () => {
 
     // FIXME: find the real reason why component path missing 1 level in routes.ts
     service.paths.absPagesPath += '/tmp';
+    // workaround for load theme
+    await symlink(
+      path.join(__dirname, '../../theme-default'),
+      path.join(service.paths.absNodeModulesPath, 'dumi-theme-default'),
+    );
 
     await service.run({
       name: 'g',
