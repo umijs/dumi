@@ -3,7 +3,7 @@ import { IDepAnalyzeResult } from '../transformer/demo/dependencies';
 export { default as context } from './context';
 export { default as Link } from './components/Link';
 export { default as NavLink } from './components/NavLink';
-export { default as SlugLink } from './components/SlugLink';
+export { default as AnchorLink } from './components/AnchorLink';
 export { default as useSearch } from './hooks/useSearch';
 export { default as useCopy } from './hooks/useCopy';
 export { default as useCodeSandbox } from './hooks/useCodeSandbox';

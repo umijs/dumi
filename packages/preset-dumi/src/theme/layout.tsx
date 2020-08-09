@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { IRouteProps, IRouteComponentProps } from '@umijs/types';
 // @ts-ignore
 import config from '@@/dumi/config';
+import AnchorLink from './components/AnchorLink';
 import Context, { IThemeContext } from './context';
 import { IMenu } from '../routes/getMenuFromRoutes';
 import 'prismjs/themes/prism.css';
@@ -30,11 +31,11 @@ const useCurrentRouteMeta = (routes: IDumiRoutes, pathname: string) => {
   const handler = (...args: [IDumiRoutes, string]) => {
     const pathWithoutSuffix = args[1].replace(/[^^]\/$/, '');
 
-    return args[0].find(({ path }) => path === pathWithoutSuffix)?.meta || null;
+    return args[0].find(({ path }) => path === pathWithoutSuffix)?.meta || {};
   };
   const [meta, setMeta] = useState<IThemeContext['meta']>(handler(routes, pathname));
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setMeta(handler(routes, pathname));
   }, [pathname]);
 
@@ -53,7 +54,7 @@ const useCurrentLocale = (locales: IThemeContext['config']['locales'], pathname:
   };
   const [locale, setLocale] = useState<string>(handler(locales, pathname));
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setLocale(handler(locales, pathname));
   }, [pathname]);
 
@@ -86,11 +87,11 @@ const useCurrentMenu = (config: IThemeContext['config'], locale: string, pathnam
       }
     }
 
-    return args[0].menus[args[1]][navPath] || [];
+    return args[0].menus[args[1]]?.[navPath] || [];
   };
   const [menu, setMenu] = useState<IMenu['locale']['path']>(handler(config, locale, pathname));
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setMenu(handler(config, locale, pathname));
   }, [config.navs, config.menus, locale, pathname]);
 
@@ -106,8 +107,13 @@ const OuterLayout: React.FC<IOuterLayoutProps & IRouteComponentProps> = props =>
   const locale = useCurrentLocale(config.locales, location.pathname);
   const menu = useCurrentMenu(config, locale, location.pathname);
 
-  // TODO:
-  //   1. anchor
+  // scroll to anchor if hash exists
+  useLayoutEffect(() => {
+    if (location.hash) {
+      AnchorLink.scrollToAnchor(location.hash.slice(1));
+    }
+  }, []);
+
   return (
     <Context.Provider
       value={{

@@ -1,3 +1,4 @@
-import React from 'react';
+import { NavLink } from '@umijs/runtime';
+import { LinkWrapper } from './Link';
 
-export default () => <></>;
+export default LinkWrapper(NavLink);
