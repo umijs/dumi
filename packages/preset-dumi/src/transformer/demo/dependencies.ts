@@ -1,8 +1,10 @@
+import fs from 'fs';
 import path from 'path';
 import slash from 'slash';
 import * as babel from '@babel/core';
 import * as types from '@babel/types';
 import traverse from '@babel/traverse';
+import { winPath } from '@umijs/utils';
 import {
   getModuleResolvePkg,
   getModuleResolvePath,
@@ -65,6 +67,10 @@ function analyzeDeps(
             extensions: LOCAL_MODULE_EXT,
           });
 
+          if (pkg.peerDependencies) {
+            Object.assign(dependencies, pkg.peerDependencies);
+          }
+
           dependencies[pkg.name] = pkg.version;
         } else if (
           // only analysis for valid local file type
@@ -116,6 +122,42 @@ function analyzeDeps(
   });
 
   return { files, dependencies };
+}
+
+export function getCSSForDeps(dependencies: IDepAnalyzeResult['dependencies']) {
+  return Object.keys(dependencies).reduce((result, dep) => {
+    const pkgWithoutGroup = dep.match(/([^\/]+)$/)[1];
+    const guessFiles = [
+      // @group/pkg-suffic => pkg-suffix
+      `${pkgWithoutGroup}`,
+      // @group/pkg-suffix => pkgsuffix
+      ...(pkgWithoutGroup.includes('-') ? [pkgWithoutGroup.replace(/-/g, '')] : []),
+      // guess normal css files
+      'main',
+      'index',
+    ].reduce((files, name) => files.concat([`${name}.css`, `${name}.min.css`]), []);
+
+    // detect guess css files
+    guessFiles.some(file => {
+      try {
+        // try to resolve CSS file
+        const gussFilePath = `${dep}/dist/${file}`;
+
+        getModuleResolvePath({
+          basePath: process.cwd(),
+          sourcePath: gussFilePath,
+          silent: true,
+        });
+        result.push(gussFilePath);
+
+        return true;
+      } catch (err) {
+        /* nothing */
+      }
+    });
+
+    return result;
+  }, [] as string[]);
 }
 
 export default analyzeDeps;

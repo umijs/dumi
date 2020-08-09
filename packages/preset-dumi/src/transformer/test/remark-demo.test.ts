@@ -2,12 +2,17 @@ import fs from 'fs';
 import path from 'path';
 import { init } from '../../context';
 import transformer from '..';
+import { Service } from '@umijs/core';
 
 describe('demo example', () => {
   const FILE_PATH = path.join(__dirname, '../fixtures/raw/remark-demo.md');
 
-  beforeAll(() => {
-    init(null, { resolve: { previewLangs: ['jsx', 'tsx'] } });
+  beforeAll(async () => {
+    const service = new Service({
+      cwd: path.dirname(FILE_PATH),
+    });
+
+    init(service as any, { resolve: { previewLangs: ['jsx', 'tsx'] } });
   });
 
   afterAll(() => {

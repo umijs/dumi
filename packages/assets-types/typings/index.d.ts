@@ -21,6 +21,10 @@ export default interface AssetsPackage {
    */
   package: string;
   /**
+   * package LOGO image URL
+   */
+  logo: string;
+  /**
    * The documentation URL of assets package
    */
   homepage?: string;

@@ -6,6 +6,7 @@ import { execSync } from 'child_process';
 import visit from 'unist-util-visit';
 import transformer from '..';
 import ctx from '../../context';
+import { getModuleResolvePath } from '../../utils/moduleResolver';
 
 /**
  * remark plugin for generate file meta
@@ -37,14 +38,31 @@ export default function yamlProcessor() {
       if (Number.isNaN(vFile.data.updatedTime)) {
         vFile.data.updatedTime = Math.floor(fs.lstatSync(this.data('fileAbsPath')).mtimeMs);
       }
+
+      // try to find related component of this md
+      if (/index\.md$/.test(this.data('fileAbsPath'))) {
+        try {
+          getModuleResolvePath({
+            basePath: process.cwd(),
+            sourcePath: path.dirname(this.data('fileAbsPath')),
+            silent: true,
+          });
+
+          // presume A is the related component of A/index.md
+          // TODO: find component from entry file for a precise result
+          vFile.data.componentName = path.basename(path.parse(this.data('fileAbsPath')).dir);
+        } catch (err) {
+          /* nothing */
+        }
+      }
     }
 
     // save frontmatters
     visit(ast, 'yaml', node => {
-      const data = yaml.safeLoad(node.value as string);
+      const data = yaml.safeLoad(node.value as string) as any;
 
       // parse markdown for features in home page
-      if (data.features) {
+      if (data?.features) {
         data.features.forEach(feat => {
           if (feat.desc) {
             feat.desc = transformer.markdown(feat.desc, null, { type: 'html' }).content;
@@ -53,17 +71,37 @@ export default function yamlProcessor() {
       }
 
       // parse markdown for desc in home page
-      if (data.hero?.desc) {
+      if (data?.hero?.desc) {
         data.hero.desc = transformer.markdown(data.hero.desc, null, { type: 'html' }).content;
       }
 
       // parse markdown for footer in home page
-      if (data.footer) {
+      if (data?.footer) {
         data.footer = transformer.markdown(data.footer, null, { type: 'html' }).content;
+      }
+
+      // force string for uuid
+      if (data?.uuid) {
+        data.uuid = String(data.uuid);
       }
 
       // save frontmatter to data
       vFile.data = Object.assign(vFile.data || {}, data);
     });
+
+    // apply for assets command
+    if (ctx.umi?.applyPlugins && vFile.data.componentName) {
+      ctx.umi.applyPlugins({
+        key: 'dumi.detectAtomAsset',
+        type: ctx.umi.ApplyPluginsType.event,
+        args: {
+          identifier: vFile.data.componentName,
+          name: vFile.data.title,
+          uuid: vFile.data.uuid,
+          // TODO: props API definition from TypeScript interface
+          props: [],
+        },
+      });
+    }
   };
 }

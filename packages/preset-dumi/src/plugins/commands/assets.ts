@@ -3,14 +3,14 @@ import path from 'path';
 import { IApi } from '@umijs/types';
 import ctx from '../../context';
 import getRouteConfig from '../../routes/getRouteConfig';
-import AssetsPackage from '../../../../assets-types/typings';
+import AssetsPackage, { AtomAsset } from '../../../../assets-types/typings';
 import { ExampleBlockAsset } from '../../../../assets-types/typings/example';
 
 export default (api: IApi) => {
-  const isAssetCmd = process.argv[process.argv.length - 1] === 'assets';
   const assetsPkg: AssetsPackage = {
     name: api.userConfig.title || api.pkg.name,
     package: api.pkg.name,
+    logo: api.userConfig.logo,
     assets: {
       atoms: [],
       examples: [],
@@ -35,14 +35,19 @@ export default (api: IApi) => {
     },
   });
 
-  if (isAssetCmd) {
-    api.register({
-      key: 'dumi.detectCodeBlock',
-      fn(block: ExampleBlockAsset) {
-        if (block.name) {
-          assetsPkg.assets.examples.push(block);
-        }
-      },
-    });
-  }
+  api.register({
+    key: 'dumi.detectCodeBlock',
+    fn(block: ExampleBlockAsset) {
+      if (block.name || block.uuid) {
+        assetsPkg.assets.examples.push(block);
+      }
+    },
+  });
+
+  api.register({
+    key: 'dumi.detectAtomAsset',
+    fn(atom: AtomAsset) {
+      assetsPkg.assets.atoms.push(atom);
+    },
+  });
 };

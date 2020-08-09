@@ -54,6 +54,6 @@ export default {
       // remove * from comments
       .replace(/(^|\n)\s*\*+/g, '$1');
 
-    return { content, meta: yaml.safeLoad(frontmatter) };
+    return { content, meta: yaml.safeLoad(frontmatter) as object };
   },
 };

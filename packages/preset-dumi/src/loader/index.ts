@@ -1,9 +1,16 @@
 import path from 'path';
 import slash from 'slash2';
 import transformer from '../transformer';
+import ctx from '../context';
 
-export default function loader(content: string) {
+export default async function loader(content: string) {
   const result = transformer.markdown(content, this.resource);
+  let builtins =
+    (await ctx.umi?.applyPlugins({
+      key: 'dumi.modifyThemeBuiltins',
+      type: ctx.umi.ApplyPluginsType.modify,
+      initialValue: [],
+    })) || [];
 
   return `
     import { Link } from 'umi';
@@ -16,6 +23,9 @@ export default function loader(content: string) {
     import DumiPreviewer from '${slash(
       path.join(__dirname, '../themes/default/builtins/Previewer.js'),
     )}';
+    ${builtins
+      .map(component => `import ${component.identifier} from '${component.source}';`)
+      .join('\n')}
 
     ${(result.meta.demos || []).join('\n')}
 

@@ -85,7 +85,7 @@ export default {
 
 ## 本地开发没问题，但部署完成后访问子页面再刷新就 404 了
 
-默认只输出一个 `index.html` 作为入口 HTML 文件，服务器在 serve `/` 时可以找到文件但 `/some-route` 却没有对应的 `/some-route/index.html`，所以会出现 404。设置 `config.exportStatic` 为 `{}` 根据路由按文件夹结构输出所有 HTML 问价即可，此配置项的更多用法可参考 Umi 文档：[Config - exportStatic](https://umijs.org/zh-CN/config#exportstatic)。
+默认只输出一个 `index.html` 作为入口 HTML 文件，服务器在 serve `/` 时可以找到文件但 `/some-route` 却没有对应的 `/some-route/index.html`，所以会出现 404。设置 `config.exportStatic` 为 `{}` 根据路由按文件夹结构输出所有 HTML 文件即可，此配置项的更多用法可参考 Umi 文档：[Config - exportStatic](https://umijs.org/zh-CN/config#exportstatic)。
 
 ## 文档构建后的 bundle 太大了，导致网站访问速度很慢，如何实现按需加载？
 

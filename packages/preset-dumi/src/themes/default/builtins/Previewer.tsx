@@ -1,11 +1,13 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { Component } from 'react';
+import { history } from 'umi';
 import innertext from 'innertext';
 import CopyButton from '../CopyButton';
 import SourceCode from './SourceCode';
 import finaliseCSB, { issueLink } from '../../../utils/codesandbox';
 import localePropsHoc from '../localePropsHoc';
 import CsbButton from '../csbButton';
+import { scrollToSlug } from '../SlugList';
 import './Previewer.less';
 
 export interface IPreviewerProps {
@@ -54,6 +56,14 @@ export interface IPreviewerProps {
    * demo dependencies
    */
   dependencies: { [key: string]: string };
+  /**
+   * builtin CSS of demo dependencies, such as antd/dist/antd.css
+   */
+  CSSInDependencies: string[];
+  /**
+   * demo anchor id
+   */
+  id?: string;
   /**
    * 1-level files that include by demo
    */
@@ -113,8 +123,14 @@ class Previewer extends Component<IPreviewerProps> {
     }
   }
 
+  handleAnchorClick = (id: string) => {
+    const demoAnchor = `${history.location.pathname}#${id}`;
+    history.push(demoAnchor);
+    scrollToSlug(id);
+  };
+
   initCSBData = () => {
-    const { source, desc = '', title, dependencies, files } = this.props;
+    const { source, desc = '', title, dependencies, files, CSSInDependencies } = this.props;
     const isTSX = Boolean(source.tsx);
     const entryExt = isTSX ? 'tsx' : 'jsx';
     const CSBData = {
@@ -128,7 +144,7 @@ class Previewer extends Component<IPreviewerProps> {
         [`index.${entryExt}`]: {
           content: `import React from 'react';
 import ReactDOM from 'react-dom';
-${dependencies.antd ? "import 'antd/dist/antd.css';" : ''}
+${(CSSInDependencies || []).map(css => `import '${css}';`).join('\n')}
 import App from './demo';
 
 ${issueLink}`,
@@ -208,6 +224,8 @@ ${issueLink}`,
       path,
       dependencies,
       files,
+      id,
+      CSSInDependencies,
       ...props
     } = this.props;
     const { showSource, sourceType, showRiddle, currentFile } = this.state;
@@ -221,7 +239,19 @@ ${issueLink}`,
     }
 
     return (
-      <div {...props} className={['__dumi-default-previewer', props.className].join(' ')}>
+      <div
+        {...props}
+        className={[
+          '__dumi-default-previewer',
+          decodeURI(history.location.hash.replace('#', '')) === id && title
+            ? '__dumi-default-previewer-target'
+            : '',
+          props.className,
+        ]
+          .filter(c => c)
+          .join(' ')}
+        id={id}
+      >
         <div
           className="__dumi-default-previewer-demo"
           style={{
@@ -234,12 +264,13 @@ ${issueLink}`,
         </div>
         <div
           className="__dumi-default-previewer-desc"
+          onClick={() => this.handleAnchorClick(id)}
           title={title}
           // eslint-disable-next-line
           dangerouslySetInnerHTML={{ __html: desc }}
         />
         <div className="__dumi-default-previewer-actions">
-          {!this.props.hideActions?.includes('EXTERNAL') && !hasExternalFile && (
+          {!this.props.hideActions?.includes('CSB') && !hasExternalFile && (
             <>
               <CsbButton type={this.props.source.tsx ? 'tsx' : 'jsx'} base64={this.state.CSBData}>
                 <button className="__dumi-default-icon" role="codesandbox" type="submit" />
@@ -258,16 +289,14 @@ ${issueLink}`,
                     value={JSON.stringify({
                       title,
                       js: this.convertRiddleJS(raw),
-                      css: dependencies.antd
-                        ? `@import 'antd${`@${dependencies.antd}`}/dist/antd.css';`
-                        : '',
+                      css: (CSSInDependencies || []).map(css => `@import '${css}';`).join('\n'),
                     })}
                   />
                 </form>
               )}
             </>
           )}
-          {!this.props.hideActions?.includes('CSB') && path && (
+          {!this.props.hideActions?.includes('EXTERNAL') && path && (
             <a target="_blank" rel="noopener noreferrer" href={path}>
               <button className="__dumi-default-icon" role="open-demo" type="button" />
             </a>
@@ -287,7 +316,7 @@ ${issueLink}`,
             />
           )}
           <button
-            className="__dumi-default-icon"
+            className={`__dumi-default-icon${showSource ? ' __dumi-default-btn-expand' : ''}`}
             role="source"
             type="button"
             onClick={() => this.setState({ showSource: !showSource })}

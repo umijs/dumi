@@ -1,6 +1,7 @@
 @import (reference) '../variables.less';
 
 .@{prefix}-previewer {
+  background-color: #fff;
   border: 1px solid @c-border;
   border-radius: 1px;
 
@@ -10,6 +11,10 @@
 
   &-demo {
     padding: 40px 24px;
+  }
+
+  &-target {
+    border-color: #3d62d2;
   }
 
   &-desc {
@@ -29,8 +34,8 @@
 
     &[title] {
       position: relative;
-      margin-top: 6px;
       padding-top: 1.2em;
+      pointer-events: none;
 
       &::before {
         content: attr(title);
@@ -43,6 +48,8 @@
         font-weight: 500;
         background-color: #fff;
         transform: translateY(-50%);
+        pointer-events: auto;
+        cursor: pointer;
       }
 
       &:empty {

@@ -60,11 +60,11 @@ function convertUserMenuChilds(
         let childItem = child;
 
         if (typeof child === 'string') {
-          const route = routes.find(route => {
+          const route = routes.find(routeItem => {
             if (
-              route.component &&
-              isSameRouteComponent(child, route.component, includes, paths) &&
-              (route.meta?.locale === locale || (!route.meta?.locale && isDefaultLocale))
+              routeItem.component &&
+              isSameRouteComponent(child, routeItem.component, includes, paths) &&
+              (routeItem.meta?.locale === locale || (!routeItem.meta?.locale && isDefaultLocale))
             ) {
               return true;
             }
@@ -155,8 +155,8 @@ export default function getMenuFromRoutes(
       }
 
       if (group?.path) {
-        const { title, path, ...meta } = group;
-        const groupKey = addHtmlSuffix(group.path) || group.title;
+        const { title, path: groupPath, ...meta } = group;
+        const groupKey = addHtmlSuffix(groupPath) || title;
 
         // group route items by group path & locale
         localeMenusMapping[locale] = {
@@ -165,7 +165,7 @@ export default function getMenuFromRoutes(
             ...(localeMenusMapping[locale]?.[nav] || {}),
             [groupKey]: {
               title,
-              path,
+              path: groupPath,
               meta: {
                 // merge group meta
                 ...(localeMenusMapping[locale]?.[nav]?.[groupKey]?.meta || {}),

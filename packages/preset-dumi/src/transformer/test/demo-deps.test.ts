@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import analyzeDeps from '../demo/dependencies';
+import analyzeDeps, { getCSSForDeps } from '../demo/dependencies';
 
 describe('demo transformer: dependencies', () => {
   it('basic analysis', () => {
@@ -37,5 +37,27 @@ describe('demo transformer: dependencies', () => {
     expect(result.files['circular.ts']).not.toBeUndefined();
     expect(Object.keys(result.files).length).toEqual(1);
     expect(result.dependencies['js-yaml']).not.toBeUndefined();
+  });
+
+  it("merge dep's peerDependencies", () => {
+    const filePath = path.join(__dirname, '../fixtures/demo-deps/peer/index.ts');
+    const result = analyzeDeps(fs.readFileSync(filePath).toString(), {
+      isTSX: false,
+      fileAbsPath: filePath,
+    });
+
+    expect(result.dependencies.react).not.toBeUndefined();
+  });
+
+  it('detect CSS files for dependencies', () => {
+    expect(
+      getCSSForDeps({
+        // has css file
+        antd: '*',
+        katex: '*',
+        // has not css file
+        'js-yaml': '*',
+      }),
+    ).toHaveLength(2);
   });
 });

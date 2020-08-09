@@ -1,4 +1,3 @@
-import path from 'path';
 import getRepoUrl from './getRepoUrl';
 
 describe('getRepoUrl', () => {

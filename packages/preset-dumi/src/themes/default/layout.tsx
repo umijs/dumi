@@ -23,7 +23,10 @@ export interface ILayoutProps {
   menus: IMenu[];
   locales: ILocale[];
   mode: IDumiOpts['mode'];
-  repoUrl?: string;
+  repository?: {
+    url: string;
+    branch?: string;
+  };
 }
 
 /**
@@ -109,7 +112,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     }
 
     // redirect to home page if there has no matched route
-    if (!state.currentRouteMeta) {
+    if (!state.currentRouteMeta && typeof window !== 'undefined') {
       const isPrefixLocale =
         state.currentLocale !== locales[0]?.name && state.currentLocale !== '*';
       const rootPath = isPrefixLocale ? `/${state.currentLocale}` : '/';
@@ -217,6 +220,9 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     const { slugs = [] } = this.state.currentRouteMeta;
     const { currentSlug } = this.state;
     // 如果当前的 slugs 不含 currentSlug, 就去更新
+    if (slugs.find(slug => slug.heading === currentSlug)) {
+      return;
+    }
     const container = window;
     const linkSections: Array<{ heading: string; top: number }> = [];
     [...slugs]
@@ -248,7 +254,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
     // clear heading if scroll top than first section
     if (document.documentElement.scrollTop === 0) {
       if (location.hash) {
-        history.replace(location.pathname);
+        history.replace(location.href.split('#')[0]);
       }
       return;
     }
@@ -296,7 +302,8 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
   );
 
   render() {
-    const { mode, title, desc, logo, repoUrl, locales, algolia, children } = this.props;
+    const { mode, title, desc, logo, repository, locales, algolia, children } = this.props;
+    const { url: repoUrl, branch } = repository;
     const { navs, menus, menuCollapsed, currentLocale, currentSlug, currentRouteMeta } = this.state;
     const siteMode = this.props.mode === 'site';
     const showHero = siteMode && currentRouteMeta.hero;
@@ -374,7 +381,7 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
                   <a
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={`${repoUrl}/edit/master/${currentRouteMeta.filePath}`}
+                    href={`${repoUrl}/edit/${branch}/${currentRouteMeta.filePath}`}
                   >
                     {isCN
                       ? `在 ${repoPlatform} 上编辑这篇文档`

@@ -25,6 +25,8 @@ export default {
 - 没有定制化的首页
 - 支持 `description` 配置项展示简介
 - 支持通过 `package.json` 中的 `repository` 配置自动展示 GitHub Stars 数
+- 支持通过 `package.json` 中的 `repository` 配置自动展示 `markdown` 文件 `footer` 中 `Edit this doc on GitHub` 的超链接
+- 支持通过 `package.json` 中的 `repository.branch` 配置可修改 `Edit this doc on GitHub` 该超链接跳转的分支，默认为 `master` 分支
 
 ## 站点模式
 
