@@ -30,6 +30,7 @@
     "@umijs/plugin-analytics": "^0.2.2",
     "@umijs/runtime": "^3.2.14",
     "@umijs/types": "3.x",
+    "copy-text-to-clipboard": "^2.2.0",
     "deepmerge": "^4.2.2",
     "dumi-theme-default": "0.0.0",
     "enhanced-resolve": "^4.1.1",
