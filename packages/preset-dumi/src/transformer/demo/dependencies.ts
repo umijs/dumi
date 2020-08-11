@@ -1,10 +1,8 @@
-import fs from 'fs';
 import path from 'path';
 import slash from 'slash';
 import * as babel from '@babel/core';
 import * as types from '@babel/types';
 import traverse from '@babel/traverse';
-import { winPath } from '@umijs/utils';
 import {
   getModuleResolvePkg,
   getModuleResolvePath,
@@ -13,9 +11,14 @@ import {
 import { saveFileOnDepChange } from '../../utils/watcher';
 import { getBabelOptions, IDemoOpts } from './options';
 
-interface IDepAnalyzeResult {
-  dependencies: { [key: string]: string };
-  files: { [key: string]: { path: string; content: string } };
+export interface IDepAnalyzeResult {
+  dependencies: {
+    [key: string]: {
+      version: string;
+      css?: string;
+    };
+  };
+  files: { [key: string]: { import: string; content: string } };
 }
 
 export const LOCAL_DEP_EXT = ['.jsx', '.tsx', '.js', '.ts'];
@@ -37,7 +40,7 @@ function analyzeDeps(
           .ast
       : raw;
   const files = totalFiles || {};
-  const dependencies = {};
+  const dependencies: IDepAnalyzeResult['dependencies'] = {};
 
   // traverse all expression
   traverse(ast, {
@@ -48,8 +51,7 @@ function analyzeDeps(
       if (
         types.isIdentifier(callPathNode.callee) &&
         callPathNode.callee.name === 'require' &&
-        types.isStringLiteral(callPathNode.arguments[0]) &&
-        callPathNode.arguments[0].value !== 'react'
+        types.isStringLiteral(callPathNode.arguments[0])
       ) {
         const requireStr = callPathNode.arguments[0].value;
         const resolvePath = getModuleResolvePath({
@@ -66,12 +68,17 @@ function analyzeDeps(
             sourcePath: requireStr,
             extensions: LOCAL_MODULE_EXT,
           });
+          const css = getCSSForDep(pkg.name);
 
-          if (pkg.peerDependencies) {
-            Object.assign(dependencies, pkg.peerDependencies);
+          Object.keys(pkg.peerDependencies || {}).forEach(dep => {
+            dependencies[dep] = dependencies[dep] || { version: pkg.peerDependencies[dep] };
+          });
+
+          dependencies[pkg.name] = { version: pkg.version };
+
+          if (css) {
+            dependencies[pkg.name].css = css;
           }
-
-          dependencies[pkg.name] = pkg.version;
         } else if (
           // only analysis for valid local file type
           PLAIN_TEXT_EXT.includes(resolvePathParsed.ext) &&
@@ -89,7 +96,7 @@ function analyzeDeps(
           // to avoid circular-reference
           if (fileName && !files[fileName]) {
             files[fileName] = {
-              path: requireStr,
+              import: requireStr,
               content: getModuleResolveContent({
                 basePath: fileAbsPath,
                 sourcePath: requireStr,
@@ -124,40 +131,37 @@ function analyzeDeps(
   return { files, dependencies };
 }
 
-export function getCSSForDeps(dependencies: IDepAnalyzeResult['dependencies']) {
-  return Object.keys(dependencies).reduce((result, dep) => {
-    const pkgWithoutGroup = dep.match(/([^\/]+)$/)[1];
-    const guessFiles = [
-      // @group/pkg-suffic => pkg-suffix
-      `${pkgWithoutGroup}`,
-      // @group/pkg-suffix => pkgsuffix
-      ...(pkgWithoutGroup.includes('-') ? [pkgWithoutGroup.replace(/-/g, '')] : []),
-      // guess normal css files
-      'main',
-      'index',
-    ].reduce((files, name) => files.concat([`${name}.css`, `${name}.min.css`]), []);
+export function getCSSForDep(dep: string) {
+  const pkgWithoutGroup = dep.match(/([^\/]+)$/)[1];
+  const guessFiles = [
+    // @group/pkg-suffic => pkg-suffix
+    `${pkgWithoutGroup}`,
+    // @group/pkg-suffix => pkgsuffix
+    ...(pkgWithoutGroup.includes('-') ? [pkgWithoutGroup.replace(/-/g, '')] : []),
+    // guess normal css files
+    'main',
+    'index',
+  ].reduce((files, name) => files.concat([`${name}.css`, `${name}.min.css`]), []);
 
-    // detect guess css files
-    guessFiles.some(file => {
-      try {
-        // try to resolve CSS file
-        const gussFilePath = `${dep}/dist/${file}`;
+  // detect guess css files
+  for (let i = 0; i <= guessFiles.length; i += 1) {
+    const file = guessFiles[i];
 
-        getModuleResolvePath({
-          basePath: process.cwd(),
-          sourcePath: gussFilePath,
-          silent: true,
-        });
-        result.push(gussFilePath);
+    try {
+      // try to resolve CSS file
+      const guessFilePath = `${dep}/dist/${file}`;
 
-        return true;
-      } catch (err) {
-        /* nothing */
-      }
-    });
+      getModuleResolvePath({
+        basePath: process.cwd(),
+        sourcePath: guessFilePath,
+        silent: true,
+      });
 
-    return result;
-  }, [] as string[]);
+      return guessFilePath;
+    } catch (err) {
+      /* nothing */
+    }
+  }
 }
 
 export default analyzeDeps;

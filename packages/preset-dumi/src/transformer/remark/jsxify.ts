@@ -15,9 +15,10 @@ export default function jsxify() {
     let JSX = toJSX(ast, { wrapper: 'fragment' }) || '';
 
     // TODO: find a elegant way to keep camelCase props like defaultShowCode or hideActions
-    JSX = JSX.replace(/hide-actions={\[/g, 'hideActions={[')
-      .replace(/default-show-code={true}/g, 'defaultShowCode')
-      .replace(/css-in-dependencies={\[/g, 'CSSInDependencies={[');
+    JSX = JSX.replace(/hide-actions={\[/g, 'hideActions={[').replace(
+      /default-show-code={true}/g,
+      'defaultShowCode',
+    );
 
     return JSX;
   };
