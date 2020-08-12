@@ -1,4 +1,4 @@
-@import (reference) './variables.less';
+@import (reference) '../style/variables.less';
 
 .@{prefix}-menu {
   position: fixed;
@@ -74,8 +74,7 @@
       color: lighten(@c-secondary, 10%);
 
       // badges
-      > object[data^='https://img.shields.io']
-      {
+      > object[data^='https://img.shields.io'] {
         max-height: 20px;
       }
 

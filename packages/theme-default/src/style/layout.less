@@ -210,19 +210,30 @@ body {
     }
 
     li {
+      position: relative;
       margin: 0;
-      padding: 4px 0;
+      padding: 4px 0 4px 6px;
       text-indent: 12px;
       font-size: 13px;
       line-height: 1.40625;
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
-      border-left: 2px solid @c-border;
 
       a {
         color: @c-text;
         text-decoration: none;
+
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          display: inline-block;
+          width: 2px;
+          background: @c-border;
+        }
 
         &:hover {
           color: lighten(@c-primary, 5%);
@@ -231,13 +242,13 @@ body {
         &:active {
           color: lighten(@c-primary, 3%);
         }
-      }
 
-      &.active {
-        border-left-color: @c-primary;
-
-        a {
+        &.active {
           color: @c-primary;
+
+          &::before {
+            background: @c-primary;
+          }
         }
       }
     }

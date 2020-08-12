@@ -1,9 +1,8 @@
 {
   "name": "dumi-theme-default",
   "version": "0.0.0",
-  "description": "",
+  "description": "The official default theme of dumi",
   "files": [
-    "es",
     "src"
   ],
   "repository": {
@@ -14,11 +13,16 @@
   "homepage": "http://github.com/umijs/dumi",
   "bugs": "http://github.com/umijs/dumi/issues",
   "authors": [],
-  "peerDependencies": {
-    "@umijs/preset-dumi": "1.x"
+  "dependencies": {
+    "prism-react-renderer": "^1.1.1",
+    "prismjs": "^1.21.0"
   },
-  "optionalDependencies": {
+  "devDependencies": {
     "dumi": "1.x"
+  },
+  "peerDependencies": {
+    "@umijs/preset-dumi": "1.x",
+    "react": "^16.13.1"
   },
   "license": "MIT"
 }

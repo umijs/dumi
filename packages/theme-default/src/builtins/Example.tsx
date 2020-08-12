@@ -1,8 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { IRouteProps } from 'umi';
 import './Example.less';
 
-export default (props: IRouteProps & { route: any }) => {
+export default (props: { route: any }) => {
   const elm = useRef<HTMLIFrameElement>();
   const [height, setHeight] = useState(0);
 
@@ -28,7 +27,7 @@ export default (props: IRouteProps & { route: any }) => {
             />
           </span>
         </div>
-        <iframe src={props.route.meta.examplePath} ref={elm} style={{ height }} title="dumi"/>
+        <iframe src={props.route.meta.examplePath} ref={elm} style={{ height }} title="dumi" />
       </div>
     )
   );

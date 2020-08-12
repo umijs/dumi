@@ -1,8 +1,6 @@
 import React, { FC, useContext } from 'react';
-import { Link, NavLink } from 'umi';
-import { NavbarLink } from './Navbar';
+import { context, Link, NavLink } from 'dumi/theme';
 import LocaleSelect from './LocaleSelect';
-import context from './context';
 import SlugList from './SlugList';
 import './SideMenu.less';
 
@@ -12,13 +10,21 @@ interface INavbarProps {
 }
 
 const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location }) => {
-  const { logo, title, desc, menus, navs, repoUrl, mode, rootPath, routeMeta } = useContext(
-    context,
-  );
+  const {
+    config: {
+      logo,
+      title,
+      description,
+      mode,
+      repository: { url: repoUrl },
+    },
+    menu,
+    nav,
+    base,
+    meta,
+  } = useContext(context);
   const isHiddenMenus =
-    Boolean(routeMeta.hero || routeMeta.features || routeMeta.gapless) ||
-    routeMeta.sidemenu === false ||
-    undefined;
+    Boolean(meta.hero || meta.features || meta.gapless) || meta.sidemenu === false || undefined;
 
   return (
     <div
@@ -30,14 +36,14 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location }) => {
       <div className="__dumi-default-menu-inner">
         <div className="__dumi-default-menu-header">
           <Link
-            to={rootPath}
+            to={base}
             className="__dumi-default-menu-logo"
             style={{
               backgroundImage: logo && `url('${logo}')`,
             }}
           />
           <h1>{title}</h1>
-          <p>{desc}</p>
+          <p>{description}</p>
           {/* github star badge */}
           {/github\.com/.test(repoUrl) && mode === 'doc' && (
             <p>
@@ -51,23 +57,23 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location }) => {
           )}
         </div>
         {/* mobile nav list */}
-        {navs.length ? (
+        {nav.length ? (
           <div className="__dumi-default-menu-mobile-area">
             <ul className="__dumi-default-menu-nav-list">
-              {navs.map(nav => (
+              {nav.map(nav => (
                 <li key={nav.path || nav.title}>
-                  <NavbarLink href={nav.path}>
+                  <NavLink to={nav.path}>
                     {nav.title}
                     {Boolean(nav.children?.length) && (
                       <ul>
                         {nav.children.map(item => (
                           <li key={item.path || item.title}>
-                            <NavbarLink href={item.path}>{item.title}</NavbarLink>
+                            <NavLink to={item.path}>{item.title}</NavLink>
                           </li>
                         ))}
                       </ul>
                     )}
-                  </NavbarLink>
+                  </NavLink>
                 </li>
               ))}
             </ul>
@@ -83,25 +89,18 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location }) => {
         {/* menu list */}
         <ul className="__dumi-default-menu-list">
           {!isHiddenMenus &&
-            menus.map(item => {
+            menu.map(item => {
               // always use meta from routes to reduce menu data size
-              const hasSlugs = Boolean(routeMeta.slugs?.length);
+              const hasSlugs = Boolean(meta.slugs?.length);
               const hasChildren = item.children && Boolean(item.children.length);
               const show1LevelSlugs =
-                routeMeta.toc === 'menu' &&
-                !hasChildren &&
-                hasSlugs &&
-                item.path === location.pathname;
+                meta.toc === 'menu' && !hasChildren && hasSlugs && item.path === location.pathname;
 
               return (
                 <li key={item.path || item.title}>
-                  {item.path ? (
-                    <NavLink to={item.path} exact={!(item.children && item.children.length)}>
-                      {item.title}
-                    </NavLink>
-                  ) : (
-                    <a>{item.title}</a>
-                  )}
+                  <NavLink to={item.path} exact={!(item.children && item.children.length)}>
+                    {item.title}
+                  </NavLink>
                   {/* group children */}
                   {Boolean(item.children && item.children.length) && (
                     <ul>
@@ -112,25 +111,17 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location }) => {
                           </NavLink>
                           {/* group children slugs */}
                           {Boolean(
-                            routeMeta.toc === 'menu' &&
+                            meta.toc === 'menu' &&
                               typeof window !== 'undefined' &&
                               child.path === location.pathname &&
                               hasSlugs,
-                          ) && (
-                            <SlugList
-                              base={child.path}
-                              slugs={routeMeta.slugs}
-                              location={location}
-                            />
-                          )}
+                          ) && <SlugList slugs={meta.slugs} />}
                         </li>
                       ))}
                     </ul>
                   )}
                   {/* group slugs */}
-                  {show1LevelSlugs && (
-                    <SlugList base={item.path} slugs={routeMeta.slugs} location={location} />
-                  )}
+                  {show1LevelSlugs && <SlugList slugs={meta.slugs} />}
                 </li>
               );
             })}

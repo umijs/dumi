@@ -4,6 +4,7 @@ import { IPreviewerComponentProps } from '..';
 
 const CSB_API_ENDPOINT = 'https://codesandbox.io/api/v1/sandboxes/define';
 
+// ref: https://github.com/codesandbox/codesandbox-importers/blob/master/packages/import-utils/src/api/define.ts
 function serialize(data: object) {
   return LZString.compressToBase64(JSON.stringify(data))
     .replace(/\+/g, '-') // Convert '+' to '-'

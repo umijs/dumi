@@ -1,4 +1,4 @@
-@import (reference) './variables.less';
+@import (reference) '../style/variables.less';
 
 ul[role='slug-list'] {
   &:empty {
@@ -7,7 +7,7 @@ ul[role='slug-list'] {
   }
 
   li {
-    &.active a {
+    > a.active {
       color: darken(@c-primary, 2%);
     }
 

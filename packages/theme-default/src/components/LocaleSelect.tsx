@@ -1,10 +1,14 @@
 import React, { FC, useContext } from 'react';
-import { history } from 'umi';
-import context from './context';
+// @ts-ignore
+import { history } from 'dumi';
+import { context } from 'dumi/theme';
 import './LocaleSelect.less';
 
 const LocaleSelect: FC = () => {
-  const { locales, locale } = useContext(context);
+  const {
+    locale,
+    config: { locales },
+  } = useContext(context);
   const firstDiffLocale = locales.find(({ name }) => name !== locale);
 
   function handleLocaleChange(ev) {

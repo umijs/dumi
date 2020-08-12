@@ -1,4 +1,4 @@
-@import (reference) '../variables.less';
+@import (reference) '../style/variables.less';
 
 .@{prefix}-previewer {
   background-color: #fff;
@@ -110,10 +110,6 @@
         margin-right: 8px;
       }
 
-      &:not(:first-child) {
-        margin-left: 8px;
-      }
-
       &[role='codesandbox'] {
         background-position: -18px 0;
       }
@@ -136,6 +132,15 @@
 
       &[role='open-demo'] {
         background-position: -126px 0;
+      }
+
+      &[role='copy'][data-status='ready'] {
+        background-position: -54px 0;
+      }
+
+      &[role='copy'][data-status='copied'] {
+        pointer-events: none;
+        background-position: -54px -16px;
       }
     }
 
