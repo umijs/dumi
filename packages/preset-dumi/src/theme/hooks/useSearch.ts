@@ -76,7 +76,7 @@ const useBuiltinSearch = (keywords: string) => {
     } else {
       setItems([]);
     }
-  }, [keywords]);
+  }, [keywords, metas.length]);
 
   return items;
 };
