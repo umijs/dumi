@@ -1,5 +1,6 @@
 /node_modules
 /coverage
+/packages/*/es
 /packages/*/lib
 /packages/*/node_modules
 /packages/*/.local

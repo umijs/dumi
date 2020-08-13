@@ -1,28 +1,23 @@
-import path from 'path';
-import slash from 'slash2';
 import transformer from '../transformer';
 import ctx from '../context';
+import getTheme from '../theme/loader';
 
 export default async function loader(content: string) {
   const result = transformer.markdown(content, this.resource);
-  let builtins =
+  const builtins =
     (await ctx.umi?.applyPlugins({
       key: 'dumi.modifyThemeBuiltins',
       type: ctx.umi.ApplyPluginsType.modify,
       initialValue: [],
     })) || [];
+  const theme = getTheme();
 
   return `
     import { Link } from 'umi';
     import React from 'react';
-    import Alert from '${slash(path.join(__dirname, '../themes/default/builtins/Alert.js'))}';
-    import Badge from '${slash(path.join(__dirname, '../themes/default/builtins/Badge.js'))}';
-    import SourceCode from '${slash(
-      path.join(__dirname, '../themes/default/builtins/SourceCode.js'),
-    )}';
-    import DumiPreviewer from '${slash(
-      path.join(__dirname, '../themes/default/builtins/Previewer.js'),
-    )}';
+    ${theme.builtins
+      .map(component => `import ${component.identifier} from '${component.source}';`)
+      .join('\n')}
     ${builtins
       .map(component => `import ${component.identifier} from '${component.source}';`)
       .join('\n')}

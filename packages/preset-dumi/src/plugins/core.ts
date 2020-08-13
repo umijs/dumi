@@ -73,6 +73,7 @@ export default function(api: IApi) {
   };
   // save umi api & opts into context
   const updateContext = () => setContext(api, mergeUserConfig(defaultOpts, api));
+  let config = {};
 
   // create symlink for packages
   hostPkgAlias.forEach(([pkgName, pkgPath]) => {
@@ -88,7 +89,13 @@ export default function(api: IApi) {
   api.onStart(updateContext);
 
   // for update context when config change
-  api.onGenerateFiles(updateContext);
+  api.onGenerateFiles(() => {
+    updateContext();
+    api.writeTmpFile({
+      path: 'dumi/config.json',
+      content: JSON.stringify(config, null, 2),
+    });
+  });
 
   // repalce default routes with generated routes
   api.onPatchRoutesBefore(({ routes, parentRoute }) => {
@@ -118,7 +125,7 @@ export default function(api: IApi) {
     const opts = mergeUserConfig(defaultOpts, api);
     const root = routes.find(route => route.path === '/');
     const childRoutes = root.routes;
-    const meta = {
+    config = {
       menus: getMenuFromRoutes(childRoutes, opts, api.paths),
       locales: getLocaleFromRoutes(childRoutes, opts),
       navs: getNavFromRoutes(childRoutes, opts, opts.navs),
@@ -140,7 +147,7 @@ export default function(api: IApi) {
       ...${
         // escape " to ^ to avoid umi parse error, then umi will decode them
         // see also: https://github.com/umijs/umi/blob/master/packages/umi-build-dev/src/routes/stripJSONQuote.js#L4
-        JSON.stringify(meta).replace(/"/g, '^')
+        JSON.stringify(config).replace(/"/g, '^')
       },
       ...props,
     })`;
@@ -218,6 +225,9 @@ export default function(api: IApi) {
         config.resolve.alias.set(pkgName, pkgPath);
       }
     });
+
+    // alias dumi
+    config.resolve.alias.set('dumi', require.resolve('dumi'));
 
     return config;
   });
