@@ -25,8 +25,8 @@ export interface IThemeContext {
     /**
      * documentation repository URL
      */
-    repository?: {
-      url: string;
+    repository: {
+      url?: string;
       branch: string;
     };
     /**
@@ -92,7 +92,14 @@ export interface IThemeContext {
 }
 
 export default React.createContext<IThemeContext>({
-  config: { mode: 'doc', title: '', navs: {}, menus: {}, locales: [] },
+  config: {
+    mode: 'doc',
+    title: '',
+    navs: {},
+    menus: {},
+    locales: [],
+    repository: { branch: 'master' },
+  },
   meta: { title: '' },
   menu: [],
   nav: [],
