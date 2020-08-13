@@ -32,6 +32,7 @@ describe('theme API: useSearch', () => {
       navs: {},
       title: 'test',
       mode: 'doc',
+      repository: { branch: 'master' },
     },
     meta: { title: '' },
     menu: [],
