@@ -1,15 +1,23 @@
 import '@testing-library/jest-dom';
 import React from 'react';
 import { render } from '@testing-library/react';
-import { createMemoryHistory, Router } from 'dumi';
+import { createMemoryHistory, MemoryHistory, Router } from '@umijs/runtime';
 import { context as Context } from 'dumi/theme';
 import SourceCode from './builtins/SourceCode';
 import Alert from './builtins/Alert';
 import Badge from './builtins/Badge';
+import Previewer from './builtins/Previewer';
 import Layout from './layout';
 
+let history: MemoryHistory;
+
+// mock history location which import from 'dumi'
+jest.mock('dumi', () => ({
+  history: { location: { pathname: '/' } },
+}));
+
 describe('default theme', () => {
-  const history = createMemoryHistory({ initialEntries: ['/', '/en'], initialIndex: 0 });
+  history = createMemoryHistory({ initialEntries: ['/', '/en-US'], initialIndex: 0 });
   const baseCtx = {
     title: 'test',
     locale: 'zh-CN',
@@ -20,7 +28,7 @@ describe('default theme', () => {
         meta: {},
       },
       {
-        path: '/en',
+        path: '/en-US',
         title: 'Home',
         meta: {},
       },
@@ -130,7 +138,7 @@ describe('default theme', () => {
         {children}
       </Context.Provider>
     );
-    const { getByText } = render(
+    const { getByText, getAllByText } = render(
       <Router history={history}>
         <Layout {...baseProps}>
           <h1>Doc</h1>
@@ -141,6 +149,12 @@ describe('default theme', () => {
 
     // expect slugs be rendered
     expect(getByText('Slug A')).not.toBeNull();
+
+    // trigger locale change
+    getAllByText('English')[0].click();
+
+    // expect location change
+    expect(history.location.pathname).toEqual(baseCtx.routes[1].path);
   });
 
   it('should render builtin components correctly', () => {
@@ -158,13 +172,42 @@ describe('default theme', () => {
         {children}
       </Context.Provider>
     );
-    const { getByText } = render(
+    const { getByText, getByTitle, getAllByTitle } = render(
       <Router history={history}>
         <Layout {...baseProps}>
           <>
             <SourceCode code={code} lang="javascript" />
             <Alert type="info">Alert</Alert>
             <Badge type="info">Badge</Badge>
+            <Previewer
+              title="demo-1"
+              identifier="demo-1"
+              sources={{
+                _: {
+                  jsx: "export default () => 'JavaScript'",
+                  tsx: "export default () => 'TypeScript'",
+                },
+              }}
+              dependencies={{}}
+            >
+              <>demo-1</>
+            </Previewer>
+            <Previewer
+              title="demo-2"
+              identifier="demo-2"
+              sources={{
+                _: {
+                  jsx: "export default () => 'Main'",
+                },
+                'Other.jsx': {
+                  import: './Other.jsx',
+                  jsx: "export default () => 'Other'",
+                },
+              }}
+              dependencies={{}}
+            >
+              <>demo-2</>
+            </Previewer>
           </>
         </Layout>
       </Router>,
@@ -179,5 +222,32 @@ describe('default theme', () => {
 
     // expect Badge be rendered
     expect(getByText('Badge')).toHaveClass('__dumi-default-badge');
+
+    // expect Previewer be rendered
+    expect(getByText('demo-1')).not.toBeNull();
+
+    // trigger source code display for demo-1
+    getAllByTitle('Toggle source code panel')[0].click();
+
+    // expect show TypeScript code default
+    expect(getByText("'TypeScript'")).not.toBeNull();
+
+    // trigger source code type change
+    getByTitle('Toggle type for source code').click();
+
+    // expect show JavaScript code
+    expect(getByText("'JavaScript'")).not.toBeNull();
+
+    // trigger source code display for demo-2
+    getAllByTitle('Toggle source code panel')[1].click();
+
+    // expect show code of main file
+    expect(getByText("'Main'")).not.toBeNull();
+
+    // trigger file change
+    getByText('Other.jsx').click();
+
+    // expect show code of main file
+    expect(getByText("'Other'")).not.toBeNull();
   });
 });
