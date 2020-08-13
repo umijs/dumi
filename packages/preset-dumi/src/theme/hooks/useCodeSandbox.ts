@@ -97,10 +97,10 @@ ReactDOM.render(
   };
 
   // append other imported local files
-  Object.entries(opts.sources).forEach(([filename, { tsx, jsx }]) => {
+  Object.entries(opts.sources).forEach(([filename, { tsx, jsx, content }]) => {
     // handle primary content
     files[filename === '_' ? appFileName : filename] = {
-      content: tsx || jsx,
+      content: tsx || jsx || content,
     };
   });
 

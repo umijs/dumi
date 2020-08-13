@@ -97,12 +97,12 @@ function applyCodeBlock(props: IPreviewerComponentProps) {
         ),
         // append local file dependencies
         ...Object.entries(props.sources).reduce(
-          (result, [file, { tsx, jsx }]) =>
+          (result, [file, { tsx, jsx, content }]) =>
             Object.assign(result, {
               // handle main file
               [file === '_' ? `index.${tsx ? 'tsx' : 'jsx'}` : file]: {
                 type: 'FILE',
-                value: tsx || jsx,
+                value: tsx || jsx || content,
               },
             }),
           {},
@@ -163,7 +163,7 @@ function visitor(node, i, parent: Node) {
             ...result,
             [file]: {
               import: files[file].import,
-              jsx: files[file].content,
+              content: files[file].content,
               // TODO: convert tsx for files
             },
           }),

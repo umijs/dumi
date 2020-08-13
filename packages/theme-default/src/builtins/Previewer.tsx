@@ -30,7 +30,7 @@ export interface IPreviewerProps extends IPreviewerComponentProps {
   /**
    * configurations for action button
    */
-  hideActions: ('CSB' | 'EXTERNAL' | 'RIDDLE')[];
+  hideActions?: ('CSB' | 'EXTERNAL' | 'RIDDLE')[];
   /**
    * show source code by default
    */

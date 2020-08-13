@@ -13,18 +13,25 @@ export { default as useLocaleProps } from './hooks/useLocaleProps';
 export interface IPreviewerComponentProps {
   title?: string;
   description?: string;
-  sources: {
-    /**
-     * self source code for demo
-     * @note  jsx exsits definitely, tsx exists when the source code language is tsx
-     */
-    _: { jsx: string; tsx?: string };
-  } & {
-    /**
-     * other file source code which imported in demo
-     */
-    [key: string]: { import: string } & IPreviewerComponentProps['sources']['_'];
-  };
+  sources:
+    | {
+        /**
+         * self source code for demo
+         * @note  jsx exsits definitely, tsx exists when the source code language is tsx
+         */
+        _: { jsx: string; tsx?: string };
+      }
+    | {
+        /**
+         * other file source code which imported in demo
+         */
+        [key: string]: {
+          import: string;
+          content: string;
+          // reserved for transform JSX for other TypeScript file
+          tsx?: string;
+        };
+      };
   /**
    * third-party dependencies of demo
    */
