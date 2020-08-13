@@ -39,7 +39,7 @@ export interface IThemeLoadResult {
 
 const THEME_PREFIX = 'dumi-theme-';
 const FALLBACK_THEME = `${THEME_PREFIX}default`;
-const REQUIRED_THEME_BUILTINS = ['Previewer', 'SourceCode', 'Alert', 'Badge'];
+const REQUIRED_THEME_BUILTINS = ['Previewer', 'SourceCode', 'Alert', 'Badge', 'Example'];
 let cache: IThemeLoadResult | null;
 
 /**
