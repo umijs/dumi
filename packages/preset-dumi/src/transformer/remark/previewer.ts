@@ -89,7 +89,7 @@ function applyCodeBlock(props: IPreviewerComponentProps) {
             Object.assign(deps, {
               [pkg]: {
                 type: 'NPM',
-                // FIXME: get real version rule from package.json
+                // TODO: get real version rule from package.json
                 value: version,
               },
             }),
@@ -117,7 +117,6 @@ function applyCodeBlock(props: IPreviewerComponentProps) {
  * @param props previewer props
  */
 function applyDemo(props: IPreviewerComponentProps, code: string) {
-  // TODO: create unified demo renderer to reduce bundle size
   ctx.umi?.applyPlugins({
     key: 'dumi.detectDemo',
     type: ctx.umi.ApplyPluginsType.event,
@@ -180,10 +179,13 @@ function visitor(node, i, parent: Node) {
     applyCodeBlock(previewerProps);
     applyDemo(previewerProps, code);
 
-    // save code into data then declare them on the top page component
+    // declare demo on the top page component for memo
     this.vFile.data.demos = (this.vFile.data.demos || []).concat(
       `const ${DEMO_COMPONENT_NAME}${(this.vFile.data.demos?.length || 0) +
-        1} = React.memo(${code});`,
+        1} = require('@@/dumi/demos').default['${
+        // render demo from the common demo module: @@/dumi/demos
+        previewerProps.identifier
+      }'].component;`,
     );
 
     // replace original node
