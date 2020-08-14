@@ -39,7 +39,7 @@ export default () => ast => {
 
     // special process <code />, <code > to <code></code>
     // to avoid non-self-closing exception in the raw step
-    if (typeof node.value === 'string' && /<code/.test(node.value)) {
+    if (typeof node.value === 'string' && /<code[^>]*src=/.test(node.value)) {
       node.value = node.value.replace(/ ?\/?>/g, '></code>');
     }
   });

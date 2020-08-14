@@ -18,3 +18,4 @@
 <a href="/a/test.md#header"></a>
 [](/a/test.md?a=1&b=2#header)
 <a href="/a/test.md?a=1&b=2#header"></a>
+[`test`](/test)
