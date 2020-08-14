@@ -190,7 +190,7 @@ export default {
 
 配置式路由，配置方式与 Umi 一致，可通过 `meta` 属性传递支持的 [frontmatter](/config/frontmatter) 属性。
 
-## ssr <Badge>3.2+</Badge>
+## ssr
 
 - Type: `object`
 - Default: `false`

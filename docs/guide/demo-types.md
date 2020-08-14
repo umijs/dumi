@@ -11,11 +11,11 @@ group:
 
 dumi 默认会将 `jsx` 和 `tsx` 语言的代码块当做 React Component 进行渲染，该代码块和普通的 module 一样，都需要具备 `export default` 导出，就像这样：
 
-<pre>
+<pre lang="md">
 ```jsx
 import React from 'react';
 
-export default () => &lt;h1 style={'{{'} color: '#555' {'}}'}&gt;Hello World!&lt;/h1&gt;;
+export default () => <h1 style={{ color: '#555' }}>Hello World!</h1>;
 ```
 </pre>
 
@@ -51,12 +51,12 @@ export default () => <h1 style={{ color: '#555' }}>Hello World!</h1>;
 
 上面两种 Demo 都可以变成嵌入式 Demo，只需要使用 `inline` 属性进行控制即可：
 
-<pre>
+<pre lang="md">
 // 代码块类型做嵌入式
 ```jsx | inline
 import React from 'react';
 
-export default () => &lt;h1 style={'{{'} color: '#555' {'}}'}&gt;Hello World!&lt;/h1&gt;;
+export default () => <h1 style={{ color: '#555' }}>Hello World!</h1>;
 ```
 </pre>
 

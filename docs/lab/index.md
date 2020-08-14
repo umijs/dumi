@@ -9,6 +9,62 @@ sidemenu: false
 实验室的功能仅在 <code>next</code> 版本中提供，可以使用 <code>npm i dumi@next</code> 安装实验版本进行体验；实验性质的功能可能不稳定，请谨慎用于生产；如果体验后有任何建议，欢迎在讨论群中进行反馈和交流 ❤
 </Alert>
 
+## 自定义主题
+
+**依赖版本：**`dumi@1.1.0-beta.6+`
+
+### 开发方式
+
+#### 目录结构
+
+创建包名为 `dumi-theme-` 开头的包，目录结构以默认主题为例：
+
+```bash
+.
+├── package.json
+└── src
+    ├── builtins      # [约定] 内置组件文件夹，dumi 会寻找**一级目录**下的 `j|tsx` 进行挂载，该文件夹下的组件可直接在 md 中使用
+    ├── components    # [非约定] 主题包自身为了可维护性抽取出来的组件，文件夹名称随开发者自定义
+    ├── layout.tsx    # [约定] 自定义的 layout 组件，props.children 即每个 md 的内容，开发者可自行控制导航、侧边栏及内容渲染
+    └── style         # [非约定] 主题包的样式表
+```
+
+其中 `[约定]` 意味着是主题生效的必备结构，`[非约定]` 则意味着开发者可以根据自己的习惯进行控制。
+
+#### 组件兜底
+
+支持部分覆盖官方主题的组件，如果主题包没有在 `builtins` 下面提供，dumi 则会兜底到默认主题的 `Previewer` 组件。会进行兜底的组件如下：
+
+1. `Previewer.tsx` - 渲染 demo 包裹器
+2. `SourceCode.tsx` - 渲染代码块并高亮
+3. `Alert.tsx` - 渲染提示框
+4. `Badge.tsx` - 渲染标签
+
+#### 主题 API
+
+为了便于自定义主题，dumi 提供了一套主题 API，可以从 `dumi/theme` 中 import 出以下内容：
+
+1. `context` - 可获取到 dumi 的配置项、当前路由的 meta 信息、国际化语言选择项等等，context 的详细定义可 <a target="_blank" href="https://github.com/umijs/dumi/blob/master/packages/preset-dumi/src/theme/context.ts#L8">查看源代码</a>
+2. `Link` - 包装后的 umi `Link`，可渲染外链
+3. `NavLink` - 包装后的 umi `NavLink`，可渲染外链
+4. `AnchorLink` - 包装后的 umi `NavLink`，用于带锚点的链接，且可高亮
+5. `useCodeSandbox` - 根据 `Previewer` 的 props 生成一个函数，执行后可在 codesandbox.io 打开该 demo
+6. `useCopy` - 提供复制函数及复制的状态，便于实现源代码复制
+7. `useSearch` - 根据配置自动提供 algolia 的绑定函数或者根据关键字返回内置搜索的检索结果
+8. `useLocaleProps` - 根据 locale 自动过滤 props，便于实现国际化 frontmatter 的定义，比如 `title.zh-CN` 在中文语言下会被转换为 `title`
+
+### 调试及使用
+
+将开发好的主题包 npm link（调试）或 npm install（使用）到项目里，并确保它在 `dependencies` 中有声明，dumi 将会自动挂载该主题，例如：
+
+```json
+{
+  "dependencies": {
+    "dumi-theme-default": "0.0.0"
+  }
+}
+```
+
 ## 和 Umi UI 一起使用
 
 **依赖版本：**`dumi@1.1.0-beta.0+` & `@umijs/preset-ui@2.2.0+`
