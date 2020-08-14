@@ -59,22 +59,26 @@ export default {
       {
         path: '/~demos/:uuid',
         component: `(props) => {
+          const react = require('react');
           const demos = require('@@/dumi/demos').default;
           const uuid = props.match.params.uuid;
           const inline = props.location.query.wrapper === undefined;
           const demo = demos[uuid];
 
           if (demo) {
-            return require('react').createElement(
-              require('${Previewer.source}').default,
-              {
-                ...demo.previewerProps,
-                inline,
-                // disallowed matryoshka
-                hideActions: (demo.previewerProps.hideActions || []).concat(['EXTERNAL'])
-              },
-              require('react').createElement(demo.component),
-            );
+            if (inline) {
+              return react.createElement(demo.component);
+            } else {
+              return react.createElement(
+                require('${Previewer.source}').default,
+                {
+                  ...demo.previewerProps,
+                  // disallowed matryoshka
+                  hideActions: (demo.previewerProps.hideActions || []).concat(['EXTERNAL'])
+                },
+                react.createElement(demo.component),
+              );
+            }
           }
 
           return \`Demo $\{uuid\} not found :(\`;

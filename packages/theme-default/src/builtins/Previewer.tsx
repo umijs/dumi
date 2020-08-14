@@ -48,7 +48,10 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
   const [currentFile, setCurrentFile] = useState('_');
   const [sourceType, setSourceType] = useState<'jsx' | 'tsx'>();
   const [showSource, setShowSource] = useState(Boolean(props.defaultShowCode));
-  const currentFileCode = props.sources[currentFile][sourceType] || props.sources[currentFile].jsx;
+  const currentFileCode =
+    props.sources[currentFile][sourceType] ||
+    props.sources[currentFile].jsx ||
+    props.sources[currentFile].content;
 
   useEffect(() => {
     setSourceType(props.sources._.tsx ? 'tsx' : 'jsx');
@@ -56,7 +59,7 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
 
   return (
     <div
-      {...props}
+      style={props.style}
       className={[
         props.className,
         '__dumi-default-previewer',
@@ -103,7 +106,7 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
           />
         )}
         {!props.hideActions?.includes('EXTERNAL') && (
-          <Link to={`~demos/${props.identifier}`}>
+          <Link target="_blank" to={`/~demos/${props.identifier}`}>
             <button
               title="Open demo in new tab"
               className="__dumi-default-icon"

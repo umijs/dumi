@@ -201,7 +201,7 @@ describe('default theme', () => {
                 },
                 'Other.jsx': {
                   import: './Other.jsx',
-                  jsx: "export default () => 'Other'",
+                  content: "export default () => 'Other'",
                 },
               }}
               dependencies={{}}
