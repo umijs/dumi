@@ -5,9 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "cross-env BROWSER=none node ./packages/dumi/bin/dumi.js dev",
-    "watch": "father-build build --watch",
+    "watch": "npm run build -- --watch",
     "doc:build": "cross-env BROWSER=none node ./packages/dumi/bin/dumi.js build",
-    "doc:deploy": "bash ./scripts/deploy_doc.sh",
     "build": "father-build",
     "changelog": "lerna-changelog",
     "clean": "lerna clean -y",
