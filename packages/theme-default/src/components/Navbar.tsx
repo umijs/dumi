@@ -44,11 +44,16 @@ const Navbar: FC<INavbarProps> = ({ onMobileMenuClick, navPrefix }) => {
             </ul>
           );
 
-          return (
-            <NavLink to={nav.path} key={nav.path || nav.title}>
+          return nav.path ? (
+            <NavLink to={nav.path} key={nav.path}>
               {nav.title}
               {child}
             </NavLink>
+          ) : (
+            <span key={nav.title}>
+              {nav.title}
+              {child}
+            </span>
           );
         })}
         <LocaleSelect />

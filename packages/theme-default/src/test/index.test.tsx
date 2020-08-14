@@ -1,13 +1,13 @@
 import '@testing-library/jest-dom';
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, queryByAttribute } from '@testing-library/react';
 import { createMemoryHistory, MemoryHistory, Router } from '@umijs/runtime';
 import { context as Context } from 'dumi/theme';
-import SourceCode from './builtins/SourceCode';
-import Alert from './builtins/Alert';
-import Badge from './builtins/Badge';
-import Previewer from './builtins/Previewer';
-import Layout from './layout';
+import SourceCode from '../builtins/SourceCode';
+import Alert from '../builtins/Alert';
+import Badge from '../builtins/Badge';
+import Previewer from '../builtins/Previewer';
+import Layout from '../layout';
 
 let history: MemoryHistory;
 
@@ -102,7 +102,7 @@ describe('default theme', () => {
         {children}
       </Context.Provider>
     );
-    const { getAllByText, getByText } = render(
+    const { container, getAllByText, getByText } = render(
       <Router history={history}>
         <Layout {...baseProps}>
           <h1>Home Page</h1>
@@ -122,6 +122,12 @@ describe('default theme', () => {
 
     // expect features be rendered
     expect(getByText('Feature')).not.toBeNull();
+
+    // trigger mobile menu display
+    queryByAttribute('class', container, '__dumi-default-navbar-toggle').click();
+
+    // expect sidemenu display for mobile
+    expect(queryByAttribute('data-mobile-show', container, 'true')).not.toBeNull();
   });
 
   it('should render documentation page', async () => {

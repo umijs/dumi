@@ -60,22 +60,33 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location }) => {
         {nav.length ? (
           <div className="__dumi-default-menu-mobile-area">
             <ul className="__dumi-default-menu-nav-list">
-              {nav.map(nav => (
-                <li key={nav.path || nav.title}>
-                  <NavLink to={nav.path}>
-                    {nav.title}
-                    {Boolean(nav.children?.length) && (
-                      <ul>
-                        {nav.children.map(item => (
-                          <li key={item.path || item.title}>
-                            <NavLink to={item.path}>{item.title}</NavLink>
-                          </li>
-                        ))}
-                      </ul>
+              {nav.map(nav => {
+                const child = Boolean(nav.children?.length) && (
+                  <ul>
+                    {nav.children.map(item => (
+                      <li key={item.path || item.title}>
+                        <NavLink to={item.path}>{item.title}</NavLink>
+                      </li>
+                    ))}
+                  </ul>
+                );
+
+                return (
+                  <li key={nav.path || nav.title}>
+                    {nav.path ? (
+                      <NavLink to={nav.path}>
+                        {nav.title}
+                        {child}
+                      </NavLink>
+                    ) : (
+                      <span>
+                        {nav.title}
+                        {child}
+                      </span>
                     )}
-                  </NavLink>
-                </li>
-              ))}
+                  </li>
+                );
+              })}
             </ul>
             {/* site mode locale select */}
             <LocaleSelect />

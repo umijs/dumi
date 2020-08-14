@@ -68,11 +68,13 @@
   }
 
   nav {
-    > a {
+    > a,
+    > span {
       position: relative;
       margin-left: 40px;
       display: inline-block;
       height: @s-nav-height;
+      cursor: pointer;
       color: #4d5164;
       font-size: 14px;
       line-height: @s-nav-height;
@@ -147,6 +149,7 @@
 
     @media @mobile {
       > a,
+      > span,
       > div {
         display: none;
       }

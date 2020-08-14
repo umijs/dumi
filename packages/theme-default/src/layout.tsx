@@ -67,10 +67,14 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
       data-show-slugs={String(showSlugs)}
       data-site-mode={isSiteMode}
       data-gapless={String(!!meta.gapless)}
+      onClick={() => setMenuCollapsed(true)}
     >
       <Navbar
         navPrefix={<SearchBar />}
-        onMobileMenuClick={() => setMenuCollapsed(!menuCollapsed)}
+        onMobileMenuClick={ev => {
+          setMenuCollapsed(val => !val);
+          ev.stopPropagation();
+        }}
       />
       <SideMenu mobileMenuCollapsed={menuCollapsed} location={location} />
       {showSlugs && <SlugList slugs={meta.slugs} className="__dumi-default-layout-toc" />}
