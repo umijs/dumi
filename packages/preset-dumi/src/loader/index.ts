@@ -16,6 +16,7 @@ export default async function loader(content: string) {
     import React from 'react';
     import { Link, AnchorLink } from 'dumi/theme';
     ${theme.builtins
+      .concat(theme.fallbacks)
       .map(component => `import ${component.identifier} from '${component.source}';`)
       .join('\n')}
     ${builtins

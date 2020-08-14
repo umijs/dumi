@@ -4,7 +4,6 @@ import slash from 'slash2';
 import { IApi, IRoute } from '@umijs/types';
 import getRouteConfigFromDir from './getRouteConfigFromDir';
 import decorateRoutes from './decorator';
-import getTheme from '../theme/loader';
 import { IDumiOpts } from '../index';
 
 export default (api: IApi, opts: IDumiOpts): IRoute[] => {
@@ -39,7 +38,7 @@ export default (api: IApi, opts: IDumiOpts): IRoute[] => {
   config.push({
     path: '/',
     wrappers: [slash(path.join(__dirname, '../theme/layout'))],
-    component: slash(path.relative(path.join(paths.absTmpPath, 'core'), getTheme().layoutPath)),
+    // component: the real theme layout will be configure in core.ts
     // decorate standard umi routes
     routes: decorateRoutes(childRoutes, opts, api),
     title: opts.title,

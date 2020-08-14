@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import symlink from 'symlink-dir';
 import { Service } from '@umijs/core';
 import { render } from '@testing-library/react';
 
@@ -29,14 +28,6 @@ describe('preset-dumi', () => {
       cwd,
       presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
     });
-
-    // FIXME: find the real reason why component path missing 1 level in routes.ts
-    service.paths.absPagesPath += '/tmp';
-    // workaround for load theme
-    await symlink(
-      path.join(__dirname, '../../theme-default'),
-      path.join(service.paths.absNodeModulesPath, 'dumi-theme-default'),
-    );
 
     await service.run({
       name: 'g',

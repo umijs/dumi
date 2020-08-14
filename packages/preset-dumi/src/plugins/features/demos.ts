@@ -53,7 +53,10 @@ export default {
 
   // add single demo render route
   api.modifyRoutes(routes => {
-    const Previewer = getTheme().builtins.find(({ identifier }) => identifier === 'Previewer');
+    const theme = getTheme();
+    const Previewer = theme.builtins
+      .concat(theme.fallbacks)
+      .find(({ identifier }) => identifier === 'Previewer');
 
     routes.unshift(
       {

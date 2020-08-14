@@ -55,7 +55,7 @@ function detectInstalledTheme() {
 export default () => {
   if (!cache) {
     const [theme = FALLBACK_THEME] = detectInstalledTheme();
-    const modulePath = path.join(ctx.umi.paths.absNodeModulesPath, theme);
+    const modulePath = winPath(path.join(ctx.umi.paths.absNodeModulesPath, theme));
     const builtinPath = path.join(modulePath, 'src/builtins');
     const components = fs.existsSync(builtinPath)
       ? fs
@@ -79,7 +79,7 @@ export default () => {
 
     cache = {
       name: theme,
-      layoutPath: path.join(modulePath, 'src', 'layout'),
+      layoutPath: winPath(path.join(theme, 'src', 'layout')),
       modulePath,
       builtins: components,
       fallbacks,

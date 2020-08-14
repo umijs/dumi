@@ -8,6 +8,7 @@ import getMenuFromRoutes from '../routes/getMenuFromRoutes';
 import getLocaleFromRoutes from '../routes/getLocaleFromRoutes';
 import getHostPkgAlias from '../utils/getHostPkgAlias';
 import getRepoUrl from '../utils/getRepoUrl';
+import getTheme from '../theme/loader';
 import ctx, { init as setContext } from '../context';
 import { IDumiOpts } from '..';
 
@@ -142,7 +143,7 @@ export default function(api: IApi) {
 
     // pass props for layout
     root.component = `(props) => require('react').createElement(require('${
-      root.component
+      getTheme().layoutPath
     }').default, {
       ...${
         // escape " to ^ to avoid umi parse error, then umi will decode them
