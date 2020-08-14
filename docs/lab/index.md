@@ -11,7 +11,7 @@ sidemenu: false
 
 ## 自定义主题
 
-**依赖版本：**`dumi@1.1.0-beta.6+`
+**依赖版本：**`dumi@1.1.0-beta.7+`
 
 ### 开发方式
 
@@ -55,7 +55,7 @@ sidemenu: false
 
 ### 调试及使用
 
-将开发好的主题包 npm link（调试）或 npm install（使用）到项目里，并确保它在 `dependencies` 中有声明，dumi 将会自动挂载该主题，例如：
+将开发好的主题包 npm link（调试）或 npm install（使用）到项目里，并确保它在 `devDependencies` 或者 `dependencies` 中有声明，dumi 将会自动挂载该主题，例如：
 
 ```json
 {
