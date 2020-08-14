@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { IRouteProps, IRouteComponentProps } from '@umijs/types';
 // @ts-ignore
 import config from '@@/dumi/config';
@@ -108,7 +108,7 @@ const OuterLayout: React.FC<IOuterLayoutProps & IRouteComponentProps> = props =>
   const menu = useCurrentMenu(config, locale, location.pathname);
 
   // scroll to anchor if hash exists
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (location.hash) {
       AnchorLink.scrollToAnchor(location.hash.slice(1));
     }

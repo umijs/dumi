@@ -13,8 +13,8 @@ export default async function loader(content: string) {
   const theme = getTheme();
 
   return `
-    import { Link } from 'umi';
     import React from 'react';
+    import { Link, AnchorLink } from 'dumi/theme';
     ${theme.builtins
       .map(component => `import ${component.identifier} from '${component.source}';`)
       .join('\n')}
