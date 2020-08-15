@@ -1,6 +1,5 @@
 import { Node } from 'unist';
 import visit from 'unist-util-visit';
-import slash from 'slash2';
 import ctx from '../../context';
 import demoTransformer, { DEMO_COMPONENT_NAME, getDepsForDemo } from '../demo';
 import { IPreviewerComponentProps } from '../../theme';
@@ -185,7 +184,7 @@ function visitor(node, i, parent: Node) {
       `const ${DEMO_COMPONENT_NAME}${(this.vFile.data.demos?.length || 0) +
         1} = require('@@/dumi/demos').default['${
         // render demo from the common demo module: @@/dumi/demos
-        slash(previewerProps.identifier)
+        previewerProps.identifier
       }'].component;`,
     );
 
