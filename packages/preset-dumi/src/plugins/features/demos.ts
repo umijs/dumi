@@ -1,4 +1,5 @@
 import React from 'react';
+import slash from 'slash2';
 import { IApi } from '@umijs/types';
 import getTheme from '../../theme/loader';
 
@@ -44,7 +45,7 @@ export default {
   api.register({
     key: 'dumi.detectDemo',
     fn({ uuid, code, previewerProps }) {
-      demos[uuid] = {
+      demos[slash(uuid)] = {
         previewerProps,
         component: `React.memo(${code})`,
       };
@@ -64,9 +65,10 @@ export default {
         component: `(props) => {
           const react = require('react');
           const demos = require('@@/dumi/demos').default;
+          const slash = require('slash2');
           const uuid = props.match.params.uuid;
           const inline = props.location.query.wrapper === undefined;
-          const demo = demos[uuid];
+          const demo = demos[slash(uuid)];
 
           if (demo) {
             if (inline) {
