@@ -1,5 +1,6 @@
 import { Node } from 'unist';
 import visit from 'unist-util-visit';
+import slash from 'slash2';
 import ctx from '../../context';
 import demoTransformer, { DEMO_COMPONENT_NAME, getDepsForDemo } from '../demo';
 import { IPreviewerComponentProps } from '../../theme';
@@ -18,12 +19,13 @@ function getPreviewerId(yaml: any, fileAbsPath: string) {
 
   if (!id) {
     // /path/to/md => path-to-md
-    id = fileAbsPath
+    id = slash(fileAbsPath)
       // discard suffix like index.md
       .replace(/(index)?\.\w+$/, '')
       .split('/')
       // get the last three levels
       .slice(-2)
+      .filter(Boolean)
       .join('-');
   }
 
