@@ -37,7 +37,7 @@ export default (api: IApi, opts: IDumiOpts): IRoute[] => {
   // add main routes
   config.push({
     path: '/',
-    wrappers: [slash(path.join(__dirname, '../theme/layout'))],
+    wrappers: [slash(path.relative(paths.absPagesPath, path.join(__dirname, '../theme/layout')))],
     // component: the real theme layout will be configure in core.ts
     // decorate standard umi routes
     routes: decorateRoutes(childRoutes, opts, api),
