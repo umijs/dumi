@@ -105,6 +105,17 @@ $ yarn dev
           <strong>LightProxy</strong>
         </a>
       </td>
+      <td align="center">
+        <a target="_blank" href="https://juejin-im.github.io/open-source/">
+          <img
+            width="32"
+            style="vertical-align: -0.32em; margin-right: 8px;"
+            src="https://avatars3.githubusercontent.com/u/69633008?s=200&v=4"
+          />
+          <br>
+          <strong>juejin-im</strong>
+        </a>
+      </td>
     </tr>
   </tbody>
 </table>
