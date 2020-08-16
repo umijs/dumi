@@ -139,15 +139,27 @@ function visitor(node, i, parent: Node) {
       // for embed demo
       this.data('fileAbsPath');
 
-    // transform markdown for previewer desc field
-    Object.keys(yaml).forEach(key => {
-      const matched = key.match(/^desc(\.|$)/);
+    Object.keys(yaml).forEach(oKey => {
+      // workaround for JSX prop name not allowed to contains .
+      // refer: https://github.com/facebook/jsx/issues/42
+      let key = oKey.replace(/\./g, '_');
 
+      const matched = key.match(/^desc(?:(_[\w-]+$)|$)/);
+
+      // compatible with short-hand usage for description field in previous dumi versions
       if (matched) {
-        yaml[`description${matched[1]}`] = transformer.markdown(yaml[key], null, {
-          type: 'html',
-        }).content;
-        delete yaml[key];
+        key = `description${matched[1] || ''}`;
+      }
+
+      // replace props key name
+      if (key !== oKey) {
+        // transform markdown for description field
+        yaml[key] = matched
+          ? transformer.markdown(yaml[oKey], null, {
+              type: 'html',
+            }).content
+          : yaml[oKey];
+        delete yaml[oKey];
       }
     });
 

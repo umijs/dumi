@@ -9,7 +9,7 @@ export default <T>(locale: string, props: T) => {
     let result = {} as T;
 
     Object.keys(args[1]).forEach(key => {
-      const [name, locale] = (key.match(/^(.+)\.([^.]+)$/) || []).slice(1);
+      const [name, locale] = (key.match(/^(.+)_([^_]+)$/) || []).slice(1);
 
       if (!locale || locale === args[0]) {
         result[name || key] = args[1][key];
