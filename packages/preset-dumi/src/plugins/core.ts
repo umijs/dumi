@@ -1,13 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 import { IApi } from '@umijs/types';
-import symlink from 'symlink-dir';
 import getRouteConfig from '../routes/getRouteConfig';
 import getNavFromRoutes from '../routes/getNavFromRoutes';
 import getMenuFromRoutes from '../routes/getMenuFromRoutes';
 import getLocaleFromRoutes from '../routes/getLocaleFromRoutes';
 import getHostPkgAlias from '../utils/getHostPkgAlias';
 import getRepoUrl from '../utils/getRepoUrl';
+import symlink from '../utils/symlink';
 import getTheme from '../theme/loader';
 import ctx, { init as setContext } from '../context';
 import { IDumiOpts } from '..';
