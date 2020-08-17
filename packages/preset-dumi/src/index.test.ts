@@ -1,17 +1,11 @@
 import fs from 'fs';
 import path from 'path';
+import { rimraf } from '@umijs/utils';
 import { Service } from '@umijs/core';
 import { render } from '@testing-library/react';
 
 describe('preset-dumi', () => {
   const fixtures = path.join(__dirname, 'fixtures');
-
-  afterAll(() => {
-    // to avoid circle-deps error when npm publish
-    fs.unlinkSync(path.join(fixtures, 'basic', 'node_modules'));
-    fs.unlinkSync(path.join(fixtures, 'algolia', 'node_modules'));
-    fs.unlinkSync(path.join(fixtures, 'node_modules'));
-  });
 
   it('init', async () => {
     const service = new Service({
@@ -20,6 +14,8 @@ describe('preset-dumi', () => {
     });
 
     await expect(service.init()).resolves.not.toThrowError();
+
+    rimraf.sync(path.join(fixtures, 'node_modules'));
   });
 
   it('core', async () => {
@@ -40,6 +36,8 @@ describe('preset-dumi', () => {
     const { container } = render(reactNode);
 
     expect(container.textContent).toContain('dumi');
+
+    rimraf.sync(path.join(fixtures, 'basic', 'node_modules'));
   });
 
   it('algolia', async () => {
@@ -59,5 +57,30 @@ describe('preset-dumi', () => {
     expect(fs.readFileSync(path.join(cwd, 'dist', 'index.html'), 'utf-8')).toContain(
       'docsearch.js',
     );
+
+    rimraf.sync(path.join(fixtures, 'algolia', 'node_modules'));
+  });
+
+  it('demos', async () => {
+    const cwd = path.join(fixtures, 'demos');
+    const service = new Service({
+      cwd,
+      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+    });
+
+    await service.run({
+      name: 'g',
+      args: {
+        _: ['g', 'tmp'],
+      },
+    });
+
+    // expect demos generate
+    const demos = require(path.join(service.paths.absTmpPath, 'dumi', 'demos')).default;
+
+    expect(Object.keys(demos).length).toEqual(2);
+    expect(demos['tsx-demo']).not.toBeUndefined();
+
+    rimraf.sync(path.join(fixtures, 'demos', 'node_modules'));
   });
 });

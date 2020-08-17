@@ -213,6 +213,7 @@ function visitor(node, i, parent: Node) {
         previewer: true,
         type: 'element',
         tagName: 'Previewer',
+        // TODO: read props from common @@/dumi/demos module to reduce bundle size
         properties: previewerProps,
         children: [
           {
