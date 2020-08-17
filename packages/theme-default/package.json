@@ -3,6 +3,7 @@
   "version": "1.0.0-beta.1",
   "description": "The official default theme of dumi",
   "files": [
+    "es",
     "src"
   ],
   "repository": {
