@@ -1,3 +1,4 @@
+import fs from 'fs';
 import path from 'path';
 import { utils } from 'umi';
 import { fork } from 'child_process';
@@ -47,6 +48,13 @@ describe('minimal', () => {
     process.on('exit', () => {
       child.kill('SIGINT');
     });
+
+    // workaround for resolve dumi-theme-default
+    fs.mkdirSync(path.join(__dirname, 'node_modules'));
+    fs.symlinkSync(
+      path.join(__dirname, '../../../theme-default'),
+      path.join(__dirname, 'node_modules', 'dumi-theme-default'),
+    );
   });
 
   beforeEach(async () => {
