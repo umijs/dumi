@@ -21,7 +21,7 @@ function getPreviewerId(yaml: any, fileAbsPath: string) {
     // /path/to/md => path-to-md
     id = slash(fileAbsPath)
       // discard suffix like index.md
-      .replace(/(\/index)?\.\w+$/, '')
+      .replace(/(\/index)?(\.[\w-]+)?\.\w+$/, '')
       .split('/')
       // get the last three levels
       .slice(-2)
