@@ -12,7 +12,7 @@ const LocaleSelect: FC = () => {
   const firstDiffLocale = locales.find(({ name }) => name !== locale);
 
   function getLocaleTogglePath(target: string) {
-    let newPathname = history.location.pathname.replace(`/${locale}`, '');
+    let newPathname = history.location.pathname.replace(`/${locale}`, '') || '/';
 
     // append locale prefix to path if it is not the default locale
     if (target !== locales[0].name) {

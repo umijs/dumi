@@ -50,7 +50,9 @@ const useCurrentRouteMeta = (routes: IDumiRoutes, pathname: string) => {
 const useCurrentLocale = (locales: IThemeContext['config']['locales'], pathname: string) => {
   const handler = (...args: [IThemeContext['config']['locales'], string]) => {
     // get locale by route prefix
-    return args[0].find(locale => args[1].startsWith(locale.name))?.name || '*';
+    return (
+      args[0].find(locale => args[1].startsWith(`/${locale.name}`))?.name || locales[0]?.name || '*'
+    );
   };
   const [locale, setLocale] = useState<string>(handler(locales, pathname));
 
