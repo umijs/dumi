@@ -19,9 +19,9 @@ function getPreviewerId(yaml: any, fileAbsPath: string) {
 
   if (!id) {
     // /path/to/md => path-to-md
-    id = fileAbsPath
+    id = slash(fileAbsPath)
       // discard suffix like index.md
-      .replace(/(index)?\.\w+$/, '')
+      .replace(/(\/index)?(\.[\w-]+)?\.\w+$/, '')
       .split('/')
       // get the last three levels
       .slice(-2)
@@ -197,7 +197,7 @@ function visitor(node, i, parent: Node) {
       `const ${DEMO_COMPONENT_NAME}${(this.vFile.data.demos?.length || 0) +
         1} = require('@@/dumi/demos').default['${
         // render demo from the common demo module: @@/dumi/demos
-        slash(previewerProps.identifier)
+        previewerProps.identifier
       }'].component;`,
     );
 
