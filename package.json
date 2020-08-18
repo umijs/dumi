@@ -33,6 +33,7 @@
     "antd": "^3.25.3",
     "babel-plugin-import": "^1.13.0",
     "cross-env": "^6.0.3",
+    "intersection-observer": "^0.11.0",
     "eslint": "^7.0.0",
     "father-build": "^1.14.2",
     "husky": "^4.2.5",
