@@ -10,12 +10,13 @@ let demoIds: Object = {};
 
 /**
  * get unique id for previewer
- * @param yaml        meta data
- * @param fileAbsPath file absolute path
+ * @param yaml          meta data
+ * @param fileAbsPath   file absolute path
+ * @param componentName the name of related component
  */
-function getPreviewerId(yaml: any, fileAbsPath: string) {
+function getPreviewerId(yaml: any, fileAbsPath: string, componentName: string) {
   const ids = demoIds[fileAbsPath];
-  let id = yaml.identifier || yaml.uuid || yaml.componentName;
+  let id = yaml.identifier || yaml.uuid || componentName;
 
   if (!id) {
     // /path/to/md => path-to-md
@@ -69,8 +70,9 @@ export default () => <Demo />;
 /**
  * apply code block detecting event
  * @param props previewer props
+ * @param componentName the name of related component
  */
-function applyCodeBlock(props: IPreviewerComponentProps) {
+function applyCodeBlock(props: IPreviewerComponentProps, componentName: string) {
   ctx.umi?.applyPlugins({
     key: 'dumi.detectCodeBlock',
     type: ctx.umi.ApplyPluginsType.event,
@@ -80,7 +82,7 @@ function applyCodeBlock(props: IPreviewerComponentProps) {
       description: props.description,
       thumbnail: props.thumbnail,
       tags: props.tags,
-      atomAssetId: props.componentName,
+      atomAssetId: componentName,
       // for HiTu DSM
       uuid: props.uuid,
       dependencies: {
@@ -185,11 +187,11 @@ function visitor(node, i, parent: Node) {
       dependencies,
       ...yaml,
       // not allow user override identifier by frontmatter
-      identifier: getPreviewerId(yaml, this.data('fileAbsPath')),
+      identifier: getPreviewerId(yaml, this.data('fileAbsPath'), this.vFile.data.componentName),
     };
 
     // apply umi plugins
-    applyCodeBlock(previewerProps);
+    applyCodeBlock(previewerProps, this.vFile.data.componentName);
     applyDemo(previewerProps, code);
 
     // declare demo on the top page component for memo
