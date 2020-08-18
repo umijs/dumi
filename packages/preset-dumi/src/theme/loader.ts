@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { winPath } from '@umijs/utils';
+import { getModuleResolvePath } from '../utils/moduleResolver';
 import ctx from '../context';
 
 interface ThemeComponent {
@@ -27,6 +28,10 @@ export interface IThemeLoadResult {
    * layout file path
    */
   layoutPath: string;
+  /**
+   * content wrapper content path
+   */
+  contentPath: string;
   /**
    * builtin components
    */
@@ -76,6 +81,13 @@ export default async () => {
 
       return result;
     }, []);
+    let contentPath = winPath(path.join(theme, 'src', 'content'));
+
+    try {
+      getModuleResolvePath({ basePath: ctx.umi.paths.cwd, sourcePath: contentPath, silent: true });
+    } catch (err) {
+      contentPath = winPath(path.join(FALLBACK_THEME, 'src', 'content'));
+    }
 
     cache = await ctx.umi.applyPlugins({
       key: 'dumi.modifyThemeResolved',
@@ -83,6 +95,7 @@ export default async () => {
       initialValue: {
         name: theme,
         layoutPath: winPath(path.join(theme, 'src', 'layout')),
+        contentPath,
         modulePath,
         builtins: components,
         fallbacks,

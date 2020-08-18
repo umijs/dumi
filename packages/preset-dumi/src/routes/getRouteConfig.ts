@@ -39,11 +39,19 @@ export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
   // add main routes
   config.push({
     path: '/',
-    wrappers: [slash(path.relative(paths.absPagesPath, path.join(__dirname, '../theme/layout')))],
+    wrappers: [
+      // builtin outer layout
+      slash(path.relative(paths.absPagesPath, path.join(__dirname, '../theme/layout'))),
+      // theme layout
+      slash(
+        path.relative(paths.absPagesPath, path.join(paths.absNodeModulesPath, theme.layoutPath)),
+      ),
+    ],
+    // theme content wrapper
     component: slash(
       path.relative(
         path.join(paths.absTmpPath, 'core'),
-        path.join(paths.absNodeModulesPath, theme.layoutPath),
+        path.join(paths.absNodeModulesPath, theme.contentPath),
       ),
     ),
     // decorate standard umi routes

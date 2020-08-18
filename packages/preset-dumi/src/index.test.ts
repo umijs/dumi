@@ -32,6 +32,9 @@ describe('preset-dumi', () => {
       path.join(service.paths.absNodeModulesPath, 'dumi-theme-default'),
     );
 
+    // FIXME: find the real reason why component path missing 1 level in routes.ts
+    service.paths.absPagesPath += '/tmp';
+
     await service.run({
       name: 'g',
       args: {
