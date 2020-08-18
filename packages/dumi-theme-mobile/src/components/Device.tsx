@@ -21,10 +21,16 @@ const Device: FC<DeviceProps> = ({ url }) => {
           />
         </svg>
         <iframe title="dumi mobile" src={url} onLoad={(event) => {
+          // rem 单位的自动设置了 fontSize
           const { target } = event as any;
           const currentDoc = target?.contentDocument || target?.contentWindow.document
           // 根据当前设定的窗口大小，设置 iframe 的 fontsize
-          currentDoc.querySelector('html').style.fontSize = '100px'
+          currentDoc.querySelector('html').style.fontSize = '100px';
+          // px 单位的情况，需要增加 theme 配置
+          // theme: {
+          //   // 因为预览窗口的宽度是320，想预览的效果是375的。
+          //   '@hd': '0.854px',
+          // },
         }} />
       </figure>
     </div>

@@ -12,6 +12,10 @@ body {
   font-feature-settings: 'tnum';
 }
 
+.@{prefix}-menu {
+  width: @s-menu-width !important;
+}
+
 .@{prefix}-layout {
   min-height: 100vh;
   padding: 16px (@s-content-margin + @s-toc-width) 50px @s-menu-width + @s-content-margin;
@@ -65,7 +69,7 @@ body {
     display: flex;
   }
   &-device {
-    top: 0;
+    top: 74px;
   }
 
   &-hero {

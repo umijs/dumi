@@ -42,6 +42,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
     locale,
   } = useContext(context);
   const [previewId, setPreviewId] = useState('');
+
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries
@@ -60,13 +61,13 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
         observer.observe(i);
       }
     });
-    if(demos[0] && demos[0].id){
+    if (demos[0] && demos[0].id) {
       setPreviewId(demos[0].id)
     }
     return () => {
       observer.disconnect();
     }
-  }, [])
+  }, [location.pathname])
   const { url: repoUrl, branch } = repository;
   const [menuCollapsed, setMenuCollapsed] = useState<boolean>(true);
   const isSiteMode = mode === 'site';
@@ -78,7 +79,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
     !showFeatures &&
     Boolean(meta.slugs?.length) &&
     (meta.toc === 'content' || meta.toc === undefined) &&
-    !meta.gapless;
+    !meta.gapless && !previewId;
   const isCN =
     locale === 'zh-CN' ||
     (locale === '*' && locales[0]?.name === 'zh-CN') ||
@@ -112,7 +113,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
         <div className="__dumi-default-layout-col">
           <div className="__dumi-default-layout-article">{children}</div>
           <div className="__dumi-default-layout-device">
-            <Device url={`/~demos/${previewId}`} />
+            {previewId && <Device url={`/~demos/${previewId}`} />}
           </div>
         </div>
         {!showHero && !showFeatures && meta.filePath && !meta.gapless && (
