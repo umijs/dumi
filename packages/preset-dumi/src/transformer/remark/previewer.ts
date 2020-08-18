@@ -18,6 +18,11 @@ function getPreviewerId(yaml: any, fileAbsPath: string, componentName: string) {
   const ids = demoIds[fileAbsPath];
   let id = yaml.identifier || yaml.uuid || componentName;
 
+  // do not generate identifier for inline demo
+  if (yaml.inline) {
+    return;
+  }
+
   if (!id) {
     // /path/to/md => path-to-md
     id = slash(fileAbsPath)
@@ -190,17 +195,16 @@ function visitor(node, i, parent: Node) {
       identifier: getPreviewerId(yaml, this.data('fileAbsPath'), this.vFile.data.componentName),
     };
 
-    // apply umi plugins
-    applyCodeBlock(previewerProps, this.vFile.data.componentName);
-    applyDemo(previewerProps, code);
-
     // declare demo on the top page component for memo
+    const demoComponentCode = yaml.inline
+      ? // insert directly for inline demo
+        `React.memo(${code})`
+      : // render other demo from the common demo module: @@/dumi/demos
+        `require('@@/dumi/demos').default['${previewerProps.identifier}'].component`;
+
     this.vFile.data.demos = (this.vFile.data.demos || []).concat(
       `const ${DEMO_COMPONENT_NAME}${(this.vFile.data.demos?.length || 0) +
-        1} = require('@@/dumi/demos').default['${
-        // render demo from the common demo module: @@/dumi/demos
-        previewerProps.identifier
-      }'].component;`,
+        1} = ${demoComponentCode};`,
     );
 
     // replace original node
@@ -211,6 +215,10 @@ function visitor(node, i, parent: Node) {
         tagName: `${DEMO_COMPONENT_NAME}${this.vFile.data.demos.length}`,
       };
     } else {
+      // apply umi plugins
+      applyCodeBlock(previewerProps, this.vFile.data.componentName);
+      applyDemo(previewerProps, code);
+
       parent.children[i] = {
         previewer: true,
         type: 'element',
