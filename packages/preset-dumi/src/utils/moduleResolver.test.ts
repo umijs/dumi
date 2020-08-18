@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import slash from 'slash2';
 import {
   getModuleResolvePath,
   getModuleResolvePkg,
@@ -10,13 +11,15 @@ describe('moduleResolver', () => {
   it('get expected 3rd-party module path', () => {
     const modulePath = getModuleResolvePath({ basePath: __dirname, sourcePath: 'js-yaml' });
 
-    expect(modulePath).toEqual(path.join(__dirname, '../../../../node_modules/js-yaml/index.js'));
+    expect(modulePath).toEqual(
+      slash(path.join(__dirname, '../../../../node_modules/js-yaml/index.js')),
+    );
   });
 
   it('get expected local module path', () => {
     const modulePath = getModuleResolvePath({ basePath: __dirname, sourcePath: '../context' });
 
-    expect(modulePath).toEqual(path.join(__dirname, '../context.ts'));
+    expect(modulePath).toEqual(slash(path.join(__dirname, '../context.ts')));
   });
 
   it('throw error if cannot resolve module', () => {
