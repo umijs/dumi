@@ -1,6 +1,6 @@
 {
   "name": "dumi-theme-default",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "description": "The official default theme of dumi",
   "files": [
     "src"
