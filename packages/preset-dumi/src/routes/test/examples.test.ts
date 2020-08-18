@@ -22,6 +22,7 @@ describe('routes: examples', () => {
         paths: {
           cwd,
           absTmpPath: path.join(cwd, 'src/.umi'),
+          absPagesPath: path.join(cwd, '/pages'),
         },
       } as IApi,
       {
