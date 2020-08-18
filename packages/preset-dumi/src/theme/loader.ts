@@ -46,13 +46,13 @@ let cache: IThemeLoadResult | null;
  * detect dumi theme in project dependencies
  */
 function detectInstalledTheme() {
-  const pkg = ctx.umi?.pkg || {};
+  const pkg = ctx.umi.pkg || {};
   const deps = Object.assign({}, pkg.dependencies, pkg.devDependencies);
 
   return Object.keys(deps).filter(name => name.startsWith(THEME_PREFIX));
 }
 
-export default () => {
+export default async () => {
   if (!cache) {
     const [theme = FALLBACK_THEME] = detectInstalledTheme();
     const modulePath = winPath(path.join(ctx.umi.paths.absNodeModulesPath, theme));
@@ -77,13 +77,17 @@ export default () => {
       return result;
     }, []);
 
-    cache = {
-      name: theme,
-      layoutPath: winPath(path.join(theme, 'src', 'layout')),
-      modulePath,
-      builtins: components,
-      fallbacks,
-    };
+    cache = await ctx.umi.applyPlugins({
+      key: 'dumi.modifyThemeResolved',
+      type: ctx.umi.ApplyPluginsType.modify,
+      initialValue: {
+        name: theme,
+        layoutPath: winPath(path.join(theme, 'src', 'layout')),
+        modulePath,
+        builtins: components,
+        fallbacks,
+      },
+    });
   }
 
   return cache;

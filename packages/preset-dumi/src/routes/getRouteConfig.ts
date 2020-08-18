@@ -3,14 +3,16 @@ import path from 'path';
 import slash from 'slash2';
 import { IApi, IRoute } from '@umijs/types';
 import getRouteConfigFromDir from './getRouteConfigFromDir';
+import getTheme from '../theme/loader';
 import decorateRoutes from './decorator';
 import { IDumiOpts } from '../index';
 
-export default (api: IApi, opts: IDumiOpts): IRoute[] => {
+export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
   const { paths } = api;
   const config: IRoute[] = [];
   const childRoutes: IRoute[] = [];
   const exampleRoutePrefix = opts.mode === 'site' ? '/_' : '/_examples/';
+  const theme = await getTheme();
 
   if (opts.routes) {
     // only apply user's routes if there has routes config
@@ -38,7 +40,12 @@ export default (api: IApi, opts: IDumiOpts): IRoute[] => {
   config.push({
     path: '/',
     wrappers: [slash(path.relative(paths.absPagesPath, path.join(__dirname, '../theme/layout')))],
-    // component: the real theme layout will be configure in core.ts
+    component: slash(
+      path.relative(
+        path.join(paths.absTmpPath, 'core'),
+        path.join(paths.absNodeModulesPath, theme.layoutPath),
+      ),
+    ),
     // decorate standard umi routes
     routes: decorateRoutes(childRoutes, opts, api),
     title: opts.title,
