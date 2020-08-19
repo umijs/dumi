@@ -5,7 +5,10 @@
   --device-padding: 2rem;
   padding: var(--device-padding);
   position: sticky;
-  top: 74px;
+  top: 0px;
+  &[data-site-mode='true'] {
+    top: @s-nav-height;
+  }
 }
 
 .@{prefix}-device > figure {

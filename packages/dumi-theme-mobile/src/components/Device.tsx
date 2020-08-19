@@ -3,11 +3,12 @@ import './Device.less';
 
 interface DeviceProps {
   url: string;
+  isSiteMode?:boolean;
 }
 
-const Device: FC<DeviceProps> = ({ url }) => {
+const Device: FC<DeviceProps> = ({ url ,isSiteMode}) => {
   return (
-    <div className="__dumi-default-device ios">
+    <div className="__dumi-default-device ios"  data-site-mode={isSiteMode} >
       <figure>
         <svg className="__dumi-default-device__md-bar" viewBox="0 0 1384.3 40.3">
           <path

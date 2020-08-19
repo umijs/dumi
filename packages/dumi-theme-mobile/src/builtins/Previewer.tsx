@@ -51,7 +51,7 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
   const [copyCode, copyStatus] = useCopy();
   const [currentFile, setCurrentFile] = useState('_');
   const [sourceType, setSourceType] = useState<'jsx' | 'tsx'>();
-  const [showSource, setShowSource] = useState(Boolean(props.defaultShowCode));
+  const [showSource, setShowSource] = useState(typeof (props.defaultShowCode) === 'undefined' ? true : Boolean(props.defaultShowCode));
   const currentFileCode =
     props.sources[currentFile][sourceType] ||
     props.sources[currentFile].jsx ||
