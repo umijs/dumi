@@ -9,20 +9,29 @@ describe('routes: examples', () => {
   const cwd = path.join(FIXTURES_PATH, 'examples');
 
   beforeAll(() => {
-    init({ cwd, paths: { cwd, absNodeModulesPath: cwd } } as IApi, {});
+    init(
+      {
+        cwd,
+        paths: { cwd, absNodeModulesPath: cwd },
+        ApplyPluginsType: {},
+        applyPlugins: (() => ({ layoutPath: '', contentPath: '' })) as any,
+      } as IApi,
+      {},
+    );
   });
 
   afterAll(() => {
     init({} as IApi, {});
   });
 
-  it('getExampleRoutes', () => {
-    const routes = getRoutes(
+  it('getExampleRoutes', async () => {
+    const routes = await getRoutes(
       {
         paths: {
           cwd,
-          absTmpPath: path.join(cwd, 'src/.umi'),
-          absPagesPath: path.join(cwd, '/pages'),
+          absTmpPath: path.join(cwd, 'src', '.umi'),
+          absPagesPath: path.join(cwd, 'pages'),
+          absNodeModulesPath: path.join(cwd, 'node_modules'),
         },
       } as IApi,
       {

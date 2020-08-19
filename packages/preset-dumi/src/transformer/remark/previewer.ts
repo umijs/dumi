@@ -10,12 +10,18 @@ let demoIds: Object = {};
 
 /**
  * get unique id for previewer
- * @param yaml        meta data
- * @param fileAbsPath file absolute path
+ * @param yaml          meta data
+ * @param fileAbsPath   file absolute path
+ * @param componentName the name of related component
  */
-function getPreviewerId(yaml: any, fileAbsPath: string) {
+function getPreviewerId(yaml: any, fileAbsPath: string, componentName: string) {
   const ids = demoIds[fileAbsPath];
-  let id = yaml.identifier || yaml.uuid || yaml.componentName;
+  let id = yaml.identifier || yaml.uuid || componentName;
+
+  // do not generate identifier for inline demo
+  if (yaml.inline) {
+    return;
+  }
 
   if (!id) {
     // /path/to/md => path-to-md
@@ -69,8 +75,9 @@ export default () => <Demo />;
 /**
  * apply code block detecting event
  * @param props previewer props
+ * @param componentName the name of related component
  */
-function applyCodeBlock(props: IPreviewerComponentProps) {
+function applyCodeBlock(props: IPreviewerComponentProps, componentName: string) {
   ctx.umi?.applyPlugins({
     key: 'dumi.detectCodeBlock',
     type: ctx.umi.ApplyPluginsType.event,
@@ -80,7 +87,7 @@ function applyCodeBlock(props: IPreviewerComponentProps) {
       description: props.description,
       thumbnail: props.thumbnail,
       tags: props.tags,
-      atomAssetId: props.componentName,
+      atomAssetId: componentName,
       // for HiTu DSM
       uuid: props.uuid,
       dependencies: {
@@ -185,20 +192,19 @@ function visitor(node, i, parent: Node) {
       dependencies,
       ...yaml,
       // not allow user override identifier by frontmatter
-      identifier: getPreviewerId(yaml, this.data('fileAbsPath')),
+      identifier: getPreviewerId(yaml, this.data('fileAbsPath'), this.vFile.data.componentName),
     };
 
-    // apply umi plugins
-    applyCodeBlock(previewerProps);
-    applyDemo(previewerProps, code);
-
     // declare demo on the top page component for memo
+    const demoComponentCode = yaml.inline
+      ? // insert directly for inline demo
+        `React.memo(${code})`
+      : // render other demo from the common demo module: @@/dumi/demos
+        `require('@@/dumi/demos').default['${previewerProps.identifier}'].component`;
+
     this.vFile.data.demos = (this.vFile.data.demos || []).concat(
       `const ${DEMO_COMPONENT_NAME}${(this.vFile.data.demos?.length || 0) +
-        1} = require('@@/dumi/demos').default['${
-        // render demo from the common demo module: @@/dumi/demos
-        previewerProps.identifier
-      }'].component;`,
+        1} = ${demoComponentCode};`,
     );
 
     // replace original node
@@ -209,6 +215,10 @@ function visitor(node, i, parent: Node) {
         tagName: `${DEMO_COMPONENT_NAME}${this.vFile.data.demos.length}`,
       };
     } else {
+      // apply umi plugins
+      applyCodeBlock(previewerProps, this.vFile.data.componentName);
+      applyDemo(previewerProps, code);
+
       parent.children[i] = {
         previewer: true,
         type: 'element',

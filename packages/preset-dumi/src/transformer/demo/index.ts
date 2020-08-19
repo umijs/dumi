@@ -1,7 +1,9 @@
+import path from 'path';
 import * as babel from '@babel/core';
 import * as types from '@babel/types';
 import traverse from '@babel/traverse';
 import generator from '@babel/generator';
+import { winPath } from '@umijs/utils';
 import { getBabelOptions, IDemoOpts } from './options';
 
 interface IDemoTransformResult {
@@ -10,7 +12,7 @@ interface IDemoTransformResult {
 }
 
 export { default as getDepsForDemo } from './dependencies';
-export { getCSSForDeps } from './dependencies';
+export { getCSSForDep } from './dependencies';
 
 export const DEMO_COMPONENT_NAME = 'DumiDemo';
 
@@ -77,6 +79,21 @@ export default (raw: string, opts: IDemoOpts): IDemoTransformResult => {
         if (types.isUnaryExpression(callPathNode.right)) {
           callPath.remove();
         }
+      }
+    },
+    CallExpression(callPath) {
+      const callPathNode = callPath.node;
+
+      // transform all relative import to absolute import
+      if (
+        types.isIdentifier(callPathNode.callee) &&
+        callPathNode.callee.name === 'require' &&
+        types.isStringLiteral(callPathNode.arguments[0]) &&
+        callPathNode.arguments[0].value.startsWith('.')
+      ) {
+        callPathNode.arguments[0].value = winPath(
+          path.join(path.dirname(opts.fileAbsPath), callPathNode.arguments[0].value),
+        );
       }
     },
   });

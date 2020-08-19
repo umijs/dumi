@@ -52,8 +52,8 @@ export default {
   });
 
   // add single demo render route
-  api.modifyRoutes(routes => {
-    const theme = getTheme();
+  api.modifyRoutes(async routes => {
+    const theme = await getTheme();
     const Previewer = theme.builtins
       .concat(theme.fallbacks)
       .find(({ identifier }) => identifier === 'Previewer');
