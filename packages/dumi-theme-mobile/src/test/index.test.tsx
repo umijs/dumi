@@ -1,11 +1,11 @@
 import '@testing-library/jest-dom';
 import 'intersection-observer';
 import React from 'react';
-import { render, queryByAttribute } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { createMemoryHistory, MemoryHistory, Router } from '@umijs/runtime';
 import { context as Context } from 'dumi/theme';
 import Previewer from '../builtins/Previewer';
-import Layout from '../layout';
+import Content from '../content';
 
 let history: MemoryHistory;
 
@@ -82,23 +82,9 @@ describe('mobile theme', () => {
   };
 
   it('should render builtin components correctly', () => {
-    const code = "console.log('Hello World!')";
-    const wrapper = ({ children }) => (
-      <Context.Provider
-        value={{
-          ...baseCtx,
-          meta: {
-            title: 'test',
-            slugs: [{ value: 'Slug A', heading: 'a', depth: 2 }],
-          },
-        }}
-      >
-        {children}
-      </Context.Provider>
-    );
-    const { getByText, getByTitle, getAllByTitle } = render(
+    const { getByText, getByTitle } = render(
       <Router history={history}>
-        <Layout {...baseProps}>
+        <Content {...baseProps}>
           <>
             <Previewer
               title="demo-1"
@@ -130,9 +116,8 @@ describe('mobile theme', () => {
               <>demo-2</>
             </Previewer>
           </>
-        </Layout>
+        </Content>
       </Router>,
-      { wrapper },
     );
 
     expect(getByTitle('dumi mobile').src).toEqual('http://localhost/~demos/demo-1');

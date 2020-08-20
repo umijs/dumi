@@ -11,7 +11,7 @@ import {
   Link,
   IPreviewerComponentProps,
 } from 'dumi/theme';
-import SourceCode from 'dumi-theme-default/es/builtins/SourceCode';
+import SourceCode from 'dumi-theme-default/src/builtins/SourceCode';
 import Popover from 'antd/es/popover';
 // @ts-ignore
 import QRCode from 'qrcode.react';
