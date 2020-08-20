@@ -8,7 +8,7 @@ interface DeviceProps {
 
 const Device: FC<DeviceProps> = ({ url ,isSiteMode}) => {
   return (
-    <div className="__dumi-default-device ios"  data-site-mode={isSiteMode} >
+    <div className="__dumi-default-device ios" data-site-mode={isSiteMode} >
       <figure>
         <svg className="__dumi-default-device__md-bar" viewBox="0 0 1384.3 40.3">
           <path
@@ -22,10 +22,9 @@ const Device: FC<DeviceProps> = ({ url ,isSiteMode}) => {
           />
         </svg>
         <iframe title="dumi mobile" src={url} onLoad={(event) => {
-          // rem 单位的自动设置了 fontSize
+          // rem 单位时，根据当前设定的窗口大小，设置 iframe 的 fontsize
           const { target } = event as any;
           const currentDoc = target?.contentDocument || target?.contentWindow.document
-          // 根据当前设定的窗口大小，设置 iframe 的 fontsize
           currentDoc.querySelector('html').style.fontSize = '100px';
           // px 单位的情况，需要增加 theme 配置
           // theme: {

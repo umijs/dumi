@@ -3,7 +3,7 @@ import 'intersection-observer';
 import React from 'react';
 import { render } from '@testing-library/react';
 import { createMemoryHistory, MemoryHistory, Router } from '@umijs/runtime';
-import { context as Context } from 'dumi/theme';
+import Device from '../components/Device';
 import Previewer from '../builtins/Previewer';
 import Content from '../content';
 
@@ -123,5 +123,18 @@ describe('mobile theme', () => {
     expect(getByTitle('dumi mobile').src).toEqual('http://localhost/~demos/demo-1');
 
     expect(getByText('demo-1')).not.toBeNull();
+
+    expect(getByText("'TypeScript'")).not.toBeNull();
+
+    getByTitle('Toggle type for source code').click();
+
+    expect(getByText("'JavaScript'")).not.toBeNull();
+
+    expect(getByText("'Main'")).not.toBeNull();
+
+    getByText('Other.jsx').click();
+
+    expect(getByText("'Other'")).not.toBeNull();
+
   });
 });
