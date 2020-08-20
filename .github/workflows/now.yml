@@ -1,4 +1,4 @@
-name: dumi - deploy
+name: Official Site Deploy
 on:
   push:
     branches:
