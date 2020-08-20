@@ -22,13 +22,13 @@ export default (api: IApi) => {
    */
   api.registerCommand({
     name: 'assets',
-    fn({ args }) {
+    async fn({ args }) {
       const assetsOutputPath = path.resolve(api.paths.cwd, args._[0] || 'assets.json');
       const fileName = path.parse(assetsOutputPath).base;
 
       api.logger.log(`Start to generate ${fileName}...`);
 
-      getRouteConfig(api, ctx.opts);
+      await getRouteConfig(api, ctx.opts);
       fs.writeFileSync(assetsOutputPath, JSON.stringify(assetsPkg, null, 2));
 
       api.logger.log(`Generate ${fileName} successfully!`);

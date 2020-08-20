@@ -44,7 +44,8 @@ export default (source: string, fileAbsPath: string, type: 'jsx' | 'html') => {
     .use(code)
     .use(previewer)
     .use(isolation)
-    .data('fileAbsPath', fileAbsPath);
+    .data('fileAbsPath', fileAbsPath)
+    .data('outputType', type);
 
   // apply compiler via type
   processor.use(rehypeCompiler[0], rehypeCompiler[1]);

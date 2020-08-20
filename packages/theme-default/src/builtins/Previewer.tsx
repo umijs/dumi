@@ -9,6 +9,7 @@ import {
   useCopy,
   useLocaleProps,
   Link,
+  AnchorLink,
   IPreviewerComponentProps,
 } from 'dumi/theme';
 import SourceCode from './SourceCode';
@@ -79,15 +80,15 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
       >
         {props.children}
       </div>
-      <div
-        className="__dumi-default-previewer-desc"
-        onClick={() => {
-          history.push(`#${props.identifier}`);
-        }}
-        title={props.title}
-        // eslint-disable-next-line
-        dangerouslySetInnerHTML={{ __html: props.description }}
-      />
+      <div className="__dumi-default-previewer-desc" data-title={props.title}>
+        {props.title && <AnchorLink to={`#${props.identifier}`}>{props.title}</AnchorLink>}
+        {props.description && (
+          <div
+            // eslint-disable-next-line
+            dangerouslySetInnerHTML={{ __html: props.description }}
+          />
+        )}
+      </div>
       <div className="__dumi-default-previewer-actions">
         {openCSB && (
           <button

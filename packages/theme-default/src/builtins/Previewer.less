@@ -14,7 +14,8 @@
   }
 
   &-target {
-    border-color: #3d62d2;
+    border-color: fade(@c-primary, 50%);
+    box-shadow: 0 0 0 5px fade(@c-primary, 5%);
   }
 
   &-desc {
@@ -32,19 +33,18 @@
       margin-bottom: 0;
     }
 
-    &[title] {
+    &[data-title] {
       position: relative;
       padding-top: 1.2em;
-      pointer-events: none;
 
-      &::before {
-        content: attr(title);
+      > a:first-child {
         position: absolute;
         top: 0;
         left: 1em;
         margin-left: -4px;
         padding: 0 4px;
         color: @c-heading;
+        font-size: inherit;
         font-weight: 500;
         background-color: #fff;
         transform: translateY(-50%);

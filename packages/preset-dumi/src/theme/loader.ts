@@ -54,7 +54,7 @@ function detectInstalledTheme() {
   const pkg = ctx.umi.pkg || {};
   const deps = Object.assign({}, pkg.dependencies, pkg.devDependencies);
 
-  return Object.keys(deps).filter(name => name.startsWith(THEME_PREFIX));
+  return Object.keys(deps).filter(name => name.replace(/^@[\w-]+\//, '').startsWith(THEME_PREFIX));
 }
 
 export default async () => {
@@ -81,24 +81,32 @@ export default async () => {
 
       return result;
     }, []);
-    let contentPath = winPath(path.join(theme, 'src', 'content'));
+    const wrapperPaths = {
+      contentPath: winPath(path.join(theme, 'src', 'content')),
+      layoutPath: winPath(path.join(theme, 'src', 'layout')),
+    };
 
-    try {
-      getModuleResolvePath({ basePath: ctx.umi.paths.cwd, sourcePath: contentPath, silent: true });
-    } catch (err) {
-      contentPath = winPath(path.join(FALLBACK_THEME, 'src', 'content'));
-    }
+    Object.keys(wrapperPaths).forEach(key => {
+      try {
+        getModuleResolvePath({
+          basePath: ctx.umi.paths.cwd,
+          sourcePath: wrapperPaths[key],
+          silent: true,
+        });
+      } catch (err) {
+        wrapperPaths[key] = winPath(path.join(FALLBACK_THEME, 'src', 'content'));
+      }
+    });
 
     cache = await ctx.umi.applyPlugins({
       key: 'dumi.modifyThemeResolved',
       type: ctx.umi.ApplyPluginsType.modify,
       initialValue: {
         name: theme,
-        layoutPath: winPath(path.join(theme, 'src', 'layout')),
-        contentPath,
         modulePath,
         builtins: components,
         fallbacks,
+        ...wrapperPaths,
       },
     });
   }
