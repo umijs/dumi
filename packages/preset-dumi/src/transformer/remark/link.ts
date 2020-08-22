@@ -24,8 +24,8 @@ export default function link() {
           parsedUrl.pathname = parsedUrl.pathname.replace(/\.md$/i, '');
         }
 
-        // handle anchor link
-        if (parsedUrl.hash) {
+        // handle internal anchor link
+        if (parsedUrl.hash && !parsedUrl.hostname) {
           LinkComponent = 'AnchorLink';
         }
 
