@@ -3,6 +3,7 @@ import path from 'path';
 import { init } from '../../context';
 import transformer from '..';
 import { Service } from '@umijs/core';
+import { winEOL } from '@umijs/utils';
 
 describe('demo example', () => {
   const FILE_PATH = path.join(__dirname, '../fixtures/raw/remark-demo.md');
@@ -23,8 +24,10 @@ describe('demo example', () => {
     const result = transformer.markdown(fs.readFileSync(FILE_PATH).toString(), FILE_PATH).content;
 
     // compare transform content
-    expect(result).toEqual(
-      fs.readFileSync(path.join(__dirname, '../fixtures/expect/remark-demo.html')).toString(),
+    expect(winEOL(result)).toEqual(
+      winEOL(
+        fs.readFileSync(path.join(__dirname, '../fixtures/expect/remark-demo.html')).toString(),
+      ),
     );
   });
 });
