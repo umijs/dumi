@@ -59,7 +59,7 @@ function detectInstalledTheme() {
 
 export default async () => {
   if (!cache) {
-    const [theme = FALLBACK_THEME] = detectInstalledTheme();
+    const [theme = process.env.DUMI_THEME || FALLBACK_THEME] = detectInstalledTheme();
     const modulePath = winPath(path.join(ctx.umi.paths.absNodeModulesPath, theme));
     const builtinPath = path.join(modulePath, 'src/builtins');
     const components = fs.existsSync(builtinPath)
@@ -94,7 +94,9 @@ export default async () => {
           silent: true,
         });
       } catch (err) {
-        wrapperPaths[key] = winPath(path.join(FALLBACK_THEME, 'src', 'content'));
+        wrapperPaths[key] = winPath(
+          path.join(FALLBACK_THEME, 'src', path.basename(wrapperPaths[key])),
+        );
       }
     });
 
