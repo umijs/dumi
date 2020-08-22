@@ -9,6 +9,7 @@ import { LinkProps, NavLinkProps } from 'react-router-dom';
 export const LinkWrapper = (Component: React.FC<LinkProps | NavLinkProps>) => {
   return ({ to, ...props }: LinkProps | NavLinkProps) => {
     const isExternal = /^(https?:)?\/\//.test(to as string) || !to;
+    const hasComplexChildren = React.isValidElement(props.children);
 
     return (
       <Component
@@ -18,7 +19,7 @@ export const LinkWrapper = (Component: React.FC<LinkProps | NavLinkProps>) => {
             ? () => (
                 <a target="_blank" rel="noopener noreferrer" href={to as string}>
                   {props.children}
-                  {to && (
+                  {to && !hasComplexChildren && (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       aria-hidden="true"
