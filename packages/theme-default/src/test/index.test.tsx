@@ -196,7 +196,7 @@ describe('default theme', () => {
               }}
               dependencies={{}}
             >
-              <>demo-1</>
+              <>demo-1 Content</>
             </Previewer>
             <Previewer
               title="demo-2"
@@ -212,7 +212,7 @@ describe('default theme', () => {
               }}
               dependencies={{}}
             >
-              <>demo-2</>
+              <>demo-2 Content</>
             </Previewer>
           </>
         </Layout>

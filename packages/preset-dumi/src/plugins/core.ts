@@ -8,7 +8,6 @@ import getLocaleFromRoutes from '../routes/getLocaleFromRoutes';
 import getHostPkgAlias from '../utils/getHostPkgAlias';
 import getRepoUrl from '../utils/getRepoUrl';
 import symlink from '../utils/symlink';
-import getTheme from '../theme/loader';
 import ctx, { init as setContext } from '../context';
 import { IDumiOpts } from '..';
 
@@ -74,7 +73,6 @@ export default function(api: IApi) {
   };
   // save umi api & opts into context
   const updateContext = () => setContext(api, mergeUserConfig(defaultOpts, api));
-  let config = {};
 
   // create symlink for packages
   hostPkgAlias.forEach(([pkgName, pkgPath]) => {
@@ -90,19 +88,37 @@ export default function(api: IApi) {
   api.onStart(updateContext);
 
   // for update context when config change
-  api.onGenerateFiles(() => {
-    updateContext();
+  api.onGenerateFiles(async () => {
+    const opts = mergeUserConfig(defaultOpts, api);
+    const root = (await api.getRoutes()).find(route => route.path === '/');
+    const childRoutes = root.routes;
+    const config = {
+      menus: getMenuFromRoutes(childRoutes, opts, api.paths),
+      locales: getLocaleFromRoutes(childRoutes, opts),
+      navs: getNavFromRoutes(childRoutes, opts, opts.navs),
+      title: opts.title,
+      logo: opts.logo,
+      desc: opts.description,
+      mode: opts.mode,
+      repository: {
+        url: getRepoUrl(pkg.repository?.url || pkg.repository),
+        branch: pkg.repository?.branch || 'master',
+      },
+      algolia: opts.algolia,
+    };
+
     api.writeTmpFile({
       path: 'dumi/config.json',
       content: JSON.stringify(config, null, 2),
     });
+    updateContext();
   });
 
   // repalce default routes with generated routes
-  api.onPatchRoutesBefore(({ routes, parentRoute }) => {
+  api.onPatchRoutesBefore(async ({ routes, parentRoute }) => {
     // only deal with the top level routes
     if (!parentRoute) {
-      const result = getRouteConfig(api, ctx.opts);
+      const result = await getRouteConfig(api, ctx.opts);
 
       // clear original routes
       routes.splice(0, routes.length);
@@ -119,41 +135,6 @@ export default function(api: IApi) {
 
       routes.splice(rootHtmlIndex, 1);
     }
-  });
-
-  // repalce default routes with generated routes
-  api.modifyRoutes(routes => {
-    const opts = mergeUserConfig(defaultOpts, api);
-    const root = routes.find(route => route.path === '/');
-    const childRoutes = root.routes;
-    config = {
-      menus: getMenuFromRoutes(childRoutes, opts, api.paths),
-      locales: getLocaleFromRoutes(childRoutes, opts),
-      navs: getNavFromRoutes(childRoutes, opts, opts.navs),
-      title: opts.title,
-      logo: opts.logo,
-      desc: opts.description,
-      mode: opts.mode,
-      repository: {
-        url: getRepoUrl(pkg.repository?.url || pkg.repository),
-        branch: pkg.repository?.branch || 'master',
-      },
-      algolia: opts.algolia,
-    };
-
-    // pass props for layout
-    root.component = `(props) => require('react').createElement(require('${
-      getTheme().layoutPath
-    }').default, {
-      ...${
-        // escape " to ^ to avoid umi parse error, then umi will decode them
-        // see also: https://github.com/umijs/umi/blob/master/packages/umi-build-dev/src/routes/stripJSONQuote.js#L4
-        JSON.stringify(config).replace(/"/g, '^')
-      },
-      ...props,
-    })`;
-
-    return routes;
   });
 
   // exclude .md file for url-loader
@@ -227,8 +208,8 @@ export default function(api: IApi) {
       }
     });
 
-    // alias dumi
-    config.resolve.alias.set('dumi', require.resolve('dumi'));
+    // alias dumi for theme, and set to umi to be able to use @umijs/preset-dumi alone
+    config.resolve.alias.set('dumi', process.env.UMI_DIR);
 
     return config;
   });

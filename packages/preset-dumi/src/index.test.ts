@@ -3,6 +3,7 @@ import path from 'path';
 import { rimraf } from '@umijs/utils';
 import { Service } from '@umijs/core';
 import { render } from '@testing-library/react';
+import symlink from './utils/symlink';
 
 describe('preset-dumi', () => {
   const fixtures = path.join(__dirname, 'fixtures');
@@ -24,6 +25,15 @@ describe('preset-dumi', () => {
       cwd,
       presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
     });
+
+    // alias dumi-theme-default
+    symlink(
+      path.join(__dirname, '../../theme-default'),
+      path.join(service.paths.absNodeModulesPath, 'dumi-theme-default'),
+    );
+
+    // FIXME: find the real reason why component path missing 1 level in routes.ts
+    service.paths.absPagesPath += '/tmp';
 
     await service.run({
       name: 'g',

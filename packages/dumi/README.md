@@ -120,6 +120,14 @@ $ yarn dev
   </tbody>
 </table>
 
+### README Badge
+
+Using dumi ? Add a README badge to show it off: [![dumi](https://img.shields.io/badge/docs%20by-dumi-blue)](https://github.com/umijs/dumi)
+
+```
+[![dumi](https://img.shields.io/badge/docs%20by-dumi-blue)](https://github.com/umijs/dumi)
+```
+
 ## Discuss
 
 <div>

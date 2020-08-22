@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { winPath } from '@umijs/utils';
+import { getModuleResolvePath } from '../utils/moduleResolver';
 import ctx from '../context';
 
 interface ThemeComponent {
@@ -28,6 +29,10 @@ export interface IThemeLoadResult {
    */
   layoutPath: string;
   /**
+   * content wrapper content path
+   */
+  contentPath: string;
+  /**
    * builtin components
    */
   builtins: ThemeComponent[];
@@ -46,13 +51,13 @@ let cache: IThemeLoadResult | null;
  * detect dumi theme in project dependencies
  */
 function detectInstalledTheme() {
-  const pkg = ctx.umi?.pkg || {};
+  const pkg = ctx.umi.pkg || {};
   const deps = Object.assign({}, pkg.dependencies, pkg.devDependencies);
 
-  return Object.keys(deps).filter(name => name.startsWith(THEME_PREFIX));
+  return Object.keys(deps).filter(name => name.replace(/^@[\w-]+\//, '').startsWith(THEME_PREFIX));
 }
 
-export default () => {
+export default async () => {
   if (!cache) {
     const [theme = FALLBACK_THEME] = detectInstalledTheme();
     const modulePath = winPath(path.join(ctx.umi.paths.absNodeModulesPath, theme));
@@ -76,14 +81,34 @@ export default () => {
 
       return result;
     }, []);
-
-    cache = {
-      name: theme,
+    const wrapperPaths = {
+      contentPath: winPath(path.join(theme, 'src', 'content')),
       layoutPath: winPath(path.join(theme, 'src', 'layout')),
-      modulePath,
-      builtins: components,
-      fallbacks,
     };
+
+    Object.keys(wrapperPaths).forEach(key => {
+      try {
+        getModuleResolvePath({
+          basePath: ctx.umi.paths.cwd,
+          sourcePath: wrapperPaths[key],
+          silent: true,
+        });
+      } catch (err) {
+        wrapperPaths[key] = winPath(path.join(FALLBACK_THEME, 'src', 'content'));
+      }
+    });
+
+    cache = await ctx.umi.applyPlugins({
+      key: 'dumi.modifyThemeResolved',
+      type: ctx.umi.ApplyPluginsType.modify,
+      initialValue: {
+        name: theme,
+        modulePath,
+        builtins: components,
+        fallbacks,
+        ...wrapperPaths,
+      },
+    });
   }
 
   return cache;
