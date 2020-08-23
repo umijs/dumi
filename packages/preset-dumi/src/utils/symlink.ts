@@ -7,7 +7,7 @@ const isWin = process.platform === 'win32';
  * resolve src from dest
  * @refer https://github.com/zkochan/symlink-dir/blob/master/src/index.ts#L18
  */
-function resolveSrc(src: string, dest: string) {
+export function resolveSrc(src: string, dest: string) {
   return isWin ? `${src}\\` : path.relative(path.dirname(dest), src);
 }
 

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { rimraf } from '@umijs/utils';
-import symlink from './symlink';
+import symlink, { resolveSrc } from './symlink';
 
 describe('utils: symlink', () => {
   it('should symlink normal target', () => {
@@ -11,7 +11,7 @@ describe('utils: symlink', () => {
     symlink(src, dest);
 
     expect(() => fs.accessSync(dest, fs.constants.F_OK)).not.toThrowError();
-    expect(path.resolve(fs.readlinkSync(dest))).toEqual(src);
+    expect(fs.readlinkSync(dest)).toEqual(resolveSrc(src, dest));
 
     // clear dest
     rimraf.sync(dest);
@@ -24,7 +24,7 @@ describe('utils: symlink', () => {
     symlink(src, dest);
 
     expect(() => fs.accessSync(dest, fs.constants.F_OK)).not.toThrowError();
-    expect(path.resolve(fs.readlinkSync(dest))).toEqual(src);
+    expect(fs.readlinkSync(dest)).toEqual(resolveSrc(src, dest));
 
     // clear dest
     rimraf.sync(path.dirname(dest));
