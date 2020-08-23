@@ -10,8 +10,8 @@ describe('utils: symlink', () => {
 
     symlink(src, dest);
 
-    expect(fs.existsSync(dest)).toBeTruthy();
-    expect(fs.realpathSync(dest)).toEqual(src);
+    expect(() => fs.accessSync(dest, fs.constants.F_OK)).not.toThrowError();
+    expect(path.resolve(fs.readlinkSync(dest))).toEqual(src);
 
     // clear dest
     rimraf.sync(dest);
@@ -23,8 +23,8 @@ describe('utils: symlink', () => {
 
     symlink(src, dest);
 
-    expect(fs.existsSync(dest)).toBeTruthy();
-    expect(fs.realpathSync(dest)).toEqual(src);
+    expect(() => fs.accessSync(dest, fs.constants.F_OK)).not.toThrowError();
+    expect(path.resolve(fs.readlinkSync(dest))).toEqual(src);
 
     // clear dest
     rimraf.sync(path.dirname(dest));
