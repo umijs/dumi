@@ -83,7 +83,7 @@ function analyzeDeps(
           // only analysis for valid local file type
           PLAIN_TEXT_EXT.includes(resolvePathParsed.ext) &&
           // do not collect entry file
-          resolvePath !== entryAbsPath &&
+          resolvePath !== slash(entryAbsPath || '') &&
           // to avoid collect alias module
           requireStr.startsWith('.')
         ) {
