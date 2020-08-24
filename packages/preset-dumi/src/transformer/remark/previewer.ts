@@ -150,7 +150,6 @@ function visitor(node, i, parent: Node) {
       // workaround for JSX prop name not allowed to contains .
       // refer: https://github.com/facebook/jsx/issues/42
       let key = oKey.replace(/\./g, '_');
-
       const matched = key.match(/^desc(?:(_[\w-]+$)|$)/);
 
       // compatible with short-hand usage for description field in previous dumi versions
@@ -160,13 +159,20 @@ function visitor(node, i, parent: Node) {
 
       // replace props key name
       if (key !== oKey) {
-        // transform markdown for description field
-        yaml[key] = matched
-          ? transformer.markdown(yaml[oKey], null, {
-              type: 'html',
-            }).content
-          : yaml[oKey];
+        yaml[key] = yaml[oKey];
         delete yaml[oKey];
+      }
+
+      // transform markdown for description field
+      if (/^description(\.|$)/.test(key)) {
+        // use wrapper object for workaround to avoid escape \n
+        yaml[key] = new String(
+          JSON.stringify(
+            transformer.markdown(yaml[key], null, {
+              type: 'html',
+            }).content,
+          ),
+        );
       }
     });
 
