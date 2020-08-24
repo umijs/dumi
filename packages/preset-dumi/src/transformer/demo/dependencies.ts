@@ -70,9 +70,18 @@ function analyzeDeps(
           });
           const css = getCSSForDep(pkg.name);
 
-          Object.keys(pkg.peerDependencies || {}).forEach(dep => {
-            dependencies[dep] = dependencies[dep] || { version: pkg.peerDependencies[dep] };
-          });
+          Object.keys(pkg.peerDependencies || {})
+            .filter(dep => !dependencies[dep])
+            .forEach(dep => {
+              const peerCss = getCSSForDep(dep);
+
+              dependencies[dep] = { version: pkg.peerDependencies[dep] };
+
+              // also collect css file for peerDependencies
+              if (peerCss) {
+                dependencies[dep].css = peerCss;
+              }
+            });
 
           dependencies[pkg.name] = { version: pkg.version };
 
