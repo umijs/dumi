@@ -60,7 +60,6 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
     (repoUrl || '').match(/(github|gitlab)/)?.[1] || 'nothing'
   ];
 
-  console.log('location.pathname:', location);
   // set scroller to top while change url
   useEffect(() => {
     window.scrollTo({
