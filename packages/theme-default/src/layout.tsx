@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { IRouteComponentProps } from '@umijs/types';
 import { context, Link } from 'dumi/theme';
 import Navbar from './components/Navbar';
@@ -59,6 +59,14 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
   const repoPlatform = { github: 'GitHub', gitlab: 'GitLab' }[
     (repoUrl || '').match(/(github|gitlab)/)?.[1] || 'nothing'
   ];
+
+  console.log('location.pathname:', location);
+  // set scroller to top while change url
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+    });
+  }, [location.pathname]);
 
   return (
     <div
