@@ -20,7 +20,7 @@ To check out live examples and docs, visit [dumi official site](https://d.umijs.
 
 ```bash
 $ yarn
-$ yarn build -w
+$ yarn watch
 $ yarn dev
 ```
 
