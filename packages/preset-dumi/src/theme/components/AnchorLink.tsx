@@ -20,7 +20,8 @@ AnchorLink.scrollToAnchor = (anchor: string) => {
     const elm = document.getElementById(decodeURIComponent(anchor));
 
     if (elm) {
-      document.documentElement.scrollTop = elm.offsetTop - 100;
+      // compatible in Edge
+      window.scrollTo(0, elm.offsetTop - 100);
     }
   });
 };
