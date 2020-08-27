@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { message } from 'antd';
 
 import copy from 'copy-to-clipboard';
 import { nodeToGroup, nodeToSketchSymbol } from 'html2sketch';
