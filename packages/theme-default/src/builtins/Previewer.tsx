@@ -51,7 +51,6 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
   const [execMotions, isMotionRunning] = useMotions(props.motions || [], demoRef.current);
   const [copyCode, copyStatus] = useCopy();
   const { generateSymbol, generateGroup, copyGroupStatus, copySymbolStatus } = useSketchJSON();
-  const demoRef = useRef();
   const [currentFile, setCurrentFile] = useState('_');
   const [sourceType, setSourceType] = useState<'jsx' | 'tsx'>();
   const [showSource, setShowSource] = useState(Boolean(props.defaultShowCode));
@@ -84,7 +83,6 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
           padding: props.compact ? '0' : undefined,
           background: props.background,
         }}
-        ref={demoRef}
       >
         {props.children}
       </div>

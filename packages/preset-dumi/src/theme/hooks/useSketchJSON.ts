@@ -13,12 +13,10 @@ declare global {
   }
 }
 
-if (window) {
-  window.DUMI_HTML2SKETCH = {
-    nodeToSketchSymbol,
-    nodeToGroup,
-  };
-}
+window.DUMI_HTML2SKETCH = {
+  nodeToSketchSymbol,
+  nodeToGroup,
+};
 
 const useSketchJSON = () => {
   const [timer, setTimer] = useState<NodeJS.Timeout>();
@@ -55,6 +53,8 @@ const useSketchJSON = () => {
   };
 
   return {
+    symbolJSON,
+    groupJSON,
     generateSymbol: (elements: Element | Element[]) => {
       try {
         if (elements instanceof Array) {
