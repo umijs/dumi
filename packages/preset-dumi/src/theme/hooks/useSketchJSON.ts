@@ -13,10 +13,12 @@ declare global {
   }
 }
 
-window.DUMI_HTML2SKETCH = {
-  nodeToSketchSymbol,
-  nodeToGroup,
-};
+if (typeof window !== 'undefined') {
+  window.DUMI_HTML2SKETCH = {
+    nodeToSketchSymbol,
+    nodeToGroup,
+  };
+}
 
 const useSketchJSON = () => {
   const [timer, setTimer] = useState<NodeJS.Timeout>();
