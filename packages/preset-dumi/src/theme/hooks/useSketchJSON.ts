@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { message } from 'antd';
 
 import copy from 'copy-to-clipboard';
 import { nodeToGroup, nodeToSketchSymbol } from 'html2sketch';
@@ -21,6 +20,7 @@ if (typeof window !== 'undefined') {
 }
 
 const useSketchJSON = () => {
+  const [groupTimer, setGroupTimer] = useState<NodeJS.Timeout>();
   const [timer, setTimer] = useState<NodeJS.Timeout>();
 
   const [groupJSON, setGroupJSON] = useState<object>();
@@ -46,8 +46,8 @@ const useSketchJSON = () => {
     setGroupJSON(data);
     setCopyGroup('copied');
 
-    clearTimeout(timer);
-    setTimer(
+    clearTimeout(groupTimer);
+    setGroupTimer(
       setTimeout(() => {
         setCopyGroup('ready');
       }, 2000),
