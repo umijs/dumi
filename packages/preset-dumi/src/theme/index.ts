@@ -7,6 +7,7 @@ export { default as AnchorLink } from './components/AnchorLink';
 export { default as useSearch } from './hooks/useSearch';
 export { default as useCopy } from './hooks/useCopy';
 export { default as useRiddle } from './hooks/useRiddle';
+export { default as useMotions } from './hooks/useMotions';
 export { default as useCodeSandbox } from './hooks/useCodeSandbox';
 export { default as useLocaleProps } from './hooks/useLocaleProps';
 
@@ -44,5 +45,9 @@ export interface IPreviewerComponentProps {
    * the component which demo belongs to
    */
   componentName?: string;
+  /**
+   * motions of current demo, for snapshot or preview
+   */
+  motions?: string[];
   [key: string]: any;
 }
