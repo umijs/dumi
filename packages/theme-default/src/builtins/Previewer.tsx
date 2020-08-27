@@ -12,6 +12,7 @@ import {
   Link,
   AnchorLink,
   IPreviewerComponentProps,
+  useSketchJSON,
 } from 'dumi/theme';
 import SourceCode from './SourceCode';
 import './Previewer.less';
@@ -49,6 +50,8 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
   const openRiddle = useRiddle(props.hideActions?.includes('RIDDLE') ? null : props);
   const [execMotions, isMotionRunning] = useMotions(props.motions || [], demoRef.current);
   const [copyCode, copyStatus] = useCopy();
+  const { generateSymbol, generateGroup, copyGroupStatus, copySymbolStatus } = useSketchJSON();
+  const demoRef = useRef();
   const [currentFile, setCurrentFile] = useState('_');
   const [sourceType, setSourceType] = useState<'jsx' | 'tsx'>();
   const [showSource, setShowSource] = useState(Boolean(props.defaultShowCode));
@@ -81,6 +84,7 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
           padding: props.compact ? '0' : undefined,
           background: props.background,
         }}
+        ref={demoRef}
       >
         {props.children}
       </div>
@@ -130,6 +134,29 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
           </Link>
         )}
         <span />
+        <button
+          title="Copy Sketch Group"
+          className="__dumi-default-icon"
+          role="sketch-group"
+          data-status={copyGroupStatus}
+          onClick={() => {
+            if (demoRef.current) {
+              generateGroup(demoRef.current);
+            }
+          }}
+        />
+        <button
+          title="Copy Sketch Symbol"
+          className="__dumi-default-icon"
+          role="sketch-symbol"
+          data-status={copySymbolStatus}
+          onClick={() => {
+            if (demoRef.current) {
+              generateSymbol(demoRef.current);
+            }
+          }}
+        />
+        <div className="__dumi-default-previewer-actions-divider" />
         <button
           title="Copy source code"
           className="__dumi-default-icon"

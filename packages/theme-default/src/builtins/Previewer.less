@@ -159,12 +159,35 @@
         pointer-events: none;
         background-position: -54px -16px;
       }
+
+      &[role='sketch-symbol'][data-status='ready'] {
+        background-position: -54px 0;
+      }
+      &[role='sketch-symbol'][data-status='copied'] {
+        pointer-events: none;
+        background-position: -54px -16px;
+      }
+
+      &[role='sketch-group'][data-status='ready'] {
+        background-position: -54px 0;
+      }
+      &[role='sketch-group'][data-status='copied'] {
+        pointer-events: none;
+        background-position: -54px -16px;
+      }
     }
 
     // split action buttons by a blank node
     > span {
       flex: 1;
       display: inline-block;
+    }
+
+    &-divider {
+      margin-right: 8px;
+      width: 1px;
+      height: 16px;
+      background: @c-border;
     }
   }
 
