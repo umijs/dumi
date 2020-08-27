@@ -34,6 +34,12 @@ describe('theme API: AnchorLink', () => {
     // FIXME: element.offsetTop not working in jest
     Object.defineProperty(anchor, 'offsetTop', { value: 110 });
 
+    // mock a scrollTo for jest
+    // @ts-ignore
+    window.scrollTo = jest.fn((x, y) => {
+      document.documentElement.scrollTop = y;
+    });
+
     // expect scroll to anchor when click (distance 100px from top)
     expect(document.documentElement.scrollTop).toEqual(0);
     anchor.click();
