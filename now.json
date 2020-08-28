@@ -11,7 +11,7 @@
     },
     { "src": "/(.*)", "dest": "/dist/$1" },
     { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/dist/index.html" }
+    { "src": "/(.*)", "dest": "/dist/404.html" }
   ],
   "github": {
     "enable": false
