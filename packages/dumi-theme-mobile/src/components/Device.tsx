@@ -21,17 +21,7 @@ const Device: FC<DeviceProps> = ({ url ,isSiteMode}) => {
             d="M1213 1.2h30c2.2 0 4 1.8 4 4v30c0 2.2-1.8 4-4 4h-30c-2.2 0-4-1.8-4-4v-30c0-2.3 1.8-4 4-4zM16 4.2h64c8.8 0 16 7.2 16 16s-7.2 16-16 16H16c-8.8 0-16-7.2-16-16s7.2-16 16-16z"
           />
         </svg>
-        <iframe title="dumi mobile" src={url} onLoad={(event) => {
-          // rem 单位时，根据当前设定的窗口大小，设置 iframe 的 fontsize
-          const { target } = event as any;
-          const currentDoc = target?.contentDocument || target?.contentWindow.document
-          currentDoc.querySelector('html').style.fontSize = '100px';
-          // px 单位的情况，需要增加 theme 配置
-          // theme: {
-          //   // 因为预览窗口的宽度是320，想预览的效果是375的。
-          //   '@hd': '0.854px',
-          // },
-        }} />
+        <iframe title="dumi mobile" src={url} />
       </figure>
     </div>
   );
