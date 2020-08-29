@@ -75,7 +75,7 @@ export default {
               hideActions: (demo.previewerProps.hideActions || []).concat(['EXTERNAL'])
             };
 
-            if (props.location.query.motion !== undefined) {
+            if (props.location.query.capture !== undefined) {
               // unchain refer
               previewerProps.motions = (previewerProps.motions || []).slice();
 
