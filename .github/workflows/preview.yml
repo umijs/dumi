@@ -14,8 +14,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: afc163/surge-preview@v1
-        env:
-          SURGE_PREVIEW: true
         with:
           surge_token: ${{ secrets.SURGE_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -31,7 +29,6 @@ jobs:
       - uses: afc163/surge-preview@v1
         env:
           DUMI_THEME: dumi-theme-mobile
-          SURGE_PREVIEW: true
         with:
           surge_token: ${{ secrets.SURGE_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
