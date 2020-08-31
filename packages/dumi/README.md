@@ -20,7 +20,7 @@ To check out live examples and docs, visit [dumi official site](https://d.umijs.
 
 ```bash
 $ yarn
-$ yarn build -w
+$ yarn watch
 $ yarn dev
 ```
 
@@ -40,14 +40,14 @@ $ yarn dev
         </a>
       </td>
       <td align="center">
-        <a target="_blank" href="https://hooks.umijs.org">
+        <a target="_blank" href="https://ahooks.js.org/">
           <img
-            width="32"
+            height="32"
             style="vertical-align: -0.32em; margin-right: 8px;"
-            src="https://gw.alipayobjects.com/zos/bmw-prod/598d14af-4f1c-497d-b579-5ac42cd4dd1f/k7bjua9c_w132_h130.png"
+            src="https://ahooks.js.org/logo.svg"
           />
           <br>
-          <strong>Umi Hooks</strong>
+          <strong>ahooks</strong>
         </a>
       </td>
       <td align="center">

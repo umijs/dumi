@@ -19,4 +19,15 @@ console.log(katex);
 export default () => <h1>Hello World!</h1>;
 ```
 
+```tsx
+/**
+ * description: |
+ *   多行文本测试
+ *   - 列表
+ */
+import React from 'react';
+
+export default () => null;
+```
+
 <code src="./demo-missing-react.tsx" hideActions='["CSB"]' />

@@ -86,9 +86,13 @@ export default (opts: IPreviewerComponentProps | null) => {
       input.value = JSON.stringify({
         title: opts.titlle,
         js: getRiddleAppCode(opts),
-        css: Object.values(opts.dependencies)
-          .map(({ version, css }) => `@import '${css}@${version}';`)
-          .filter(Boolean)
+        css: Object.entries(opts.dependencies)
+          .filter(([, dep]) => dep.css)
+          .map(
+            ([name, { version, css }]) =>
+              // generate to @import 'pkg@version/path/to/css' format
+              `@import '${css.replace(new RegExp(`^(${name})`), `$1@${version}`)}';`,
+          )
           .join('\n'),
       });
 

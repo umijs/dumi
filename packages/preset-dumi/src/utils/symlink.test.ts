@@ -10,8 +10,9 @@ describe('utils: symlink', () => {
 
     symlink(src, dest);
 
-    expect(fs.existsSync(dest)).toBeTruthy();
-    expect(fs.realpathSync(dest)).toEqual(src);
+    // use accessSync instead of existSync to avoid error on Windows
+    expect(() => fs.accessSync(dest)).not.toThrowError();
+    expect(path.resolve(path.dirname(dest), fs.readlinkSync(dest))).toEqual(src);
 
     // clear dest
     rimraf.sync(dest);
@@ -23,8 +24,8 @@ describe('utils: symlink', () => {
 
     symlink(src, dest);
 
-    expect(fs.existsSync(dest)).toBeTruthy();
-    expect(fs.realpathSync(dest)).toEqual(src);
+    expect(() => fs.accessSync(dest)).not.toThrowError();
+    expect(path.resolve(path.dirname(dest), fs.readlinkSync(dest))).toEqual(src);
 
     // clear dest
     rimraf.sync(path.dirname(dest));

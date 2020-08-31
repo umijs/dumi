@@ -62,24 +62,44 @@ export default {
       {
         path: '/~demos/:uuid',
         component: `(props) => {
-          const react = require('react');
+          const React = require('react');
           const demos = require('@@/dumi/demos').default;
           const uuid = props.match.params.uuid;
           const inline = props.location.query.wrapper === undefined;
           const demo = demos[uuid];
 
           if (demo) {
+            const previewerProps = {
+              ...demo.previewerProps,
+              // disallowed matryoshka
+              hideActions: (demo.previewerProps.hideActions || []).concat(['EXTERNAL'])
+            };
+
+            if (props.location.query.capture !== undefined) {
+              // unchain refer
+              previewerProps.motions = (previewerProps.motions || []).slice();
+
+              // unshift autoplay motion
+              previewerProps.motions.unshift('autoplay');
+
+              // append capture motion if not exist
+              if (previewerProps.motions.every(motion => !motion.startsWith('capture'))) {
+                // compatible with qiankun app
+                previewerProps.motions.push('capture:[id|=root]');
+              }
+            }
+
             if (inline) {
-              return react.createElement(demo.component);
+              return React.createElement(() => {
+                require('dumi/theme').useMotions(previewerProps.motions || [], document);
+
+                return React.createElement('div', {}, React.createElement(demo.component));
+              });
             } else {
-              return react.createElement(
+              return React.createElement(
                 require('${Previewer.source}').default,
-                {
-                  ...demo.previewerProps,
-                  // disallowed matryoshka
-                  hideActions: (demo.previewerProps.hideActions || []).concat(['EXTERNAL'])
-                },
-                react.createElement(demo.component),
+                previewerProps,
+                React.createElement(demo.component),
               );
             }
           }

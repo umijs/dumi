@@ -1,11 +1,12 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 // @ts-ignore
 import { history } from 'dumi';
 import {
   context,
   useCodeSandbox,
   useRiddle,
+  useMotions,
   useCopy,
   useLocaleProps,
   Link,
@@ -39,12 +40,14 @@ export interface IPreviewerProps extends IPreviewerComponentProps {
 }
 
 const Previewer: React.FC<IPreviewerProps> = oProps => {
+  const demoRef = useRef();
   const { locale } = useContext(context);
   const props = useLocaleProps<IPreviewerProps>(locale, oProps);
   const isActive = history.location.hash === `#${props.identifier}`;
   const isSingleFile = Object.keys(props.sources).length === 1;
   const openCSB = useCodeSandbox(props.hideActions?.includes('CSB') ? null : props);
   const openRiddle = useRiddle(props.hideActions?.includes('RIDDLE') ? null : props);
+  const [execMotions, isMotionRunning] = useMotions(props.motions || [], demoRef.current);
   const [copyCode, copyStatus] = useCopy();
   const [currentFile, setCurrentFile] = useState('_');
   const [sourceType, setSourceType] = useState<'jsx' | 'tsx'>();
@@ -71,6 +74,7 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
       id={props.identifier}
     >
       <div
+        ref={demoRef}
         className="__dumi-default-previewer-demo"
         style={{
           transform: props.transform ? 'translate(0, 0)' : undefined,
@@ -104,6 +108,15 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
             className="__dumi-default-icon"
             role="riddle"
             onClick={openRiddle}
+          />
+        )}
+        {props.motions && (
+          <button
+            title="Execute motions"
+            className="__dumi-default-icon"
+            role="motions"
+            disabled={isMotionRunning}
+            onClick={() => execMotions()}
           />
         )}
         {!props.hideActions?.includes('EXTERNAL') && (

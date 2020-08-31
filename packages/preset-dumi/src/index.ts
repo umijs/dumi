@@ -44,6 +44,7 @@ export default () => {
       require.resolve('./plugins/algolia'),
       require.resolve('./plugins/commands/assets'),
       require.resolve('./plugins/features/demos'),
+      require.resolve('./plugins/features/404'),
     ],
   };
 };
