@@ -27,7 +27,7 @@ dumi 基于 Umi，即除了自己提供的配置项以外，还支持[所有 Umi
 
 <code src="path/to/homepage.tsx" inline />
 ```
-详细使用可参考 ant design landing 的 [use in dumi](https://landing.ant.design/docs/use/dumi-cn)
+详细使用可参考 Ant Design Landing 的 [use in dumi](https://landing.ant.design/docs/use/dumi-cn)
 
 ## dumi 支持使用 `.md` 之外的其他方式编写文档吗？
 
