@@ -98,8 +98,8 @@ export default function yamlProcessor() {
           identifier: vFile.data.componentName,
           name: vFile.data.title,
           uuid: vFile.data.uuid,
-          // TODO: props API definition from TypeScript interface
-          props: [],
+          // use to parse props from component file
+          _sourcePath: path.join(path.dirname(this.data('fileAbsPath')), 'index.tsx'),
         },
       });
     }

@@ -89,7 +89,7 @@ function applyCodeBlock(props: IPreviewerComponentProps, componentName: string) 
       tags: props.tags,
       atomAssetId: componentName,
       // for HiTu DSM
-      uuid: props.uuid,
+      uuid: props.uuid && String(props.uuid),
       dependencies: {
         // append npm dependencies
         ...Object.entries(props.dependencies).reduce(
