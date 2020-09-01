@@ -8,6 +8,13 @@ import symlink from './utils/symlink';
 describe('preset-dumi', () => {
   const fixtures = path.join(__dirname, 'fixtures');
 
+  afterAll(() => {
+    // clear all node_modules
+    ['', 'basic', 'algolia', 'demos', 'assets'].forEach(dir => {
+      rimraf.sync(path.join(fixtures, dir, 'node_modules'));
+    });
+  });
+
   it('init', async () => {
     const service = new Service({
       cwd: fixtures,
@@ -15,8 +22,6 @@ describe('preset-dumi', () => {
     });
 
     await expect(service.init()).resolves.not.toThrowError();
-
-    rimraf.sync(path.join(fixtures, 'node_modules'));
   });
 
   it('core', async () => {
@@ -46,8 +51,6 @@ describe('preset-dumi', () => {
     const { container } = render(reactNode);
 
     expect(container.textContent).toContain('dumi');
-
-    rimraf.sync(path.join(fixtures, 'basic', 'node_modules'));
   });
 
   it('algolia', async () => {
@@ -67,8 +70,6 @@ describe('preset-dumi', () => {
     expect(fs.readFileSync(path.join(cwd, 'dist', 'index.html'), 'utf-8')).toContain(
       'docsearch.js',
     );
-
-    rimraf.sync(path.join(fixtures, 'algolia', 'node_modules'));
   });
 
   it('demos', async () => {
@@ -90,7 +91,29 @@ describe('preset-dumi', () => {
 
     expect(Object.keys(demos).length).toEqual(2);
     expect(demos['tsx-demo']).not.toBeUndefined();
+  });
 
-    rimraf.sync(path.join(fixtures, 'demos', 'node_modules'));
+  it('assets command', async () => {
+    const cwd = path.join(fixtures, 'assets');
+    const service = new Service({
+      cwd,
+      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+    });
+
+    await service.run({
+      name: 'assets',
+      args: {
+        _: ['assets'],
+      },
+    });
+
+    // expect assets.json generate
+    const { assets } = require(path.join(service.paths.cwd, 'assets.json'));
+    const { assets: expectAssets } = require(path.join(service.paths.cwd, 'assets.expect.json'));
+
+    expect(assets.atoms[0]).toEqual(expectAssets.atoms[0]);
+    expect(assets.examples[0]).toEqual(expectAssets.examples[0]);
+    expect(assets.examples[1].name).toEqual('react');
+    expect(assets.examples[1].dependencies.react).not.toBeUndefined();
   });
 });
