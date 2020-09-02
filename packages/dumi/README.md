@@ -4,17 +4,17 @@
 
 ## Intro
 
-A doc tool base on Umi that can help you dev library & write doc.
+An Umi-based doc tool can assist you to develop libraries & write docs.
 
 ### Features
 
 - 📦 Out of the box, focus on development & documentation
-- 🚀 Base on Umi 3, high-performance & extensible
-- 📋 Powerful Markdown extensions, support embed demo, external demo & inline demo
+- 🚀 Based on Umi 3, high-performance & extensible
+- 📋 Powerful Markdown extensions, support to embed demo or import external demo & inline demo
 
 ## Usage & Guide
 
-To check out live examples and docs, visit [dumi official site](https://d.umijs.org).
+To view more online examples and docs, please visit [dumi official site](https://d.umijs.org).
 
 ## Development
 
@@ -24,7 +24,7 @@ $ yarn watch
 $ yarn dev
 ```
 
-## Who is using dumi?
+## Who are using dumi?
 
 <table>
   <tbody>
@@ -128,7 +128,7 @@ Using dumi ? Add a README badge to show it off: [![dumi](https://img.shields.io/
 [![dumi](https://img.shields.io/badge/docs%20by-dumi-blue)](https://github.com/umijs/dumi)
 ```
 
-## Discuss
+## Discuss group
 
 <div>
   <img src="https://gw.alipayobjects.com/zos/bmw-prod/881c4596-a6cc-4f69-be8d-f94c4e02e058/k7ttshpq_w1004_h1346.jpeg" width="300" />
