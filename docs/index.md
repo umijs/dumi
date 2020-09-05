@@ -22,7 +22,7 @@ footer: Open-source MIT Licensed | Copyright © 2019-present<br />Powered by sel
 
 ## Getting Started
 
-Create first docs in manual way
+Create first doc in manual way
 
 ```bash
 // Create dir for libraries

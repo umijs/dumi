@@ -3,31 +3,31 @@ group:
   title: 开始写组件 Demo
 ---
 
-# 控制 Demo 渲染
+# Render of demos
 
-Demo 的渲染是由 dumi 内置的 `Previewer` 控制的，该组件暴露了一些 `props`，我们可以通过 FrontMatter 来进行设置，例如：
+The render of demo is controlled by dumi's built-in `Previewer`. This component exports some `props`, so that we can configurate through FrontMatter, for example:
 
 <pre>
 ```jsx
 /**
- * title: 标题内容
+ * title: title
  */
 
-// 组件内容
+// content
 ```
 </pre>
 
-dumi 会对源代码中的 FrontMatter 进行剔除，不会展示给用户。如果是引入的外部 Demo，我们除了可以直接在外部 Demo 的文件中像上面一样配置 FrontMatter 之外，还可以直接向 `code` 标签传递 `props`：
+Dumi will remove FrontMatter from the source code and will not present it to users. If it is an external imported demo, we can not only configurate FrontMatter in the external demo file as above, but also can directly transfer `props` to the `code` tag:
 
 ```html
-<code src="/path/to/Demo.tsx" title="标题内容" />
+<code src="/path/to/Demo.tsx" title="title" />
 ```
 
-目前，内置的 `Previewer` 组件为如下场景提供了控制配置项。
+At present, the built-in `Previewer` component provides control configurations for the following scenarios.
 
-## `fixed` 定位元素
+## `fixed` Element
 
-倘若我们的 Demo 包含 `position: fixed;` 的元素，那么它在渲染的时候必然会『飞出』Demo 包裹器；可有些场景下，我们仍然是希望它相对于 Demo 包裹器定位的，所以 `Previewer` 提供了 `transform` 的配置项，一旦设置为 true，则会为 Demo 包裹器加上 `transform` 用于更改 `position: fixed` 元素的 CSS 包含块 为 Demo 包裹器，就像这样：
+If our demo contains elements which have the `position: fixed` property, it must 『overflow』 of the demo wrapper when rendering. However, in some scenarios, we still want it to be positioned relative to the demo wrapper. Therefore, the `Previewer` provides a configuration item of `transform`. Once set it to true, the `transform` property will be set in the demo wrapper to change the CSS containing block of the `position: fixed` element to demo wrapper, like this:
 
 <pre>
 ```jsx
@@ -35,13 +35,13 @@ dumi 会对源代码中的 FrontMatter 进行剔除，不会展示给用户。�
  * transform: true
  */
 
-// 组件内容
+// content
 ```
 </pre>
 
-## 修改背景色
+## Background
 
-默认情况下 Demo 包裹器的背景色为白色，但有些 Demo 需要有深色的背景，通过 `background` 配置项，可以修改它的背景颜色、渐变甚至加上背景图片，`Previewer` 会将其当做 CSS 属性值处理：
+The background color of the demo wrapper is white by default, but there are some demos need a dark background.You can change its background color, background gradient, or even add a background image by changing the configuration item of `background`. The `previewer` will consider it as a CSS property:
 
 <pre>
 ```jsx
@@ -55,7 +55,7 @@ export default () => null;
 ```
 </pre>
 
-效果如下：
+like this:
 
 ```jsx
 /**
@@ -67,9 +67,9 @@ import React from 'react';
 export default () => null;
 ```
 
-## 不需要内边距
+## No Padding
 
-为了体现留白的艺术，Demo 包裹器默认有 `padding`，以确保 Demo 不会贴边展示；但有些 Demo 我们却是希望它贴边展示的，比如导航头、侧边栏等等。dumi 提供了 `compact` 配置项来控制内边距，一旦设置为 `true`，则会移除所有内边距：
+In order to present the art of blank, the demo wrapper has `padding` by default to ensure that the demo will not be presented on the edge; however, for some demos, we want it to be presented on the edge, such as navigation, sidebar, etc. Dumi provides a configuration item of `compact` to control the paddings. Once set it to `true`, all paddings will be removed
 
 <pre>
 ```jsx
@@ -79,11 +79,11 @@ export default () => null;
 
 import React from 'react';
 
-export default () => '我会贴边站';
+export default () => 'I\'ll on the edge';
 ```
 </pre>
 
-效果如下：
+like this:
 
 ```jsx
 /**
@@ -92,18 +92,18 @@ export default () => '我会贴边站';
 
 import React from 'react';
 
-export default () => '我会贴边站';
+export default () => "I'll on the edge";
 ```
 
-## 标题与简介
+## Title & Desc
 
-如果我们希望为当前 Demo 加上描述信息，例如标题与简介，可以通过 `title` 和 `desc` 进行配置：
+If we want to add some informations, such as title and description, to the demo, we can configure it by `title` and `desc`:
 
 <pre>
 ```jsx
 /**
- * title: 我是标题
- * desc: 我是简介，我可以用 `Markdown` 来编写
+ * title: Here is title
+ * desc: Here is description, could coded in `Markdown`
  */
 
 import React from 'react';
@@ -112,12 +112,12 @@ export default () => null;
 ```
 </pre>
 
-效果如下：
+like this：
 
 ```jsx
 /**
- * title: 我是标题
- * desc: 我是简介，我可以用 `Markdown` 来编写
+ * title: Here is title
+ * desc: Here is description, could coded in `Markdown`
  */
 
 import React from 'react';
@@ -125,6 +125,6 @@ import React from 'react';
 export default () => null;
 ```
 
-## 直接嵌入文档
+## Embeded in documents
 
-将 Demo 以嵌入形式呈现，请参考 [Demo 的类型 - 嵌入式](/guide/demo-types#嵌入式)。
+Render demo in embedded mode, please refer to [Demo 的类型 - 嵌入式](/guide/demo-types#嵌入式)。
