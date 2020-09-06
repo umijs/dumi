@@ -43,6 +43,7 @@ export default function yamlProcessor() {
       if (/index\.md$/.test(this.data('fileAbsPath'))) {
         try {
           getModuleResolvePath({
+            extensions: ['.tsx'],
             basePath: process.cwd(),
             sourcePath: path.dirname(this.data('fileAbsPath')),
             silent: true,
