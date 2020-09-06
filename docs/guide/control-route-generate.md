@@ -1,51 +1,51 @@
-# 控制路由生成
+# Control route generate
 
-## 约定式路由规则
+## Convention Routing rules
 
-dumi 和 Umi 一样，有一套路由生成的约定。
+As same as Umi, dumi has a set of routing generation conventions.
 
-生成均以 [`resolve.includes`](/config#includes) 配置项的值作为基础检测路径，倘若我们不配置该值，则会默认探测 `docs` 目录、`src` 目录（普通项目）、`packages/pkg/src` 目录（lerna 项目）。
+Dumi will generate routes based on the base detection path which is taken by the value of the configuration item of [`resolve.includes`](/config#includes). If we do not configure this value, dumi will detect the `docs`, `src`(normal projects), `packages/pkg/src`(lerna projects) directory by default.
 
-假定 `docs` 有如下目录结构，dumi 会这么进行识别：
+It is assumed that `docs` has the following directory structure, dumi will identify it like this:
 
 ```bash
 .
 └── docs/
-    ├── index.md       # 生成 / 路由
-    ├── index.zh-CN.md # 生成 /zh-CN 路由
-    ├── examples.md    # 生成 /examples 路由
+    ├── index.md       # generate '/' route
+    ├── index.zh-CN.md # generate '/zh-CN' route
+    ├── examples.md    # generate '/examples' route
     ├── guide
-    |   ├── README.md  # 生成 /guide 路由
-    |   ├── help.md    # 生成 /guide/help 路由
+    |   ├── README.md  # generate '/guide' route
+    |   ├── help.md    # generate '/guide/help' route
 ```
 
-可以发现，除了多语言的部分，和 Umi 对 `tsx/jsx` 约定式路由的识别规则非常类似。
+It can be found that, except for the multi-language part, it is very similar to rules of Umi for identifying `tsx/jsx` Convention routes.
 
-另外，dumi 会将驼峰命名（camelCased）转换为短横线命名（kebab-case），例如 `docs/gettingStarted` 会被转化为 `docs/getting-started`。
+In addition, dumi will convert camel cased(camelCased) to kebab case(kebab-case), for example, `docs/gettingStarted` will be converted to `docs/getting-started`.
 
-### 控制页面名称
+### Page title
 
-页面名称的默认生成规则是，取当前路由的最后一段并首字母大写。比如，路由是 `/guide/help`，dumi 将会取末端路由 `help` 并首字母大写变成 `Help`。
+The default rule of generating page title is to take the last segment of the current route and capitalize it. For example, if the route is `/guide/help`, dumi will take the end route `help` and capitalize it to `Help`.
 
-如果希望手动控制页面名称，可以使用 [名为`title` 的 frontmatter 配置项](/config/frontmatter#title) 进行配置。
+If you want to control the page title in manual way, you can configure it through [名为`title` 的 frontmatter 配置项](/config/frontmatter#title)
 
-### 控制页面排序
+### Page order
 
-在侧边菜单中，各页面会按照规则进行排序展示。
+In the side menu, the pages will be sorted according to the rules.
 
-页面的默认排序规则为，先对比 `path` 的长度，例如 `/guide` 肯定排在 `/guide/help` 前面，其次对比页面名称的 ASCII 码，比如 `Guide` 肯定排在 `Help` 前面。
+The default rule of the page sorting is: firstly, compare the length of `path`, for example `/guide` must be in front of `/guide/help`, and then compare the ASCII of page name, for example, `Guide` must be in front of `Help`.
 
-如果希望手动控制页面顺序，可以使用 [名为`order` 的 frontmatter 配置项](/config/frontmatter#order) 进行配置，数字越小越靠前。
+If you want to control the page order in manual way, you can configure it through [名为`order` 的 frontmatter 配置项](/config/frontmatter#order). The smaller the number, the more previous the rank will be.
 
-### 控制页面路由
+### Page route
 
-目前，页面自身的路由无法自定义，dumi 会保留名称即路由的约定，如果希望修改页面的路由，例如将 `/guide/help` 中的 `help` 修改为 `other`，那么建议把 `help.md` 改为 `other.md`。
+At present, the route of the page itself cannot be customized. Dumi will abide by the agreement that name is route. If you want to change the route of the page, for example, changing the `help` in `/guide/help` to `other`, it is recommended that change `help.md` to `other.md`.
 
-但除开页面自己的路由，页面所属菜单分组和导航分组的路由是可以修改的，详见 [控制菜单分组路径](/guide/control-menu-generate#控制分组路径) 以及 [控制导航分组路径](/guide/control-nav-generate#控制导航路径)。
+However, except the route of the page itself, the route of the menu and navigation to which the page belongs can be changed. For more, please refer to [控制菜单分组路径](/guide/control-menu-generate#控制分组路径) and [控制导航分组路径](/guide/control-nav-generate#控制导航路径).
 
-## 配置式路由
+## Configuring Routing
 
-通常推荐直接使用约定式路由，倘若不能满足需要，也可以通过 [`config.routes`](/config#routes) 配置项来进行配置，用法和 Umi 一样，但有两点需要注意：
+Generally, it is recommended to use the conventional routing directly. If it can not satisfy the requirements, can also configure through [`config.routes`](/config#routes). The usage is the same as Umi, but there are two points to notice:
 
-1. 目前仅支持配置 `.md` 作为路由组件，后续会进行扩展支持标准的 `module`
-2. 为了便于在运行时对路由进行遍历，dumi 会把所有嵌套式路由拉平，如果嵌套的路由有父级组件，会通过 Umi 的 [`wrappers`](https://umijs.org/docs/routing#wrappers) 路由配置项进行包裹
+1. Only support to configure `.md` as a routing component for now. The standard `module` will be supported in the future
+2. To traversal of routes at runtime, dumi flattens all nested routes. If there are parent components in nested routes, it will be wrapped through the Umi's configuration of [`wrappers`](https://umijs.org/docs/routing#wrappers)
