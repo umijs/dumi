@@ -1,40 +1,40 @@
-# 多种呈现模式
+# Modes
 
-目前，dumi 支持两种呈现模式，分别是文档模式和站点模式。在两种模式之间切换也非常地简单：
+For now, dumi supports two modes: document mode and site mode. It's very simple to switch between the two modes
 
 ```ts
-// config/config.ts 或 .umirc.ts
+// config/config.ts or .umirc.ts
 export default {
-  // 文档模式（默认值）
+  // document mode(default)
   mode: 'doc',
-  // 站点模式
+  // site mode
   mode: 'site',
 };
 ```
 
-在组件库比较轻量、不需要繁杂文档的时候，可以以文档模式呈现；在它羽翼丰满、需要有教程和周边生态时，建议以站点模式呈现。以 dumi 的官网为例展示效果分别如下：
+When the component library is light and does not need complicated documents, it can be presented in document mode; when it is perfect and needs a tutorial, it is recommended to be presented in site mode. Taking dumi's official website as an example, the display effects are as follows:
 
-## 文档模式
+## Document mode
 
 ![](https://gw.alipayobjects.com/zos/bmw-prod/86ddc125-75e0-49e0-920b-f9497e806cf1/k7iyfr0t_w2600_h1754.png)
 
-文档模式的特点是：
+The characteristics of document mode are:
 
-- 没有导航头
-- 没有搜索框
-- 没有定制化的首页
-- 支持 `description` 配置项展示简介
-- 支持通过 `package.json` 中的 `repository` 配置自动展示 GitHub Stars 数
-- 支持通过 `package.json` 中的 `repository` 配置自动展示 `markdown` 文件 `footer` 中 `Edit this doc on GitHub` 的超链接
-- 支持通过 `package.json` 中的 `repository.branch` 配置可修改 `Edit this doc on GitHub` 该超链接跳转的分支，默认为 `master` 分支
+- No navigation
+- No search input
+- No customized home page
+- Support to present introduction through `description` configuration
+- Support to present the Github Stars number automatically through `repository` in `package.json`
+- Support to present the links to `Edit this doc on GitHub` in the `footer` of `markdown` file automatically through `repository` in `package.json`
+- Support to change the branch of this link ,`Edit this doc on GitHub`,through `repository.branch` in `package.json`,the default is `master` branch
 
-## 站点模式
+## Site mode
 
 ![](https://gw.alipayobjects.com/zos/bmw-prod/7ce6770d-df19-48fa-853e-64cbbf41b762/k7iyfarw_w2600_h1754.png)
 
-官网模式的特点是：
+The characteristics of site mode are:
 
-- 有导航头
-- 有搜索框
-- 支持通过 `hero` 和 `features` [配置首页](/config/frontmatter#hero)
-- 支持通过 `footer` [配置页脚](/config/frontmatter#footer)
+- Navigation
+- Search input
+- Support to [配置首页](/config/frontmatter#hero) through `hero` and `features`
+- Support to [配置页脚](/config/frontmatter#footer) through `footer`
