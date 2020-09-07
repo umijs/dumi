@@ -128,6 +128,14 @@ export default function(api: IApi) {
     }
   });
 
+  // add empty component for root layout
+  // TODO: move this logic into getRouteConfig and make sure tests passed
+  api.modifyRoutes(routes => {
+    routes.find(route => route.path === '/').component = '(props) => props.children';
+
+    return routes;
+  });
+
   // remove useless /index.html from exportStatic feature
   api.onPatchRoutes(({ routes, parentRoute }) => {
     if (api.config.exportStatic && parentRoute?.path === '/') {

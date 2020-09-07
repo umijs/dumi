@@ -46,14 +46,11 @@ export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
       slash(
         path.relative(paths.absPagesPath, path.join(paths.absNodeModulesPath, theme.layoutPath)),
       ),
-    ],
-    // theme content wrapper
-    component: slash(
-      path.relative(
-        path.join(paths.absTmpPath, 'core'),
-        path.join(paths.absNodeModulesPath, theme.contentPath),
+      // theme content wrapper
+      slash(
+        path.relative(paths.absPagesPath, path.join(paths.absNodeModulesPath, theme.contentPath)),
       ),
-    ),
+    ],
     // decorate standard umi routes
     routes: decorateRoutes(childRoutes, opts, api),
     title: opts.title,
