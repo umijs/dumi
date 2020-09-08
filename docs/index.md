@@ -1,9 +1,9 @@
 ---
-title: dumi - An Umi-based doc tool can assist you to develop libraries & write docs.
+title: dumi - A Umi-based doc tool can assist you to develop libraries & write docs.
 order: 10
 hero:
   title: dumi
-  desc: An Umi-based doc tool can assist you to develop libraries & write docs.
+  desc: A Umi-based doc tool can assist you to develop libraries & write docs.
   actions:
     - text: Getting Started
       link: /guide/getting-started

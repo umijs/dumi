@@ -50,7 +50,7 @@ export default () => <>Hello World</>; // It works too
 
 Will user write projects in Markdown? Absolutely no. The reason why we directly write demos in Markdown is simple and convenience in this way. But if there was a complex demo, and we were determined to write in Markdown. It would be a nightmare when writting and maintaining, same as we still have to use Windows Notepad to code in 2020.
 
-In order to letting developers to code and maintain demos as same as developing components, dumi support to import demo from external, something like this:
+In order to let developers to code and maintain demos as same as developing components, dumi support to import demo from external, something like this:
 
 ```html
 <code src="/path/to/Demo.tsx" />

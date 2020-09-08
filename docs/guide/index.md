@@ -7,7 +7,7 @@ nav:
 
 ## What's dumi?
 
-dumi, temporarilty pronounced like [duːmɪ], is an Umi-based doc tool that especially for developing libraries & writting docs.It can provide one-stop component development experience for developer with [father](https://github.com/umijs/father), in which **father for building and dumi for component development & writting docs**.
+dumi, temporarilty pronounced like [duːmɪ], is a Umi-based doc tool that especially for developing libraries & writting docs.It can provide one-stop component development experience for developer with [father](https://github.com/umijs/father), in which **father for building and dumi for component development & writting docs**.
 
 Similar with Umi, dumi is based on routing too, which will generate appropriate navigators, menus and routers according to directory structrue & FrontMatter. Meanwhile, dumi is also support to configuring routing for customization requirement; Moreover, in order to convenient for developing component and showing component demo, dumi produces a powerful and wonderful Mardown compiler based on remarkjs, which makes us code demo conveniently, even copuld import demo into Markdown.As well as plenty of presets or plugins of Umi, dumi can assist us to deal with various complex scene.
 

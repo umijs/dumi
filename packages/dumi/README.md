@@ -4,7 +4,7 @@
 
 ## Intro
 
-An Umi-based doc tool can assist you to develop libraries & write docs.
+A Umi-based doc tool can assist you to develop libraries & write docs.
 
 ### Features
 
