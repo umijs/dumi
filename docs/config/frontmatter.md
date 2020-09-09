@@ -5,74 +5,75 @@ toc: menu
 
 # FrontMatter
 
-和大多数文档工具一样，为了使 Markdown 文件能发挥出配置能力，dumi 也不能免俗地提供了一些 FrontMatter 的配置；有些特殊的是，dumi 不仅支持 Markdown 文件进行 FrontMatter 配置，也支持外部 Demo 引入的 TSX/JSX 文件的 FrontMatter 配置。
+Like most documentation tools, in order to enable Markdown files to perform configurations capabilities, dumi also provides some FrontMatter configurations; There are some specials that dumi not only supports Markdown files for FrontMatter configuration, but also supports FrontMatter configuration of TSX/JSX imported by external demos.
 
-Markdown 文件的 FrontMatter 编写方法如下：
+The FrontMatter for Markdown files is as follows:
 
 <pre>---
-title: 标题内容
+title: title content
 ---
 </pre>
 
-TSX/JSX 文件的 FrontMatter 编写方法如下：
+The FrontMatter for TSX/JSX  files is as follows:
 
 <pre>
 /**
-&nbsp;* title: 标题内容
+&nbsp;* title: title content
 &nbsp;*/
 </pre>
 
-## Markdown 支持的 FrontMatter 配置项
+## The FrontMatter configurations supported by Markdown
 
 ### title
 
-- 类型：`String`
-- 默认值：`null`
-- 详细：
+- Type: `String`
+- Default: `null`
+- Details:
 
-用于配置该页面的标题，将会被用作该页面标题的子标题以及左侧菜单。
+Configure the page title, which will be used as the subtitle of the page title and the left menu.
 
-如果用户不进行配置，网站标题将会仅显示主标题；左侧菜单项名称默认为该 Markdown 文件的文件名（不含后缀）。
+If the user does not configure, the website title will only present the main title; The name of the left menu defaults to the file name of the Markdown file (without suffix).
 
 ### sidemenu
 
-- 类型：`Boolean`
-- 默认值：`true`
-- 详细：
+- Type: `Boolean`
+- Default: `true`
+- Details:
 
-控制侧边栏菜单的显示或隐藏。
+Control the display of the sidebar menu.
 
 ### toc
 
-- 类型：`false | 'content' | 'menu'`
-- 默认值：`'content'`
-- 详细：
+- Type: `false | 'content' | 'menu'`
+- Default: `'content'`
+- Details:
 
-控制锚点目录的显示或位置，值为 `false` 时不展示，值为 `content` 时展示在内容区域的右侧（Affix Menu），值为 `menu` 时会将**当前路由的锚点目录**展示在左侧菜单中。
+Control the presentation or position of the anchor directory. When the value is `false`, it will not be presented. When the value is `content`, it will be presented on the right side of the content area (Affix Menu). When the value is `menu`, **the anchor of the current route** will be presented in the left menu.
+
 
 ### order
 
-- 类型：`Number`
-- 默认值：`null`
-- 详细：
+- Type: `Number`
+- Default: `null`
+- Details:
 
-控制该文档的显示顺序，数值越小排序越靠前。
+Control the sorting order of the document, the smaller the value, the higher the sort.
 
 ### legacy
 
-- 类型：`String`
-- 默认值：`null`
-- 详细：
+- Type: `String`
+- Default: `null`
+- Details:
 
-指定该文档的旧路径（从根路径开始指定），避免从其他文档迁移到 dumi 后原路径访问 `404`。
+Links to the old path of the document (specify from the root path) to avoid getting `404` from the original path after migrating from other documents to dumi.
 
 ### group
 
-- 类型：`Object`
-- 默认值：`null`
-- 详细：
+- Type: `Object`
+- Default: `null`
+- Details:
 
-该配置用于对当前页面进行分组，这样可以在侧边栏菜单进行分组显示，我们可以通过下方三项 FrontMatter 配置项显示地对 `group` 进行配置，也可以基于 dumi 的文件夹嵌套来自动生成 group，例如：
+This configuration is used to group the current page so that it can be grouped and presented in the sidebar menu. We can generate group by configuring the `group` through the next three FrontMatter configurations, or automatically based on dumi's folder nesting, for example:
 
 ```
 .
@@ -83,91 +84,91 @@ TSX/JSX 文件的 FrontMatter 编写方法如下：
         ├── b.md
 ```
 
-dumi 会自动为 `index.md`、`a.md`、`b.md` 指定 `group.title` 为 `Components`、`group.path` 为 `/components`。并且我们可以通过 FrontMatter 对生成的默认配置进行**选择性复写**，比如：
+dumi will automatically specify `group.title` as `Components` and specify `group.path` as `/components` for `index.md`, `a.md`, and `b.md`. And we can use FrontMatter to **selectively copy** the generated default configuration, such as:
 
 ```yaml
 ---
 group:
-  title: 组件
+  title: component
 ---
 
 ```
 
-则最终生成的 `group.path` 还是 `/components`，但 `group.title` 则变成了 `组件`。
+Eventually, the `group.path` will still generated to `/components`, but `group.title` generated to `component`.
 
 #### group.title
 
-- 类型：`String`
-- 详细：
+- Type: `String`
+- Details:
 
-用于配置侧边栏菜单中该组别的菜单项名称，如果未配置则会默认读取 `group.path` 并转换为 `title`，例如将 `/components` 转换为 `Components`。
+It is used to configure the name of the group in the sidebar menu. If it is not configured, it will read `group.path` by default and convert it to `title`. For example, `/components`  will be converted to `Components`.
 
 #### group.path
 
-- 类型：`String`
-- 详细：
+- Type: `String`
+- Details:
 
-**必选**，配置该组别的路由前缀，当 `location.pathname` 匹配到该前缀时，菜单组会进行 active 标记。
+**Required**, configure the routes prefix of this group. When `location.pathname` matches this prefix, the menu group will be marked as active.
 
 #### group.order
 
-- 类型：`Number`
-- 默认值：`null`
-- 详细：
+- Type: `Number`
+- Default: `null`
+- Details:
 
-控制该文档组的显示顺序，数值越小排序越靠前。
+Control the presented order of the document, the smaller the value, the higher the sort.
 
 ### nav
 
-- 类型：`Object`
-- 默认值：`null`
-- 详细：
+- Type: `Object`
+- Default: `null`
+- Details:
 
-**仅 site 模式下可用**，该配置用于手动指定当前文档所处的导航菜单，默认根据第一级路由路径自动生成，子配置项与 `group` 一致。
+**Only works in site mode**, this configuration is used to manually specify the navigation menu where the current document is located. By default, it is automatically generated based on the first-level route path, and the sub-configurations are consistent with `group`.
 
 #### nav.title
 
-略，与 `group.title` 一致。
+Omitted, same as `group.title`.
 
 #### nav.path
 
-略，与 `group.path` 一致。
+Omitted, same as `group.path`.
 
 #### nav.order
 
-略，与 `group.order` 一致。
+Omitted, same as `group.order`.
 
 ### hero
 
-- 类型：`Object`
-- 默认值：`null`
-- 详细：
+- Type: `Object`
+- Default: `null`
+- Details:
 
-在 site 模式下可用，配置 hero 后，该页面将会以首页形式呈现。
+Only works in site mode, the page will be presented as a homepage after configuring.
 
 #### hero.title
 
-- 类型：`String`
-- 默认值：`null`
-- 详细：
+- Type: `String`
+- Default: `null`
+- Details: 
 
-配置首页首屏区域的大标题。
+Configure the headline of the homepage.
 
 #### hero.desc
 
-- 类型：`String`
-- 默认值：`null`
-- 详细：
+- Type: `String`
+- Default: `null`
+- Details: 
 
-配置首页首屏区域的简介文字。
+Configure the introduction text of the homepage.
 
 #### hero.actions
 
-- 类型：`Array`
-- 默认值：`null`
-- 详细：
+- Type: `Array`
+- Default: `null`
+- Details: 
 
-配置首页首屏区域的操作按钮，第一个按钮会作为主按钮展示，配置格式如下：
+Configure the operation buttons of the homepage. The first button will be presented as the main button. The configurations are as follows:
 
 ```yaml
 hero:
@@ -178,96 +179,96 @@ hero:
 
 ### features
 
-- 类型：`Object`
-- 默认值：`null`
-- 详细：
+- Type: `Object`
+- Default: `null`
+- Details:
 
-在 site 模式下可用，配置后该页面将会以首页形式呈现，用于每行 3 个的形式展示组件库的特性，配置格式如下：
+Only works in site mode. The page will be presented as the homepage after configuration, used to present the features of the component library in the form of 3 per line. The configuration format is as follows:
 
 ```yaml
 features:
-  - icon: 图标的 URL 地址，建议切图尺寸为 144 * 144（可选）
-    title: 性能强大
-    desc: 可以配置 `markdown` 文本
+  - icon: The URL of icon, recommended size is 144 * 144 (optional)
+    title: title content
+    desc: support `markdown` text
 ```
 
 ### footer
 
-- 类型：`Markdown`
-- 默认值：`null`
-- 详细：
+- Type: `Markdown`
+- Default: `null`
+- Details:
 
-配置当前页面的 footer 区域，建议首页做配置即可，目前暂不支持统一对所有页面进行配置。
+Configure the footer of the current page. It is recommended to configure the home page. Currently, not support to configura all pages.
 
 ### translateHelp
 
-- 类型：`Boolean`
-- 默认值：`false`
-- 详细：
+- Type: `Boolean`
+- Default: `false`
+- Details:
 
-是否在该页面顶部展示『帮助翻译』的提示框。
+Whether to present the 『Help Translation』 prompt at the top of the page.
 
-## TSX/JSX 支持的 FrontMatter 配置项
+## FrontMatter configurations supported by TSX/JSX
 
 ### title
 
-- 类型：`String`
-- 默认值：`null`
-- 详细：
+- Type: `String`
+- Default: `null`
+- Details:
 
-用于配置该外部 Demo 的标题，配置后会在 Demo 预览器中显示。
+It is used to configure the title of the demo, which will be presented in the Demo previewer.
 
 ### desc
 
-- 类型：`Markdown`
-- 默认值：`null`
-- 详细：
+- Type: `Markdown`
+- Default: `null`
+- Details:
 
-用于配置该外部 Demo 的简介，配置后会在 Demo 预览器中显示，支持 Markdown 语法。
+It is used to configure the description of the Demo, which will be presented in the Demo previewer, and support Markdown.
 
 ### inline
 
-- 类型：`Boolean`
-- 默认值：`false`
-- 详细：
+- Type: `Boolean`
+- Default: `false`
+- Details:
 
-用于指示该 demo 为自由 demo，将会直接在文档中嵌入渲染，不会被 demo 容器包裹，用户也无法查看源代码。
+It is used to indicate that the demo is a inline demo, which will be directly embedded in the document, and will not be wrapped by the demo wrapper, and users cannot view the source code.
 
 ### transform
 
-- 类型：`Boolean`
-- 默认值：`false`
-- 详细：
+- Type: `Boolean`
+- Default: `false`
+- Details:
 
-用于控制 demo 的包裹容器是否设置 `transform` 的 CSS 值以控制 `position: fixed;` 的元素相对于 demo 容器定位。
+It is used to control whether the demo wrapper sets the CSS value of `transform` to control the position of the elements of `position: fixed;` relative to the demo wrapper.
 
 ### defaultShowCode
 
-- 类型：`Boolean`
-- 默认值：`false`
-- 详细：
+- Type: `Boolean`
+- Default: `false`
+- Details:
 
-用于控制当前 demo 的包裹容器是否默认展开源代码显示。
+It is used to control whether the demo wrapper expands the presentation of source code by default.
 
 ### hideActions
 
-- 类型：`Array<'CSB' | 'EXTERNAL'>`
-- 默认值：`[]`
-- 详细：
+- Type: `Array<'CSB' | 'EXTERNAL'>`
+- Default: `[]`
+- Details:
 
-用于控制 Demo 预览器部分功能按钮的隐藏，配置值含义如下：
+It is used to control the hiding of some function buttons of the Demo previewer. The configuration values have the following meanings:
 
-- CSB: 隐藏『在 codesandbox.io 中打开』的按钮
-- EXTERNAL: 隐藏『在新窗口打开』的按钮
+- CSB: Hide the button 『Open in codesandbox.io』
+- EXTERNAL: Hide the button 『open in new window』
 
-通过 code 标签的属性配置：
+Configure via the attributes of the code tag:
 
 ```html
-<!-- 注意，单引号为必备，要确保值为有效 JSON 字符串 -->
+<!-- Attention, single quotes are required, to make sure the value is a valid JSON string -->
 <code hideActions='["CSB"]' />
 ```
 
-通过 frontmatter 配置：
+Configure via frontmatter:
 
 ```ts
 /**
@@ -276,13 +277,13 @@ features:
  *   - CSB
  */
 
-// 以上两种方式均可识别
+// Both of the above methods can be identified
 ```
 
-### 通过 `code` 标签控制
+### Controlled by `code` tag
 
-所有 TSX/JSX 支持的配置项，在使用 `code` 标签引入外部 demo 时也可以使用，就像这样：
+All configurations supported by TSX/JSX can also be used when importing external demos using the `code` tag, like this:
 
 ```html
-<code title="标题" desc="说明文字" src="/path/to/demo" />
+<code title="title" desc="desc" src="/path/to/demo" />
 ```
