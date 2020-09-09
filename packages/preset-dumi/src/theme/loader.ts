@@ -32,6 +32,10 @@ export interface IThemeLoadResult {
      * outer layout path
      */
     _: string;
+    /**
+     * single demo route layout path
+     */
+    demo: string | null;
   };
   /**
    * builtin components
@@ -82,34 +86,40 @@ export default async () => {
 
       return result;
     }, []);
-    const layoutPaths: IThemeLoadResult['layoutPaths'] = {
-      _: winPath(path.join(theme, 'src', 'layout')),
-    };
+    const layoutPaths = {} as IThemeLoadResult['layoutPaths'];
 
-    Object.keys(layoutPaths).forEach(key => {
-      try {
-        getModuleResolvePath({
-          basePath: ctx.umi.paths.cwd,
-          sourcePath: layoutPaths[key],
-          silent: true,
-        });
-      } catch (err) {
-        // try to fallback to default theme
+    // outer layout: src/layout.tsx or src/layouts/index.tsx
+    [winPath(path.join(theme, 'src', 'layout')), winPath(path.join(theme, 'src', 'layouts'))].some(
+      (layoutPath, i, outerLayoutPaths) => {
         try {
-          layoutPaths[key] = winPath(
-            path.join(FALLBACK_THEME, 'src', path.basename(layoutPaths[key])),
-          );
-
           getModuleResolvePath({
             basePath: ctx.umi.paths.cwd,
-            sourcePath: layoutPaths[key],
+            sourcePath: layoutPath,
             silent: true,
           });
+
+          layoutPaths._ = layoutPath;
         } catch (err) {
-          layoutPaths[key] = null;
+          // fallback to default theme layout if cannot find any valid layout
+          if (i === outerLayoutPaths.length - 1) {
+            layoutPaths._ = winPath(path.join(FALLBACK_THEME, 'src', 'layout'));
+          }
         }
-      }
-    });
+      },
+    );
+
+    // demo layout
+    try {
+      layoutPaths.demo = winPath(path.join(theme, 'src', 'layout', 'demo'));
+
+      getModuleResolvePath({
+        basePath: ctx.umi.paths.cwd,
+        sourcePath: layoutPaths.demo,
+        silent: true,
+      });
+    } catch (err) {
+      layoutPaths.demo = null;
+    }
 
     cache = await ctx.umi.applyPlugins({
       key: 'dumi.modifyThemeResolved',

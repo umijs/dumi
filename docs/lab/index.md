@@ -100,6 +100,9 @@ export default () => {
     ├── builtins      # [约定] 内置组件文件夹，dumi 会寻找**一级目录**下的 `j|tsx` 进行挂载，该文件夹下的组件可直接在 md 中使用
     ├── components    # [非约定] 主题包自身为了可维护性抽取出来的组件，文件夹名称随开发者自定义
     ├── layout.tsx    # [约定] 自定义的 layout 组件，props.children 即每个 md 的内容，开发者可自行控制导航、侧边栏及内容渲染
+    ├── layouts       # [约定] 自定义的 layouts 目录，在需要自定义多个 layout 时使用
+    │ ├── index.tsx   # [约定] 等同于 src/layout.tsx，两种方式二选一，layout.tsx 优先级更高
+    │ └── demo.tsx    # [约定] 自定义组件 demo 单独路由（~demos/:uuid）的 layout
     └── style         # [非约定] 主题包的样式表
 ```
 
@@ -114,7 +117,7 @@ export default () => {
 3. `Alert.tsx` - 渲染提示框
 4. `Badge.tsx` - 渲染标签
 
-另外，`layout.tsx` 也会进行兜底，如果只希望控制正文区域的渲染，可以选择包裹默认主题的 `layout`、控制 `layout` 的 `children` 来实现。例如，给正文区域增加一个反馈按钮：
+另外，`layout.tsx`（或 `layouts/index.tsx`）也会进行兜底，如果只希望控制正文区域的渲染，可以选择包裹默认主题的 `layout`、控制 `layout` 的 `children` 来实现。例如，给正文区域增加一个反馈按钮：
 
 ```tsx | pure
 // src/layout.tsx
