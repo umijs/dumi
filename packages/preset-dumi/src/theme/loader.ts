@@ -25,13 +25,14 @@ export interface IThemeLoadResult {
    */
   modulePath: string;
   /**
-   * layout file path
+   * layout paths
    */
-  layoutPath: string;
-  /**
-   * content wrapper content path
-   */
-  contentPath: string;
+  layoutPaths: {
+    /**
+     * outer layout path
+     */
+    _: string;
+  };
   /**
    * builtin components
    */
@@ -81,22 +82,32 @@ export default async () => {
 
       return result;
     }, []);
-    const wrapperPaths = {
-      contentPath: winPath(path.join(theme, 'src', 'content')),
-      layoutPath: winPath(path.join(theme, 'src', 'layout')),
+    const layoutPaths: IThemeLoadResult['layoutPaths'] = {
+      _: winPath(path.join(theme, 'src', 'layout')),
     };
 
-    Object.keys(wrapperPaths).forEach(key => {
+    Object.keys(layoutPaths).forEach(key => {
       try {
         getModuleResolvePath({
           basePath: ctx.umi.paths.cwd,
-          sourcePath: wrapperPaths[key],
+          sourcePath: layoutPaths[key],
           silent: true,
         });
       } catch (err) {
-        wrapperPaths[key] = winPath(
-          path.join(FALLBACK_THEME, 'src', path.basename(wrapperPaths[key])),
-        );
+        // try to fallback to default theme
+        try {
+          layoutPaths[key] = winPath(
+            path.join(FALLBACK_THEME, 'src', path.basename(layoutPaths[key])),
+          );
+
+          getModuleResolvePath({
+            basePath: ctx.umi.paths.cwd,
+            sourcePath: layoutPaths[key],
+            silent: true,
+          });
+        } catch (err) {
+          layoutPaths[key] = null;
+        }
       }
     });
 
@@ -108,7 +119,7 @@ export default async () => {
         modulePath,
         builtins: components,
         fallbacks,
-        ...wrapperPaths,
+        layoutPaths,
       },
     });
   }

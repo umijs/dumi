@@ -14,7 +14,7 @@ describe('routes: examples', () => {
         cwd,
         paths: { cwd, absNodeModulesPath: cwd },
         ApplyPluginsType: {},
-        applyPlugins: (() => ({ layoutPath: '', contentPath: '' })) as any,
+        applyPlugins: (() => ({ layoutPaths: { _: '' } })) as any,
       } as IApi,
       {},
     );
