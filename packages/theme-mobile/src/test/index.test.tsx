@@ -1,5 +1,4 @@
 import '@testing-library/jest-dom';
-import 'intersection-observer';
 import React from 'react';
 import { render } from '@testing-library/react';
 import { createMemoryHistory, MemoryHistory, Router } from '@umijs/runtime';
@@ -133,7 +132,6 @@ describe('mobile theme', () => {
     getByText('Other.jsx').click();
 
     expect(getByText("'Other'")).not.toBeNull();
-
   });
   it('should render demos layout', () => {
     const { getByText, getByTitle } = render(
