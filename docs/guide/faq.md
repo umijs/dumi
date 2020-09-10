@@ -6,8 +6,6 @@ title: FAQ
 
 The dumi actually is a preset of Umi —— @umijs/preset-dumi, which means that we can use dumi in a Umi project at the same time. However, in order to avoid conflicts between the configurations of the Umi project and the dumi document, it is recommended to use [UMI_ENV](https://umijs.org/docs/env-variables#umi_env) to distinguish.
 
-## 配置项只有这些吗？想实现更多的功能怎么办？
-
 ## Are these all configurations? What if I need more features?
 
 dumi is based on Umi, Which means in addition to the configurations provided by itself, it also supports [所有 Umi 的配置项](https://umijs.org/config), and also supports [Umi 生态的插件](https://umijs.org/plugins/preset-react), so if you need more features, you can first check whether Umi's configurations and plugins can be satisfied. If still cannot be satisfied, welcome to feedback to [讨论群](/guide#参与贡献) or [提出 Feature Request](https://github.com/umijs/dumi/issues/new?labels=enhancement&template=feature_request.md&title=feat%3A+) on GitHub
