@@ -116,13 +116,12 @@ describe('mobile theme', () => {
               <>demo-2</>
             </Previewer>
           </>
+          <Device className="__dumi-default-mobile-content-device" url="/~demos/demo-123" />
         </Content>
       </Router>,
     );
 
-    expect(getByTitle('dumi mobile').src).toEqual('http://localhost/~demos/demo-1');
-
-    expect(getByText('demo-1')).not.toBeNull();
+    expect(getByTitle('dumi-previewer').src).toEqual('http://localhost/~demos/demo-123');
 
     expect(getByText("'TypeScript'")).not.toBeNull();
 
