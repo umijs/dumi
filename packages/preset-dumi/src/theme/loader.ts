@@ -48,7 +48,8 @@ export interface IThemeLoadResult {
 }
 
 const THEME_PREFIX = 'dumi-theme-';
-const FALLBACK_THEME = `${THEME_PREFIX}default`;
+const LOCAL_THEME_PATH = '.dumi/theme';
+const FALLBACK_THEME = `${THEME_PREFIX}default/src`;
 const REQUIRED_THEME_BUILTINS = ['Previewer', 'SourceCode', 'Alert', 'Badge', 'Example'];
 let cache: IThemeLoadResult | null;
 
@@ -59,28 +60,51 @@ function detectInstalledTheme() {
   const pkg = ctx.umi.pkg || {};
   const deps = Object.assign({}, pkg.dependencies, pkg.devDependencies);
 
-  return Object.keys(deps).filter(name => name.replace(/^@[\w-]+\//, '').startsWith(THEME_PREFIX));
+  return (
+    Object.keys(deps)
+      .filter(name => name.replace(/^@[\w-]+\//, '').startsWith(THEME_PREFIX))
+      // add src dir level
+      .map(name => `${name}/src`)
+  );
+}
+
+/**
+ * detect dumi theme in project dependencies
+ */
+function detectLocalTheme() {
+  const detectPath = winPath(path.join(ctx.umi.cwd, LOCAL_THEME_PATH));
+
+  return fs.existsSync(detectPath) ? detectPath : null;
+}
+
+/**
+ * detect dumi theme
+ */
+function detectTheme() {
+  const localTheme = detectLocalTheme();
+
+  return localTheme ? [localTheme] : detectInstalledTheme();
 }
 
 export default async () => {
-  if (!cache) {
-    const [theme = process.env.DUMI_THEME || FALLBACK_THEME] = detectInstalledTheme();
-    const modulePath = winPath(path.join(ctx.umi.paths.absNodeModulesPath, theme));
-    const builtinPath = path.join(modulePath, 'src/builtins');
+  if (!cache || process.env.NODE_ENV === 'test') {
+    const [theme = process.env.DUMI_THEME || FALLBACK_THEME] = detectTheme();
+    const modulePath = winPath(path.resolve(ctx.umi.paths.absNodeModulesPath, theme));
+    const builtinPath = path.join(modulePath, 'builtins');
     const components = fs.existsSync(builtinPath)
       ? fs
           .readdirSync(builtinPath)
           .filter(file => /\.(j|t)sx?$/.test(file))
           .map(file => ({
             identifier: path.parse(file).name,
-            source: winPath(path.join(theme, 'src', 'builtins', file)),
+            source: winPath(path.join(theme, 'builtins', file)),
           }))
       : [];
     const fallbacks = REQUIRED_THEME_BUILTINS.reduce((result, name) => {
       if (components.every(({ identifier }) => identifier !== name)) {
         result.push({
           identifier: name,
-          source: winPath(path.join(FALLBACK_THEME, 'src', 'builtins', `${name}`)),
+          source: winPath(path.join(FALLBACK_THEME, 'builtins', `${name}`)),
         });
       }
 
@@ -88,8 +112,8 @@ export default async () => {
     }, []);
     const layoutPaths = {} as IThemeLoadResult['layoutPaths'];
 
-    // outer layout: src/layout.tsx or src/layouts/index.tsx
-    [winPath(path.join(theme, 'src', 'layout')), winPath(path.join(theme, 'src', 'layouts'))].some(
+    // outer layout: layout.tsx or layouts/index.tsx
+    [winPath(path.join(theme, 'layout')), winPath(path.join(theme, 'layouts'))].some(
       (layoutPath, i, outerLayoutPaths) => {
         try {
           getModuleResolvePath({
@@ -99,10 +123,12 @@ export default async () => {
           });
 
           layoutPaths._ = layoutPath;
+
+          return true;
         } catch (err) {
           // fallback to default theme layout if cannot find any valid layout
           if (i === outerLayoutPaths.length - 1) {
-            layoutPaths._ = winPath(path.join(FALLBACK_THEME, 'src', 'layout'));
+            layoutPaths._ = winPath(path.join(FALLBACK_THEME, 'layout'));
           }
         }
       },
@@ -110,7 +136,7 @@ export default async () => {
 
     // demo layout
     try {
-      layoutPaths.demo = winPath(path.join(theme, 'src', 'layout', 'demo'));
+      layoutPaths.demo = winPath(path.join(theme, 'layout', 'demo'));
 
       getModuleResolvePath({
         basePath: ctx.umi.paths.cwd,
