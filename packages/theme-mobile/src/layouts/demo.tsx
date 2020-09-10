@@ -27,7 +27,6 @@ const MobileDemosLayout: React.FC<IRouteComponentProps> = ({ children }) => {
 
   return (
     <div className="__dumi-default-mobile-demos">
-
       {children}
     </div>
   )

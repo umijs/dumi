@@ -89,18 +89,18 @@ export default async () => {
     const builtinPath = path.join(modulePath, 'builtins');
     const components = fs.existsSync(builtinPath)
       ? fs
-          .readdirSync(builtinPath)
-          .filter(file => /\.(j|t)sx?$/.test(file))
-          .map(file => ({
-            identifier: path.parse(file).name,
-            source: winPath(path.join(theme, 'builtins', file)),
-          }))
+        .readdirSync(builtinPath)
+        .filter(file => /\.(j|t)sx?$/.test(file))
+        .map(file => ({
+          identifier: path.parse(file).name,
+          source: winPath(path.join(theme, 'builtins', file)),
+        }))
       : [];
     const fallbacks = REQUIRED_THEME_BUILTINS.reduce((result, name) => {
       if (components.every(({ identifier }) => identifier !== name)) {
         result.push({
           identifier: name,
-          source: winPath(path.join(FALLBACK_THEME, 'builtins', `${name}`)),
+          source: winPath(path.join(FALLBACK_THEME, 'src', 'builtins', `${name}`)),
         });
       }
 
