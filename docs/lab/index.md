@@ -91,7 +91,7 @@ export default () => {
 
 #### 目录结构
 
-创建包名为 `dumi-theme-` 开头的包，目录结构以默认主题为例：
+方式一，创建包名为 `dumi-theme-` or `@group/dumi-theme-` 开头的包，目录结构以默认主题为例：
 
 ```bash
 .
@@ -107,6 +107,8 @@ export default () => {
 ```
 
 其中 `[约定]` 意味着是主题生效的必备结构，`[非约定]` 则意味着开发者可以根据自己的习惯进行控制。
+
+方式二，在本地项目中创建 `.dumi/theme` 的文件夹，**目录结构和上方 `src` 目录一致**，此方式适用于不需要发布的主题包，也更容易进行调试。
 
 #### 组件兜底
 
@@ -149,7 +151,7 @@ export default ({ children, ...props }) => (
 
 ### 调试及使用
 
-将开发好的主题包 npm link（调试）或 npm install（使用）到项目里，并确保它在 `devDependencies` 或者 `dependencies` 中有声明，dumi 将会自动挂载该主题，例如：
+如果开发的主题包是 npm 包的形式，将开发好的主题包 npm link（调试）或 npm install（使用）到项目里，并确保它在 `devDependencies` 或者 `dependencies` 中有声明，dumi 将会自动挂载该主题，例如：
 
 ```json
 {
@@ -158,6 +160,8 @@ export default ({ children, ...props }) => (
   }
 }
 ```
+
+如果开发的主题包是本地主题 `.dumi/theme` 目录的形式，dumi 会自动挂载，可直接进行调试。
 
 ## 和 Umi UI 一起使用
 
