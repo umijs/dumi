@@ -31,7 +31,6 @@
     "react": "^16.12.0"
   },
   "devDependencies": {
-    "@umijs/preset-react": "1.x",
     "@umijs/test": "^3.0.5",
     "dumi": "^{{{ version }}}",
     "father-build": "^1.17.2",
