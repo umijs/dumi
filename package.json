@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "cross-env BROWSER=none node ./packages/dumi/bin/dumi.js dev",
-    "dev:mobile": "cross-env BROWSER=none DUMI_THEME=dumi-theme-mobile node ./packages/dumi/bin/dumi.js dev",
+    "dev:mobile": "cross-env BROWSER=none DUMI_THEME=dumi-theme-mobile/src node ./packages/dumi/bin/dumi.js dev",
     "watch": "npm run build -- --watch",
     "doc:build": "cross-env BROWSER=none node ./packages/dumi/bin/dumi.js build",
     "build": "father-build",

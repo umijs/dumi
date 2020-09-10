@@ -30,7 +30,8 @@
   "dependencies": {
     "dumi-theme-default": "1.0.0-beta.0",
     "lodash.debounce": "^4.0.8",
-    "qrcode.react": "^1.0.0"
+    "qrcode.react": "^1.0.0",
+    "umi-hd": "^5.0.1"
   },
   "peerDependencies": {
     "@umijs/preset-dumi": "1.x",
