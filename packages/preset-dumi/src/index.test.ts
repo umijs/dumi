@@ -10,7 +10,7 @@ describe('preset-dumi', () => {
 
   afterAll(() => {
     // clear all node_modules
-    ['', 'basic', 'algolia', 'demos', 'assets'].forEach(dir => {
+    ['', 'basic', 'algolia', 'demos', 'assets', 'local-theme'].forEach(dir => {
       rimraf.sync(path.join(fixtures, dir, 'node_modules'));
     });
   });
@@ -36,9 +36,6 @@ describe('preset-dumi', () => {
       path.join(__dirname, '../../theme-default'),
       path.join(service.paths.absNodeModulesPath, 'dumi-theme-default'),
     );
-
-    // FIXME: find the real reason why component path missing 1 level in routes.ts
-    service.paths.absPagesPath += '/tmp';
 
     await service.run({
       name: 'g',
@@ -115,5 +112,31 @@ describe('preset-dumi', () => {
     expect(assets.examples[0]).toEqual(expectAssets.examples[0]);
     expect(assets.examples[1].name).toEqual('react');
     expect(assets.examples[1].dependencies.react).not.toBeUndefined();
+  });
+
+  it('local theme', async () => {
+    const cwd = path.join(fixtures, 'local-theme');
+    const service = new Service({
+      cwd,
+      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+    });
+
+    // alias dumi-theme-default
+    symlink(
+      path.join(__dirname, '../../theme-default'),
+      path.join(service.paths.absNodeModulesPath, 'dumi-theme-default'),
+    );
+
+    await service.run({
+      name: 'g',
+      args: {
+        _: ['g', 'tmp'],
+      },
+    });
+
+    const reactNode = require(path.join(cwd, '.umi-test', 'umi.ts')).default;
+    const { findByText } = render(reactNode);
+
+    expect(await findByText('local theme layout')).not.toBeNull();
   });
 });
