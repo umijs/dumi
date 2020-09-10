@@ -50,8 +50,10 @@ export default (raw: string, opts: IDemoOpts): IDemoTransformResult => {
       if (
         callPathNode.operator === '=' &&
         types.isMemberExpression(callPathNode.left) &&
-        (callPathNode.left.property.value === 'default' || // exports["default"]
-          callPathNode.left.property.name === 'default') && // exports.default
+        ((types.isStringLiteral(callPathNode.left.property) && // exports["default"]
+          callPathNode.left.property.value === 'default') ||
+          (types.isIdentifier(callPathNode.left.property) && // exports.default
+            callPathNode.left.property.name === 'default')) &&
         types.isIdentifier(callPathNode.left.object) &&
         callPathNode.left.object.name === 'exports'
       ) {

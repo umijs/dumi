@@ -49,7 +49,7 @@ export interface IThemeLoadResult {
 
 const THEME_PREFIX = 'dumi-theme-';
 const LOCAL_THEME_PATH = '.dumi/theme';
-const FALLBACK_THEME = `${THEME_PREFIX}default/src`;
+const FALLBACK_THEME = `${THEME_PREFIX}default`;
 const REQUIRED_THEME_BUILTINS = ['Previewer', 'SourceCode', 'Alert', 'Badge', 'Example'];
 let cache: IThemeLoadResult | null;
 
@@ -60,12 +60,7 @@ function detectInstalledTheme() {
   const pkg = ctx.umi.pkg || {};
   const deps = Object.assign({}, pkg.dependencies, pkg.devDependencies);
 
-  return (
-    Object.keys(deps)
-      .filter(name => name.replace(/^@[\w-]+\//, '').startsWith(THEME_PREFIX))
-      // add src dir level
-      .map(name => `${name}/src`)
-  );
+  return Object.keys(deps).filter(name => name.replace(/^@[\w-]+\//, '').startsWith(THEME_PREFIX));
 }
 
 /**
@@ -88,7 +83,8 @@ function detectTheme() {
 
 export default async () => {
   if (!cache || process.env.NODE_ENV === 'test') {
-    const [theme = process.env.DUMI_THEME || FALLBACK_THEME] = detectTheme();
+    const [name = process.env.DUMI_THEME || FALLBACK_THEME] = detectTheme();
+    const theme = name.startsWith('/') ? name : `${name}/src`;
     const modulePath = winPath(path.resolve(ctx.umi.paths.absNodeModulesPath, theme));
     const builtinPath = path.join(modulePath, 'builtins');
     const components = fs.existsSync(builtinPath)
@@ -136,7 +132,7 @@ export default async () => {
 
     // demo layout
     try {
-      layoutPaths.demo = winPath(path.join(theme, 'layout', 'demo'));
+      layoutPaths.demo = winPath(path.join(theme, 'layouts', 'demo'));
 
       getModuleResolvePath({
         basePath: ctx.umi.paths.cwd,
