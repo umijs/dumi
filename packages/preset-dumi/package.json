@@ -4,9 +4,8 @@
   "description": "",
   "main": "lib/index.js",
   "files": [
-    "dist",
     "lib",
-    "src"
+    "src/theme"
   ],
   "repository": {
     "type": "git",
