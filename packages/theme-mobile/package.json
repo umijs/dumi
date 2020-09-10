@@ -20,7 +20,7 @@
   ],
   "license": "MIT",
   "bugs": "http://github.com/umijs/dumi/issues",
-  "homepage": "https://github.com/umijs/dumi/tree/master/packages/dumi-theme-mobile#readme",
+  "homepage": "https://github.com/umijs/dumi/tree/master/packages/theme-mobile#readme",
   "publishConfig": {
     "access": "public"
   },
