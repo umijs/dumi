@@ -18,10 +18,10 @@ export default (props: IPreviewerProps) => {
       // post message if scroll into current demo
       if (
         // fallback to first demo
-        (isFirstDemo && scrollTop < ref.current.offsetTop) ||
+        (isFirstDemo && scrollTop < ref?.current?.offsetTop) ||
         // detect scroll position
-        (scrollTop > ref.current.offsetTop &&
-          scrollTop < ref.current.offsetTop + ref.current.offsetHeight)
+        (scrollTop > ref?.current?.offsetTop &&
+          scrollTop < ref?.current?.offsetTop + ref?.current?.offsetHeight)
       ) {
         window.postMessage({ type: ACTIVE_MSG_TYPE, value: props.identifier }, '*');
         setIsActive(true);

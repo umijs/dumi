@@ -5,7 +5,8 @@ import { render } from '@testing-library/react';
 import { createMemoryHistory, MemoryHistory, Router } from '@umijs/runtime';
 import Device from '../components/Device';
 import Previewer from '../builtins/Previewer';
-import Loyout from '../layout';
+import Layout from '../layouts';
+import DemoLayout from '../layouts/demo';
 
 let history: MemoryHistory;
 
@@ -84,7 +85,7 @@ describe('mobile theme', () => {
   it('should render builtin components correctly', () => {
     const { getByText, getByTitle } = render(
       <Router history={history}>
-        <Loyout {...baseProps}>
+        <Layout {...baseProps}>
           <>
             <Previewer
               title="demo-1"
@@ -115,7 +116,7 @@ describe('mobile theme', () => {
             />
           </>
           <Device className="__dumi-default-mobile-content-device" url="/~demos/demo-123" />
-        </Loyout>
+        </Layout>
       </Router>,
     );
 
@@ -133,5 +134,16 @@ describe('mobile theme', () => {
 
     expect(getByText("'Other'")).not.toBeNull();
 
+  });
+  it('should render demos layout', () => {
+    const { getByText, getByTitle } = render(
+      <Router history={history}>
+        <DemoLayout {...baseProps}>
+          <div title="content">123</div>
+        </DemoLayout>
+      </Router>,
+    );
+
+    expect(getByTitle('content')).not.toBeNull();
   });
 });
