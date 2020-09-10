@@ -1,11 +1,11 @@
 import fs from 'fs';
 import path from 'path';
-import yaml from 'js-yaml';
 import slash from 'slash2';
 import { execSync } from 'child_process';
 import visit from 'unist-util-visit';
 import transformer from '..';
 import ctx from '../../context';
+import yaml from '../../utils/yaml';
 import { getModuleResolvePath } from '../../utils/moduleResolver';
 
 /**
@@ -43,6 +43,7 @@ export default function yamlProcessor() {
       if (/index\.md$/.test(this.data('fileAbsPath'))) {
         try {
           getModuleResolvePath({
+            extensions: ['.tsx'],
             basePath: process.cwd(),
             sourcePath: path.dirname(this.data('fileAbsPath')),
             silent: true,
@@ -59,10 +60,10 @@ export default function yamlProcessor() {
 
     // save frontmatters
     visit(ast, 'yaml', node => {
-      const data = yaml.safeLoad(node.value as string) as any;
+      const data = yaml(node.value as string);
 
       // parse markdown for features in home page
-      if (data?.features) {
+      if (data.features) {
         data.features.forEach(feat => {
           if (feat.desc) {
             feat.desc = transformer.markdown(feat.desc, null, { type: 'html' }).content;
@@ -71,18 +72,13 @@ export default function yamlProcessor() {
       }
 
       // parse markdown for desc in home page
-      if (data?.hero?.desc) {
+      if (data.hero?.desc) {
         data.hero.desc = transformer.markdown(data.hero.desc, null, { type: 'html' }).content;
       }
 
       // parse markdown for footer in home page
-      if (data?.footer) {
+      if (data.footer) {
         data.footer = transformer.markdown(data.footer, null, { type: 'html' }).content;
-      }
-
-      // force string for uuid
-      if (data?.uuid) {
-        data.uuid = String(data.uuid);
       }
 
       // save frontmatter to data
@@ -98,8 +94,8 @@ export default function yamlProcessor() {
           identifier: vFile.data.componentName,
           name: vFile.data.title,
           uuid: vFile.data.uuid,
-          // TODO: props API definition from TypeScript interface
-          props: [],
+          // use to parse props from component file
+          _sourcePath: path.join(path.dirname(this.data('fileAbsPath')), 'index.tsx'),
         },
       });
     }

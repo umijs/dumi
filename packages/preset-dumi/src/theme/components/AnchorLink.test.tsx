@@ -8,6 +8,7 @@ import AnchorLink from './AnchorLink';
 describe('theme API: AnchorLink', () => {
   let anchor: any;
   let stub: any;
+  let scrollTo: any;
 
   beforeAll(async () => {
     render(
@@ -28,11 +29,19 @@ describe('theme API: AnchorLink', () => {
 
   afterAll(() => {
     window.requestAnimationFrame = stub;
+    window.scrollTo = scrollTo;
   });
 
   it('should scroll to anchor after click', async () => {
     // FIXME: element.offsetTop not working in jest
     Object.defineProperty(anchor, 'offsetTop', { value: 110 });
+
+    scrollTo = window.scrollTo;
+    // mock a scrollTo for jest
+    // @ts-ignore
+    window.scrollTo = jest.fn((x, y) => {
+      document.documentElement.scrollTop = y;
+    });
 
     // expect scroll to anchor when click (distance 100px from top)
     expect(document.documentElement.scrollTop).toEqual(0);

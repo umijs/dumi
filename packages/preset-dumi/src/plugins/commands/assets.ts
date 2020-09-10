@@ -27,10 +27,21 @@ export default (api: IApi) => {
       const fileName = path.parse(assetsOutputPath).base;
 
       api.logger.log(`Start to generate ${fileName}...`);
-
       await getRouteConfig(api, ctx.opts);
-      fs.writeFileSync(assetsOutputPath, JSON.stringify(assetsPkg, null, 2));
 
+      const finalPkg: AssetsPackage = await api.applyPlugins({
+        key: 'dumi.modifyAssetsMeta',
+        type: api.ApplyPluginsType.modify,
+        initialValue: assetsPkg,
+      });
+
+      // remove useless _sourcePath field in remark/meta.ts
+      finalPkg.assets.atoms.forEach(atom => {
+        // @ts-ignore
+        delete atom._sourcePath;
+      });
+
+      fs.writeFileSync(assetsOutputPath, JSON.stringify(finalPkg, null, 2));
       api.logger.log(`Generate ${fileName} successfully!`);
     },
   });

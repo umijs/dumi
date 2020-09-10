@@ -1,12 +1,11 @@
 {
   "name": "@umijs/preset-dumi",
-  "version": "1.1.0-beta.13",
+  "version": "1.1.0-beta.16",
   "description": "",
   "main": "lib/index.js",
   "files": [
-    "dist",
     "lib",
-    "src"
+    "src/theme"
   ],
   "repository": {
     "type": "git",
@@ -32,7 +31,7 @@
     "@umijs/types": "3.x",
     "copy-text-to-clipboard": "^2.2.0",
     "deepmerge": "^4.2.2",
-    "dumi-theme-default": "1.0.0-beta.4",
+    "dumi-theme-default": "1.0.0-beta.6",
     "enhanced-resolve": "^4.1.1",
     "github-slugger": "^1.3.0",
     "hast-util-raw": "^6.0.0",

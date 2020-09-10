@@ -61,6 +61,7 @@ export default {
     routes.unshift(
       {
         path: '/~demos/:uuid',
+        wrappers: [theme.layoutPaths.demo].filter(Boolean),
         component: `(props) => {
           const React = require('react');
           const demos = require('@@/dumi/demos').default;
