@@ -1,1 +1,2 @@
-export * from '@umijs/preset-dumi/src/theme';
+// @ts-ignore
+export * from '@umijs/preset-dumi/lib/theme';

@@ -102,7 +102,7 @@ function convertUserMenuChilds(
 }
 
 export function addHtmlSuffix(oPath: string) {
-  if (oPath && ctx.umi?.config?.exportStatic?.htmlSuffix) {
+  if (oPath && ctx.umi?.config?.exportStatic && ctx.umi.config.exportStatic.htmlSuffix) {
     return `${oPath}.html`;
   }
 
