@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import Layout from 'dumi-theme-default/src/layout';
 import { IRouteComponentProps } from '@umijs/types';
 import Device from './components/Device';
 import { ACTIVE_MSG_TYPE } from './builtins/Previewer';
 import './style/layout.less';
 
-const Content: React.FC<IRouteComponentProps> = ({ children, location }) => {
+const MobileLayout: React.FC<IRouteComponentProps> = ({ children, ...props }) => {
   const [demoId, setDemoId] = useState('');
 
   useEffect(() => {
@@ -22,15 +23,18 @@ const Content: React.FC<IRouteComponentProps> = ({ children, location }) => {
   // clear demoId when route changed
   useEffect(() => {
     setDemoId('');
-  }, [location.pathname]);
+  }, [props.location.pathname]);
 
   return (
-    <div className="__dumi-default-mobile-content">
-      <article>{children}</article>
-      {demoId && (
-        <Device className="__dumi-default-mobile-content-device" url={`/~demos/${demoId}`} />
-      )}
-    </div>
-  );
+    <Layout {...props}>
+      <div className="__dumi-default-mobile-content">
+        <article>{children}</article>
+        {demoId && (
+          <Device className="__dumi-default-mobile-content-device" url={`/~demos/${demoId}`} />
+        )}
+      </div>
+    </Layout>
+  )
 };
-export default Content;
+
+export default MobileLayout;

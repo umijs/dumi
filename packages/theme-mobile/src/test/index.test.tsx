@@ -5,7 +5,7 @@ import { render } from '@testing-library/react';
 import { createMemoryHistory, MemoryHistory, Router } from '@umijs/runtime';
 import Device from '../components/Device';
 import Previewer from '../builtins/Previewer';
-import Content from '../content';
+import Loyout from '../layout';
 
 let history: MemoryHistory;
 
@@ -84,7 +84,7 @@ describe('mobile theme', () => {
   it('should render builtin components correctly', () => {
     const { getByText, getByTitle } = render(
       <Router history={history}>
-        <Content {...baseProps}>
+        <Loyout {...baseProps}>
           <>
             <Previewer
               title="demo-1"
@@ -112,12 +112,10 @@ describe('mobile theme', () => {
                 },
               }}
               dependencies={{}}
-            >
-              <>demo-2</>
-            </Previewer>
+            />
           </>
           <Device className="__dumi-default-mobile-content-device" url="/~demos/demo-123" />
-        </Content>
+        </Loyout>
       </Router>,
     );
 
