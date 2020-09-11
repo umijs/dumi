@@ -41,9 +41,14 @@ export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
     path: '/',
     wrappers: [
       // builtin outer layout
-      slash(path.join(__dirname, '../theme/layout')),
+      slash(path.relative(api.paths.absPagesPath, path.join(__dirname, '../theme/layout'))),
       // theme layout
-      slash(path.resolve(paths.absNodeModulesPath, theme.layoutPaths._)),
+      slash(
+        path.relative(
+          api.paths.absPagesPath,
+          path.resolve(paths.absNodeModulesPath, theme.layoutPaths._),
+        ),
+      ),
     ],
     // decorate standard umi routes
     routes: decorateRoutes(childRoutes, opts, api),
