@@ -84,7 +84,7 @@ function detectTheme() {
 export default async () => {
   if (!cache || process.env.NODE_ENV === 'test') {
     const [name = process.env.DUMI_THEME || FALLBACK_THEME] = detectTheme();
-    const theme = name.startsWith('/') ? name : `${name}/src`;
+    const theme = path.isAbsolute(name) ? name : `${name}/src`;
     const modulePath = winPath(path.resolve(ctx.umi.paths.absNodeModulesPath, theme));
     const builtinPath = path.join(modulePath, 'builtins');
     const components = fs.existsSync(builtinPath)
@@ -124,7 +124,7 @@ export default async () => {
         } catch (err) {
           // fallback to default theme layout if cannot find any valid layout
           if (i === outerLayoutPaths.length - 1) {
-            layoutPaths._ = winPath(path.join(FALLBACK_THEME, 'layout'));
+            layoutPaths._ = winPath(path.join(FALLBACK_THEME, 'src', 'layout'));
           }
         }
       },
