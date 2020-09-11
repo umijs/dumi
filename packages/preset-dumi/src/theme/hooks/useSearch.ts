@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState, useCallback } from 'react';
-import { context } from 'dumi/theme';
+import { context } from '..';
 
 interface ISearchMetaItem {
   title: string;

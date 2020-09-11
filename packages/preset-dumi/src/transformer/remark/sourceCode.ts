@@ -48,7 +48,7 @@ export default () => {
             (parent.children as any).splice(
               i,
               1,
-              createSourceCode(parsed.properties?.lang, content, node.position),
+              createSourceCode((parsed.properties as any)?.lang, content, node.position),
             );
           }
         }

@@ -14,9 +14,7 @@ export default () => <h1>Hello World!</h1>;
 import React from 'react';
 import katex from 'katex';
 
-console.log(katex);
-
-export default () => <h1>Hello World!</h1>;
+export default () => <h1>Hello {typeof katex}!</h1>;
 ```
 
 ```tsx

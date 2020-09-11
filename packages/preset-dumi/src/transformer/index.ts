@@ -1,6 +1,6 @@
-import yaml from 'js-yaml';
 import remark from './remark';
 import FileCache from '../utils/cache';
+import yaml from '../utils/yaml';
 
 export interface TransformResult {
   content: string;
@@ -54,6 +54,6 @@ export default {
       // remove * from comments
       .replace(/(^|\n)\s*\*+/g, '$1');
 
-    return { content, meta: yaml.safeLoad(frontmatter) as object };
+    return { content, meta: yaml(frontmatter) };
   },
 };

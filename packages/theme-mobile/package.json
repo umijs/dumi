@@ -1,0 +1,40 @@
+{
+  "name": "dumi-theme-mobile",
+  "version": "1.0.0-beta.0",
+  "description": "dumi-theme-mobile",
+  "files": [
+    "es",
+    "src"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/umijs/dumi"
+  },
+  "keywords": [
+    "dumi",
+    "father-build",
+    "umi"
+  ],
+  "authors": [
+    "xiaohuoni <448627663@qq.com> (https://github.com/xiaohuoni)"
+  ],
+  "license": "MIT",
+  "bugs": "http://github.com/umijs/dumi/issues",
+  "homepage": "https://github.com/umijs/dumi/tree/master/packages/theme-mobile#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "dumi": "1.x"
+  },
+  "dependencies": {
+    "dumi-theme-default": "1.0.0-beta.0",
+    "lodash.debounce": "^4.0.8",
+    "qrcode.react": "^1.0.0",
+    "umi-hd": "^5.0.1"
+  },
+  "peerDependencies": {
+    "@umijs/preset-dumi": "1.x",
+    "react": "^16.13.1"
+  }
+}

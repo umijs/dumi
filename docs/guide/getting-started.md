@@ -78,7 +78,7 @@ Dumi will consider `jsx/tsx` code block as React Component to render, then take 
 ```jsx
 import React from 'react';
 
-export default () => &lt;h2&gt;First Demo&lt;/h2&gt;;
+export default () => <h2>First Demo</h2>;
 ```
 </pre>
 

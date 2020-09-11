@@ -91,7 +91,7 @@ Currently supports the following `motion` syntax:
 
 #### Directory Structure
 
-Create a package starting with `dumi-theme-`, here takes a theme using the default as an example:
+Method one, Create a package starting with `dumi-theme-` or `@group/dumi-theme-`, here takes a theme using the default as an example:
 
 ```bash
 .
@@ -99,12 +99,16 @@ Create a package starting with `dumi-theme-`, here takes a theme using the defau
 └── src
     ├── builtins      # [Convention] Built-in component folder, dumi will look for `j|tsx` in **first-level directory** to mount, the components in this folder can be used directly in md
     ├── components    # [Non-Convention] The components extracted by the theme package in this folder. The folder name is customized by the developer
-    ├── content.tsx   # [Convention] You can custom your own content component, props.children is the content of each markdown. If you only want to customize the text, you can use content.tsx instead of layout.tsx
     ├── layout.tsx    # [Convention] You can custom your own layout component, props.children is the content of each markdown, developers can control the navigation, sidebar and content rendering by themselves
+    ├── layouts       # [Convention] A custom layouts directory, used when you need to customize multiple layouts
+    │   ├── index.tsx # [Convention] Same as src/layout.tsx, choose one of the two methods, layout.tsx has higher priority
+    │   └── demo.tsx  # [Convention] Separate route (~demos/:uuid) layout for custom component demo
     └── style         # [Non-Convention] Theme package style sheet
 ```
 
 Here, `[Convention]` means a necessary structure for the theme package, and `[Non-Convention]` means that developers can control according to their own habits.
+
+Method two, create a `.dumi/theme` folder in the local project, **consider this folder as the `src` directory above, and write a custom theme directly**, for example, create `.dumi/theme/layout.tsx` to customize the layout; This method is suitable for theme packages that do not need to be released, which is easier to debug.
 
 #### Component Guarantee
 
@@ -115,7 +119,22 @@ It supports components that partially cover the official theme. If the theme pac
 3. `Alert.tsx` - For alert box
 4. `Badge.tsx` - For badge
 
-In addition, `content.tsx` and `layout.tsx` will also be guaranteed (the paths of these two files may be adjusted before the official version is released).
+In addition, `layout.tsx` (or `layouts/index.tsx`) will also be guaranteed. If you only want to control the rendering of the text area, you can choose to wrap the `layout` of the default theme, and code the `children` of `layout` to achieve. For example, add a feedback button to the text area:
+
+```tsx | pure
+// src/layout.tsx
+import React from 'react';
+import Layout from 'dumi-theme-default/src/layout';
+
+export default ({ children, ...props }) => (
+  <Layout {...props}>
+    <>
+      <button>feedback</button>
+      {children}
+    </>
+  </Layout>
+);
+```
 
 #### Theme API
 
@@ -132,7 +151,7 @@ In order to customize the theme, dumi provides a set of theme APIs, you can impo
 
 ### Debug and usage
 
-Take the developed theme package npm link (debugging) or npm install (used) into the project, and make sure that it is declared in `devDependencies` or `dependencies`, dumi will automatically mount this theme, for example:
+If the developed theme package is a npm package, take the developed theme package npm link (debugging) or npm install (used) into the project, and make sure that it is declared in `devDependencies` or `dependencies`, dumi will automatically mount this theme, for example:
 
 ```json
 {
@@ -141,6 +160,8 @@ Take the developed theme package npm link (debugging) or npm install (used) into
   }
 }
 ```
+
+If the developed theme package is in the form of the `.dumi/theme` directory, dumi will automatically mount it and you can debug directly.
 
 ## Use with Umi UI
 
