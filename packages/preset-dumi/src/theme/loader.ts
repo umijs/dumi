@@ -100,7 +100,7 @@ export default async () => {
       if (components.every(({ identifier }) => identifier !== name)) {
         result.push({
           identifier: name,
-          source: winPath(path.join(FALLBACK_THEME, 'builtins', `${name}`)),
+          source: winPath(path.join(FALLBACK_THEME, 'src', 'builtins', `${name}`)),
         });
       }
 
@@ -124,7 +124,7 @@ export default async () => {
         } catch (err) {
           // fallback to default theme layout if cannot find any valid layout
           if (i === outerLayoutPaths.length - 1) {
-            layoutPaths._ = winPath(path.join(FALLBACK_THEME, 'layout'));
+            layoutPaths._ = winPath(path.join(FALLBACK_THEME, 'src', 'layout'));
           }
         }
       },
