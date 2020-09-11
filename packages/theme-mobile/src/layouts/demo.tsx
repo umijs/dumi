@@ -3,7 +3,7 @@ import { IRouteComponentProps } from '@umijs/types';
 import vw from 'umi-hd/lib/vw';
 import flex from 'umi-hd/lib/flex';
 
-const MobileDemosLayout: React.FC<IRouteComponentProps> = ({ children }) => {
+const MobileDemoLayout: React.FC<IRouteComponentProps> = ({ children }) => {
   useEffect(() => {
     const handler = () => {
       if (document.documentElement.clientWidth >= 750) {
@@ -25,11 +25,7 @@ const MobileDemosLayout: React.FC<IRouteComponentProps> = ({ children }) => {
     return () => window.removeEventListener('resize', handler);
   }, []);
 
-  return (
-    <div className="__dumi-default-mobile-demos">
-      {children}
-    </div>
-  )
+  return <div className="__dumi-default-mobile-demo-layout">{children}</div>;
 };
 
-export default MobileDemosLayout;
+export default MobileDemoLayout;
