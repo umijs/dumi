@@ -101,14 +101,14 @@ export default () => {
     ├── components    # [非约定] 主题包自身为了可维护性抽取出来的组件，文件夹名称随开发者自定义
     ├── layout.tsx    # [约定] 自定义的 layout 组件，props.children 即每个 md 的内容，开发者可自行控制导航、侧边栏及内容渲染
     ├── layouts       # [约定] 自定义的 layouts 目录，在需要自定义多个 layout 时使用
-    │ ├── index.tsx   # [约定] 等同于 src/layout.tsx，两种方式二选一，layout.tsx 优先级更高
-    │ └── demo.tsx    # [约定] 自定义组件 demo 单独路由（~demos/:uuid）的 layout
+    │   ├── index.tsx # [约定] 等同于 src/layout.tsx，两种方式二选一，layout.tsx 优先级更高
+    │   └── demo.tsx  # [约定] 自定义组件 demo 单独路由（~demos/:uuid）的 layout
     └── style         # [非约定] 主题包的样式表
 ```
 
 其中 `[约定]` 意味着是主题生效的必备结构，`[非约定]` 则意味着开发者可以根据自己的习惯进行控制。
 
-方式二，在本地项目中创建 `.dumi/theme` 的文件夹，**目录结构和上方 `src` 目录一致**，此方式适用于不需要发布的主题包，也更容易进行调试。
+方式二，在本地项目中创建 `.dumi/theme` 文件夹，**将该文件夹当做上面的 `src` 目录，直接编写自定义主题即可**，例如，创建 `.dumi/theme/layout.tsx` 以自定义 layout；此方式适用于不需要发布的主题包，也更容易进行调试。
 
 #### 组件兜底
 
