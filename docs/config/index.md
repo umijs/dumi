@@ -64,7 +64,7 @@ To set the description of the document, which will be presented below the sideba
 
 Whether to enable load-on-demand, which means whether to split the build productions, and download additional JS and execute it when needed.
 
-More: [Umi 配置 - dynamicImport](https://umijs.org/zh-CN/config#dynamicimport);
+More: [the Configurations of Umi - dynamicImport](https://umijs.org/config#dynamicimport);
 
 ## exportStatic
 
@@ -75,7 +75,7 @@ To set the output format of html, and only output `index.html` by default.
 
 If you enable `exportStatic`, html files will be output for each route.
 
-More: [Umi 配置 - exportStatic](https://umijs.org/zh-CN/config#exportstatic);
+More: [the Configurations of Umi - exportStatic](https://umijs.org/config#exportstatic);
 
 ## favicon
 
@@ -124,7 +124,7 @@ The file name suffix of the default locale is optional. For example, in the defa
 
 This configuration is used to set the document presented mode. The default is document mode (left menu + right content). It can be switched to site mode (navigation header + left menu + right content) by configured it as `site`. If you want to modify the text and order of the navigation menu items, you can refer to the `nav` configurations in the frontmatter.
 
-The effects of the two modes can be seen in [指南 - 多种呈现模式](/guide/mode)。
+The effects of the two modes can be seen in [Guide - Modes](/guide/mode)。
 
 ## menus
 
@@ -132,7 +132,7 @@ The effects of the two modes can be seen in [指南 - 多种呈现模式](/guide
 - Default: `automatic generated`
 - Details:
 
-This configuration is used to customize the present of the side menu. It currently only works in the `site` mode, which has multi-language mode and single-language mode. Please refer to [指南 - 配置式侧边菜单](/guide/control-menu-generate#配置式侧边菜单).
+This configuration is used to customize the present of the side menu. It currently only works in the `site` mode, which has multi-language mode and single-language mode. Please refer to [Guide - Configurate side menu](/guide/control-menu-generate#configurate-side-menu).
 
 ## navs
 
@@ -140,7 +140,7 @@ This configuration is used to customize the present of the side menu. It current
 - Default: `automatic generated`
 - Details:
 
-This configuration is used to customize the present of the navigation bar. It only works in the `site` mode, which has multi-language mode and single-language mode. Please refer to [指南 - 配置式导航菜单](/guide/control-nav-generate#配置式导航菜单).
+This configuration is used to customize the present of the navigation bar. It only works in the `site` mode, which has multi-language mode and single-language mode. Please refer to [Guide - Configurate navigation](/guide/control-nav-generate#configurate-navigation).
 
 The sub-navigation menu can be nested in the following forms, and currently does not support more levels of nesting:
 
@@ -203,7 +203,7 @@ Configuration routing, the configuration method is the same as Umi, and can set 
 
 Configure whether to enable SSR. All routes will be pre-rendered as HTML after setting it to true, which is good for search engine crawler.
 
-More: [Umi 配置 - ssr](https://umijs.org/zh-CN/config#ssr);
+More: [the configurations of Umi - ssr](https://umijs.org/config#ssr);
 
 ## scripts
 
@@ -243,4 +243,4 @@ Configure minimum compatibled version of the browser, and the polyfill and synta
 
 ## Others
 
-More: [官方文档](https://umijs.org/config)
+More: [the configurations of Umi](https://umijs.org/config)

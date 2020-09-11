@@ -51,13 +51,13 @@ Very/deep
 
 导航名称的默认生成规则是，取当前导航的路由名称去掉 `/` 并首字母大写。比如，路由是 `/guide`，dumi 将会取 `guide` 并首字母大写变成 `Guide`。
 
-如果希望手动控制导航名称，可以使用 [`nav.title`](/config/frontmatter#navtitle) 的 frontmatter 配置项进行配置；**注意，同一导航文件夹下只需要在任意 Markdown 文件中配置，则会全体生效**。
+如果希望手动控制导航名称，可以使用 [`nav.title`](/zh-CN/config/frontmatter#navtitle) 的 frontmatter 配置项进行配置；**注意，同一导航文件夹下只需要在任意 Markdown 文件中配置，则会全体生效**。
 
 ### 控制导航路径
 
 导航路径的默认生成规则是，取路由的第一级嵌套。比如，路由是 `/very/very/deep/child`，那么 `very` 则会作为导航路径。
 
-如果希望手动控制导航路径，可以使用 [`nav.path`](/config/frontmatter#navpath) 的 frontmatter 配置项进行配置。
+如果希望手动控制导航路径，可以使用 [`nav.path`](/zh-CN/config/frontmatter#navpath) 的 frontmatter 配置项进行配置。
 
 不同于 `nav.title`，由于 `nav.path` 作为唯一标识符，手动控制的话即便同一文件夹下也需要每个 Markdown 文件都设置，所以通常还是建议用文件夹来组织导航而不是手动控制。
 
@@ -65,15 +65,15 @@ Very/deep
 
 导航的默认排序规则为，先对比 `path` 的长度，例如 `/guide` 肯定排在 `/guide/help` 前面，其次对比导航名称的 ASCII 码，比如 `Guide` 肯定排在 `Help` 前面。
 
-如果希望手动控制导航顺序，可以使用 [`nav.order`](/config/frontmatter#navorder) 的 frontmatter 配置项进行配置，数字越小越靠前；和 `nav.title` 一样，同一导航文件夹下只需要在任意 Markdown 文件中配置，就会全体生效。
+如果希望手动控制导航顺序，可以使用 [`nav.order`](/zh-CN/config/frontmatter#navorder) 的 frontmatter 配置项进行配置，数字越小越靠前；和 `nav.title` 一样，同一导航文件夹下只需要在任意 Markdown 文件中配置，就会全体生效。
 
 ### 控制菜单生成
 
-请参考 [控制菜单生成](/guide/control-menu-generate)，**需要注意的是，在 `site` 模式下，由于导航作为第一级嵌套，菜单的自动解析都是从第二级嵌套开始的**。
+请参考 [控制菜单生成](/zh-CN/guide/control-menu-generate)，**需要注意的是，在 `site` 模式下，由于导航作为第一级嵌套，菜单的自动解析都是从第二级嵌套开始的**。
 
 ## 配置式导航
 
-在大部分场景下，我们都需要对导航上展示的内容做定制，例如添加 GitHub 的仓库链接、旧版文档的链接等等，可以使用 [`navs` 配置项](/config#navs) 来实现：
+在大部分场景下，我们都需要对导航上展示的内容做定制，例如添加 GitHub 的仓库链接、旧版文档的链接等等，可以使用 [`navs` 配置项](/zh-CN/config#navs) 来实现：
 
 ```ts
 // config/config.ts 或 .umirc.ts

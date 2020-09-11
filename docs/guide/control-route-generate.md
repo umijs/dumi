@@ -27,7 +27,7 @@ In addition, dumi will convert camel cased(camelCased) to kebab case(kebab-case)
 
 The default rule of generating page title is to take the last segment of the current route and capitalize it. For example, if the route is `/guide/help`, dumi will take the end route `help` and capitalize it to `Help`.
 
-If you want to control the page title in manual way, you can configure it through [名为`title` 的 frontmatter 配置项](/config/frontmatter#title)
+If you want to control the page title in manual way, you can configure it through [The frontmatter configuration of `title`](/config/frontmatter#title)
 
 ### Page order
 
@@ -35,13 +35,13 @@ In the side menu, the pages will be sorted according to the rules.
 
 The default rule of the page sorting is: firstly, compare the length of `path`, for example `/guide` must be in front of `/guide/help`, and then compare the ASCII of page name, for example, `Guide` must be in front of `Help`.
 
-If you want to control the page order in manual way, you can configure it through [名为`order` 的 frontmatter 配置项](/config/frontmatter#order). The smaller the number, the more previous the rank will be.
+If you want to control the page order in manual way, you can configure it through [The frontmatter configuration of `order`](/config/frontmatter#order). The smaller the number, the more previous the rank will be.
 
 ### Page route
 
 At present, the route of the page itself cannot be customized. Dumi will abide by the agreement that name is route. If you want to change the route of the page, for example, changing the `help` in `/guide/help` to `other`, it is recommended that change `help.md` to `other.md`.
 
-However, except the route of the page itself, the route of the menu and navigation to which the page belongs can be changed. For more, please refer to [控制菜单分组路径](/guide/control-menu-generate#控制分组路径) and [控制导航分组路径](/guide/control-nav-generate#控制导航路径).
+However, except the route of the page itself, the route of the menu and navigation to which the page belongs can be changed. For more, please refer to [Control menu generate](/guide/control-menu-generate#group-title) and [Control navigation generate](/guide/control-nav-generate#navigation-path).
 
 ## Configuring Routing
 

@@ -40,7 +40,7 @@ That's all about this example.
 
 ## Default language and missing translation
 
-In the default configuration of dumi, the default language is `en-US` and the second language is `zh-CN`. If you need to change this configuration, such as changing the default language or adding more languages, please check the [Config - locales](/config?#locales).
+In the default configuration of dumi, the default language is `en-US` and the second language is `zh-CN`. If you need to change this configuration, such as changing the default language or adding more languages, please check the [Config - locales](/config#locales).
 
 During the process of actual document writing, it is likely to be **incrementally** and **gradually**, for example, firstly, writing all the documents in the default language, and then translating them into other languages gradually, which will inevitably lead to a transition period of 『document translation to half』.
 

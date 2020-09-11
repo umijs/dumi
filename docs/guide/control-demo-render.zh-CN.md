@@ -127,4 +127,4 @@ export default () => null;
 
 ## 直接嵌入文档
 
-将 Demo 以嵌入形式呈现，请参考 [Demo 的类型 - 嵌入式](/guide/demo-types#嵌入式)。
+将 Demo 以嵌入形式呈现，请参考 [Demo 的类型 - 嵌入式](/zh-CN/guide/demo-types#嵌入式)。

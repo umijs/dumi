@@ -16,7 +16,7 @@ v10.13.0
 
 ## 脚手架初始化
 
-为了方便使用，dumi 提供了两种不同的脚手架，两者的区别可以查看 [指南-多种呈现模式](https://d.umijs.org/guide/mode)。我们需要先找个地方建个空目录，然后再使用脚手架：
+为了方便使用，dumi 提供了两种不同的脚手架，两者的区别可以查看 [指南-多种呈现模式](/zh-CN/guide/mode)。我们需要先找个地方建个空目录，然后再使用脚手架：
 
 ```bash
 $ mkdir myapp && cd myapp
@@ -86,4 +86,4 @@ export default () => &lt;h2&gt;First Demo&lt;/h2&gt;;
 
 ![](https://gw.alipayobjects.com/zos/bmw-prod/a74b9643-b1db-48b0-83b1-67d15e13b6fc/k7a3sl0s_w1988_h1310.png)
 
-是不是非常简单？但写 Demo 易写好 Demo 难，关于写 Demo 这件事，dumi 有些理念和原则，也想与你分享一下：[dumi 的 Demo 理念](/guide/demo-principle)。
+是不是非常简单？但写 Demo 易写好 Demo 难，关于写 Demo 这件事，dumi 有些理念和原则，也想与你分享一下：[dumi 的 Demo 理念](/zh-CN/guide/demo-principle)。

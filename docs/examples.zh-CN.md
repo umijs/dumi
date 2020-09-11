@@ -130,6 +130,6 @@ $$
 
 ## 超链接
 
-[前往 Umi 官网](https://umijs.org)
+[前往 Umi 官网](https://umijs.org/zh-CN)
 
-自动转换超链接 https://umijs.org
+自动转换超链接 https://umijs.org/zh-CN

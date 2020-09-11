@@ -36,5 +36,5 @@ export default {
 
 - 有导航头
 - 有搜索框
-- 支持通过 `hero` 和 `features` [配置首页](/config/frontmatter#hero)
-- 支持通过 `footer` [配置页脚](/config/frontmatter#footer)
+- 支持通过 `hero` 和 `features` [配置首页](/zh-CN/config/frontmatter#hero)
+- 支持通过 `footer` [配置页脚](/zh-CN/config/frontmatter#footer)

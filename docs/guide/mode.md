@@ -36,5 +36,5 @@ The characteristics of site mode are:
 
 - Navigation
 - Search input
-- Support to [配置首页](/config/frontmatter#hero) through `hero` and `features`
-- Support to [配置页脚](/config/frontmatter#footer) through `footer`
+- Support to [config home page](/config/frontmatter#hero) through `hero` and `features`
+- Support to [config footer](/config/frontmatter#footer) through `footer`

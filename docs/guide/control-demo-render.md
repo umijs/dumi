@@ -127,4 +127,4 @@ export default () => null;
 
 ## Embeded in documents
 
-Render demo in embedded mode, please refer to [Demo 的类型 - 嵌入式](/guide/demo-types#嵌入式)。
+Render demo in embedded mode, please refer to [The Types of demos - embedded mode](/guide/demo-types#embedded-mode)。

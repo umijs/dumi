@@ -7,7 +7,7 @@ toc: menu
 ---
 
 <Alert>
-提示：dumi 基于 Umi，即除了本页提到的配置项以外，还支持 <a target="_blank" href="https://umijs.org/config">所有 Umi 的配置项</a>，并且也支持 <a target="_blank" href="https://umijs.org/plugins/preset-react">Umi 生态的插件</a>。
+提示：dumi 基于 Umi，即除了本页提到的配置项以外，还支持 <a target="_blank" href="https://umijs.org/zh-CN/config">所有 Umi 的配置项</a>，并且也支持 <a target="_blank" href="https://umijs.org/zh-CN/plugins/preset-react">Umi 生态的插件</a>。
 </Alert>
 
 # Config
@@ -120,7 +120,7 @@ export default {
 
 用于设定文档的展现模式，默认为文档模式（左侧菜单 + 右侧内容），配置为 `site` 时可无缝切换为站点模式（导航头 + 左侧菜单 + 右侧内容）。如果希望对导航菜单项展示的文本和顺序，可参考 frontmatter 配置中的 `nav` 配置项。
 
-两种模式的效果可见 [指南 - 多种呈现模式](/guide/mode)。
+两种模式的效果可见 [指南 - 多种呈现模式](/zh-CN/guide/mode)。
 
 ## menus
 
@@ -128,7 +128,7 @@ export default {
 - 默认值：`自动生成的菜单`
 - 详细：
 
-该配置项用于自定义侧边菜单的展示，目前仅 `site` 模式下可用，分多语言模式和单语言模式，使用方式详见 [指南 - 配置式侧边菜单](/guide/control-menu-generate#配置式侧边菜单)。
+该配置项用于自定义侧边菜单的展示，目前仅 `site` 模式下可用，分多语言模式和单语言模式，使用方式详见 [指南 - 配置式侧边菜单](/zh-CN/guide/control-menu-generate#配置式侧边菜单)。
 
 ## navs
 
@@ -136,7 +136,7 @@ export default {
 - 默认值：`自动生成的导航`
 - 详细：
 
-该配置项用于自定义导航栏的展示，仅 `site` 模式下可用，分多语言模式和单语言模式，使用方式详见 [指南 - 配置式导航菜单](/guide/control-nav-generate#配置式导航菜单)。
+该配置项用于自定义导航栏的展示，仅 `site` 模式下可用，分多语言模式和单语言模式，使用方式详见 [指南 - 配置式导航](/zh-CN/guide/control-nav-generate#配置式导航)。
 
 可通过如下形式嵌套二级导航菜单，目前暂不支持更多层级嵌套：
 
@@ -188,7 +188,7 @@ export default {
 - 默认值：`null`
 - 详细：
 
-配置式路由，配置方式与 Umi 一致，可通过 `meta` 属性传递支持的 [frontmatter](/config/frontmatter) 属性。
+配置式路由，配置方式与 Umi 一致，可通过 `meta` 属性传递支持的 [frontmatter](/zh-CN/config/frontmatter) 属性。
 
 ## ssr
 
@@ -237,4 +237,4 @@ export default {
 
 ## 其他配置
 
-详见 Umi 的 [官方文档](https://umijs.org/config)。
+详见 Umi 的 [官方文档](https://umijs.org/zh-CN/config)。

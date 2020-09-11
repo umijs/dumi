@@ -30,25 +30,25 @@ It's basically the same as expected, but there is a problem here: it is very str
 
 The default rule of generating group title is to take the route name of the group, and remove `/` and capitalize it. For example, if the route is `/guide/help`, dumi will remove the last segment of route which is `/help`, take `/guide` as a group title, and remove `/` and capitalize it to `Guide`.
 
-If you want to control the group title in manual way, you can configurate it through [名为 `group.title` 的 frontmatter 配置项](/config/frontmatter#grouptitle)
+If you want to control the group title in manual way, you can configurate it through [the frontmatter configrations of `group.title`](/config/frontmatter#grouptitle)
 
 ### Group path
 
 The default rule of generating the group path is to remove the last segment of the route, and the previous segment will be used as the group path no matter how long it is. For example, if the route is `/very/very/deep/child`, then `very/very/deep` will be used as the group path.
 
-If you want to control the group path in manual way, you can configurate it through [名为 `group.path` 的 frontmatter 配置项](/config/frontmatter#grouppath)
+If you want to control the group path in manual way, you can configurate it through [the frontmatter configrations of `group.path`](/config/frontmatter#grouppath)
 
 ### Group order
 
 The default rule of group order is: firstly, compare the length of `path`, for example `/guide` must be in front of `/guide/help`, and then compare the ASCII of group name. For example, `Guide` must be in front of `Help`.
 
-If you want to control the group order in manual way, you can configurate it through [名为 `group.order` 的 frontmatter 配置项](/config/frontmatter#grouporder). The smaller the number, the more previous the rank will be.
+If you want to control the group order in manual way, you can configurate it through [the frontmatter configrations of `group.order`](/config/frontmatter#grouporder). The smaller the number, the more previous the rank will be.
 
 ## Configurate side menu
 
 <Alert>Attention：only works in <code>site</code> mode for now </Alert>
 
-If found that the convention cannot satisfy the requirements, you can **increment customize** the side menu through [`menus` 配置项](/config#mennus)
+If found that the convention cannot satisfy the requirements, you can **increment customize** the side menu through [`menus`](/config#menus)
 
 ```ts
 // config/config.ts or .umirc.ts

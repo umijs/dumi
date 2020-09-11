@@ -18,4 +18,4 @@ export default {
 
 <img src="https://user-images.githubusercontent.com/13595509/80310631-52e6d280-880e-11ea-9a9a-0942c0e24658.png" width="600" style="box-shadow:rgba(0, 0, 0, 0.15) 0px 3px 6px 0px">
 
-> 建议开启，这样开发出来的组件库天然支持[服务端渲染](https://umijs.org/docs/ssr)
+> 建议开启，这样开发出来的组件库天然支持[服务端渲染](https://umijs.org/zh-CN/docs/ssr)

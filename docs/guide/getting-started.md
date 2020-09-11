@@ -16,7 +16,7 @@ v10.13.0
 
 ## Initial scaffold
 
-For convenience of usage, dumi provides two different scaffolds, differences between the two scaffolds can view [指南-多种呈现模式](https://d.umijs.org/guide/mode). First, we need to find a place to make an empty directory, and then use scaffold:
+For convenience of usage, dumi provides two different scaffolds, differences between the two scaffolds can view [Guide-Mode](/guide/mode). First, we need to find a place to make an empty directory, and then use scaffold:
 
 ```bash
 $ mkdir myapp && cd myapp
@@ -86,4 +86,4 @@ Our first demo is running after saving:
 
 ![](https://gw.alipayobjects.com/zos/bmw-prod/a74b9643-b1db-48b0-83b1-67d15e13b6fc/k7a3sl0s_w1988_h1310.png)
 
-Is it simple? However, is's easy to write a demo but difficult to write a good demo. Dumi has some idea and principles that want to share with you about how to write a demo: [dumi 的 Demo 理念](/guide/demo-principle).
+Is it simple? However, is's easy to write a demo but difficult to write a good demo. Dumi has some ideals and principles that want to share with you about how to write a demo: [Ideals of demos](/guide/demo-principle).

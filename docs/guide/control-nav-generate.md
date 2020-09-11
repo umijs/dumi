@@ -63,17 +63,17 @@ It's different from `nav.title`, `nav.path` is a unique identifier. Because of i
 
 ### Navigation order
 
-The default rule of navigation order is: firstly, compare the length of `path`, for example `/guide` must be in front of `/guide/help`, and then compare the ASCII of navigation name, for example, `Guide` must be in front of '`Help`.
+The default rule of navigation order is: firstly, compare the length of `path`, for example `/guide` must be in front of `/guide/help`, and then compare the ASCII of navigation name, for example, `Guide` must be in front of `Help`.
 
 If you want to control the navigation order in manual way, you can configure it through [`nav.order`](/config/frontmatter#navorder). The smaller the number, the more previous the rank will be. As same as `nav.title`, you only need to configure it in any markdown file in the same folder, it will take effect all.
 
 ### Menu generation
 
-Please refer to [控制菜单生成](/guide/control-menu-generate), **it should be noticed that in the `site` mode, since navigation is the first level of nesting, the automatic parsing of menus starts from the second level of nesting**.
+Please refer to [Control menu generate](/guide/control-menu-generate), **it should be noticed that in the `site` mode, since navigation is the first level of nesting, the automatic parsing of menus starts from the second level of nesting**.
 
-## Configurating navigation
+## Configurate navigation
 
-In most scenarios, we need to customize the content presented on the navigation, such as adding repo links to GitHub or links to old versions of documents or etc. We can configure it through [`navs` 配置项](/config#navs):
+In most scenarios, we need to customize the content presented on the navigation, such as adding repo links to GitHub or links to old versions of documents or etc. We can configure it through [`navs`](/config#navs):
 
 ```ts
 // config/config.ts or .umirc.ts
@@ -108,4 +108,4 @@ export default {
 };
 ```
 
-However, this configuration is only used for the presentation of custom navigation header, and **does not affect the generation of routes**. If you want to customize the routing path, please configurate it in Markdown throught frontmatter configuration refered [参考上方](#控制导航路径).
+However, this configuration is only used for the presentation of custom navigation header, and **does not affect the generation of routes**. If you want to customize the routing path, please configurate it in Markdown throught frontmatter configuration refered [above](#navigation-path).

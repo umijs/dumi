@@ -14,17 +14,17 @@ All configurations have been moved from the original `config.doc` to the `config
 
 ### Change comparison table
 
-| **New configuration name**     | **Old configuration name** | **effect**                                        |
-| -------------------- | ---------------- | ----------------------------------------------- |
-| title                | doc.title        | 设置网站的标题，默认值为 `package.name`         |
-| description          | doc.desc         | 设置网站的介绍文字，目前仅 doc 模式下有用       |
-| logo                 | doc.logo         | 设置网站的 LOGO                                 |
-| mode                 | doc.mode         | 设置网站的类型                                  |
-| locales              | doc.locales      | 设置网站的多语言配置                            |
-| menus                | doc.menus        | 配置网站的侧边栏菜单                            |
-| navs                 | doc.navs         | 配置网站的导航菜单                              |
-| resolve.includes     | doc.include      | 设置文档的探测目录                              |
-| resolve.previewLangs | doc.previewLangs | 设置哪些代码块语言会被当做 React Component 渲染 |
+| **New configuration name**     | **Old configuration name** | **effect**                                                            |
+| ------------------------------ | -------------------------- | --------------------------------------------------------------------- |
+| title                          | doc.title                  | Set the title of the website, the default value is `package.name`     |
+| description                    | doc.desc                   | Set the description of the website, only works in doc mode for now    |
+| logo                           | doc.logo                   | Set the logo of the website                                           |
+| mode                           | doc.mode                   | Set the mode of site                                                  |
+| locales                        | doc.locales                | Set the locales of the website                                        |
+| menus                          | doc.menus                  | Set the sidebar menus of the website                                  |
+| navs                           | doc.navs                   | Set the navigations of the website                                    |
+| resolve.includes               | doc.include                | Set the detected directory of the website                             |
+| resolve.previewLangs           | doc.previewLangs           | Set which code block will be rendered as React Component              |
 
 ### API changed
 

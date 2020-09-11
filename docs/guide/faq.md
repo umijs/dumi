@@ -8,7 +8,7 @@ The dumi actually is a preset of Umi —— @umijs/preset-dumi, which means that
 
 ## Are these all configurations? What if I need more features?
 
-dumi is based on Umi, Which means in addition to the configurations provided by itself, it also supports [所有 Umi 的配置项](https://umijs.org/config), and also supports [Umi 生态的插件](https://umijs.org/plugins/preset-react), so if you need more features, you can first check whether Umi's configurations and plugins can be satisfied. If still cannot be satisfied, welcome to feedback to [讨论群](/guide#参与贡献) or [提出 Feature Request](https://github.com/umijs/dumi/issues/new?labels=enhancement&template=feature_request.md&title=feat%3A+) on GitHub
+dumi is based on Umi, Which means in addition to the configurations provided by itself, it also supports [all configurations of Umi](https://umijs.org/config), and also supports [the plugins of Umi](https://umijs.org/plugins/preset-react), so if you need more features, you can first check whether Umi's configurations and plugins can be satisfied. If still cannot be satisfied, welcome to feedback to [the discuss group](/guide#contributing) or [give a Feature Request](https://github.com/umijs/dumi/issues/new?labels=enhancement&template=feature_request.md&title=feat%3A+) on GitHub
 
 ## Why `README.md` appears on the homepage of the document?
 
@@ -27,7 +27,7 @@ At present, dumi has not yet support the theme customization function, but it ca
 
 <code src="path/to/homepage.tsx" inline />
 ```
-For detailed usage, please refer to [use in dumi](https://landing.ant.design/docs/use/dumi-cn) of Ant Design Landing
+For detailed usage, please refer to [use in dumi](https://landing.ant.design/docs/use/dumi) of Ant Design Landing
 
 ## Does dumi support to write documents in other ways rather than `.md`?
 
@@ -35,7 +35,7 @@ Sorry, it is not supported yet
 
 ## How to use dumi in non-Umi projects such as cra?
 
-[源码示例](https://github.com/xiaohuoni/dumi-demo-cra)
+[Source code](https://github.com/xiaohuoni/dumi-demo-cra)
 
 1. Install the dependence.
 
@@ -86,11 +86,11 @@ You can configurate it through [styles](https://umijs.org/config#styles) and [sc
 
 ## Local development is works, but will get a 404 after deployment and visiting
 
-There is only one `index.html` is output as the entry HTML file by default. The server can find the file while path is `/` but `/some-route` does not have a corresponding `/some-route/index.html`, so it will get a 404. You can set `config.exportStatic` to `{}` which is means output all HTML files in a folder structure according to the route. For more usage of this configuration, please refer to the Umi document: [Config - exportStatic](https://umijs.org/zh-CN/config#exportstatic).
+There is only one `index.html` is output as the entry HTML file by default. The server can find the file while path is `/` but `/some-route` does not have a corresponding `/some-route/index.html`, so it will get a 404. You can set `config.exportStatic` to `{}` which is means output all HTML files in a folder structure according to the route. For more usage of this configuration, please refer to the Umi document: [Config - exportStatic](https://umijs.org/config#exportstatic).
 
 ## The bundle after document building is too large, which brings about slow website access. How to implement load-on-demand mode?
 
-You can set `config.dynamicImport` to `{}`. For more usage fo this configuration, please refer to the Umi document: [Config - dynamicImport](https://umijs.org/zh-CN/config#dynamicimport).
+You can set `config.dynamicImport` to `{}`. For more usage fo this configuration, please refer to the Umi document: [Config - dynamicImport](https://umijs.org/config#dynamicimport).
 
 ## Deploy on Github Pages
 
@@ -169,7 +169,7 @@ jobs:
 
 ## During the development, how to configure the styles in the md file in load-on-demand?
 
-dumi will alias pkgName/es, pkgName/lib, [详情见](https://github.com/umijs/dumi/blob/master/packages/preset-dumi/src/plugins/core.ts#L198)
+Dumi will alias pkgName/es, pkgName/lib, [for details, see](https://github.com/umijs/dumi/blob/master/packages/preset-dumi/src/plugins/core.ts#L198)
 
 Configure `extraBabelPlugins` (Attention, it is a configuration of `.umirc.ts`, not `.fatherrc.ts`), add [`babel-plugin-import`](https://github.com/ant-design/babel-plugin-import), and configure reasonably according to the directory structure.
 
