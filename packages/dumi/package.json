@@ -9,6 +9,7 @@
   "files": [
     "lib",
     "bin",
+    "theme.d.ts",
     "index.d.ts"
   ],
   "repository": {
