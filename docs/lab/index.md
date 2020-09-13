@@ -9,6 +9,18 @@ sidemenu: false
 The functions of the laboratory are only works in the <code>next</code> version, you can use <code>npm i dumi@next</code> to install the experimental version for experience; The experimental functions are unstable, please do not use it in production; If you have any suggestions, welcome to feedback and exchanges in the discussion group ❤
 </Alert>
 
+## 移动端组件研发
+
+**依赖版本：**`dumi@1.1.0-beta.18+` & `dumi-theme-mobile`
+
+使用方式很简单，确保项目是 dumi 最新的 beta 版且安装 `dumi-theme-mobile` 到 `devDependencies` 中即可，dumi 将会从默认的 PC 组件库研发切换为移动端组件研发。目前包含如下能力：
+
+1. sticky 手机模拟容器 + iframe 预览 demo
+2. 预览 demo 时自动处理 rem（基于 umi-hd 的 [750 模式](https://github.com/umijs/umi-hd#%E6%95%B4%E4%BD%93%E4%BB%8B%E7%BB%8D)）
+3. 提供二维码便于真机预览
+
+<img style="border: 1px solid #eee;" src="https://gw.alipayobjects.com/zos/bmw-prod/acb29a94-6200-4798-82eb-190177fa841c/kezwf18r_w2556_h1396.jpeg" alt="移动端主题预览效果" />
+
 ## Motions
 
 **Dependent version:**`dumi@1.1.0-beta.13+`
