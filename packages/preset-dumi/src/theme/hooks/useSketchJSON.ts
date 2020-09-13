@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import copy from 'copy-to-clipboard';
+import copy from 'copy-text-to-clipboard';
 import { nodeToGroup, nodeToSketchSymbol } from 'html2sketch';
 
 declare global {
