@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-
+import { useState } from 'react';
 import copy from 'copy-to-clipboard';
 import { nodeToGroup, nodeToSketchSymbol } from 'html2sketch';
 
@@ -57,18 +56,23 @@ const useSketchJSON = () => {
   return {
     symbolJSON,
     groupJSON,
-    generateSymbol: (elements: Element | Element[]) => {
+    generateSymbol: async (elements: Element | Element[]) => {
       try {
         if (elements instanceof Array) {
           const objects: Object[] = [];
 
-          Array.from(elements).forEach(el => {
-            const sketchJSON = nodeToSketchSymbol(el).toSketchJSON();
+          for (let i = 0; i < elements.length; i += 1) {
+            const el = elements[i];
+            // eslint-disable-next-line no-await-in-loop
+            const symbol = await nodeToSketchSymbol(el);
+            const sketchJSON = symbol.toSketchJSON();
             objects.push(sketchJSON);
-          });
+          }
+
           copySymbolJSON(objects);
         } else {
-          const sketchJSON = nodeToSketchSymbol(elements).toSketchJSON();
+          const symbol = await nodeToSketchSymbol(elements);
+          const sketchJSON = symbol.toSketchJSON();
           copySymbolJSON(sketchJSON);
         }
       } catch (e) {
@@ -77,17 +81,21 @@ const useSketchJSON = () => {
         console.error(e);
       }
     },
-    generateGroup: (elements: Element | Element[]) => {
+    generateGroup: async (elements: Element | Element[]) => {
       try {
         const objects: Object[] = [];
         if (elements instanceof Array) {
-          Array.from(elements).forEach(el => {
-            const sketchJSON = nodeToGroup(el).toSketchJSON();
+          for (let i = 0; i < elements.length; i += 1) {
+            const el = elements[i];
+            // eslint-disable-next-line no-await-in-loop
+            const group = await nodeToGroup(el);
+            const sketchJSON = group.toSketchJSON();
             objects.push(sketchJSON);
-          });
+          }
           copyGroupJSON(objects);
         } else {
-          const sketchJSON = nodeToGroup(elements).toSketchJSON();
+          const group = await nodeToGroup(elements);
+          const sketchJSON = group.toSketchJSON();
           copyGroupJSON(sketchJSON);
         }
       } catch (e) {
