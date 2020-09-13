@@ -22,7 +22,7 @@ export default <T>(locale: string, props: T) => {
 
   useEffect(() => {
     setLocaleProps(processor(locale, props));
-  }, [locale]);
+  }, [locale, props]);
 
   return localeProps;
 };

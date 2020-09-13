@@ -10,8 +10,8 @@ export default function link() {
       // handle internal link, external link & anchor link
       if (is(node, 'a') && has(node, 'href')) {
         let LinkComponent = 'Link';
-        let parsedUrl = url.parse(node.properties.href);
-        const children = (node.children || []).map(n => toHtml(n)).join('');
+        let parsedUrl = url.parse((node.properties as any).href);
+        const children = ((node.children as any[]) || []).map(n => toHtml(n)).join('');
         let properties = Object.keys(node.properties)
           .filter(prop => !['href'].includes(prop))
           .map(prop => `${prop}="${node.properties[prop]}"`)

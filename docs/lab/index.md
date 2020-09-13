@@ -9,6 +9,18 @@ sidemenu: false
 实验室的功能仅在 <code>next</code> 版本中提供，可以使用 <code>npm i dumi@next</code> 安装实验版本进行体验；实验性质的功能可能不稳定，请谨慎用于生产；如果体验后有任何建议，欢迎在讨论群中进行反馈和交流 ❤
 </Alert>
 
+## 移动端组件研发
+
+**依赖版本：**`dumi@1.1.0-beta.18+` & `dumi-theme-mobile`
+
+使用方式很简单，确保项目是 dumi 最新的 beta 版且安装 `dumi-theme-mobile` 到 `devDependencies` 中即可，dumi 将会从默认的 PC 组件库研发切换为移动端组件研发。目前包含如下能力：
+
+1. sticky 手机模拟容器 + iframe 预览 demo
+2. 预览 demo 时自动处理 rem（基于 umi-hd 的 [750 模式](https://github.com/umijs/umi-hd#%E6%95%B4%E4%BD%93%E4%BB%8B%E7%BB%8D)）
+3. 提供二维码便于真机预览
+
+<img style="border: 1px solid #eee;" src="https://gw.alipayobjects.com/zos/bmw-prod/acb29a94-6200-4798-82eb-190177fa841c/kezwf18r_w2556_h1396.jpeg" alt="移动端主题预览效果" />
+
 ## Motions
 
 **依赖版本：**`dumi@1.1.0-beta.13+`
@@ -91,7 +103,7 @@ export default () => {
 
 #### 目录结构
 
-创建包名为 `dumi-theme-` 开头的包，目录结构以默认主题为例：
+方式一，创建包名为 `dumi-theme-` or `@group/dumi-theme-` 开头的包，目录结构以默认主题为例：
 
 ```bash
 .
@@ -99,12 +111,16 @@ export default () => {
 └── src
     ├── builtins      # [约定] 内置组件文件夹，dumi 会寻找**一级目录**下的 `j|tsx` 进行挂载，该文件夹下的组件可直接在 md 中使用
     ├── components    # [非约定] 主题包自身为了可维护性抽取出来的组件，文件夹名称随开发者自定义
-    ├── content.tsx   # [约定] 自定义的 content 组件，props.children 即每个 md 的内容，如果仅希望定制正文区域，可以使用 content.tsx 而非 layout.tsx
     ├── layout.tsx    # [约定] 自定义的 layout 组件，props.children 即每个 md 的内容，开发者可自行控制导航、侧边栏及内容渲染
+    ├── layouts       # [约定] 自定义的 layouts 目录，在需要自定义多个 layout 时使用
+    │   ├── index.tsx # [约定] 等同于 src/layout.tsx，两种方式二选一，layout.tsx 优先级更高
+    │   └── demo.tsx  # [约定] 自定义组件 demo 单独路由（~demos/:uuid）的 layout
     └── style         # [非约定] 主题包的样式表
 ```
 
 其中 `[约定]` 意味着是主题生效的必备结构，`[非约定]` 则意味着开发者可以根据自己的习惯进行控制。
+
+方式二，在本地项目中创建 `.dumi/theme` 文件夹，**将该文件夹当做上面的 `src` 目录，直接编写自定义主题即可**，例如，创建 `.dumi/theme/layout.tsx` 以自定义 layout；此方式适用于不需要发布的主题包，也更容易进行调试。
 
 #### 组件兜底
 
@@ -115,7 +131,22 @@ export default () => {
 3. `Alert.tsx` - 渲染提示框
 4. `Badge.tsx` - 渲染标签
 
-另外，`content.tsx` 和 `layout.tsx` 也会进行兜底（这两个文件的路径在发布正式版之前可能会有所调整）。
+另外，`layout.tsx`（或 `layouts/index.tsx`）也会进行兜底，如果只希望控制正文区域的渲染，可以选择包裹默认主题的 `layout`、控制 `layout` 的 `children` 来实现。例如，给正文区域增加一个反馈按钮：
+
+```tsx | pure
+// src/layout.tsx
+import React from 'react';
+import Layout from 'dumi-theme-default/src/layout';
+
+export default ({ children, ...props }) => (
+  <Layout {...props}>
+    <>
+      <button>反馈</button>
+      {children}
+    </>
+  </Layout>
+);
+```
 
 #### 主题 API
 
@@ -129,11 +160,10 @@ export default () => {
 6. `useCopy` - 提供复制函数及复制的状态，便于实现源代码复制
 7. `useSearch` - 根据配置自动提供 algolia 的绑定函数或者根据关键字返回内置搜索的检索结果
 8. `useLocaleProps` - 根据 locale 自动过滤 props，便于实现国际化 frontmatter 的定义，比如 `title.zh-CN` 在中文语言下会被转换为 `title`
-9. `useSketchJSON` - 将 demo 对象解析为 Sketch 的 Symbol 或编组对象, 通过 [Kitchen](https://kitchen.alipay.com/) 插件可以直接粘贴进 Sketch
 
 ### 调试及使用
 
-将开发好的主题包 npm link（调试）或 npm install（使用）到项目里，并确保它在 `devDependencies` 或者 `dependencies` 中有声明，dumi 将会自动挂载该主题，例如：
+如果开发的主题包是 npm 包的形式，将开发好的主题包 npm link（调试）或 npm install（使用）到项目里，并确保它在 `devDependencies` 或者 `dependencies` 中有声明，dumi 将会自动挂载该主题，例如：
 
 ```json
 {
@@ -142,6 +172,8 @@ export default () => {
   }
 }
 ```
+
+如果开发的主题包是本地主题 `.dumi/theme` 目录的形式，dumi 会自动挂载，可直接进行调试。
 
 ## 和 Umi UI 一起使用
 
