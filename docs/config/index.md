@@ -2,7 +2,7 @@
 order: 1
 nav:
   order: 2
-  title: Configuration
+  title: Config
 toc: menu
 ---
 
@@ -193,7 +193,7 @@ Configure the publicPath of webpack. Webpack will add the value of `publicPath` 
 - Default: `null`
 - Details:
 
-Configuration routing, the configuration method is the same as Umi, and can set it in `meta` to pass through to [frontmatter](/config/frontmatter) 
+Configuration routing, the configuration method is the same as Umi, and can set it in `meta` to pass through to [frontmatter](/config/frontmatter)
 
 ## ssr
 
@@ -216,7 +216,7 @@ Same as [headScripts](TODO), configure additional scripts in `<body>`.
 
 - Type: `String`
 - Default: `package.name`
-- Details: 
+- Details:
 
 The name of the configuration document, generally the name of the developed component.
 
