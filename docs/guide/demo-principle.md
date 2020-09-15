@@ -1,61 +1,62 @@
 ---
 group:
-  title: 开始写组件 Demo
+  title: Start to develop demo
 ---
 
-# dumi 的 Demo 理念
+# Ideals of demos
 
-dumi 只有一个理念——**开发者应该像用户一样写 Demo**。
+Dumi has only one ideal, **developer should write demos like user**
 
-这句话如何理解？用户的 Demo 就是实际项目，像用户一样写 Demo 意味着这个 Demo 能直接为实际项目所用，所以它必定要满足下面几个原则。
+How to understand this? The user's demo is actual project. Writting demo from the perspective of users means that demos can directly used in actual project, therefore, it must have following principles.
 
-## 原则一：能看能用
+## Principle one: enable to view & use
 
-我们在为组件写 Demo 的时候，很容易写成这样：
+While we are writting a demo for component, it's usual to write like this:
 
 ```jsx | pure
 import React from 'react';
-import Component from './'; // 错误示例，请勿模仿
+import Component from './'; // Wrong: do not imitate
 
 export default () => <Component />;
 ```
 
-这个 Demo 当然能够如预期一般正常运行，但如果用户觉得这个 Demo 可以被用于项目开发、准备拷贝 Demo 源码至项目中的时候，他会发现这个 `./` 的依赖完全无法识别。所以，这样的 Demo，是 **只能看、不能用** 的。
+Obviously, this demo can run as expected, but if user found that this demo could used for developing the project and when user prepared to copy source code into the project, he/she would find that it couldn't recognize the dependence about `./` compeletely. So, some demos like this, **only enable to view but disable to use**.
 
-为了解决这个尴尬的问题，dumi 会为开发者自动 alias 当前项目的包，如果是 lerna 项目则会 alias 全部的包，这意味着，我们完全可以像用户一样去引用组件库的依赖，就像这样：
+For dealing with this embarrassed problem, dumi uses alias for current project's package automatically for developer, By the way, dumi uses aliases for all packages if project is based on lerna. It means we could reference dependencies of libraries, like this:
 
 ```jsx | pure
 import { Component } from 'library-name';
 ```
 
-这样的 Demo，不仅能让用户直接在项目中使用，也能使得 Demo 在 codesandbox.io 中打开时，也能正常工作。
+Such demo, not only could be used in project directly, but also works while opening in codesandbox.io
 
-## 原则二：依赖清晰
+## Principle two: clear dependencies
 
-由于 Umi 会自动帮我们引入 React，即便我们不引入 React，也能够正常使用 JSX：
+Since umi helps us to import React automatically, it can works well even we don't import React in JSX.
 
 ```jsx | pure
-export default () => <>Hello World</>; // 这样写也是跑得起来的
+export default () => <>Hello World</>; // It works
 ```
 
-但这样的 Demo 在 online editor 或者其他非 Umi 框架的项目中是无法正常运行的。所以，这样的 Demo 我们认为是**依赖不清晰的**，只要使用了 JSX，我们就应当引入 React：
+But such demos don't work in online editor or other non-umi framework projects. So, we assume such demos have unclear dependencies. We should import React as long as we use in JSX.
 
 ```jsx | pure
 import React from 'react';
 
-export default () => <>Hello World</>; // 这样写也是跑得起来的
+export default () => <>Hello World</>; // It works too
 ```
 
-## 原则三：易于维护
+## Principle three: easy to maintained
 
-用户会在 Markdown 中写项目吗？显然不会。我们之所以选择直接在 Markdown 中写 Demo，是因为它简单、方便，但倘若某个组件的 Demo 特别复杂，我们却执意在 Markdown 中进行编写，那编写和维护的过程就成了噩梦，就像在 2020 年了我们仍然要使用 Windows 记事本去编程一样。
+Will user write projects in Markdown? Absolutely no. The reason why we directly write demos in Markdown is simple and convenience in this way. But if there was a complex demo, and we were determined to write in Markdown. It would be a nightmare when writting and maintaining, same as we still have to use Windows Notepad to code in 2020.
 
-为了能让开发者能和开发组件一样去编写、维护 Demo，dumi 支持从外部引入一个 Demo，就像这样：
+In order to let developers to code and maintain demos as same as developing components, dumi support to import demo from external, something like this:
 
 ```html
 <code src="/path/to/Demo.tsx" />
 ```
 
-同时为了使得它既能看、也能用，在用户需要展示 Demo 源代码的时候，dumi 仍然会为用户展示真正的源代码！这样以来，不仅用户的体验丝毫不受影响，开发者也能享受到编辑器带来的 Code Snippets、ESLint、prettier 等强大的功能。
+Meanwhile, for enabling demos to view and use, dumi will show origin source code which needed to show to user! This not only doesn't affect experiences of user, but also makes developers to enjoy the powerful functions such as Code Snipperts, ESLint, prettier and so on brought by the editor.
 
-如果开发者写的 Demo 用户拷贝过去无法直接运行，那这个 Demo 是『只能看，不能用的』；如果开发者像用户一样写 Demo，那这个 Demo 必定是『既能看，也能用的』。
+
+If a demo coded by developer didn't work with directly coping, the demo is able to『view, but not to use』.If developers coded demos from the perspective of users, the demo must be able to 『view and use』

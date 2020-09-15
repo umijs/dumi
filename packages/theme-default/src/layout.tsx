@@ -38,6 +38,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
     config: { mode, locales, repository, navs },
     meta,
     locale,
+    nav,
   } = useContext(context);
   const { url: repoUrl, branch } = repository;
   const [menuCollapsed, setMenuCollapsed] = useState<boolean>(true);
@@ -54,8 +55,8 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
   const isCN =
     locale === 'zh-CN' ||
     (locale === '*' && locales[0]?.name === 'zh-CN') ||
-    /[\u4e00-\u9fa5]/.test(JSON.stringify(navs));
-  let updatedTime: any = new Date(meta.updatedTime).toLocaleString();
+    /[\u4e00-\u9fa5]/.test(JSON.stringify(nav));
+  const updatedTime: any = new Date(meta.updatedTime).toLocaleString();
   const repoPlatform = { github: 'GitHub', gitlab: 'GitLab' }[
     (repoUrl || '').match(/(github|gitlab)/)?.[1] || 'nothing'
   ];

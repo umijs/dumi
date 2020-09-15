@@ -1,27 +1,27 @@
 ---
-title: 介绍
+title: Introducation
 nav:
-  title: 指南
+  title: Guide
   order: 1
 ---
 
-## 什么是 dumi？
+## What's dumi?
 
-dumi，暂时就叫它**嘟米**吧，是一款基于 Umi 打造、为组件开发场景而生的文档工具，与 [father](https://github.com/umijs/father) 一起为开发者提供一站式的组件开发体验，**father 负责构建，而 dumi 负责组件开发及组件文档生成**。
+dumi, temporarilty pronounced like [duːmɪ], is a Umi-based doc tool that especially for developing libraries & writting docs.It can provide one-stop component development experience for developer with [father](https://github.com/umijs/father), in which **father for building and dumi for component development & writting docs**.
 
-和 Umi 类似，dumi 也是以路由为基础的，会自动根据目录结构和 FrontMatter 生成对应的文档导航、菜单和路由，同时也支持配置式路由以满足自定义需要；另外，为了便于开发组件和展示组件 demo，dumi 基于 remarkjs 打造了强大、贴心的 Markdown 编译器，使我们能非常方便地在 Markdown 中编写 demo、甚至往 Markdown 中导入 demo；加上 Umi 丰富的 preset、plugin 生态，能帮我们应对各种复杂场景。
+Similar with Umi, dumi is based on routing too, which will generate appropriate navigators, menus and routers according to directory structrue & FrontMatter. Meanwhile, dumi is also support to configuring routing for customization requirement; Moreover, in order to convenient for developing component and showing component demo, dumi produces a powerful and wonderful Mardown compiler based on remarkjs, which makes us code demo conveniently, even copuld import demo into Markdown.As well as plenty of presets or plugins of Umi, dumi can assist us to deal with various complex scene.
 
 <!-- dumi 的前身叫 father-doc -->
 
-## 特性
+## Features
 
-- 📦 开箱即用，让所有注意力都放在文档编写和组件开发
-- 🚀 基于 [Umi 3](https://umijs.org)，天生高性能、可扩展
-- 📋 强大的 Markdown 扩展，可嵌入 Demo、可导入外部 Demo 甚至插入自定义 React 组件
+- 📦 Out of the box, focus on development & documentation
+- 🚀 Based on [Umi 3](https://umijs.org), high-performance & extensible
+- 📋 Powerful Markdown extensions, support to embed demo or import external demo & inline demo
 
-## 参与贡献
+## Contributing
 
-欢迎加入到 dumi 的建设队伍中来，请访问 https://github.com/umijs/dumi 。
+Welcome to contribute to dumi, please visit https://github.com/umijs/dumi.
 
 ```jsx | inline
 import React from 'react';

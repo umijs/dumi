@@ -1,41 +1,41 @@
-# 控制导航生成
+# Control navigation generate
 
 <Alert>
-注意：导航仅在 <code>site</code> 模式下可用。
+Attention：only works in <code>site</code> mode for now 
 </Alert>
 
-## 约定式导航规则
+## The rules of convention navigation
 
-和菜单项及菜单分组一样，dumi 的导航也是建立在路由结构上生成的。路由的嵌套关系会被 dumi 解析为导航及导航下的菜单分组，还是看看 dumi 会怎么识别路由结构：
+Like menu items and menu groups, dumi navigation is based on the routing structure. The nested relationship of routes will be resolved by dumi into navigation and menu groups in navigation. Then, let's see how dumi identifies the routing structure:
 
 ```bash
-/                       # 首页
-/guide                  # 指南导航 + 指南导航的首页
-/guide/help             # 指南导航 + 指南导航的帮助分组
-/other                  # 其他导航
-/very/very/deep/child   # very 导航 + very/deep 分组
+/                       # index page
+/guide                  # Guide page + index page of Guide page
+/guide/help             # Guide page + Help page of Guide page
+/other                  # Other page
+/very/very/deep/child   # Very page + Very/deep group of Very page
 ```
 
-然后这个识别结果会被展示为：
+Then the recognition result will be presented like:
 
 ```bash
-# 导航头
+# Navigation
 LOGO     Guide | Other | Very
 -----------------------------
 
-# 指南的侧边菜单
+# Side menu of Guide page
 -----
 Guide
 -----
 Help
 -----
 
-# 其他的侧边菜单
+# Side menu of Other page
 -----
 Other
 -----
 
-# Very 的侧边菜单
+# Side menu of Very page
 -----
 Very/deep
 -----
@@ -43,62 +43,62 @@ Very/deep
 -----
 ```
 
-总结一下约定式生成的逻辑：**文件夹的第一级嵌套会作为导航，第二级至倒数第二级嵌套会作为侧边菜单，最后一级是页面；第一级嵌套下的所有菜单和页面会被归集到该导航下**。
+In a conclusion: **the first level nesting of the folder will be used as the navigation, from the second level to the last but one will be used as the side menu, and the last level will be used as the page; All the menus and pages under the first level will be grouped in the navigation**.
 
-但仅依靠自动规则往往是不够的，我们通常还有定制导航头文字和顺序的需要：
+However, it's often not enough to rely on automatic rules. We usually have requirements about customizing navigation header text and order:
 
-### 控制导航名称
+### Navigation title
 
-导航名称的默认生成规则是，取当前导航的路由名称去掉 `/` 并首字母大写。比如，路由是 `/guide`，dumi 将会取 `guide` 并首字母大写变成 `Guide`。
+The default rule of generating navigation title is to take the route name of current navigation, remove `/` and capitalize it. For example, if the route is `/guide`, dumi will take `guide` and capitalize it to `Guide`.
 
-如果希望手动控制导航名称，可以使用 [`nav.title`](/config/frontmatter#navtitle) 的 frontmatter 配置项进行配置；**注意，同一导航文件夹下只需要在任意 Markdown 文件中配置，则会全体生效**。
+If you want to control the navigation title in manual way, you can configure it through [`nav.title`](/config/frontmatter#navtitle). **Attention, you only need to configure it in any markdown file in the same folder, it will take effect all**
 
-### 控制导航路径
+### Navigation path
 
-导航路径的默认生成规则是，取路由的第一级嵌套。比如，路由是 `/very/very/deep/child`，那么 `very` 则会作为导航路径。
+The default rule of generating navigation path is to take the first level nesting of routes. For example, if the route is `/very/very/deep/child`, then `very` will be used as the navigation path.
 
-如果希望手动控制导航路径，可以使用 [`nav.path`](/config/frontmatter#navpath) 的 frontmatter 配置项进行配置。
+If you want to control the navigation path in manual way, you can configure it through [`nav.path`](/config/frontmatter#navpath).
 
-不同于 `nav.title`，由于 `nav.path` 作为唯一标识符，手动控制的话即便同一文件夹下也需要每个 Markdown 文件都设置，所以通常还是建议用文件夹来组织导航而不是手动控制。
+It's different from `nav.title`, `nav.path` is a unique identifier. Because of it, manual control needs each markdown file to be set even these files in the same folder. Therefore, it is generally recommended to organize navigation by folder instead of manual control.
 
-### 控制导航顺序
+### Navigation order
 
-导航的默认排序规则为，先对比 `path` 的长度，例如 `/guide` 肯定排在 `/guide/help` 前面，其次对比导航名称的 ASCII 码，比如 `Guide` 肯定排在 `Help` 前面。
+The default rule of navigation order is: firstly, compare the length of `path`, for example `/guide` must be in front of `/guide/help`, and then compare the ASCII of navigation name, for example, `Guide` must be in front of `Help`.
 
-如果希望手动控制导航顺序，可以使用 [`nav.order`](/config/frontmatter#navorder) 的 frontmatter 配置项进行配置，数字越小越靠前；和 `nav.title` 一样，同一导航文件夹下只需要在任意 Markdown 文件中配置，就会全体生效。
+If you want to control the navigation order in manual way, you can configure it through [`nav.order`](/config/frontmatter#navorder). The smaller the number, the more previous the rank will be. As same as `nav.title`, you only need to configure it in any markdown file in the same folder, it will take effect all.
 
-### 控制菜单生成
+### Menu generation
 
-请参考 [控制菜单生成](/guide/control-menu-generate)，**需要注意的是，在 `site` 模式下，由于导航作为第一级嵌套，菜单的自动解析都是从第二级嵌套开始的**。
+Please refer to [Control menu generate](/guide/control-menu-generate), **it should be noticed that in the `site` mode, since navigation is the first level of nesting, the automatic parsing of menus starts from the second level of nesting**.
 
-## 配置式导航
+## Configurate navigation
 
-在大部分场景下，我们都需要对导航上展示的内容做定制，例如添加 GitHub 的仓库链接、旧版文档的链接等等，可以使用 [`navs` 配置项](/config#navs) 来实现：
+In most scenarios, we need to customize the content presented on the navigation, such as adding repo links to GitHub or links to old versions of documents or etc. We can configure it through [`navs`](/config#navs):
 
 ```ts
-// config/config.ts 或 .umirc.ts
+// config/config.ts or .umirc.ts
 export default {
-  // 单语言配置方式如下
+  // The configuration of single language is as follows
   navs: [
-    null, // null 值代表保留约定式生成的导航，只做增量配置
+    null, // The null means dumi should reserve the convention navigation and only make an incremental configuration
     {
       title: 'GitHub',
       path: 'https://github.com/umijs/dumi',
     },
   ],
 
-  // 多语言配置方式如下
+  // The configuration of multiple languages is as follows
   navs: {
-    // 多语言 key 值需与 locales 配置中的 key 一致
+    //The multi-languages key should be consistent with the key in the locales configuration
     'en-US': [
-      null, // null 值代表保留约定式生成的导航，只做增量配置
+      null, // The null means dumi should reserve the convention navigation and only make an incremental configuration
       {
         title: 'GitHub',
         path: 'https://github.com/umijs/dumi',
       },
     ],
     'zh-CN': [
-      null, // null 值代表保留约定式生成的导航，只做增量配置
+      null, // The null means dumi should reserve the convention navigation and only make an incremental configuration
       {
         title: 'GitHub',
         path: 'https://github.com/umijs/dumi',
@@ -108,4 +108,4 @@ export default {
 };
 ```
 
-但此配置项只用于自定义导航头的展示项，**并不会影响路由的生成**，如果希望自定义路由路径，请 [参考上方](#控制导航路径) 在 Markdown 文件中通过 frontmatter 配置项进行控制。
+However, this configuration is only used for the presentation of custom navigation header, and **does not affect the generation of routes**. If you want to customize the routing path, please configurate it in Markdown throught frontmatter configuration refered [above](#navigation-path).
