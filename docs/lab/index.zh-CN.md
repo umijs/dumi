@@ -160,6 +160,7 @@ export default ({ children, ...props }) => (
 6. `useCopy` - 提供复制函数及复制的状态，便于实现源代码复制
 7. `useSearch` - 根据配置自动提供 algolia 的绑定函数或者根据关键字返回内置搜索的检索结果
 8. `useLocaleProps` - 根据 locale 自动过滤 props，便于实现国际化 frontmatter 的定义，比如 `title.zh-CN` 在中文语言下会被转换为 `title`
+9. `useDemoUrl` - 获取单独打开 demo 的页面地址，例如 `useDemoUrl(props.identifier)` 会返回类似 `http://example.com/~demos/demo-id` 的 URL.
 
 ### 调试及使用
 

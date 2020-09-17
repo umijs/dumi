@@ -160,6 +160,7 @@ In order to customize the theme, dumi provides a set of theme APIs, you can impo
 6. `useCopy` - Provide copy function and copy status to achieve to copy source code
 7. `useSearch` - Automatically provide algolia binding functions according to configuration or return search results according to keywords
 8. `useLocaleProps` - Automatically filter props according to locale to achieve to the definition of international frontmatter. For example, `title.zh-CN` will be converted to `title` in Chinese language
+9. `useDemoUrl` - Get the single demo page url via demo identifier, for example, `useDemoUrl(props.identifier)` may return like `http://example.com/~demos/demo-id`.
 
 ### Debug and usage
 
