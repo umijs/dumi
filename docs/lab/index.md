@@ -114,7 +114,7 @@ Method one, Create a package starting with `dumi-theme-` or `@group/dumi-theme-`
     ├── layout.tsx    # [Convention] You can custom your own layout component, props.children is the content of each markdown, developers can control the navigation, sidebar and content rendering by themselves
     ├── layouts       # [Convention] A custom layouts directory, used when you need to customize multiple layouts
     │   ├── index.tsx # [Convention] Same as src/layout.tsx, choose one of the two methods, layout.tsx has higher priority
-    │   └── demo.tsx  # [Convention] Separate route (~demos/:uuid) layout for custom component demo
+    │   └── demo.tsx  # [Convention] Separate route (_demos/:uuid) layout for custom component demo
     └── style         # [Non-Convention] Theme package style sheet
 ```
 

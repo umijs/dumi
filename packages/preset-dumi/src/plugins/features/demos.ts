@@ -60,7 +60,7 @@ export default {
 
     routes.unshift(
       {
-        path: '/~demos/:uuid',
+        path: '/_demos/:uuid',
         wrappers: [theme.layoutPaths.demo].filter(Boolean),
         component: `(props) => {
           const React = require('react');
@@ -107,11 +107,6 @@ export default {
 
           return \`Demo $\{uuid\} not found :(\`;
         }`,
-      },
-      // compatible 1.0 _demos/:name usage
-      {
-        path: '/_demos/:uuid',
-        redirect: '/~demos/:uuid',
       },
     );
 

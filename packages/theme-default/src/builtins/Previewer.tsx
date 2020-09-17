@@ -120,7 +120,7 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
           />
         )}
         {!props.hideActions?.includes('EXTERNAL') && (
-          <Link target="_blank" to={`/~demos/${props.identifier}`}>
+          <Link target="_blank" to={`/_demos/${props.identifier}`}>
             <button
               title="Open demo in new tab"
               className="__dumi-default-icon"

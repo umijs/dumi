@@ -156,7 +156,7 @@ describe('mobile theme', () => {
 
     // expect initialize to render the first demo
     expect((getByTitle('dumi-previewer') as HTMLIFrameElement).src).toEqual(
-      'http://localhost/~demos/demo-1',
+      'http://localhost/_demos/demo-1',
     );
 
     expect(getByText("'TypeScript'")).not.toBeNull();
@@ -189,7 +189,7 @@ describe('mobile theme', () => {
 
     // expect initialize to render the second demo
     expect((getByTitle('dumi-previewer') as HTMLIFrameElement).src).toEqual(
-      'http://localhost/~demos/demo-2',
+      'http://localhost/_demos/demo-2',
     );
   });
 

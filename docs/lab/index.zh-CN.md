@@ -114,7 +114,7 @@ export default () => {
     ├── layout.tsx    # [约定] 自定义的 layout 组件，props.children 即每个 md 的内容，开发者可自行控制导航、侧边栏及内容渲染
     ├── layouts       # [约定] 自定义的 layouts 目录，在需要自定义多个 layout 时使用
     │   ├── index.tsx # [约定] 等同于 src/layout.tsx，两种方式二选一，layout.tsx 优先级更高
-    │   └── demo.tsx  # [约定] 自定义组件 demo 单独路由（~demos/:uuid）的 layout
+    │   └── demo.tsx  # [约定] 自定义组件 demo 单独路由（_demos/:uuid）的 layout
     └── style         # [非约定] 主题包的样式表
 ```
 

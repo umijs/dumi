@@ -30,7 +30,7 @@ const MobileLayout: React.FC<IRouteComponentProps> = ({ children, ...props }) =>
       <div className="__dumi-default-mobile-content">
         <article>{children}</article>
         {demoId && (
-          <Device className="__dumi-default-mobile-content-device" url={`/~demos/${demoId}`} />
+          <Device className="__dumi-default-mobile-content-device" url={`/_demos/${demoId}`} />
         )}
       </div>
     </Layout>
