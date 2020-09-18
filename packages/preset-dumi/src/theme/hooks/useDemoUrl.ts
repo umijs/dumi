@@ -1,11 +1,16 @@
 import { useState, useEffect } from 'react';
 
+// functional for testing
+function isBMW() {
+  return process.env.PLATFORM_TYPE === 'BASEMENT';
+}
+
 export const getDemoRoutePrefix = () => {
-  return process.env.PLATFORM_TYPE === 'BASEMENT' ? '/_demos/' : '/~demos/';
+  return isBMW() ? '/_demos/' : '/~demos/';
 };
 
 export const getDemoUrl = (demoId: string) => {
-  return `${window.location.origin}${getDemoRoutePrefix()}${demoId}`;
+  return `${window.location.origin}${getDemoRoutePrefix()}${demoId}${isBMW() ? '/index.html' : ''}`;
 };
 
 /**

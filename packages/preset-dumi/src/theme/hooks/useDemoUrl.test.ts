@@ -15,6 +15,6 @@ describe('theme API: useDemoUrl', () => {
     const { result } = renderHook(() => useDemoUrl('test'));
     process.env.PLATFORM_TYPE = oType;
 
-    expect(result.current).toEqual('http://localhost/_demos/test');
+    expect(result.current).toEqual('http://localhost/_demos/test/index.html');
   });
 });
