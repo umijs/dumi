@@ -9,6 +9,7 @@ import {
   useMotions,
   useCopy,
   useLocaleProps,
+  useDemoUrl,
   Link,
   AnchorLink,
   IPreviewerComponentProps,
@@ -43,6 +44,7 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
   const demoRef = useRef();
   const { locale } = useContext(context);
   const props = useLocaleProps<IPreviewerProps>(locale, oProps);
+  const demoUrl = useDemoUrl(props.identifier);
   const isActive = history.location.hash === `#${props.identifier}`;
   const isSingleFile = Object.keys(props.sources).length === 1;
   const openCSB = useCodeSandbox(props.hideActions?.includes('CSB') ? null : props);
@@ -120,7 +122,7 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
           />
         )}
         {!props.hideActions?.includes('EXTERNAL') && (
-          <Link target="_blank" to={`/~demos/${props.identifier}`}>
+          <Link target="_blank" to={demoUrl}>
             <button
               title="Open demo in new tab"
               className="__dumi-default-icon"

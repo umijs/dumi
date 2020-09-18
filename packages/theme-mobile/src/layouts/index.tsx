@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useDemoUrl } from 'dumi/theme';
 import Layout from 'dumi-theme-default/src/layout';
 import { IRouteComponentProps } from '@umijs/types';
 import Device from '../components/Device';
@@ -7,6 +8,7 @@ import '../style/layout.less';
 
 const MobileLayout: React.FC<IRouteComponentProps> = ({ children, ...props }) => {
   const [demoId, setDemoId] = useState('');
+  const demoUrl = useDemoUrl(demoId);
 
   useEffect(() => {
     const handler = (ev: any) => {
@@ -29,12 +31,10 @@ const MobileLayout: React.FC<IRouteComponentProps> = ({ children, ...props }) =>
     <Layout {...props}>
       <div className="__dumi-default-mobile-content">
         <article>{children}</article>
-        {demoId && (
-          <Device className="__dumi-default-mobile-content-device" url={`/~demos/${demoId}`} />
-        )}
+        {demoId && <Device className="__dumi-default-mobile-content-device" url={demoUrl} />}
       </div>
     </Layout>
-  )
+  );
 };
 
 export default MobileLayout;

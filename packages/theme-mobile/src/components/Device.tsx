@@ -32,7 +32,7 @@ const Device: FC<IDeviceProps> = ({ url, className }) => {
           onClick={() => setRenderKey(Math.random())}
         />
         <button className="__dumi-default-icon" role="qrcode">
-          <QRCode value={`${window.document.location.origin}${url}`} size={96} />
+          <QRCode value={url} size={96} />
         </button>
         <Link to={url} target="_blank" className="__dumi-default-icon" role="open-demo" />
       </div>
