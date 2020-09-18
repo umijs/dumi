@@ -8,6 +8,18 @@ describe('theme API: useDemoUrl', () => {
     expect(result.current).toEqual('http://localhost/~demos/test');
   });
 
+  it('should return demo url and prefix router base', () => {
+    // @ts-ignore
+    window.routerBase = '/hello/';
+
+    const { result } = renderHook(() => useDemoUrl('test'));
+
+    // @ts-ignore
+    delete window.routerBase;
+
+    expect(result.current).toEqual('http://localhost/hello/~demos/test');
+  });
+
   it('should return basement-compatible demo url', () => {
     const oType = process.env.PLATFORM_TYPE;
 

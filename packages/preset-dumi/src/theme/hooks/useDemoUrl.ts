@@ -6,7 +6,9 @@ function isBMW() {
 }
 
 export const getDemoRoutePrefix = () => {
-  return isBMW() ? '/_demos/' : '/~demos/';
+  const routerBase = (window as any).routerBase || '/';
+
+  return isBMW() ? `${routerBase}_demos/` : `${routerBase}~demos/`;
 };
 
 export const getDemoUrl = (demoId: string) => {
