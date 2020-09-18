@@ -13,6 +13,17 @@ interface ISingleRoutetDemos {
 export default (api: IApi) => {
   const demos: ISingleRoutetDemos = {};
 
+  // pass platform env
+  if (process.env.PLATFORM_TYPE) {
+    api.modifyDefaultConfig(memo => {
+      memo.define = Object.assign(memo.define || {}, {
+        'process.env.PLATFORM_TYPE': process.env.PLATFORM_TYPE,
+      });
+
+      return memo;
+    });
+  }
+
   // write all demos into .umi dir
   api.onGenerateFiles(async () => {
     const items = Object.keys(demos).map(
