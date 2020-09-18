@@ -1,7 +1,7 @@
 import React from 'react';
 import { IApi, IRoute } from '@umijs/types';
 import getTheme from '../../theme/loader';
-import { getDemoRoutePrefix } from '../../theme/hooks/useDemoUrl';
+import { getDemoRouteName } from '../../theme/hooks/useDemoUrl';
 
 interface ISingleRoutetDemos {
   [key: string]: {
@@ -66,7 +66,7 @@ export default {
   // add single demo render route
   api.modifyRoutes(async routes => {
     const theme = await getTheme();
-    const prependRoutes: IRoute[] = [{ path: `${getDemoRoutePrefix()}:uuid` }];
+    const prependRoutes: IRoute[] = [{ path: `/${getDemoRouteName()}/:uuid` }];
     const Previewer = theme.builtins
       .concat(theme.fallbacks)
       .find(({ identifier }) => identifier === 'Previewer');

@@ -5,14 +5,27 @@ function isBMW() {
   return process.env.PLATFORM_TYPE === 'BASEMENT';
 }
 
-export const getDemoRoutePrefix = () => {
-  const routerBase = (window as any).routerBase || '/';
-
-  return isBMW() ? `${routerBase}_demos/` : `${routerBase}~demos/`;
+/**
+ * get demo route name
+ * @note  also use this function in CLI, do not use BOM inside
+ */
+export const getDemoRouteName = () => {
+  return isBMW() ? `_demos` : `~demos`;
 };
 
+/**
+ * get single demo url
+ * @param demoId  demo identifier
+ */
 export const getDemoUrl = (demoId: string) => {
-  return `${window.location.origin}${getDemoRoutePrefix()}${demoId}${isBMW() ? '/index.html' : ''}`;
+  return [
+    window.location.origin,
+    (window as any)?.routerBase || '/',
+    getDemoRouteName(),
+    '/',
+    demoId,
+    isBMW() ? '/index.html' : '',
+  ].join('');
 };
 
 /**
