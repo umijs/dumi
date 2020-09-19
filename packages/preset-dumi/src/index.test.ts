@@ -139,4 +139,28 @@ describe('preset-dumi', () => {
 
     expect(await findByText('local theme layout')).not.toBeNull();
   });
+
+  it('platform env', async () => {
+    const oType = process.env.PLATFORM_TYPE;
+
+    process.env.PLATFORM_TYPE = 'TESTING';
+
+    const service = new Service({
+      cwd: fixtures,
+      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+    });
+    const defines = (await service.run({
+      name: 'webpack',
+      args: {
+        _: ['webpack'],
+        plugin: 'define',
+      },
+    })) as any;
+
+    // expect define PLATFORM_TYPE
+    expect(defines.definitions['process.env.PLATFORM_TYPE'] === process.env.PLATFORM_TYPE);
+
+    // restore env
+    process.env.PLATFORM_TYPE = oType;
+  });
 });

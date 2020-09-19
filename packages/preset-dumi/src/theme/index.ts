@@ -10,6 +10,7 @@ export { default as useRiddle } from './hooks/useRiddle';
 export { default as useMotions } from './hooks/useMotions';
 export { default as useCodeSandbox } from './hooks/useCodeSandbox';
 export { default as useLocaleProps } from './hooks/useLocaleProps';
+export { default as useDemoUrl } from './hooks/useDemoUrl';
 export { default as useSketchJSON } from './hooks/useSketchJSON';
 
 export interface IPreviewerComponentProps {

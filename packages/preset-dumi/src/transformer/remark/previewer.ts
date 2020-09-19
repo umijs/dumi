@@ -6,7 +6,7 @@ import demoTransformer, { DEMO_COMPONENT_NAME, getDepsForDemo } from '../demo';
 import { IPreviewerComponentProps } from '../../theme';
 import transformer from '..';
 
-let demoIds: Object = {};
+const demoIds: Object = {};
 
 /**
  * get unique id for previewer
@@ -164,8 +164,9 @@ function visitor(node, i, parent: Node) {
       }
 
       // transform markdown for description field
-      if (/^description(\.|$)/.test(key)) {
+      if (/^description(_|$)/.test(key)) {
         // use wrapper object for workaround to avoid escape \n
+        // eslint-disable-next-line
         yaml[key] = new String(
           JSON.stringify(
             transformer.markdown(yaml[key], null, {

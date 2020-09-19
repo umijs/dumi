@@ -4,12 +4,12 @@
 
 ## Intro
 
-An Umi-based doc tool can assist you to develop libraries & write docs.
+A Umi-based doc tool can assist you to develop libraries & write docs.
 
 ### Features
 
 - 📦 Out of the box, focus on development & documentation
-- 🚀 Based on Umi 3, high-performance & extensible
+- 🚀 Based on [Umi 3](https://umijs.org), high-performance & extensible
 - 📋 Powerful Markdown extensions, support to embed demo or import external demo & inline demo
 
 ## Usage & Guide

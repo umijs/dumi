@@ -2,6 +2,7 @@ import '@testing-library/jest-dom';
 import React from 'react';
 import { render, act } from '@testing-library/react';
 import { createMemoryHistory, MemoryHistory, Router } from '@umijs/runtime';
+
 import Previewer from '../builtins/Previewer';
 import Layout from '../layouts';
 import DemoLayout from '../layouts/demo';
@@ -79,11 +80,11 @@ describe('mobile theme', () => {
     match: { params: {}, isExact: true, path: '/', url: '/' },
     route: { routes: baseCtx.routes },
   };
-  let originalOffsetTop = Object.getOwnPropertyDescriptor(
+  const originalOffsetTop = Object.getOwnPropertyDescriptor(
     window.HTMLElement.prototype,
     'offsetTop',
   );
-  let originalOffsetHeight = Object.getOwnPropertyDescriptor(
+  const originalOffsetHeight = Object.getOwnPropertyDescriptor(
     window.HTMLElement.prototype,
     'offsetHeight',
   );
@@ -93,7 +94,7 @@ describe('mobile theme', () => {
       // mock offsetTop because jest not implement it
       // refer: https://github.com/jsdom/jsdom/issues/135
       offsetTop: {
-        get: function() {
+        get() {
           return document.querySelector('.__dumi-default-mobile-previewer') === this ? 130 : 200;
         },
       },

@@ -5,7 +5,7 @@ export default {
   mode: 'site',
   favicon: 'https://img.alicdn.com/tfs/TB1YHEpwUT1gK0jSZFhXXaAtVXa-28-27.svg',
   menus: {
-    '/guide': [
+    '/zh-CN/guide': [
       {
         title: '介绍',
         children: ['guide/index', 'guide/getting-started'],
@@ -31,12 +31,45 @@ export default {
         children: ['guide/migration', 'guide/faq'],
       },
     ],
+    '/guide': [
+      {
+        title: 'Introducation',
+        children: ['guide/index', 'guide/getting-started'],
+      },
+      {
+        title: 'How to write a demo',
+        children: ['guide/demo-principle', 'guide/demo-types', 'guide/control-demo-render'],
+      },
+      {
+        title: 'Control and generate',
+        children: [
+          'guide/control-route-generate',
+          'guide/control-menu-generate',
+          'guide/control-nav-generate',
+        ],
+      },
+      {
+        title: 'More usage',
+        children: ['guide/mode', 'guide/multi-language', 'guide/seo'],
+      },
+      {
+        title: 'Others',
+        children: ['guide/migration', 'guide/faq'],
+      },
+    ],
   },
-  navs: [
-    null,
-    { title: 'GitHub', path: 'https://github.com/umijs/dumi' },
-    { title: '更新日志', path: 'https://github.com/umijs/dumi/releases' },
-  ],
+  navs: {
+    'en-US': [
+      null,
+      { title: 'GitHub', path: 'https://github.com/umijs/dumi' },
+      { title: 'Changelog', path: 'https://github.com/umijs/dumi/releases' },
+    ],
+    'zh-CN': [
+      null,
+      { title: 'GitHub', path: 'https://github.com/umijs/dumi' },
+      { title: '更新日志', path: 'https://github.com/umijs/dumi/releases' },
+    ],
+  },
   extraBabelPlugins: [
     [
       'import',
