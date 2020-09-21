@@ -27,11 +27,12 @@ function getPreviewerId(yaml: any, fileAbsPath: string, componentName: string) {
     // /path/to/md => path-to-md
     id = slash(fileAbsPath)
       // discard suffix like index.md
-      .replace(/(\/index)?(\.[\w-]+)?\.\w+$/, '')
-      .split('/')
+      .replace(/(?:\/index)?(\.[\w-]+)?\.\w+$/, '$1')
+      .split(/\/|\./)
       // get the last three levels
       .slice(-2)
-      .join('-');
+      .join('-')
+      .toLowerCase();
   }
 
   // record id
@@ -197,8 +198,9 @@ function visitor(node, i, parent: Node) {
         ),
       },
       dependencies,
+      componentName: this.vFile.data.componentName,
       ...yaml,
-      // not allow user override identifier by frontmatter
+      // to avoid user's identifier override internal logic
       identifier: getPreviewerId(yaml, this.data('fileAbsPath'), this.vFile.data.componentName),
     };
 
