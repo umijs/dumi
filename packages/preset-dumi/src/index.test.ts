@@ -86,8 +86,9 @@ describe('preset-dumi', () => {
     // expect demos generate
     const demos = require(path.join(service.paths.absTmpPath, 'dumi', 'demos')).default;
 
-    expect(Object.keys(demos).length).toEqual(2);
+    expect(Object.keys(demos).length).toEqual(3);
     expect(demos['tsx-demo']).not.toBeUndefined();
+    expect(demos['component-demo'].previewerProps.componentName).toEqual('ForceComponent');
   });
 
   it('assets command', async () => {

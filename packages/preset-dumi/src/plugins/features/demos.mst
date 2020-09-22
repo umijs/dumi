@@ -1,0 +1,12 @@
+import React from 'react';
+
+export default {
+  {{#demos}}
+  '{{uuid}}': {
+    component: {{{component}}},
+    {{#isDemoEntry}}
+    previewerProps: {{{previewerProps}}},
+    {{/isDemoEntry}}
+  },
+  {{/demos}}
+};

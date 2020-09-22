@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import React from 'react';
 import { IApi, IRoute } from '@umijs/types';
 import getTheme from '../../theme/loader';
@@ -26,29 +28,40 @@ export default (api: IApi) => {
 
   // write all demos into .umi dir
   api.onGenerateFiles(async () => {
-    const items = Object.keys(demos).map(
-      uuid => ` '${uuid}': {
-    previewerProps: ${JSON.stringify(demos[uuid].previewerProps)},
-    component: ${demos[uuid].component},
-  },`,
-    );
+    const tpl = fs.readFileSync(path.join(__dirname, 'demos.mst'), 'utf-8');
+    const groups: { [key: string]: any[] } = {};
+    const items = Object.keys(demos).map(uuid => {
+      const { componentName } = demos[uuid].previewerProps;
+      let demoComponent = demos[uuid].component;
 
-    const builtins =
-      (await api.applyPlugins({
-        key: 'dumi.modifyThemeBuiltins',
-        type: api.ApplyPluginsType.modify,
-        initialValue: [],
-      })) || [];
+      // group demos module by component
+      if (componentName) {
+        groups[componentName] = (groups[componentName] || []).concat({
+          uuid,
+          component: demoComponent,
+        });
+        demoComponent = `require('./${componentName}').default['${uuid}'].component`;
+      }
 
+      return {
+        uuid,
+        component: demoComponent,
+        previewerProps: JSON.stringify(demos[uuid].previewerProps),
+      };
+    });
+
+    // write demos entry file
     api.writeTmpFile({
-      path: 'dumi/demos.ts',
-      content: `import React from 'react';
-${builtins
-  .map(component => `import ${component.identifier} from '${component.source}';`)
-  .join('\n')}
-export default {
-  ${items.join('\n')}
-}`,
+      path: 'dumi/demos/index.ts',
+      content: api.utils.Mustache.render(tpl, { demos: items, isDemoEntry: true }),
+    });
+
+    // write demos which belongs to component into a single module
+    Object.entries(groups).forEach(([componentName, groupDemos]) => {
+      api.writeTmpFile({
+        path: `dumi/demos/${componentName}.ts`,
+        content: api.utils.Mustache.render(tpl, { demos: groupDemos }),
+      });
     });
   });
 
