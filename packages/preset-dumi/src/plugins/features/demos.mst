@@ -1,4 +1,5 @@
 import React from 'react';
+{{#isDemoEntry}}import { dynamic } from 'dumi';{{/isDemoEntry}}
 
 export default {
   {{#demos}}

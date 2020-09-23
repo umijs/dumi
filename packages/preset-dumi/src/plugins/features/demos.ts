@@ -34,13 +34,20 @@ export default (api: IApi) => {
       const { componentName } = demos[uuid].previewerProps;
       let demoComponent = demos[uuid].component;
 
-      // group demos module by component
+      // dynamic import demos for performance if it is belongs to some component
       if (componentName) {
         groups[componentName] = (groups[componentName] || []).concat({
           uuid,
           component: demoComponent,
         });
-        demoComponent = `require('./${componentName}').default['${uuid}'].component`;
+        demoComponent = `() => React.createElement(dynamic({
+      loader: async function() {
+        const { default: demos } = await import(/* webpackChunkName: "demos_${componentName}" */'./${componentName}');
+
+        return demos['${uuid}'].component;
+      },
+      loading: () => null,
+    }))`;
       }
 
       return {
@@ -56,7 +63,7 @@ export default (api: IApi) => {
       content: api.utils.Mustache.render(tpl, { demos: items, isDemoEntry: true }),
     });
 
-    // write demos which belongs to component into a single module
+    // write demos which belongs to component into a single module for dynamic import
     Object.entries(groups).forEach(([componentName, groupDemos]) => {
       api.writeTmpFile({
         path: `dumi/demos/${componentName}.ts`,
@@ -96,48 +103,29 @@ export default (api: IApi) => {
     prependRoutes[0].wrappers = [theme.layoutPaths.demo].filter(Boolean);
     prependRoutes[0].component = `(props) => {
       const React = require('react');
-      const demos = require('@@/dumi/demos').default;
-      const uuid = props.match.params.uuid;
-      const inline = props.location.query.wrapper === undefined;
-      const demo = demos[uuid];
+      const renderArgs = require('${api.utils.winPath(
+        path.relative(
+          path.join(api.paths.absTmpPath, 'core'),
+          path.join(__dirname, './getDemoRenderArgs'),
+        ),
+      )}').default(props);
 
-      if (demo) {
-        const previewerProps = {
-          ...demo.previewerProps,
-          // disallowed matryoshka
-          hideActions: (demo.previewerProps.hideActions || []).concat(['EXTERNAL'])
-        };
+      switch (renderArgs.length) {
+        case 1:
+          // render demo directly
+          return renderArgs[0];
 
-        if (props.location.query.capture !== undefined) {
-          // unchain refer
-          previewerProps.motions = (previewerProps.motions || []).slice();
-
-          // unshift autoplay motion
-          previewerProps.motions.unshift('autoplay');
-
-          // append capture motion if not exist
-          if (previewerProps.motions.every(motion => !motion.startsWith('capture'))) {
-            // compatible with qiankun app
-            previewerProps.motions.push('capture:[id|=root]');
-          }
-        }
-
-        if (inline) {
-          return React.createElement(() => {
-            require('dumi/theme').useMotions(previewerProps.motions || [], document);
-
-            return React.createElement('div', {}, React.createElement(demo.component));
-          });
-        } else {
+        case 2:
+          // render demo with previewer
           return React.createElement(
             require('${Previewer.source}').default,
-            previewerProps,
-            React.createElement(demo.component),
+            renderArgs[0],
+            renderArgs[1],
           );
-        }
-      }
 
-      return \`Demo $\{uuid\} not found :(\`;
+        default:
+          return \`Demo $\{uuid\} not found :(\`;
+      }
     }`;
 
     routes.unshift(...prependRoutes);
