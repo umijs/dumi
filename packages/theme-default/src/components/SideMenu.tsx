@@ -19,7 +19,7 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location }) => {
       repository: { url: repoUrl },
     },
     menu,
-    nav,
+    nav: navItems,
     base,
     meta,
   } = useContext(context);
@@ -57,10 +57,10 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location }) => {
           )}
         </div>
         {/* mobile nav list */}
-        {nav.length ? (
+        {navItems.length ? (
           <div className="__dumi-default-menu-mobile-area">
             <ul className="__dumi-default-menu-nav-list">
-              {nav.map(nav => {
+              {navItems.map(nav => {
                 const child = Boolean(nav.children?.length) && (
                   <ul>
                     {nav.children.map(item => (
@@ -89,12 +89,12 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location }) => {
               })}
             </ul>
             {/* site mode locale select */}
-            <LocaleSelect />
+            <LocaleSelect location={location} />
           </div>
         ) : (
           <div className="__dumi-default-menu-doc-locale">
             {/* doc mode locale select */}
-            <LocaleSelect />
+            <LocaleSelect location={location} />
           </div>
         )}
         {/* menu list */}

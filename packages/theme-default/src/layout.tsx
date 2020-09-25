@@ -78,6 +78,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
       onClick={() => setMenuCollapsed(true)}
     >
       <Navbar
+        location={location}
         navPrefix={<SearchBar />}
         onMobileMenuClick={ev => {
           setMenuCollapsed(val => !val);
