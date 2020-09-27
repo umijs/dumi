@@ -69,8 +69,8 @@ export default () => {
             href={user.link}
           >
             <img
-              width={user.name && 32}
-              height={!user.name && 32}
+              width={(user.name && 32) || undefined}
+              height={(!user.name && 32) || undefined}
               style={{ verticalAlign: '-0.32em', marginRight: 8 }}
               src={user.logo}
               alt={user.name}
