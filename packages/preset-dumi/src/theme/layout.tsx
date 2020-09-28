@@ -112,7 +112,7 @@ const OuterLayout: React.FC<IOuterLayoutProps & IRouteComponentProps> = props =>
   // scroll to anchor if hash exists
   useEffect(() => {
     if (location.hash) {
-      AnchorLink.scrollToAnchor(location.hash.slice(1));
+      AnchorLink.scrollToAnchor(decodeURIComponent(location.hash.slice(1)));
     }
   }, []);
 
