@@ -5,8 +5,6 @@ import config from '@@/dumi/config';
 import AnchorLink from './components/AnchorLink';
 import Context, { IThemeContext } from './context';
 import { IMenu } from '../routes/getMenuFromRoutes';
-import 'prismjs/themes/prism.css';
-import 'katex/dist/katex.min.css';
 
 export interface IOuterLayoutProps {
   mode: IThemeContext['config']['mode'];
