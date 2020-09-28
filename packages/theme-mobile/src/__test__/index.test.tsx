@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import React from 'react';
-import { render, act } from '@testing-library/react';
+import { render, act, waitFor } from '@testing-library/react';
 import { createMemoryHistory, MemoryHistory, Router } from '@umijs/runtime';
 
 import Previewer from '../builtins/Previewer';
@@ -188,8 +188,10 @@ describe('mobile theme', () => {
     });
 
     // expect initialize to render the second demo
-    expect((getByTitle('dumi-previewer') as HTMLIFrameElement).src).toEqual(
-      'http://localhost/~demos/demo-2',
+    await waitFor(() =>
+      expect((getByTitle('dumi-previewer') as HTMLIFrameElement).src).toEqual(
+        'http://localhost/~demos/demo-2',
+      ),
     );
   });
 
