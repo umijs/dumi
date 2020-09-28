@@ -32,7 +32,7 @@ export const getDemoUrl = (demoId: string) => {
  * hooks for get single demo url
  */
 export default (demoId: string) => {
-  const [url, setUrl] = useState(getDemoUrl(demoId));
+  const [url, setUrl] = useState('');
 
   useEffect(() => {
     setUrl(getDemoUrl(demoId));

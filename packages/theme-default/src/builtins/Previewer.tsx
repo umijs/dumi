@@ -45,7 +45,7 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
   const { locale } = useContext(context);
   const props = useLocaleProps<IPreviewerProps>(locale, oProps);
   const demoUrl = useDemoUrl(props.identifier);
-  const isActive = history.location.hash === `#${props.identifier}`;
+  const isActive = history?.location.hash === `#${props.identifier}`;
   const isSingleFile = Object.keys(props.sources).length === 1;
   const openCSB = useCodeSandbox(props.hideActions?.includes('CSB') ? null : props);
   const openRiddle = useRiddle(props.hideActions?.includes('RIDDLE') ? null : props);
