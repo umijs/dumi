@@ -27,7 +27,7 @@ export default (paths: IApi['paths']) => {
 
     if (lernaVersion.startsWith('3')) {
       JSON.parse(
-        execSync(`${path.join(paths.cwd, 'node_modules/.bin/lerna')} ls --json`, {
+        execSync(`${path.join(paths.cwd, 'node_modules/.bin/lerna')} ls --json --all`, {
           stdio: 'pipe',
         }).toString(),
       ).forEach(pkg => {
