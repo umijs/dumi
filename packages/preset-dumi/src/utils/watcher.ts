@@ -23,9 +23,10 @@ export const getWatchersForFile = (filePath: string) => {
   function loop(loopFilePath: string) {
     // find all related watchers, include dep file
     watchers.forEach(item => {
-      if (
+      if ((
         item.options.watchFilePath === loopFilePath ||
         item.options.parentFilePath === loopFilePath
+      )&&!result.has(item)
       ) {
         result.add(item);
 
