@@ -62,4 +62,11 @@ describe('util: watcher', () => {
     expect(getWatchersForFile(childPath).length).toEqual(0);
     expect(getWatchersForFile(otherPath).length).toEqual(0);
   });
+
+  it('finite loop', () => {
+    saveFileOnDepChange(parentPath, childPath);
+    saveFileOnDepChange(childPath, parentPath);
+    expect(getWatchersForFile(parentPath).length).toEqual(2);
+    expect(getWatchersForFile(childPath).length).toEqual(2);
+  });
 });
