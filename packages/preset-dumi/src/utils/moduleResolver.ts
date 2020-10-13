@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import slash from 'slash2';
 import resolve from 'enhanced-resolve';
+import getHostPkgAlias from './getHostPkgAlias';
 import ctx from '../context';
 
 const DEFAULT_EXT = ['.tsx', '.jsx', '.js', '.ts'];
@@ -12,6 +13,27 @@ interface IModuleResolverOpts {
   extensions?: string[];
   silent?: boolean;
 }
+
+const getResolveAlias = (() => {
+  let cache: any;
+
+  return () => {
+    if (!cache) {
+      const hostPkgAlias = getHostPkgAlias(ctx.umi?.paths).map(([pkgName]) => pkgName);
+
+      cache = Object.entries(ctx.umi?.config?.alias || {}).reduce((result, [name, value]) => {
+        // discard local package alias to use symlink in node_modules, for collect locale packages as third-party dependencies
+        if (!hostPkgAlias.includes(name)) {
+          result[name] = value;
+        }
+
+        return result;
+      }, {});
+    }
+
+    return cache;
+  };
+})();
 
 /**
  * resolve module path base on umi context (alias)
@@ -26,7 +48,7 @@ export const getModuleResolvePath = ({
     return slash(
       resolve.create.sync({
         extensions,
-        alias: ctx.umi?.config?.alias || {},
+        alias: getResolveAlias(),
         symlinks: false,
         mainFiles: ['index', 'package.json'],
       })(fs.statSync(basePath).isDirectory() ? basePath : path.parse(basePath).dir, sourcePath),

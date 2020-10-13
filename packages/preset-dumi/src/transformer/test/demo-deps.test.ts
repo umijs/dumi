@@ -1,8 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 import analyzeDeps, { getCSSForDep } from '../demo/dependencies';
+import ctx from '../../context';
 
 describe('demo transformer: dependencies', () => {
+  beforeAll(() => {
+    ctx.umi = Object.assign({}, ctx.umi, { paths: { cwd: process.cwd() } });
+  });
+
   it('basic analysis', () => {
     const filePath = path.join(__dirname, '../fixtures/demo-deps/normal/index.tsx');
     const result = analyzeDeps(fs.readFileSync(filePath).toString(), {
