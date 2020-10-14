@@ -9,7 +9,7 @@ describe('loader', () => {
   beforeAll(() => {
     ctx.umi = Object.assign({}, ctx.umi, {
       cwd: __dirname,
-      paths: { absNodeModulesPath: '' },
+      paths: { cwd: process.cwd(), absNodeModulesPath: '' },
       ApplyPluginsType: {},
       applyPlugins: ({ initialValue }) => initialValue,
     });
@@ -20,7 +20,10 @@ describe('loader', () => {
 
   it('should load normal md', async () => {
     const filePath = path.join(fixture, 'normal.md');
-    const result = await loader.call({ resource: filePath }, fs.readFileSync(filePath).toString());
+    const result = await loader.call(
+      { resource: filePath, resourcePath: filePath },
+      fs.readFileSync(filePath).toString(),
+    );
 
     // expect prepend demos
     expect(result).toContain("const DumiDemo1 = require('@@/dumi/demos')");
@@ -34,7 +37,10 @@ describe('loader', () => {
     const oEnv = process.env.NODE_ENV;
 
     process.env.NODE_ENV = 'production';
-    const result = await loader.call({ resource: filePath }, fs.readFileSync(filePath).toString());
+    const result = await loader.call(
+      { resource: filePath, resourcePath: filePath },
+      fs.readFileSync(filePath).toString(),
+    );
     process.env.NODE_ENV = oEnv;
 
     // expect import Katex css file
@@ -43,9 +49,35 @@ describe('loader', () => {
 
   it('should load math md with Katex style', async () => {
     const filePath = path.join(fixture, 'katex.md');
-    const result = await loader.call({ resource: filePath }, fs.readFileSync(filePath).toString());
+    const result = await loader.call(
+      { resource: filePath, resourcePath: filePath },
+      fs.readFileSync(filePath).toString(),
+    );
 
     // expect import Katex css file
     expect(result).toContain("import 'katex");
+  });
+
+  it('should load part of md by range', async () => {
+    const filePath = path.join(fixture, 'normal.md');
+    const singleLine = await loader.call(
+      { resource: filePath, resourcePath: filePath, resourceQuery: '?range=L1' },
+      fs.readFileSync(filePath).toString(),
+    );
+    const rangeLines = await loader.call(
+      { resource: filePath, resourcePath: filePath, resourceQuery: '?range=L3-L5' },
+      fs.readFileSync(filePath).toString(),
+    );
+
+    // expect get correct line
+    expect(singleLine).toContain('id="hello-world"');
+
+    // expect get single line
+    expect(singleLine.match(/<>([^]+)<\/>/)[1].replace(/^[\s\n]*|[\s\n]*$/g, '')).not.toContain(
+      '\n',
+    );
+
+    // expect parse previewer
+    expect(rangeLines).toContain('Previewer');
   });
 });

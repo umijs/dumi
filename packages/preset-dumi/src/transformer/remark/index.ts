@@ -10,6 +10,7 @@ import rehype from './rehype';
 import slug from './slug';
 import meta from './meta';
 import code from './code';
+import embed from './embed';
 import link from './link';
 import img from './img';
 import previewer from './previewer';
@@ -42,6 +43,7 @@ export default (source: string, fileAbsPath: string, type: 'jsx' | 'html') => {
     .use(comments, { removeConditional: true })
     .use(img)
     .use(code)
+    .use(embed)
     .use(previewer)
     .use(isolation)
     .data('fileAbsPath', fileAbsPath)
