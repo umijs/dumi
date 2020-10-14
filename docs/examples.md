@@ -22,15 +22,15 @@ import { Button } from 'antd';
 export default () => <Button type="primary">I'm Button from antd</Button>;
 ```
 
-## Translate TS to JS
+### Translate TS to JS
 
 <code src="./demo/typescript.tsx" />
 
-## Multiple dependencies
+### Multiple dependencies
 
 <code src="./demo/modal.jsx" />
 
-## Functional Buttons
+### Functional Buttons
 
 <code src="./demo/show-preview.tsx" hideActions='["CSB", "EXTERNAL"]' />
 

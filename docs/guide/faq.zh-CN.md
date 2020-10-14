@@ -27,6 +27,7 @@ dumi 基于 Umi，即除了自己提供的配置项以外，还支持[所有 Umi
 
 <code src="path/to/homepage.tsx" inline />
 ```
+
 详细使用可参考 Ant Design Landing 的 [use in dumi](https://landing.ant.design/docs/use/dumi-cn)
 
 ## dumi 支持使用 `.md` 之外的其他方式编写文档吗？
@@ -238,11 +239,14 @@ dumi 语法高亮使用的 [prism-react-renderer](https://github.com/FormidableL
 
 ```tsx | pure
 // src/app.ts
-import Prism from "prism-react-renderer/prism";
+import Prism from 'prism-react-renderer/prism';
 
-(typeof global !== "undefined" ? global : window).Prism = Prism;
+(typeof global !== 'undefined' ? global : window).Prism = Prism;
 
-require("prismjs/components/prism-kotlin");
-require("prismjs/components/prism-csharp");
+require('prismjs/components/prism-kotlin');
+require('prismjs/components/prism-csharp');
 ```
 
+## 非 umi 项目启动 dumi 后提示 Error: register failed, invalid key xx from plugin src/app.ts
+
+由于 `src/app.(t|j)sx?` 是 dumi [运行时配置文件](https://umijs.org/zh-CN/docs/directory-structure#appts)的约定，请避开此路径创建文件；如果无法避开命名，可参考上方[修改 APP_ROOT](#如何在 cra 等非 umi 项目中使用 dumi？) 的方式切换 dumi 的运行目录实现规避。

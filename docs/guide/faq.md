@@ -27,6 +27,7 @@ At present, dumi has not yet support the theme customization function, but it ca
 
 <code src="path/to/homepage.tsx" inline />
 ```
+
 For detailed usage, please refer to [use in dumi](https://landing.ant.design/docs/use/dumi) of Ant Design Landing
 
 ## Does dumi support to write documents in other ways rather than `.md`?
@@ -238,11 +239,14 @@ We can add support for other languages in dumi in the following ways:
 
 ```tsx | pure
 // src/app.ts
-import Prism from "prism-react-renderer/prism";
+import Prism from 'prism-react-renderer/prism';
 
-(typeof global !== "undefined" ? global : window).Prism = Prism;
+(typeof global !== 'undefined' ? global : window).Prism = Prism;
 
-require("prismjs/components/prism-kotlin");
-require("prismjs/components/prism-csharp");
+require('prismjs/components/prism-kotlin');
+require('prismjs/components/prism-csharp');
 ```
 
+## Use dumi in non-Umi project then got Error: register failed, invalid key xx from plugin src/app.ts
+
+Because of `src/app.(t|j)sx?` is dumi's [runtime configuration module](https://umijs.org/docs/directory-structure#appts), please avoid use this path, you can also use the [APP_ROOT way](#How to use dumi in non-Umi projects such as cra?) to workaround this if your project must use this path.
