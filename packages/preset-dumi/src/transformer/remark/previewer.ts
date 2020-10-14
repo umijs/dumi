@@ -11,11 +11,12 @@ const demoIds: Object = {};
 /**
  * get unique id for previewer
  * @param yaml          meta data
- * @param fileAbsPath   file absolute path
+ * @param mdAbsPath     md absolute path
+ * @param codeAbsPath   code absolute path, it is seem as mdAbsPath for embed demo
  * @param componentName the name of related component
  */
-function getPreviewerId(yaml: any, fileAbsPath: string, componentName: string) {
-  const ids = demoIds[fileAbsPath];
+function getPreviewerId(yaml: any, mdAbsPath: string, codeAbsPath: string, componentName: string) {
+  const ids = demoIds[mdAbsPath];
   let id = yaml.identifier || yaml.uuid || componentName;
 
   // do not generate identifier for inline demo
@@ -25,14 +26,21 @@ function getPreviewerId(yaml: any, fileAbsPath: string, componentName: string) {
 
   if (!id) {
     // /path/to/md => path-to-md
-    id = slash(fileAbsPath)
+    const words = (slash(codeAbsPath) as string)
       // discard suffix like index.md
       .replace(/(?:\/index)?(\.[\w-]+)?\.\w+$/, '$1')
       .split(/\/|\./)
       // get the last three levels
       .slice(-2)
-      .join('-')
-      .toLowerCase();
+      .map(w => w.toLowerCase());
+
+    if (!ids?.[words[1]]) {
+      // use demo file name first if it is not conflict
+      id = words[1];
+    } else {
+      // otherwise join parent path then process repetitions
+      id = words.join('-');
+    }
   }
 
   // record id
@@ -201,7 +209,12 @@ function visitor(node, i, parent: Node) {
       componentName: this.vFile.data.componentName,
       ...yaml,
       // to avoid user's identifier override internal logic
-      identifier: getPreviewerId(yaml, this.data('fileAbsPath'), this.vFile.data.componentName),
+      identifier: getPreviewerId(
+        yaml,
+        this.data('fileAbsPath'),
+        fileAbsPath,
+        this.vFile.data.componentName,
+      ),
     };
 
     // declare demo on the top page component for memo
