@@ -68,5 +68,6 @@ describe('util: watcher', () => {
     saveFileOnDepChange(childPath, parentPath);
     expect(getWatchersForFile(parentPath).length).toEqual(2);
     expect(getWatchersForFile(childPath).length).toEqual(2);
+    closeWatchersForFile(parentPath);
   });
 });
