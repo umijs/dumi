@@ -63,7 +63,8 @@
           "bin",
           "preset",
           "routes",
-          "transformer"
+          "transformer",
+          "parser"
         ]
       ]
     }
