@@ -51,25 +51,14 @@ $ yarn dev
         </a>
       </td>
       <td align="center">
-        <a target="_blank" href="https://prolayout.ant.design">
+        <a target="_blank" href="https://procomponents.ant.design/">
           <img
             width="32"
             style="vertical-align: -0.32em; margin-right: 8px;"
             src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
           />
           <br>
-          <strong>Pro Layout</strong>
-        </a>
-      </td>
-      <td align="center">
-        <a target="_blank" href="https://protable.ant.design">
-          <img
-            width="32"
-            style="vertical-align: -0.32em; margin-right: 8px;"
-            src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
-          />
-          <br>
-          <strong>Pro Table</strong>
+          <strong>Pro Components</strong>
         </a>
       </td>
       <td align="center">
