@@ -17,7 +17,7 @@ const demoIds: Object = {};
  */
 function getPreviewerId(yaml: any, mdAbsPath: string, codeAbsPath: string, componentName: string) {
   const ids = demoIds[mdAbsPath];
-  let id = yaml.identifier || yaml.uuid || componentName;
+  let id = yaml.identifier || yaml.uuid;
 
   // do not generate identifier for inline demo
   if (yaml.inline) {
@@ -25,22 +25,22 @@ function getPreviewerId(yaml: any, mdAbsPath: string, codeAbsPath: string, compo
   }
 
   if (!id) {
-    // /path/to/md => path-to-md
     const words = (slash(codeAbsPath) as string)
-      // discard suffix like index.md
+      // discard index & suffix like index.tsx
       .replace(/(?:\/index)?(\.[\w-]+)?\.\w+$/, '$1')
-      .split(/\/|\./)
-      // get the last three levels
-      .slice(-2)
+      .split(/\//)
       .map(w => w.toLowerCase());
 
-    if (!ids?.[words[1]]) {
-      // use demo file name first if it is not conflict
-      id = words[1];
-    } else {
-      // otherwise join parent path then process repetitions
-      id = words.join('-');
-    }
+    // /path/to/index.tsx -> to || /path/to.tsx -> to
+    const demoName = words[words.length - 1] || 'demo';
+    const prefix =
+      componentName ||
+      words
+        .slice(0, words.length - 1)
+        .filter(word => word && !['src', 'demo', 'demos'].includes(word))
+        .slice(-1)[0];
+
+    id = [prefix, demoName].join('-');
   }
 
   // record id

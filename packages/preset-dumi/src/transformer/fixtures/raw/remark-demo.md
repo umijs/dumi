@@ -19,6 +19,7 @@ export default () => <h1>Hello {typeof katex}!</h1>;
 
 ```tsx
 /**
+ * identifier: custom-demo-url
  * description: |
  *   多行文本测试
  *   - 列表
