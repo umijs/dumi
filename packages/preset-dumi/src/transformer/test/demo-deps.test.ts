@@ -1,5 +1,7 @@
 import fs from 'fs';
 import path from 'path';
+import { Service } from '@umijs/core';
+import { rimraf } from '@umijs/utils';
 import analyzeDeps, { getCSSForDep } from '../demo/dependencies';
 import ctx from '../../context';
 
@@ -57,5 +59,24 @@ describe('demo transformer: dependencies', () => {
   it('detect CSS files for dependency', () => {
     expect(typeof getCSSForDep('antd')).toEqual('string');
     expect(getCSSForDep('js-yaml')).toBeUndefined();
+  });
+
+  it('should collect local pkg as third-party dependencies', async () => {
+    const service = new Service({
+      cwd: path.join(__dirname, '../fixtures/demo-deps/local-pkgs'),
+      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('../../index.ts')],
+    });
+
+    // for package symlink
+    await service.init();
+
+    const filePath = path.join(__dirname, '../fixtures/demo-deps/local-pkgs/test.ts');
+    const result = analyzeDeps(fs.readFileSync(filePath).toString(), {
+      isTSX: false,
+      fileAbsPath: filePath,
+    });
+
+    rimraf.sync(path.join(service.cwd, 'node_modules'));
+    expect(result.dependencies['local-pkg']).not.toBeUndefined();
   });
 });
