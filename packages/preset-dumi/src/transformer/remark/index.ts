@@ -11,6 +11,7 @@ import slug from './slug';
 import meta from './meta';
 import code from './code';
 import embed from './embed';
+import api from './api';
 import link from './link';
 import img from './img';
 import previewer from './previewer';
@@ -44,6 +45,7 @@ export default (source: string, fileAbsPath: string, type: 'jsx' | 'html') => {
     .use(img)
     .use(code)
     .use(embed)
+    .use(api)
     .use(previewer)
     .use(isolation)
     .data('fileAbsPath', fileAbsPath)

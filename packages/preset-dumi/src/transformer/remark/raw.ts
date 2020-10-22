@@ -42,6 +42,11 @@ export default () => ast => {
     if (typeof node.value === 'string' && /<code[^>]*src=/.test(node.value)) {
       node.value = node.value.replace(/ ?\/?>/g, '></code>');
     }
+
+    // special process <API /> for same reason in above
+    if (typeof node.value === 'string' && /<dumi-raw-a-p-i/.test(node.value)) {
+      node.value = node.value.replace(/ ?\/?>/g, '></dumi-raw-a-p-i>');
+    }
   });
 
   // raw to hast tree
