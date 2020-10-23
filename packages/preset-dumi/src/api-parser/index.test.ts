@@ -1,13 +1,16 @@
 import fs from 'fs';
 import path from 'path';
+import { winEOL } from '@umijs/utils';
 import parser from '.';
 
 const rawPath = path.join(__dirname, 'fixtures', 'raw');
 const expectPath = path.join(__dirname, 'fixtures', 'expect');
 
 function assertResult(filename) {
-  expect(JSON.stringify(parser(path.join(rawPath, filename)), null, 2)).toEqual(
-    fs.readFileSync(path.join(expectPath, `${path.basename(filename, '.tsx')}.json`)).toString(),
+  expect(winEOL(JSON.stringify(parser(path.join(rawPath, filename)), null, 2))).toEqual(
+    winEOL(
+      fs.readFileSync(path.join(expectPath, `${path.basename(filename, '.tsx')}.json`)).toString(),
+    ),
   );
 }
 
