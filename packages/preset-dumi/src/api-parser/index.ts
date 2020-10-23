@@ -20,6 +20,8 @@ export interface IPropDefinitions {
      * component property description
      */
     description?: string;
+    'description.zh-CN'?: string;
+    'description.en-US'?: string;
     /**
      * component property type
      */
@@ -58,11 +60,29 @@ export default (filePath: string, componentName?: string) => {
         const props = Object.entries(item.props).map(([identifier, prop]) => {
           const result = { identifier } as IPropDefinitions[''][0];
           const fields = ['identifier', 'description', 'type', 'default', 'required'];
+          const localeDescReg = /(?:^|\n+)@description\s+/;
 
           fields.forEach(field => {
             switch (field) {
               case 'type':
                 result.type = prop.type.raw || prop.type.name;
+                break;
+
+              case 'description':
+                // the workaround way for support locale description
+                // detect locale description content, such as @description.zh-CN xxx
+                if (localeDescReg.test(prop.description)) {
+                  // split by @description symbol
+                  const groups = prop.description.split(localeDescReg).filter(Boolean);
+
+                  groups?.forEach(str => {
+                    const [, locale, content] = str.match(/^(\.[\w-]+)?\s*([^]*)$/);
+
+                    result[`description${locale || ''}`] = content;
+                  });
+                } else if (prop.description) {
+                  result.description = prop.description;
+                }
                 break;
 
               default:

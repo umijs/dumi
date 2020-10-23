@@ -35,4 +35,8 @@ describe('api parser', () => {
   it('should parse multiple exports', () => {
     assertResult('multiple.tsx');
   });
+
+  it('should parse locale description', () => {
+    assertResult('localeDescription.tsx');
+  });
 });
