@@ -1,0 +1,39 @@
+{
+  "Normal": {
+    "default": [
+      {
+        "identifier": "normal",
+        "type": "string"
+      }
+    ]
+  },
+  "LocaleDescription": {
+    "default": [
+      {
+        "identifier": "locale",
+        "type": "string",
+        "description": "default description",
+        "description.en-US": "english description"
+      }
+    ]
+  },
+  "MultipleExports": {
+    "default": [],
+    "Other": [
+      {
+        "identifier": "other",
+        "type": "string"
+      },
+      {
+        "identifier": "another",
+        "type": "string",
+        "required": true
+      },
+      {
+        "identifier": "anotherAgain",
+        "type": "string",
+        "default": "again"
+      }
+    ]
+  }
+}

@@ -18,3 +18,5 @@ export default () => null;
 
 export default () => null;
 ```
+
+<API src="../Test/index.tsx" />
