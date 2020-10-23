@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { context, useApiData, IApiComponentProps } from 'dumi/theme';
+import { context, useApiData, IApiComponentProps, AnchorLink } from 'dumi/theme';
 
 const LOCALE_TEXTS = {
   'zh-CN': {
@@ -18,6 +18,14 @@ const LOCALE_TEXTS = {
   },
 };
 
+function ApiAnchorLink({ expt }: { expt: string }) {
+  return (
+    <AnchorLink to={`#api${expt && expt !== 'default' ? `-${expt}` : ''}`} aria-hidden="true">
+      <span className="icon icon-link" />
+    </AnchorLink>
+  );
+}
+
 export default ({ identifier, exports: expts }: IApiComponentProps) => {
   const data = useApiData(identifier);
   const { locale } = useContext(context);
@@ -26,9 +34,20 @@ export default ({ identifier, exports: expts }: IApiComponentProps) => {
   return (
     <>
       {data &&
-        expts.map(expt => (
+        expts.map((expt, i) => (
           <React.Fragment key={expt}>
-            {expt !== 'default' && <h3>{expt}</h3>}
+            {(expt === 'default' || !i) && (
+              <h2 id="api">
+                <ApiAnchorLink expt={expt} />
+                API
+              </h2>
+            )}
+            {expt !== 'default' && (
+              <h3 id={`api-${expt}`}>
+                <ApiAnchorLink expt={expt} />
+                {expt}
+              </h3>
+            )}
             <table style={{ marginTop: 24 }}>
               <thead>
                 <tr>

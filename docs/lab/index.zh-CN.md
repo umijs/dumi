@@ -9,6 +9,55 @@ sidemenu: false
 实验室的功能仅在 <code>next</code> 版本中提供，可以使用 <code>npm i dumi@next</code> 安装实验版本进行体验；实验性质的功能可能不稳定，请谨慎用于生产；如果体验后有任何建议，欢迎在讨论群中进行反馈和交流 ❤
 </Alert>
 
+## 组件 API 自动生成
+
+**依赖版本：**`dumi@1.1.0-beta.27+`
+
+现在，我们可以通过 JS Doc 注解 + TypeScript 类型定义的方式实现组件 API 的自动生成了！
+
+### 组件源码中的类型和注解
+
+组件 API 自动生成的前提是，确保 dumi 能够通过 TypeScript 类型定义 + 注解推导出 API 的内容，例如 `Hello` 组件的源代码：
+
+```tsx | pure
+import React from 'react';
+
+export interface IHelloProps {
+  /**
+   * 可以这样写属性描述
+   * @description       也可以显式加上描述名
+   * @description.zh-CN 还支持不同的 locale 后缀来实现多语言描述
+   * @default           支持定义默认值
+   * @required          支持标记可选/必填
+   */
+  className?: string;
+}
+
+const Hello: React.FC<IHelloProps> = () => <>Hello World!</>;
+
+export default Hello;
+```
+
+### 在文档中展示 API
+
+有了能够推导 API 的源代码，我们就可以在 Markdown 中通过 `API` 内置组件来渲染 API 表格：
+
+```md
+<!-- 不传递 src 将自动探测当前组件，比如 src/Hello/index.md 将会识别 src/Hello/index.tsx -->
+<API />
+
+<!-- 传递 src 将显式指明渲染哪个组件的 API -->
+<API src="/path/to/your/component.tsx" />
+```
+
+效果大致如下：
+
+<API src="../demo/Hello/index.tsx" />
+
+### 自定义 API 表格渲染
+
+和其他内置组件一样，`API` 组件也支持通过 theme API 进行复写，只需要创建 `.dumi/theme/builtins/API.tsx`（本地主题）或者创建一个包含 `API.tsx` 的主题包，结合 `dumi/theme` 暴露的 `useApiData` hook，即可自行控制 API 表格的渲染，可参考 dumi 默认主题的 [API 组件实现](https://github.com/umijs/dumi/blob/master/packages/theme-default/src/builtins/API.tsx)。
+
 ## 移动端组件研发
 
 **依赖版本：**`dumi@1.1.0-beta.18+` & `dumi-theme-mobile`
