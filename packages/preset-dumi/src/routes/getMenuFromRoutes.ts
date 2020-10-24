@@ -81,9 +81,7 @@ function convertUserMenuChilds(
             title: route.title,
           };
 
-          if (!route.meta) {
-            route.meta = {};
-          }
+          route.meta = route.meta || {};
 
           // update original route group
           route.meta.group = {
@@ -137,13 +135,13 @@ export default function getMenuFromRoutes(
     };
   } = {};
   const { menus: userMenus = {} } = opts;
-  let localeMenus: IMenu = {};
+  const localeMenus: IMenu = {};
 
   routes.forEach(route => {
     if (isValidMenuRoutes(route)) {
       const { group } = route.meta;
       const nav = addHtmlSuffix(route.meta.nav?.path) || '*';
-      const locale = route.meta.locale || opts.locales[0]?.[0] || '*';
+      const locale = route.meta.locale || opts.locales[0][0];
       const menuItem: IMenuItem = {
         path: route.path,
         title: route.title,
@@ -251,17 +249,6 @@ export default function getMenuFromRoutes(
         return true;
       }
     });
-  });
-
-  // replace unique locale key with *
-  Object.keys(localeMenus).some((locale, _, locales) => {
-    if (locales.length === 1) {
-      localeMenus = {
-        '*': localeMenus[locale],
-      };
-    }
-
-    return true;
   });
 
   return localeMenus;

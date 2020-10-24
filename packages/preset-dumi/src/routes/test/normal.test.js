@@ -9,7 +9,7 @@ describe('routes & menu: normal', () => {
   let routes;
 
   it('getRouteConfigFromDir', () => {
-    routes = getRoute(path.join(FIXTURES_PATH, 'normal'), { locales: [] });
+    routes = getRoute(path.join(FIXTURES_PATH, 'normal'), { locales: [['en-US', 'EN']] });
     expect(routes).toEqual([
       {
         path: '/',
@@ -52,7 +52,7 @@ describe('routes & menu: normal', () => {
   it('route decorator', () => {
     routes = decorateRoute(
       routes,
-      { locales: [] },
+      { locales: [['en-US', 'EN']] },
       {
         paths: {
           cwd: process.cwd(),
@@ -167,10 +167,10 @@ describe('routes & menu: normal', () => {
   });
 
   it('getMenuFromRoutes', () => {
-    const menu = getMenu(routes, { locales: [] });
+    const menu = getMenu(routes, { locales: [['en-US', 'EN']] });
 
     expect(menu).toEqual({
-      '*': {
+      'en-US': {
         '*': [
           {
             title: 'Rename Sub',

@@ -12,7 +12,7 @@ export default (routes: IRoute[], opts: IDumiOpts): ILocale[] => {
 
   // collect valid locales set
   routes.forEach(route => {
-    const localeName = route.meta?.locale || opts.locales[0]?.[0];
+    const localeName = route.meta?.locale || opts.locales[0][0];
     const locale = opts.locales.find(([name]) => name === localeName);
 
     if (locale) {
@@ -27,9 +27,12 @@ export default (routes: IRoute[], opts: IDumiOpts): ILocale[] => {
       .map(([name, label]) => ({ name, label })),
   );
 
-  // discard unique locale
-  if (locales.length === 1) {
-    locales.splice(0, 1);
+  // fallback to default locale if there has no valid locales
+  if (!locales.length) {
+    locales.push({
+      name: opts.locales[0][0],
+      label: opts.locales[0][1],
+    });
   }
 
   return locales;
