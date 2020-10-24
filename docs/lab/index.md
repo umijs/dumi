@@ -17,7 +17,7 @@ Now, we can get auto-gen component API tables via JS Doc + TypeScript definition
 
 ### Type & doc comment in source code
 
-Before API generate, we need to write correct TypeScript definitions and doc comments, to make sure dumi can parse them. For example the `Hello` component:
+For generating API automatically, we need to ensure that dumi can devise the content of API via correct TypeScript definitions and doc comments. For example the `Hello` component:
 
 ```tsx | pure
 import React from 'react';
