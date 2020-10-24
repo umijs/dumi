@@ -40,7 +40,7 @@ export default Hello;
 
 ### Show API in documentation
 
-Base on the correct source code, we can render the API table via `API` builtin component in Markdown:
+Based on the correct source code, we can render the API table via `API` builtin component in Markdown:
 
 ```md
 <!-- Omit src for detect target component automatically, for example, src/Hello/index.md will target src/Hello/index.tsx -->
@@ -54,9 +54,9 @@ After that, we will get:
 
 <API src="../demo/Hello/index.tsx" />
 
-### Control API table render
+### Control API table rendering
 
-Like other builtin components, we can also override the `API` builtin component via theme API, just need to create `.dumi/theme/builtins/API.tsx` (local theme), or create a theme package that contains `API.tsx`, and import `useApiData` hook from `dumi/theme`, then we can do that, refer the implementation of default [API component](https://github.com/umijs/dumi/blob/master/packages/theme-default/src/builtins/API.tsx).
+Like other builtin components, we can also override the `API` builtin component via theme API, just need to create a `.dumi/theme/builtins/API.tsx` (local theme), or create a theme package that contains the `API.tsx`, and import `useApiData` hook from `dumi/theme`, then we can control rendering as you like. Please refer the implementation of default [API component](https://github.com/umijs/dumi/blob/master/packages/theme-default/src/builtins/API.tsx).
 
 ## Develop mobile library
 
