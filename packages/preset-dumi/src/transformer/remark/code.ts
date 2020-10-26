@@ -32,7 +32,7 @@ export default function code() {
 
         // restore camelCase attrs, because hast-util-raw will transform camlCase to lowercase
         Object.entries(ATTR_MAPPING).forEach(([mark, attr]) => {
-          if (attrs[mark]) {
+          if (attrs[mark] !== undefined) {
             attrs[attr] = attrs[mark];
             delete attrs[mark];
           }
