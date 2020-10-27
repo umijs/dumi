@@ -436,10 +436,15 @@ describe('routes & menu: site mode', () => {
     });
   });
 
-  it('getLocaleFromRoutes', () => {
-    // test for unique locale discard logic
-    const locales = getLocale(routes, { locales: DEFAULT_LOCALES.reverse() });
+  it('getLocaleFromRoutes: fallback to default locale', () => {
+    // test for empty valid locales fallback logic
+    const locales = getLocale([], { locales: DEFAULT_LOCALES.reverse() });
 
-    expect(locales).toEqual([]);
+    expect(locales).toEqual([
+      {
+        name: DEFAULT_LOCALES[0][0],
+        label: DEFAULT_LOCALES[0][1],
+      },
+    ]);
   });
 });

@@ -1,6 +1,7 @@
 import visit from 'unist-util-visit';
 import has from 'hast-util-has-property';
 import raw from 'hast-util-raw';
+import { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 
 /**
  * detect properties whether has complex value
@@ -15,7 +16,7 @@ function hasComplexProp(props: object) {
 /**
  * rehype plugin for compile raw node to hast
  */
-export default () => ast => {
+export default (): IDumiUnifiedTransformer => ast => {
   const props = [];
 
   visit(ast, node => {
@@ -53,17 +54,17 @@ export default () => ast => {
   const parsed = raw(ast);
 
   // restore React Component & it's properties
-  visit(parsed, 'element', elm => {
+  visit<IDumiElmNode>(parsed, 'element', elm => {
     // restore tag name
-    if (/^dumi-raw/.test(elm.tagName as string)) {
-      elm.tagName = (elm.tagName as string)
+    if (/^dumi-raw/.test(elm.tagName)) {
+      elm.tagName = elm.tagName
         .replace('dumi-raw', '')
         .replace(/-([a-z])/g, (_, word) => word.toUpperCase());
     }
 
     // restore properties from temp array
     if (has(elm, '_index')) {
-      elm.properties = props[(elm.properties as any)._index];
+      elm.properties = props[elm.properties._index];
     }
   });
 

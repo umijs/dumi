@@ -1,3 +1,4 @@
+import { Processor } from 'unified';
 import toJSX from '@mapbox/hast-util-to-jsx';
 import visit from 'unist-util-visit';
 import { formatJSXProps } from '../utils';
@@ -5,7 +6,7 @@ import { formatJSXProps } from '../utils';
 /**
  * rehype compiler for compile hast to jsx
  */
-export default function jsxify() {
+export default (function jsxify() {
   this.Compiler = function compiler(ast) {
     // format props for JSX element
     visit(ast, 'element', node => {
@@ -24,4 +25,4 @@ export default function jsxify() {
 
     return JSX;
   };
-}
+} as Processor);

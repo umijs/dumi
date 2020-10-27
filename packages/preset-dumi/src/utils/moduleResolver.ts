@@ -21,14 +21,13 @@ const getResolveAlias = (() => {
     if (!cache) {
       const hostPkgAlias = getHostPkgAlias(ctx.umi?.paths).map(([pkgName]) => pkgName);
 
-      cache = Object.entries(ctx.umi?.config?.alias || {}).reduce((result, [name, value]) => {
-        // discard local package alias to use symlink in node_modules, for collect locale packages as third-party dependencies
-        if (!hostPkgAlias.includes(name)) {
-          result[name] = value;
+      cache = Object.assign({}, ctx.umi?.config?.alias);
+      hostPkgAlias.forEach(pkg => {
+        // use symlink in node_modules, for collect local packages as third-party dependencies
+        if (!cache[pkg] || cache[pkg].endsWith('src')) {
+          cache[pkg] = `${pkg}/src`;
         }
-
-        return result;
-      }, {});
+      });
     }
 
     return cache;

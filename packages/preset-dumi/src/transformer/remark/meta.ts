@@ -3,6 +3,8 @@ import path from 'path';
 import slash from 'slash2';
 import { execSync } from 'child_process';
 import visit from 'unist-util-visit';
+import { YamlNode } from 'remark-frontmatter';
+import { IDumiUnifiedTransformer } from '.';
 import transformer from '..';
 import ctx from '../../context';
 import yaml from '../../utils/yaml';
@@ -11,7 +13,7 @@ import { getModuleResolvePath } from '../../utils/moduleResolver';
 /**
  * remark plugin for generate file meta
  */
-export default function yamlProcessor() {
+export default function yamlProcessor(): IDumiUnifiedTransformer {
   return (ast, vFile) => {
     if (this.data('fileAbsPath')) {
       const filePath = slash(
@@ -59,8 +61,8 @@ export default function yamlProcessor() {
     }
 
     // save frontmatters
-    visit(ast, 'yaml', node => {
-      const data = yaml(node.value as string);
+    visit<YamlNode>(ast, 'yaml', node => {
+      const data = yaml(node.value);
 
       // parse markdown for features in home page
       if (data.features) {

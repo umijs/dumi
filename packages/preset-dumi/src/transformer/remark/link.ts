@@ -3,15 +3,16 @@ import toHtml from 'hast-util-to-html';
 import has from 'hast-util-has-property';
 import is from 'hast-util-is-element';
 import url from 'url';
+import { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 
-export default function link() {
+export default function link(): IDumiUnifiedTransformer {
   return ast => {
-    visit(ast, 'element', (node, i, parent) => {
+    visit<IDumiElmNode>(ast, 'element', (node, i, parent) => {
       // handle internal link, external link & anchor link
       if (is(node, 'a') && has(node, 'href')) {
         let LinkComponent = 'Link';
-        let parsedUrl = url.parse((node.properties as any).href);
-        const children = ((node.children as any[]) || []).map(n => toHtml(n)).join('');
+        const parsedUrl = url.parse(node.properties.href);
+        const children = (node.children || []).map(n => toHtml(n)).join('');
         let properties = Object.keys(node.properties)
           .filter(prop => !['href'].includes(prop))
           .map(prop => `${prop}="${node.properties[prop]}"`)

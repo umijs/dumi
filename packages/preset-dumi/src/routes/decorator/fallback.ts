@@ -18,7 +18,7 @@ function replaceLocaleForPath(
  * generate fallback routes for missing locales
  */
 export default (function fallback(routes) {
-  const defaultLocale = this.options.locales[0]?.[0];
+  const defaultLocale = this.options.locales[0][0];
   const fallbacks = [];
 
   // for missing locale routes

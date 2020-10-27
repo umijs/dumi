@@ -9,7 +9,7 @@ export default (function group(routes) {
   const userCustomGroupTitles = {};
 
   routes.map(route => {
-    const defaultLocale = this.options.locales[0]?.[0];
+    const defaultLocale = this.options.locales[0][0];
     let groupPath: string = route.meta.group?.path;
     const groupTitle: string = route.meta.group?.title;
     let clearPath = route.path;

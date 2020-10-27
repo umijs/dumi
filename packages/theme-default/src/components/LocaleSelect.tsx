@@ -22,26 +22,21 @@ const LocaleSelect: FC<{ location: any }> = ({ location }) => {
     return newPathname;
   }
 
-  return (
-    Boolean(locales.length) && (
-      <div className="__dumi-default-locale-select" data-locale-count={locales.length}>
-        {locales.length > 2 ? (
-          <select
-            value={locale}
-            onChange={ev => history.push(getLocaleTogglePath(ev.target.value))}
-          >
-            {locales.map(localeItem => (
-              <option value={localeItem.name} key={localeItem.name}>
-                {localeItem.label}
-              </option>
-            ))}
-          </select>
-        ) : (
-          <Link to={getLocaleTogglePath(firstDiffLocale.name)}>{firstDiffLocale.label}</Link>
-        )}
-      </div>
-    )
-  );
+  return firstDiffLocale ? (
+    <div className="__dumi-default-locale-select" data-locale-count={locales.length}>
+      {locales.length > 2 ? (
+        <select value={locale} onChange={ev => history.push(getLocaleTogglePath(ev.target.value))}>
+          {locales.map(localeItem => (
+            <option value={localeItem.name} key={localeItem.name}>
+              {localeItem.label}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <Link to={getLocaleTogglePath(firstDiffLocale.name)}>{firstDiffLocale.label}</Link>
+      )}
+    </div>
+  ) : null;
 };
 
 export default LocaleSelect;

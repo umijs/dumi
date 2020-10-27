@@ -5,7 +5,7 @@ export default (api: IApi) => {
     key: 'locales',
     config: {
       schema(joi) {
-        return joi.array();
+        return joi.array().min(1);
       },
       onChange: api.ConfigChangeType.regenerateTmpFiles,
     },

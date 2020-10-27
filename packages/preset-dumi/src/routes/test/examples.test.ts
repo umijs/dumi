@@ -35,7 +35,7 @@ describe('routes: examples', () => {
         },
       } as IApi,
       {
-        locales: [],
+        locales: [['en-US', 'EN']],
         resolve: {
           examples: ['examples'],
           includes: [],
@@ -43,6 +43,6 @@ describe('routes: examples', () => {
       },
     );
 
-    expect(routes.find(route => route.path == '/_examples/test')).not.toBeUndefined();
+    expect(routes.find(route => route.path === '/_examples/test')).not.toBeUndefined();
   });
 });

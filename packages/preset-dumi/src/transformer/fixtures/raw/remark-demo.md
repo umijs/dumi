@@ -19,6 +19,7 @@ export default () => <h1>Hello {typeof katex}!</h1>;
 
 ```tsx
 /**
+ * identifier: custom-demo-url
  * description: |
  *   多行文本测试
  *   - 列表
@@ -28,4 +29,6 @@ import React from 'react';
 export default () => null;
 ```
 
-<code src="./demo-missing-react.tsx" hideActions='["CSB"]' />
+<code src="./demo-missing-react.tsx" hideActions='["CSB"]' defaultShowCode />
+
+<code src="./demo-missing-react.tsx" inline />
