@@ -1,3 +1,4 @@
+import { Plugin } from 'unified';
 import rehype from 'remark-rehype';
 import { parseText } from 'sylvanas';
 
@@ -23,10 +24,11 @@ function demoHandler(h, { type, lang, value, position, ...props }) {
   });
 }
 
-export default () =>
-  rehype({
+export default (function wrappedRehype() {
+  return rehype.call(this, {
     handlers: {
       demo: demoHandler,
     },
-    allowDangerousHTML: true,
+    allowDangerousHtml: true,
   });
+} as Plugin);

@@ -4,15 +4,16 @@ import is from 'hast-util-is-element';
 import has from 'hast-util-has-property';
 import visit from 'unist-util-visit';
 import { getModuleResolvePath } from '../../utils/moduleResolver';
+import { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 
 /**
  * remark plugin for parse embed tag to external module
  */
-export default function embed() {
+export default function embed(): IDumiUnifiedTransformer {
   return ast => {
-    visit(ast, 'element', (node, i, parent) => {
+    visit<IDumiElmNode>(ast, 'element', (node, i, parent) => {
       if (is(node, 'embed') && has(node, 'src')) {
-        const { src } = node.properties as { [key: string]: any };
+        const { src } = node.properties;
         const parsed = url.parse(src);
         const absPath = getModuleResolvePath({
           basePath: this.data('fileAbsPath'),
@@ -26,7 +27,7 @@ export default function embed() {
             case '.md':
             default:
               // replace original node
-              (parent.children as any).splice(i, 1, {
+              parent.children.splice(i, 1, {
                 type: 'element',
                 tagName: 'React.Fragment',
                 properties: {

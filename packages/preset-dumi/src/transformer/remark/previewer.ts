@@ -1,10 +1,11 @@
 import { Node } from 'unist';
-import visit from 'unist-util-visit';
+import visit, { Visitor } from 'unist-util-visit';
 import slash from 'slash2';
 import ctx from '../../context';
 import demoTransformer, { DEMO_COMPONENT_NAME, getDepsForDemo } from '../demo';
 import { IPreviewerComponentProps } from '../../theme';
 import transformer from '..';
+import { IDumiElmNode, IDumiUnifiedTransformer } from '.';
 
 const demoIds: Object = {};
 
@@ -55,8 +56,8 @@ function getPreviewerId(yaml: any, mdAbsPath: string, codeAbsPath: string, compo
  * @param node        previewer node
  * @param fileAbsPath demo absolute path
  */
-function transformNode(node: Node, fileAbsPath: string) {
-  const props = node.properties as any;
+function transformNode(node: IDumiElmNode, fileAbsPath: string) {
+  const props = node.properties;
   const code = props.source.tsx || props.source.jsx;
   const isExternalDemo = props.filePath;
   const transformOpts = {
@@ -145,7 +146,7 @@ function applyDemo(props: IPreviewerComponentProps, code: string) {
   });
 }
 
-function visitor(node, i, parent: Node) {
+const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
   if (node.tagName === 'div' && node.properties?.type === 'previewer') {
     const source = node.properties.source;
     const yaml = node.properties.meta || {};
@@ -257,9 +258,9 @@ function visitor(node, i, parent: Node) {
       };
     }
   }
-}
+};
 
-export default function previewer() {
+export default function previewer(): IDumiUnifiedTransformer {
   // clear single paths for a new transform flow
   if (this.data('fileAbsPath')) {
     demoIds[this.data('fileAbsPath')] = {};

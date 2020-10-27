@@ -6,6 +6,7 @@ import { parseText } from 'sylvanas';
 import { getModuleResolvePath } from '../../utils/moduleResolver';
 import { saveFileOnDepChange } from '../../utils/watcher';
 import transformer from '..';
+import { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 
 const ATTR_MAPPING = {
   hideactions: 'hideActions',
@@ -15,11 +16,11 @@ const ATTR_MAPPING = {
 /**
  * remark plugin for parse code tag to external demo
  */
-export default function code() {
+export default function code(): IDumiUnifiedTransformer {
   return ast => {
-    visit(ast, 'element', (node, i, parent) => {
+    visit<IDumiElmNode>(ast, 'element', (node, i, parent) => {
       if (is(node, 'code') && has(node, 'src')) {
-        const { src, ...attrs } = node.properties as { [key: string]: any };
+        const { src, ...attrs } = node.properties;
         const absPath = getModuleResolvePath({
           basePath: this.data('fileAbsPath'),
           sourcePath: src,
@@ -57,7 +58,7 @@ export default function code() {
         });
 
         // replace original node
-        (parent.children as any).splice(i, 1, {
+        parent.children.splice(i, 1, {
           type: 'element',
           tagName: 'div',
           position: node.position,

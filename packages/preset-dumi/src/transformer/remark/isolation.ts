@@ -1,7 +1,8 @@
 import { Node } from 'unist';
-import visit from 'unist-util-visit';
+import visit, { Visitor } from 'unist-util-visit';
+import { IDumiElmNode, IDumiUnifiedTransformer } from '.';
 
-function visitor(node) {
+const visitor: Visitor<IDumiElmNode> = function visitor(node) {
   // wrap all noddes except previewer nodes into markdown elements for isolate styles
   node.children = node.children.reduce((result, item) => {
     // push wrapper element when first loop or the prev node is previewer node
@@ -24,8 +25,8 @@ function visitor(node) {
 
     return result;
   }, []);
-}
+};
 
-export default (options: { [key: string]: any } = {}) => (ast: Node) => {
+export default (options: { [key: string]: any } = {}): IDumiUnifiedTransformer => (ast: Node) => {
   visit(ast, 'root', visitor.bind({ className: options.className || 'markdown' }));
 };

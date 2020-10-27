@@ -29,4 +29,6 @@ import React from 'react';
 export default () => null;
 ```
 
-<code src="./demo-missing-react.tsx" hideActions='["CSB"]' />
+<code src="./demo-missing-react.tsx" hideActions='["CSB"]' defaultShowCode />
+
+<code src="./demo-missing-react.tsx" inline />
