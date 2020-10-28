@@ -21,7 +21,9 @@ describe('component api example', () => {
 
     // compare transform content
     expect(result).toEqual(
-      '<div className="markdown"><API exports={["default","World"]} identifier="Hello" /></div>',
+      `<div className="markdown"><h2 id="api"><AnchorLink to="#api" aria-hidden="true" tabIndex={-1}><span className={["icon","icon-link"]} /></AnchorLink>API</h2>
+<API identifier="Hello" export="default" /><h3 id="api-world"><AnchorLink to="#api-world" aria-hidden="true" tabIndex={-1}><span className={["icon","icon-link"]} /></AnchorLink>World</h3>
+<API identifier="Hello" export="World" /></div>`,
     );
   });
 
@@ -31,7 +33,9 @@ describe('component api example', () => {
 
     // compare transform content
     expect(result).toEqual(
-      '<div className="markdown"><API src="./Hello/index.tsx" exports={["default","World"]} identifier="Hello" /></div>',
+      `<div className="markdown"><h2 id="api"><AnchorLink to="#api" aria-hidden="true" tabIndex={-1}><span className={["icon","icon-link"]} /></AnchorLink>API</h2>
+<API src="./Hello/index.tsx" identifier="Hello" export="default" /><h3 id="api-world"><AnchorLink to="#api-world" aria-hidden="true" tabIndex={-1}><span className={["icon","icon-link"]} /></AnchorLink>World</h3>
+<API src="./Hello/index.tsx" identifier="Hello" export="World" /></div>`,
     );
   });
 
@@ -41,7 +45,22 @@ describe('component api example', () => {
 
     // compare transform content
     expect(result).toEqual(
-      '<div className="markdown"><p><API src="./Hello/index.tsx" exports={["default"]} identifier="Hello" /></p></div>',
+      `<div className="markdown"><p><h2 id="api"><AnchorLink to="#api" aria-hidden="true" tabIndex={-1}><span className={["icon","icon-link"]} /></AnchorLink>API</h2>
+<API src="./Hello/index.tsx" identifier="Hello" export="default" /></p></div>`,
     );
+  });
+
+  it('transform api and render correct slugs', () => {
+    const filePath = path.join(fixtures, 'api-slugs.md');
+    const result = transformer.markdown(fs.readFileSync(filePath).toString(), filePath);
+
+    // compare transform meta
+    expect(result.meta.slugs).toEqual([
+      { depth: 2, value: 'First', heading: 'first' },
+      { depth: 2, value: 'API', heading: 'api' },
+      { depth: 3, value: 'World', heading: 'api-world' },
+      { depth: 2, value: 'Second', heading: 'second' },
+      { depth: 3, value: 'World', heading: 'api-world' },
+    ]);
   });
 });

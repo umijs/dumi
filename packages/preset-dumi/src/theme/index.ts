@@ -53,3 +53,16 @@ export interface IPreviewerComponentProps {
   motions?: string[];
   [key: string]: any;
 }
+
+export interface IApiComponentProps {
+  /**
+   * api data identifier
+   * @note  it is the component identifier by default
+   *        will fallback to the src path on <code> element if component identifier is not available
+   */
+  identifier: string;
+  /**
+   * which export should be displayed
+   */
+  export: string;
+}

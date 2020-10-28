@@ -215,7 +215,7 @@ describe('default theme', () => {
             >
               <>demo-2 Content</>
             </Previewer>
-            <API identifier="MultipleExports" exports={['default', 'Other']} />
+            <API identifier="MultipleExports" export="Other" />
           </>
         </Layout>
       </Router>,
@@ -257,9 +257,6 @@ describe('default theme', () => {
 
     // expect show code of main file
     expect(getByText("'Other'")).not.toBeNull();
-
-    // expect render API title
-    expect(container.querySelector('#api').tagName).toEqual('H2');
 
     // expect render API property
     expect(getByText('other', { selector: 'table td' })).not.toBeNull();
