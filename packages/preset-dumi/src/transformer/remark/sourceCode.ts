@@ -2,6 +2,7 @@ import { Node } from 'unist';
 import visit from 'unist-util-visit';
 import toString from 'hast-util-to-string';
 import raw from 'hast-util-raw';
+import { winEOL } from '@umijs/utils';
 import { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 
 function createSourceCode(lang: string, code: string, position: any) {
@@ -33,7 +34,7 @@ export default (): IDumiUnifiedTransformer => {
         parent.children.splice(
           i,
           1,
-          createSourceCode(lang, toString(node.children[0]), node.position),
+          createSourceCode(lang, winEOL(toString(node.children[0])), node.position),
         );
       }
     });
@@ -44,7 +45,7 @@ export default (): IDumiUnifiedTransformer => {
         const parsed = raw(node) as IDumiElmNode;
 
         if (parsed.tagName === 'pre') {
-          const [, content] = node.value.match(/^<pre[^>]*>\n?([^]*?)<\/pre>$/) || [];
+          const [, content] = winEOL(node.value).match(/^<pre[^>]*>\n?([^]*?)<\/pre>$/) || [];
 
           if (content) {
             parent.children.splice(
