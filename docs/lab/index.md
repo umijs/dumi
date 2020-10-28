@@ -38,6 +38,8 @@ const Hello: React.FC<IHelloProps> = () => <>Hello World!</>;
 export default Hello;
 ```
 
+The API parse behind dumi is `react-docgen-typescript`，check out its [documentation](https://github.com/styleguidist/react-docgen-typescript#example) to get more definitions & comments usage.
+
 ### Show API in documentation
 
 Based on the correct source code, we can render the API table via `API` builtin component in Markdown:
@@ -60,6 +62,10 @@ After that, we will get:
 
 <API src="../demo/Hello/index.tsx"></API>
 
+### Control API table rendering
+
+Like other builtin components, we can also override the `API` builtin component via theme API, just need to create a `.dumi/theme/builtins/API.tsx` (local theme), or create a theme package that contains the `API.tsx`, and import `useApiData` hook from `dumi/theme`, then we can control rendering as you like. Please refer the implementation of default [API component](https://github.com/umijs/dumi/blob/master/packages/theme-default/src/builtins/API.tsx).
+
 ## Markdown file embed
 
 **Dependent version:**`dumi@1.1.0-beta.25+`
@@ -79,10 +85,6 @@ In any markdown file, we can embed part or all of the another Markdown file via 
 
 <embed src="/path/to/some.md#L1-L10"></embed>
 ```
-
-### Control API table rendering
-
-Like other builtin components, we can also override the `API` builtin component via theme API, just need to create a `.dumi/theme/builtins/API.tsx` (local theme), or create a theme package that contains the `API.tsx`, and import `useApiData` hook from `dumi/theme`, then we can control rendering as you like. Please refer the implementation of default [API component](https://github.com/umijs/dumi/blob/master/packages/theme-default/src/builtins/API.tsx).
 
 ## Develop mobile library
 

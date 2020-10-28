@@ -38,6 +38,8 @@ const Hello: React.FC<IHelloProps> = () => <>Hello World!</>;
 export default Hello;
 ```
 
+dumi 后背的类型解析工具是 `react-docgen-typescript`，更多类型和注解的用法可参考 [它的文档](https://github.com/styleguidist/react-docgen-typescript#example)。
+
 ### 在文档中展示 API
 
 有了能够推导 API 的源代码，我们就可以在 Markdown 中通过 `API` 内置组件来渲染 API 表格：
@@ -60,6 +62,10 @@ export default Hello;
 
 <API src="../demo/Hello/index.tsx"></API>
 
+### 自定义 API 表格渲染
+
+和其他内置组件一样，`API` 组件也支持通过 theme API 进行复写，只需要创建 `.dumi/theme/builtins/API.tsx`（本地主题）或者创建一个包含 `API.tsx` 的主题包，结合 `dumi/theme` 暴露的 `useApiData` hook，即可自行控制 API 表格的渲染，可参考 dumi 默认主题的 [API 组件实现](https://github.com/umijs/dumi/blob/master/packages/theme-default/src/builtins/API.tsx)。
+
 ## Markdown 文件嵌入
 
 **依赖版本：**`dumi@1.1.0-beta.25+`
@@ -79,10 +85,6 @@ export default Hello;
 
 <embed src="/path/to/some.md#L1-L10"></embed>
 ```
-
-### 自定义 API 表格渲染
-
-和其他内置组件一样，`API` 组件也支持通过 theme API 进行复写，只需要创建 `.dumi/theme/builtins/API.tsx`（本地主题）或者创建一个包含 `API.tsx` 的主题包，结合 `dumi/theme` 暴露的 `useApiData` hook，即可自行控制 API 表格的渲染，可参考 dumi 默认主题的 [API 组件实现](https://github.com/umijs/dumi/blob/master/packages/theme-default/src/builtins/API.tsx)。
 
 ## 移动端组件研发
 
