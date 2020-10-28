@@ -45,6 +45,7 @@ export default () => {
       require.resolve('./plugins/commands/assets'),
       require.resolve('./plugins/features/demos'),
       require.resolve('./plugins/features/404'),
+      require.resolve('./plugins/features/api'),
     ],
   };
 };

@@ -1,0 +1,27 @@
+{
+  "A": [
+    {
+      "identifier": "className",
+      "description": "extra CSS className for this component",
+      "type": "string"
+    },
+    {
+      "identifier": "style",
+      "description": "inline styles",
+      "type": "CSSProperties"
+    },
+    {
+      "identifier": "size",
+      "description": "component size",
+      "type": "\"small\" | \"large\"",
+      "required": true
+    }
+  ],
+  "multiple": [
+    {
+      "identifier": "isHello",
+      "type": "boolean",
+      "required": true
+    }
+  ]
+}

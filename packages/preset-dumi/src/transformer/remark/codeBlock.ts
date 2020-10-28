@@ -1,4 +1,5 @@
 import visit from 'unist-util-visit';
+import { winEOL } from '@umijs/utils';
 import { Code } from 'mdast';
 import { IDumiUnifiedTransformer } from '.';
 import transformer from '..';
@@ -30,7 +31,7 @@ export default (): IDumiUnifiedTransformer => {
       if (ctx.opts?.resolve.previewLangs.includes(node.lang)) {
         const modifier = codeBlockModifierParser(node.meta);
         // extract frontmatters for embedded demo
-        const { content, meta } = transformer.code(node.value);
+        const { content, meta } = transformer.code(winEOL(node.value));
 
         if (modifier.pure) {
           // clear useless meta if the lang with pure modifier

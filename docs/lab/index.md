@@ -9,6 +9,55 @@ sidemenu: false
 The functions of the laboratory are only works in the <code>next</code> version, you can use <code>npm i dumi@next</code> to install the experimental version for experience; The experimental functions are unstable, please do not use it in production; If you have any suggestions, welcome to feedback and exchanges in the discussion group ❤
 </Alert>
 
+## Auto-gen component API
+
+**Dependent version:**`dumi@1.1.0-beta.27+`
+
+Now, we can get auto-gen component API tables via JS Doc + TypeScript definitions!
+
+### Type & doc comment in source code
+
+For generating API automatically, we need to ensure that dumi can devise the content of API via correct TypeScript definitions and doc comments. For example the `Hello` component:
+
+```tsx | pure
+import React from 'react';
+
+export interface IHelloProps {
+  /**
+   * write description here
+   * @description       also can write description with property name
+   * @description.zh-CN support to write description for different locales
+   * @default           support to set default value
+   * @required          support to mark required
+   */
+  className?: string;
+}
+
+const Hello: React.FC<IHelloProps> = () => <>Hello World!</>;
+
+export default Hello;
+```
+
+### Show API in documentation
+
+Based on the correct source code, we can render the API table via `API` builtin component in Markdown:
+
+```md
+<!-- Omit src for detect target component automatically, for example, src/Hello/index.md will target src/Hello/index.tsx -->
+<API />
+
+<!-- Pass src will specific component which we need to show API -->
+<API src="/path/to/your/component.tsx" />
+```
+
+After that, we will get:
+
+<API src="../demo/Hello/index.tsx" />
+
+### Control API table rendering
+
+Like other builtin components, we can also override the `API` builtin component via theme API, just need to create a `.dumi/theme/builtins/API.tsx` (local theme), or create a theme package that contains the `API.tsx`, and import `useApiData` hook from `dumi/theme`, then we can control rendering as you like. Please refer the implementation of default [API component](https://github.com/umijs/dumi/blob/master/packages/theme-default/src/builtins/API.tsx).
+
 ## Develop mobile library
 
 **Dependent versions:**`dumi@1.1.0-beta.18+` & `dumi-theme-mobile`

@@ -42,6 +42,7 @@
     "js-yaml": "^3.13.1",
     "katex": "^0.11.1",
     "lz-string": "^1.4.4",
+    "react-docgen-typescript": "^1.20.5",
     "rehype-autolink-headings": "^4.0.0",
     "rehype-katex": "^4.0.0",
     "rehype-remove-comments": "^4.0.2",

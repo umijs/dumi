@@ -14,6 +14,7 @@ import meta from './meta';
 import codeBlock from './codeBlock';
 import code from './code';
 import embed from './embed';
+import api from './api';
 import link from './link';
 import img from './img';
 import previewer from './previewer';
@@ -87,15 +88,16 @@ export default (source: string, fileAbsPath: string, type: 'jsx' | 'html') => {
     .use(rehype)
     // rehype plugins
     .use(katex)
-    .use(slug)
-    .use(headings)
-    .use(link)
     .use(sourceCode)
     .use(raw)
     .use(comments, { removeConditional: true })
     .use(img)
     .use(code)
     .use(embed)
+    .use(api)
+    .use(slug)
+    .use(headings)
+    .use(link)
     .use(previewer)
     .use(isolation)
     .data('fileAbsPath', fileAbsPath)

@@ -7,6 +7,7 @@ import SourceCode from '../builtins/SourceCode';
 import Alert from '../builtins/Alert';
 import Badge from '../builtins/Badge';
 import Previewer from '../builtins/Previewer';
+import API from '../builtins/API';
 import Layout from '../layout';
 
 let history: MemoryHistory;
@@ -178,7 +179,7 @@ describe('default theme', () => {
         {children}
       </Context.Provider>
     );
-    const { getByText, getByTitle, getAllByTitle } = render(
+    const { getByText, getByTitle, getAllByTitle, container } = render(
       <Router history={history}>
         <Layout {...baseProps}>
           <>
@@ -214,6 +215,7 @@ describe('default theme', () => {
             >
               <>demo-2 Content</>
             </Previewer>
+            <API identifier="MultipleExports" export="Other" />
           </>
         </Layout>
       </Router>,
@@ -255,5 +257,8 @@ describe('default theme', () => {
 
     // expect show code of main file
     expect(getByText("'Other'")).not.toBeNull();
+
+    // expect render API property
+    expect(getByText('other', { selector: 'table td' })).not.toBeNull();
   });
 });

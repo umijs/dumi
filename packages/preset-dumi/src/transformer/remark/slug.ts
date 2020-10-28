@@ -8,23 +8,9 @@ import { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 const slugs = slugger();
 const headings = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
 
-function filterValidChildren(children) {
-  const rawStack = [];
-
+function filterValidChildren(children: IDumiElmNode[]) {
   return children.filter(item => {
-    if (item.type === 'raw') {
-      // ignore self-closing raw node, like <img />
-      if (/^<[A-Z][^/]+>$/.test(item.value)) {
-        rawStack.push(item.value);
-      } else if (/^<\/[A-Z]/.test(item.value)) {
-        rawStack.pop();
-      }
-
-      return false;
-    }
-
-    // discard children if it was wrapped by built-in Component
-    return !rawStack.length;
+    return item.type !== 'element' || !/^[A-Z]/.test(item.tagName);
   });
 }
 
