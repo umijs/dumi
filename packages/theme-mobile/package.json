@@ -1,6 +1,6 @@
 {
   "name": "dumi-theme-mobile",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "description": "dumi-theme-mobile",
   "files": [
     "es",
@@ -28,7 +28,7 @@
     "dumi": "1.x"
   },
   "dependencies": {
-    "dumi-theme-default": "1.0.0-beta.10",
+    "dumi-theme-default": "1.0.0-beta.11",
     "lodash.debounce": "^4.0.8",
     "qrcode.react": "^1.0.0",
     "umi-hd": "^5.0.1"
