@@ -2,8 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import React from 'react';
 import { IApi, IRoute } from '@umijs/types';
-import getTheme from '../../theme/loader';
-import { getDemoRouteName } from '../../theme/hooks/useDemoUrl';
+import getTheme from '../../../theme/loader';
+import { getDemoRouteName } from '../../../theme/hooks/useDemoUrl';
 
 interface ISingleRoutetDemos {
   [key: string]: {

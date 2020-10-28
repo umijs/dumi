@@ -1,5 +1,9 @@
 import { IApi } from '@umijs/types';
+import { setOptions } from '../../context';
 
+/**
+ * plugin for enable algolia search engine
+ */
 export default (api: IApi) => {
   api.describe({
     key: 'algolia',
@@ -31,4 +35,11 @@ export default (api: IApi) => {
       },
     ]);
   }
+
+  // share config with other source module via context
+  api.modifyConfig(memo => {
+    setOptions('algolia', memo.algolia);
+
+    return memo;
+  });
 };

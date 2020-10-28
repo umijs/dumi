@@ -1,51 +1,38 @@
-import { IRoute } from '@umijs/types';
-import { INavItem, INav } from './routes/getNavFromRoutes';
-import { IMenuItem } from './routes/getMenuFromRoutes';
-
-export interface IDumiOpts {
-  title?: string;
-  logo?: string | boolean;
-  mode?: 'doc' | 'site';
-  description?: string;
-  locales?: [string, string][];
-  resolve?: {
-    previewLangs?: string[];
-    includes?: string[];
-    examples?: string[];
-  };
-  menus?: { [key: string]: IMenuItem[] };
-  navs?: INav | INavItem[];
-  routes?: {
-    path: IRoute['path'];
-    component: IRoute['component'];
-    redirect: IRoute['redirect'];
-    [key: string]: any;
-  }[];
-  algolia?: {
-    apiKey: string;
-    indexName: string;
-    debug?: boolean;
-  };
-}
+export { IDumiOpts } from './context';
 
 export default () => {
   return {
     plugins: [
-      require.resolve('./plugins/features/theme'),
-      require.resolve('./plugins/title'),
-      require.resolve('./plugins/description'),
-      require.resolve('./plugins/logo'),
-      require.resolve('./plugins/locales'),
-      require.resolve('./plugins/mode'),
-      require.resolve('./plugins/menus'),
-      require.resolve('./plugins/navs'),
-      require.resolve('./plugins/resolve'),
-      require.resolve('./plugins/core'),
-      require.resolve('./plugins/algolia'),
-      require.resolve('./plugins/commands/assets'),
-      require.resolve('./plugins/features/demos'),
+      // prepare plugin
+      require.resolve('./plugins/features/init'),
+      require.resolve('./plugins/features/theme'), // must before symlink to ensure correct alias order
+      require.resolve('./plugins/features/symlink'),
+
+      // config keys
+      require.resolve('./plugins/features/logo'),
+      require.resolve('./plugins/features/mode'),
+      require.resolve('./plugins/features/description'),
+      require.resolve('./plugins/features/locales'),
+      require.resolve('./plugins/features/resolve'),
+      require.resolve('./plugins/features/menus'),
+      require.resolve('./plugins/features/navs'),
+      require.resolve('./plugins/features/algolia'),
+
+      // site generate
+      require.resolve('./plugins/features/routes'),
+      require.resolve('./plugins/features/compile'),
       require.resolve('./plugins/features/404'),
+
+      // generate files
+      require.resolve('./plugins/features/demo'),
+      require.resolve('./plugins/features/config'),
       require.resolve('./plugins/features/api'),
+
+      // integrate other umi plugins
+      require.resolve('./plugins/features/extras'),
+
+      // commands
+      require.resolve('./plugins/commands/assets'),
     ],
   };
 };

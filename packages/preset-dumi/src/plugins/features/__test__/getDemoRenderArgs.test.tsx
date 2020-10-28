@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { IRouteComponentProps } from '@umijs/types';
 import { render } from '@testing-library/react';
 import demos from './__mocks__/@@/dumi/demos';
-import getDemoRenderArgs from '../getDemoRenderArgs';
+import getDemoRenderArgs from '../demo/getDemoRenderArgs';
 
 describe('feature: getDemoRenderArgs', () => {
   const baseProps = {
