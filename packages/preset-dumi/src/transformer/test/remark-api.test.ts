@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import { Service } from '@umijs/core';
-import { winEOL } from '@umijs/utils';
 import { init } from '../../context';
 import transformer from '..';
 
@@ -22,7 +21,7 @@ describe('component api example', () => {
 
     // compare transform content
     expect(result).toEqual(
-      '<div className="markdown"><API exports={["default"]} identifier="Hello" /></div>',
+      '<div className="markdown"><API exports={["default","World"]} identifier="Hello" /></div>',
     );
   });
 
@@ -32,7 +31,17 @@ describe('component api example', () => {
 
     // compare transform content
     expect(result).toEqual(
-      '<div className="markdown"><API src="./Hello/index.tsx" exports={["default"]} identifier="Hello" /></div>',
+      '<div className="markdown"><API src="./Hello/index.tsx" exports={["default","World"]} identifier="Hello" /></div>',
+    );
+  });
+
+  it('transform api and show specific exports', () => {
+    const filePath = path.join(fixtures, 'custom-exports.md');
+    const result = transformer.markdown(fs.readFileSync(filePath).toString(), filePath).content;
+
+    // compare transform content
+    expect(result).toEqual(
+      '<div className="markdown"><p><API src="./Hello/index.tsx" exports={["default"]} identifier="Hello" /></p></div>',
     );
   });
 });

@@ -36,7 +36,8 @@ export default ({ identifier, exports: expts }: IApiComponentProps) => {
       {data &&
         expts.map((expt, i) => (
           <React.Fragment key={expt}>
-            {(expt === 'default' || !i) && (
+            {/* render large API title if it is default export, or it is the first export and the exports attribute was not custom */}
+            {(expt === 'default' || (!i && expts.length === Object.keys(data).length)) && (
               <h2 id="api">
                 <ApiAnchorLink expt={expt} />
                 API

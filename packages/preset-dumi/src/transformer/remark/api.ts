@@ -2,10 +2,12 @@ import path from 'path';
 import is from 'hast-util-is-element';
 import has from 'hast-util-has-property';
 import visit from 'unist-util-visit';
+import { parseElmAttrToProps } from './utils';
 import parser, { IPropDefinitions } from '../../api-parser';
 import { getModuleResolvePath } from '../../utils/moduleResolver';
 import { saveFileOnDepChange } from '../../utils/watcher';
 import ctx from '../../context';
+import { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 
 function applyApiData(identifier: string, definitions: IPropDefinitions) {
   if (identifier && definitions) {
@@ -23,15 +25,15 @@ function applyApiData(identifier: string, definitions: IPropDefinitions) {
 /**
  * remark plugin for parse embed tag to external module
  */
-export default function embed() {
+export default function embed(): IDumiUnifiedTransformer {
   return (ast, vFile) => {
-    visit(ast, 'element', node => {
+    visit<IDumiElmNode>(ast, 'element', node => {
       if (is(node, 'API')) {
         let identifier: string;
         let definitions: IPropDefinitions;
 
         if (has(node, 'src')) {
-          const src = (node.properties as any).src || '';
+          const src = node.properties.src || '';
           // guess component name if src file is index
           const componentName =
             path.parse(src).name === 'index' ? path.basename(path.dirname(src)) : '';
@@ -58,9 +60,11 @@ export default function embed() {
         }
 
         if (identifier && definitions) {
+          const parsedAttrs = parseElmAttrToProps(node.properties);
+
           // configure properties for API node
-          (node.properties as any).exports = Object.keys(definitions);
-          (node.properties as any).identifier = identifier;
+          node.properties.exports = parsedAttrs.exports || Object.keys(definitions);
+          node.properties.identifier = identifier;
 
           // apply api data
           applyApiData(identifier, definitions);
