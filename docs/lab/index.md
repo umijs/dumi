@@ -44,15 +44,41 @@ Based on the correct source code, we can render the API table via `API` builtin 
 
 ```md
 <!-- Omit src for detect target component automatically, for example, src/Hello/index.md will target src/Hello/index.tsx -->
-<API />
+
+<API></API>
 
 <!-- Pass src will specific component which we need to show API -->
-<API src="/path/to/your/component.tsx" />
+
+<API src="/path/to/your/component.tsx"></API>
+
+<!-- Pass exports will specific which export should be displayed, make sure the value is a legal JSON string -->
+
+<API exports='["default", "Other"]'></API>
 ```
 
 After that, we will get:
 
-<API src="../demo/Hello/index.tsx" />
+<API src="../demo/Hello/index.tsx"></API>
+
+## Markdown file embed
+
+**Dependent version:**`dumi@1.1.0-beta.25+`
+
+In any markdown file, we can embed part or all of the another Markdown file via `embed` tag, it is better to manage our docs:
+
+```md
+<!-- Embed all of the content -->
+
+<embed src="/path/to/some.md"></embed>
+
+<!-- Embed specific line of the content via line number -->
+
+<embed src="/path/to/some.md#L1"></embed>
+
+<!-- Embed part of the content via line number range -->
+
+<embed src="/path/to/some.md#L1-L10"></embed>
+```
 
 ### Control API table rendering
 

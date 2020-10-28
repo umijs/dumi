@@ -44,15 +44,41 @@ export default Hello;
 
 ```md
 <!-- 不传递 src 将自动探测当前组件，比如 src/Hello/index.md 将会识别 src/Hello/index.tsx -->
-<API />
+
+<API></API>
 
 <!-- 传递 src 将显式指明渲染哪个组件的 API -->
-<API src="/path/to/your/component.tsx" />
+
+<API src="/path/to/your/component.tsx"></API>
+
+<!-- 传递 exports 将显式指明渲染哪些导出，请确保值为合法的 JSON 字符串 -->
+
+<API exports='["default", "Other"]'></API>
 ```
 
 效果大致如下：
 
-<API src="../demo/Hello/index.tsx" />
+<API src="../demo/Hello/index.tsx"></API>
+
+## Markdown 文件嵌入
+
+**依赖版本：**`dumi@1.1.0-beta.25+`
+
+我们可以通过 `embed` 标签在 Markdown 文件中引用另一个 Markdown 文件的部分或全部内容，可以使得文档组织和管理更加灵活：
+
+```md
+<!-- 引入全量的 Markdown 文件内容 -->
+
+<embed src="/path/to/some.md"></embed>
+
+<!-- 根据行号引入指定行的 Markdown 文件内容 -->
+
+<embed src="/path/to/some.md#L1"></embed>
+
+<!-- 根据行号引入部分 Markdown 文件内容 -->
+
+<embed src="/path/to/some.md#L1-L10"></embed>
+```
 
 ### 自定义 API 表格渲染
 
