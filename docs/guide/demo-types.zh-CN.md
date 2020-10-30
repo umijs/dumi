@@ -1,8 +1,3 @@
----
-group:
-  title: 开始写组件 Demo
----
-
 # Demo 的类型
 
 在 dumi 中，一共有 3 种 Demo 类型。

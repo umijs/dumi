@@ -1,8 +1,3 @@
----
-group:
-  title: Start to develop demo
----
-
 # Types of demos
 
 There are three types for demo in dumi

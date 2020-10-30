@@ -1,8 +1,3 @@
----
-group:
-  title: 开始写组件 Demo
----
-
 # 控制 Demo 渲染
 
 Demo 的渲染是由 dumi 内置的 `Previewer` 控制的，该组件暴露了一些 `props`，我们可以通过 FrontMatter 来进行设置，例如：

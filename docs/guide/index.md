@@ -1,5 +1,6 @@
 ---
 title: Introducation
+order: 1
 nav:
   title: Guide
   order: 1

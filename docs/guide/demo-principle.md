@@ -1,8 +1,3 @@
----
-group:
-  title: Start to develop demo
----
-
 # Ideals of demos
 
 Dumi has only one ideal, **developer should write demos like user**
@@ -57,6 +52,5 @@ In order to let developers to code and maintain demos as same as developing comp
 ```
 
 Meanwhile, for enabling demos to view and use, dumi will show origin source code which needed to show to user! This not only doesn't affect experiences of user, but also makes developers to enjoy the powerful functions such as Code Snipperts, ESLint, prettier and so on brought by the editor.
-
 
 If a demo coded by developer didn't work with directly coping, the demo is able to『view, but not to use』.If developers coded demos from the perspective of users, the demo must be able to 『view and use』

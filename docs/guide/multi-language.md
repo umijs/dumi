@@ -1,7 +1,3 @@
----
-title: Multi-language
----
-
 # Multi-language
 
 Generally, our component documents are written in more than one language to satisfy the requirements of developers in different countries and regions. Based on dumi, you are able to switch multi-language mode for your documents by adding the suffix locale to `.md`.

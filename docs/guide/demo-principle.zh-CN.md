@@ -1,8 +1,3 @@
----
-group:
-  title: 开始写组件 Demo
----
-
 # dumi 的 Demo 理念
 
 dumi 只有一个理念——**开发者应该像用户一样写 Demo**。

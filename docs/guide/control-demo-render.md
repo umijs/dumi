@@ -1,8 +1,3 @@
----
-group:
-  title: 开始写组件 Demo
----
-
 # Render of demos
 
 The render of demo is controlled by dumi's built-in `Previewer`. This component exports some `props`, so that we can configurate through FrontMatter, for example:

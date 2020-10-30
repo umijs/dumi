@@ -1,7 +1,3 @@
----
-title: SEO
----
-
 # SEO
 
 Dumi generates a single page application (SPA) in default. For some scenarios with strong SEO requirements, you can enable the `ssr` and `exportStatic` configuration, as follows:
