@@ -24,7 +24,9 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location }) => {
     meta,
   } = useContext(context);
   const isHiddenMenus =
-    Boolean(meta.hero || meta.features || meta.gapless) || meta.sidemenu === false || undefined;
+    Boolean((meta.hero || meta.features || meta.gapless) && mode === 'site') ||
+    meta.sidemenu === false ||
+    undefined;
 
   return (
     <div
