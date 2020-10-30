@@ -10,7 +10,11 @@ const UMI_LIKE_PKGS = ['umi', '@alipay/bigfish'];
 export default (api: IApi) => {
   const deps = Object.assign({}, api.pkg.devDependencies);
   // enable ingetrate mode if dumi was registered as a umi preset on a umi like project
-  const isIntegrateUmi = UMI_LIKE_PKGS.some(pkg => deps[pkg]) && deps['@umijs/preset-dumi'];
+  const isIntegrateUmi =
+    UMI_LIKE_PKGS.some(pkg => deps[pkg]) &&
+    deps['@umijs/preset-dumi'] &&
+    // also can force disable integrate mode by umi build --dumi
+    api.args?.dumi === undefined;
 
   // init context & share umi api with other source module
   init(api, { isIntegrate: isIntegrateUmi } as any);
