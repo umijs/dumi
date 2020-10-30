@@ -81,7 +81,7 @@ describe('default theme', () => {
     history,
     location: { ...history.location, query: {} },
     match: { params: {}, isExact: true, path: '/', url: '/' },
-    route: { routes: baseCtx.routes },
+    route: { path: '/', routes: baseCtx.routes },
   };
 
   it('should render site home page', () => {
@@ -179,7 +179,8 @@ describe('default theme', () => {
         {children}
       </Context.Provider>
     );
-    const { getByText, getByTitle, getAllByTitle, container } = render(
+
+    const { getByText, getByTitle, getAllByTitle } = render(
       <Router history={history}>
         <Layout {...baseProps}>
           <>
