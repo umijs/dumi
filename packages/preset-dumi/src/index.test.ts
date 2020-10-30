@@ -189,11 +189,11 @@ describe('preset-dumi', () => {
       id: 'test',
     });
 
-    // expect all docs inside /~components route path and keep original umi routes
+    // expect all docs inside /~docs route path and keep original umi routes
     expect((await (api as any).getRoutes()).map(route => route.path)).toEqual([
       '/~demos/:uuid',
       '/_demos/:uuid',
-      '/~components',
+      '/~docs',
       '/A',
       '/',
     ]);

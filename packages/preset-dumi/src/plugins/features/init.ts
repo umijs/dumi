@@ -8,7 +8,7 @@ const UMI_LIKE_PKGS = ['umi', '@alipay/bigfish'];
  * dumi prepare plugin
  */
 export default (api: IApi) => {
-  const deps = Object.assign({}, api.pkg.devDependencies);
+  const deps = Object.assign({}, api.pkg.dependencies, api.pkg.devDependencies);
   // enable ingetrate mode if dumi was registered as a umi preset on a umi like project
   const isIntegrateUmi =
     UMI_LIKE_PKGS.some(pkg => deps[pkg]) &&

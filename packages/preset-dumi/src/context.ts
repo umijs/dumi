@@ -68,7 +68,7 @@ export interface IDumiOpts {
   };
   /**
    * is integrate mode
-   * @note  if enter interate mode, doc site will append in /~components route in development
+   * @note  if enter interate mode, doc site will append in /~docs route in development
    */
   isIntegrate: boolean;
 }

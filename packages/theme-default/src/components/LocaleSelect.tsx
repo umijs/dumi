@@ -18,7 +18,7 @@ const LocaleSelect: FC<{ location: any }> = ({ location }) => {
 
     // append locale prefix to path if it is not the default locale
     if (target !== locales[0].name) {
-      // compatiable with integrate route prefix /~components
+      // compatiable with integrate route prefix /~docs
       const routePrefix = `${baseWithoutLocale}/${target}`.replace(/\/\//, '/');
       const pathnameWithoutBase = location.pathname.replace(base, '');
 

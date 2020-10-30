@@ -103,7 +103,7 @@ const useCurrentMenu = (ctxConfig: IThemeContext['config'], locale: string, path
  * @param route     layout route configurations
  * @note  handle these points:
  *          1. locale prefix, such as empty or /zh-CN
- *          2. integrate mode route prefix, such as /~components or /~components/zh-CN
+ *          2. integrate mode route prefix, such as /~docs or /~docs/zh-CN
  */
 const useCurrentBase = (
   locale: string,
@@ -135,7 +135,7 @@ const OuterLayout: React.FC<IOuterLayoutProps & IRouteComponentProps> = props =>
   const { location, route, children } = props;
   const pathWithoutPrefix = location.pathname.replace(route.path, '');
   const meta = useCurrentRouteMeta(route.routes, location.pathname);
-  // use non-prefix for detect current locale, such as /~components/en-US -> /en-US
+  // use non-prefix for detect current locale, such as /~docs/en-US -> /en-US
   const locale = useCurrentLocale(config.locales, pathWithoutPrefix);
   const menu = useCurrentMenu(config, locale, location.pathname);
   const base = useCurrentBase(locale, config.locales, route);
