@@ -2,12 +2,18 @@ import fs from 'fs';
 import { IApi } from '@umijs/types';
 import { init, setOptions } from '../../context';
 
+const UMI_LIKE_PKGS = ['umi', '@alipay/bigfish'];
+
 /**
  * dumi prepare plugin
  */
 export default (api: IApi) => {
+  const deps = Object.assign({}, api.pkg.devDependencies);
+  // enable ingetrate mode if dumi was registered as a umi preset on a umi like project
+  const isIntegrateUmi = UMI_LIKE_PKGS.some(pkg => deps[pkg]) && deps['@umijs/preset-dumi'];
+
   // init context & share umi api with other source module
-  init(api, {} as any);
+  init(api, { isIntegrate: isIntegrateUmi } as any);
 
   // use modifyConfig api for update context
   // because both of the umi service init & user config changed will trigger this plugin key
