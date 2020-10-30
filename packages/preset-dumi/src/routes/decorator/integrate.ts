@@ -1,7 +1,12 @@
 import { RouteProcessor } from '.';
 
-function prefix(oPath: string) {
-  return `/~components${oPath}`.replace(/\/$/, '');
+/**
+ * global route prefix in integrate mode
+ */
+const INTEGRATE_ROUTE_PREFIX = '/~components';
+
+export function prefix(oPath: string) {
+  return `${INTEGRATE_ROUTE_PREFIX}${oPath}`.replace(/\/$/, '');
 }
 
 /**
