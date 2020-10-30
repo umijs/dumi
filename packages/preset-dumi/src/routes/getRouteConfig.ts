@@ -38,7 +38,8 @@ export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
 
   // add main routes
   config.push({
-    path: '/',
+    _dumiRoot: true,
+    path: opts.isIntegrate ? '/~components' : '/',
     wrappers: [
       // builtin outer layout
       slash(path.relative(api.paths.absPagesPath, path.join(__dirname, '../theme/layout'))),

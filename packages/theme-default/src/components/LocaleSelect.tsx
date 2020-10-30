@@ -6,20 +6,26 @@ import './LocaleSelect.less';
 
 const LocaleSelect: FC<{ location: any }> = ({ location }) => {
   const {
+    base,
     locale,
     config: { locales },
   } = useContext(context);
   const firstDiffLocale = locales.find(({ name }) => name !== locale);
 
   function getLocaleTogglePath(target: string) {
-    let newPathname = location.pathname.replace(`/${locale}`, '') || '/';
+    const baseWithoutLocale = base.replace(`/${locale}`, '');
+    const pathnameWithoutLocale = location.pathname.replace(base, baseWithoutLocale) || '/';
 
     // append locale prefix to path if it is not the default locale
     if (target !== locales[0].name) {
-      newPathname = `/${target}${newPathname}`.replace(/\/$/, '');
+      // compatiable with integrate route prefix /~components
+      const routePrefix = `${baseWithoutLocale}/${target}`.replace(/\/\//, '/');
+      const pathnameWithoutBase = location.pathname.replace(base, '');
+
+      return `${routePrefix}${pathnameWithoutBase}`.replace(/\/$/, '');
     }
 
-    return newPathname;
+    return pathnameWithoutLocale;
   }
 
   return firstDiffLocale ? (
