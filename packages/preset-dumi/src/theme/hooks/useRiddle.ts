@@ -42,6 +42,7 @@ function getRiddleAppCode(opts: IPreviewerComponentProps) {
 
   // convert export default to ReactDOM.render for riddle
   result = result
+    .replace(/^/, `import ReactDOM from 'react-dom@${dependencies.react?.version || 'latest'}';\n`)
     .replace('export default', 'const DumiDemo =')
     .concat('\nReactDOM.render(<DumiDemo />, mountNode);');
 
@@ -90,8 +91,8 @@ export default (opts: IPreviewerComponentProps | null) => {
           .filter(([, dep]) => dep.css)
           .map(
             ([name, { version, css }]) =>
-              // generate to @import 'pkg@version/path/to/css' format
-              `@import '${css.replace(new RegExp(`^(${name})`), `$1@${version}`)}';`,
+              // generate to @import '~pkg@version/path/to/css' format
+              `@import '~${css.replace(new RegExp(`^(${name})`), `$1@${version}`)}';`,
           )
           .join('\n'),
       });
