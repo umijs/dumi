@@ -6,6 +6,9 @@
     "es",
     "src"
   ],
+  "sideEffects": [
+    "./**/*.less"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/umijs/dumi"
