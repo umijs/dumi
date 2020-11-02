@@ -33,6 +33,9 @@ export default () => {
 
       // commands
       require.resolve('./plugins/commands/assets'),
+
+      // for disable dumi
+      require.resolve('./plugins/features/disable'),
     ],
   };
 };

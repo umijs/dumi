@@ -10,7 +10,7 @@ describe('preset-dumi', () => {
 
   afterAll(() => {
     // clear all node_modules
-    ['', 'basic', 'algolia', 'demos', 'assets', 'local-theme'].forEach(dir => {
+    ['', 'basic', 'algolia', 'demos', 'assets', 'local-theme', 'integrate'].forEach(dir => {
       rimraf.sync(path.join(fixtures, dir, 'node_modules'));
     });
   });
@@ -163,5 +163,61 @@ describe('preset-dumi', () => {
 
     // restore env
     process.env.PLATFORM_TYPE = oType;
+  });
+
+  it('integrate mode', async () => {
+    const cwd = path.join(fixtures, 'integrate');
+    const service = new Service({
+      cwd,
+      env: 'development',
+      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+    });
+
+    // alias dumi-theme-default
+    symlink(
+      path.join(__dirname, '../../theme-default'),
+      path.join(service.paths.absNodeModulesPath, 'dumi-theme-default'),
+    );
+
+    // remove @umijs/preset-dumi from package.json to use the source code from ./index.ts
+    service.initialPresets = service.initialPresets.filter(({ id }) => id !== '@umijs/preset-dumi');
+    await service.init();
+
+    const api = service.getPluginAPI({
+      service,
+      key: 'test',
+      id: 'test',
+    });
+
+    // expect all docs inside /~docs route path and keep original umi routes
+    expect((await (api as any).getRoutes()).map(route => route.path)).toEqual([
+      '/~demos/:uuid',
+      '/_demos/:uuid',
+      '/~docs',
+      '/A',
+      '/',
+    ]);
+  });
+
+  it('integrate mode with production', async () => {
+    const cwd = path.join(fixtures, 'integrate');
+    const service = new Service({
+      cwd,
+      env: 'production',
+      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+    });
+
+    // remove @umijs/preset-dumi from package.json to use the source code from ./index.ts
+    service.initialPresets = service.initialPresets.filter(({ id }) => id !== '@umijs/preset-dumi');
+    await service.init();
+
+    const api = service.getPluginAPI({
+      service,
+      key: 'test',
+      id: 'test',
+    });
+
+    // expect dumi disabled in integrate with production
+    expect((await (api as any).getRoutes()).map(route => route.path)).toEqual(['/A', '/']);
   });
 });

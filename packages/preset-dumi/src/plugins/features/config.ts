@@ -11,7 +11,7 @@ import ctx from '../../context';
 export default (api: IApi) => {
   // write config.json when generating temp files
   api.onGenerateFiles(async () => {
-    const root = (await api.getRoutes()).find(route => route.path === '/');
+    const root = (await api.getRoutes()).find(route => route._dumiRoot);
     const childRoutes = root.routes;
     const config = {
       menus: getMenuFromRoutes(childRoutes, ctx.opts, api.paths),

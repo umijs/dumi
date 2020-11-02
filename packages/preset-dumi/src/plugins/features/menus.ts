@@ -1,5 +1,6 @@
 import { IApi } from '@umijs/types';
-import { setOptions } from '../../context';
+import ctx, { setOptions, IDumiOpts } from '../../context';
+import { prefix } from '../../routes/decorator/integrate';
 
 export default (api: IApi) => {
   api.describe({
@@ -14,7 +15,19 @@ export default (api: IApi) => {
 
   // share config with other source module via context
   api.modifyConfig(memo => {
-    setOptions('menus', memo.menus);
+    let menus: IDumiOpts['menus'];
+
+    if (ctx.opts.isIntegrate && memo.menus) {
+      // add integrate route prefix
+      menus = {};
+      Object.keys(memo.menus).forEach(key => {
+        menus[prefix(key)] = memo.menus[key];
+      });
+    } else {
+      // use user config
+      menus = memo.menus;
+    }
+    setOptions('menus', menus);
 
     return memo;
   });

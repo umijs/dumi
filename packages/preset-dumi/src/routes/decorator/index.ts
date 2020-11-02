@@ -9,6 +9,7 @@ import group from './group';
 import fallback from './fallback';
 import redirect from './redirect';
 import relative from './relative';
+import integrate from './integrate';
 
 export type RouteProcessor = (
   this: { options: IDumiOpts; umi: IApi; data: { [key: string]: any } },
@@ -67,6 +68,7 @@ export default (routes: IRoute[], opts: IDumiOpts, umi: IApi) => {
     .use(nav)
     .use(group)
     .use(fallback)
+    .use(integrate)
     .use(redirect)
     .use(relative);
 

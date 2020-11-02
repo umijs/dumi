@@ -9,6 +9,19 @@ sidemenu: false
 实验室的功能仅在 <code>next</code> 版本中提供，可以使用 <code>npm i dumi@next</code> 安装实验版本进行体验；实验性质的功能可能不稳定，请谨慎用于生产；如果体验后有任何建议，欢迎在讨论群中进行反馈和交流 ❤
 </Alert>
 
+## Umi 项目集成模式
+
+**依赖版本：**`dumi@1.1.0-beta.28+`
+
+在进行项目研发时，项目内部的组件库管理通常是一个很头疼的问题，既不需要发布单独的 npm 包，又需要进行迭代、更新、说明、交接；为了让项目内部组件库管理这件事变得更加轻松，dumi 推出了 Umi 项目集成模式：
+
+- **自动探测**：当 `dependencies` 或 `devDependencies` 中包含 `umi` 和 `@umijs/preset-dumi` 时，进入集成模式（不再需要单独安装 `dumi` 这个包）
+- **相互隔离**：所有 dumi 文档都会集中在 `/~docs` 路由下，与原项目相互隔离、互不干扰，可以理解为标准 dumi 文档都加了一个特定路由前缀，也包括用户的导航和菜单路由配置
+- **不影响生产**：仅在 `NODE_ENV` 是 `development` 时集成，不影响项目的生产构建
+- **可单独构建**：如果需要单独构建文档做部署，可执行 `umi build --dumi`，即可得到一份非集成模式的 dumi 站点产物，`--dumi` 在 `umi dev` 命令下也是可用的
+
+使用方式很简单：在已有 Umi 项目中安装 `@umijs/preset-dumi` 到 `devDependencies` 中，再根据需要配置 `resolve.includes` 即可（比如约定 `src/components` 目录下为业务组件库和组件库对应的文档）。
+
 ## 组件 API 自动生成
 
 **依赖版本：**`dumi@1.1.0-beta.27+`

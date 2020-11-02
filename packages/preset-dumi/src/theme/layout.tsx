@@ -97,13 +97,48 @@ const useCurrentMenu = (ctxConfig: IThemeContext['config'], locale: string, path
 };
 
 /**
+ * hooks for doc base route path
+ * @param locale    current locale
+ * @param locales   project locale configurations
+ * @param route     layout route configurations
+ * @note  handle these points:
+ *          1. locale prefix, such as empty or /zh-CN
+ *          2. integrate mode route prefix, such as /~docs or /~docs/zh-CN
+ */
+const useCurrentBase = (
+  locale: string,
+  locales: IThemeContext['config']['locales'],
+  route: IRouteProps,
+) => {
+  const handler = (...args: [string, IThemeContext['config']['locales'], IRouteProps]) => {
+    if (args[0] === args[1][0].name) {
+      // use layout route path as base in default locale
+      return args[2].path;
+    }
+
+    // join layout route path & locale prefix in other locale
+    return `${route.path}/${locale}`.replace(/\/\//, '/');
+  };
+  const [base, setBase] = useState<string>(handler(locale, locales, route));
+
+  useLayoutEffect(() => {
+    setBase(handler(locale, locales, route));
+  }, [locale]);
+
+  return base;
+};
+
+/**
  * outer theme layout
  */
 const OuterLayout: React.FC<IOuterLayoutProps & IRouteComponentProps> = props => {
   const { location, route, children } = props;
+  const pathWithoutPrefix = location.pathname.replace(route.path, '');
   const meta = useCurrentRouteMeta(route.routes, location.pathname);
-  const locale = useCurrentLocale(config.locales, location.pathname);
+  // use non-prefix for detect current locale, such as /~docs/en-US -> /en-US
+  const locale = useCurrentLocale(config.locales, pathWithoutPrefix);
   const menu = useCurrentMenu(config, locale, location.pathname);
+  const base = useCurrentBase(locale, config.locales, route);
 
   // scroll to anchor if hash exists
   useEffect(() => {
@@ -120,7 +155,7 @@ const OuterLayout: React.FC<IOuterLayoutProps & IRouteComponentProps> = props =>
         locale,
         nav: config.navs[locale] || [],
         menu,
-        base: !config.locales.length || locale === config.locales[0].name ? '/' : `/${locale}`,
+        base,
         routes: (route.routes as unknown) as IThemeContext['routes'],
       }}
     >
