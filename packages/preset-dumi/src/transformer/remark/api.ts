@@ -5,13 +5,13 @@ import is from 'hast-util-is-element';
 import has from 'hast-util-has-property';
 import visit from 'unist-util-visit';
 import { parseElmAttrToProps } from './utils';
-import parser, { IPropDefinitions } from '../../api-parser';
+import parser from '../../api-parser';
 import { getModuleResolvePath } from '../../utils/moduleResolver';
 import { saveFileOnDepChange } from '../../utils/watcher';
 import ctx from '../../context';
 import { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 
-function applyApiData(identifier: string, definitions: IPropDefinitions) {
+function applyApiData(identifier: string, definitions: ReturnType<typeof parser>) {
   if (identifier && definitions) {
     ctx.umi?.applyPlugins({
       key: 'dumi.detectApi',
@@ -30,7 +30,11 @@ function applyApiData(identifier: string, definitions: IPropDefinitions) {
  * @param identifier  api parse identifier, mapping in .umi/dumi/apis.json
  * @param definitions api definitions
  */
-function serializeAPINodes(node: IDumiElmNode, identifier: string, definitions: IPropDefinitions) {
+function serializeAPINodes(
+  node: IDumiElmNode,
+  identifier: string,
+  definitions: ReturnType<typeof parser>,
+) {
   const parsedAttrs = parseElmAttrToProps(node.properties);
   const expts: string[] = parsedAttrs.exports || Object.keys(definitions);
 
@@ -93,7 +97,7 @@ export default function embed(): IDumiUnifiedTransformer {
     visit<IDumiElmNode>(ast, 'element', (node, i, parent) => {
       if (is(node, 'API') && !node._dumi_parsed) {
         let identifier: string;
-        let definitions: IPropDefinitions;
+        let definitions: ReturnType<typeof parser>;
 
         if (has(node, 'src')) {
           const src = node.properties.src || '';

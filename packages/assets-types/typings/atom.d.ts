@@ -3,6 +3,40 @@
  * @note  for example, a Button component is an atom asset
  */
 
+export interface AtomPropsDefinition {
+  /**
+   * export name
+   */
+  [key: string]: {
+    /**
+     * component property name
+     */
+    identifier: string;
+    /**
+     * component property label
+     */
+    name?: string;
+    /**
+     * component property description
+     */
+    description?: string;
+    'description.zh-CN'?: string;
+    'description.en-US'?: string;
+    /**
+     * component property type
+     */
+    type: string;
+    /**
+     * component property default value
+     */
+    default?: string;
+    /**
+     * property whether required
+     */
+    required?: true;
+  }[];
+}
+
 export default interface AtomAsset {
   /**
    * The export module identifier of atom asset
@@ -21,7 +55,7 @@ export default interface AtomAsset {
    */
   uuid?: string;
   /**
-   * TODO: the API spec of atom asset
+   * the API spec of atom asset
    */
-  props: any;
+  props: AtomPropsDefinition;
 }

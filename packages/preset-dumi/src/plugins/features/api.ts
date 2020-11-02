@@ -1,11 +1,11 @@
 import { IApi } from '@umijs/types';
-import { IPropDefinitions } from '../../api-parser';
+import { IApiDefinition } from '../../api-parser';
 
 /**
  * plugin for generate apis.json into .umi temp directory
  */
 export default (api: IApi) => {
-  const apis: { [key: string]: IPropDefinitions } = {};
+  const apis: { [key: string]: IApiDefinition } = {};
 
   // write all apis into .umi dir
   api.onGenerateFiles(async () => {
