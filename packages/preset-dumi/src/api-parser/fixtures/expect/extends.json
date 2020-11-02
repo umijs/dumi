@@ -3,6 +3,7 @@
     {
       "identifier": "isB",
       "type": "boolean",
+      "default": "true",
       "required": true
     },
     {
@@ -19,6 +20,7 @@
       "identifier": "size",
       "description": "component size",
       "type": "\"small\" | \"large\"",
+      "default": "small",
       "required": true
     }
   ]

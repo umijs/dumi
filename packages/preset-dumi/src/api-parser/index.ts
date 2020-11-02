@@ -59,7 +59,7 @@ export default (filePath: string, componentName?: string) => {
         const exportName = item.displayName === componentName ? 'default' : item.displayName;
         const props = Object.entries(item.props).map(([identifier, prop]) => {
           const result = { identifier } as IPropDefinitions[''][0];
-          const fields = ['identifier', 'description', 'type', 'default', 'required'];
+          const fields = ['identifier', 'description', 'type', 'defaultValue', 'required'];
           const localeDescReg = /(?:^|\n+)@description\s+/;
 
           fields.forEach(field => {
@@ -82,6 +82,12 @@ export default (filePath: string, componentName?: string) => {
                   });
                 } else if (prop.description) {
                   result.description = prop.description;
+                }
+                break;
+
+              case 'defaultValue':
+                if (prop[field]) {
+                  result.default = prop[field].value;
                 }
                 break;
 
