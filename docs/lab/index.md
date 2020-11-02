@@ -9,6 +9,19 @@ sidemenu: false
 The functions of the laboratory are only works in the <code>next</code> version, you can use <code>npm i dumi@next</code> to install the experimental version for experience; The experimental functions are unstable, please do not use it in production; If you have any suggestions, welcome to feedback and exchanges in the discussion group ❤
 </Alert>
 
+## Umi inregrated mode
+
+**Dependent version:**`dumi@1.1.0-beta.28+`
+
+When we are working a business project, it is a big headache for us to manage the components within project, because these components no need to release a npm package, but also need to be iterated, updated, documented, and handed over; The Umi interagted mode was born for this scene, it includes:
+
+- **Auto-detecting**: The integrated mode will be activated when the `dependencies` or `devDependencies` includes `umi` & `@umijs/preset-dumi` (`dumi` pacakge no longer needed)
+- **Routes isolation**: All the dumi docs will be created under the `/~docs` route, it is isolated from the original project, just like prefix a specific path for all the dumi routes, user's menus and user's navs
+- **Only development**: The Integrated moode only activate when the `NODE_ENV` is `development`, does not includes in the production bundle
+- **Solo support**: We can get the non-integrated docs bundle for deployment via `umi build --dumi`, also available in `umi dev`
+
+To use the integrated mode, we can install the `@umijs/preset-dumi` into `devDependencies`, and configure `resolve.includes` as project needed (for example, use `src/components` as project's components directory).
+
 ## Auto-gen component API
 
 **Dependent version:**`dumi@1.1.0-beta.27+`
