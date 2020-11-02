@@ -133,7 +133,11 @@ const useCurrentBase = (
  */
 const OuterLayout: React.FC<IOuterLayoutProps & IRouteComponentProps> = props => {
   const { location, route, children } = props;
-  const pathWithoutPrefix = location.pathname.replace(route.path, '');
+  const pathWithoutPrefix = location.pathname.replace(
+    // to avoid stripped the first /
+    route.path.replace(/^\/$/, '//'),
+    '',
+  );
   const meta = useCurrentRouteMeta(route.routes, location.pathname);
   // use non-prefix for detect current locale, such as /~docs/en-US -> /en-US
   const locale = useCurrentLocale(config.locales, pathWithoutPrefix);

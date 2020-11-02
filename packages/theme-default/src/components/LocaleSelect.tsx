@@ -20,7 +20,11 @@ const LocaleSelect: FC<{ location: any }> = ({ location }) => {
     if (target !== locales[0].name) {
       // compatiable with integrate route prefix /~docs
       const routePrefix = `${baseWithoutLocale}/${target}`.replace(/\/\//, '/');
-      const pathnameWithoutBase = location.pathname.replace(base, '');
+      const pathnameWithoutBase = location.pathname.replace(
+        // to avoid stripped the first /
+        base.replace(/^\/$/, '//'),
+        '',
+      );
 
       return `${routePrefix}${pathnameWithoutBase}`.replace(/\/$/, '');
     }
