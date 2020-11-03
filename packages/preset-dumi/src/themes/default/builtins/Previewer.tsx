@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { Component } from 'react';
+import { Link } from 'umi';
 import innertext from 'innertext';
 import CopyButton from '../CopyButton';
 import SourceCode from './SourceCode';
@@ -271,9 +272,9 @@ ${issueLink}`,
             </>
           )}
           {!this.props.hideActions?.includes('CSB') && path && (
-            <a target="_blank" rel="noopener noreferrer" href={path}>
+            <Link target="_blank" to={path}>
               <button className="__dumi-default-icon" role="open-demo" type="button" />
-            </a>
+            </Link>
           )}
           <span />
           <CopyButton text={files[currentFile]?.content || raw} />
