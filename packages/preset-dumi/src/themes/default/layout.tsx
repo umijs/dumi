@@ -112,7 +112,9 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
 
     // redirect to home page if there has no matched route
     if (!state.currentRouteMeta && location.pathname !== rootPath) {
-      window.location.replace(rootPath);
+      if (typeof window !== undefined) {
+        window.location.replace(rootPath);
+      }
 
       // just to avoid throw error
       state.currentRouteMeta = {};
