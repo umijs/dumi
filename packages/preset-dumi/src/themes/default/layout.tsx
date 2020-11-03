@@ -350,10 +350,14 @@ export default class Layout extends Component<ILayoutProps & RouteProps> {
           data-show-slugs={String(showSlugs)}
           data-site-mode={siteMode}
           data-gapless={String(!!currentRouteMeta.gapless)}
+          onClick={() => this.setState({ menuCollapsed: true })}
         >
           <Navbar
             navPrefix={<SearchBar routes={this.props.route.routes} />}
-            onMobileMenuClick={() => this.setState({ menuCollapsed: !menuCollapsed })}
+            onMobileMenuClick={ev => {
+              this.setState({ menuCollapsed: !menuCollapsed });
+              ev.stopPropagation();
+            }}
           />
           <SideMenu mobileMenuCollapsed={menuCollapsed} location={this.props.location} />
           {showSlugs && (
