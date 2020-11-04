@@ -41,9 +41,8 @@ export interface IHelloProps {
    * @description       also can write description with property name
    * @description.zh-CN support to write description for different locales
    * @default           support to set default value
-   * @required          support to mark required
    */
-  className?: string;
+  className?: string; // support to mark not required via TypeScript optional type
 }
 
 const Hello: React.FC<IHelloProps> = () => <>Hello World!</>;
