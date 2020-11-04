@@ -35,10 +35,9 @@ const Features = features => (
 
 const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
   const {
-    config: { mode, locales, repository, navs },
+    config: { mode, repository },
     meta,
     locale,
-    nav,
   } = useContext(context);
   const { url: repoUrl, branch } = repository;
   const [menuCollapsed, setMenuCollapsed] = useState<boolean>(true);
@@ -68,6 +67,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
   return (
     <div
       className="__dumi-default-layout"
+      data-route={location.pathname}
       data-show-sidemenu={String(showSideMenu)}
       data-show-slugs={String(showSlugs)}
       data-site-mode={isSiteMode}
