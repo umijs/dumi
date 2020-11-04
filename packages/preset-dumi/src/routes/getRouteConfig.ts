@@ -14,11 +14,14 @@ export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
   const childRoutes: IRoute[] = [];
   const exampleRoutePrefix = opts.mode === 'site' ? '/_' : '/_examples/';
   const theme = await getTheme();
+  const userRoutes = opts.isIntegrate
+    ? api.userConfig.routes?.find(route => route._dumiRoot)
+    : api.userConfig.routes;
 
-  if (api.userConfig.routes) {
+  if (userRoutes) {
     // only apply user's routes if there has routes config
     childRoutes.push(
-      ...api.userConfig.routes.map(({ component, ...routeOpts }) => ({
+      ...userRoutes.map(({ component, ...routeOpts }) => ({
         component: path.isAbsolute(component as string)
           ? slash(path.relative(paths.cwd, component))
           : component,
