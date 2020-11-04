@@ -22,6 +22,7 @@ export default () => {
       require.resolve('./plugins/features/routes'),
       require.resolve('./plugins/features/compile'),
       require.resolve('./plugins/features/404'),
+      require.resolve('./plugins/features/sitemap'),
 
       // generate files
       require.resolve('./plugins/features/demo'),

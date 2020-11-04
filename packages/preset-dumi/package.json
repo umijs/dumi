@@ -73,7 +73,8 @@
     "@types/mdast": "^3.0.3",
     "@types/unist": "^2.0.3",
     "@umijs/core": "^3.2.6",
-    "react-test-renderer": "^16.13.1"
+    "react-test-renderer": "^16.13.1",
+    "sitemap": "^6.3.3"
   },
   "license": "MIT"
 }

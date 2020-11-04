@@ -181,7 +181,7 @@ Configure the code block that will be converted to ReactComponent by dumi. If yo
 
 ## publicPath
 
-- Type: `publicPath`
+- Type: `String`
 - Default: `/`
 - Details:
 
@@ -210,7 +210,14 @@ More: [the configurations of Umi - ssr](https://umijs.org/config#ssr);
 - Type: `Array`
 - Default: `[]`
 
-Same as [headScripts](TODO), configure additional scripts in `<body>`.
+Same as [headScripts](https://umijs.org/config#headscripts), configure additional scripts in `<body>`.
+
+## sitemap <Badge>1.1.0-beta.30+</Badge>
+
+- Type: `{ hostname: string, excludes?: string[] }`
+- Default: `null`
+
+Enable auto-generate `sitemap.xml` feature. The `hostname` option for configure hostname of item url in sitemap, the `excludes` options for exclude some route paths in sitemap.
 
 ## title
 

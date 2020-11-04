@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { IApi } from '@umijs/types';
 import { rimraf } from '@umijs/utils';
 import { Service } from '@umijs/core';
 import { render } from '@testing-library/react';
@@ -219,5 +220,36 @@ describe('preset-dumi', () => {
 
     // expect dumi disabled in integrate with production
     expect((await (api as any).getRoutes()).map(route => route.path)).toEqual(['/A', '/']);
+  });
+
+  it('should generate sitemap.xml', async () => {
+    const cwd = path.join(fixtures, 'sitemap');
+    const service = new Service({
+      cwd,
+      env: 'production',
+      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+    });
+
+    await service.init();
+
+    const api = service.getPluginAPI({
+      service,
+      key: 'test',
+      id: 'test',
+    }) as IApi;
+
+    if (!fs.existsSync(api.paths.absOutputPath)) {
+      fs.mkdirSync(api.paths.absOutputPath);
+    }
+
+    await api.applyPlugins({
+      key: 'onBuildComplete',
+      type: api.ApplyPluginsType.event,
+    });
+
+    // expect sitemap.xml content correctly
+    expect(fs.readFileSync(path.join(api.paths.absOutputPath, 'sitemap.xml')).toString()).toEqual(
+      '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://d.umijs.org/</loc></url><url><loc>https://d.umijs.org/test</loc></url></urlset>',
+    );
   });
 });

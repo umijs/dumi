@@ -177,7 +177,7 @@ export default {
 
 ## publicPath
 
-- Type: `publicPath`
+- Type: `String`
 - Default: `/`
 
 配置 webpack 的 publicPath。当打包的时候，webpack 会在静态文件路径前面添加 `publicPath` 的值，当你需要修改静态文件地址时，比如使用 CDN 部署，把 `publicPath` 的值设为 CDN 的值就可以。
@@ -204,7 +204,14 @@ export default {
 - Type: `Array`
 - Default: `[]`
 
-同 [headScripts](TODO)，配置 `<body>` 里的额外脚本。
+同 [headScripts](https://umijs.org/config#headscripts)，配置 `<body>` 里的额外脚本。
+
+## sitemap <Badge>1.1.0-beta.30+</Badge>
+
+- Type: `{ hostname: string, excludes?: string[] }`
+- Default: `null`
+
+启用 `sitemap.xml` 自动生成特性。`hostname` 配置项用来指定 URL 的域名前缀，`excludes` 配置项用来忽略某些不需要包含在 sitemap 中的路由。
 
 ## title
 
