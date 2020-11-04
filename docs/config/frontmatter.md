@@ -18,8 +18,8 @@ The FrontMatter for TSX/JSX files is as follows:
 
 <pre>
 /**
-&nbsp;* title: title content
-&nbsp;*/
+ * title: title content
+ */
 </pre>
 
 ## The FrontMatter configurations supported by Markdown
@@ -256,6 +256,14 @@ It is used to control whether the demo wrapper sets the CSS value of `transform`
 - Details:
 
 It is used to control whether the demo wrapper expands the presentation of source code by default.
+
+### debug <Badge>1.1.0-beta.30+</Badge>
+
+- Type: `Boolean`
+- Default: `false`
+- Details:
+
+Mark this demo as debug demo, it means this demo will not render in production mode, in additional, dumi will render a `DEV ONLY` badge for all debug demos in development mode, so that can help developers recognize them.
 
 ### hideActions
 

@@ -231,7 +231,10 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
     );
 
     // replace original node
-    if (yaml.inline) {
+    if (ctx.umi?.env === 'production' && yaml.debug) {
+      // discard debug demo in production
+      parent.children.splice(i, 1);
+    } else if (yaml.inline) {
       parent.children[i] = {
         previewer: true,
         type: 'element',

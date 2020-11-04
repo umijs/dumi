@@ -1,9 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-import { init } from '../../context';
-import transformer from '..';
 import { Service } from '@umijs/core';
 import { winEOL } from '@umijs/utils';
+import { IDumiOpts, init } from '../../context';
+import transformer from '..';
 
 function clearVersion(source: string) {
   return source.replace(/version":"[^"]+"/g, 'version":"*"');
@@ -14,10 +14,12 @@ describe('demo example', () => {
 
   beforeAll(async () => {
     const service = new Service({
+      // for test debug demo
+      env: 'production',
       cwd: path.dirname(FILE_PATH),
     });
 
-    init(service as any, { resolve: { previewLangs: ['jsx', 'tsx'] } });
+    init(service as any, { resolve: { previewLangs: ['jsx', 'tsx'] } } as IDumiOpts);
   });
 
   afterAll(() => {

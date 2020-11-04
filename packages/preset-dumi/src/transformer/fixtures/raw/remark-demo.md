@@ -32,3 +32,12 @@ export default () => null;
 <code src="./demo-missing-react.tsx" hideActions='["CSB"]' defaultShowCode />
 
 <code src="./demo-missing-react.tsx" inline />
+
+```jsx
+/**
+ * debug: true
+ */
+export default () => null;
+```
+
+<code src="./demo-missing-react.tsx" debug />

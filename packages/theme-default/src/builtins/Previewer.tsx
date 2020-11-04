@@ -74,6 +74,7 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
         .filter(Boolean)
         .join(' ')}
       id={props.identifier}
+      data-debug={props.debug || undefined}
     >
       <div
         ref={demoRef}

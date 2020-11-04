@@ -18,8 +18,8 @@ TSX/JSX 文件的 FrontMatter 编写方法如下：
 
 <pre>
 /**
-&nbsp;* title: 标题内容
-&nbsp;*/
+ * title: 标题内容
+ */
 </pre>
 
 ## Markdown 支持的 FrontMatter 配置项
@@ -256,6 +256,14 @@ features:
 - 详细：
 
 用于控制当前 demo 的包裹容器是否默认展开源代码显示。
+
+### debug <Badge>1.1.0-beta.30+</Badge>
+
+- 类型：`Boolean`
+- 默认值：`false`
+- 详细：
+
+标记当前 demo 为调试 demo，这意味着在生产模式下该 demo 是不可见的；另外，调试 demo 在开发环境下也会展示一个 `DEV ONLY` 的标记，以便开发者将其和其他 demo 区分开来。
 
 ### hideActions
 

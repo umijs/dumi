@@ -5,6 +5,26 @@
   border: 1px solid @c-border;
   border-radius: 1px;
 
+  &[data-debug] {
+    margin-top: 32px;
+    border-color: #ffcb00;
+
+    &::before {
+      content: 'DEV ONLY';
+      float: left;
+      margin-left: -1px;
+      margin-top: -18px;
+      padding: 3px 5px;
+      font-size: 12px;
+      line-height: 1;
+      background-color: #ffcb00;
+      color: #735600;
+      text-shadow: 0.5px 0.5px 0 rgba(255, 255, 255, 0.5);
+      border-top-left-radius: 1px;
+      border-top-right-radius: 1px;
+    }
+  }
+
   + .@{prefix}-previewer {
     margin-top: 32px;
   }
