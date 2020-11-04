@@ -2,6 +2,7 @@ import { IApi, IRoute } from '@umijs/types';
 import { IDumiOpts } from '../..';
 import flat from './flat';
 import frontMatter from './frontMatter';
+import hide from './hide';
 import locale from './locale';
 import title from './title';
 import nav from './nav';
@@ -63,6 +64,7 @@ export default (routes: IRoute[], opts: IDumiOpts, umi: IApi) => {
   decorator
     .use(flat)
     .use(frontMatter)
+    .use(hide)
     .use(locale)
     .use(title)
     .use(nav)

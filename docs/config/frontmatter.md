@@ -14,7 +14,7 @@ title: title content
 ---
 </pre>
 
-The FrontMatter for TSX/JSX  files is as follows:
+The FrontMatter for TSX/JSX files is as follows:
 
 <pre>
 /**
@@ -49,7 +49,6 @@ Control the display of the sidebar menu.
 - Details:
 
 Control the presentation or position of the anchor directory. When the value is `false`, it will not be presented. When the value is `content`, it will be presented on the right side of the content area (Affix Menu). When the value is `menu`, **the anchor of the current route** will be presented in the left menu.
-
 
 ### order
 
@@ -101,7 +100,7 @@ Eventually, the `group.path` will still generated to `/components`, but `group.t
 - Type: `String`
 - Details:
 
-It is used to configure the name of the group in the sidebar menu. If it is not configured, it will read `group.path` by default and convert it to `title`. For example, `/components`  will be converted to `Components`.
+It is used to configure the name of the group in the sidebar menu. If it is not configured, it will read `group.path` by default and convert it to `title`. For example, `/components` will be converted to `Components`.
 
 #### group.path
 
@@ -150,7 +149,7 @@ Only works in site mode, the page will be presented as a homepage after configur
 
 - Type: `String`
 - Default: `null`
-- Details: 
+- Details:
 
 Configure the headline of the homepage.
 
@@ -158,7 +157,7 @@ Configure the headline of the homepage.
 
 - Type: `String`
 - Default: `null`
-- Details: 
+- Details:
 
 Configure the introduction text of the homepage.
 
@@ -166,7 +165,7 @@ Configure the introduction text of the homepage.
 
 - Type: `Array`
 - Default: `null`
-- Details: 
+- Details:
 
 Configure the operation buttons of the homepage. The first button will be presented as the main button. The configurations are as follows:
 
@@ -207,6 +206,14 @@ Configure the footer of the current page. It is recommended to configure the hom
 - Details:
 
 Whether to present the 『Help Translation』 prompt at the top of the page.
+
+### hide <Badge>1.1.0-beta.30+</Badge>
+
+- Type: `Boolean`
+- Default: `false`
+- Details:
+
+You can hide specific documentation that you do not want to display on the webpack in production env, and this option does not affect the development env.
 
 ## FrontMatter configurations supported by TSX/JSX
 
