@@ -16,9 +16,6 @@ This page lists various Markdown styles and demos rendered by dumi.
 ### Embed Code
 
 ```jsx
-/**
- * debug: true
- */
 import React from 'react';
 import { Button } from 'antd';
 

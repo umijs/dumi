@@ -234,6 +234,7 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
     if (ctx.umi?.env === 'production' && yaml.debug) {
       // discard debug demo in production
       parent.children.splice(i, 1);
+      this.vFile.data.demos.splice(this.vFile.data.demos.length - 1, 1);
     } else if (yaml.inline) {
       parent.children[i] = {
         previewer: true,

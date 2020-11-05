@@ -107,7 +107,7 @@ export default () => null;
 ```
 </pre>
 
-like this：
+Like this：
 
 ```jsx
 /**
@@ -123,3 +123,7 @@ export default () => null;
 ## Embeded in documents
 
 Render demo in embedded mode, please refer to [The Types of demos - embedded mode](/guide/demo-types#embedded-mode)。
+
+## debug demo <Badge>1.1.0-beta.30+</Badge>
+
+If we just want to render some demos in development mode for debug, we can use the `debug` option, details: [FrontMatter - debug](/config/frontmatter#debug)

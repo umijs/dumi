@@ -51,6 +51,10 @@ export interface IPreviewerComponentProps {
    * motions of current demo, for snapshot or preview
    */
   motions?: string[];
+  /**
+   * mark demo as debug demo, will be discarded in production mode
+   */
+  debug?: true;
   [key: string]: any;
 }
 

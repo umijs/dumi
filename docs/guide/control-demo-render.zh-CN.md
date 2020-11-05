@@ -123,3 +123,7 @@ export default () => null;
 ## 直接嵌入文档
 
 将 Demo 以嵌入形式呈现，请参考 [Demo 的类型 - 嵌入式](/zh-CN/guide/demo-types#嵌入式)。
+
+## 调试型 demo <Badge>1.1.0-beta.30+</Badge>
+
+如果某些 demo 我们只希望在开发模式下展示，可使用 `debug` 参数标记，详见 [FrontMatter 配置项 - debug](/zh-CN/config/frontmatter#debug)
