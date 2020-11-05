@@ -233,6 +233,22 @@ It is used to configure the title of the demo, which will be presented in the De
 
 It is used to configure the description of the Demo, which will be presented in the Demo previewer, and support Markdown.
 
+### compact
+
+- Type: `Boolean`
+- Default: `false`
+- Details:
+
+Use to remove padding for demo container.
+
+### background
+
+- Type: `CSSPropertyValue`
+- Default: `null`
+- Details:
+
+Use to configure background for demo container.
+
 ### inline
 
 - Type: `Boolean`

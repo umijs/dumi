@@ -233,6 +233,22 @@ features:
 
 用于配置该外部 Demo 的简介，配置后会在 Demo 预览器中显示，支持 Markdown 语法。
 
+### compact
+
+- 类型：`Boolean`
+- 默认值：`false`
+- 详细：
+
+用于去除 demo 渲染容器的内边距。
+
+### background
+
+- 类型：`CSSPropertyValue`
+- 默认值：`null`
+- 详细：
+
+用于设置 demo 渲染容器的背景色。
+
 ### inline
 
 - 类型：`Boolean`

@@ -130,7 +130,7 @@ If we just want to render some demos in development mode for debug, we can use t
 
 ## iframe mode <Badge>1.1.0-beta.30+</Badge>
 
-If we want to render demo in an iframe element, we can use `iframe` option to implement absolute isolation between demo and docs, it is usually used for layout component:
+If we want to render demo in an iframe element, we can use `iframe` option to implement absolute isolation between demo and docs, it is usually used for layout component, now [`compact`](/config/frontmatter#compact) option will be `true` by default:
 
 <pre lang="md">
 ```jsx

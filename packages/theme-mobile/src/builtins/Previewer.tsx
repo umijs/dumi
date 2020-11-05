@@ -39,6 +39,8 @@ export default (props: IPreviewerProps) => {
       // rewrite props for device mode
       setPreviewerProps(
         Object.assign({}, props, {
+          // omit iframe
+          iframe: null,
           // omit children
           children: null,
           // show source code

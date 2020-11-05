@@ -130,7 +130,7 @@ export default () => null;
 
 ## iframe 模式 <Badge>1.1.0-beta.30+</Badge>
 
-如果我们希望以 iframe 嵌套的形式来渲染当前 demo，可以通过 `iframe` 进行配置，可实现 demo 和 文档的完全隔离，通常用于布局型组件：
+如果我们希望以 iframe 嵌套的形式来渲染当前 demo，可以通过 `iframe` 进行配置，可实现 demo 和 文档的完全隔离，通常用于布局型组件，此时 [`compact`](/zh-CN/config/frontmatter#compact) 配置默认为 `true`：
 
 <pre lang="md">
 ```jsx
