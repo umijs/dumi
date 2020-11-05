@@ -29,7 +29,7 @@ export interface IPreviewerProps extends IPreviewerComponentProps {
   /**
    * collapse padding of demo area
    */
-  compact?: string;
+  compact?: boolean;
   /**
    * configurations for action button
    */
@@ -38,6 +38,10 @@ export interface IPreviewerProps extends IPreviewerComponentProps {
    * show source code by default
    */
   defaultShowCode?: boolean;
+  /**
+   * use iframe mode for this demo
+   */
+  iframe?: true | number;
 }
 
 const Previewer: React.FC<IPreviewerProps> = oProps => {
@@ -54,6 +58,7 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
   const [currentFile, setCurrentFile] = useState('_');
   const [sourceType, setSourceType] = useState<'jsx' | 'tsx'>();
   const [showSource, setShowSource] = useState(Boolean(props.defaultShowCode));
+  const [iframeKey, setIframeKey] = useState(Math.random());
   const currentFileCode =
     props.sources[currentFile][sourceType] ||
     props.sources[currentFile].jsx ||
@@ -75,17 +80,28 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
         .join(' ')}
       id={props.identifier}
       data-debug={props.debug || undefined}
+      data-iframe={props.iframe || undefined}
     >
+      {props.iframe && <div className="__dumi-default-previewer-browser-nav" />}
       <div
         ref={demoRef}
         className="__dumi-default-previewer-demo"
         style={{
           transform: props.transform ? 'translate(0, 0)' : undefined,
-          padding: props.compact ? '0' : undefined,
+          padding: props.compact || (props.iframe && props.compact !== false) ? '0' : undefined,
           background: props.background,
         }}
       >
-        {props.children}
+        {props.iframe ? (
+          <iframe
+            title="dumi-previewer"
+            style={{ height: typeof props.iframe === 'number' ? props.iframe : undefined }}
+            key={iframeKey}
+            src={demoUrl}
+          />
+        ) : (
+          props.children
+        )}
       </div>
       <div className="__dumi-default-previewer-desc" data-title={props.title}>
         {props.title && <AnchorLink to={`#${props.identifier}`}>{props.title}</AnchorLink>}
@@ -120,6 +136,14 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
             role="motions"
             disabled={isMotionRunning}
             onClick={() => execMotions()}
+          />
+        )}
+        {props.iframe && (
+          <button
+            title="Reload demo iframe page"
+            className="__dumi-default-icon"
+            role="refresh"
+            onClick={() => setIframeKey(Math.random())}
           />
         )}
         {!props.hideActions?.includes('EXTERNAL') && (

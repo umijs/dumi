@@ -127,3 +127,41 @@ export default () => null;
 ## 调试型 demo <Badge>1.1.0-beta.30+</Badge>
 
 如果某些 demo 我们只希望在开发模式下展示，可使用 `debug` 参数标记，详见 [FrontMatter 配置项 - debug](/zh-CN/config/frontmatter#debug)
+
+## iframe 模式 <Badge>1.1.0-beta.30+</Badge>
+
+如果我们希望以 iframe 嵌套的形式来渲染当前 demo，可以通过 `iframe` 进行配置，可实现 demo 和 文档的完全隔离，通常用于布局型组件：
+
+<pre lang="md">
+```jsx
+/**
+ * iframe: true
+ * iframe: 300 // 设置为数值可控制 iframe 高度
+ */
+import React from 'react';
+
+export default () => (
+  <h2
+    style={{
+      boxShadow: '0 2px 15px rgba(0,0,0,0.1)',
+      padding: '5px 20px'
+    }}
+  >
+    iframe 模式
+  </h2>
+);
+```
+</pre>
+
+效果如下：
+
+```jsx
+/**
+ * iframe: 150
+ */
+import React from 'react';
+
+export default () => (
+  <h2 style={{ boxShadow: '0 2px 15px rgba(0,0,0,0.1)', padding: '5px 20px' }}>iframe 模式</h2>
+);
+```

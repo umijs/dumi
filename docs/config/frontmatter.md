@@ -295,6 +295,14 @@ Configure via frontmatter:
 // Both of the above methods can be identified
 ```
 
+### iframe <Badge>1.1.0-beta.30+</Badge>
+
+- Type: `Boolean | Number`
+- Default: `false`
+- Details:
+
+Use iframe mode to render this demo, it is very useful for layout demo, we can control the iframe height via pass a number value, check out [iframe mode](/guide/control-demo-render#iframe-mode) to get more informations.
+
 ### Controlled by `code` tag
 
 All configurations supported by TSX/JSX can also be used when importing external demos using the `code` tag, like this:

@@ -180,7 +180,7 @@ describe('default theme', () => {
       </Context.Provider>
     );
 
-    const { getByText, getByTitle, getAllByTitle } = render(
+    const { getByText, getByTitle, getAllByTitle, container } = render(
       <Router history={history}>
         <Layout {...baseProps}>
           <>
@@ -215,6 +215,23 @@ describe('default theme', () => {
               dependencies={{}}
             >
               <>demo-2 Content</>
+            </Previewer>
+            <Previewer
+              title="demo-3"
+              identifier="demo-3"
+              sources={{
+                _: {
+                  jsx: "export default () => 'Main'",
+                },
+                'Other.jsx': {
+                  import: './Other.jsx',
+                  content: "export default () => 'Other'",
+                },
+              }}
+              dependencies={{}}
+              iframe={100}
+            >
+              <>demo-3 Content</>
             </Previewer>
             <API identifier="MultipleExports" export="Other" />
           </>
@@ -258,6 +275,14 @@ describe('default theme', () => {
 
     // expect show code of main file
     expect(getByText("'Other'")).not.toBeNull();
+
+    // expect render iframe demo
+    (container.querySelector('[data-iframe] button[role=refresh]') as HTMLElement).click();
+    expect(container.querySelector('[data-iframe]').innerHTML).not.toContain('demo-3 Content');
+    expect(container.querySelector('[data-iframe] iframe')).not.toBeNull();
+    expect((container.querySelector('[data-iframe] iframe') as HTMLElement).style.height).toEqual(
+      '100px',
+    );
 
     // expect render API property
     expect(getByText('other', { selector: 'table td' })).not.toBeNull();

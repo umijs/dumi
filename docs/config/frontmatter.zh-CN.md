@@ -295,6 +295,14 @@ features:
 // 以上两种方式均可识别
 ```
 
+### iframe <Badge>1.1.0-beta.30+</Badge>
+
+- 类型：`Boolean | Number`
+- 默认值：`false`
+- 详细：
+
+使用 iframe 模式渲染当前 demo，对于渲染 layout 型的 demo 非常有用，当我们传递数值时可以控制 iframe 的高度，访问 [iframe 模式](/zh-CN/guide/control-demo-render#iframe-模式) 了解更多。
+
 ### 通过 `code` 标签控制
 
 所有 TSX/JSX 支持的配置项，在使用 `code` 标签引入外部 demo 时也可以使用，就像这样：

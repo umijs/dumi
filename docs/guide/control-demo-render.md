@@ -127,3 +127,41 @@ Render demo in embedded mode, please refer to [The Types of demos - embedded mod
 ## debug demo <Badge>1.1.0-beta.30+</Badge>
 
 If we just want to render some demos in development mode for debug, we can use the `debug` option, details: [FrontMatter - debug](/config/frontmatter#debug)
+
+## iframe mode <Badge>1.1.0-beta.30+</Badge>
+
+If we want to render demo in an iframe element, we can use `iframe` option to implement absolute isolation between demo and docs, it is usually used for layout component:
+
+<pre lang="md">
+```jsx
+/**
+ * iframe: true
+ * iframe: 300 // control iframe height via number value
+ */
+import React from 'react';
+
+export default () => (
+  <h2
+    style={{
+      boxShadow: '0 2px 15px rgba(0,0,0,0.1)',
+      padding: '5px 20px'
+    }}
+  >
+    iframe mode
+  </h2>
+);
+```
+</pre>
+
+Like this：
+
+```jsx
+/**
+ * iframe: 150
+ */
+import React from 'react';
+
+export default () => (
+  <h2 style={{ boxShadow: '0 2px 15px rgba(0,0,0,0.1)', padding: '5px 20px' }}>iframe mode</h2>
+);
+```
