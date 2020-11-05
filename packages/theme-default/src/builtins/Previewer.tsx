@@ -95,7 +95,10 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
         {props.iframe ? (
           <iframe
             title="dumi-previewer"
-            style={{ height: typeof props.iframe === 'number' ? props.iframe : undefined }}
+            style={{
+              // both compatible with unit or non-unit, such as 100, 100px, 100vh
+              height: String(props.iframe).replace(/(\d)$/, '$1px'),
+            }}
             key={iframeKey}
             src={demoUrl}
           />
