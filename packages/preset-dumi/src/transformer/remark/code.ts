@@ -38,7 +38,7 @@ export default function code(): IDumiUnifiedTransformer {
             source:
               lang === 'tsx'
                 ? {
-                    jsx: parseText(result.content, { filename: absPath }),
+                    jsx: parseText(result.content),
                     tsx: result.content,
                   }
                 : { jsx: result.content },

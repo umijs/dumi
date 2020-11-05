@@ -55,7 +55,7 @@
     "remark-rehype": "^8.0.0",
     "remark-stringify": "^9.0.0",
     "slash2": "^2.0.0",
-    "sylvanas": "^0.6.0",
+    "sylvanas": "0.4.3",
     "unified": "^8.4.1",
     "unist-util-visit": "^2.0.1",
     "unist-util-visit-parents": "^3.0.1"

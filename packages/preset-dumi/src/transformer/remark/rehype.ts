@@ -13,7 +13,7 @@ function demoHandler(h, { type, lang, value, position, ...props }) {
   // set source code
   if (lang === 'tsx') {
     source.tsx = source.jsx;
-    source.jsx = parseText(source.tsx, { filename: 'index.tsx' });
+    source.jsx = parseText(source.tsx);
   }
 
   return h(position, 'div', {
