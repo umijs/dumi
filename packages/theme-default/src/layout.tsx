@@ -51,7 +51,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
     Boolean(meta.slugs?.length) &&
     (meta.toc === 'content' || meta.toc === undefined) &&
     !meta.gapless;
-  const isCN = locale === 'zh-CN';
+  const isCN = /^zh|cn$/i.test(locale);
   const updatedTime: any = new Date(meta.updatedTime).toLocaleString();
   const repoPlatform = { github: 'GitHub', gitlab: 'GitLab' }[
     (repoUrl || '').match(/(github|gitlab)/)?.[1] || 'nothing'

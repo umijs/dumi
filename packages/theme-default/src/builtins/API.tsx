@@ -21,7 +21,7 @@ const LOCALE_TEXTS = {
 export default ({ identifier, export: expt }: IApiComponentProps) => {
   const data = useApiData(identifier);
   const { locale } = useContext(context);
-  const texts = LOCALE_TEXTS[locale] || LOCALE_TEXTS['en-US'];
+  const texts = /^zh|cn$/i.test(locale) ? LOCALE_TEXTS['zh-CN'] : LOCALE_TEXTS['en-US'];
 
   return (
     <>
