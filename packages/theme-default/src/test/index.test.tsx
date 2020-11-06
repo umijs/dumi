@@ -258,12 +258,6 @@ describe('default theme', () => {
     // expect show TypeScript code default
     expect(getByText("'TypeScript'")).not.toBeNull();
 
-    // trigger source code type change
-    getByTitle('Toggle type for source code').click();
-
-    // expect show JavaScript code
-    expect(getByText("'JavaScript'")).not.toBeNull();
-
     // trigger source code display for demo-2
     getAllByTitle('Toggle source code panel')[1].click();
 

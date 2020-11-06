@@ -122,7 +122,6 @@ describe('mobile theme', () => {
               identifier="demo-1"
               sources={{
                 _: {
-                  jsx: "export default () => 'JavaScript'",
                   tsx: "export default () => 'TypeScript'",
                 },
               }}
@@ -160,10 +159,6 @@ describe('mobile theme', () => {
     );
 
     expect(getByText("'TypeScript'")).not.toBeNull();
-
-    getByTitle('Toggle type for source code').click();
-
-    expect(getByText("'JavaScript'")).not.toBeNull();
 
     expect(getByText("'Main'")).not.toBeNull();
 

@@ -10,11 +10,12 @@ import {
   useCopy,
   useLocaleProps,
   useDemoUrl,
+  useTSPlaygroundUrl,
   Link,
   AnchorLink,
   IPreviewerComponentProps,
 } from 'dumi/theme';
-import SourceCode from './SourceCode';
+import SourceCode, { ICodeBlockProps } from './SourceCode';
 import './Previewer.less';
 
 export interface IPreviewerProps extends IPreviewerComponentProps {
@@ -44,6 +45,22 @@ export interface IPreviewerProps extends IPreviewerComponentProps {
   iframe?: true | number;
 }
 
+/**
+ * get source code type for file
+ * @param file    file path
+ * @param source  file source object
+ */
+function getSourceType(file: string, source: IPreviewerComponentProps['sources']['']) {
+  // use file extension as source type first
+  let type = file.match(/\.(\w+)$/)?.[1];
+
+  if (!type) {
+    type = source.tsx ? 'tsx' : 'jsx';
+  }
+
+  return type as ICodeBlockProps['lang'];
+}
+
 const Previewer: React.FC<IPreviewerProps> = oProps => {
   const demoRef = useRef();
   const { locale } = useContext(context);
@@ -56,17 +73,18 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
   const [execMotions, isMotionRunning] = useMotions(props.motions || [], demoRef.current);
   const [copyCode, copyStatus] = useCopy();
   const [currentFile, setCurrentFile] = useState('_');
-  const [sourceType, setSourceType] = useState<'jsx' | 'tsx'>();
+  const [sourceType, setSourceType] = useState(
+    getSourceType(currentFile, props.sources[currentFile]),
+  );
   const [showSource, setShowSource] = useState(Boolean(props.defaultShowCode));
   const [iframeKey, setIframeKey] = useState(Math.random());
   const currentFileCode =
-    props.sources[currentFile][sourceType] ||
-    props.sources[currentFile].jsx ||
-    props.sources[currentFile].content;
+    props.sources[currentFile][sourceType] || props.sources[currentFile].content;
+  const playgroundUrl = useTSPlaygroundUrl(locale, currentFileCode);
 
   useEffect(() => {
-    setSourceType(props.sources._.tsx ? 'tsx' : 'jsx');
-  }, []);
+    setSourceType(getSourceType(currentFile, props.sources[currentFile]));
+  }, [currentFile]);
 
   return (
     <div
@@ -167,14 +185,15 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
           data-status={copyStatus}
           onClick={() => copyCode(currentFileCode)}
         />
-        {isSingleFile && showSource && (
-          <button
-            title="Toggle type for source code"
-            className="__dumi-default-icon"
-            role={`change-${sourceType}`}
-            type="button"
-            onClick={() => setSourceType(sourceType === 'tsx' ? 'jsx' : 'tsx')}
-          />
+        {sourceType === 'tsx' && showSource && (
+          <Link target="_blank" to={playgroundUrl}>
+            <button
+              title="Get JSX via TypeScript Playground"
+              className="__dumi-default-icon"
+              role="change-tsx"
+              type="button"
+            />
+          </Link>
         )}
         <button
           title="Toggle source code panel"

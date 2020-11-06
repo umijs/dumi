@@ -1,6 +1,5 @@
 import { Plugin } from 'unified';
 import oRehype from 'remark-rehype';
-import { parseText } from 'sylvanas';
 
 /**
  * handle demo type node from parse
@@ -8,18 +7,11 @@ import { parseText } from 'sylvanas';
 function demoHandler(h, { type, lang, value, position, ...props }) {
   // split source codes for previewer
   const clonedNode = { lang, value };
-  const source: { jsx: string; tsx?: string } = { jsx: clonedNode.value };
-
-  // set source code
-  if (lang === 'tsx') {
-    source.tsx = source.jsx;
-    source.jsx = parseText(source.tsx);
-  }
 
   return h(position, 'div', {
     type: 'previewer',
     lang,
-    source,
+    source: { [lang]: clonedNode.value },
     ...props,
   });
 }

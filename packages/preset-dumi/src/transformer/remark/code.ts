@@ -2,7 +2,6 @@ import fs from 'fs';
 import is from 'hast-util-is-element';
 import has from 'hast-util-has-property';
 import visit from 'unist-util-visit';
-import { parseText } from 'sylvanas';
 import { parseElmAttrToProps } from './utils';
 import { getModuleResolvePath } from '../../utils/moduleResolver';
 import { saveFileOnDepChange } from '../../utils/watcher';
@@ -35,13 +34,9 @@ export default function code(): IDumiUnifiedTransformer {
           position: node.position,
           properties: {
             type: 'previewer',
-            source:
-              lang === 'tsx'
-                ? {
-                    jsx: parseText(result.content),
-                    tsx: result.content,
-                  }
-                : { jsx: result.content },
+            source: {
+              [lang]: result.content,
+            },
             filePath: absPath,
             meta: {
               ...parsedAttrs,
