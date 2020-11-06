@@ -1,5 +1,5 @@
 import { Plugin } from 'unified';
-import rehype from 'remark-rehype';
+import oRehype from 'remark-rehype';
 import { parseText } from 'sylvanas';
 
 /**
@@ -24,8 +24,8 @@ function demoHandler(h, { type, lang, value, position, ...props }) {
   });
 }
 
-export default (function wrappedRehype() {
-  return rehype.call(this, {
+export default (function rehype() {
+  return oRehype.call(this, {
     handlers: {
       demo: demoHandler,
     },

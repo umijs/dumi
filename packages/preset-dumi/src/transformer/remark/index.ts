@@ -1,3 +1,4 @@
+import { createDebug } from '@umijs/utils';
 import unified, { Transformer } from 'unified';
 import { Node } from 'unist';
 import frontmatter from 'remark-frontmatter';
@@ -22,6 +23,8 @@ import raw from './raw';
 import jsxify from './jsxify';
 import isolation from './isolation';
 import sourceCode from './sourceCode';
+
+const log = createDebug('dumi:remark');
 
 interface IDumiVFileData {
   /**
@@ -54,6 +57,16 @@ interface IDumiVFileData {
   }[];
 }
 
+function debug(name: string) {
+  return function debugPlugin() {
+    return () => {
+      if (this.data('fileAbsPath')) {
+        log(name, this.data('fileAbsPath'));
+      }
+    };
+  };
+}
+
 export interface IDumiElmNode extends Node {
   properties: {
     id?: string;
@@ -78,33 +91,56 @@ export default (source: string, fileAbsPath: string, type: 'jsx' | 'html') => {
   const processor = unified()
     // parse to remark
     .use(parse)
+    .use(debug('parse'))
     .use(gfm)
+    .use(debug('gfm'))
     // remark plugins
     .use(frontmatter)
+    .use(debug('frontmatter'))
     .use(math)
+    .use(debug('math'))
     .use(meta)
+    .use(debug('meta'))
     .use(codeBlock)
+    .use(debug('codeBlock'))
     // remark to rehype
     .use(rehype)
+    .use(debug('rehype'))
     // rehype plugins
     .use(katex)
+    .use(debug('katex'))
     .use(sourceCode)
+    .use(debug('sourceCode'))
     .use(raw)
+    .use(debug('raw'))
     .use(comments, { removeConditional: true })
+    .use(debug('comments'))
     .use(img)
+    .use(debug('img'))
     .use(code)
+    .use(debug('code'))
     .use(embed)
+    .use(debug('embed'))
     .use(api)
+    .use(debug('api'))
     .use(slug)
+    .use(debug('slug'))
     .use(headings)
+    .use(debug('headings'))
     .use(link)
+    .use(debug('link'))
     .use(previewer)
+    .use(debug('previewer'))
     .use(isolation)
+    .use(debug('isolation'))
     .data('fileAbsPath', fileAbsPath)
     .data('outputType', type);
 
   // apply compiler via type
   processor.use(rehypeCompiler[0], rehypeCompiler[1]);
 
-  return processor.processSync(source);
+  const result = processor.processSync(source);
+  debug('compiler').call(processor);
+
+  return result;
 };

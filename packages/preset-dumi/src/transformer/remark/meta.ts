@@ -13,7 +13,7 @@ import { getModuleResolvePath } from '../../utils/moduleResolver';
 /**
  * remark plugin for generate file meta
  */
-export default function yamlProcessor(): IDumiUnifiedTransformer {
+export default function meta(): IDumiUnifiedTransformer {
   return (ast, vFile) => {
     if (this.data('fileAbsPath')) {
       const filePath = slash(

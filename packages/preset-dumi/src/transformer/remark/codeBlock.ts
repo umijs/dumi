@@ -24,7 +24,7 @@ function codeBlockModifierParser(meta: string): { [key: string]: any } {
 /**
  * rehype plugin for convert code block to demo compomnent
  */
-export default (): IDumiUnifiedTransformer => {
+export default function codeBlock(): IDumiUnifiedTransformer {
   return ast => {
     // handle md code block syntax
     visit<Code>(ast, 'code', node => {
@@ -45,4 +45,4 @@ export default (): IDumiUnifiedTransformer => {
       }
     });
   };
-};
+}

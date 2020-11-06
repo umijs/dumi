@@ -23,7 +23,7 @@ function createSourceCode(lang: string, code: string, position: any) {
 /**
  * rehype plugin for convert code block to SourceCode compomnent
  */
-export default (): IDumiUnifiedTransformer => {
+export default function sourceCode(): IDumiUnifiedTransformer {
   return ast => {
     // handle md code block syntax
     visit<IDumiElmNode>(ast, 'element', (node, i, parent) => {
@@ -58,4 +58,4 @@ export default (): IDumiUnifiedTransformer => {
       }
     });
   };
-};
+}

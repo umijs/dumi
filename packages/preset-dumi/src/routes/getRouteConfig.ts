@@ -2,11 +2,14 @@ import fs from 'fs';
 import path from 'path';
 import slash from 'slash2';
 import { IApi, IRoute } from '@umijs/types';
+import { createDebug } from '@umijs/utils';
 import getRouteConfigFromDir from './getRouteConfigFromDir';
 import getTheme from '../theme/loader';
 import decorateRoutes from './decorator';
 import { prefix } from './decorator/integrate';
 import { IDumiOpts } from '../index';
+
+const debug = createDebug('dumi:routes:get');
 
 export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
   const { paths } = api;
@@ -28,6 +31,7 @@ export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
         ...routeOpts,
       })),
     );
+    debug('getRouteConfigFromUserConfig');
   } else {
     // generate routes automatically if there has no routes config
     // find routes from include path & find examples from example path
@@ -38,6 +42,7 @@ export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
         childRoutes.push(...getRouteConfigFromDir(docsPath, opts));
       }
     });
+    debug('getRouteConfigFromDir');
   }
 
   // add main routes
@@ -59,6 +64,7 @@ export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
     routes: decorateRoutes(childRoutes, opts, api),
     title: opts.title,
   });
+  debug('decorateRoutes');
 
   // process example routes
   config[0].routes.forEach(route => {
@@ -80,6 +86,7 @@ export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
       route.meta.examplePath = examplePath;
     }
   });
+  debug('exampleRoutes');
 
   return config;
 };

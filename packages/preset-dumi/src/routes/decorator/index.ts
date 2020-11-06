@@ -1,4 +1,5 @@
 import { IApi, IRoute } from '@umijs/types';
+import { createDebug } from '@umijs/utils';
 import { IDumiOpts } from '../..';
 import flat from './flat';
 import frontMatter from './frontMatter';
@@ -24,6 +25,8 @@ class RouteDecorator {
 
   private umi: IApi;
 
+  private debug = createDebug('dumi:routes:decorator');
+
   /**
    * shared storage for all processors
    */
@@ -40,18 +43,19 @@ class RouteDecorator {
   }
 
   process(routes: IRoute[]): IRoute[] {
-    return this.processors.reduce(
-      (result, processor) =>
-        processor.call(
-          {
-            options: this.options,
-            umi: this.umi,
-            data: this.data,
-          },
-          result,
-        ),
-      routes,
-    );
+    return this.processors.reduce((result, processor) => {
+      const r = processor.call(
+        {
+          options: this.options,
+          umi: this.umi,
+          data: this.data,
+        },
+        result,
+      );
+      this.debug(processor.name);
+
+      return r;
+    }, routes);
   }
 }
 

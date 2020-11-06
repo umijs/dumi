@@ -27,4 +27,6 @@ function process(routes: IRoute[], parent?: IRoute) {
 /**
  * flat child routes decorator
  */
-export default (routes => process(routes)) as RouteProcessor;
+export default (function flat(routes) {
+  return process(routes);
+} as RouteProcessor);

@@ -92,7 +92,7 @@ function serializeAPINodes(
 /**
  * remark plugin for parse embed tag to external module
  */
-export default function embed(): IDumiUnifiedTransformer {
+export default function api(): IDumiUnifiedTransformer {
   return (ast, vFile) => {
     visit<IDumiElmNode>(ast, 'element', (node, i, parent) => {
       if (is(node, 'API') && !node._dumi_parsed) {
