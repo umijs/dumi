@@ -12,6 +12,7 @@ export { default as useCodeSandbox } from './hooks/useCodeSandbox';
 export { default as useLocaleProps } from './hooks/useLocaleProps';
 export { default as useDemoUrl } from './hooks/useDemoUrl';
 export { default as useApiData } from './hooks/useApiData';
+export { default as useTSPlaygroundUrl } from './hooks/useTSPlaygroundUrl';
 
 export interface IPreviewerComponentProps {
   title?: string;
