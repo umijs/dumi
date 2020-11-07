@@ -3,6 +3,7 @@ import path from 'path';
 import { winPath } from '@umijs/utils';
 import { getModuleResolvePath } from '../utils/moduleResolver';
 import ctx from '../context';
+import getAbsNodeModulesPath from '../utils/getAbsNodeModulesPath';
 
 interface ThemeComponent {
   /**
@@ -85,7 +86,7 @@ export default async () => {
   if (!cache || process.env.NODE_ENV === 'test') {
     const [name = process.env.DUMI_THEME || FALLBACK_THEME] = detectTheme();
     const theme = path.isAbsolute(name) ? name : `${name}/src`;
-    const modulePath = winPath(path.resolve(ctx.umi.paths.absNodeModulesPath, theme));
+    const modulePath = winPath(getAbsNodeModulesPath(theme));
     const builtinPath = path.join(modulePath, 'builtins');
     const components = fs.existsSync(builtinPath)
       ? fs

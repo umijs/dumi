@@ -7,6 +7,7 @@ import getTheme from '../theme/loader';
 import decorateRoutes from './decorator';
 import { prefix } from './decorator/integrate';
 import { IDumiOpts } from '../index';
+import getAbsNodeModulesPath from '../utils/getAbsNodeModulesPath';
 
 export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
   const { paths } = api;
@@ -51,7 +52,7 @@ export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
       slash(
         path.relative(
           api.paths.absPagesPath,
-          path.resolve(paths.absNodeModulesPath, theme.layoutPaths._),
+          getAbsNodeModulesPath(theme.layoutPaths._),
         ),
       ),
     ],
