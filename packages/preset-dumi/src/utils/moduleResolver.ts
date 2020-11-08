@@ -12,6 +12,7 @@ interface IModuleResolverOpts {
   sourcePath: string;
   extensions?: string[];
   silent?: boolean;
+  alias?: { [key: string]: string };
 }
 
 const getResolveAlias = (() => {
@@ -42,12 +43,13 @@ export const getModuleResolvePath = ({
   sourcePath,
   extensions = DEFAULT_EXT,
   silent,
+  alias,
 }: IModuleResolverOpts) => {
   try {
     return slash(
       resolve.create.sync({
         extensions,
-        alias: getResolveAlias(),
+        alias: alias || getResolveAlias(),
         symlinks: false,
         mainFiles: ['index', 'package.json'],
       })(fs.statSync(basePath).isDirectory() ? basePath : path.parse(basePath).dir, sourcePath),
