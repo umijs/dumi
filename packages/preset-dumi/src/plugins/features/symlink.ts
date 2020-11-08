@@ -46,6 +46,7 @@ export default (api: IApi) => {
         }
 
         if (!config.resolve.alias.has(pkgName)) {
+          config.resolve.alias.set(`${pkgName}/src`, srcPath);
           config.resolve.alias.set(pkgName, srcPath);
         }
       } else if (!config.resolve.alias.has(pkgName)) {
