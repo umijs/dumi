@@ -42,7 +42,10 @@ export default (api: IApi) => {
         });
         demoComponent = `() => React.createElement(dynamic({
       loader: async function() {
-        const { default: demos } = await import(/* webpackChunkName: "demos_${componentName}" */'./${componentName}');
+        const { default: demos } = await import(/* webpackChunkName: "demos_${[...componentName]
+          // reverse component name to avoid some special component (such as Advertisement) be blocked by ADBlock when dynamic loading
+          .reverse()
+          .join('')}" */'./${componentName}');
 
         return demos['${uuid}'].component;
       },
