@@ -19,3 +19,5 @@
 [](/a/test.md?a=1&b=2#header)
 <a href="/a/test.md?a=1&b=2#header"></a>
 [`test`](/test)
+<a href="https://d.umijs.org/some.md">External Link</a>
+[External Link](https://d.umijs.org/some.md)

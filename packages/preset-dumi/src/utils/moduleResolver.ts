@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import slash from 'slash2';
 import resolve from 'enhanced-resolve';
+import getHostPkgAlias from './getHostPkgAlias';
 import ctx from '../context';
 
 const DEFAULT_EXT = ['.tsx', '.jsx', '.js', '.ts'];
@@ -11,7 +12,28 @@ interface IModuleResolverOpts {
   sourcePath: string;
   extensions?: string[];
   silent?: boolean;
+  alias?: { [key: string]: string };
 }
+
+const getResolveAlias = (() => {
+  let cache: any;
+
+  return () => {
+    if (!cache) {
+      const hostPkgAlias = getHostPkgAlias(ctx.umi?.paths).map(([pkgName]) => pkgName);
+
+      cache = Object.assign({}, ctx.umi?.config?.alias);
+      hostPkgAlias.forEach(pkg => {
+        // use symlink in node_modules, for collect local packages as third-party dependencies
+        if (!cache[pkg] || cache[pkg].endsWith('src')) {
+          cache[pkg] = `${pkg}/src`;
+        }
+      });
+    }
+
+    return cache;
+  };
+})();
 
 /**
  * resolve module path base on umi context (alias)
@@ -21,12 +43,13 @@ export const getModuleResolvePath = ({
   sourcePath,
   extensions = DEFAULT_EXT,
   silent,
+  alias,
 }: IModuleResolverOpts) => {
   try {
     return slash(
       resolve.create.sync({
         extensions,
-        alias: ctx.umi?.config?.alias || {},
+        alias: alias || getResolveAlias(),
         symlinks: false,
         mainFiles: ['index', 'package.json'],
       })(fs.statSync(basePath).isDirectory() ? basePath : path.parse(basePath).dir, sourcePath),

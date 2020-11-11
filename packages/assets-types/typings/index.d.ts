@@ -3,6 +3,7 @@ import ExampleAsset from './example';
 
 export { default as AtomAsset } from './atom';
 export { default as ExampleAsset } from './example';
+export * from './atom';
 export * from './example';
 
 export default interface AssetsPackage {

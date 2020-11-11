@@ -1,17 +1,21 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 // @ts-ignore
 import { history } from 'dumi';
 import {
   context,
   useCodeSandbox,
   useRiddle,
+  useMotions,
   useCopy,
   useLocaleProps,
+  useDemoUrl,
+  useTSPlaygroundUrl,
   Link,
+  AnchorLink,
   IPreviewerComponentProps,
 } from 'dumi/theme';
-import SourceCode from './SourceCode';
+import SourceCode, { ICodeBlockProps } from './SourceCode';
 import './Previewer.less';
 
 export interface IPreviewerProps extends IPreviewerComponentProps {
@@ -26,7 +30,7 @@ export interface IPreviewerProps extends IPreviewerComponentProps {
   /**
    * collapse padding of demo area
    */
-  compact?: string;
+  compact?: boolean;
   /**
    * configurations for action button
    */
@@ -35,27 +39,52 @@ export interface IPreviewerProps extends IPreviewerComponentProps {
    * show source code by default
    */
   defaultShowCode?: boolean;
+  /**
+   * use iframe mode for this demo
+   */
+  iframe?: true | number;
+}
+
+/**
+ * get source code type for file
+ * @param file    file path
+ * @param source  file source object
+ */
+function getSourceType(file: string, source: IPreviewerComponentProps['sources']['']) {
+  // use file extension as source type first
+  let type = file.match(/\.(\w+)$/)?.[1];
+
+  if (!type) {
+    type = source.tsx ? 'tsx' : 'jsx';
+  }
+
+  return type as ICodeBlockProps['lang'];
 }
 
 const Previewer: React.FC<IPreviewerProps> = oProps => {
+  const demoRef = useRef();
   const { locale } = useContext(context);
   const props = useLocaleProps<IPreviewerProps>(locale, oProps);
-  const isActive = history.location.hash === `#${props.identifier}`;
+  const demoUrl = useDemoUrl(props.identifier);
+  const isActive = history?.location.hash === `#${props.identifier}`;
   const isSingleFile = Object.keys(props.sources).length === 1;
   const openCSB = useCodeSandbox(props.hideActions?.includes('CSB') ? null : props);
   const openRiddle = useRiddle(props.hideActions?.includes('RIDDLE') ? null : props);
+  const [execMotions, isMotionRunning] = useMotions(props.motions || [], demoRef.current);
   const [copyCode, copyStatus] = useCopy();
   const [currentFile, setCurrentFile] = useState('_');
-  const [sourceType, setSourceType] = useState<'jsx' | 'tsx'>();
+  const [sourceType, setSourceType] = useState(
+    getSourceType(currentFile, props.sources[currentFile]),
+  );
   const [showSource, setShowSource] = useState(Boolean(props.defaultShowCode));
+  const [iframeKey, setIframeKey] = useState(Math.random());
   const currentFileCode =
-    props.sources[currentFile][sourceType] ||
-    props.sources[currentFile].jsx ||
-    props.sources[currentFile].content;
+    props.sources[currentFile][sourceType] || props.sources[currentFile].content;
+  const playgroundUrl = useTSPlaygroundUrl(locale, currentFileCode);
 
   useEffect(() => {
-    setSourceType(props.sources._.tsx ? 'tsx' : 'jsx');
-  }, []);
+    setSourceType(getSourceType(currentFile, props.sources[currentFile]));
+  }, [currentFile]);
 
   return (
     <div
@@ -68,26 +97,42 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
         .filter(Boolean)
         .join(' ')}
       id={props.identifier}
+      data-debug={props.debug || undefined}
+      data-iframe={props.iframe || undefined}
     >
+      {props.iframe && <div className="__dumi-default-previewer-browser-nav" />}
       <div
+        ref={demoRef}
         className="__dumi-default-previewer-demo"
         style={{
           transform: props.transform ? 'translate(0, 0)' : undefined,
-          padding: props.compact ? '0' : undefined,
+          padding: props.compact || (props.iframe && props.compact !== false) ? '0' : undefined,
           background: props.background,
         }}
       >
-        {props.children}
+        {props.iframe ? (
+          <iframe
+            title="dumi-previewer"
+            style={{
+              // both compatible with unit or non-unit, such as 100, 100px, 100vh
+              height: String(props.iframe).replace(/(\d)$/, '$1px'),
+            }}
+            key={iframeKey}
+            src={demoUrl}
+          />
+        ) : (
+          props.children
+        )}
       </div>
-      <div
-        className="__dumi-default-previewer-desc"
-        onClick={() => {
-          history.push(`#${props.identifier}`);
-        }}
-        title={props.title}
-        // eslint-disable-next-line
-        dangerouslySetInnerHTML={{ __html: props.description }}
-      />
+      <div className="__dumi-default-previewer-desc" data-title={props.title}>
+        {props.title && <AnchorLink to={`#${props.identifier}`}>{props.title}</AnchorLink>}
+        {props.description && (
+          <div
+            // eslint-disable-next-line
+            dangerouslySetInnerHTML={{ __html: props.description }}
+          />
+        )}
+      </div>
       <div className="__dumi-default-previewer-actions">
         {openCSB && (
           <button
@@ -105,8 +150,25 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
             onClick={openRiddle}
           />
         )}
+        {props.motions && (
+          <button
+            title="Execute motions"
+            className="__dumi-default-icon"
+            role="motions"
+            disabled={isMotionRunning}
+            onClick={() => execMotions()}
+          />
+        )}
+        {props.iframe && (
+          <button
+            title="Reload demo iframe page"
+            className="__dumi-default-icon"
+            role="refresh"
+            onClick={() => setIframeKey(Math.random())}
+          />
+        )}
         {!props.hideActions?.includes('EXTERNAL') && (
-          <Link target="_blank" to={`/~demos/${props.identifier}`}>
+          <Link target="_blank" to={demoUrl}>
             <button
               title="Open demo in new tab"
               className="__dumi-default-icon"
@@ -123,14 +185,15 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
           data-status={copyStatus}
           onClick={() => copyCode(currentFileCode)}
         />
-        {isSingleFile && showSource && (
-          <button
-            title="Toggle type for source code"
-            className="__dumi-default-icon"
-            role={`change-${sourceType}`}
-            type="button"
-            onClick={() => setSourceType(sourceType === 'tsx' ? 'jsx' : 'tsx')}
-          />
+        {sourceType === 'tsx' && showSource && (
+          <Link target="_blank" to={playgroundUrl}>
+            <button
+              title="Get JSX via TypeScript Playground"
+              className="__dumi-default-icon"
+              role="change-tsx"
+              type="button"
+            />
+          </Link>
         )}
         <button
           title="Toggle source code panel"

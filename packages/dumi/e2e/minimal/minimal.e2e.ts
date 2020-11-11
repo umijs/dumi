@@ -3,6 +3,7 @@ import path from 'path';
 import { utils } from 'umi';
 import { fork } from 'child_process';
 import puppeteer from 'puppeteer';
+import symlink from '../../../preset-dumi/src/utils/symlink';
 
 const SCRIPT_PATH = path.join(__dirname, '../../bin/dumi.js');
 
@@ -19,7 +20,6 @@ describe('minimal', () => {
         PORT: '12341',
         BROWSER: 'none',
       },
-      silent: true,
     });
 
     child.on('message', async args => {
@@ -41,17 +41,13 @@ describe('minimal', () => {
       throw err;
     });
 
-    child.on('exit', code => {
-      process.exit(code);
-    });
-
     process.on('exit', () => {
       child.kill('SIGINT');
     });
 
     // workaround for resolve dumi-theme-default
     fs.mkdirSync(path.join(__dirname, 'node_modules'));
-    fs.symlinkSync(
+    symlink(
       path.join(__dirname, '../../../theme-default'),
       path.join(__dirname, 'node_modules', 'dumi-theme-default'),
     );
@@ -70,12 +66,6 @@ describe('minimal', () => {
   test('build', done => {
     fork(SCRIPT_PATH, ['build'], {
       cwd: __dirname,
-      env: {
-        ...process.env,
-        PORT: '12341',
-        BROWSER: 'none',
-      },
-      silent: true,
     }).on('exit', code => {
       expect(code).toEqual(0);
       done();

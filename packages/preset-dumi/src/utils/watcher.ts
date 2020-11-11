@@ -16,7 +16,6 @@ export const triggerFileChange = (filePath: string) => {
   fs.writeFileSync(filePath, fs.readFileSync(filePath));
 };
 
-
 export const getWatchersForFile = (filePath: string) => {
   const result = new Set<IWatcherItem>();
 
@@ -24,8 +23,9 @@ export const getWatchersForFile = (filePath: string) => {
     // find all related watchers, include dep file
     watchers.forEach(item => {
       if (
-        item.options.watchFilePath === loopFilePath ||
-        item.options.parentFilePath === loopFilePath
+        (item.options.watchFilePath === loopFilePath ||
+          item.options.parentFilePath === loopFilePath) &&
+        !result.has(item)
       ) {
         result.add(item);
 
@@ -80,4 +80,3 @@ export const closeWatchersForFile = (filePath: string) => {
   // close all related watchers
   relatedWatchers.forEach(item => closeWatcher(item));
 };
-

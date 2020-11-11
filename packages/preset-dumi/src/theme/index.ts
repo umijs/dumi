@@ -7,8 +7,12 @@ export { default as AnchorLink } from './components/AnchorLink';
 export { default as useSearch } from './hooks/useSearch';
 export { default as useCopy } from './hooks/useCopy';
 export { default as useRiddle } from './hooks/useRiddle';
+export { default as useMotions } from './hooks/useMotions';
 export { default as useCodeSandbox } from './hooks/useCodeSandbox';
 export { default as useLocaleProps } from './hooks/useLocaleProps';
+export { default as useDemoUrl } from './hooks/useDemoUrl';
+export { default as useApiData } from './hooks/useApiData';
+export { default as useTSPlaygroundUrl } from './hooks/useTSPlaygroundUrl';
 
 export interface IPreviewerComponentProps {
   title?: string;
@@ -44,5 +48,26 @@ export interface IPreviewerComponentProps {
    * the component which demo belongs to
    */
   componentName?: string;
+  /**
+   * motions of current demo, for snapshot or preview
+   */
+  motions?: string[];
+  /**
+   * mark demo as debug demo, will be discarded in production mode
+   */
+  debug?: true;
   [key: string]: any;
+}
+
+export interface IApiComponentProps {
+  /**
+   * api data identifier
+   * @note  it is the component identifier by default
+   *        will fallback to the src path on <code> element if component identifier is not available
+   */
+  identifier: string;
+  /**
+   * which export should be displayed
+   */
+  export: string;
 }

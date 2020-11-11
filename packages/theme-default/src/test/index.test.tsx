@@ -7,6 +7,7 @@ import SourceCode from '../builtins/SourceCode';
 import Alert from '../builtins/Alert';
 import Badge from '../builtins/Badge';
 import Previewer from '../builtins/Previewer';
+import API from '../builtins/API';
 import Layout from '../layout';
 
 let history: MemoryHistory;
@@ -80,7 +81,7 @@ describe('default theme', () => {
     history,
     location: { ...history.location, query: {} },
     match: { params: {}, isExact: true, path: '/', url: '/' },
-    route: { routes: baseCtx.routes },
+    route: { path: '/', routes: baseCtx.routes },
   };
 
   it('should render site home page', () => {
@@ -178,7 +179,8 @@ describe('default theme', () => {
         {children}
       </Context.Provider>
     );
-    const { getByText, getByTitle, getAllByTitle } = render(
+
+    const { getByText, getByTitle, getAllByTitle, container } = render(
       <Router history={history}>
         <Layout {...baseProps}>
           <>
@@ -196,7 +198,7 @@ describe('default theme', () => {
               }}
               dependencies={{}}
             >
-              <>demo-1</>
+              <>demo-1 Content</>
             </Previewer>
             <Previewer
               title="demo-2"
@@ -212,8 +214,26 @@ describe('default theme', () => {
               }}
               dependencies={{}}
             >
-              <>demo-2</>
+              <>demo-2 Content</>
             </Previewer>
+            <Previewer
+              title="demo-3"
+              identifier="demo-3"
+              sources={{
+                _: {
+                  jsx: "export default () => 'Main'",
+                },
+                'Other.jsx': {
+                  import: './Other.jsx',
+                  content: "export default () => 'Other'",
+                },
+              }}
+              dependencies={{}}
+              iframe={100}
+            >
+              <>demo-3 Content</>
+            </Previewer>
+            <API identifier="MultipleExports" export="Other" />
           </>
         </Layout>
       </Router>,
@@ -238,12 +258,6 @@ describe('default theme', () => {
     // expect show TypeScript code default
     expect(getByText("'TypeScript'")).not.toBeNull();
 
-    // trigger source code type change
-    getByTitle('Toggle type for source code').click();
-
-    // expect show JavaScript code
-    expect(getByText("'JavaScript'")).not.toBeNull();
-
     // trigger source code display for demo-2
     getAllByTitle('Toggle source code panel')[1].click();
 
@@ -255,5 +269,16 @@ describe('default theme', () => {
 
     // expect show code of main file
     expect(getByText("'Other'")).not.toBeNull();
+
+    // expect render iframe demo
+    (container.querySelector('[data-iframe] button[role=refresh]') as HTMLElement).click();
+    expect(container.querySelector('[data-iframe]').innerHTML).not.toContain('demo-3 Content');
+    expect(container.querySelector('[data-iframe] iframe')).not.toBeNull();
+    expect((container.querySelector('[data-iframe] iframe') as HTMLElement).style.height).toEqual(
+      '100px',
+    );
+
+    // expect render API property
+    expect(getByText('other', { selector: 'table td' })).not.toBeNull();
   });
 });

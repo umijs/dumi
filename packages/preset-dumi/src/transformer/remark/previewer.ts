@@ -1,22 +1,24 @@
 import { Node } from 'unist';
-import visit from 'unist-util-visit';
+import visit, { Visitor } from 'unist-util-visit';
 import slash from 'slash2';
 import ctx from '../../context';
 import demoTransformer, { DEMO_COMPONENT_NAME, getDepsForDemo } from '../demo';
 import { IPreviewerComponentProps } from '../../theme';
 import transformer from '..';
+import { IDumiElmNode, IDumiUnifiedTransformer } from '.';
 
-let demoIds: Object = {};
+const demoIds: Object = {};
 
 /**
  * get unique id for previewer
  * @param yaml          meta data
- * @param fileAbsPath   file absolute path
+ * @param mdAbsPath     md absolute path
+ * @param codeAbsPath   code absolute path, it is seem as mdAbsPath for embed demo
  * @param componentName the name of related component
  */
-function getPreviewerId(yaml: any, fileAbsPath: string, componentName: string) {
-  const ids = demoIds[fileAbsPath];
-  let id = yaml.identifier || yaml.uuid || componentName;
+function getPreviewerId(yaml: any, mdAbsPath: string, codeAbsPath: string, componentName: string) {
+  const ids = demoIds[mdAbsPath];
+  let id = yaml.identifier || yaml.uuid;
 
   // do not generate identifier for inline demo
   if (yaml.inline) {
@@ -24,14 +26,22 @@ function getPreviewerId(yaml: any, fileAbsPath: string, componentName: string) {
   }
 
   if (!id) {
-    // /path/to/md => path-to-md
-    id = slash(fileAbsPath)
-      // discard suffix like index.md
-      .replace(/(\/index)?(\.[\w-]+)?\.\w+$/, '')
-      .split('/')
-      // get the last three levels
-      .slice(-2)
-      .join('-');
+    const words = (slash(codeAbsPath) as string)
+      // discard index & suffix like index.tsx
+      .replace(/(?:\/index)?(\.[\w-]+)?\.\w+$/, '$1')
+      .split(/\//)
+      .map(w => w.toLowerCase());
+
+    // /path/to/index.tsx -> to || /path/to.tsx -> to
+    const demoName = words[words.length - 1] || 'demo';
+    const prefix =
+      componentName ||
+      words
+        .slice(0, words.length - 1)
+        .filter(word => word && !['src', 'demo', 'demos'].includes(word))
+        .slice(-1)[0];
+
+    id = [prefix, demoName].join('-');
   }
 
   // record id
@@ -46,8 +56,8 @@ function getPreviewerId(yaml: any, fileAbsPath: string, componentName: string) {
  * @param node        previewer node
  * @param fileAbsPath demo absolute path
  */
-function transformNode(node: Node, fileAbsPath: string) {
-  const props = node.properties as any;
+function transformNode(node: IDumiElmNode, fileAbsPath: string) {
+  const props = node.properties;
   const code = props.source.tsx || props.source.jsx;
   const isExternalDemo = props.filePath;
   const transformOpts = {
@@ -137,7 +147,7 @@ function applyDemo(props: IPreviewerComponentProps, code: string) {
   });
 }
 
-function visitor(node, i, parent: Node) {
+const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
   if (node.tagName === 'div' && node.properties?.type === 'previewer') {
     const source = node.properties.source;
     const yaml = node.properties.meta || {};
@@ -151,7 +161,6 @@ function visitor(node, i, parent: Node) {
       // workaround for JSX prop name not allowed to contains .
       // refer: https://github.com/facebook/jsx/issues/42
       let key = oKey.replace(/\./g, '_');
-
       const matched = key.match(/^desc(?:(_[\w-]+$)|$)/);
 
       // compatible with short-hand usage for description field in previous dumi versions
@@ -161,13 +170,21 @@ function visitor(node, i, parent: Node) {
 
       // replace props key name
       if (key !== oKey) {
-        // transform markdown for description field
-        yaml[key] = matched
-          ? transformer.markdown(yaml[oKey], null, {
-              type: 'html',
-            }).content
-          : yaml[oKey];
+        yaml[key] = yaml[oKey];
         delete yaml[oKey];
+      }
+
+      // transform markdown for description field
+      if (/^description(_|$)/.test(key)) {
+        // use wrapper object for workaround to avoid escape \n
+        // eslint-disable-next-line
+        yaml[key] = new String(
+          JSON.stringify(
+            transformer.markdown(yaml[key], null, {
+              type: 'html',
+            }).content,
+          ),
+        );
       }
     });
 
@@ -191,9 +208,15 @@ function visitor(node, i, parent: Node) {
         ),
       },
       dependencies,
+      componentName: this.vFile.data.componentName,
       ...yaml,
-      // not allow user override identifier by frontmatter
-      identifier: getPreviewerId(yaml, this.data('fileAbsPath'), this.vFile.data.componentName),
+      // to avoid user's identifier override internal logic
+      identifier: getPreviewerId(
+        yaml,
+        this.data('fileAbsPath'),
+        fileAbsPath,
+        this.vFile.data.componentName,
+      ),
     };
 
     // declare demo on the top page component for memo
@@ -209,7 +232,11 @@ function visitor(node, i, parent: Node) {
     );
 
     // replace original node
-    if (yaml.inline) {
+    if (ctx.umi?.env === 'production' && yaml.debug) {
+      // discard debug demo in production
+      parent.children.splice(i, 1);
+      this.vFile.data.demos.splice(this.vFile.data.demos.length - 1, 1);
+    } else if (yaml.inline) {
       parent.children[i] = {
         previewer: true,
         type: 'element',
@@ -236,9 +263,9 @@ function visitor(node, i, parent: Node) {
       };
     }
   }
-}
+};
 
-export default function previewer() {
+export default function previewer(): IDumiUnifiedTransformer {
   // clear single paths for a new transform flow
   if (this.data('fileAbsPath')) {
     demoIds[this.data('fileAbsPath')] = {};

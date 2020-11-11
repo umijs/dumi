@@ -84,14 +84,13 @@
     }
   }
 
-  &-doc-locale:not(:empty) {
-    display: none;
+  &-doc-locale {
     padding: 16px 0;
     text-align: center;
     border-bottom: 1px solid @c-border;
 
-    @media @mobile {
-      display: block;
+    &:empty {
+      display: none;
     }
   }
 

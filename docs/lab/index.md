@@ -1,61 +1,261 @@
 ---
-title: 实验室
+title: Lab
 nav:
-  title: 实验室
+  title: Lab
 sidemenu: false
 ---
 
 <Alert>
-实验室的功能仅在 <code>next</code> 版本中提供，可以使用 <code>npm i dumi@next</code> 安装实验版本进行体验；实验性质的功能可能不稳定，请谨慎用于生产；如果体验后有任何建议，欢迎在讨论群中进行反馈和交流 ❤
+The functions of the laboratory are only works in the <code>next</code> version, you can use <code>npm i dumi@next</code> to install the experimental version for experience; The experimental functions are unstable, please do not use it in production; If you have any suggestions, welcome to feedback and exchanges in the discussion group ❤
 </Alert>
 
-## 自定义主题
+## Umi inregrated mode
 
-**依赖版本：**`dumi@1.1.0-beta.7+`
+**Dependent version:**`dumi@1.1.0-beta.28+`
 
-### 开发方式
+When we are working a business project, it is a big headache for us to manage the components within project, because these components no need to release a npm package, but also need to be iterated, updated, documented, and handed over; The Umi interagted mode was born for this scene, it includes:
 
-#### 目录结构
+- **Auto-detecting**: The integrated mode will be activated when the `dependencies` or `devDependencies` includes `umi` & `@umijs/preset-dumi` (`dumi` pacakge no longer needed)
+- **Routes isolation**: All the dumi docs will be created under the `/~docs` route, it is isolated from the original project, just like prefix a specific path for all the dumi routes, user's menus and user's navs
+- **Only development**: The Integrated moode only activate when the `NODE_ENV` is `development`, does not includes in the production bundle
+- **Solo support**: We can get the non-integrated docs bundle for deployment via `umi build --dumi`, also available in `umi dev`
 
-创建包名为 `dumi-theme-` 开头的包，目录结构以默认主题为例：
+To use the integrated mode, we can install the `@umijs/preset-dumi` into `devDependencies`, and configure `resolve.includes` as project needed (for example, use `src/components` as project's components directory).
+
+## Auto-gen component API
+
+**Dependent version:**`dumi@1.1.0-beta.27+`
+
+Now, we can get auto-gen component API tables via JS Doc + TypeScript definitions!
+
+### Type & doc comment in source code
+
+For generating API automatically, we need to ensure that dumi can devise the content of API via correct TypeScript definitions and doc comments. For example the `Hello` component:
+
+```tsx | pure
+import React from 'react';
+
+export interface IHelloProps {
+  /**
+   * write description here
+   * @description       also can write description with property name
+   * @description.zh-CN support to write description for different locales
+   * @default           support to set default value
+   */
+  className?: string; // support to mark not required via TypeScript optional type
+}
+
+const Hello: React.FC<IHelloProps> = () => <>Hello World!</>;
+
+export default Hello;
+```
+
+The API parse behind dumi is `react-docgen-typescript`，check out its [documentation](https://github.com/styleguidist/react-docgen-typescript#example) to get more definitions & comments usage.
+
+### Show API in documentation
+
+Based on the correct source code, we can render the API table via `API` builtin component in Markdown:
+
+```md
+<!-- Omit src for detect target component automatically, for example, src/Hello/index.md will target src/Hello/index.tsx -->
+
+<API></API>
+
+<!-- Pass src will specific component which we need to show API -->
+
+<API src="/path/to/your/component.tsx"></API>
+
+<!-- Pass exports will specific which export should be displayed, make sure the value is a legal JSON string -->
+
+<API exports='["default", "Other"]'></API>
+```
+
+After that, we will get:
+
+<API src="../demo/Hello/index.tsx"></API>
+
+### Control API table rendering
+
+Like other builtin components, we can also override the `API` builtin component via theme API, just need to create a `.dumi/theme/builtins/API.tsx` (local theme), or create a theme package that contains the `API.tsx`, and import `useApiData` hook from `dumi/theme`, then we can control rendering as you like. Please refer the implementation of default [API component](https://github.com/umijs/dumi/blob/master/packages/theme-default/src/builtins/API.tsx).
+
+## Markdown file embed
+
+**Dependent version:**`dumi@1.1.0-beta.25+`
+
+In any markdown file, we can embed part or all of the another Markdown file via `embed` tag, it is better to manage our docs:
+
+```md
+<!-- Embed all of the content -->
+
+<embed src="/path/to/some.md"></embed>
+
+<!-- Embed specific line of the content via line number -->
+
+<embed src="/path/to/some.md#L1"></embed>
+
+<!-- Embed part of the content via line number range -->
+
+<embed src="/path/to/some.md#L1-L10"></embed>
+```
+
+## Develop mobile library
+
+**Dependent versions:**`dumi@1.1.0-beta.18+` & `dumi-theme-mobile`
+
+It is easy to use, just make sure you are using the beta version of dumi, and have been installed the `dumi-theme-mobile` into your dependencies, then dumi will switch to the mobile library development mode. This mode includes the following features:
+
+1. Mobile simulated container with CSS sticky + iframe embedded demo
+2. Auto-enable rem ability (Base on [750 mode](https://github.com/umijs/umi-hd#%E6%95%B4%E4%BD%93%E4%BB%8B%E7%BB%8D) of umi-hd）
+3. QRCode for preview on the real device
+
+<img style="border: 1px solid #eee;" src="https://gw.alipayobjects.com/zos/bmw-prod/acb29a94-6200-4798-82eb-190177fa841c/kezwf18r_w2556_h1396.jpeg" alt="Mobile theme preview" />
+
+## Motions
+
+**Dependent version:**`dumi@1.1.0-beta.13+`
+
+The name has not been thought out yet, it can be understood as a Demo action. If the developer writes `motions` in advanced when writing a Demo, for example, write it like this:
+
+```tsx | pure
+/**
+ * motions:
+ *  - click:[data-action="addon"]
+ *  - timeout:1000
+ *  - click:[data-action="addon"]
+ *  - timeout:1000
+ *  - click:[data-action="reset"]
+ */
+import React, { useState } from 'react';
+
+export default () => {
+  const [count, setCount] = useState(0);
+
+  return (
+    <>
+      <p>{count}</p>
+      <button type="button" data-action="addon" onClick={() => setCount(count + 1)}>
+        add
+      </button>
+      <button type="button" data-action="reset" onClick={() => setCount(0)}>
+        reset
+      </button>
+    </>
+  );
+};
+```
+
+You will get the following Demo, try to click the play button on the operation bar, the `motions` predefined by developer will be executed in sequence:
+
+```tsx
+/**
+ * motions:
+ *  - click:[data-action="addon"]
+ *  - timeout:1000
+ *  - click:[data-action="addon"]
+ *  - timeout:1000
+ *  - click:[data-action="reset"]
+ */
+import React, { useState } from 'react';
+
+export default () => {
+  const [count, setCount] = useState(0);
+
+  return (
+    <>
+      <p>{count}</p>
+      <button type="button" data-action="addon" onClick={() => setCount(count + 1)}>
+        add
+      </button>
+      <button type="button" data-action="reset" onClick={() => setCount(0)}>
+        reset
+      </button>
+    </>
+  );
+};
+```
+
+Currently supports the following `motion` syntax:
+
+- `autoplay`: The motion will be executed automatically in the first place, and `loop` will be supported in the future
+- `click:selector`: here is a CSS selector, which is used to click on a selector
+- `timeout:number`: here is a number, which is used to wait for a time before executing the next step, such as waiting for the transition animation to complete
+- `capture:selector`: here is a CSS selector, which is used for `postMessage`. This selector can be extended in the future in combination with snapshots and other scenarios. The content of the message data sent is like:
+  ```js
+  { type: 'dumi:capture-element', value: 'selector' }
+  ```
+
+## Custom theme
+
+**Dependent version:**`dumi@1.1.0-beta.7+`
+
+### Development
+
+#### Directory Structure
+
+Method one, Create a package starting with `dumi-theme-` or `@group/dumi-theme-`, here takes a theme using the default as an example:
 
 ```bash
 .
 ├── package.json
 └── src
-    ├── builtins      # [约定] 内置组件文件夹，dumi 会寻找**一级目录**下的 `j|tsx` 进行挂载，该文件夹下的组件可直接在 md 中使用
-    ├── components    # [非约定] 主题包自身为了可维护性抽取出来的组件，文件夹名称随开发者自定义
-    ├── layout.tsx    # [约定] 自定义的 layout 组件，props.children 即每个 md 的内容，开发者可自行控制导航、侧边栏及内容渲染
-    └── style         # [非约定] 主题包的样式表
+    ├── builtins      # [Convention] Built-in component folder, dumi will look for `j|tsx` in **first-level directory** to mount, the components in this folder can be used directly in md
+    ├── components    # [Non-Convention] The components extracted by the theme package in this folder. The folder name is customized by the developer
+    ├── layout.tsx    # [Convention] You can custom your own layout component, props.children is the content of each markdown, developers can control the navigation, sidebar and content rendering by themselves
+    ├── layouts       # [Convention] A custom layouts directory, used when you need to customize multiple layouts
+    │   ├── index.tsx # [Convention] Same as src/layout.tsx, choose one of the two methods, layout.tsx has higher priority
+    │   └── demo.tsx  # [Convention] Separate route (~demos/:uuid) layout for custom component demo
+    └── style         # [Non-Convention] Theme package style sheet
 ```
 
-其中 `[约定]` 意味着是主题生效的必备结构，`[非约定]` 则意味着开发者可以根据自己的习惯进行控制。
+Here, `[Convention]` means a necessary structure for the theme package, and `[Non-Convention]` means that developers can control according to their own habits.
 
-#### 组件兜底
+Method two, create a `.dumi/theme` folder in the local project, **consider this folder as the `src` directory above, and write a custom theme directly**, for example, create `.dumi/theme/layout.tsx` to customize the layout; This method is suitable for theme packages that do not need to be released, which is easier to debug.
 
-支持部分覆盖官方主题的组件，如果主题包没有在 `builtins` 下面提供，dumi 则会兜底到默认主题的 `Previewer` 组件。会进行兜底的组件如下：
+#### Component Guarantee
 
-1. `Previewer.tsx` - 渲染 demo 包裹器
-2. `SourceCode.tsx` - 渲染代码块并高亮
-3. `Alert.tsx` - 渲染提示框
-4. `Badge.tsx` - 渲染标签
+It supports components that partially cover the official theme. If the theme package is not provided in `builtins`, dumi will guarantee to the default theme `Previewer` component. The components that will be guaranteed are as follows:
 
-#### 主题 API
+1. `Previewer.tsx` - For demo wrapper
+2. `SourceCode.tsx` - For code block and highlighting it
+3. `Alert.tsx` - For alert box
+4. `Badge.tsx` - For badge
 
-为了便于自定义主题，dumi 提供了一套主题 API，可以从 `dumi/theme` 中 import 出以下内容：
+In addition, `layout.tsx` (or `layouts/index.tsx`) will also be guaranteed. If you only want to control the rendering of the text area, you can choose to wrap the `layout` of the default theme, and code the `children` of `layout` to achieve. For example, add a feedback button to the text area:
 
-1. `context` - 可获取到 dumi 的配置项、当前路由的 meta 信息、国际化语言选择项等等，context 的详细定义可 <a target="_blank" href="https://github.com/umijs/dumi/blob/master/packages/preset-dumi/src/theme/context.ts#L8">查看源代码</a>
-2. `Link` - 包装后的 umi `Link`，可渲染外链
-3. `NavLink` - 包装后的 umi `NavLink`，可渲染外链
-4. `AnchorLink` - 包装后的 umi `NavLink`，用于带锚点的链接，且可高亮
-5. `useCodeSandbox` - 根据 `Previewer` 的 props 生成一个函数，执行后可在 codesandbox.io 打开该 demo
-6. `useCopy` - 提供复制函数及复制的状态，便于实现源代码复制
-7. `useSearch` - 根据配置自动提供 algolia 的绑定函数或者根据关键字返回内置搜索的检索结果
-8. `useLocaleProps` - 根据 locale 自动过滤 props，便于实现国际化 frontmatter 的定义，比如 `title.zh-CN` 在中文语言下会被转换为 `title`
+```tsx | pure
+// src/layout.tsx
+import React from 'react';
+import Layout from 'dumi-theme-default/src/layout';
 
-### 调试及使用
+export default ({ children, ...props }) => (
+  <Layout {...props}>
+    <>
+      <button>feedback</button>
+      {children}
+    </>
+  </Layout>
+);
+```
 
-将开发好的主题包 npm link（调试）或 npm install（使用）到项目里，并确保它在 `devDependencies` 或者 `dependencies` 中有声明，dumi 将会自动挂载该主题，例如：
+#### Theme API
+
+In order to customize the theme, dumi provides a set of theme APIs, you can import the following from `dumi/theme`:
+
+1. `context` - You can get the configurations of dumi, meta information of the current route, international language options, etc. The detailed definition of the context can be viewd <a target="_blank" href="https://github.com/umijs/dumi/blob/master/packages/preset-dumi/src/theme/context.ts#L8">source code</a>
+2. `Link` - The wrapped umi `Link` can render external links
+3. `NavLink` - The wrapped umi `NavLink` can render external links
+4. `AnchorLink` - The wrapped umi `NavLink` can be used for links with anchor points, and can be highlighted
+5. `useCodeSandbox` - Generate a function based on the props of `Previewer`, and open the demo in codesandbox.io
+6. `useCopy` - Provide copy function and copy status to achieve to copy source code
+7. `useSearch` - Automatically provide algolia binding functions according to configuration or return search results according to keywords
+8. `useLocaleProps` - Automatically filter props according to locale to achieve to the definition of international frontmatter. For example, `title.zh-CN` will be converted to `title` in Chinese language
+9. `useDemoUrl` - Get the single demo page url via demo identifier, for example, `useDemoUrl(props.identifier)` may return like `http://example.com/~demos/demo-id`
+10. `useApiData` - Get API meta data for specific component, please refer the implementation of default [API component](https://github.com/umijs/dumi/blob/master/packages/theme-default/src/builtins/API.tsx)
+11. `useTSPlaygroundUrl` - Get the TypeScript Playground url, to transform TSX to JSX via the Playground site
+
+### Debug and usage
+
+If the developed theme package is a npm package, take the developed theme package npm link (debugging) or npm install (used) into the project, and make sure that it is declared in `devDependencies` or `dependencies`, dumi will automatically mount this theme, for example:
 
 ```json
 {
@@ -65,28 +265,30 @@ sidemenu: false
 }
 ```
 
-## 和 Umi UI 一起使用
+If the developed theme package is in the form of the `.dumi/theme` directory, dumi will automatically mount it and you can debug directly.
 
-**依赖版本：**`dumi@1.1.0-beta.0+` & `@umijs/preset-ui@2.2.0+`
+## Use with Umi UI
 
-使用流程如下图所示：
+**Dependent versions:**`dumi@1.1.0-beta.0+` & `@umijs/preset-ui@2.2.0+`
+
+The usage process is shown in the figure below:
 
 <p style="text-align: center;">
   <img src="https://gw.alipayobjects.com/zos/bmw-prod/a873195d-32fe-427d-9756-a002d7644d85/kc5y7qpk_w2078_h1757.png" width="800" >
 </p>
 
-### 使用方式
+### Usage
 
-#### 1. 初始化 dumi 组件开发项目
+#### 1. Initialize the dumi component to develop project
 
 ```bash
 $ mkdir dumi-lib && cd dumi-lib
 $ npx @umijs/create-dumi-lib
 ```
 
-#### 2. 为 Demo 添加资产元信息
+#### 2. Add asset meta information for Demo
 
-以初始化项目的 Demo 为例，打开 `src/Foo/index.md`，添加如下 frontmatter 配置：
+Take the demo of the getting-started project as an example, open `src/Foo/index.md` and add the following frontmatter configuration:
 
 <pre lang="diff">
 // src/Foo/index.md
@@ -94,8 +296,8 @@ $ npx @umijs/create-dumi-lib
 ```jsx
 + /**
 +  * title: Foo Demo
-+  * thumbnail: [缩略图的 URL 地址]
-+  * previewUrl: [预览的 URL 地址]
++  * thumbnail: [The url of thumbnail]
++  * previewUrl: [The url of preview]
 +  */
 import React from 'react';
 import { Foo } from 'dumi-lib';
@@ -104,15 +306,15 @@ export default () => <Foo title="First Demo" />;
 ```
 </pre>
 
-除了在源代码中编写 frontmatter 以外，给外部 Demo 的 `code` 标签添加属性，也能实现元信息的添加：
+In addition to writing frontmatter in the source code, adding attributes to the `code` tag of the external Demo can also add meta information:
 
 ```html
-<code src="/path/to/demo.tsx" title="Demo 的名称" thumbnail="Demo 的预览缩略图地址" previewUrl="预览的 URL 地址" />
+<code src="/path/to/demo.tsx" title="Demo title" thumbnail="the url of thumbnail" previewUrl="The url of preview" />
 ```
 
-#### 3. 启用元数据生成能力
+#### 3. Enable metadata generation capabilities
 
-在 `package.json` 中添加一条 npm script，并声明 `dumiAssets` 字段，Umi UI 会根据此字段查找资产元数据文件：
+Add an script to `package.json` and declare the `dumiAssets` field, Umi UI will find asset metadata files based on this field:
 
 ```diff
 {
@@ -123,20 +325,20 @@ export default () => <Foo title="First Demo" />;
 }
 ```
 
-由于 `assets.json` 不需要参与版本控制，请在 `gitignore` 中添加 `assets.json`。
+Since `assets.json` does not need to control versions , please add `assets.json` to `gitignore`.
 
-#### 4. 构建并生成资产元数据
+#### 4. Build and generate asset metadata
 
-如果只是用于测试，可以用 `npm version` 来代替 `npm publish`，随后用 link 进行本地玩耍：
+If it is just for testing, you can use `npm version` instead of `npm publish`, and then use link for testing:
 
 ```bash
 $ npm run build
 $ npm version patch -m "build: bump version to %s"
 ```
 
-#### 5. 在 Umi UI 中使用
+#### 5. Use in Umi UI
 
-初始化 Umi 应用，安装 Umi UI 并 link 我们刚刚的组件库：
+Initialize the Umi application, install Umi UI and link the component library we just made:
 
 ```bash
 $ mkdir umi-app && cd umi-app
@@ -145,18 +347,18 @@ $ npm i @umijs/preset-ui -D
 $ npm link path/to/dumi-lib
 ```
 
-在 Umi 应用的 `package.json` 中，手动添加组件库为依赖：
+In the `package.json` of the Umi application, manually add the component library as a dependency:
 
 ```diff
 {
   "dependencies": {
-    // 其他依赖
+    // other dependencies
 +   "your-lib-package-name": "*"
   }
 }
 ```
 
-然后和往常一样启动 Umi 项目，即可在 Umi UI 的迷你气泡中看到 dumi-lib 项目中的 Demo 资产，并可直接插入到页面中使用：
+Then start the Umi project as usual, you can see the Demo assets in the dumi-lib project in the floating bubble of Umi UI, and can be directly inserted into the page for using:
 
 <p style="text-align: center;">
   <img src="https://gw.alipayobjects.com/zos/bmw-prod/4102a494-e4d8-494e-a790-1a7a5562da51/kc6gnqjd_w680_h387.gif" width="680">

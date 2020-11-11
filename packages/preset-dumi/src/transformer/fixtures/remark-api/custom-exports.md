@@ -1,0 +1,1 @@
+<API src="./Hello/index.tsx" exports='["default"]'></API>

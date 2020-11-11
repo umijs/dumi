@@ -5,8 +5,6 @@ import config from '@@/dumi/config';
 import AnchorLink from './components/AnchorLink';
 import Context, { IThemeContext } from './context';
 import { IMenu } from '../routes/getMenuFromRoutes';
-import 'prismjs/themes/prism.css';
-import 'katex/dist/katex.min.css';
 
 export interface IOuterLayoutProps {
   mode: IThemeContext['config']['mode'];
@@ -50,9 +48,7 @@ const useCurrentRouteMeta = (routes: IDumiRoutes, pathname: string) => {
 const useCurrentLocale = (locales: IThemeContext['config']['locales'], pathname: string) => {
   const handler = (...args: [IThemeContext['config']['locales'], string]) => {
     // get locale by route prefix
-    return (
-      args[0].find(locale => args[1].startsWith(`/${locale.name}`))?.name || locales[0]?.name || '*'
-    );
+    return args[0].find(locale => args[1].startsWith(`/${locale.name}`))?.name || locales[0].name;
   };
   const [locale, setLocale] = useState<string>(handler(locales, pathname));
 
@@ -65,11 +61,11 @@ const useCurrentLocale = (locales: IThemeContext['config']['locales'], pathname:
 
 /**
  * hooks for get menu data of current route
- * @param config    context config
+ * @param ctxConfig context config
  * @param locale    locale from current route
  * @param pathname  pathname of location
  */
-const useCurrentMenu = (config: IThemeContext['config'], locale: string, pathname: string) => {
+const useCurrentMenu = (ctxConfig: IThemeContext['config'], locale: string, pathname: string) => {
   const handler = (...args: [IThemeContext['config'], string, string]) => {
     const navs = args[0].navs[args[1]] || [];
     let navPath = '*';
@@ -91,13 +87,45 @@ const useCurrentMenu = (config: IThemeContext['config'], locale: string, pathnam
 
     return args[0].menus[args[1]]?.[navPath] || [];
   };
-  const [menu, setMenu] = useState<IMenu['locale']['path']>(handler(config, locale, pathname));
+  const [menu, setMenu] = useState<IMenu['locale']['path']>(handler(ctxConfig, locale, pathname));
 
   useLayoutEffect(() => {
-    setMenu(handler(config, locale, pathname));
-  }, [config.navs, config.menus, locale, pathname]);
+    setMenu(handler(ctxConfig, locale, pathname));
+  }, [ctxConfig.navs, ctxConfig.menus, locale, pathname]);
 
   return menu;
+};
+
+/**
+ * hooks for doc base route path
+ * @param locale    current locale
+ * @param locales   project locale configurations
+ * @param route     layout route configurations
+ * @note  handle these points:
+ *          1. locale prefix, such as empty or /zh-CN
+ *          2. integrate mode route prefix, such as /~docs or /~docs/zh-CN
+ */
+const useCurrentBase = (
+  locale: string,
+  locales: IThemeContext['config']['locales'],
+  route: IRouteProps,
+) => {
+  const handler = (...args: [string, IThemeContext['config']['locales'], IRouteProps]) => {
+    if (args[0] === args[1][0].name) {
+      // use layout route path as base in default locale
+      return args[2].path;
+    }
+
+    // join layout route path & locale prefix in other locale
+    return `${route.path}/${locale}`.replace(/\/\//, '/');
+  };
+  const [base, setBase] = useState<string>(handler(locale, locales, route));
+
+  useLayoutEffect(() => {
+    setBase(handler(locale, locales, route));
+  }, [locale]);
+
+  return base;
 };
 
 /**
@@ -105,14 +133,21 @@ const useCurrentMenu = (config: IThemeContext['config'], locale: string, pathnam
  */
 const OuterLayout: React.FC<IOuterLayoutProps & IRouteComponentProps> = props => {
   const { location, route, children } = props;
+  const pathWithoutPrefix = location.pathname.replace(
+    // to avoid stripped the first /
+    route.path.replace(/^\/$/, '//'),
+    '',
+  );
   const meta = useCurrentRouteMeta(route.routes, location.pathname);
-  const locale = useCurrentLocale(config.locales, location.pathname);
+  // use non-prefix for detect current locale, such as /~docs/en-US -> /en-US
+  const locale = useCurrentLocale(config.locales, pathWithoutPrefix);
   const menu = useCurrentMenu(config, locale, location.pathname);
+  const base = useCurrentBase(locale, config.locales, route);
 
   // scroll to anchor if hash exists
   useEffect(() => {
     if (location.hash) {
-      AnchorLink.scrollToAnchor(location.hash.slice(1));
+      AnchorLink.scrollToAnchor(decodeURIComponent(location.hash.slice(1)));
     }
   }, []);
 
@@ -124,7 +159,7 @@ const OuterLayout: React.FC<IOuterLayoutProps & IRouteComponentProps> = props =>
         locale,
         nav: config.navs[locale] || [],
         menu,
-        base: !config.locales.length || locale === config.locales[0].name ? '/' : `/${locale}`,
+        base,
         routes: (route.routes as unknown) as IThemeContext['routes'],
       }}
     >

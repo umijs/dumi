@@ -4,15 +4,16 @@ import LocaleSelect from './LocaleSelect';
 import './Navbar.less';
 
 interface INavbarProps {
+  location: any;
   navPrefix?: React.ReactNode;
   onMobileMenuClick: (ev: MouseEvent<HTMLButtonElement>) => void;
 }
 
-const Navbar: FC<INavbarProps> = ({ onMobileMenuClick, navPrefix }) => {
+const Navbar: FC<INavbarProps> = ({ onMobileMenuClick, navPrefix, location }) => {
   const {
     base,
     config: { mode, title, logo },
-    nav,
+    nav: navItems,
   } = useContext(context);
 
   return (
@@ -32,8 +33,8 @@ const Navbar: FC<INavbarProps> = ({ onMobileMenuClick, navPrefix }) => {
       </Link>
       <nav>
         {navPrefix}
-        {/* navs */}
-        {nav.map(nav => {
+        {/* nav */}
+        {navItems.map(nav => {
           const child = Boolean(nav.children?.length) && (
             <ul>
               {nav.children.map(item => (
@@ -56,7 +57,7 @@ const Navbar: FC<INavbarProps> = ({ onMobileMenuClick, navPrefix }) => {
             </span>
           );
         })}
-        <LocaleSelect />
+        <LocaleSelect location={location} />
       </nav>
     </div>
   );

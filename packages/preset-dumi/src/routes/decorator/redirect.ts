@@ -19,7 +19,7 @@ const genValidGroups = validRoutes =>
 /**
  * generate redirects for missing group index routes & legacy route paths
  */
-export default (routes => {
+export default (function redirect(routes) {
   const redirects = [];
 
   routes.forEach(route => {
@@ -75,4 +75,4 @@ export default (routes => {
   });
 
   return routes.concat(Object.values(redirects));
-}) as RouteProcessor;
+} as RouteProcessor);

@@ -8,15 +8,36 @@ export default () => <h1>Hello World!</h1>;
 /**
  * title: test
  * title.zh-CN: 测试
- * desc: test css in dependencies
- * desc.zh-CN: 测试依赖中的 CSS
+ * desc: test css in dependencies，[Link](https://d.umijs.org)
+ * desc.zh-CN: 测试依赖中的 CSS，[链接](https://d.umijs.org)
  */
 import React from 'react';
 import katex from 'katex';
 
-console.log(katex);
-
-export default () => <h1>Hello World!</h1>;
+export default () => <h1>Hello {typeof katex}!</h1>;
 ```
 
-<code src="./demo-missing-react.tsx" hideActions='["CSB"]' />
+```tsx
+/**
+ * identifier: custom-demo-url
+ * description: |
+ *   多行文本测试
+ *   - 列表
+ */
+import React from 'react';
+
+export default () => null;
+```
+
+<code src="./demo-missing-react.tsx" hideActions='["CSB"]' defaultShowCode />
+
+<code src="./demo-missing-react.tsx" inline />
+
+```jsx
+/**
+ * debug: true
+ */
+export default () => null;
+```
+
+<code src="./demo-missing-react.tsx" debug />

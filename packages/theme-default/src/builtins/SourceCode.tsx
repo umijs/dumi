@@ -1,6 +1,7 @@
 import React from 'react';
 import Highlight, { defaultProps, Language } from 'prism-react-renderer';
 import { useCopy } from 'dumi/theme';
+import 'prismjs/themes/prism.css';
 import './SourceCode.less';
 
 export interface ICodeBlockProps {

@@ -3,7 +3,7 @@ import { RouteProcessor } from '.';
 export default (function nav(routes) {
   // only apply for site mode
   if (this.options.mode === 'site') {
-    const defaultLocale = this.options.locales[0]?.[0];
+    const defaultLocale = this.options.locales[0][0];
     const userCustomNavTitles = {};
 
     routes.forEach(route => {

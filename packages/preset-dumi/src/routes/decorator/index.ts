@@ -1,7 +1,9 @@
 import { IApi, IRoute } from '@umijs/types';
+import { createDebug } from '@umijs/utils';
 import { IDumiOpts } from '../..';
 import flat from './flat';
 import frontMatter from './frontMatter';
+import hide from './hide';
 import locale from './locale';
 import title from './title';
 import nav from './nav';
@@ -9,6 +11,7 @@ import group from './group';
 import fallback from './fallback';
 import redirect from './redirect';
 import relative from './relative';
+import integrate from './integrate';
 
 export type RouteProcessor = (
   this: { options: IDumiOpts; umi: IApi; data: { [key: string]: any } },
@@ -21,6 +24,8 @@ class RouteDecorator {
   private options: IDumiOpts;
 
   private umi: IApi;
+
+  private debug = createDebug('dumi:routes:decorator');
 
   /**
    * shared storage for all processors
@@ -38,18 +43,19 @@ class RouteDecorator {
   }
 
   process(routes: IRoute[]): IRoute[] {
-    return this.processors.reduce(
-      (result, processor) =>
-        processor.call(
-          {
-            options: this.options,
-            umi: this.umi,
-            data: this.data,
-          },
-          result,
-        ),
-      routes,
-    );
+    return this.processors.reduce((result, processor) => {
+      const r = processor.call(
+        {
+          options: this.options,
+          umi: this.umi,
+          data: this.data,
+        },
+        result,
+      );
+      this.debug(processor.name);
+
+      return r;
+    }, routes);
   }
 }
 
@@ -62,11 +68,13 @@ export default (routes: IRoute[], opts: IDumiOpts, umi: IApi) => {
   decorator
     .use(flat)
     .use(frontMatter)
+    .use(hide)
     .use(locale)
     .use(title)
     .use(nav)
     .use(group)
     .use(fallback)
+    .use(integrate)
     .use(redirect)
     .use(relative);
 

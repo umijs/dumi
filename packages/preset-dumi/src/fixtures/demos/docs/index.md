@@ -9,3 +9,14 @@ export default () => null;
 
 export default () => null;
 ```
+
+```tsx
+/**
+ * identifier: component-demo
+ * componentName: ForceComponent
+ */
+
+export default () => null;
+```
+
+<API src="../Test/index.tsx" />

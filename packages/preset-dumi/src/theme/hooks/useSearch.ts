@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState, useCallback } from 'react';
-import { context } from 'dumi/theme';
+import { context } from '..';
 
 interface ISearchMetaItem {
   title: string;
@@ -27,7 +27,7 @@ const useBuiltinSearch = (keywords: string) => {
           const isValidLocaleRoute = meta?.locale === locale;
           const isValidDefaultLocaleRoute =
             // route locale euqal default locale
-            meta?.locale === locales[0]?.name ||
+            meta?.locale === locales[0].name ||
             // missing locale and there has no locale or global locale equal default locale
             (!meta?.locale && (!locales.length || locale === locales[0].name));
 

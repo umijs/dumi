@@ -3,6 +3,9 @@ import path from 'path';
 import { IApi } from '@umijs/types';
 import getTheme from '../../theme/loader';
 
+/**
+ * plugin for alias dumi/theme module for export theme API
+ */
 export default (api: IApi) => {
   api.chainWebpack(async memo => {
     const theme = await getTheme();

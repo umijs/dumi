@@ -2,25 +2,25 @@
 title: FAQ
 ---
 
-## dumi 和 Umi 的关系是什么？
+## What is the relationship between dumi and Umi?
 
-dumi 本体是一个 Umi 的 preset——@umijs/preset-dumi，也就是说，我们可以在一个 Umi 的项目中同时使用 dumi。但为了避免 Umi 项目的配置项与 dumi 文档的配置项冲突，建议使用 [UMI_ENV](https://umijs.org/docs/env-variables#umi_env) 进行区分。
+The dumi actually is a preset of Umi —— @umijs/preset-dumi, which means that we can use dumi in a Umi project at the same time. However, in order to avoid conflicts between the configurations of the Umi project and the dumi document, it is recommended to use [UMI_ENV](https://umijs.org/docs/env-variables#umi_env) to distinguish.
 
-## 配置项只有这些吗？想实现更多的功能怎么办？
+## Are these all configurations? What if I need more features?
 
-dumi 基于 Umi，即除了自己提供的配置项以外，还支持[所有 Umi 的配置项](https://umijs.org/config)，并且也支持 [Umi 生态的插件](https://umijs.org/plugins/preset-react)，所以如果需要更多的功能，可以先看一下 Umi 的配置项和插件生态能否满足，如果仍旧不能，欢迎到[讨论群](/guide#参与贡献)反馈或者 GitHub 上[提出 Feature Request](https://github.com/umijs/dumi/issues/new?labels=enhancement&template=feature_request.md&title=feat%3A+)
+dumi is based on Umi, Which means in addition to the configurations provided by itself, it also supports [all configurations of Umi](https://umijs.org/config), and also supports [the plugins of Umi](https://umijs.org/plugins/preset-react), so if you need more features, you can first check whether Umi's configurations and plugins can be satisfied. If still cannot be satisfied, welcome to feedback to [the discuss group](/guide#contributing) or [give a Feature Request](https://github.com/umijs/dumi/issues/new?labels=enhancement&template=feature_request.md&title=feat%3A+) on GitHub
 
-## 为什么 `README.md` 会出现在文档的首页？
+## Why `README.md` appears on the homepage of the document?
 
-无论是文档还是官网，一定会有首页。dumi 会优先在所有的 `resolve.includes` 文件夹下寻找 `index.md` 或者 `REAdME.md`，如果找不到的话则会使用项目根目录的 `README.md`。
+Whether it is a document or an website, there must be a home page. Dumi will first look for `index.md` or `REAdME.md` as the homepage in all `resolve.includes` folders, if not found, it will use `README.md` in the project root directory as the homepage.
 
-## 如何将文档部署到域名的非根目录？
+## How to deploy documents to a non-root directory of a domain name?
 
-使用 Umi 的 [base 配置项](https://umijs.org/config#base)即可。
+Configurating [base 配置项](https://umijs.org/config#base) of Umi will works
 
-## 如何完全自定义首页？
+## How to fully customize the homepage?
 
-目前 dumi 尚未开放主题自定义功能，可以通过引入外部嵌入式 Demo 的形式来实现：
+At present, dumi has not yet support the theme customization function, but it can be realized by importing the external embedded Demo:
 
 ```markdown
 <!-- index.md -->
@@ -28,21 +28,23 @@ dumi 基于 Umi，即除了自己提供的配置项以外，还支持[所有 Umi
 <code src="path/to/homepage.tsx" inline />
 ```
 
-## dumi 支持使用 `.md` 之外的其他方式编写文档吗？
+For detailed usage, please refer to [use in dumi](https://landing.ant.design/docs/use/dumi) of Ant Design Landing
 
-暂不支持。
+## Does dumi support to write documents in other ways rather than `.md`?
 
-## 如何在 cra 等非 umi 项目中使用 dumi？
+Sorry, it is not supported yet
 
-[源码示例](https://github.com/xiaohuoni/dumi-demo-cra)
+## How to use dumi in non-Umi projects such as cra?
 
-安装模块。
+[Source code](https://github.com/xiaohuoni/dumi-demo-cra)
+
+1. Install the dependence.
 
 ```bash
 yarn add dumi cross-env -D
 ```
 
-增加启动命令，修改 `package.json`。
+2. Add a start-up command in `package.json`
 
 ```json
   "scripts": {
@@ -51,7 +53,7 @@ yarn add dumi cross-env -D
   },
 ```
 
-增加配置，新建 `config/config.js`。
+3. Create `config/config.js`, and add configuration
 
 ```js
 export default {
@@ -61,52 +63,52 @@ export default {
 };
 ```
 
-新建文档目录 `dumi/docs/`，这里的 `dumi` 目录即第二步中配置的环境变量，你可以随意同步修改。
+4. Create a new document directory `dumi/docs/`, where the `dumi` directory is the environment variable configured in the second step, you can modify it at will.
 
-新建文档 `dumi/docs/index.md`。
+5. Create `dumi/docs/index.md`.
 
 ```markdown
-# 这是一个 Dumi 结合 create-react-app 的 Demo
+# This is a demo of dumi combined with create-react-app
 ```
 
-将 dumi 的临时文件添加到 `.gitignore` 中。
+6. Add the temporary files of dumi into `.gitignore`.
 
 ```
 .umi
 ```
 
-## dumi 支持基于其他技术框架、例如 Vue、Angular 编写文档和 Demo 吗？
+## Does dumi support to write documents and demos based on other frameworks, such as Vue and Angular?
 
-暂不支持；但 Umi 3 在架构上对 renderer 做了抽离，后续如果有其他的 renderer，dumi 也会进行跟进。
+Sorry, it's not supported yet. But Umi 3 has abstracted the renderer from the structure. If there are other renderers in the future, dumi will also follow up.
 
-## 如何添加统计脚本和全局 CSS 样式？
+## How to add statistical scripts and global CSS styles?
 
-可使用 Umi 的 [styles](https://umijs.org/config#styles) 和 [scripts](https://umijs.org/config#scripts) 配置项。
+You can configurate it through [styles](https://umijs.org/config#styles) and [scripts](https://umijs.org/config#scripts) of Umi.
 
-## 本地开发没问题，但部署完成后访问子页面再刷新就 404 了
+## Local development is works, but will get a 404 after deployment and visiting
 
-默认只输出一个 `index.html` 作为入口 HTML 文件，服务器在 serve `/` 时可以找到文件但 `/some-route` 却没有对应的 `/some-route/index.html`，所以会出现 404。设置 `config.exportStatic` 为 `{}` 根据路由按文件夹结构输出所有 HTML 文件即可，此配置项的更多用法可参考 Umi 文档：[Config - exportStatic](https://umijs.org/zh-CN/config#exportstatic)。
+There is only one `index.html` is output as the entry HTML file by default. The server can find the file while path is `/` but `/some-route` does not have a corresponding `/some-route/index.html`, so it will get a 404. You can set `config.exportStatic` to `{}` which is means output all HTML files in a folder structure according to the route. For more usage of this configuration, please refer to the Umi document: [Config - exportStatic](https://umijs.org/config#exportstatic).
 
-## 文档构建后的 bundle 太大了，导致网站访问速度很慢，如何实现按需加载？
+## The bundle after document building is too large, which brings about slow website access. How to implement load-on-demand mode?
 
-配置 `config.dynamicImport` 为 `{}`，此配置项的更多用法可参考 Umi 文档：[Config - dynamicImport](https://umijs.org/zh-CN/config#dynamicimport)。
+You can set `config.dynamicImport` to `{}`. For more usage fo this configuration, please refer to the Umi document: [Config - dynamicImport](https://umijs.org/config#dynamicimport).
 
-## 部署到 Github Pages
+## Deploy on Github Pages
 
-由于 GitHub Pages 是非域名根路径部署，部署之前请先确保设置了 `base` 和 `publicPath` 配置项为仓库名称：
+Since GitHub Pages is deployed in a non-domain name root path, please ensure that the `base` and `publicPath` configurations are set to the repository name before deployment:
 
 ```ts
 export default {
-  base: '/仓库名称',
-  publicPath: '/仓库名称/',
-  exportStatic: {}, // 将所有路由输出为 HTML 目录结构，以免刷新页面时 404
-  // 其他配置
+  base: '/repositoryName',
+  publicPath: '/repositoryName/',
+  exportStatic: {}, // Export all routes as HTML directory structure to avoid 404 when refreshing the page
+  // Other configuration
 };
 ```
 
-### 手动部署
+### Manual deployment
 
-借助 [gh-pages](https://github.com/tschaub/gh-pages) 可以轻松帮助我们部署文档到 Github Page
+With the help of [gh-pages](https://github.com/tschaub/gh-pages), you can easily deploy documents to Github Page
 
 ```bash
 npm install gh-pages --save-dev
@@ -118,7 +120,7 @@ or
 yarn add gh-pages -D
 ```
 
-`package.json` 中添加
+Add in `package.json`
 
 ```json
 "scripts": {
@@ -126,23 +128,23 @@ yarn add gh-pages -D
 }
 ```
 
-编译生成 `dist` 目录
+Compile to `dist` directory
 
 ```bash
 npm run docs:build
 ```
 
-一键发布
+One-click release
 
 ```bash
 npm run deploy
 ```
 
-### 自动部署
+### Automatic deployment
 
-利用 [Github Action](https://github.com/features/actions) 在每次 `master` 分支更新后自动部署
+With the help of [Github Action](https://github.com/features/actions), projects will automatically deployed after each update of `master` branch
 
-新建 `.github/workflows/gh-pages.yml` 文件
+Create `.github/workflows/gh-pages.yml`
 
 ```yml
 name: github pages
@@ -166,15 +168,15 @@ jobs:
           publish_dir: ./docs-dist
 ```
 
-## 开发阶段，如何配置 md 文件中的样式按需引入？
+## During the development, how to configure the styles in the md file in load-on-demand?
 
-dumi 会对 pkgName/es、pkgName/lib 做 alias，[详情见](https://github.com/umijs/dumi/blob/master/packages/preset-dumi/src/plugins/core.ts#L198)
+Dumi will alias pkgName/es, pkgName/lib, [for details, see](https://github.com/umijs/dumi/blob/master/packages/preset-dumi/src/plugins/core.ts#L198)
 
-配置 `extraBabelPlugins` (注意是 `.umirc.ts` 的配置项，不是 `.fatherrc.ts`)，加入 [`babel-plugin-import`](https://github.com/ant-design/babel-plugin-import)，根据目录结构合理配置
+Configure `extraBabelPlugins` (Attention, it is a configuration of `.umirc.ts`, not `.fatherrc.ts`), add [`babel-plugin-import`](https://github.com/ant-design/babel-plugin-import), and configure reasonably according to the directory structure.
 
-例如：
+For example：
 
-目录结构：
+Here is the directory structure：
 
 ```shell
 .
@@ -205,7 +207,7 @@ dumi 会对 pkgName/es、pkgName/lib 做 alias，[详情见](https://github.com/
 └── yarn.lock
 ```
 
-配置 .umirc.ts：
+In .umirc.ts：
 
 ```tsx | pure
 extraBabelPlugins: [
@@ -215,7 +217,7 @@ extraBabelPlugins: [
       libraryName: 'lean',
       camel2DashComponentName: false,
       customStyleName: name => {
-        return `./style/index.less`; // 注意：这里 ./ 不可省略
+        return `./style/index.less`; // Attention: the ./ cannot be omitted in here
       },
     },
     'lean',
@@ -223,25 +225,28 @@ extraBabelPlugins: [
 ];
 ```
 
-在 md 中引入组件：
+Import component in md:
 
 ```tsx | pure
-import { Button } from 'lean'; // 这里会按需引入样式
+import { Button } from 'lean'; // load-on-demand styles here
 ```
 
-## dumi 如何支持对 Swift、C#、Kotlin 等语言的语法高亮？
+## How does dumi support to highlight for languages such as Swift, C#, Kotlin?
 
-dumi 语法高亮使用的 [prism-react-renderer](https://github.com/FormidableLabs/prism-react-renderer) ，是一款基于 [PrismJS](https://github.com/PrismJS/prism) 实现的 React 组件。 `PrismJS` 支持的语言种类很多，但 `prism-react-renderer` 在实现的时候对部分语言进行了移除，其具体原因可以查看 [Adding Out of the Box Languages](https://github.com/FormidableLabs/prism-react-renderer/issues/53#issuecomment-546653848)。
+The [prism-react-renderer](https://github.com/FormidableLabs/prism-react-renderer) used for highlighting in dumi, is a React component based on [PrismJS](https://github.com/PrismJS/prism). `PrismJS` supports many languages, but `prism-react-renderer` has removed some languages when implemented. For more specific reasons, please refer to [Adding Out of the Box Languages](https://github.com/FormidableLabs/prism-react-renderer/issues/53#issuecomment-546653848)
 
-我们在 dumi 中可以通过下面的方式，添加对其他语言的支持：
+We can add support for other languages in dumi in the following ways:
 
 ```tsx | pure
 // src/app.ts
-import Prism from "prism-react-renderer/prism";
+import Prism from 'prism-react-renderer/prism';
 
-(typeof global !== "undefined" ? global : window).Prism = Prism;
+(typeof global !== 'undefined' ? global : window).Prism = Prism;
 
-require("prismjs/components/prism-kotlin");
-require("prismjs/components/prism-csharp");
+require('prismjs/components/prism-kotlin');
+require('prismjs/components/prism-csharp');
 ```
 
+## Use dumi in non-Umi project then got Error: register failed, invalid key xx from plugin src/app.ts
+
+Because of `src/app.(t|j)sx?` is dumi's [runtime configuration module](https://umijs.org/docs/directory-structure#appts), please avoid use this path, you can also use the [APP_ROOT way](#How to use dumi in non-Umi projects such as cra?) to workaround this if your project must use this path.

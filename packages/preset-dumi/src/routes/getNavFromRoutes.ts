@@ -14,7 +14,7 @@ export interface INav {
 }
 
 export default (routes: IRoute[], opts: IDumiOpts, userCustomNavs: INav | INavItem[]): INav => {
-  let localeNavs = {};
+  const localeNavs = {};
   let customNavs = userCustomNavs || {};
 
   if (opts.mode !== 'site') {
@@ -24,7 +24,7 @@ export default (routes: IRoute[], opts: IDumiOpts, userCustomNavs: INav | INavIt
   // group navs by locale
   routes.forEach(route => {
     if (route.meta?.nav) {
-      const locale = route.meta.locale || opts.locales[0]?.[0] || '*';
+      const locale = route.meta.locale || opts.locales[0][0];
       const navPath = addHtmlSuffix(route.meta.nav.path);
 
       localeNavs[locale] = {
@@ -53,17 +53,6 @@ export default (routes: IRoute[], opts: IDumiOpts, userCustomNavs: INav | INavIt
 
       return metaOrder || pathOrder || ascOrder;
     });
-  });
-
-  // replace unique locale key with *
-  Object.keys(localeNavs).some((locale, _, locales) => {
-    if (locales.length === 1) {
-      localeNavs = {
-        '*': localeNavs[locale],
-      };
-    }
-
-    return true;
   });
 
   // merge user's navs & generated navs

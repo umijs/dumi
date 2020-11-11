@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { IRouteComponentProps } from '@umijs/types';
 import { context, Link } from 'dumi/theme';
 import Navbar from './components/Navbar';
@@ -35,7 +35,7 @@ const Features = features => (
 
 const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
   const {
-    config: { mode, locales, repository, navs },
+    config: { mode, repository },
     meta,
     locale,
   } = useContext(context);
@@ -51,18 +51,23 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
     Boolean(meta.slugs?.length) &&
     (meta.toc === 'content' || meta.toc === undefined) &&
     !meta.gapless;
-  const isCN =
-    locale === 'zh-CN' ||
-    (locale === '*' && locales[0]?.name === 'zh-CN') ||
-    /[\u4e00-\u9fa5]/.test(JSON.stringify(navs));
-  let updatedTime: any = new Date(meta.updatedTime).toLocaleString();
+  const isCN = /^zh|cn$/i.test(locale);
+  const updatedTime: any = new Date(meta.updatedTime).toLocaleString();
   const repoPlatform = { github: 'GitHub', gitlab: 'GitLab' }[
     (repoUrl || '').match(/(github|gitlab)/)?.[1] || 'nothing'
   ];
 
+  // set scroller to top while change url
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+    });
+  }, [location.pathname]);
+
   return (
     <div
       className="__dumi-default-layout"
+      data-route={location.pathname}
       data-show-sidemenu={String(showSideMenu)}
       data-show-slugs={String(showSlugs)}
       data-site-mode={isSiteMode}
@@ -70,6 +75,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
       onClick={() => setMenuCollapsed(true)}
     >
       <Navbar
+        location={location}
         navPrefix={<SearchBar />}
         onMobileMenuClick={ev => {
           setMenuCollapsed(val => !val);

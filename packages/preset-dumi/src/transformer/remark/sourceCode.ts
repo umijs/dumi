@@ -1,6 +1,9 @@
+import { Node } from 'unist';
 import visit from 'unist-util-visit';
 import toString from 'hast-util-to-string';
 import raw from 'hast-util-raw';
+import { winEOL } from '@umijs/utils';
+import { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 
 function createSourceCode(lang: string, code: string, position: any) {
   return {
@@ -20,39 +23,39 @@ function createSourceCode(lang: string, code: string, position: any) {
 /**
  * rehype plugin for convert code block to SourceCode compomnent
  */
-export default () => {
+export default function sourceCode(): IDumiUnifiedTransformer {
   return ast => {
     // handle md code block syntax
-    visit(ast, 'element', (node, i, parent) => {
+    visit<IDumiElmNode>(ast, 'element', (node, i, parent) => {
       if (node.tagName === 'pre' && node.children?.[0]?.tagName === 'code') {
         const cls = node.children[0].properties.className || [];
         const lang = cls.join('').match(/language-(\w+)(?:$| )/)?.[1] || 'unknown';
 
-        (parent.children as any).splice(
+        parent.children.splice(
           i,
           1,
-          createSourceCode(lang, toString(node.children[0]), node.position),
+          createSourceCode(lang, winEOL(toString(node.children[0])), node.position),
         );
       }
     });
 
     // handle pre tag syntax
-    visit(ast, 'raw', (node, i, parent) => {
-      if (/^<pre/.test(node.value as string)) {
-        const parsed = raw(node);
+    visit<Node & { value: string }>(ast, 'raw', (node, i, parent) => {
+      if (/^<pre/.test(node.value)) {
+        const parsed = raw(node) as IDumiElmNode;
 
         if (parsed.tagName === 'pre') {
-          const [, content] = (node.value as string).match(/^<pre[^>]*>\n?([^]*?)<\/pre>$/) || [];
+          const [, content] = winEOL(node.value).match(/^<pre[^>]*>\n?([^]*?)<\/pre>$/) || [];
 
           if (content) {
-            (parent.children as any).splice(
+            parent.children.splice(
               i,
               1,
-              createSourceCode(parsed.properties?.lang, content, node.position),
+              createSourceCode(parsed.properties.lang, content, node.position),
             );
           }
         }
       }
     });
   };
-};
+}

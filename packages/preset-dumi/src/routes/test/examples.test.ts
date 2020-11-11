@@ -1,7 +1,7 @@
 import path from 'path';
 import { IApi } from '@umijs/types';
 import getRoutes from '../getRouteConfig';
-import { init } from '../../context';
+import { init, IDumiOpts } from '../../context';
 
 const FIXTURES_PATH = path.join(__dirname, '..', 'fixtures');
 
@@ -14,14 +14,14 @@ describe('routes: examples', () => {
         cwd,
         paths: { cwd, absNodeModulesPath: cwd },
         ApplyPluginsType: {},
-        applyPlugins: (() => ({ layoutPath: '', contentPath: '' })) as any,
+        applyPlugins: (() => ({ layoutPaths: { _: '' } })) as any,
       } as IApi,
-      {},
+      {} as IDumiOpts,
     );
   });
 
   afterAll(() => {
-    init({} as IApi, {});
+    init({} as IApi, {} as IDumiOpts);
   });
 
   it('getExampleRoutes', async () => {
@@ -33,16 +33,17 @@ describe('routes: examples', () => {
           absPagesPath: path.join(cwd, 'pages'),
           absNodeModulesPath: path.join(cwd, 'node_modules'),
         },
+        userConfig: {},
       } as IApi,
       {
-        locales: [],
+        locales: [['en-US', 'EN']],
         resolve: {
           examples: ['examples'],
           includes: [],
         },
-      },
+      } as IDumiOpts,
     );
 
-    expect(routes.find(route => route.path == '/_examples/test')).not.toBeUndefined();
+    expect(routes.find(route => route.path === '/_examples/test')).not.toBeUndefined();
   });
 });

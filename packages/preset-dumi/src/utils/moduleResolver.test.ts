@@ -6,8 +6,13 @@ import {
   getModuleResolvePkg,
   getModuleResolveContent,
 } from './moduleResolver';
+import ctx from '../context';
 
 describe('moduleResolver', () => {
+  beforeAll(() => {
+    ctx.umi = Object.assign({}, ctx.umi, { paths: { cwd: process.cwd() } });
+  });
+
   it('get expected 3rd-party module path', () => {
     const modulePath = getModuleResolvePath({ basePath: __dirname, sourcePath: 'js-yaml' });
 

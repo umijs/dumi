@@ -1,112 +1,112 @@
 ---
-title: 文档示例
+title: Examples
 legacy: /example
 nav:
   order: 3
-  title: 渲染示例
+  title: Examples
 toc: menu
 ---
 
-# 文档示例
+# examples
 
-此页面列举了 dumi 渲染各项 Markdown 样式以及 Demo 的效果。
+This page lists various Markdown styles and demos rendered by dumi.
 
-## 渲染 Demo
+## For Demo
 
-### 代码块嵌入
+### Embed Code
 
 ```jsx
 import React from 'react';
 import { Button } from 'antd';
 
-export default () => <Button type="primary">我是 antd 的按钮</Button>;
+export default () => <Button type="primary">I'm Button from antd</Button>;
 ```
 
-## TS 转 JS
+### Translate TS to JS
 
 <code src="./demo/typescript.tsx" />
 
-## 多文件依赖
+### Multiple dependencies
 
 <code src="./demo/modal.jsx" />
 
-## 控制 Demo 预览器的功能按钮
+### Functional Buttons
 
 <code src="./demo/show-preview.tsx" hideActions='["CSB", "EXTERNAL"]' />
 
 ```jsx
 /**
- * title: 代码块
- * desc: '代码块中通过块注释指定，例：hideActions: ["CSB", "EXTERNAL"]'
+ * title: Code Block
+ * desc: 'setting by comments in code block. For examples: hideActions: ["CSB", "EXTERNAL"]'
  * hideActions: ["CSB", "EXTERNAL"]
  */
 import React from 'react';
 import { Button } from 'antd';
 
-export default () => <Button type="primary">我用来测试</Button>;
+export default () => <Button type="primary">I'm for testing</Button>;
 ```
 
-# 一级标题
+# Header One
 
-## 二级标题
+## Header Two
 
-### 三级标题
+### Header Three
 
-#### 四级标题
+#### Header Four
 
-##### 五级标题
+##### Header Five
 
-###### 六级标题
+###### Header Six
 
-## 水平线
+## Horizon Line
 
 ---
 
-## 强调样式
+## Emphasize
 
-**字体加粗**
+**Blod Font**
 
-_斜体样式_
+_Italics Font_
 
-~~删除线样式~~
+~~Delete~~
 
-## 引用
+## Blockquotes
 
-> 引用可以被嵌套
+> Blockquotes can nested
 >
-> > 只要引用符号比上一级多就能产生嵌套
+> > Blockquotes can nested Blockquotes
 
-## 列表
+## Lists
 
-无序列表
+unordered List
 
-- 使用 `+`、`-` 或 `*` 来创建无序列表
-- 列表可以嵌套，嵌套会产生缩进
-  - 我是子列表项
+- To create an unordered list, preface each item in the list with `+`、`-` or `*`
+- list can nest another list, remember to indent sub-list
+  - here is sub-list
 
-有序列表
+ordered list
 
-1. dumi 不基于 father
-2. dumi 基于 Umi
-3. dumi 核心是一个 Umi 插件
+1. dumi is not based on father
+2. dumi is based on Umi
+3. the core of dumi is a plugin for Umi
 
-## 代码
+## Code
 
-行内 `code`
+inline `code`
 
-代码块：
+Code Block:
 
 ```
 // some code here
 ```
 
-语法高亮
+Highlight
 
 ```js
 console.log('Hello World!');
 ```
 
-## 数学公式
+## Mathematica
 
 Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation.
 
@@ -114,22 +114,22 @@ $$
 L = \frac{1}{2} \rho v^2 S C_L
 $$
 
-## 表格
+## Table
 
-| 名词   | 解释                                                                         |
+| nouns  | explanations                                                                 |
 | ------ | ---------------------------------------------------------------------------- |
 | father | Library toolkit based on rollup, docz, storybook, jest, prettier and eslint. |
 | Umi    | Pluggable enterprise-level react application framework.                      |
 
-单元格右对齐
+cell to right aligned
 
-|   名词 |                                                                         解释 |
+|  nouns |                                                                 explanations |
 | -----: | ---------------------------------------------------------------------------: |
 | father | Library toolkit based on rollup, docz, storybook, jest, prettier and eslint. |
 |    Umi |                      Pluggable enterprise-level react application framework. |
 
-## 超链接
+## Links
 
-[前往 Umi 官网](https://umijs.org)
+[visit Umi official site](https://umijs.org)
 
-自动转换超链接 https://umijs.org
+automatic transform into Links https://umijs.org

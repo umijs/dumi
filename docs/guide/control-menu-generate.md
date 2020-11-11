@@ -1,20 +1,20 @@
-# 控制菜单生成
+# Control menu generate
 
-## 约定式菜单规则
+## Convention menu rules
 
-dumi 的文档菜单是建立在路由结构上的。路由的嵌套关系会被 dumi 解析为菜单分组，先看看 dumi 会怎么识别路由结构：
+Dumi's document menu is based on the routing structure. The nested relationship of routes will be resolved into menu groups by dumi. First, let's see how dumi identifies the routing structure
 
 ```bash
-/                       # 未分组
-/guide                  # 指南分组
-/guide/help             # 指南分组
-/other                  # 其他分组
-/very/very/deep/child   # 注意，/very/very/deep 会被整个识别为分组
+/                       # ungrouped
+/guide                  # go into guide group
+/guide/help             # go into guide group
+/other                  # go into other group
+/very/very/deep/child   # Attention, it will go into /very/very/deep group
 ```
 
-然后这个识别结果会被展示为：
+Then the recognition result will be presented as follows:
 
-- 根路径
+- root
 - guide
   - guide
   - help
@@ -22,52 +22,52 @@ dumi 的文档菜单是建立在路由结构上的。路由的嵌套关系会被
 - very/very/deep
   - child
 
-和预期基本一致，但这里有个问题：`very/very/deep` 下面只有一个子项的时候还展示为分组非常奇怪，为了满足特殊场景（真的需要对单独子项做分组）和常规场景（省略分组），dumi 有个设定：
+It's basically the same as expected, but there is a problem here: it is very strange to present `very/very/deep` as a group when there is only one subitem. In order to satisfy the the requirements of special scenarios (it does necessary to group single subitems indeed) and normal scenarios (omitting grouping), dumi has a setting:
 
-**当分组名与子路由标题一致且只有一个子路由时**，该项就不会展示为分组了，就像 `other` 分组一样。但如何配置分组名呢？请接着往下看。
+**When the group title is consistent with the subroute title and there is only one subroute**, the item will not be presented as a group, just like the `other` group. But how do you configure group title? Please keep looking down.
 
-### 控制分组名称
+### Group title
 
-分组名称的默认生成规则是，取分组的路由名称去掉 `/` 并首字母大写。比如，路由是 `/guide/help`，dumi 将会去掉末端路由 `/help` 将 `/guide` 当做分组，并且去掉 `/` 再首字母大写变成 `Guide`。
+The default rule of generating group title is to take the route name of the group, and remove `/` and capitalize it. For example, if the route is `/guide/help`, dumi will remove the last segment of route which is `/help`, take `/guide` as a group title, and remove `/` and capitalize it to `Guide`.
 
-如果希望手动控制分组名称，可以使用 [名为 `group.title` 的 frontmatter 配置项](/config/frontmatter#grouptitle) 进行配置。
+If you want to control the group title in manual way, you can configurate it through [the frontmatter configrations of `group.title`](/config/frontmatter#grouptitle)
 
-### 控制分组路径
+### Group path
 
-分组路径的默认生成规则是，将路由的最后一段去掉，前面无论多长都会作为分组路径。比如，路由是 `/very/very/deep/child`，那么 `very/very/deep` 则会作为分组路径。
+The default rule of generating the group path is to remove the last segment of the route, and the previous segment will be used as the group path no matter how long it is. For example, if the route is `/very/very/deep/child`, then `very/very/deep` will be used as the group path.
 
-如果希望手动控制分组路径，可以使用 [名为 `group.path` 的 frontmatter 配置项](/config/frontmatter#grouppath) 进行配置。
+If you want to control the group path in manual way, you can configurate it through [the frontmatter configrations of `group.path`](/config/frontmatter#grouppath)
 
-### 控制分组排序
+### Group order
 
-分组的默认排序规则为，先对比 `path` 的长度，例如 `/guide` 肯定排在 `/guide/help` 前面，其次对比分组名称的 ASCII 码，比如 `Guide` 肯定排在 `Help` 前面。
+The default rule of group order is: firstly, compare the length of `path`, for example `/guide` must be in front of `/guide/help`, and then compare the ASCII of group name. For example, `Guide` must be in front of `Help`.
 
-如果希望手动控制分组顺序，可以使用 [名为 `group.order` 的 frontmatter 配置项](/config/frontmatter#grouporder) 进行配置，数字越小越靠前。
+If you want to control the group order in manual way, you can configurate it through [the frontmatter configrations of `group.order`](/config/frontmatter#grouporder). The smaller the number, the more previous the rank will be.
 
-## 配置式侧边菜单
+## Configurate side menu
 
-<Alert>注意：目前仅 <code>site</code> 模式下可用。</Alert>
+<Alert>Attention：only works in <code>site</code> mode for now </Alert>
 
-如果发现约定式无法满足需要，可通过 [`menus` 配置项](/config#mennus) 对侧边菜单进行**增量自定义**：
+If found that the convention cannot satisfy the requirements, you can **increment customize** the side menu through [`menus`](/config#menus)
 
 ```ts
-// config/config.ts 或 .umirc.ts
+// config/config.ts or .umirc.ts
 export default {
   menus: {
-    // 需要自定义侧边菜单的路径，没有配置的路径还是会使用自动生成的配置
+    // You need to customize the path of the side menu. Non-configurated path will still use the configuration generated automatically
     '/guide': [
       {
-        title: '菜单项',
-        path: '菜单路由（可选）',
+        title: 'menu title',
+        path: 'menu path(optional)',
         children: [
-          // 菜单子项（可选）
-          'guide/index.md', // 对应的 Markdown 文件，路径是相对于 resolve.includes 目录识别的
+          // submenu item(optional)
+          'guide/index.md', // corresponding markdown file, the path is recognized relative to resolve.includes
         ],
       },
     ],
-    // 如果该路径有其他语言，需在前面加上语言前缀，需与 locales 配置中的路径一致
+    // If there are other languages, the language prefix should be added before the path, which should be consistent with the path in the locales configuration
     '/zh-CN/guide': [
-      // 省略，配置同上
+      // same as above
     ],
   },
 };
