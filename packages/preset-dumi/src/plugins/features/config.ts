@@ -11,12 +11,15 @@ import ctx from '../../context';
 export default (api: IApi) => {
   // write config.json when generating temp files
   api.onGenerateFiles(async () => {
-    const root = (await api.getRoutes()).find(route => route._dumiRoot);
-    const childRoutes = root.routes;
+    const { routes } = await api.applyPlugins({
+      key: 'dumi.getRootRoute',
+      type: api.ApplyPluginsType.modify,
+      initialValue: await api.getRoutes(),
+    });
     const config = {
-      menus: getMenuFromRoutes(childRoutes, ctx.opts, api.paths),
-      locales: getLocaleFromRoutes(childRoutes, ctx.opts),
-      navs: getNavFromRoutes(childRoutes, ctx.opts, ctx.opts.navs),
+      menus: getMenuFromRoutes(routes, ctx.opts, api.paths),
+      locales: getLocaleFromRoutes(routes, ctx.opts),
+      navs: getNavFromRoutes(routes, ctx.opts, ctx.opts.navs),
       title: ctx.opts.title,
       logo: ctx.opts.logo,
       desc: ctx.opts.description,

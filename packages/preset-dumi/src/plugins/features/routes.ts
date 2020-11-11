@@ -1,6 +1,6 @@
-import { IApi } from '@umijs/types';
+import { IApi, IRoute } from '@umijs/types';
 import ctx from '../../context';
-import getRouteConfig from '../../routes/getRouteConfig';
+import getRouteConfig, { DUMI_ROOT_FLAG } from '../../routes/getRouteConfig';
 
 /**
  * plugin for generate routes
@@ -25,17 +25,38 @@ export default (api: IApi) => {
     }
   });
 
+  api.register({
+    key: 'dumi.getRootRoute',
+    async fn(oRoutes: IRoute[] = []) {
+      const findRoot = (routes: IRoute[]) => {
+        for (let i = 0; i < routes.length; i += 1) {
+          if (routes[i][DUMI_ROOT_FLAG]) {
+            return routes[i];
+          }
+
+          const childRoot = findRoot(routes[i].routes || []);
+
+          if (childRoot) {
+            return childRoot;
+          }
+        }
+      };
+
+      return findRoot(oRoutes);
+    },
+  });
+
   // add empty component for root layout
   // TODO: move this logic into getRouteConfig and make sure tests passed
-  api.modifyRoutes(routes => {
-    routes.find(route => route._dumiRoot).component = '(props) => props.children';
-
-    return routes;
+  api.onPatchRoute(({ route }) => {
+    if (route[DUMI_ROOT_FLAG]) {
+      route.component = '(props) => props.children';
+    }
   });
 
   // remove useless /index.html from exportStatic feature
   api.onPatchRoutes(({ routes, parentRoute }) => {
-    if (api.config.exportStatic && parentRoute?._dumiRoot) {
+    if (api.config.exportStatic && parentRoute?.[DUMI_ROOT_FLAG]) {
       const rootHtmlIndex = routes.findIndex(route => route.path === '/index.html');
 
       routes.splice(rootHtmlIndex, 1);

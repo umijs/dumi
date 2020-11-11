@@ -27,7 +27,11 @@ export default (api: IApi) => {
         hostname: api.config.sitemap.hostname,
         xmlns: { video: false, image: false, news: false, xhtml: false },
       });
-      const routes = (await api.getRoutes()).find(route => route._dumiRoot).routes;
+      const { routes } = await api.applyPlugins({
+        key: 'dumi.getRootRoute',
+        type: api.ApplyPluginsType.modify,
+        initialValue: await api.getRoutes(),
+      });
       const excludes = ['/404'].concat(api.config.sitemap.excludes);
       const writeStream = fs.createWriteStream(path.join(api.paths.absOutputPath, 'sitemap.xml'));
 

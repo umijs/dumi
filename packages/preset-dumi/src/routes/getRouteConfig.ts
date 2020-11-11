@@ -11,6 +11,8 @@ import { IDumiOpts } from '../index';
 
 const debug = createDebug('dumi:routes:get');
 
+export const DUMI_ROOT_FLAG = '__dumiRoot';
+
 export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
   const { paths } = api;
   const config: IRoute[] = [];
@@ -18,7 +20,11 @@ export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
   const exampleRoutePrefix = opts.mode === 'site' ? '/_' : '/_examples/';
   const theme = await getTheme();
   const userRoutes = opts.isIntegrate
-    ? api.userConfig.routes?.find(route => route._dumiRoot)
+    ? await api.applyPlugins({
+        key: 'dumi.getRootRoute',
+        type: api.ApplyPluginsType.modify,
+        initialValue: api.userConfig.routes,
+      })
     : api.userConfig.routes;
 
   if (userRoutes) {
@@ -47,7 +53,7 @@ export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
 
   // add main routes
   config.push({
-    _dumiRoot: true,
+    [DUMI_ROOT_FLAG]: true,
     path: opts.isIntegrate ? prefix('/') : '/',
     wrappers: [
       // builtin outer layout
