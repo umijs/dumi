@@ -40,6 +40,8 @@ export default (api: IApi) => {
             return childRoot;
           }
         }
+
+        return null;
       };
 
       return findRoot(oRoutes);

@@ -191,13 +191,29 @@ describe('preset-dumi', () => {
     });
 
     // expect all docs inside /~docs route path and keep original umi routes
-    expect((await (api as any).getRoutes()).map(route => route.path)).toEqual([
+    const routes = await (api as any).getRoutes();
+
+    expect(routes.map(route => route.path)).toEqual([
       '/~demos/:uuid',
       '/_demos/:uuid',
       '/~docs',
       '/A',
       '/',
     ]);
+
+    // expect docs component path resolve correctly in configuring routing mode
+    const rootRoute = await (api as any).applyPlugins({
+      key: 'dumi.getRootRoute',
+      type: (api as any).ApplyPluginsType.modify,
+      initialValue: routes,
+    });
+
+    // all component path will be resolved to absolute path in configuring routing mode
+    // ref: https://github.com/umijs/umi/blob/ef674b120c9a3188f0167a9fa2211d3cdbf60a21/packages/core/src/Route/Route.ts#L114
+    expect(path.isAbsolute(rootRoute.routes[0].component)).toBeTruthy();
+
+    // expect path correct
+    expect(fs.existsSync(rootRoute.routes[0].component)).toBeTruthy();
   });
 
   it('integrate mode with production', async () => {

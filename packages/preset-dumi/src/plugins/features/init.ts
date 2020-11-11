@@ -25,11 +25,12 @@ export default (api: IApi) => {
     // share config with other source module via context
     setOptions('title', memo.title || api.pkg.name || 'dumi');
 
-    return {
-      ...memo,
-      // pass empty routes if pages path does not exist and no routes config
-      // to avoid umi throw src directory not exists error
-      routes: fs.existsSync(api.paths.absSrcPath) && !api.userConfig.routes ? undefined : [],
-    };
+    // pass empty routes if pages path does not exist and no routes config
+    // to avoid umi throw src directory not exists error
+    if (!memo.routes && !fs.existsSync(api.paths.absPagesPath)) {
+      memo.routes = [];
+    }
+
+    return memo;
   });
 };

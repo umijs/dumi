@@ -24,4 +24,14 @@ export default {
       },
     ],
   },
+  routes: [
+    {
+      path: '/A',
+      component: '@/pages/A'
+    },
+    {
+      path: '/',
+      component: '@/pages',
+    }
+  ]
 }
