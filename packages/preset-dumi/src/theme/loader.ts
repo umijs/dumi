@@ -89,7 +89,8 @@ function detectTheme() {
  */
 function getThemeResolvePath(sourcePath: string) {
   return getModuleResolvePath({
-    basePath: ctx.umi.cwd,
+    // start search theme from @umijs/preset-dumi package
+    basePath: __dirname,
     sourcePath,
     silent: true,
     // use empty alias to avoid dumi repo start failed
