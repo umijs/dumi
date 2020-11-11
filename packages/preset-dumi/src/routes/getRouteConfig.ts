@@ -54,6 +54,8 @@ export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
   // add main routes
   config.push({
     [DUMI_ROOT_FLAG]: true,
+    // use to disable pro-layout in integrated mode
+    layout: false,
     path: opts.isIntegrate ? prefix('/') : '/',
     wrappers: [
       // builtin outer layout

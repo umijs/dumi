@@ -89,7 +89,13 @@ export default (api: IApi) => {
   // add single demo render route
   api.modifyRoutes(async routes => {
     const theme = await getTheme();
-    const prependRoutes: IRoute[] = [{ path: `/${getDemoRouteName()}/:uuid` }];
+    const prependRoutes: IRoute[] = [
+      {
+        path: `/${getDemoRouteName()}/:uuid`,
+        // use to disable pro-layout in integrated mode
+        layout: false,
+      },
+    ];
     const Previewer = theme.builtins
       .concat(theme.fallbacks)
       .find(({ identifier }) => identifier === 'Previewer');
