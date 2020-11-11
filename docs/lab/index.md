@@ -95,6 +95,7 @@ $ npx @umijs/create-dumi-lib
 + /**
 +  * title: Foo Demo
 +  * thumbnail: [缩略图的 URL 地址]
++  * previewUrl: [预览的 URL 地址]
 +  */
 import React from 'react';
 import { Foo } from 'dumi-lib';
@@ -106,7 +107,7 @@ export default () => <Foo title="First Demo" />;
 除了在源代码中编写 frontmatter 以外，给外部 Demo 的 `code` 标签添加属性，也能实现元信息的添加：
 
 ```html
-<code src="/path/to/demo.tsx" title="Demo 的名称" thumbnail="Demo 的预览缩略图地址" />
+<code src="/path/to/demo.tsx" title="Demo 的名称" thumbnail="Demo 的预览缩略图地址" previewUrl="预览的 URL 地址" />
 ```
 
 #### 3. 启用元数据生成能力
@@ -139,9 +140,9 @@ $ npm version patch -m "build: bump version to %s"
 
 ```bash
 $ mkdir umi-app && cd umi-app
-$ npx @umijs/create-dumi-app
+$ npx @umijs/create-umi-app
 $ npm i @umijs/preset-ui -D
-$ npm link path/to/dumi/lib
+$ npm link path/to/dumi-lib
 ```
 
 在 Umi 应用的 `package.json` 中，手动添加组件库为依赖：
