@@ -5,7 +5,7 @@ import is from 'hast-util-is-element';
 import { IDumiElmNode, IDumiUnifiedTransformer } from '.';
 
 function isRelativeUrl(url) {
-  return typeof url === 'string' && !/^(?:https?:)?\/\//.test(url) && !path.isAbsolute(url);
+  return typeof url === 'string' && !/^(?:\w+:)?\/\//.test(url) && !path.isAbsolute(url);
 }
 
 /**
