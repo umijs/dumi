@@ -121,6 +121,9 @@ export default function api(): IDumiUnifiedTransformer {
 
             definitions = parser(sourcePath, vFile.data.componentName);
             identifier = vFile.data.componentName;
+
+            // trigger parent markdown file change after this file changed
+            saveFileOnDepChange(this.data('fileAbsPath'), sourcePath);
           } catch (err) {
             /* noting */
           }
