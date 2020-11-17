@@ -5,7 +5,7 @@ import is from 'hast-util-is-element';
 import url from 'url';
 
 function isAbsoluteUrl(url) {
-  return /^(?:https?:)?\/\//.test(url);
+  return /^(?:\w+:)?\/\//.test(url);
 }
 
 export default () => ast => {
