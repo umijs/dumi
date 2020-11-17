@@ -43,6 +43,10 @@ export interface IPreviewerProps extends IPreviewerComponentProps {
    * use iframe mode for this demo
    */
   iframe?: true | number;
+  /**
+   * replace builtin demo url
+   */
+  demoUrl?: string;
 }
 
 /**
@@ -50,7 +54,7 @@ export interface IPreviewerProps extends IPreviewerComponentProps {
  * @param file    file path
  * @param source  file source object
  */
-function getSourceType(file: string, source: IPreviewerComponentProps['sources']['']) {
+function getSourceType(file: string, source: IPreviewerComponentProps['sources']['_']) {
   // use file extension as source type first
   let type = file.match(/\.(\w+)$/)?.[1];
 
@@ -65,7 +69,8 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
   const demoRef = useRef();
   const { locale } = useContext(context);
   const props = useLocaleProps<IPreviewerProps>(locale, oProps);
-  const demoUrl = useDemoUrl(props.identifier);
+  const builtinDemoUrl = useDemoUrl(props.identifier);
+  const demoUrl = props.demoUrl || builtinDemoUrl;
   const isActive = history?.location.hash === `#${props.identifier}`;
   const isSingleFile = Object.keys(props.sources).length === 1;
   const openCSB = useCodeSandbox(props.hideActions?.includes('CSB') ? null : props);
