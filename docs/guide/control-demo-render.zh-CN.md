@@ -165,3 +165,13 @@ export default () => (
   <h2 style={{ boxShadow: '0 2px 15px rgba(0,0,0,0.1)', padding: '5px 20px' }}>iframe 模式</h2>
 );
 ```
+
+## 渲染为代码块
+
+有时候我们就是希望展示一段 `JSX` 源代码，但 dumi 又默认会将其当做 React 组件进行渲染；这时候我们可以通过 `pure` 修饰符告诉 dumi 这是一段不需要渲染的源代码：
+
+<pre lang="markdown">
+```jsx | pure
+// 我不会被渲染
+```
+</pre>

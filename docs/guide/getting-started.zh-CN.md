@@ -78,7 +78,7 @@ dumi 会将 `jsx/tsx` 代码块当做 React Component 进行渲染然后放入 D
 ```jsx
 import React from 'react';
 
-export default () => &lt;h2&gt;First Demo&lt;/h2&gt;;
+export default () => <h2>First Demo</h2>;
 ```
 </pre>
 

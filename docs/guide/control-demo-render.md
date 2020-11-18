@@ -165,3 +165,13 @@ export default () => (
   <h2 style={{ boxShadow: '0 2px 15px rgba(0,0,0,0.1)', padding: '5px 20px' }}>iframe mode</h2>
 );
 ```
+
+## Render as a code block
+
+Sometime we hope to write a `JSX` source code, but dumi will try to render it as React component, at this time, we can tell dumi to render it as a code block via `pure` modifier:
+
+<pre lang="markdown">
+```jsx | pure
+// I will not be rendered
+```
+</pre>
