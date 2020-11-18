@@ -17,7 +17,7 @@ jobs:
             {
               "msgtype": "markdown",
               "markdown": {
-                  "title": "dumi ${{github.event.release.tag_name}} released",
-                  "text": "### dumi [${{github.event.release.tag_name}}](${{github.event.release.html_url}}) released:\n${{github.event.release.body}}"
+                  "title": "${{github.event.release.tag_name}} released",
+                  "text": "# [${{github.event.release.tag_name}}](${{github.event.release.html_url}}) released:\n${{github.event.release.body}}"
               }
             }
