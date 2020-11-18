@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useState, useEffect, useContext, useRef } from 'react';
+import Tabs, { TabPane } from 'rc-tabs';
 // @ts-ignore
 import { history } from 'dumi';
 import {
@@ -211,15 +212,17 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
       {showSource && (
         <div className="__dumi-default-previewer-source-wrapper">
           {!isSingleFile && (
-            <ul className="__dumi-default-previewer-source-tab">
+            <Tabs
+              className="__dumi-default-previewer-source-tab"
+              prefixCls="__dumi-default-tabs"
+              moreIcon="···"
+              defaultActiveKey={currentFile}
+              onChange={key => setCurrentFile(key)}
+            >
               {Object.keys(props.sources).map(filename => (
-                <li className={currentFile === filename ? 'active' : ''} key={filename}>
-                  <button type="button" onClick={() => setCurrentFile(filename)}>
-                    {filename === '_' ? `index.${sourceType}` : filename}
-                  </button>
-                </li>
+                <TabPane tab={filename === '_' ? `index.${sourceType}` : filename} key={filename} />
               ))}
-            </ul>
+            </Tabs>
           )}
           <div className="__dumi-default-previewer-source">
             <SourceCode code={currentFileCode} lang={sourceType} showCopy={false} />

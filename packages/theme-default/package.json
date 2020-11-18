@@ -19,7 +19,8 @@
   "authors": [],
   "dependencies": {
     "prism-react-renderer": "^1.1.1",
-    "prismjs": "^1.21.0"
+    "prismjs": "^1.21.0",
+    "rc-tabs": "^11.7.1"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.3",
