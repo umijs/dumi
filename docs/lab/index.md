@@ -309,7 +309,7 @@ export default () => <Foo title="First Demo" />;
 In addition to writing frontmatter in the source code, adding attributes to the `code` tag of the external Demo can also add meta information:
 
 ```html
-<code src="/path/to/demo.tsx" title="Demo title" thumbnail="the url of thumbnail" previewUrl="The url of preview" />
+<code src="/path/to/demo.tsx" title="Demo title" thumbnail="the url of thumbnail" previewUrl="the url for preview" />
 ```
 
 #### 3. Enable metadata generation capabilities
