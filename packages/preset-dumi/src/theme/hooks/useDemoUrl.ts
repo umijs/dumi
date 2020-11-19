@@ -20,7 +20,8 @@ export const getDemoRouteName = () => {
 export const getDemoUrl = (demoId: string) => {
   return [
     window.location.origin,
-    (window as any)?.routerBase || '/',
+    // compatible with (empty), /base & /base/
+    `${(window as any)?.routerBase || ''}/`.replace(/\/\/$/, '/'),
     getDemoRouteName(),
     '/',
     demoId,
