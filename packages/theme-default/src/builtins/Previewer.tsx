@@ -88,9 +88,10 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
     props.sources[currentFile][sourceType] || props.sources[currentFile].content;
   const playgroundUrl = useTSPlaygroundUrl(locale, currentFileCode);
 
-  useEffect(() => {
-    setSourceType(getSourceType(currentFile, props.sources[currentFile]));
-  }, [currentFile]);
+  function handleFileChange(filename: string) {
+    setCurrentFile(filename);
+    setSourceType(getSourceType(filename, props.sources[filename]));
+  }
 
   return (
     <div
@@ -217,10 +218,17 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
               prefixCls="__dumi-default-tabs"
               moreIcon="···"
               defaultActiveKey={currentFile}
-              onChange={key => setCurrentFile(key)}
+              onChange={handleFileChange}
             >
               {Object.keys(props.sources).map(filename => (
-                <TabPane tab={filename === '_' ? `index.${sourceType}` : filename} key={filename} />
+                <TabPane
+                  tab={
+                    filename === '_'
+                      ? `index.${getSourceType(filename, props.sources[filename])}`
+                      : filename
+                  }
+                  key={filename}
+                />
               ))}
             </Tabs>
           )}
