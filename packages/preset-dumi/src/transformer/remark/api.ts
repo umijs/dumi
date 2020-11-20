@@ -107,7 +107,7 @@ export default function api(): IDumiUnifiedTransformer {
           const absPath = path.join(path.dirname(this.data('fileAbsPath')), src);
 
           definitions = parser(absPath, componentName);
-          identifier = componentName || src;
+          identifier = src;
 
           // trigger parent markdown file change after this file changed
           saveFileOnDepChange(this.data('fileAbsPath'), absPath);
