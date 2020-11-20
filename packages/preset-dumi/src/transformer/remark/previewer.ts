@@ -97,6 +97,7 @@ function applyCodeBlock(props: IPreviewerComponentProps, componentName: string) 
       description: props.description,
       thumbnail: props.thumbnail,
       tags: props.tags,
+      previewUrl: props.previewUrl,
       atomAssetId: componentName,
       // for HiTu DSM
       uuid: props.uuid,

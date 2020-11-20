@@ -297,6 +297,7 @@ Take the demo of the getting-started project as an example, open `src/Foo/index.
 + /**
 +  * title: Foo Demo
 +  * thumbnail: [The url of thumbnail]
++  * previewUrl: [The url of preview]
 +  */
 import React from 'react';
 import { Foo } from 'dumi-lib';
@@ -308,7 +309,7 @@ export default () => <Foo title="First Demo" />;
 In addition to writing frontmatter in the source code, adding attributes to the `code` tag of the external Demo can also add meta information:
 
 ```html
-<code src="/path/to/demo.tsx" title="Demo title" thumbnail="the url of thumbnail" />
+<code src="/path/to/demo.tsx" title="Demo title" thumbnail="the url of thumbnail" previewUrl="the url for preview" />
 ```
 
 #### 3. Enable metadata generation capabilities
@@ -341,9 +342,9 @@ Initialize the Umi application, install Umi UI and link the component library we
 
 ```bash
 $ mkdir umi-app && cd umi-app
-$ npx @umijs/create-dumi-app
+$ npx @umijs/create-umi-app
 $ npm i @umijs/preset-ui -D
-$ npm link path/to/dumi/lib
+$ npm link path/to/dumi-lib
 ```
 
 In the `package.json` of the Umi application, manually add the component library as a dependency:
