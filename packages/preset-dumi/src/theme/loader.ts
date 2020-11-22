@@ -15,6 +15,10 @@ interface ThemeComponent {
    * component path
    */
   source: string;
+  /**
+   * resolved module path
+   */
+  modulePath: string;
 }
 
 export interface IThemeLoadResult {
@@ -117,6 +121,7 @@ export default async () => {
             identifier: path.parse(file).name,
             // still use module identifier rather than abs path for theme package modules
             source: winPath(path.join(theme, builtinPath.replace(modulePath, ''), file)),
+            modulePath: winPath(path.join(builtinPath, file)),
           }))
       : [];
     const fallbacks = REQUIRED_THEME_BUILTINS.reduce((result, bName) => {
@@ -124,6 +129,7 @@ export default async () => {
         result.push({
           identifier: bName,
           source: winPath(path.join(FALLBACK_THEME, 'src', 'builtins', `${bName}`)),
+          modulePath: getThemeResolvePath(path.join(FALLBACK_THEME, 'src', 'builtins', `${bName}`)),
         });
       }
 
