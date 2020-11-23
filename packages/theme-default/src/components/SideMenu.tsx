@@ -75,7 +75,7 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location }) => {
 
                 return (
                   <li key={nav.path || nav.title}>
-                    {nav.path ? (
+                    {nav.path && (!nav.children || nav.children.length < 1) ? (
                       <NavLink to={nav.path}>
                         {nav.title}
                         {child}
