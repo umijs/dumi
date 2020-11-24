@@ -68,46 +68,48 @@
   }
 
   nav {
-    > a,
     > span {
       position: relative;
       margin-left: 40px;
       display: inline-block;
       height: @s-nav-height;
       cursor: pointer;
-      color: #4d5164;
       font-size: 14px;
       line-height: @s-nav-height;
       text-decoration: none;
       letter-spacing: 0;
 
-      &:hover,
-      &.active {
-        color: @c-primary;
+      a {
+        color: #4d5164;
+
+        &:hover,
+        &.active {
+          color: @c-primary;
+        }
+
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          right: -18px;
+          left: -18px;
+        }
+
+        &.active::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: -2px;
+          right: -2px;
+          height: 2px;
+          background-color: @c-primary;
+          border-radius: 1px;
+        }
       }
 
       + *:not(a) {
         margin-left: 40px;
-      }
-
-      &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        right: -18px;
-        left: -18px;
-      }
-
-      &.active::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: -2px;
-        right: -2px;
-        height: 2px;
-        background-color: @c-primary;
-        border-radius: 1px;
       }
 
       // second nav

@@ -45,14 +45,15 @@ const Navbar: FC<INavbarProps> = ({ onMobileMenuClick, navPrefix, location }) =>
             </ul>
           );
 
-          return nav.path && !child ? (
-            <NavLink to={nav.path} key={nav.path}>
-              {nav.title}
-              {child}
-            </NavLink>
-          ) : (
-            <span key={nav.title}>
-              {nav.title}
+          return (
+            <span key={nav.title || nav.path}>
+              {nav.path ? (
+                <NavLink to={nav.path} key={nav.path}>
+                  {nav.title}
+                </NavLink>
+              ) : (
+                nav.title
+              )}
               {child}
             </span>
           );
