@@ -90,6 +90,22 @@ function serializeAPINodes(
 }
 
 /**
+ * detect component name via file path
+ */
+function guessComponentName(fileAbsPath: string) {
+  const parsed = path.parse(fileAbsPath);
+
+  if (parsed.name === 'index') {
+    // button/index.tsx => button
+    // button/src/index.tsx => button
+    return path.basename(parsed.dir.replace(/\/src$/, ''));
+  }
+
+  // components/button.tsx => button
+  return parsed.name;
+}
+
+/**
  * remark plugin for parse embed tag to external module
  */
 export default function api(): IDumiUnifiedTransformer {
@@ -101,9 +117,8 @@ export default function api(): IDumiUnifiedTransformer {
 
         if (has(node, 'src')) {
           const src = node.properties.src || '';
-          // guess component name if src file is index
-          const componentName =
-            path.parse(src).name === 'index' ? path.basename(path.dirname(src)) : '';
+          // guess component name if there has no identifier property
+          const componentName = node.properties.identifier || guessComponentName(src);
           const absPath = path.join(path.dirname(this.data('fileAbsPath')), src);
 
           definitions = parser(absPath, componentName);

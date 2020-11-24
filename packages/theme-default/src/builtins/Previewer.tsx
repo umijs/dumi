@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useState, useEffect, useContext, useRef } from 'react';
+import Tabs, { TabPane } from 'rc-tabs';
 // @ts-ignore
 import { history } from 'dumi';
 import {
@@ -87,9 +88,10 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
     props.sources[currentFile][sourceType] || props.sources[currentFile].content;
   const playgroundUrl = useTSPlaygroundUrl(locale, currentFileCode);
 
-  useEffect(() => {
-    setSourceType(getSourceType(currentFile, props.sources[currentFile]));
-  }, [currentFile]);
+  function handleFileChange(filename: string) {
+    setCurrentFile(filename);
+    setSourceType(getSourceType(filename, props.sources[filename]));
+  }
 
   return (
     <div
@@ -211,15 +213,24 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
       {showSource && (
         <div className="__dumi-default-previewer-source-wrapper">
           {!isSingleFile && (
-            <ul className="__dumi-default-previewer-source-tab">
+            <Tabs
+              className="__dumi-default-previewer-source-tab"
+              prefixCls="__dumi-default-tabs"
+              moreIcon="···"
+              defaultActiveKey={currentFile}
+              onChange={handleFileChange}
+            >
               {Object.keys(props.sources).map(filename => (
-                <li className={currentFile === filename ? 'active' : ''} key={filename}>
-                  <button type="button" onClick={() => setCurrentFile(filename)}>
-                    {filename === '_' ? `index.${sourceType}` : filename}
-                  </button>
-                </li>
+                <TabPane
+                  tab={
+                    filename === '_'
+                      ? `index.${getSourceType(filename, props.sources[filename])}`
+                      : filename
+                  }
+                  key={filename}
+                />
               ))}
-            </ul>
+            </Tabs>
           )}
           <div className="__dumi-default-previewer-source">
             <SourceCode code={currentFileCode} lang={sourceType} showCopy={false} />
