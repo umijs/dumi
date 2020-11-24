@@ -42,4 +42,11 @@ describe('api parser', () => {
   it('should parse locale description', () => {
     assertResult('localeDescription.tsx');
   });
+
+  it('should guess component name correctly', () => {
+    expect(parser(path.join(rawPath, 'guess', 'FileName.tsx'))).toHaveProperty('FileName');
+    expect(
+      parser(path.join(rawPath, 'guess', 'NestSrc', 'src', 'index.tsx'), 'NestSrc'),
+    ).toHaveProperty('default');
+  });
 });

@@ -63,4 +63,11 @@ describe('component api example', () => {
       { depth: 3, value: 'World', heading: 'api-world' },
     ]);
   });
+
+  it('should guess filename as component name', () => {
+    const filePath = path.join(fixtures, 'guess-name.md');
+    const result = transformer.markdown(fs.readFileSync(filePath).toString(), filePath);
+
+    expect(result.content).toContain('identifier="World"');
+  });
 });
