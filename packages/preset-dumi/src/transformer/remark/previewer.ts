@@ -224,7 +224,7 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
       ? // insert directly for inline demo
         `React.memo(${code})`
       : // render other demo from the common demo module: @@/dumi/demos
-        `require('@@/dumi/demos').default['${previewerProps.identifier}'].component`;
+        `React.memo(require('@@/dumi/demos').default['${previewerProps.identifier}'].component)`;
 
     this.vFile.data.demos = (this.vFile.data.demos || []).concat(
       `const ${DEMO_COMPONENT_NAME}${(this.vFile.data.demos?.length || 0) +
