@@ -2,6 +2,10 @@ import React from 'react';
 import { NavLink } from '@umijs/runtime';
 import { NavLinkProps } from 'react-router-dom';
 
+function getElmScrollPosition (elm: HTMLElement) {
+  return elm.offsetTop + (elm.offsetParent ? getElmScrollPosition(elm.offsetParent as HTMLElement) : 0);
+}
+
 const AnchorLink: React.FC<NavLinkProps> & { scrollToAnchor: (anchor: string) => void } = props => {
   const hash = (props.to as string).match(/(#.+)$/)?.[1] || '';
 
@@ -21,7 +25,7 @@ AnchorLink.scrollToAnchor = (anchor: string) => {
 
     if (elm) {
       // compatible in Edge
-      window.scrollTo(0, elm.offsetTop - 100);
+      window.scrollTo(0, getElmScrollPosition(elm) - 100);
     }
   });
 };
