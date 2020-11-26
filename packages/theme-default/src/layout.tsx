@@ -57,13 +57,6 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
     (repoUrl || '').match(/(github|gitlab)/)?.[1] || 'nothing'
   ];
 
-  // set scroller to top while change url
-  useEffect(() => {
-    window.scrollTo({
-      top: 0,
-    });
-  }, [location.pathname]);
-
   return (
     <div
       className="__dumi-default-layout"
