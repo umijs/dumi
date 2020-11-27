@@ -145,6 +145,14 @@ group:
 
 在 site 模式下可用，配置 hero 后，该页面将会以首页形式呈现。
 
+#### hero.image
+
+- 类型：`String`
+- 默认值：`null`
+- 详细：
+
+配置首页首屏区域的标题配图。
+
 #### hero.title
 
 - 类型：`String`
