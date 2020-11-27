@@ -93,8 +93,8 @@ function detectTheme() {
  */
 function getThemeResolvePath(sourcePath: string) {
   return getModuleResolvePath({
-    // start search theme from @umijs/preset-dumi package
-    basePath: __dirname,
+    // start search theme from @umijs/preset-dumi package, but use cwd if use relative theme folder
+    basePath: sourcePath.startsWith('.') ? ctx.umi.cwd : __dirname,
     sourcePath,
     silent: true,
     // use empty alias to avoid dumi repo start failed
@@ -119,8 +119,11 @@ export default async () => {
           .filter(file => /\.(j|t)sx?$/.test(file))
           .map(file => ({
             identifier: path.parse(file).name,
-            // still use module identifier rather than abs path for theme package modules
-            source: winPath(path.join(theme, builtinPath.replace(modulePath, ''), file)),
+            source: theme.startsWith('.')
+              ? // use abs path for relative theme folder
+                winPath(path.join(builtinPath, file))
+              : // still use module identifier rather than abs path for theme package and absolute theme folder
+                winPath(path.join(theme, builtinPath.replace(modulePath, ''), file)),
             modulePath: winPath(path.join(builtinPath, file)),
           }))
       : [];
