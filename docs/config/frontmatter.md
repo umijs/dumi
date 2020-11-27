@@ -145,6 +145,14 @@ Omitted, same as `group.order`.
 
 Only works in site mode, the page will be presented as a homepage after configuring.
 
+#### hero.image
+
+- Type: `String`
+- Default: `null`
+- Details:
+
+Configure the title image of the homepage.
+
 #### hero.title
 
 - Type: `String`

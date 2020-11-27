@@ -2,6 +2,7 @@
 title: dumi - A Umi-based doc tool can assist you to develop libraries & write docs.
 order: 10
 hero:
+  image: https://gw.alipayobjects.com/zos/bmw-prod/598d14af-4f1c-497d-b579-5ac42cd4dd1f/k7bjua9c_w132_h130.png
   title: dumi
   desc: A Umi-based doc tool can assist you to develop libraries & write docs.
   actions:
