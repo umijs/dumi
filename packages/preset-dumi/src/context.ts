@@ -71,6 +71,12 @@ export interface IDumiOpts {
    * @note  if enter interate mode, doc site will append in /~docs route in development
    */
   isIntegrate: boolean;
+  /**
+   * theme config
+   */
+  theme: {
+    [key: string]: any;
+  };
 }
 
 const context: { umi?: IApi; opts?: IDumiOpts } = {};

@@ -49,6 +49,10 @@ export interface IThemeContext {
      * algolia configurations
      */
     algolia?: IDumiOpts['algolia'];
+    /**
+     * theme config
+     */
+    theme: IDumiOpts['theme'];
   };
   /**
    * the meta information of current route
@@ -99,6 +103,7 @@ export default React.createContext<IThemeContext>({
     menus: {},
     locales: [],
     repository: { branch: 'master' },
+    theme: {},
   },
   meta: { title: '' },
   menu: [],

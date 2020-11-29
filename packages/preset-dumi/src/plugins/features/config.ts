@@ -3,6 +3,7 @@ import getLocaleFromRoutes from '../../routes/getLocaleFromRoutes';
 import getMenuFromRoutes from '../../routes/getMenuFromRoutes';
 import getNavFromRoutes from '../../routes/getNavFromRoutes';
 import getRepoUrl from '../../utils/getRepoUrl';
+import { IThemeContext } from '../../theme/context';
 import ctx from '../../context';
 
 /**
@@ -16,19 +17,20 @@ export default (api: IApi) => {
       type: api.ApplyPluginsType.modify,
       initialValue: await api.getRoutes(),
     });
-    const config = {
+    const config: IThemeContext['config'] = {
       menus: getMenuFromRoutes(routes, ctx.opts, api.paths),
       locales: getLocaleFromRoutes(routes, ctx.opts),
       navs: getNavFromRoutes(routes, ctx.opts, ctx.opts.navs),
       title: ctx.opts.title,
       logo: ctx.opts.logo,
-      desc: ctx.opts.description,
+      description: ctx.opts.description,
       mode: ctx.opts.mode,
       repository: {
         url: getRepoUrl(api.pkg.repository?.url || api.pkg.repository),
         branch: api.pkg.repository?.branch || 'master',
       },
       algolia: ctx.opts.algolia,
+      theme: ctx.opts.theme,
     };
 
     api.writeTmpFile({
