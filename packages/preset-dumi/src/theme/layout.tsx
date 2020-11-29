@@ -16,17 +16,16 @@ export interface IOuterLayoutProps {
   menus: IThemeContext['config']['menus'];
   locales: IThemeContext['config']['locales'];
   algolia: IThemeContext['config']['algolia'];
+  routes: IThemeContext['routes'];
 }
-
-export type IDumiRoutes = (IRouteProps & { meta?: any })[];
 
 /**
  * hooks for get meta data of current route
  * @param routes    project route configurations
  * @param pathname  pathname of location
  */
-const useCurrentRouteMeta = (routes: IDumiRoutes, pathname: string) => {
-  const handler = (...args: [IDumiRoutes, string]) => {
+const useCurrentRouteMeta = (routes: IOuterLayoutProps['routes'], pathname: string) => {
+  const handler = (...args: [IOuterLayoutProps['routes'], string]) => {
     const pathWithoutSuffix = args[1].replace(/[^^]\/$/, '');
 
     return args[0].find(({ path }) => path === pathWithoutSuffix)?.meta || {};
@@ -138,7 +137,8 @@ const OuterLayout: React.FC<IOuterLayoutProps & IRouteComponentProps> = props =>
     route.path.replace(/^\/$/, '//'),
     '',
   );
-  const meta = useCurrentRouteMeta(route.routes, location.pathname);
+  const routes = props.routes.find(item => item.__dumiRoot).routes as IThemeContext['routes'];
+  const meta = useCurrentRouteMeta(routes, location.pathname);
   // use non-prefix for detect current locale, such as /~docs/en-US -> /en-US
   const locale = useCurrentLocale(config.locales, pathWithoutPrefix);
   const menu = useCurrentMenu(config, locale, location.pathname);
@@ -160,7 +160,7 @@ const OuterLayout: React.FC<IOuterLayoutProps & IRouteComponentProps> = props =>
         nav: config.navs[locale] || [],
         menu,
         base,
-        routes: (route.routes as unknown) as IThemeContext['routes'],
+        routes,
       }}
     >
       {children}

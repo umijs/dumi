@@ -109,7 +109,11 @@ export default (api: IApi) => {
       });
     }
 
-    prependRoutes[0].wrappers = [theme.layoutPaths.demo].filter(Boolean);
+    prependRoutes[0].wrappers = [
+      // builtin outer layout, for initialize context
+      api.utils.winPath(path.join(__dirname, '../../../theme/layout')),
+      theme.layoutPaths.demo
+    ].filter(Boolean);
     prependRoutes[0].component = `(props) => {
       const React = require('react');
       const renderArgs = require('${api.utils.winPath(
