@@ -1,6 +1,6 @@
 import React, { FC, useState, useContext } from 'react';
 import QRCode from 'qrcode.react';
-import { Link, context } from 'dumi/theme';
+import { context } from 'dumi/theme';
 import './Device.less';
 
 interface IDeviceProps {

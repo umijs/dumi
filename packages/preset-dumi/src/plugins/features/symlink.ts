@@ -15,7 +15,11 @@ export default (api: IApi) => {
     const linkPath = path.join(api.paths.cwd, 'node_modules', pkgName);
 
     // link current pkgs into node_modules, for module resolve in editor
-    if (!fs.existsSync(linkPath)) {
+    if (
+      !fs.existsSync(linkPath) ||
+      (fs.lstatSync(linkPath).isSymbolicLink() && fs.readlinkSync(linkPath) !== pkgPath)
+    ) {
+      api.utils.rimraf.sync(linkPath);
       symlink(pkgPath, linkPath);
     }
   });
