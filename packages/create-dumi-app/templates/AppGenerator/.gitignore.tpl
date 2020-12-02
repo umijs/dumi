@@ -17,3 +17,7 @@
 .umi
 .umi-production
 .env.local
+
+# ide
+/.vscode
+/.idea
