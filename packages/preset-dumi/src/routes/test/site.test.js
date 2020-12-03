@@ -47,6 +47,18 @@ describe('routes & menu: site mode', () => {
         exact: true,
       },
       {
+        component:
+          './packages/preset-dumi/src/routes/fixtures/site/duplicated/duplicated0/duplicated01/index.md',
+        exact: true,
+        path: '/duplicated/duplicated0/duplicated01',
+      },
+      {
+        component:
+          './packages/preset-dumi/src/routes/fixtures/site/duplicated/duplicated0/duplicated01/other.md',
+        exact: true,
+        path: '/duplicated/duplicated0/duplicated01/other',
+      },
+      {
         component: './packages/preset-dumi/src/routes/fixtures/site/rewrite/index.md',
         exact: true,
         path: '/rewrite',
@@ -135,6 +147,50 @@ describe('routes & menu: site mode', () => {
         title: 'Others',
       },
       {
+        component:
+          '../../../packages/preset-dumi/src/routes/fixtures/site/duplicated/duplicated0/duplicated01/index.md',
+        exact: true,
+        meta: {
+          filePath:
+            'packages/preset-dumi/src/routes/fixtures/site/duplicated/duplicated0/duplicated01/index.md',
+          group: {
+            path: '/duplicated0',
+            title: 'Duplicated0',
+          },
+          nav: {
+            path: '/duplicated',
+            title: 'Duplicated',
+          },
+          slugs: [],
+          title: 'Index',
+          updatedTime: 1607009815955,
+        },
+        path: '/duplicated0/duplicated01',
+        title: 'Index',
+      },
+      {
+        component:
+          '../../../packages/preset-dumi/src/routes/fixtures/site/duplicated/duplicated0/duplicated01/other.md',
+        exact: true,
+        meta: {
+          filePath:
+            'packages/preset-dumi/src/routes/fixtures/site/duplicated/duplicated0/duplicated01/other.md',
+          group: {
+            path: '/duplicated0/duplicated01',
+            title: 'Duplicated0/duplicated01',
+          },
+          nav: {
+            path: '/duplicated',
+            title: 'Duplicated',
+          },
+          slugs: [],
+          title: 'Other',
+          updatedTime: 1607009822413,
+        },
+        path: '/duplicated0/duplicated01/other',
+        title: 'Other',
+      },
+      {
         path: '/test-rewrite/rewrite',
         component: '../../../packages/preset-dumi/src/routes/fixtures/site/rewrite/index.md',
         exact: true,
@@ -144,7 +200,7 @@ describe('routes & menu: site mode', () => {
           nav: { path: '/test-rewrite', title: 'Test-rewrite' },
           slugs: [],
           title: 'Index',
-          group: { path: '/test-rewrite/rewrite', title: 'Rewrite' },
+          group: { path: '/test-rewrite/rewrite', title: 'Test-rewrite/rewrite' },
         },
         title: 'Index',
       },
@@ -194,6 +250,52 @@ describe('routes & menu: site mode', () => {
         title: 'Others',
       },
       {
+        component:
+          '../../../packages/preset-dumi/src/routes/fixtures/site/duplicated/duplicated0/duplicated01/index.md',
+        exact: true,
+        meta: {
+          filePath:
+            'packages/preset-dumi/src/routes/fixtures/site/duplicated/duplicated0/duplicated01/index.md',
+          group: {
+            path: '/zh-CN/duplicated0',
+            title: 'Duplicated0',
+          },
+          locale: 'zh-CN',
+          nav: {
+            path: '/zh-CN/duplicated',
+            title: 'Duplicated',
+          },
+          slugs: [],
+          title: 'Index',
+          updatedTime: 1607009815955,
+        },
+        path: '/zh-CN/duplicated0/duplicated01',
+        title: 'Index',
+      },
+      {
+        component:
+          '../../../packages/preset-dumi/src/routes/fixtures/site/duplicated/duplicated0/duplicated01/other.md',
+        exact: true,
+        meta: {
+          filePath:
+            'packages/preset-dumi/src/routes/fixtures/site/duplicated/duplicated0/duplicated01/other.md',
+          group: {
+            path: '/zh-CN/duplicated0/duplicated01',
+            title: 'Duplicated0/duplicated01',
+          },
+          locale: 'zh-CN',
+          nav: {
+            path: '/zh-CN/duplicated',
+            title: 'Duplicated',
+          },
+          slugs: [],
+          title: 'Other',
+          updatedTime: 1607009822413,
+        },
+        path: '/zh-CN/duplicated0/duplicated01/other',
+        title: 'Other',
+      },
+      {
         path: '/zh-CN/test-rewrite/rewrite',
         component: '../../../packages/preset-dumi/src/routes/fixtures/site/rewrite/index.md',
         exact: true,
@@ -203,16 +305,40 @@ describe('routes & menu: site mode', () => {
           nav: { path: '/zh-CN/test-rewrite', title: 'Test-rewrite' },
           slugs: [],
           title: 'Index',
-          group: { path: '/zh-CN/test-rewrite/rewrite', title: 'Rewrite' },
+          group: { path: '/zh-CN/test-rewrite/rewrite', title: 'Test-rewrite/rewrite' },
           locale: 'zh-CN',
         },
         title: 'Index',
+      },
+      {
+        exact: true,
+        meta: {},
+        path: '/duplicated0',
+        redirect: '/duplicated0/duplicated01',
+      },
+      {
+        exact: true,
+        meta: {},
+        path: '/duplicated',
+        redirect: '/duplicated0',
       },
       {
         path: '/test-rewrite',
         meta: {},
         exact: true,
         redirect: '/test-rewrite/rewrite',
+      },
+      {
+        exact: true,
+        meta: {},
+        path: '/zh-CN/duplicated0',
+        redirect: '/zh-CN/duplicated0/duplicated01',
+      },
+      {
+        exact: true,
+        meta: {},
+        path: '/zh-CN/duplicated',
+        redirect: '/zh-CN/duplicated0',
       },
       {
         path: '/zh-CN/test-rewrite',
@@ -230,11 +356,13 @@ describe('routes & menu: site mode', () => {
       'en-US': [
         { path: '/api', title: 'Api' },
         { path: '/config', title: 'Config' },
+        { path: '/duplicated', title: 'Duplicated' },
         { path: '/test-rewrite', title: 'Test-rewrite' },
       ],
       'zh-CN': [
         { path: '/zh-CN/api', title: 'Api' },
         { path: '/zh-CN/config', title: 'Config' },
+        { path: '/zh-CN/duplicated', title: 'Duplicated' },
         { path: '/zh-CN/test-rewrite', title: 'Test-rewrite' },
       ],
     });
@@ -253,12 +381,14 @@ describe('routes & menu: site mode', () => {
       'en-US': [
         { path: '/api', title: 'Api' },
         { path: '/config', title: 'Config' },
+        { path: '/duplicated', title: 'Duplicated' },
         { path: '/test-rewrite', title: 'Test-rewrite' },
         { path: '/test', title: 'test' },
       ],
       'zh-CN': [
         { path: '/zh-CN/api', title: 'Api' },
         { path: '/zh-CN/config', title: 'Config' },
+        { path: '/zh-CN/duplicated', title: 'Duplicated' },
         { path: '/zh-CN/test-rewrite', title: 'Test-rewrite' },
       ],
     });
@@ -295,9 +425,35 @@ describe('routes & menu: site mode', () => {
             meta: {},
           },
         ],
+        '/duplicated': [
+          {
+            children: [
+              {
+                meta: {},
+                path: '/duplicated0/duplicated01',
+                title: 'Index',
+              },
+            ],
+            meta: {},
+            path: '/duplicated0',
+            title: 'Duplicated0',
+          },
+          {
+            children: [
+              {
+                meta: {},
+                path: '/duplicated0/duplicated01/other',
+                title: 'Other',
+              },
+            ],
+            meta: {},
+            path: '/duplicated0/duplicated01',
+            title: 'Duplicated0/duplicated01',
+          },
+        ],
         '/test-rewrite': [
           {
-            title: 'Rewrite',
+            title: 'Test-rewrite/rewrite',
             path: '/test-rewrite/rewrite',
             meta: {},
             children: [
@@ -337,9 +493,35 @@ describe('routes & menu: site mode', () => {
             meta: {},
           },
         ],
+        '/zh-CN/duplicated': [
+          {
+            children: [
+              {
+                meta: {},
+                path: '/zh-CN/duplicated0/duplicated01',
+                title: 'Index',
+              },
+            ],
+            meta: {},
+            path: '/zh-CN/duplicated0',
+            title: 'Duplicated0',
+          },
+          {
+            children: [
+              {
+                meta: {},
+                path: '/zh-CN/duplicated0/duplicated01/other',
+                title: 'Other',
+              },
+            ],
+            meta: {},
+            path: '/zh-CN/duplicated0/duplicated01',
+            title: 'Duplicated0/duplicated01',
+          },
+        ],
         '/zh-CN/test-rewrite': [
           {
-            title: 'Rewrite',
+            title: 'Test-rewrite/rewrite',
             path: '/zh-CN/test-rewrite/rewrite',
             meta: {},
             children: [
@@ -402,9 +584,35 @@ describe('routes & menu: site mode', () => {
             ],
           },
         ],
+        '/duplicated': [
+          {
+            children: [
+              {
+                meta: {},
+                path: '/duplicated0/duplicated01',
+                title: 'Index',
+              },
+            ],
+            meta: {},
+            path: '/duplicated0',
+            title: 'Duplicated0',
+          },
+          {
+            children: [
+              {
+                meta: {},
+                path: '/duplicated0/duplicated01/other',
+                title: 'Other',
+              },
+            ],
+            meta: {},
+            path: '/duplicated0/duplicated01',
+            title: 'Duplicated0/duplicated01',
+          },
+        ],
         '/test-rewrite': [
           {
-            title: 'Rewrite',
+            title: 'Test-rewrite/rewrite',
             path: '/test-rewrite/rewrite',
             meta: {},
             children: [{ path: '/test-rewrite/rewrite', title: 'Index', meta: {} }],
@@ -418,9 +626,35 @@ describe('routes & menu: site mode', () => {
           { path: '/zh-CN/config', title: 'Index', meta: {} },
           { path: '/zh-CN/config/others', title: 'Others', meta: {} },
         ],
+        '/zh-CN/duplicated': [
+          {
+            children: [
+              {
+                meta: {},
+                path: '/zh-CN/duplicated0/duplicated01',
+                title: 'Index',
+              },
+            ],
+            meta: {},
+            path: '/zh-CN/duplicated0',
+            title: 'Duplicated0',
+          },
+          {
+            children: [
+              {
+                meta: {},
+                path: '/zh-CN/duplicated0/duplicated01/other',
+                title: 'Other',
+              },
+            ],
+            meta: {},
+            path: '/zh-CN/duplicated0/duplicated01',
+            title: 'Duplicated0/duplicated01',
+          },
+        ],
         '/zh-CN/test-rewrite': [
           {
-            title: 'Rewrite',
+            title: 'Test-rewrite/rewrite',
             path: '/zh-CN/test-rewrite/rewrite',
             meta: {},
             children: [

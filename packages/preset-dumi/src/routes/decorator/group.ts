@@ -88,7 +88,11 @@ export default (function group(routes) {
         // fallback group title if there only has group path
         route.meta.group.path
           // discard nav prefix path or locale prefix path
-          .replace(route.meta.nav?.path || `/${route.meta.locale || ''}`, '')
+          .replace(
+            (this.options.mode === 'site' ? '' : route.meta.nav?.path) ||
+              `/${route.meta.locale || ''}`,
+            '',
+          )
           // discard start slash
           .replace(/^\//g, '')
           // upper case the first english letter
