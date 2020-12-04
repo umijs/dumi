@@ -24,6 +24,11 @@ const USERS = [
     logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
   },
   {
+    name: 'react-component',
+    link: 'https://github.com/react-component',
+    logo: 'https://avatars3.githubusercontent.com/u/9441414?s=200&v=4',
+  },
+  {
     name: 'GGEditor',
     link: 'https://ggeditor.com',
     logo: 'https://img.alicdn.com/tfs/TB1FFA1CFP7gK0jSZFjXXc5aXXa-214-200.png',
