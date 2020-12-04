@@ -12,27 +12,37 @@ interface IModuleResolverOpts {
   sourcePath: string;
   extensions?: string[];
   silent?: boolean;
-  alias?: { [key: string]: string };
 }
 
-const getResolveAlias = (() => {
-  let cache: any;
+/**
+ * get package related paths from source path
+ * @param identifier  module path, such as dumi/lib/a.js or /path/to/node_modules/dumi/lib/a.js
+ */
+const getPkgPathsFromPath = (identifier: string) => {
+  const matches = identifier.match(/^(.*node_modules)\/((?:@[^/]+\/)?[^/]+)/) || [];
 
-  return () => {
+  return {
+    absSourcePath: identifier,
+    absPkgModulePath: matches[0],
+    absNodeModulesPath: matches[1],
+    pkgName: matches[2],
+  };
+}
+
+/**
+ * get package root path if it is a local package
+ * @param pkg   package name
+ */
+const getHostPkgPath = (() => {
+  let cache: ReturnType<typeof getHostPkgAlias>;
+
+  return (pkg: string) => {
     if (!cache) {
-      const hostPkgAlias = getHostPkgAlias(ctx.umi?.paths).map(([pkgName]) => pkgName);
-
-      cache = Object.assign({}, ctx.umi?.config?.alias);
-      hostPkgAlias.forEach(pkg => {
-        // use symlink in node_modules, for collect local packages as third-party dependencies
-        if (!cache[pkg] || cache[pkg].endsWith('src')) {
-          cache[pkg] = `${pkg}/src`;
-        }
-      });
+      cache = getHostPkgAlias(ctx.umi?.paths);
     }
 
-    return cache;
-  };
+    return cache.find(([name]) => name === pkg)?.[1];
+  }
 })();
 
 /**
@@ -43,13 +53,17 @@ export const getModuleResolvePath = ({
   sourcePath,
   extensions = DEFAULT_EXT,
   silent,
-  alias,
 }: IModuleResolverOpts) => {
+  // treat local packages as 3rd-party module for collect as dependencies
+  if (/^[a-z]@/.test(sourcePath) && getHostPkgPath(getPkgPathsFromPath(sourcePath).pkgName)) {
+    return slash(path.join(ctx.umi.paths.absNodeModulesPath, sourcePath));
+  }
+
   try {
     return slash(
       resolve.create.sync({
         extensions,
-        alias: alias || getResolveAlias(),
+        alias: ctx.umi?.config?.alias,
         symlinks: false,
         mainFiles: ['index', 'package.json'],
       })(fs.statSync(basePath).isDirectory() ? basePath : path.parse(basePath).dir, sourcePath),
@@ -75,7 +89,9 @@ export const getModuleResolvePkg = ({
   let name: string | null;
   let peerDependencies: any | null;
   const resolvePath = getModuleResolvePath({ basePath, sourcePath, extensions });
-  const modulePath = resolvePath.match(/^(.*?node_modules\/(?:@[^/]+\/)?[^/]+)/)?.[1];
+  const { pkgName, absPkgModulePath } = getPkgPathsFromPath(resolvePath);
+  // use project path as module path for local packages
+  const modulePath = getHostPkgPath(pkgName) || absPkgModulePath;
   const pkgPath = path.join(modulePath, 'package.json');
 
   if (modulePath && fs.existsSync(pkgPath)) {

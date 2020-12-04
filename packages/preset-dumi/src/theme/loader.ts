@@ -97,9 +97,6 @@ function getThemeResolvePath(sourcePath: string) {
     basePath: sourcePath.startsWith('.') ? ctx.umi.cwd : __dirname,
     sourcePath,
     silent: true,
-    // use empty alias to avoid dumi repo start failed
-    // because the auto-alias target theme-default/src
-    alias: {},
   });
 }
 

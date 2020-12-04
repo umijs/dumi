@@ -4,7 +4,7 @@ import { execSync } from 'child_process';
 import { IApi } from '@umijs/types';
 
 function getPkgAliasForPath(absPath: string) {
-  const result = [path.basename(absPath), absPath];
+  const result: [string, string] = [path.basename(absPath), absPath];
   const pkgPath = path.join(absPath, 'package.json');
 
   // use package.name if exists
@@ -17,7 +17,7 @@ function getPkgAliasForPath(absPath: string) {
 
 export default (paths: IApi['paths']) => {
   const isLerna = fs.existsSync(path.join(paths.cwd, 'lerna.json'));
-  const pkgs = [];
+  const pkgs: [string, string][] = [];
 
   if (isLerna) {
     // for lerna repo
