@@ -66,6 +66,9 @@ export default () => {
             fontSize: 20,
             fontWeight: 600,
             borderRadius: 2,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
           }}
         >
           <a
@@ -74,8 +77,8 @@ export default () => {
             href={user.link}
           >
             <img
-              width={(user.name && 32) || undefined}
-              height={(!user.name && 32) || undefined}
+              width={(user.name && 40) || undefined}
+              height={(!user.name && 40) || undefined}
               style={{ verticalAlign: '-0.32em' }}
               src={user.logo}
               alt={user.name}
