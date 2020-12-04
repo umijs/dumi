@@ -69,18 +69,18 @@ export default () => {
           }}
         >
           <a
-            style={{ display: 'block', color: '#666', padding: '18px 32px' }}
+            style={{ display: 'block', color: '#666', padding: '18px' }}
             target="_blank"
             href={user.link}
           >
             <img
               width={(user.name && 32) || undefined}
               height={(!user.name && 32) || undefined}
-              style={{ verticalAlign: '-0.32em', marginRight: 8 }}
+              style={{ verticalAlign: '-0.32em' }}
               src={user.logo}
               alt={user.name}
             />
-            {user.name}
+            <div>{user.name}</div>
           </a>
         </li>
       ))}
