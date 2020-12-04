@@ -6,12 +6,12 @@ import { useState, useEffect } from 'react';
  */
 export default <T>(locale: string, props: T) => {
   const processor = (...args: [string, any]) => {
-    let result = {} as T;
+    const result = {} as T;
 
     Object.keys(args[1]).forEach(key => {
-      const [name, locale] = (key.match(/^(.+)_([^_]+)$/) || []).slice(1);
+      const [name, keyLocale] = (key.match(/^(.+)\.([^_]+)$/) || []).slice(1);
 
-      if (!locale || locale === args[0]) {
+      if (!keyLocale || keyLocale === args[0]) {
         result[name || key] = args[1][key];
       }
     });

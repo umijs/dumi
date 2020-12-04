@@ -158,10 +158,8 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
       this.data('fileAbsPath');
 
     Object.keys(yaml).forEach(oKey => {
-      // workaround for JSX prop name not allowed to contains .
-      // refer: https://github.com/facebook/jsx/issues/42
-      let key = oKey.replace(/\./g, '_');
-      const matched = key.match(/^desc(?:(_[\w-]+$)|$)/);
+      let key = oKey;
+      const matched = key.match(/^desc(?:(\.[\w-]+$)|$)/);
 
       // compatible with short-hand usage for description field in previous dumi versions
       if (matched) {
@@ -175,16 +173,10 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
       }
 
       // transform markdown for description field
-      if (/^description(_|$)/.test(key)) {
-        // use wrapper object for workaround to avoid escape \n
-        // eslint-disable-next-line
-        yaml[key] = new String(
-          JSON.stringify(
-            transformer.markdown(yaml[key], null, {
-              type: 'html',
-            }).content,
-          ),
-        );
+      if (/^description(\.|$)/.test(key)) {
+        yaml[key] = transformer.markdown(yaml[key], null, {
+          type: 'html',
+        }).content;
       }
     });
 
@@ -252,7 +244,9 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
         type: 'element',
         tagName: 'Previewer',
         // TODO: read props from common @@/dumi/demos module to reduce bundle size
-        properties: previewerProps,
+        properties: {
+          'data-previewer-props-replaced': previewerProps.identifier,
+        },
         children: [
           {
             type: 'element',
