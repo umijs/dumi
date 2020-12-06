@@ -8,7 +8,7 @@ import {
   getModuleResolvePath,
   getModuleResolveContent,
 } from '../../utils/moduleResolver';
-import { saveFileOnDepChange } from '../../utils/watcher';
+import { IWatcherItem, listenFileOnceChange } from '../../utils/watcher';
 import { getBabelOptions, IDemoOpts } from './options';
 
 export interface IDepAnalyzeResult {
@@ -30,7 +30,12 @@ export const PLAIN_TEXT_EXT = [...LOCAL_MODULE_EXT, '.less', '.css', '.scss', '.
 
 function analyzeDeps(
   raw: babel.BabelFileResult['ast'] | string,
-  { isTSX, fileAbsPath, entryAbsPath }: IDemoOpts & { entryAbsPath?: string },
+  {
+    isTSX,
+    fileAbsPath,
+    entryAbsPath,
+    depChangeListener,
+  }: IDemoOpts & { entryAbsPath?: string; depChangeListener?: IWatcherItem['listeners'][0] },
   totalFiles?: IDepAnalyzeResult['files'],
 ): IDepAnalyzeResult {
   // support to pass babel transform result directly
@@ -130,7 +135,7 @@ function analyzeDeps(
             }
 
             // trigger parent file change to update frontmatter when dep file change
-            saveFileOnDepChange(fileAbsPath, resolvePath);
+            listenFileOnceChange(fileAbsPath, depChangeListener);
           }
         }
       }

@@ -1,11 +1,15 @@
+import fs from 'fs';
 import { Node } from 'unist';
 import visit, { Visitor } from 'unist-util-visit';
+import { createDebug } from '@umijs/utils';
 import slash from 'slash2';
 import ctx from '../../context';
 import demoTransformer, { DEMO_COMPONENT_NAME, getDepsForDemo } from '../demo';
 import { IPreviewerComponentProps } from '../../theme';
 import transformer from '..';
 import { IDumiElmNode, IDumiUnifiedTransformer } from '.';
+
+const debug = createDebug('dumi:previewer');
 
 const demoIds: Object = {};
 
@@ -52,33 +56,112 @@ function getPreviewerId(yaml: any, mdAbsPath: string, codeAbsPath: string, compo
 }
 
 /**
- * transform previewer node to code, dependent fies & dependencies
- * @param node        previewer node
- * @param fileAbsPath demo absolute path
+ * transform meta data for node
+ * @param meta  node meta data from attribute & frontmatter
  */
-function transformNode(node: IDumiElmNode, fileAbsPath: string) {
-  const props = node.properties;
-  const code = props.source.tsx || props.source.jsx;
-  const isExternalDemo = props.filePath;
-  const transformOpts = {
-    isTSX: Boolean(props.source.tsx),
-    fileAbsPath,
-  };
+function transformNodeMeta(meta: { [key: string]: any }) {
+  Object.keys(meta).forEach(key => {
+    const matched = key.match(/^desc(?:(\.[\w-]+$)|$)/);
+
+    // compatible with short-hand usage for description field in previous dumi versions
+    if (matched) {
+      key = `description${matched[1] || ''}`;
+      meta[key] = meta[matched[0]];
+      delete meta[matched[0]];
+    }
+
+    // transform markdown for description field
+    if (/^description(\.|$)/.test(key)) {
+      meta[key] = transformer.markdown(meta[key], null, {
+        type: 'html',
+      }).content;
+    }
+  });
+
+  return meta;
+}
+
+/**
+ * transform demo node to real component
+ * @param node        demo node
+ * @param mdAbsPath   md absolute path
+ */
+function transformCode(node: IDumiElmNode, mdAbsPath: string) {
+  return node.properties.filePath
+    ? // export external demo directly for collect right sourcemap in dev
+      `require('${node.properties.filePath}').default`
+    : demoTransformer(node.properties.source.tsx || node.properties.source.jsx, {
+        isTSX: Boolean(node.properties.source.tsx),
+        fileAbsPath: node.properties.filePath || mdAbsPath,
+      }).content;
+}
+
+/**
+ * generate previewer props for demo node
+ * @param node        demo node
+ * @param mdAbsPath   markdown file absolute file
+ * @param identifier  exist previewId, will generate a new one if not passed
+ */
+function generatePreviewerProps(
+  node: IDumiElmNode,
+  mdAbsPath: string,
+  componentName: string,
+  identifier?: string,
+): IPreviewerComponentProps & { [key: string]: any } {
+  const isExternalDemo = Boolean(node.properties.filePath);
+  let fileAbsPath = mdAbsPath;
+
+  // special process external demo
+  if (isExternalDemo) {
+    const lang = node.properties.filePath.match(/\.(\w+)$/)[1];
+    const { meta, content } = transformer.code(
+      fs.readFileSync(node.properties.filePath).toString(),
+    );
+
+    fileAbsPath = node.properties.filePath;
+    node.properties.source = { [lang]: content };
+    node.properties.meta = Object.assign(meta, node.properties.meta);
+  }
+
+  const yaml = transformNodeMeta(node.properties.meta || {});
+  const previewId = identifier || getPreviewerId(yaml, mdAbsPath, fileAbsPath, componentName);
+  const { files, dependencies } = getDepsForDemo(
+    node.properties.source.tsx || node.properties.source.jsx,
+    {
+      isTSX: Boolean(node.properties.source.tsx),
+      fileAbsPath,
+      depChangeListener() {
+        if (!yaml.inline && isExternalDemo) {
+          debug(`regenerate demo props for: ${node.properties.filePath}`);
+          // update @@/demos module if external demo changed, to update previewerProps for page component
+          applyDemo(
+            generatePreviewerProps(node, mdAbsPath, componentName, previewId),
+            transformCode(node, mdAbsPath),
+          );
+        }
+      },
+    },
+  );
 
   return {
-    code: demoTransformer(
-      // use import way for external demo use to HMR & sourcemap
-      isExternalDemo
-        ? `
-import React from 'react';
-import Demo from '${props.filePath}';
-
-export default () => <Demo />;
-`
-        : code,
-      transformOpts,
-    ).content,
-    ...getDepsForDemo(code, transformOpts),
+    sources: {
+      _: node.properties.source,
+      ...Object.keys(files).reduce(
+        (result, file) => ({
+          ...result,
+          [file]: {
+            import: files[file].import,
+            content: files[file].content,
+          },
+        }),
+        {},
+      ),
+    },
+    dependencies,
+    componentName,
+    ...yaml,
+    // to avoid user's identifier override internal logic
+    identifier: previewId,
   };
 }
 
@@ -149,70 +232,18 @@ function applyDemo(props: IPreviewerComponentProps, code: string) {
 
 const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
   if (node.tagName === 'div' && node.properties?.type === 'previewer') {
-    const source = node.properties.source;
-    const yaml = node.properties.meta || {};
-    const fileAbsPath =
-      // for external demo
-      node.properties.filePath ||
-      // for embed demo
-      this.data('fileAbsPath');
+    // generate previewer props
+    const previewerProps = generatePreviewerProps(
+      node,
+      this.data('fileAbsPath'),
+      this.vFile.data.componentName,
+    );
 
-    Object.keys(yaml).forEach(oKey => {
-      let key = oKey;
-      const matched = key.match(/^desc(?:(\.[\w-]+$)|$)/);
-
-      // compatible with short-hand usage for description field in previous dumi versions
-      if (matched) {
-        key = `description${matched[1] || ''}`;
-      }
-
-      // replace props key name
-      if (key !== oKey) {
-        yaml[key] = yaml[oKey];
-        delete yaml[oKey];
-      }
-
-      // transform markdown for description field
-      if (/^description(\.|$)/.test(key)) {
-        yaml[key] = transformer.markdown(yaml[key], null, {
-          type: 'html',
-        }).content;
-      }
-    });
-
-    // transform demo node
-    const { code, dependencies, files } = transformNode(node, fileAbsPath);
-
-    // create properties for Previewer
-    const previewerProps: IPreviewerComponentProps & { [key: string]: any } = {
-      sources: {
-        _: source,
-        ...Object.keys(files).reduce(
-          (result, file) => ({
-            ...result,
-            [file]: {
-              import: files[file].import,
-              content: files[file].content,
-              // TODO: convert tsx for files
-            },
-          }),
-          {},
-        ),
-      },
-      dependencies,
-      componentName: this.vFile.data.componentName,
-      ...yaml,
-      // to avoid user's identifier override internal logic
-      identifier: getPreviewerId(
-        yaml,
-        this.data('fileAbsPath'),
-        fileAbsPath,
-        this.vFile.data.componentName,
-      ),
-    };
+    // generate demo node
+    const code = transformCode(node, this.data('fileAbsPath'));
 
     // declare demo on the top page component for memo
-    const demoComponentCode = yaml.inline
+    const demoComponentCode = previewerProps.inline
       ? // insert directly for inline demo
         `React.memo(${code})`
       : // render other demo from the common demo module: @@/dumi/demos
@@ -224,11 +255,11 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
     );
 
     // replace original node
-    if (ctx.umi?.env === 'production' && yaml.debug) {
+    if (ctx.umi?.env === 'production' && previewerProps.debug) {
       // discard debug demo in production
       parent.children.splice(i, 1);
       this.vFile.data.demos.splice(this.vFile.data.demos.length - 1, 1);
-    } else if (yaml.inline) {
+    } else if (previewerProps.inline) {
       parent.children[i] = {
         previewer: true,
         type: 'element',

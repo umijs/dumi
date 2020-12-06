@@ -7,7 +7,7 @@ import visit from 'unist-util-visit';
 import { parseElmAttrToProps } from './utils';
 import parser from '../../api-parser';
 import { getModuleResolvePath } from '../../utils/moduleResolver';
-import { saveFileOnDepChange } from '../../utils/watcher';
+import { listenFileOnceChange } from '../../utils/watcher';
 import ctx from '../../context';
 import { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 
@@ -106,6 +106,25 @@ function guessComponentName(fileAbsPath: string) {
 }
 
 /**
+ * watch component change to update api data
+ * @param absPath       component absolute path
+ * @param componentName component name
+ * @param identifier    api identifier
+ */
+function watchComponentUpdate(absPath: string, componentName: string, identifier: string) {
+  listenFileOnceChange(absPath, () => {
+    let definitions: ReturnType<typeof parser>;
+
+    try {
+      definitions = parser(absPath, componentName);
+    } catch (err) { /* noting */ }
+
+    // update api data
+    applyApiData(identifier, definitions);
+  });
+}
+
+/**
  * remark plugin for parse embed tag to external module
  */
 export default function api(): IDumiUnifiedTransformer {
@@ -124,8 +143,8 @@ export default function api(): IDumiUnifiedTransformer {
           definitions = parser(absPath, componentName);
           identifier = componentName || src;
 
-          // trigger parent markdown file change after this file changed
-          saveFileOnDepChange(this.data('fileAbsPath'), absPath);
+          // trigger listener to update previewer props after this file changed
+          watchComponentUpdate(absPath, componentName, identifier);
         } else if (vFile.data.componentName) {
           try {
             const sourcePath = getModuleResolvePath({
@@ -137,8 +156,8 @@ export default function api(): IDumiUnifiedTransformer {
             definitions = parser(sourcePath, vFile.data.componentName);
             identifier = vFile.data.componentName;
 
-            // trigger parent markdown file change after this file changed
-            saveFileOnDepChange(this.data('fileAbsPath'), sourcePath);
+            // trigger listener to update previewer props after this file changed
+            watchComponentUpdate(sourcePath, vFile.data.componentName, identifier);
           } catch (err) {
             /* noting */
           }

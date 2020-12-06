@@ -6,20 +6,29 @@ import { IApiDefinition } from '../../api-parser';
  */
 export default (api: IApi) => {
   const apis: { [key: string]: IApiDefinition } = {};
-
-  // write all apis into .umi dir
-  api.onGenerateFiles(async () => {
+  const generateApisFile = () => {
     api.writeTmpFile({
       path: 'dumi/apis.json',
       content: JSON.stringify(apis, null, 2),
     });
+  }
+
+  // write all apis into .umi dir
+  api.onGenerateFiles(() => {
+    generateApisFile();
   });
 
   // register demo detections
   api.register({
     key: 'dumi.detectApi',
     fn({ identifier, data }) {
+      const isUpdated = Boolean(apis[identifier]);
+
       apis[identifier] = data;
+
+      if (isUpdated) {
+        generateApisFile();
+      }
     },
   });
 };

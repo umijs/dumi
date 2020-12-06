@@ -2,8 +2,11 @@ import fs from 'fs';
 import path from 'path';
 import React from 'react';
 import { IApi, IRoute } from '@umijs/types';
+import { createDebug } from '@umijs/utils';
 import getTheme from '../../../theme/loader';
 import { getDemoRouteName } from '../../../theme/hooks/useDemoUrl';
+
+const debug = createDebug('dumi:demos');
 
 interface ISingleRoutetDemos {
   [key: string]: {
@@ -14,20 +17,7 @@ interface ISingleRoutetDemos {
 
 export default (api: IApi) => {
   const demos: ISingleRoutetDemos = {};
-
-  // pass platform env
-  if (process.env.PLATFORM_TYPE) {
-    api.modifyDefaultConfig(memo => {
-      memo.define = Object.assign(memo.define || {}, {
-        'process.env.PLATFORM_TYPE': process.env.PLATFORM_TYPE,
-      });
-
-      return memo;
-    });
-  }
-
-  // write all demos into .umi dir
-  api.onGenerateFiles(async () => {
+  const generateDemosFile = api.utils.lodash.debounce(async () => {
     const tpl = fs.readFileSync(path.join(__dirname, 'demos.mst'), 'utf-8');
     const groups: { [key: string]: any[] } = {};
     const items = Object.keys(demos).map(uuid => {
@@ -73,16 +63,38 @@ export default (api: IApi) => {
         content: api.utils.Mustache.render(tpl, { demos: groupDemos }),
       });
     });
+
+    debug('.dumi/demos files generated');
   });
+
+  // pass platform env
+  if (process.env.PLATFORM_TYPE) {
+    api.modifyDefaultConfig(memo => {
+      memo.define = Object.assign(memo.define || {}, {
+        'process.env.PLATFORM_TYPE': process.env.PLATFORM_TYPE,
+      });
+
+      return memo;
+    });
+  }
+
+  // write all demos into .umi dir
+  api.onGenerateFiles(generateDemosFile);
 
   // register demo detections
   api.register({
     key: 'dumi.detectDemo',
     fn({ uuid, code, previewerProps }) {
+      const isUpdating = Boolean(demos[uuid]);
+
       demos[uuid] = {
         previewerProps,
-        component: `React.memo(${code})`,
+        component: code,
       };
+
+      if (isUpdating) {
+        generateDemosFile();
+      }
     },
   });
 
@@ -112,7 +124,7 @@ export default (api: IApi) => {
     prependRoutes[0].wrappers = [
       // builtin outer layout, for initialize context
       api.utils.winPath(path.join(__dirname, '../../../theme/layout')),
-      theme.layoutPaths.demo
+      theme.layoutPaths.demo,
     ].filter(Boolean);
     prependRoutes[0].component = `(props) => {
       const React = require('react');

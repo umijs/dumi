@@ -1,11 +1,8 @@
-import fs from 'fs';
 import is from 'hast-util-is-element';
 import has from 'hast-util-has-property';
 import visit from 'unist-util-visit';
 import { parseElmAttrToProps } from './utils';
 import { getModuleResolvePath } from '../../utils/moduleResolver';
-import { saveFileOnDepChange } from '../../utils/watcher';
-import transformer from '..';
 import { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 
 /**
@@ -21,10 +18,6 @@ export default function code(): IDumiUnifiedTransformer {
           sourcePath: src,
           extensions: ['.tsx', '.jsx'],
         });
-        const lang = absPath.match(/\.(\w+)$/)[1];
-
-        // read external demo content and convert node to demo node
-        const result = transformer.code(fs.readFileSync(absPath).toString());
         const parsedAttrs = parseElmAttrToProps(attrs);
 
         // replace original node
@@ -34,19 +27,12 @@ export default function code(): IDumiUnifiedTransformer {
           position: node.position,
           properties: {
             type: 'previewer',
-            source: {
-              [lang]: result.content,
-            },
             filePath: absPath,
             meta: {
               ...parsedAttrs,
-              ...result.meta,
             },
           },
         });
-
-        // trigger parent markdown file change after this file changed
-        saveFileOnDepChange(this.data('fileAbsPath'), absPath);
       }
     });
   };

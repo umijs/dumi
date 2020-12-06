@@ -15,6 +15,7 @@ export default () => null;
  * identifier: component-demo
  * componentName: ForceComponent
  */
+import './index.less';
 
 export default () => null;
 ```

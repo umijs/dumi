@@ -1,73 +1,62 @@
 import fs from 'fs';
 import path from 'path';
 import {
-  watchFileChange,
-  triggerFileChange,
-  getWatchersForFile,
-  closeWatchersForFile,
-  closeWatcher,
-  saveFileOnDepChange,
+  listenFileOnceChange
 } from './watcher';
 
+function triggerFileChange(filePath: string) {
+  fs.writeFileSync(filePath, fs.readFileSync(filePath));
+}
+
 describe('util: watcher', () => {
-  const parentPath = path.join(__dirname, './fixtures/watcher/parent.js');
-  const childPath = path.join(__dirname, './fixtures/watcher/child.js');
-  const otherPath = path.join(__dirname, './fixtures/watcher/other.js');
+  const filePath = path.join(__dirname, './fixtures/watcher/file.js');
 
   beforeAll(() => {
     process.env.TEST_WATCHER = 'true';
   });
 
-  afterAll(() => {
-    delete process.env.TEST_WATCHER;
-  });
-
   it('basic watch', done => {
-    const watcherItem = watchFileChange(parentPath, () => {
-      closeWatcher(watcherItem);
-      expect(getWatchersForFile(parentPath).length).toEqual(0);
+    listenFileOnceChange(filePath, () => {
       done();
     });
 
-    expect(getWatchersForFile(parentPath).length).toEqual(1);
     setTimeout(() => {
-      triggerFileChange(parentPath);
+      triggerFileChange(filePath);
     }, 10);
   });
 
-  it('save on change', done => {
-    const watcher = fs.watch(parentPath, () => {
-      closeWatchersForFile(parentPath);
-      expect(getWatchersForFile(parentPath).length).toEqual(0);
-      watcher.close();
+  it('watch one file multi-times', done => {
+    let count = 0;
+
+    listenFileOnceChange(filePath, () => {
+      count += 1;
+    });
+
+    listenFileOnceChange(filePath, () => {
+      expect(count).toEqual(1);
       done();
     });
 
-    saveFileOnDepChange(parentPath, childPath);
-    expect(getWatchersForFile(parentPath).length).toEqual(1);
     setTimeout(() => {
-      triggerFileChange(childPath);
+      triggerFileChange(filePath);
     }, 10);
   });
 
-  it('clear related watcher', () => {
-    saveFileOnDepChange(parentPath, childPath);
-    saveFileOnDepChange(childPath, otherPath);
-    expect(getWatchersForFile(parentPath).length).toEqual(2);
-    expect(getWatchersForFile(parentPath).length).toEqual(2);
-    expect(getWatchersForFile(childPath).length).toEqual(2);
-    expect(getWatchersForFile(otherPath).length).toEqual(1);
-    closeWatchersForFile(parentPath);
-    expect(getWatchersForFile(parentPath).length).toEqual(0);
-    expect(getWatchersForFile(childPath).length).toEqual(0);
-    expect(getWatchersForFile(otherPath).length).toEqual(0);
-  });
+  it('should not to watch in non-dev env', done => {
+    let count = 0;
+    delete process.env.TEST_WATCHER;
 
-  it('finite loop', () => {
-    saveFileOnDepChange(parentPath, childPath);
-    saveFileOnDepChange(childPath, parentPath);
-    expect(getWatchersForFile(parentPath).length).toEqual(2);
-    expect(getWatchersForFile(childPath).length).toEqual(2);
-    closeWatchersForFile(parentPath);
+    listenFileOnceChange(filePath, () => {
+      count += 1;
+    });
+
+    setTimeout(() => {
+      triggerFileChange(filePath);
+
+      setTimeout(() => {
+        expect(count).toEqual(0);
+        done();
+      });
+    }, 10);
   });
 });
