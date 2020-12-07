@@ -1,5 +1,6 @@
 import path from 'path';
 import slash from 'slash';
+import crypto from 'crypto';
 import * as babel from '@babel/core';
 import * as types from '@babel/types';
 import traverse from '@babel/traverse';
@@ -8,8 +9,34 @@ import {
   getModuleResolvePath,
   getModuleResolveContent,
 } from '../../utils/moduleResolver';
+import FileCache from '../../utils/cache';
 import { IWatcherItem, listenFileOnceChange } from '../../utils/watcher';
 import { getBabelOptions, IDemoOpts } from './options';
+
+const cachers = {
+  file: new FileCache(),
+  content: new FileCache(),
+};
+const getContentHash = (content: string) => {
+  const hash = crypto.createHash('sha256');
+  hash.update(content);
+  return hash.digest('hex');
+};
+
+interface IAnalyzeCache {
+  dependencies: {
+    resolvePath: string;
+    name: string;
+    version: string;
+    css?: string;
+    peerDeps: { name: string; version: string; css?: string }[];
+  }[];
+  files: {
+    resolvePath: string;
+    requireStr: string;
+    filename: string;
+  }[];
+}
 
 export interface IDepAnalyzeResult {
   dependencies: {
@@ -29,118 +56,166 @@ export const LOCAL_MODULE_EXT = [...LOCAL_DEP_EXT, '.json'];
 export const PLAIN_TEXT_EXT = [...LOCAL_MODULE_EXT, '.less', '.css', '.scss', '.sass', '.styl'];
 
 function analyzeDeps(
-  raw: babel.BabelFileResult['ast'] | string,
+  raw: string,
   {
     isTSX,
     fileAbsPath,
     entryAbsPath,
     depChangeListener,
   }: IDemoOpts & { entryAbsPath?: string; depChangeListener?: IWatcherItem['listeners'][0] },
-  totalFiles?: IDepAnalyzeResult['files'],
 ): IDepAnalyzeResult {
-  // support to pass babel transform result directly
-  const ast =
-    typeof raw === 'string'
-      ? babel.transformSync(raw, getBabelOptions({ isTSX, fileAbsPath, transformRuntime: false }))
-          .ast
-      : raw;
-  const files = totalFiles || {};
+  const cacheKey = fileAbsPath.endsWith('.md')
+    ? `${fileAbsPath}-${getContentHash(raw)}`
+    : fileAbsPath;
+  const files: IDepAnalyzeResult['files'] = {};
   const dependencies: IDepAnalyzeResult['dependencies'] = {};
+  let cache: IAnalyzeCache = fileAbsPath && cachers.file.get(fileAbsPath);
 
-  // traverse all expression
-  traverse(ast, {
-    CallExpression(callPath) {
-      const callPathNode = callPath.node;
+  if (!cache) {
+    cache = { dependencies: [], files: [] };
 
-      // tranverse all require statement
-      if (
-        types.isIdentifier(callPathNode.callee) &&
-        callPathNode.callee.name === 'require' &&
-        types.isStringLiteral(callPathNode.arguments[0])
-      ) {
-        const requireStr = callPathNode.arguments[0].value;
-        const resolvePath = getModuleResolvePath({
-          basePath: fileAbsPath,
-          sourcePath: requireStr,
-          extensions: LOCAL_MODULE_EXT,
-        });
-        const resolvePathParsed = path.parse(resolvePath);
+    // support to pass babel transform result directly
+    const { ast } = babel.transformSync(
+      raw,
+      getBabelOptions({ isTSX, fileAbsPath, transformRuntime: false }),
+    );
 
-        if (resolvePath.includes('node_modules')) {
-          // save external deps
-          const pkg = getModuleResolvePkg({
+    // traverse all require call expression
+    traverse(ast, {
+      CallExpression(callPath) {
+        const callPathNode = callPath.node;
+
+        // tranverse all require statement
+        if (
+          types.isIdentifier(callPathNode.callee) &&
+          callPathNode.callee.name === 'require' &&
+          types.isStringLiteral(callPathNode.arguments[0])
+        ) {
+          const requireStr = callPathNode.arguments[0].value;
+          const resolvePath = getModuleResolvePath({
             basePath: fileAbsPath,
             sourcePath: requireStr,
             extensions: LOCAL_MODULE_EXT,
           });
-          const css = getCSSForDep(pkg.name);
+          const resolvePathParsed = path.parse(resolvePath);
 
-          Object.keys(pkg.peerDependencies || {})
-            .filter(dep => !dependencies[dep])
-            .forEach(dep => {
-              const peerCss = getCSSForDep(dep);
+          if (resolvePath.includes('node_modules')) {
+            // save external deps
+            const pkg = getModuleResolvePkg({
+              basePath: fileAbsPath,
+              sourcePath: resolvePath,
+              extensions: LOCAL_MODULE_EXT,
+            });
+            const css = getCSSForDep(pkg.name);
+            const peerDeps: IAnalyzeCache['dependencies'][0]['peerDeps'] = [];
 
-              dependencies[dep] = { version: pkg.peerDependencies[dep] };
+            // process peer dependencies from dependency
+            Object.keys(pkg.peerDependencies || {}).forEach(dep => {
+              const peerCSS = getCSSForDep(dep);
 
-              // also collect css file for peerDependencies
-              if (peerCss) {
-                dependencies[dep].css = peerCss;
-              }
+              peerDeps.push({
+                name: dep,
+                version: pkg.peerDependencies[dep],
+                // also collect css file for peerDependencies
+                css: peerCSS,
+              });
             });
 
-          dependencies[pkg.name] = { version: pkg.version };
+            cache.dependencies.push({
+              resolvePath,
+              name: pkg.name,
+              version: pkg.version,
+              css,
+              peerDeps,
+            });
+          } else if (
+            // only analysis for valid local file type
+            PLAIN_TEXT_EXT.includes(resolvePathParsed.ext) &&
+            // do not collect entry file
+            resolvePath !== slash(entryAbsPath || '') &&
+            // to avoid collect alias module
+            requireStr.startsWith('.')
+          ) {
+            // save local deps
+            const filename = slash(path.relative(fileAbsPath, resolvePath)).replace(
+              /(\.\/|\..\/)/g,
+              '',
+            );
 
-          if (css) {
-            dependencies[pkg.name].css = css;
-          }
-        } else if (
-          // only analysis for valid local file type
-          PLAIN_TEXT_EXT.includes(resolvePathParsed.ext) &&
-          // do not collect entry file
-          resolvePath !== slash(entryAbsPath || '') &&
-          // to avoid collect alias module
-          requireStr.startsWith('.')
-        ) {
-          // save local deps
-          const fileName = slash(path.relative(fileAbsPath, resolvePath)).replace(
-            /(\.\/|\..\/)/g,
-            '',
-          );
-
-          // to avoid circular-reference
-          if (fileName && !files[fileName]) {
-            files[fileName] = {
-              import: requireStr,
-              content: getModuleResolveContent({
-                basePath: fileAbsPath,
-                sourcePath: requireStr,
-                extensions: LOCAL_MODULE_EXT,
-              }),
-            };
-
-            // continue to collect deps for dep
-            if (LOCAL_DEP_EXT.includes(resolvePathParsed.ext)) {
-              const result = analyzeDeps(
-                files[fileName].content,
-                {
-                  isTSX: /\.tsx?/.test(resolvePathParsed.ext),
-                  fileAbsPath: resolvePath,
-                  entryAbsPath: entryAbsPath || fileAbsPath,
-                },
-                files,
-              );
-
-              Object.assign(files, result.files);
-              Object.assign(dependencies, result.dependencies);
-            }
-
-            // trigger parent file change to update frontmatter when dep file change
-            listenFileOnceChange(fileAbsPath, depChangeListener);
+            cache.files.push({
+              resolvePath,
+              requireStr,
+              filename,
+            });
           }
         }
-      }
-    },
+      },
+    });
+  }
+
+  // visit all dependencies
+  cache.dependencies.forEach(item => {
+    dependencies[item.name] = {
+      version: item.version,
+      ...(item.css ? { css: item.css } : {}),
+    };
   });
+
+  // visit all peer dependencies, to make sure collect 1-level dependency first
+  cache.dependencies
+    .reduce((result, item) => result.concat(item.peerDeps), [])
+    .filter(item => !dependencies[item])
+    .forEach(item => {
+      dependencies[item.name] = {
+        version: item.version,
+        ...(item.css ? { css: item.css } : {}),
+      };
+    });
+
+  // visit all local files
+  cache.files
+    .filter(item => {
+      // to avoid circular-reference
+      return !files[item.filename];
+    })
+    .forEach(item => {
+      const ext = path.extname(item.resolvePath);
+
+      files[item.filename] = cachers.content.get(item.resolvePath) || {
+        import: item.requireStr,
+        content: getModuleResolveContent({
+          basePath: fileAbsPath,
+          sourcePath: item.requireStr,
+          extensions: LOCAL_MODULE_EXT,
+        }),
+      };
+
+      // cache resolve content
+      cachers.content.add(item.resolvePath, files[item.filename]);
+
+      // continue to collect deps for dep
+      if (LOCAL_DEP_EXT.includes(ext)) {
+        const result = analyzeDeps(files[item.filename].content, {
+          isTSX: /\.tsx?/.test(ext),
+          fileAbsPath: item.resolvePath,
+          entryAbsPath: entryAbsPath || fileAbsPath,
+          depChangeListener,
+        });
+
+        Object.assign(files, result.files);
+        Object.assign(dependencies, result.dependencies);
+      }
+
+      // trigger listener to update previewer props when dep file change
+      if (depChangeListener) {
+        listenFileOnceChange(item.resolvePath, depChangeListener);
+      }
+    });
+
+  // cache analyze result for single demo code
+  if (fileAbsPath) {
+    cachers.file.add(fileAbsPath, cache, cacheKey);
+  }
 
   return { files, dependencies };
 }

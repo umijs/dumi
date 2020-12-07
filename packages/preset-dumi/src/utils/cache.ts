@@ -1,20 +1,24 @@
 import fs from 'fs';
 
 export default class FileCache {
-  cache: { [key: string]: { updatedTime: number; value: any } } = {};
+  cache: { [key: string]: { filePath: string; updatedTime: number; value: any } } = {};
 
-  add(filePath: string, value: any) {
-    this.cache[filePath] = {
-      updatedTime: fs.lstatSync(filePath).mtimeMs,
+  add(filePath: string, value: any, key?: string) {
+    this.cache[key || filePath] = {
+      filePath,
       value,
+      updatedTime: fs.lstatSync(filePath).mtimeMs,
     };
   }
 
-  get(filePath: string) {
+  get(key: string) {
     let result;
 
-    if (filePath && fs.lstatSync(filePath).mtimeMs === this.cache[filePath]?.updatedTime) {
-      result = this.cache[filePath].value;
+    if (
+      this.cache[key] &&
+      fs.lstatSync(this.cache[key].filePath).mtimeMs === this.cache[key].updatedTime
+    ) {
+      result = this.cache[key].value;
     }
 
     return result;
