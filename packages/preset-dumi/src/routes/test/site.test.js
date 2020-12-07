@@ -155,7 +155,7 @@ describe('routes & menu: site mode', () => {
             'packages/preset-dumi/src/routes/fixtures/site/duplicated/duplicated0/duplicated01/index.md',
           group: {
             path: '/duplicated0',
-            title: 'Duplicated0',
+            title: 'Duplicated0/duplicated01',
           },
           nav: {
             path: '/duplicated',
@@ -258,7 +258,7 @@ describe('routes & menu: site mode', () => {
             'packages/preset-dumi/src/routes/fixtures/site/duplicated/duplicated0/duplicated01/index.md',
           group: {
             path: '/zh-CN/duplicated0',
-            title: 'Duplicated0',
+            title: 'Duplicated0/duplicated01',
           },
           locale: 'zh-CN',
           nav: {
@@ -436,7 +436,7 @@ describe('routes & menu: site mode', () => {
             ],
             meta: {},
             path: '/duplicated0',
-            title: 'Duplicated0',
+            title: 'Duplicated0/duplicated01',
           },
           {
             children: [
@@ -504,7 +504,7 @@ describe('routes & menu: site mode', () => {
             ],
             meta: {},
             path: '/zh-CN/duplicated0',
-            title: 'Duplicated0',
+            title: 'Duplicated0/duplicated01',
           },
           {
             children: [
@@ -595,7 +595,7 @@ describe('routes & menu: site mode', () => {
             ],
             meta: {},
             path: '/duplicated0',
-            title: 'Duplicated0',
+            title: 'Duplicated0/duplicated01',
           },
           {
             children: [
@@ -637,7 +637,7 @@ describe('routes & menu: site mode', () => {
             ],
             meta: {},
             path: '/zh-CN/duplicated0',
-            title: 'Duplicated0',
+            title: 'Duplicated0/duplicated01',
           },
           {
             children: [

@@ -7,6 +7,11 @@ import { RouteProcessor } from '.';
  */
 export default (function group(routes) {
   const userCustomGroupTitles = {};
+  const isIndexFile = (p: string) =>
+    new RegExp(
+      `^(index|readme)(\\.(${this.options.locales.map(([name]) => name).join('|')}))?`,
+      'i',
+    ).test(p);
 
   routes.map(route => {
     const defaultLocale = this.options.locales[0][0];
@@ -82,9 +87,29 @@ export default (function group(routes) {
   // fallback groups title
   routes.forEach(route => {
     if (route.meta.group?.path && !route.meta.group.title) {
+      // use other same group path title first
+      const userDefinedTitle = userCustomGroupTitles[route.meta.group.path];
+      if (userDefinedTitle) {
+        route.meta.group.title = userDefinedTitle;
+        return;
+      }
+
+      const parsed = path.parse(route.component as string);
+      if (isIndexFile(parsed.name)) {
+        const { dir } = parsed;
+        const navPath = route.meta.nav?.path;
+        if (navPath && dir.includes(navPath)) {
+          route.meta.group.title = dir
+            .slice(dir.indexOf(navPath) + 1 + navPath.length)
+            // discard start slash
+            .replace(/^\//g, '')
+            // upper case the first english letter
+            .replace(/^[a-z]/, s => s.toUpperCase());
+          return;
+        }
+      }
+
       route.meta.group.title =
-        // use other same group path title first
-        userCustomGroupTitles[route.meta.group.path] ||
         // fallback group title if there only has group path
         route.meta.group.path
           // discard nav prefix path or locale prefix path
