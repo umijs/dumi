@@ -121,6 +121,9 @@ function watchComponentUpdate(absPath: string, componentName: string, identifier
 
     // update api data
     applyApiData(identifier, definitions);
+
+    // watch next turn
+    watchComponentUpdate(absPath, componentName, identifier);
   });
 }
 
