@@ -33,16 +33,16 @@ export default (function group(routes) {
     if (!groupPath) {
       const parsed = path.parse(route.component as string);
 
-      // only process nested route
-      if (
-        // at least 2-level path
-        (clearPath && clearPath.lastIndexOf('/') !== 0) ||
-        // or component filename is the default entry
-        (parsed && clearPath.length > 1 && isIndexFile(parsed.name))
+      if (parsed && clearPath.length > 1 && isIndexFile(parsed.name)) {
+        groupPath = clearPath;
+      } else if (
+        // only process nested route
+        clearPath &&
+        clearPath.lastIndexOf('/') !== 0
       ) {
         groupPath = clearPath.match(/^([^]+?)(\/[^/]+)?$/)[1];
-        clearPath = clearPath.replace(groupPath, '');
       }
+      clearPath = clearPath.replace(groupPath, '');
     }
 
     // set group path

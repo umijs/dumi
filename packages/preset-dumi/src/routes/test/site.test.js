@@ -154,7 +154,7 @@ describe('routes & menu: site mode', () => {
           filePath:
             'packages/preset-dumi/src/routes/fixtures/site/duplicated/duplicated0/duplicated01/index.md',
           group: {
-            path: '/duplicated0',
+            path: '/duplicated0/duplicated01',
             title: 'Duplicated0/duplicated01',
           },
           nav: {
@@ -257,7 +257,7 @@ describe('routes & menu: site mode', () => {
           filePath:
             'packages/preset-dumi/src/routes/fixtures/site/duplicated/duplicated0/duplicated01/index.md',
           group: {
-            path: '/zh-CN/duplicated0',
+            path: '/zh-CN/duplicated0/duplicated01',
             title: 'Duplicated0/duplicated01',
           },
           locale: 'zh-CN',
@@ -313,14 +313,8 @@ describe('routes & menu: site mode', () => {
       {
         exact: true,
         meta: {},
-        path: '/duplicated0',
-        redirect: '/duplicated0/duplicated01',
-      },
-      {
-        exact: true,
-        meta: {},
         path: '/duplicated',
-        redirect: '/duplicated0',
+        redirect: '/duplicated0/duplicated01',
       },
       {
         path: '/test-rewrite',
@@ -331,14 +325,8 @@ describe('routes & menu: site mode', () => {
       {
         exact: true,
         meta: {},
-        path: '/zh-CN/duplicated0',
-        redirect: '/zh-CN/duplicated0/duplicated01',
-      },
-      {
-        exact: true,
-        meta: {},
         path: '/zh-CN/duplicated',
-        redirect: '/zh-CN/duplicated0',
+        redirect: '/zh-CN/duplicated0/duplicated01',
       },
       {
         path: '/zh-CN/test-rewrite',
@@ -433,13 +421,6 @@ describe('routes & menu: site mode', () => {
                 path: '/duplicated0/duplicated01',
                 title: 'Index',
               },
-            ],
-            meta: {},
-            path: '/duplicated0',
-            title: 'Duplicated0/duplicated01',
-          },
-          {
-            children: [
               {
                 meta: {},
                 path: '/duplicated0/duplicated01/other',
@@ -501,13 +482,6 @@ describe('routes & menu: site mode', () => {
                 path: '/zh-CN/duplicated0/duplicated01',
                 title: 'Index',
               },
-            ],
-            meta: {},
-            path: '/zh-CN/duplicated0',
-            title: 'Duplicated0/duplicated01',
-          },
-          {
-            children: [
               {
                 meta: {},
                 path: '/zh-CN/duplicated0/duplicated01/other',
@@ -592,13 +566,6 @@ describe('routes & menu: site mode', () => {
                 path: '/duplicated0/duplicated01',
                 title: 'Index',
               },
-            ],
-            meta: {},
-            path: '/duplicated0',
-            title: 'Duplicated0/duplicated01',
-          },
-          {
-            children: [
               {
                 meta: {},
                 path: '/duplicated0/duplicated01/other',
@@ -634,13 +601,6 @@ describe('routes & menu: site mode', () => {
                 path: '/zh-CN/duplicated0/duplicated01',
                 title: 'Index',
               },
-            ],
-            meta: {},
-            path: '/zh-CN/duplicated0',
-            title: 'Duplicated0/duplicated01',
-          },
-          {
-            children: [
               {
                 meta: {},
                 path: '/zh-CN/duplicated0/duplicated01/other',
