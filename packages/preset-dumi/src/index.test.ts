@@ -84,6 +84,9 @@ describe('preset-dumi', () => {
       },
     });
 
+    // wait for debounce
+    await new Promise(resolve => setTimeout(resolve));
+
     // expect demos generate
     const demos = require(path.join(service.paths.absTmpPath, 'dumi', 'demos')).default;
 
