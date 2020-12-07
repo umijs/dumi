@@ -24,6 +24,11 @@ const USERS = [
     logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
   },
   {
+    name: 'react-component',
+    link: 'https://github.com/react-component',
+    logo: 'https://avatars3.githubusercontent.com/u/9441414?s=200&v=4',
+  },
+  {
     name: 'GGEditor',
     link: 'https://ggeditor.com',
     logo: 'https://img.alicdn.com/tfs/TB1FFA1CFP7gK0jSZFjXXc5aXXa-214-200.png',
@@ -61,21 +66,24 @@ export default () => {
             fontSize: 20,
             fontWeight: 600,
             borderRadius: 2,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
           }}
         >
           <a
-            style={{ display: 'block', color: '#666', padding: '18px 32px' }}
+            style={{ display: 'block', color: '#666', padding: '18px' }}
             target="_blank"
             href={user.link}
           >
             <img
-              width={(user.name && 32) || undefined}
-              height={(!user.name && 32) || undefined}
-              style={{ verticalAlign: '-0.32em', marginRight: 8 }}
+              width={(user.name && 40) || undefined}
+              height={(!user.name && 40) || undefined}
+              style={{ verticalAlign: '-0.32em' }}
               src={user.logo}
               alt={user.name}
             />
-            {user.name}
+            <div>{user.name}</div>
           </a>
         </li>
       ))}

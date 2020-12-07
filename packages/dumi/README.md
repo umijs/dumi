@@ -62,6 +62,17 @@ $ yarn dev
         </a>
       </td>
       <td align="center">
+        <a target="_blank" href="https://github.com/react-component">
+          <img
+            width="32"
+            style="vertical-align: -0.32em; margin-right: 8px;"
+            src="https://avatars3.githubusercontent.com/u/9441414?s=200&v=4"
+          />
+          <br>
+          <strong>react-component</strong>
+        </a>
+      </td>
+      <td align="center">
         <a target="_blank" href="https://ggeditor.com">
           <img
             width="32"
