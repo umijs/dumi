@@ -7,11 +7,11 @@ import { RouteProcessor } from '.';
  */
 export default (function group(routes) {
   const userCustomGroupTitles = {};
-  const isIndexFile = (p: string) =>
+  const isIndexFile = (filename: string) =>
     new RegExp(
-      `^(index|readme)(\\.(${this.options.locales.map(([name]) => name).join('|')}))?`,
+      `^(index|readme)(\\.(${this.options.locales.map(([name]) => name).join('|')}))?$`,
       'i',
-    ).test(p);
+    ).test(filename);
 
   routes.map(route => {
     const defaultLocale = this.options.locales[0][0];
@@ -38,12 +38,7 @@ export default (function group(routes) {
         // at least 2-level path
         (clearPath && clearPath.lastIndexOf('/') !== 0) ||
         // or component filename is the default entry
-        (parsed &&
-          clearPath.length > 1 &&
-          new RegExp(
-            `^(index|readme)(\\.(${this.options.locales.map(([name]) => name).join('|')}))?$`,
-            'i',
-          ).test(parsed.name))
+        (parsed && clearPath.length > 1 && isIndexFile(parsed.name))
       ) {
         groupPath = clearPath.match(/^([^]+?)(\/[^/]+)?$/)[1];
         clearPath = clearPath.replace(groupPath, '');
