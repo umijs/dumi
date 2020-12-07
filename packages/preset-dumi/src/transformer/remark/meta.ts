@@ -37,7 +37,8 @@ export default function meta(): IDumiUnifiedTransformer {
       }
 
       // fallback to file update time
-      if (Number.isNaN(vFile.data.updatedTime)) {
+      /* istanbul ignore if */
+      if (typeof vFile.data.updatedTime !== 'number') {
         vFile.data.updatedTime = Math.floor(fs.lstatSync(this.data('fileAbsPath')).mtimeMs);
       }
 
