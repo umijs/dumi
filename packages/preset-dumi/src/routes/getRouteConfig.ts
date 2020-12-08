@@ -20,11 +20,11 @@ export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
   const exampleRoutePrefix = opts.mode === 'site' ? '/_' : '/_examples/';
   const theme = await getTheme();
   const userRoutes = opts.isIntegrate
-    ? await api.applyPlugins({
+    ? (await api.applyPlugins({
         key: 'dumi.getRootRoute',
         type: api.ApplyPluginsType.modify,
         initialValue: api.userConfig.routes,
-      })
+      }))?.routes
     : api.userConfig.routes;
 
   if (userRoutes) {

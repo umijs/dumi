@@ -33,4 +33,14 @@ export default (api: IApi) => {
 
     return memo;
   });
+
+  // re-enable @ & @@ umi default alias for integrated mode
+  if (isIntegrateUmi) {
+    api.modifyDefaultConfig((memo) => {
+      memo.alias['@'] = api.paths.absSrcPath;
+      memo.alias['@@'] = api.paths.absTmpPath;
+
+      return memo;
+    });
+  }
 };
