@@ -57,7 +57,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
   const updatedTime = () => {
     const date = new Date(meta.updatedTime);
     const year = date.getFullYear();
-    const month = showFormat(date.getMonth());
+    const month = showFormat(date.getMonth() + 1);
     const day = showFormat(date.getDate());
     const hour = showFormat(date.getHours());
     const minute = showFormat(date.getMinutes());
