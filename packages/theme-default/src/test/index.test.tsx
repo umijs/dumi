@@ -139,6 +139,8 @@ describe('default theme', () => {
           meta: {
             title: 'test',
             slugs: [{ value: 'Slug A', heading: 'a', depth: 2 }],
+            updatedTime: 1604026996000,
+            filePath: 'temp',
           },
         }}
       >
@@ -156,6 +158,9 @@ describe('default theme', () => {
 
     // expect slugs be rendered
     expect(getByText('Slug A')).not.toBeNull();
+
+    // expect footer date show
+    expect(getByText('2020-10-30 11:03:16')).not.toBeNull();
 
     // trigger locale change
     getAllByText('English')[0].click();
