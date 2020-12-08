@@ -160,7 +160,7 @@ describe('default theme', () => {
     expect(getByText('Slug A')).not.toBeNull();
 
     // expect footer date show
-    expect(getByText('2020-10-30 11:03:16')).not.toBeNull();
+    expect(getByText('2020-10-30 03:03:16')).not.toBeNull();
 
     // trigger locale change
     getAllByText('English')[0].click();
