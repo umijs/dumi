@@ -11,6 +11,7 @@
       {
         "type": "BLOCK",
         "atomAssetId": "Foo",
+        "identifier": "222222",
         "uuid": "222222",
         "dependencies": {
           "index.tsx": {

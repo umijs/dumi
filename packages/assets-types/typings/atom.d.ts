@@ -52,6 +52,7 @@ export default interface AtomAsset {
   'name.en-US'?: string;
   /**
    * atom uuid
+   * @deprecated  legacy HiTu DSM logic
    */
   uuid?: string;
   /**

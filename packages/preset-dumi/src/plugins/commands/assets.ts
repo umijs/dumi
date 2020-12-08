@@ -49,7 +49,7 @@ export default (api: IApi) => {
   api.register({
     key: 'dumi.detectCodeBlock',
     fn(block: ExampleBlockAsset) {
-      if (block.name || block.uuid) {
+      if (block.name || block.identifier) {
         assetsPkg.assets.examples.push(block);
       }
     },

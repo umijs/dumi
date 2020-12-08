@@ -182,7 +182,8 @@ function applyCodeBlock(props: IPreviewerComponentProps, componentName: string) 
       tags: props.tags,
       previewUrl: props.previewUrl,
       atomAssetId: componentName,
-      // for HiTu DSM
+      identifier: props.identifier || props.uuid,
+      // for HiTu DSM, deprecated
       uuid: props.uuid,
       dependencies: {
         // append npm dependencies

@@ -8,7 +8,12 @@ export interface ExampleBaseAsset {
    */
   designId?: string;
   /**
+   * identifier for asset
+   */
+  identifier: string;
+  /**
    * uuid for asset
+   * @deprecated  legacy HiTu DSM logic
    */
   uuid?: string;
   /**
