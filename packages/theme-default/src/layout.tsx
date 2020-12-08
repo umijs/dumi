@@ -53,7 +53,20 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
     (meta.toc === 'content' || meta.toc === undefined) &&
     !meta.gapless;
   const isCN = /^zh|cn$/i.test(locale);
-  const updatedTime: any = new Date(meta.updatedTime).toLocaleString();
+
+  const updatedTime = () => {
+    const { updatedTime } = meta;
+    const date = new Date(updatedTime).toLocaleDateString();
+    const hour = new Date(updatedTime).getHours();
+    const hourShow = hour < 10 ? `0${hour}` : hour;
+    const minute = new Date(updatedTime).getMinutes();
+    const minuteShow = minute < 10 ? `0${minute}` : minute;
+    const second = new Date(updatedTime).getSeconds();
+    const secondShow = second < 10 ? `0${second}` : second;
+
+    return `${date} ${hourShow}:${minuteShow}:${secondShow}`;
+  };
+
   const repoPlatform = { github: 'GitHub', gitlab: 'GitLab' }[
     (repoUrl || '').match(/(github|gitlab)/)?.[1] || 'nothing'
   ];
@@ -86,10 +99,10 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
           <div className="__dumi-default-layout-footer-meta">
             {repoPlatform && (
               <Link to={`${repoUrl}/edit/${branch}/${meta.filePath}`}>
-                {isCN ? `在 ${repoPlatform} 上编辑这篇文档` : `Edit this doc on ${repoPlatform}`}
+                {isCN ? `在 ${repoPlatform} 上编辑此页` : `Edit this doc on ${repoPlatform}`}
               </Link>
             )}
-            <span data-updated-text={isCN ? '最后更新时间：' : 'Last Update: '}>{updatedTime}</span>
+            <span data-updated-text={isCN ? '最后更新时间：' : 'Last update: '}>{updatedTime()}</span>
           </div>
         )}
         {(showHero || showFeatures) && meta.footer && (
