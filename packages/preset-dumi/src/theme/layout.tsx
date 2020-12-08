@@ -127,6 +127,18 @@ const useCurrentBase = (
   return base;
 };
 
+const findDumiRoot = (routes: any): IThemeContext['routes'] => {
+  return routes.find(item => {
+    if (item.__dumiRoot) {
+      return true;
+    }
+    if (item.routes) {
+      return findDumiRoot(item.routes);
+    }
+    return false;
+  })?.routes;
+};
+
 /**
  * outer theme layout
  */
@@ -137,7 +149,7 @@ const OuterLayout: React.FC<IOuterLayoutProps & IRouteComponentProps> = props =>
     route.path.replace(/^\/$/, '//'),
     '',
   );
-  const routes = props.routes.find(item => item.__dumiRoot).routes as IThemeContext['routes'];
+  const routes = findDumiRoot(props.routes) || [];
   const meta = useCurrentRouteMeta(routes, location.pathname);
   // use non-prefix for detect current locale, such as /~docs/en-US -> /en-US
   const locale = useCurrentLocale(config.locales, pathWithoutPrefix);

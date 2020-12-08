@@ -196,7 +196,7 @@ describe('preset-dumi', () => {
     // expect all docs inside /~docs route path and keep original umi routes
     const routes = await (api as any).getRoutes();
 
-    expect(routes.map(route => route.path)).toEqual([
+    expect(routes[0].routes.map(route => route.path)).toEqual([
       '/~demos/:uuid',
       '/_demos/:uuid',
       '/~docs',
@@ -217,6 +217,18 @@ describe('preset-dumi', () => {
 
     // expect path correct
     expect(fs.existsSync(rootRoute.routes[0].component)).toBeTruthy();
+
+    await service.runCommand({
+      name: 'g',
+      args: {
+        _: ['g', 'tmp'],
+      },
+    });
+
+    const reactNode = require(path.join(cwd, 'src', '.umi', 'umi.ts')).default;
+
+    // expect find correct dumi root routes, to not throw error
+    render(reactNode);
   });
 
   it('integrate mode with production', async () => {
@@ -238,7 +250,7 @@ describe('preset-dumi', () => {
     });
 
     // expect dumi disabled in integrate with production
-    expect((await (api as any).getRoutes()).map(route => route.path)).toEqual(['/A', '/']);
+    expect((await (api as any).getRoutes())[0].routes.map(route => route.path)).toEqual(['/A', '/']);
   });
 
   it('should generate sitemap.xml', async () => {
