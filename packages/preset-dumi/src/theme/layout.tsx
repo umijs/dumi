@@ -163,10 +163,6 @@ const OuterLayout: React.FC<IOuterLayoutProps & IRouteComponentProps> = props =>
     }
   }, []);
 
-  if (!routes.length) {
-    return <div>未找到任何 dumi 相关的路由</div>;
-  }
-
   return (
     <Context.Provider
       value={{

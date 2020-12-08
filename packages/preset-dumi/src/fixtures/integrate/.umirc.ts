@@ -1,4 +1,6 @@
 export default {
+  history: { type: 'memory' },
+  mountElementId: '',
   mode: 'site',
   resolve: {
     includes: ['src/components'],
@@ -7,7 +9,7 @@ export default {
     '/hello': [
       {
         title: 'Hello',
-        children: ['src/components/Hello'],
+        children: ['Hello'],
       },
     ],
   },
@@ -27,11 +29,12 @@ export default {
   routes: [
     {
       path: '/A',
-      component: '@/pages/A'
+      component: './A'
     },
     {
       path: '/',
-      component: '@/pages',
+      redirect: '/~docs'
     }
-  ]
+  ],
+  plugins: ['./wrapper.ts']
 }
