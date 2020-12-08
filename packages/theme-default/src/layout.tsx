@@ -55,16 +55,22 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
   const isCN = /^zh|cn$/i.test(locale);
 
   const updatedTime = () => {
-    const { updatedTime } = meta;
-    const date = new Date(updatedTime).toLocaleDateString();
-    const hour = new Date(updatedTime).getHours();
-    const hourShow = hour < 10 ? `0${hour}` : hour;
-    const minute = new Date(updatedTime).getMinutes();
-    const minuteShow = minute < 10 ? `0${minute}` : minute;
-    const second = new Date(updatedTime).getSeconds();
-    const secondShow = second < 10 ? `0${second}` : second;
+    const date = new Date(meta.updatedTime);
+    const year = date.getFullYear();
+    const month = showFormat(date.getMonth());
+    const day = showFormat(date.getDate());
+    const hour = showFormat(date.getHours());
+    const minute = showFormat(date.getMinutes());
+    const second = showFormat(date.getSeconds());
 
-    return `${date} ${hourShow}:${minuteShow}:${secondShow}`;
+    return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
+  };
+
+  const showFormat = (base: number) => {
+    if (base < 10) {
+      return `0${base}`;
+    }
+    return `${base}`;
   };
 
   const repoPlatform = { github: 'GitHub', gitlab: 'GitLab' }[
