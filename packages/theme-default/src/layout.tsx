@@ -53,26 +53,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
     (meta.toc === 'content' || meta.toc === undefined) &&
     !meta.gapless;
   const isCN = /^zh|cn$/i.test(locale);
-
-  const updatedTime = () => {
-    const date = new Date(meta.updatedTime);
-    const year = date.getFullYear();
-    const month = showFormat(date.getMonth() + 1);
-    const day = showFormat(date.getDate());
-    const hour = showFormat(date.getHours());
-    const minute = showFormat(date.getMinutes());
-    const second = showFormat(date.getSeconds());
-
-    return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
-  };
-
-  const showFormat = (base: number) => {
-    if (base < 10) {
-      return `0${base}`;
-    }
-    return `${base}`;
-  };
-
+  const updatedTime: any = new Date(meta.updatedTime).toLocaleString([], { hour12: false });
   const repoPlatform = { github: 'GitHub', gitlab: 'GitLab' }[
     (repoUrl || '').match(/(github|gitlab)/)?.[1] || 'nothing'
   ];
@@ -108,7 +89,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
                 {isCN ? `在 ${repoPlatform} 上编辑此页` : `Edit this doc on ${repoPlatform}`}
               </Link>
             )}
-            <span data-updated-text={isCN ? '最后更新时间：' : 'Last update: '}>{updatedTime()}</span>
+            <span data-updated-text={isCN ? '最后更新时间：' : 'Last update: '}>{updatedTime}</span>
           </div>
         )}
         {(showHero || showFeatures) && meta.footer && (
