@@ -33,7 +33,7 @@ export default () => {
       <button type="button" data-action="addon" onClick={() => setCount(count + 1)}>
         增加
       </button>
-      <button type="button" data-action="reset" onClick={() => setCount(0)}>
+      <button type="button" data-action="reset" onClick={() => setCount(0)} style={{marginLeft: 8}}>
         重置
       </button>
     </>
@@ -63,7 +63,7 @@ export default () => {
       <button type="button" data-action="addon" onClick={() => setCount(count + 1)}>
         增加
       </button>
-      <button type="button" data-action="reset" onClick={() => setCount(0)}>
+      <button type="button" data-action="reset" onClick={() => setCount(0)} style={{marginLeft: 8}}>
         重置
       </button>
     </>
