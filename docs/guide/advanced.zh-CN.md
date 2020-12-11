@@ -30,7 +30,7 @@ toc: menu
 
 ### 默认语言
 
-在 dumi 的默认配置中，`en-US` 是默认语言，`zh-CN` 是第二种语言，如果你需要修改这个配置，比如修改默认语言、或者添加更多语言，请查看 [配置项 - locales](/config#locales) 配置项。
+在 dumi 的默认配置中，`en-US` 是默认语言，`zh-CN` 是第二种语言，如果你需要修改这个配置，比如修改默认语言、或者添加更多语言，请查看 [配置项 - locales](/zh-CN/config#locales) 配置项。
 
 ### 翻译缺失
 
@@ -161,7 +161,7 @@ $ npm link path/to/dumi/lib
 
 <img style="border: 1px solid #eee;" src="https://gw.alipayobjects.com/zos/bmw-prod/acb29a94-6200-4798-82eb-190177fa841c/kezwf18r_w2556_h1396.jpeg" alt="移动端主题预览效果" />
 
-访问 [主题列表 - mobile](/theme#dumi-theme-mobile) 了解更多移动端主题的特性及高清方案。
+访问 [主题列表 - mobile](/zh-CN/theme#dumi-theme-mobile) 了解更多移动端主题的特性及高清方案。
 
 ## 组件 API 自动生成
 
