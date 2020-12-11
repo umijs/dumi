@@ -87,7 +87,7 @@ Install `@umijs/preset-dumi` in the existing Umi project into `devDependencies`,
 The usage process is shown in the figure below:
 
 <p style="text-align: center;">
-  <img src="https://gw.alipayobjects.com/zos/bmw-prod/a873195d-32fe-427d-9756-a002d7644d85/kc5y7qpk_w2078_h1757.png" width="800" >
+  <img src="https://gw.alipayobjects.com/zos/bmw-prod/b6bc8d0a-c83e-4cd7-91fb-2464e8974a8a/kijxaoib_w2078_h1757.png" width="800" >
 </p>
 
 ### 1. Initialize the dumi component development project
