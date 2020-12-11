@@ -30,7 +30,7 @@ toc: menu
 
 ### 默认语言
 
-在 dumi 的默认配置中，`en-US` 是默认语言，`zh-CN` 是第二种语言，如果你需要修改这个配置，比如修改默认语言、或者添加更多语言，请查看 [配置项 - locales]() 配置项。
+在 dumi 的默认配置中，`en-US` 是默认语言，`zh-CN` 是第二种语言，如果你需要修改这个配置，比如修改默认语言、或者添加更多语言，请查看 [配置项 - locales](/zh-CN/config#locales) 配置项。
 
 ### 翻译缺失
 
@@ -70,14 +70,14 @@ toc: menu
   <img src="https://gw.alipayobjects.com/zos/bmw-prod/a873195d-32fe-427d-9756-a002d7644d85/kc5y7qpk_w2078_h1757.png" width="800" >
 </p>
 
-#### 1. 初始化 dumi 组件开发项目
+### 1. 初始化 dumi 组件开发项目
 
 ```bash
 $ mkdir dumi-lib && cd dumi-lib
 $ npx @umijs/create-dumi-lib
 ```
 
-#### 2. 为 demo 添加资产元信息
+### 2. 为 demo 添加资产元信息
 
 以初始化项目的 demo 为例，打开 `src/Foo/index.md`，添加如下 frontmatter 配置：
 
@@ -103,7 +103,7 @@ export default () => <Foo title="First Demo" />;
 <code src="/path/to/demo.tsx" title="demo 的名称" thumbnail="demo 的预览缩略图地址" previewUrl="预览的 URL 地址" />
 ```
 
-#### 3. 启用元数据生成能力
+### 3. 启用元数据生成能力
 
 在 `package.json` 中添加一条 npm script，并声明 `dumiAssets` 字段，Umi UI 会根据此字段查找资产元数据文件：
 
@@ -118,7 +118,7 @@ export default () => <Foo title="First Demo" />;
 
 由于 `assets.json` 不需要参与版本控制，请在 `gitignore` 中添加 `assets.json`。
 
-#### 4. 构建并生成资产元数据
+### 4. 构建并生成资产元数据
 
 如果只是用于测试，可以用 `npm version` 来代替 `npm publish`，随后用 link 进行本地玩耍：
 
@@ -127,7 +127,7 @@ $ npm run build
 $ npm version patch -m "build: bump version to %s"
 ```
 
-#### 5. 在 Umi UI 中使用
+### 5. 在 Umi UI 中使用
 
 初始化 Umi 应用，安装 Umi UI 并 link 我们刚刚的组件库：
 
