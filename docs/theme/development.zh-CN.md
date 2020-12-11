@@ -82,7 +82,7 @@ export default ({ children, ...props }) => (
 
 ## 开发、调试及使用
 
-所谓的主题开发，本质上还是写 React 组件，但为了降低写组件的成本，dumi 提供了一套主题 API、开放了许多 dumi 内置的能力和数据，可以帮我们快速完成主题的开发，详见 [主题 - 主题 API](/theme/api)。
+所谓的主题开发，本质上还是写 React 组件，但为了降低写组件的成本，dumi 提供了一套主题 API、开放了许多 dumi 内置的能力和数据，可以帮我们快速完成主题的开发，详见 [主题 - 主题 API](/zh-CN/theme/api)。
 
 主题开发的过程中需要不断调试。对于本地主题而言，dumi 是完全自动检测的，只要存在 `.dumi/theme` 文件夹，dumi 就会在构建时进行挂载；对于独立的主题 npm 包而言，需要将其写入 `devDependencies`，并且将该 npm 包 link 到项目下，dumi 将会自动挂载该主题，例如：
 
@@ -94,4 +94,5 @@ export default ({ children, ...props }) => (
 }
 ```
 
-主题的使用和调试是类似的，本地主题就不再赘述；对于主题 npm 包而言，用户只需要执行 `npm install dumi-theme-[name] -D` 即可完成主题包的安装，启动 dumi 时主题将会被自动挂载。
+- 本地主题：使用和调试是类似的
+- npm 包：用户只需要执行 `npm install dumi-theme-[name] -D` 即可完成主题包的安装，启动 dumi 时主题将会被自动挂载
