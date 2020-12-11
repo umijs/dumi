@@ -161,7 +161,7 @@ $ npm link path/to/dumi/lib
 
 <img style="border: 1px solid #eee;" src="https://gw.alipayobjects.com/zos/bmw-prod/acb29a94-6200-4798-82eb-190177fa841c/kezwf18r_w2556_h1396.jpeg" alt="移动端主题预览效果" />
 
-访问 [主题列表 - mobile](/zh-CN/theme#dumi-theme-mobile) 了解更多移动端主题的特性及高清方案。
+访问 [主题列表 - mobile](/theme#dumi-theme-mobile) 了解更多移动端主题的特性及高清方案。
 
 ## 组件 API 自动生成
 
