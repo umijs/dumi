@@ -181,7 +181,7 @@ The usage is very simple. After initializing the dumi project, install `dumi-the
 
 <img style="border: 1px solid #eee;" src="https://gw.alipayobjects.com/zos/bmw-prod/acb29a94-6200-4798-82eb-190177fa841c/kezwf18r_w2556_h1396.jpeg" alt="Mobile theme preview effect" />
 
-Visit [Theme List - mobile](/zh-CN/theme#dumi-theme-mobile) to learn more about the features and HD solutions of mobile themes.
+Visit [Theme List - mobile](/theme#dumi-theme-mobile) to learn more about the features and HD solutions of mobile themes.
 
 ## Automatic component API generation
 
