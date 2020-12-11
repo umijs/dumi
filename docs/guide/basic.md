@@ -430,7 +430,7 @@ export default () => (
 
 Setting `iframe` to `true` will use `iframe` to render the demo, which can be completely isolated from the document.
 
-It is usually used for layout components. In this case, [`compact`](/zh-CN/config/frontmatter# compact) The configuration defaults to `true`:
+It is usually used for layout components. In this case, [`compact`](/config/frontmatter#compact) The configuration defaults to `true`:
 
 ```jsx
 /**
