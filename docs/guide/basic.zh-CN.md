@@ -436,7 +436,7 @@ dumi 提供了一系列内置组件作为 Markdown 语法的补充，除了上�
 
 ### Alert
 
-使用 `Alert` 创建一个提示框，`type` 可选 `warning`、`info`、`success`、`error`：
+使用 `Alert` 创建一个提示框，`type` 可选 `warning`、`info`、`success`、`error`，默认为 `info`。
 
 ```html
 <Alert type="info">
@@ -473,4 +473,4 @@ dumi 对 HTML 默认的 `embed` 标签做了扩展，可以在一个 Markdown �
 <embed src="/path/to/some.md#L1-L10"></embed>
 ```
 
-我们也可以通过 dumi 提供的主题 API 实现内置组件的复写和新增，可访问 [主题 - 主题开发]() 了解更多。
+我们也可以通过 dumi 提供的主题 API 实现内置组件的复写和新增，可访问 [主题 - 主题开发](/zh-CN/theme/development) 了解更多。
