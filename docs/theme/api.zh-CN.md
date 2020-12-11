@@ -25,10 +25,10 @@ toc: menu
 
 ## useCodeSandbox
 
-- **参数：** `Object` 主题 `Previewer` 组件接收到的 props
-- **返回：** `Function` 在 CodeSandbox.io 打开 demo 的执行函数
+- **参数：** `Object`。主题 `Previewer` 组件接收到的 props
+- **返回：** `Function`。在 CodeSandbox.io 打开 demo 的执行函数
 
-根据 `Previewer` 的 props 生成一个函数，执行后可在 [codesandbox.io][https://codesandbox.io] 打开该 demo，例如：
+根据 `Previewer` 的 props 生成一个函数，执行后可在 [codesandbox.io](https://codesandbox.io) 打开该 demo，例如：
 
 ```jsx | pure
 // builtins/Previewer.tsx
@@ -46,8 +46,8 @@ export default (props) => {
 
 - **参数：** 无
 - **返回：**
-  - copyCode：`Function` 拷贝执行函数，执行时传入的文本会被拷贝到剪贴板
-  - copyStatus：`'ready' | 'copied'` 默认值为 `ready`，在执行拷贝后会变成 `copied`，2s 后再变回 `ready`，便于开发者控制复制成功的提示信息
+  - copyCode：`Function`。拷贝执行函数，执行时传入的文本会被拷贝到剪贴板
+  - copyStatus：`'ready' | 'copied'`。默认值为 `ready`，在执行拷贝后会变成 `copied`，2s 后再变回 `ready`，便于开发者控制复制成功的提示信息
 
 提供复制函数及复制的状态，便于实现源代码复制和状态展示，例如：
 
@@ -68,41 +68,41 @@ export default (props) => {
 
 ## useSearch
 
-- **参数：** `String` 当前输入框的关键字
+- **参数：** `String`。当前输入框的关键字
 - **返回：**
-  - `Function` 如果用户开启 algolia，则返回 algolia 的绑定函数，将输入框的 CSS 选择器传入即可，后续筛选、呈现工作全部交给 algolia
-  - `Array` 如果用户未开启 algolia，则返回基于关键字的内置搜索结果，目前只能搜索标题
+  - `Function`。如果用户开启 algolia，则返回 algolia 的绑定函数，将输入框的 CSS 选择器传入即可，后续筛选、呈现工作全部交给 algolia
+  - `Array`。如果用户未开启 algolia，则返回基于关键字的内置搜索结果，目前只能搜索标题
 
 根据配置自动提供 algolia 的绑定函数或者根据关键字返回内置搜索的检索结果，具体用法可参考 dumi 内置主题的 [SearchBar 组件](https://github.com/umijs/dumi/blob/master/packages/theme-default/src/components/SearchBar.tsx#L9)。
 
 ## useLocaleProps
 
 - **参数：**
-  - locale：`String` 当前 locale 值
-  - props：`Object` 需要过滤、转换的 props
-- **返回：** `Object` 过滤、转换之后的 props
+  - locale：`String`。当前 locale 值
+  - props：`Object`。需要过滤、转换的 props
+- **返回：** `Object`。过滤、转换之后的 props
 
 根据 locale 自动过滤、转换 props，便于实现国际化 FrontMatter 的定义，比如 `title.zh-CN` 在中文语言下会被转换为 `title`，具体示例可参考 dumi 内置主题的 [Previewer 组件](https://github.com/umijs/dumi/blob/master/packages/theme-default/src/builtins/Previewer.tsx#L72)。
 
 ## useDemoUrl
 
-- **参数：** `String` 主题 `Previewer` 组件接收到的 `identifier` 参数，demo 的唯一标识符
-- **返回：** `String` demo 单独打开的页面地址
+- **参数：** `String`。主题 `Previewer` 组件接收到的 `identifier` 参数，demo 的唯一标识符
+- **返回：** `String`。demo 单独打开的页面地址
 
 获取单独打开 demo 的页面地址，例如 `useDemoUrl(props.identifier)` 会返回类似 `http://example.com/~demos/demo-id` 的 URL。
 
 ## useApiData
 
-- **参数：** `String` 主题 `API` 组件接收到的 `identifier` 参数，API 的唯一标识符
-- **返回：** `Array` Props 属性列表
+- **参数：** `String`。主题 `API` 组件接收到的 `identifier` 参数，API 的唯一标识符
+- **返回：** `Array`。Props 属性列表
 
 获取指定组件的 API 元数据，可参考 dumi 默认主题的 [API 组件实现](https://github.com/umijs/dumi/blob/master/packages/theme-default/src/builtins/API.tsx)。
 
 ## useTSPlaygroundUrl
 
 - **参数：**
-  - locale：`String` 当前的语言选项
-  - code：`String` 要在 TypeScript Playground 中转换的 TSX 代码
-- **返回：** `String` 前往 TypeScript Playground 的 url
+  - locale：`String`。当前的语言选项
+  - code：`String`。要在 TypeScript Playground 中转换的 TSX 代码
+- **返回：** `String`。前往 TypeScript Playground 的 url
 
 获取当前 TypeScript 官网 Playground 的链接，用于将 TSX 代码提交到 Playground 中展示 JSX 代码。
