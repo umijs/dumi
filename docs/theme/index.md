@@ -17,7 +17,7 @@ nav:
 
 - **Code address:** [dumi/packages/theme-mobile](https://github.com/umijs/dumi/tree/master/packages/theme-mobile)
 - **Experience address:** (Missing)
-- **Theme introduction:** The mobile terminal research and development theme based on the dumi default theme extension.
+- **Theme introduction:** The mobile terminal research and development theme based on the dumi default theme extension
 It will have the following characteristics:
   1. Sticky mobile phone simulation container + iframe preview demo
   2. Based on [umi-hd](https://github.com/umijs/umi-hd) provide automatic settings of `viewport` and root `font-size` for demo preview
@@ -56,4 +56,4 @@ export default {
 
 If you have created a good dumi theme and want to share it with everyone.
 
-Please send your theme information through Pull Request [Update to this document](https://github.com/umijs/dumi/edit/master/docs/theme/index.md).
+Please send your theme information through Pull Request [to this document](https://github.com/umijs/dumi/edit/master/docs/theme/index.md).

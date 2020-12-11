@@ -11,7 +11,7 @@ In order to customize the theme, dumi provides a set of theme API, we can import
 
 You can get the configuration items of dumi, meta information of the current routing, international language options, etc.
 
-The detailed definition of context can be <a target="_blank" href="https://github.com/umijs/dumi/blob/master/packages/preset-dumi/src/theme/context.ts#L8">View source code</a>
+The detailed definition of context can be <a target="_blank" href="https://github.com/umijs/dumi/blob/master/packages/preset-dumi/src/theme/context.ts#L8">View source code</a>.
 
 ## Link
 
