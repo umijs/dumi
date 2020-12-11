@@ -267,7 +267,7 @@ export default () => <h1>Hello dumi!</h1>;
 
 和代码块 demo 一样，上述代码也会被渲染为 React 组件，并且外部 demo 的源代码及其他依赖的源代码都可以被用户查看，就像这样：
 
-<code src="../.demos/modal/modal.zh-CN.jsx"></code>
+<code src="../.demos/modal/modal.jsx"></code>
 
 ### 控制 demo 渲染
 
