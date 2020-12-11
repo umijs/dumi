@@ -20,6 +20,13 @@ export default function code(): IDumiUnifiedTransformer {
         });
         const parsedAttrs = parseElmAttrToProps(attrs);
 
+        // https://github.com/umijs/dumi/issues/418
+        // remark-parse will create a extra paragraph ast node as container when <code src="..." /> wraps.
+        if (parent.tagName === 'p') {
+          // avoid react validateDOMNesting error
+          parent.tagName = 'div';
+        }
+
         // replace original node
         parent.children.splice(i, 1, {
           type: 'element',
