@@ -1,6 +1,6 @@
 /**
- * title: Basic Modal
- * desc: This is a basic example of the antd Modal component
+ * title: 基础 Modal
+ * desc: 这是 antd Modal 组件的基础示例
  */
 
 import React from 'react';

@@ -267,7 +267,7 @@ export default () => <h1>Hello dumi!</h1>;
 
 和代码块 demo 一样，上述代码也会被渲染为 React 组件，并且外部 demo 的源代码及其他依赖的源代码都可以被用户查看，就像这样：
 
-<code src="../.demos/modal/modal.jsx"></code>
+<code src="../.demos/modal/modal.zh-CN.jsx"></code>
 
 ### 控制 demo 渲染
 
@@ -436,7 +436,7 @@ dumi 提供了一系列内置组件作为 Markdown 语法的补充，除了上�
 
 ### Alert
 
-使用 `Alert` 创建一个提示框，`type` 可选 `warning`、`info`、`success`、`error`：
+使用 `Alert` 创建一个提示框，`type` 可选 `warning`、`info`、`success`、`error`，默认为 `info`。
 
 ```html
 <Alert type="info">
