@@ -195,7 +195,7 @@ There is currently no scaffolding for the lerna project. You can check [ahooks](
 
 As shown in the figure below, dumi's conventional routing rules are very simple:
 
-<img src="https://gw.alipayobjects.com/zos/bmw-prod/e607ec1b-8f5d-4fec-9557-42298ceab02e/kiimo7of_w1410_h548.png" width="705" />
+<img src="https://gw.alipayobjects.com/zos/bmw-prod/66ca1c57-3146-40d5-bea4-24dea86eb95b/kijoyzad_w1540_h732.png" width="770" />
 
 Give a few examples to facilitate understanding:
 
