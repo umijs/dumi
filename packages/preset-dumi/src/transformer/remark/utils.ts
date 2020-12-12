@@ -1,3 +1,5 @@
+import { Node } from 'unist';
+
 const ATTR_MAPPING = {
   hideactions: 'hideActions',
   defaultshowcode: 'defaultShowCode',
@@ -42,3 +44,26 @@ export const parseElmAttrToProps = (attrs: { [key: string]: string }) => {
 
   return parsed;
 };
+
+/**
+ * use to replace node in n ary tree
+ * @param node ast node
+ * @param find target node
+ * @param replace new node
+ */
+export function replaceNode<N extends Node & { children?: N[] }>(node: N, find: N, replace: N) {
+  function preorder(root: N, parent: N | null) {
+    if (root === find && parent && Array.isArray(parent.children)) {
+      parent.children.forEach((current, index) => {
+        if (current === find) {
+          parent.children[index] = replace;
+        }
+      });
+    }
+    if (Array.isArray(root.children)) {
+      root.children.forEach(child => preorder(child, root));
+    }
+  }
+  preorder(node, null);
+  return node;
+}
