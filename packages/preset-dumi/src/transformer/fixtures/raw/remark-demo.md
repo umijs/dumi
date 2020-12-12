@@ -41,3 +41,7 @@ export default () => null;
 ```
 
 <code src="./demo-missing-react.tsx" debug />
+
+<code
+  src="./demo-missing-react.tsx"
+/>123
