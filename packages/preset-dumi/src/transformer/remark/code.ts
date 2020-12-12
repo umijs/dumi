@@ -20,7 +20,8 @@ export default function code(): IDumiUnifiedTransformer {
         });
         const parsedAttrs = parseElmAttrToProps(attrs);
 
-        const previewerNode = {
+        // replace original node
+        parent.children.splice(i, 1, {
           type: 'element',
           tagName: 'div',
           position: node.position,
@@ -31,18 +32,14 @@ export default function code(): IDumiUnifiedTransformer {
               ...parsedAttrs,
             },
           },
-        };
+        });
 
         // https://github.com/umijs/dumi/issues/418
         // remark-parse will create a extra paragraph ast node as container when <code src="..." /> wraps.
         // so we replace `parent` to avoid react validateDOMNesting error.
         if (parent.tagName === 'p') {
-          replaceNode(ast, parent as IDumiElmNode, previewerNode);
-          return;
+          replaceNode(ast, parent as IDumiElmNode, ...parent.children);
         }
-
-        // replace original node
-        parent.children.splice(i, 1, previewerNode);
       }
     });
   };

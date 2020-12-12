@@ -47,23 +47,23 @@ export const parseElmAttrToProps = (attrs: { [key: string]: string }) => {
 
 /**
  * use to replace node in n ary tree
- * @param node ast node
- * @param find target node
- * @param replace new node
+ * @param node {Node} ast node
+ * @param find {Node} target node
+ * @param replace {Node} new node
  */
-export function replaceNode<N extends Node & { children?: N[] }>(node: N, find: N, replace: N) {
-  function preorder(root: N, parent: N | null) {
+export function replaceNode<N extends Node & { children?: N[] }>(
+  node: N,
+  find: N,
+  ...replace: N[]
+) {
+  function preorder(root: N, index: number, parent: N | null) {
     if (root === find && parent && Array.isArray(parent.children)) {
-      parent.children.forEach((current, index) => {
-        if (current === find) {
-          parent.children[index] = replace;
-        }
-      });
+      parent.children.splice(index, 1, ...replace);
     }
     if (Array.isArray(root.children)) {
-      root.children.forEach(child => preorder(child, root));
+      root.children.forEach((child, idx) => preorder(child, idx, root));
     }
   }
-  preorder(node, null);
+  preorder(node, 0, null);
   return node;
 }
