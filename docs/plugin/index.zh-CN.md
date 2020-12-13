@@ -51,7 +51,6 @@ export default {
 - **简介：** 启用组件库开发期间的 Sass 编译支持，**注意，该插件启用与否与组件库构建工具（father-build）无关**，如果组件库本身使用了 Sass，我们还需要开启 father-build 的 [Sass 编译支持](https://github.com/umijs/father#sassinrollupmode)
 - **配置：**
 
-
 ```ts
 export default {
   sass: {
@@ -67,7 +66,7 @@ export default {
 
 ### `@umijs/plugin-esbuild`
 
-- **简介：** 使用 esbuild 作为文档站点产物的压缩器，试验性功能，可能有坑，但压缩提速效果拔群。
+- **简介：** 使用 esbuild 作为文档站点产物的压缩器，试验性功能，可能有坑，但压缩提速效果拔群
 - **配置：**
 
 ```ts
@@ -186,7 +185,7 @@ export default (api: IApi) => {
 
 ### `dumi.detectApi`
 
-dumi 在解析 Markdown 时，如果检测到有使用 API 自动生成，会触发此钩子，并将相关 API 数据传。，调用方式：
+dumi 在解析 Markdown 时，如果检测到有使用 API 自动生成，会触发此钩子，并将相关 API 数据传。调用方式：
 
 ```ts
 // /path/to/plugin.ts
