@@ -44,4 +44,14 @@ export default () => null;
 
 <code
   src="./demo-missing-react.tsx"
+/>
+
+<code
+  src="./demo-missing-react.tsx"
 />123
+
+000<code
+  src="./demo-missing-react.tsx"
+/>456<code
+  src="./demo-missing-react.tsx"
+/>
