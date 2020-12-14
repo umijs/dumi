@@ -1,5 +1,6 @@
 import transformer from '../transformer';
 import getTheme from '../theme/loader';
+import getFileRangeLines from '../utils/getFileRangeLines';
 
 let useKatexFilePath = '';
 
@@ -8,19 +9,7 @@ export default async function loader(raw: string) {
   const range = new URLSearchParams(this.resourceQuery).get('range');
 
   // get line range of markdown file
-  if (range) {
-    const [, start, end] = range.match(/^L(\d+)(?:-L(\d+))?$/) || [];
-
-    if (start) {
-      const lineStart = parseInt(start, 10) - 1;
-      const lineEnd = end ? parseInt(end, 10) : lineStart + 1;
-
-      content = content
-        .split(/\r|\n/g)
-        .slice(lineStart, lineEnd)
-        .join('\n');
-    }
-  }
+  content = getFileRangeLines(content, range);
 
   const result = transformer.markdown(content, this.resourcePath, { noCache: content !== raw });
   const theme = await getTheme();

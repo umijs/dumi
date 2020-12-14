@@ -4,6 +4,7 @@ import toString from 'hast-util-to-string';
 import is from 'hast-util-is-element';
 import has from 'hast-util-has-property';
 import { IDumiUnifiedTransformer, IDumiElmNode } from '.';
+import { EMBED_SLUGS } from './embed';
 
 const slugs = slugger();
 const headings = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
@@ -32,7 +33,7 @@ export default (): IDumiUnifiedTransformer => (ast, vFile) => {
 
       // generate id if not exist
       if (!has(node, 'id')) {
-        node.properties.id = slugs.slug(title);
+        node.properties.id = slugs.slug(title, false);
       }
 
       // save slugs
@@ -46,6 +47,12 @@ export default (): IDumiUnifiedTransformer => (ast, vFile) => {
       if (!vFile.data.title) {
         vFile.data.title = title;
       }
+    }
+
+    // visit all embed files
+    if (has(node, EMBED_SLUGS)) {
+      vFile.data.slugs.push(...node.properties[EMBED_SLUGS]);
+      delete node.properties[EMBED_SLUGS];
     }
   });
 };
