@@ -52,6 +52,8 @@ export default () => null;
 
 000<code
   src="./demo-missing-react.tsx"
-/>456<code
+/><span>456</span><code
+  src="./demo-missing-react.tsx"
+/>*321*<code
   src="./demo-missing-react.tsx"
 />
