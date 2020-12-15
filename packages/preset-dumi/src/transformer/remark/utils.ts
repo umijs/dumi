@@ -1,7 +1,15 @@
+import { IDumiElmNode } from '.';
+
 const ATTR_MAPPING = {
   hideactions: 'hideActions',
   defaultshowcode: 'defaultShowCode',
 };
+
+// https://developer.mozilla.org/en-US/docs/Web/HTML/Inline_elements#Elements
+// prettier-ignore
+const INLINE_ELEMENTS = [
+  "a","abbr","acronym","audio","b","bdi","bdo","big","br","button","canvas","cite","code","data","datalist","del","dfn","em","embed","i","iframe","img","input","ins","kbd","label","map","mark","meter","noscript","object","output","picture","progress","q","ruby","s","samp","script","select","slot","small","span","strong","sub","sup","svg","template","textarea","time","u","tt","var","video","wbr"
+];
 
 /**
  * parse custome HTML element attributes to properties
@@ -42,3 +50,7 @@ export const parseElmAttrToProps = (attrs: { [key: string]: string }) => {
 
   return parsed;
 };
+
+export function isInlineElement<N extends IDumiElmNode>(node: N) {
+  return node.type === 'element' && INLINE_ELEMENTS.includes(node.tagName);
+}
