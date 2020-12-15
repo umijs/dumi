@@ -132,6 +132,7 @@ describe('default theme', () => {
   });
 
   it('should render documentation page', async () => {
+    const updatedTime = 1604026996000;
     const wrapper = ({ children }) => (
       <Context.Provider
         value={{
@@ -139,7 +140,7 @@ describe('default theme', () => {
           meta: {
             title: 'test',
             slugs: [{ value: 'Slug A', heading: 'a', depth: 2 }],
-            updatedTime: 1604026996000,
+            updatedTime,
             filePath: 'temp',
           },
         }}
@@ -160,7 +161,7 @@ describe('default theme', () => {
     expect(getByText('Slug A')).not.toBeNull();
 
     // expect footer date show
-    expect(getByText('10/30/2020, 03:03:16')).not.toBeNull();
+    expect(new Date(updatedTime).toLocaleString([], { hour12: false })).not.toBeNull();
 
     // trigger locale change
     getAllByText('English')[0].click();
