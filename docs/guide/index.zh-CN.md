@@ -30,7 +30,7 @@ import React from 'react';
 export default () => (
   <>
     <img
-      src="https://gw.alipayobjects.com/zos/bmw-prod/881c4596-a6cc-4f69-be8d-f94c4e02e058/k7ttshpq_w1004_h1346.jpeg"
+      src="https://gw.alipayobjects.com/zos/bmw-prod/877c66b3-ec81-48ca-ad7f-f3a6f7e19b42/kiprxtw0_w1004_h1346.png"
       width="260"
     />
     <img
