@@ -1,6 +1,6 @@
 import is from 'hast-util-is-element';
 import has from 'hast-util-has-property';
-import visit from 'unist-util-visit-parents';
+import visit from 'unist-util-visit';
 import { parseElmAttrToProps } from './utils';
 import { getModuleResolvePath } from '../../utils/moduleResolver';
 import { IDumiUnifiedTransformer, IDumiElmNode } from '.';
@@ -10,7 +10,8 @@ import { IDumiUnifiedTransformer, IDumiElmNode } from '.';
  */
 export default function code(): IDumiUnifiedTransformer {
   return ast => {
-    visit<IDumiElmNode>(ast, 'element', (node, ancestor) => {
+    let extraReplacement = false;
+    visit<IDumiElmNode>(ast, 'element', (node, index, parent) => {
       if (is(node, 'code') && has(node, 'src')) {
         const { src, ...attrs } = node.properties;
         const absPath = getModuleResolvePath({
@@ -20,7 +21,8 @@ export default function code(): IDumiUnifiedTransformer {
         });
         const parsedAttrs = parseElmAttrToProps(attrs);
 
-        const previewer = {
+        // replace original node
+        parent.children.splice(index, 1, {
           type: 'element',
           tagName: 'div',
           position: node.position,
@@ -31,22 +33,26 @@ export default function code(): IDumiUnifiedTransformer {
               ...parsedAttrs,
             },
           },
-        };
-        const len = ancestor.length;
-        const grandparent = ancestor[len - 2] as IDumiElmNode;
-        const parent = ancestor[len - 1] as IDumiElmNode;
-        const nodeIndex = parent.children.indexOf(node);
-
-        // replace original node
-        parent.children.splice(nodeIndex, 1, previewer);
+        });
 
         // https://github.com/umijs/dumi/issues/418
         // remark-parse will create a extra paragraph ast node as container when <code src="..." /> wraps.
         if (parent.tagName === 'p') {
-          grandparent.children.splice(
-            grandparent.children.indexOf(parent),
+          extraReplacement = true;
+        }
+      }
+    });
+
+    if (extraReplacement) {
+      visit<IDumiElmNode>(ast, 'element', (node, index, parent) => {
+        if (
+          is(node, 'p') &&
+          node.children?.some(child => is(child, 'div') && child.properties.type === 'previewer')
+        ) {
+          parent.children.splice(
+            index,
             1,
-            ...parent.children.reduce((hoists, child) => {
+            ...node.children.reduce((hoists, child) => {
               if (child.properties?.type === 'previewer') {
                 hoists.push(child);
               } else {
@@ -66,10 +72,9 @@ export default function code(): IDumiUnifiedTransformer {
             }, [] as IDumiElmNode[]),
           );
 
-          // break visit due to `parent` replacement
-          return -1;
+          return [visit.SKIP, index];
         }
-      }
-    });
+      });
+    }
   };
 }
