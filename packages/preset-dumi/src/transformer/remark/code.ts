@@ -1,7 +1,7 @@
 import is from 'hast-util-is-element';
 import has from 'hast-util-has-property';
 import visit from 'unist-util-visit-parents';
-import { isInlineElement, parseElmAttrToProps } from './utils';
+import { parseElmAttrToProps } from './utils';
 import { getModuleResolvePath } from '../../utils/moduleResolver';
 import { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 
@@ -43,29 +43,31 @@ export default function code(): IDumiUnifiedTransformer {
         // https://github.com/umijs/dumi/issues/418
         // remark-parse will create a extra paragraph ast node as container when <code src="..." /> wraps.
         if (parent.tagName === 'p') {
-          const hoists = [] as IDumiElmNode[];
-          parent.children = parent.children.reduce((children, child, index) => {
-            if (index <= nodeIndex) {
-              hoists.push(
-                child.type === 'text' || isInlineElement(child)
-                  ? {
-                      type: 'element',
-                      tagName: 'p',
-                      properties: {},
-                      children: [child],
-                    }
-                  : child,
-              );
-            } else {
-              children.push(child);
-            }
+          grandparent.children.splice(
+            grandparent.children.indexOf(parent),
+            1,
+            ...parent.children.reduce((hoists, child) => {
+              if (child.properties?.type === 'previewer') {
+                hoists.push(child);
+              } else {
+                const latestHoist = hoists[hoists.length - 1];
+                if (!latestHoist || latestHoist.properties.type === 'previewer') {
+                  hoists.push({
+                    type: 'element',
+                    tagName: 'p',
+                    properties: {},
+                    children: [],
+                  });
+                }
 
-            return children;
-          }, [] as IDumiElmNode[]);
-          const shouldHold = parent.children.length > 0;
-          const parentIndex = grandparent.children.indexOf(parent);
+                hoists[hoists.length - 1].children.push(child);
+              }
+              return hoists;
+            }, [] as IDumiElmNode[]),
+          );
 
-          grandparent.children.splice(parentIndex, shouldHold ? 0 : 1, ...hoists);
+          // break visit due to `parent` replacement
+          return -1;
         }
       }
     });
