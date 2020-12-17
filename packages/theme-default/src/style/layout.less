@@ -151,6 +151,19 @@ body {
         color: @c-heading;
       }
 
+      a dt {
+        color: @c-link;
+        transition: opacity 0.2s;
+        &:hover {
+          opacity: 0.7;
+          text-decoration: underline;
+        }
+
+        &:active {
+          opacity: 0.9;
+        }
+      }
+
       dd {
         margin: 0;
 
