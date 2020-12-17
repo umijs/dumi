@@ -195,7 +195,8 @@ hero:
 ```yaml
 features:
   - icon: 图标的 URL 地址，建议切图尺寸为 144 * 144（可选）
-    title: 性能强大
+    title: 特性标题
+    link: 可以配置跳转链接
     desc: 可以配置 `markdown` 文本
 ```
 
