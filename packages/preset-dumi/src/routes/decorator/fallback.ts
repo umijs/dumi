@@ -33,14 +33,8 @@ export default (function fallback(routes) {
       if (fs.existsSync(readmePath)) {
         const component = `./README${localeFileAddon}.md`;
         const readme = fs.readFileSync(readmePath, 'utf-8');
-        const readmeArr = readme.split('\n');
-        let title = 'README';
-        for (let i = 0; i < readmeArr.length; i++) {
-          if (readmeArr[i].startsWith('# ')) {
-            title = readmeArr[i].replace('# ', '');
-            break;
-          }
-        }
+        const reg  = /^#\s(.*)?\r\n/;
+        const title = reg.test(readme) ? reg.exec(readme)[1] : 'README';
 
         routes.unshift({
           path: localePrefix,
