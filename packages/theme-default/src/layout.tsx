@@ -29,7 +29,7 @@ const Features = features => (
       <dl key={feat.title} style={{ backgroundImage: feat.icon ? `url(${feat.icon})` : undefined }}>
         {
           feat.link
-            ? <Link to={feat.link} key={feat.title}>
+            ? <Link to={feat.link}>
                 <dt>{feat.title}</dt>
               </Link>
             : <dt>{feat.title}</dt>
