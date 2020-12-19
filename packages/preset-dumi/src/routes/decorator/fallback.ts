@@ -4,6 +4,8 @@ import slash from 'slash2';
 import deepmerge from 'deepmerge';
 import { RouteProcessor } from '.';
 
+const isWindows = require('is-windows');
+
 function replaceLocaleForPath(
   pathname: string,
   prevLocale: string | undefined,
@@ -33,7 +35,7 @@ export default (function fallback(routes) {
       if (fs.existsSync(readmePath)) {
         const component = `./README${localeFileAddon}.md`;
         const readme = fs.readFileSync(readmePath, 'utf-8');
-        const reg  = /^#\s(.*)?\r\n/;
+        const reg  = isWindows() ? /^#\s(.*)?\r\n/ : /^#\s(.*)?\n/;
         const title = reg.test(readme) ? reg.exec(readme)[1] : 'README';
 
         routes.unshift({
