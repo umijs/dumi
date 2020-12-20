@@ -41,7 +41,6 @@
     "hast-util-to-html": "^7.1.1",
     "hast-util-to-string": "^1.0.2",
     "hosted-git-info": "^3.0.2",
-    "is-windows": "^1.0.2",
     "js-yaml": "^3.13.1",
     "katex": "^0.11.1",
     "lz-string": "^1.4.4",
