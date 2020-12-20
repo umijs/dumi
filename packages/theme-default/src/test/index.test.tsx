@@ -96,7 +96,7 @@ describe('default theme', () => {
               desc: 'Hero Description',
               actions: [{ text: '开始', link: '/' }],
             },
-            features: [{ title: 'Feat', desc: 'Feature' }],
+            features: [{ title: 'Feat', desc: 'Feature' }, { title: 'Feat2', link: '/' }]
           },
         }}
       >
@@ -123,6 +123,7 @@ describe('default theme', () => {
 
     // expect features be rendered
     expect(getByText('Feature')).not.toBeNull();
+    expect(getByText('Feat2')).not.toBeNull();
 
     // trigger mobile menu display
     queryByAttribute('class', container, '__dumi-default-navbar-toggle').click();

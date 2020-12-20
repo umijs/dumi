@@ -195,7 +195,8 @@ Only works in site mode. The page will be presented as the homepage after config
 ```yaml
 features:
   - icon: The URL of icon, recommended size is 144 * 144 (optional)
-    title: title content
+    title: Title content
+    link: Support jump link
     desc: support `markdown` text
 ```
 

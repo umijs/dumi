@@ -27,7 +27,13 @@ const Features = features => (
   <div className="__dumi-default-layout-features">
     {features.map(feat => (
       <dl key={feat.title} style={{ backgroundImage: feat.icon ? `url(${feat.icon})` : undefined }}>
-        <dt>{feat.title}</dt>
+        {
+          feat.link
+            ? <Link to={feat.link}>
+                <dt>{feat.title}</dt>
+              </Link>
+            : <dt>{feat.title}</dt>
+        }
         <dd dangerouslySetInnerHTML={{ __html: feat.desc }} />
       </dl>
     ))}
