@@ -77,7 +77,7 @@ function getPreviewerId(yaml: any, mdAbsPath: string, codeAbsPath: string, compo
       id = `${prefix}-${demoName}`;
 
       // record id count
-      const currentIdCount = externalIdMap.get(id);
+      const currentIdCount = externalIdMap.get(id) || 0;
 
       externalIdMap.set(id, currentIdCount + 1);
 
