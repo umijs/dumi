@@ -253,7 +253,13 @@ describe('default theme', () => {
       { wrapper },
     );
 
-    fireEvent.click(container.querySelector('#btn'));
+    fireEvent(
+      container.querySelector('#btn'),
+      new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
 
     // expect SourceCode highlight
     expect(getByText('console')).toHaveClass('token');
