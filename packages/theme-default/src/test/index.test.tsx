@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import React from 'react';
-import { render, queryByAttribute } from '@testing-library/react';
+import { render, queryByAttribute, fireEvent } from '@testing-library/react';
 import { createMemoryHistory, MemoryHistory, Router } from '@umijs/runtime';
 import { context as Context } from 'dumi/theme';
 import SourceCode from '../builtins/SourceCode';
@@ -96,7 +96,10 @@ describe('default theme', () => {
               desc: 'Hero Description',
               actions: [{ text: '开始', link: '/' }],
             },
-            features: [{ title: 'Feat', desc: 'Feature' }, { title: 'Feat2', link: '/' }]
+            features: [
+              { title: 'Feat', desc: 'Feature' },
+              { title: 'Feat2', link: '/' },
+            ],
           },
         }}
       >
@@ -191,6 +194,9 @@ describe('default theme', () => {
       <Router history={history}>
         <Layout {...baseProps}>
           <>
+            <a href="" id="btn">
+              click
+            </a>
             <SourceCode code={code} lang="javascript" />
             <Alert type="info">Alert</Alert>
             <Badge type="info">Badge</Badge>
@@ -245,6 +251,23 @@ describe('default theme', () => {
         </Layout>
       </Router>,
       { wrapper },
+    );
+
+    // toggle side menu display
+    fireEvent(
+      container.querySelector('.__dumi-default-navbar-toggle'),
+      new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+
+    fireEvent(
+      container.querySelector('#btn'),
+      new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+      }),
     );
 
     // expect SourceCode highlight
