@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import React from 'react';
-import { render, queryByAttribute } from '@testing-library/react';
+import { render, queryByAttribute, fireEvent } from '@testing-library/react';
 import { createMemoryHistory, MemoryHistory, Router } from '@umijs/runtime';
 import { context as Context } from 'dumi/theme';
 import SourceCode from '../builtins/SourceCode';
@@ -191,6 +191,7 @@ describe('default theme', () => {
       <Router history={history}>
         <Layout {...baseProps}>
           <>
+            <a href="" id="btn">click</a>
             <SourceCode code={code} lang="javascript" />
             <Alert type="info">Alert</Alert>
             <Badge type="info">Badge</Badge>
@@ -246,6 +247,8 @@ describe('default theme', () => {
       </Router>,
       { wrapper },
     );
+
+    fireEvent.click(container.querySelector('#btn'))
 
     // expect SourceCode highlight
     expect(getByText('console')).toHaveClass('token');
