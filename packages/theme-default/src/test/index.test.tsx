@@ -253,6 +253,7 @@ describe('default theme', () => {
       { wrapper },
     );
 
+// toggle side menu display
     fireEvent(
       container.querySelector('.__dumi-default-navbar-toggle'),
       new MouseEvent('click', {
