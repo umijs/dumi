@@ -248,7 +248,7 @@ describe('default theme', () => {
       { wrapper },
     );
 
-    fireEvent.click(container.querySelector('#btn'))
+    fireEvent.click(container.querySelector('#btn'));
 
     // expect SourceCode highlight
     expect(getByText('console')).toHaveClass('token');
