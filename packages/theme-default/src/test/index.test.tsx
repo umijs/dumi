@@ -96,7 +96,10 @@ describe('default theme', () => {
               desc: 'Hero Description',
               actions: [{ text: '开始', link: '/' }],
             },
-            features: [{ title: 'Feat', desc: 'Feature' }, { title: 'Feat2', link: '/' }]
+            features: [
+              { title: 'Feat', desc: 'Feature' },
+              { title: 'Feat2', link: '/' },
+            ],
           },
         }}
       >
@@ -191,7 +194,9 @@ describe('default theme', () => {
       <Router history={history}>
         <Layout {...baseProps}>
           <>
-            <a href="" id="btn">click</a>
+            <a href="" id="btn">
+              click
+            </a>
             <SourceCode code={code} lang="javascript" />
             <Alert type="info">Alert</Alert>
             <Badge type="info">Badge</Badge>
