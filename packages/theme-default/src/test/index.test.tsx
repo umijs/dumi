@@ -254,6 +254,14 @@ describe('default theme', () => {
     );
 
     fireEvent(
+      container.querySelector('.__dumi-default-navbar-toggle'),
+      new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+
+    fireEvent(
       container.querySelector('#btn'),
       new MouseEvent('click', {
         bubbles: true,
