@@ -73,8 +73,8 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
       data-site-mode={isSiteMode}
       data-gapless={String(!!meta.gapless)}
       onClick={() => {
-        if(menuCollapsed) return
-        setMenuCollapsed(true)
+        if(menuCollapsed) return;
+        setMenuCollapsed(true);
       }}
     >
       <Navbar
