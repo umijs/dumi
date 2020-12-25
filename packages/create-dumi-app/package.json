@@ -1,6 +1,6 @@
 {
   "name": "@umijs/create-dumi-app",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "@umijs/create-dumi-app",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
