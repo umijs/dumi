@@ -21,6 +21,11 @@ const FILE_LIST = [
       { type: 'replace', value: [/]\(\//g, '](https://umijs.org/'] },
       // prepend anchor link prefix
       { type: 'replace', value: [/]\(#/g, '](https://umijs.org/zh-CN/config#'] },
+      // remove unnecessary option
+      ...['title', 'singular', 'routes', 'mpa', 'mountElementId'].map(option => ({
+        type: 'replace',
+        value: [new RegExp(`(?:^|[\r\n])## ${option}[^]+?([\r\n]#|$)`), '$1'],
+      })),
     ],
   },
 ];
