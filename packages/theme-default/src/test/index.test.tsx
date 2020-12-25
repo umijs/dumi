@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import React from 'react';
-import { render, queryByAttribute } from '@testing-library/react';
+import { render, queryByAttribute, fireEvent } from '@testing-library/react';
 import { createMemoryHistory, MemoryHistory, Router } from '@umijs/runtime';
 import { context as Context } from 'dumi/theme';
 import SourceCode from '../builtins/SourceCode';
@@ -96,7 +96,10 @@ describe('default theme', () => {
               desc: 'Hero Description',
               actions: [{ text: '开始', link: '/' }],
             },
-            features: [{ title: 'Feat', desc: 'Feature' }],
+            features: [
+              { title: 'Feat', desc: 'Feature' },
+              { title: 'Feat2', link: '/' },
+            ],
           },
         }}
       >
@@ -123,6 +126,7 @@ describe('default theme', () => {
 
     // expect features be rendered
     expect(getByText('Feature')).not.toBeNull();
+    expect(getByText('Feat2')).not.toBeNull();
 
     // trigger mobile menu display
     queryByAttribute('class', container, '__dumi-default-navbar-toggle').click();
@@ -132,6 +136,7 @@ describe('default theme', () => {
   });
 
   it('should render documentation page', async () => {
+    const updatedTime = 1604026996000;
     const wrapper = ({ children }) => (
       <Context.Provider
         value={{
@@ -139,7 +144,7 @@ describe('default theme', () => {
           meta: {
             title: 'test',
             slugs: [{ value: 'Slug A', heading: 'a', depth: 2 }],
-            updatedTime: 1604026996000,
+            updatedTime,
             filePath: 'temp',
           },
         }}
@@ -160,7 +165,7 @@ describe('default theme', () => {
     expect(getByText('Slug A')).not.toBeNull();
 
     // expect footer date show
-    expect(getByText('10/30/2020, 03:03:16')).not.toBeNull();
+    expect(new Date(updatedTime).toLocaleString([], { hour12: false })).not.toBeNull();
 
     // trigger locale change
     getAllByText('English')[0].click();
@@ -189,6 +194,9 @@ describe('default theme', () => {
       <Router history={history}>
         <Layout {...baseProps}>
           <>
+            <a href="" id="btn">
+              click
+            </a>
             <SourceCode code={code} lang="javascript" />
             <Alert type="info">Alert</Alert>
             <Badge type="info">Badge</Badge>
@@ -243,6 +251,23 @@ describe('default theme', () => {
         </Layout>
       </Router>,
       { wrapper },
+    );
+
+    // toggle side menu display
+    fireEvent(
+      container.querySelector('.__dumi-default-navbar-toggle'),
+      new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+
+    fireEvent(
+      container.querySelector('#btn'),
+      new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+      }),
     );
 
     // expect SourceCode highlight

@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 import { Node } from 'unist';
 import visit, { Visitor } from 'unist-util-visit';
 import { createDebug } from '@umijs/utils';
@@ -11,7 +12,18 @@ import { IDumiElmNode, IDumiUnifiedTransformer } from '.';
 
 const debug = createDebug('dumi:previewer');
 
-const demoIds: Object = {};
+/**
+ * cache id for each external demo file
+ */
+const externalCache = new Map<string, string>();
+/**
+ * record external demo id count
+ */
+const externalIdMap = new Map<string, number>();
+/**
+ * record code block demo id count
+ */
+const mdCodeBlockIdMap = new Map<string, Map<string, number>>();
 
 /**
  * get unique id for previewer
@@ -21,7 +33,6 @@ const demoIds: Object = {};
  * @param componentName the name of related component
  */
 function getPreviewerId(yaml: any, mdAbsPath: string, codeAbsPath: string, componentName: string) {
-  const ids = demoIds[mdAbsPath];
   let id = yaml.identifier || yaml.uuid;
 
   // do not generate identifier for inline demo
@@ -30,29 +41,54 @@ function getPreviewerId(yaml: any, mdAbsPath: string, codeAbsPath: string, compo
   }
 
   if (!id) {
-    const words = (slash(codeAbsPath) as string)
-      // discard index & suffix like index.tsx
-      .replace(/(?:\/index)?(\.[\w-]+)?\.\w+$/, '$1')
-      .split(/\//)
-      .map(w => w.toLowerCase());
+    if (mdAbsPath === codeAbsPath) {
+      // for code block demo, format: component-demo-N
+      const idMap = mdCodeBlockIdMap.get(mdAbsPath);
+      const prefix =
+        componentName ||
+        path.basename(slash(mdAbsPath).replace(/(index|readme)?(\.[\w-]+)?\.md/i, ''));
 
-    // /path/to/index.tsx -> to || /path/to.tsx -> to
-    const demoName = words[words.length - 1] || 'demo';
-    const prefix =
-      componentName ||
-      words
-        .slice(0, words.length - 1)
-        .filter(word => word && !['src', 'demo', 'demos'].includes(word))
-        .slice(-1)[0];
+      id = `${prefix}-demo`;
 
-    id = [prefix, demoName].join('-');
+      // record id count
+      const currentIdCount = idMap.get(id) || 0;
+
+      idMap.set(id, currentIdCount + 1);
+
+      // append count suffix
+      id += currentIdCount ? `-${currentIdCount}` : '';
+    } else {
+      // for external demo, format: dir-file-N
+      // use cache first
+      id = externalCache.get(codeAbsPath);
+
+      const words = (slash(codeAbsPath) as string)
+        // discard index & suffix like index.tsx
+        .replace(/(?:\/index)?(\.[\w-]+)?\.\w+$/, '$1')
+        .split(/\//)
+        .map(w => w.toLowerCase());
+      // /path/to/index.tsx -> to || /path/to.tsx -> to
+      const demoName = words[words.length - 1] || 'demo';
+      const prefix = words
+        .slice(0, -1)
+        .filter(word => !/^(src|_?demos?|_?examples?)$/.test(word))
+        .pop();
+
+      id = `${prefix}-${demoName}`;
+
+      // record id count
+      const currentIdCount = externalIdMap.get(id) || 0;
+
+      externalIdMap.set(id, currentIdCount + 1);
+
+      // append count suffix
+      id += currentIdCount ? `-${currentIdCount}` : '';
+
+      externalCache.set(codeAbsPath, id);
+    }
   }
 
-  // record id
-  ids[id] = (ids[id] || 0) + 1;
-
-  // handle conflict ids
-  return ids[id] > 1 ? `${id}-${ids[id] - 1}` : id;
+  return id;
 }
 
 /**
@@ -294,7 +330,7 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
 export default function previewer(): IDumiUnifiedTransformer {
   // clear single paths for a new transform flow
   if (this.data('fileAbsPath')) {
-    demoIds[this.data('fileAbsPath')] = {};
+    mdCodeBlockIdMap.set(this.data('fileAbsPath'), new Map());
   }
 
   return (ast: Node, vFile) => {

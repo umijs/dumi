@@ -1,3 +1,4 @@
+import fs from 'fs';
 import url from 'url';
 import path from 'path';
 import is from 'hast-util-is-element';
@@ -5,6 +6,10 @@ import has from 'hast-util-has-property';
 import visit from 'unist-util-visit';
 import { getModuleResolvePath } from '../../utils/moduleResolver';
 import { IDumiUnifiedTransformer, IDumiElmNode } from '.';
+import getFileRangeLines from '../../utils/getFileRangeLines';
+import transformer from '..';
+
+export const EMBED_SLUGS = 'dumi-embed-file-slugs';
 
 /**
  * remark plugin for parse embed tag to external module
@@ -37,6 +42,13 @@ export default function embed(): IDumiUnifiedTransformer {
                       parsed.hash ? `?range=${parsed.hash.replace('#', '')}` : ''
                     }').default()`,
                   ),
+                  [EMBED_SLUGS]: transformer.markdown(
+                    getFileRangeLines(
+                      fs.readFileSync(absPath).toString(),
+                      parsed.hash?.replace('#', ''),
+                    ),
+                    absPath,
+                  ).meta.slugs,
                 },
                 position: node.position,
               });

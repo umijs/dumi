@@ -31,16 +31,21 @@ export default (function fallback(routes) {
       const readmePath = slash(path.join(this.umi.paths.cwd, `README${localeFileAddon}.md`));
 
       if (fs.existsSync(readmePath)) {
+        const component = `./README${localeFileAddon}.md`;
+        const readme = fs.readFileSync(readmePath, 'utf-8');
+        const reg  = /(?:^|[\r\n])#+\s+(.+)/;
+        const title = reg.test(readme) ? reg.exec(readme)[1] : 'README';
+
         routes.unshift({
           path: localePrefix,
-          component: `./README${localeFileAddon}.md`,
+          component,
           exact: true,
           meta: {
             locale,
-            title: 'README',
+            title,
             order: -Infinity, // keep readme on the top
           },
-          title: 'README',
+          title,
         });
       }
     }

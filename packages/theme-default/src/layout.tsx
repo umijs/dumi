@@ -27,7 +27,13 @@ const Features = features => (
   <div className="__dumi-default-layout-features">
     {features.map(feat => (
       <dl key={feat.title} style={{ backgroundImage: feat.icon ? `url(${feat.icon})` : undefined }}>
-        <dt>{feat.title}</dt>
+        {feat.link ? (
+          <Link to={feat.link}>
+            <dt>{feat.title}</dt>
+          </Link>
+        ) : (
+          <dt>{feat.title}</dt>
+        )}
         <dd dangerouslySetInnerHTML={{ __html: feat.desc }} />
       </dl>
     ))}
@@ -66,7 +72,10 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
       data-show-slugs={String(showSlugs)}
       data-site-mode={isSiteMode}
       data-gapless={String(!!meta.gapless)}
-      onClick={() => setMenuCollapsed(true)}
+      onClick={() => {
+        if (menuCollapsed) return;
+        setMenuCollapsed(true);
+      }}
     >
       <Navbar
         location={location}
