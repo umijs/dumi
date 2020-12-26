@@ -109,8 +109,7 @@
         }
       }
 
-      + *:not(a),
-      .@{prefix}-search + .@{prefix}-locale-select {
+      + *:not(a) {
         margin-left: 40px;
       }
 
@@ -149,6 +148,10 @@
         transform: translate(-50%) scaleY(0.9);
         opacity: 0;
       }
+    }
+
+    .@{prefix}-search + .@{prefix}-locale-select {
+      margin-left: 40px;
     }
 
     @media @mobile {
