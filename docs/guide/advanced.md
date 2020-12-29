@@ -209,7 +209,7 @@ const Hello: React.FC<IHelloProps> = () => <>Hello World!</>;
 export default Hello;
 ```
 
-The type analysis tool behind dumi is `react-docgen-typescript`.
+The type analysis tool dumi based is `react-docgen-typescript`.
 
 For more types and annotation usage, please refer to [documentation](https://github.com/styleguidist/react-docgen-typescript#example).
 
