@@ -38,7 +38,7 @@ It's same for other pages, just like the official website of dumi you are browsi
 
 In the default configuration of dumi, `en-US` is the default language, and `zh-CN` is the second language.
 
-If you need to modify this configuration, such as modifying the default language or adding more languages, please check [Configuration Items - locales](/config#locales) configuration items.
+If you need to modify this configuration, like modifying the default language or adding more languages, please check [Configuration Items - locales](/config#locales).
 
 ### Missing translation
 
