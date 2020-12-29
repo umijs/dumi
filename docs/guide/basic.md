@@ -276,7 +276,7 @@ If our demo is very complicated and may even have many external files, then it i
 <code src="/path/to/complex-demo.tsx"></code>
 ```
 
-Like the code block demo, the above code will also be rendered as React components.
+Like the code block demo, the above code will also be rendered as a react component.
 
 And the source code of the external demo and other dependent source codes can be viewed by users, like this:
 
