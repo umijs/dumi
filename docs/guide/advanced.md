@@ -177,7 +177,7 @@ Then start the Umi project as usual, you can see the demo assets in the dumi-lib
 
 ## Mobile component development
 
-The usage is very simple. After initializing the dumi project, install `dumi-theme-mobile` into `devDependencies`, and dumi will switch from the default PC component library development to mobile component development.
+The usage is very simple. After initializing the dumi project, install `dumi-theme-mobile` into `devDependencies`, and dumi will switch from the default PC component library development to mobile component library development.
 
 <img style="border: 1px solid #eee;" src="https://gw.alipayobjects.com/zos/bmw-prod/acb29a94-6200-4798-82eb-190177fa841c/kezwf18r_w2556_h1396.jpeg" alt="Mobile theme preview effect" />
 
