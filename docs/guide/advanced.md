@@ -80,7 +80,7 @@ In order to make the management of the project's internal component library easi
 
 The usage is very simple:
 
-Install `@umijs/preset-dumi` in the existing Umi project into `devDependencies`, and then configure `resolve.includes` as needed (for example, it is agreed that the `src/components` directory is business components Documents corresponding to libraries and component libraries).
+Install `@umijs/preset-dumi` in the existing Umi project into `devDependencies`, and then configure `resolve.includes` as needed (for example, the `src/components` directory usually conventional defined as business component libraries and the documents corresponding to libraries).
 
 ## Use with Umi UI
 
