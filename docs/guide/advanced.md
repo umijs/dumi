@@ -237,7 +237,7 @@ The effect is roughly as follows:
 
 ### Custom API table rendering
 
-Like other built-in components, the `API` component also supports replication through the theme API.
+Like other built-in components, the `API` component also supports override through the theme API.
 
 You only need to create a `.dumi/theme/builtins/API.tsx` (local theme) or create a theme package containing `API.tsx`, combining with the `useApiData` hook exposed by `dumi/theme`, you can control the rendering of the API table yourself.
 
