@@ -30,7 +30,7 @@ Now we want to increase the Chinese version of the site. Just create a Markdown 
   </ul>
 </Tree>
 
-In this way, dumi will render the English homepage when a user visits `www.example.com`, and dumi will render the Chinese homepage when visiting `www.example.com/zh-CN`. 
+In this way, dumi will render the English homepage when visiting `www.example.com`, while rendering the Chinese homepage when visiting `www.example.com/zh-CN`. 
 
 The same is true for other pages. Just like the official website of dumi you are browsing.
 
