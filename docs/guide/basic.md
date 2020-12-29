@@ -8,7 +8,7 @@ toc: menu
 
 ### Common project
 
-The directory structure of a common component library that uses dumi for research and development is roughly as follows:
+The directory structure of a common component library that based on dumi is roughly as follows:
 
 <Tree>
   <ul>
