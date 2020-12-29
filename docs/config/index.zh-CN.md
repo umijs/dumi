@@ -74,9 +74,15 @@ export default {
 - 默认值：`doc`
 - 详细：
 
-用于设定文档的展现模式，默认为文档模式（左侧菜单 + 右侧内容），配置为 `site` 时可无缝切换为站点模式（导航头 + 左侧菜单 + 右侧内容）。如果希望对导航菜单项展示的文本和顺序，可参考 frontmatter 配置中的 `nav` 配置项。
+用于设定文档的展现模式，默认为文档模式，配置为 `site` 时可无缝切换为站点模式。如果希望对导航菜单项展示的文本和顺序，可参考 frontmatter 配置中的 `nav` 配置项。
 
-两种模式的效果可见 [指南 - 多种呈现模式](/zh-CN/guide/mode)。
+两种模式的效果如下，文档模式：
+
+![](https://gw.alipayobjects.com/zos/bmw-prod/86ddc125-75e0-49e0-920b-f9497e806cf1/k7iyfr0t_w2600_h1754.png)
+
+站点模式：
+
+![](https://gw.alipayobjects.com/zos/bmw-prod/7ce6770d-df19-48fa-853e-64cbbf41b762/k7iyfarw_w2600_h1754.png)
 
 ## menus
 
@@ -84,7 +90,30 @@ export default {
 - 默认值：`自动生成的菜单`
 - 详细：
 
-该配置项用于自定义侧边菜单的展示，目前仅 `site` 模式下可用，分多语言模式和单语言模式，使用方式详见 [指南 - 配置式侧边菜单](/zh-CN/guide/control-menu-generate#配置式侧边菜单)。
+该配置项用于自定义侧边菜单的展示，目前仅 `site` 模式下可用，分多语言模式和单语言模式，使用方式：
+
+```ts
+// config/config.ts 或 .umirc.ts
+export default {
+  menus: {
+    // 需要自定义侧边菜单的路径，没有配置的路径还是会使用自动生成的配置
+    '/guide': [
+      {
+        title: '菜单项',
+        path: '菜单路由（可选）',
+        children: [
+          // 菜单子项（可选）
+          'guide/index.md', // 对应的 Markdown 文件，路径是相对于 resolve.includes 目录识别的
+        ],
+      },
+    ],
+    // 如果该路径有其他语言，需在前面加上语言前缀，需与 locales 配置中的路径一致
+    '/zh-CN/guide': [
+      // 省略，配置同上
+    ],
+  },
+};
+```
 
 ## navs
 
@@ -92,22 +121,47 @@ export default {
 - 默认值：`自动生成的导航`
 - 详细：
 
-该配置项用于自定义导航栏的展示，仅 `site` 模式下可用，分多语言模式和单语言模式，使用方式详见 [指南 - 配置式导航](/zh-CN/guide/control-nav-generate#配置式导航)。
+该配置项用于自定义导航栏的展示，仅 `site` 模式下可用，分多语言模式和单语言模式，使用方式：
 
-可通过如下形式嵌套二级导航菜单，目前暂不支持更多层级嵌套：
-
-```js
+```ts
+// config/config.ts 或 .umirc.ts
 export default {
+  // 单语言配置方式如下
   navs: [
+    null, // null 值代表保留约定式生成的导航，只做增量配置
+    {
+      title: 'GitHub',
+      path: 'https://github.com/umijs/dumi',
+    },
     {
       title: '我有二级导航',
       path: '链接是可选的',
+      // 可通过如下形式嵌套二级导航菜单，目前暂不支持更多层级嵌套：
       children: [
         { title: '第一项', path: 'https://d.umijs.org' },
         { title: '第二项', path: '/guide' },
       ],
     },
   ],
+
+  // 多语言配置方式如下
+  navs: {
+    // 多语言 key 值需与 locales 配置中的 key 一致
+    'en-US': [
+      null, // null 值代表保留约定式生成的导航，只做增量配置
+      {
+        title: 'GitHub',
+        path: 'https://github.com/umijs/dumi',
+      },
+    ],
+    'zh-CN': [
+      null, // null 值代表保留约定式生成的导航，只做增量配置
+      {
+        title: 'GitHub',
+        path: 'https://github.com/umijs/dumi',
+      },
+    ],
+  },
 };
 ```
 
