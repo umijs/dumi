@@ -213,7 +213,7 @@ Which means that only one of  `docs/index.md` and `src/index.md` will be recogni
 
 ### Customize navigation, grouping and titles
 
-If you want to control the generation of navigation/grouping/page title, you can do this by **writing FrontMatter at the top of the Markdown file**:
+If you want to control the generation of navigation/grouping/titles, you can control it by **writing FrontMatter at the top of the Markdown file**:
 
 
 ```markdown
