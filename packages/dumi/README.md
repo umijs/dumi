@@ -72,6 +72,8 @@ $ yarn dev
           <strong>react-component</strong>
         </a>
       </td>
+    </tr>
+    <tr>
       <td align="center">
         <a target="_blank" href="https://ggeditor.com">
           <img
