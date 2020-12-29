@@ -70,7 +70,7 @@ The directory structure of a common component library that based on dumi is roug
   </ul>
 </Tree>
 
-If it is a pure document site without component source code, just ignore the above `src` directory structure.
+If it is a pure document site without component source code, just ignore the `src` directory above.
 
 Note that only the directory structure is explained here.
 
