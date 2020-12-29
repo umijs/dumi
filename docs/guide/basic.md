@@ -33,7 +33,7 @@ The directory structure of a common component library that uses dumi for researc
     </li>
     <li>
       src
-      <small>Source directory</small>
+      <small>Source code directory</small>
       <ul>
         <li>
           Button
