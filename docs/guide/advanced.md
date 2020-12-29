@@ -73,7 +73,7 @@ There is no need to publish a separate npm package, but also need to be iterated
 
 In order to make the management of the project's internal component library easier, dumi launched the Umi project integration mode:
 
-- **Automatic detection**: When `dependencies` or `devDependencies` contains `umi` and `@umijs/preset-dumi`, it will enter the integrated mode (you no longer need to install the `dumi` package separately)
+- **Automatic detection**: When `dependencies` or `devDependencies` contains `umi` and `@umijs/preset-dumi`, it will open the integrated mode automaticly (you no longer need to install the `dumi` package)
 - **Isolated**: All dumi documents will be concentrated under the `/~docs` route, which is isolated from the original project and does not interfere with each other. It can be understood that the standard dumi documents have added a specific routing prefix, including the user's navigation and menu routing configuration
 - **Does not affect production**: Integrate only when `NODE_ENV` is `development`, and does not affect the production build of the project
 - **Can be built separately**: If you need to build a document separately for deployment, you can execute `umi build --dumi` to get a dumi site product in non-integrated mode. `--dumi` is also available under the `umi dev` command
