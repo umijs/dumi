@@ -147,7 +147,7 @@ $ npm run build
 $ npm version patch -m "build: bump version to %s"
 ```
 
-### 5. Used during Umi UI
+### 5. Used in Umi UI
 
 Initialize the Umi application, install Umi UI and link the component library we just made:
 
