@@ -32,7 +32,7 @@ Now we want to increase the Chinese version of the site. Just create a Markdown 
 
 In this way, dumi will render the English homepage when visiting `www.example.com`, while rendering the Chinese homepage when visiting `www.example.com/zh-CN`. 
 
-The same is true for other pages. Just like the official website of dumi you are browsing.
+It's same for other pages, just like the official website of dumi you are browsing now.
 
 ### Default language
 
