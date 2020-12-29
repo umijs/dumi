@@ -67,7 +67,7 @@ When a user visits `www.example.com/zh-CN/missing`, dumi will present the conten
 
 In addition to independent component libraries, most of our projects will also have their own internal components.
 
-The management of these internal component libraries is usually a headache.
+It's usually troublesome to manage these internal component libraries.
 
 There is no need to publish a separate npm package, but also need to be iterated, updated, Description, handover.
 
