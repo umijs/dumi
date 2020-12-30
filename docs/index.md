@@ -1,9 +1,9 @@
 ---
-title: dumi - A Umi-based doc tool can assist you to develop libraries & write docs.
+title: dumi - A doc tool can assist you to develop libraries & write docs.
 order: 10
 hero:
   title: dumi
-  desc: 📖 A Umi-based doc tool can assist you to develop libraries & write docs.
+  desc: 📖 A doc tool can assist you to develop libraries & write docs.
   actions:
     - text: Getting Started
       link: /guide
@@ -31,7 +31,7 @@ footer: Open-source MIT Licensed | Copyright © 2019-present<br />Powered by sel
 
 ## Who are using
 
-<embed src="../packages/dumi/README.md#L28-L124"></embed>
+<embed src="../packages/dumi/README.md#L28-L117"></embed>
 
 ## Feedback
 

@@ -1,5 +1,5 @@
 ---
-title: dumi - 基于 Umi、为组件开发场景而生的文档工具
+title: dumi - 为组件开发场景而生的文档工具
 order: 10
 hero:
   title: dumi
@@ -31,7 +31,7 @@ footer: Open-source MIT Licensed | Copyright © 2019-present<br />Powered by sel
 
 ## 谁在使用
 
-<embed src="../packages/dumi/README.md#L28-L124"></embed>
+<embed src="../packages/dumi/README.md#L28-L117"></embed>
 
 ## 反馈与共建
 
