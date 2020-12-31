@@ -125,7 +125,7 @@ export default async (api: IApi) => {
 
 ### `dumi.modifyAssetsMeta`
 
-用于修改 `dumi assets` 命令产出的资产元数据，如果不了解什么是资产元数据，可访问 [进阶使用 - 与 Umi UI 一起使用](/zh-CN/guide/advanced#和-umi-ui-一起使用)。
+用于修改 `dumi assets` 命令产出的资产元数据，如果不了解什么是资产元数据，可访问 [进阶使用 - UI 资产数据化](/zh-CN/guide/advanced#ui-资产数据化)。
 
 该 API 通常用于定制自己团队的资产元数据内容，比如内部有个自动生成 demo 缩略图的服务，可以通过该方式修改最终打进 npm 包的资产元数据。调用方式：
 

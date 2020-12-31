@@ -131,7 +131,7 @@ export default async (api: IApi) => {
 
 Used to modify the asset metadata produced by the `dumi assets` command.
 
-If you don’t know what asset metadata is, you can visit [Advanced - Use with Umi UI](/guide/advanced#use-with-umi-ui).
+If you don’t know what asset metadata is, you can visit [Advanced - UI assets meta data](/guide/advanced#ui-assets-meta-data).
 
 This API is usually used to customize the asset metadata content of your team. For example, there is an internal service that automatically generates demo thumbnails.
 

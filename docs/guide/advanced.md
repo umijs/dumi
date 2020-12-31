@@ -30,7 +30,7 @@ Now we want to increase the Chinese version of the site. Just create a Markdown 
   </ul>
 </Tree>
 
-In this way, dumi will render the English homepage when visiting `www.example.com`, while rendering the Chinese homepage when visiting `www.example.com/zh-CN`. 
+In this way, dumi will render the English homepage when visiting `www.example.com`, while rendering the Chinese homepage when visiting `www.example.com/zh-CN`.
 
 It's same for other pages, just like the official website of dumi you are browsing now.
 
@@ -63,7 +63,7 @@ Obviously `missing.zh-CN.md` is missing.
 
 When a user visits `www.example.com/zh-CN/missing`, dumi will present the content of `missing.md` to the user.
 
-## Use with Umi project
+## Umi integrated mode
 
 In addition to independent component libraries, most of our projects will also have their own internal components.
 
@@ -82,9 +82,13 @@ The usage is very simple:
 
 Install `@umijs/preset-dumi` in the existing Umi project into `devDependencies`, and then configure `resolve.includes` as needed (for example, the `src/components` directory usually conventional defined as business component libraries and the documents corresponding to libraries).
 
-## Use with Umi UI
+## UI assets meta data
 
-The usage process is shown in the figure below:
+How to understand assets meta data? From the developer's perspective, in a narrow sense, any entity that can be produced to help downstream improve efficiency can be called an asset, such as components, documents, component APIs, component demos & etc.
+
+In the process of component development, we create assets all the time. The released npm package is naturally an asset, but the written TypeScript type definitions and carefully prepared component library demos are also assets. Now only one command is needed to digitize the assets completed by dumi and the developer. This data can Follow the npm package iteration, release, and then transfer to downstream tools.
+
+We select Umi UI for example, the usage process is shown in the figure below:
 
 <p style="text-align: center;">
   <img src="https://gw.alipayobjects.com/zos/bmw-prod/b6bc8d0a-c83e-4cd7-91fb-2464e8974a8a/kijxaoib_w2078_h1757.png" width="800" >

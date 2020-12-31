@@ -51,7 +51,7 @@ toc: menu
 
 很显然 `missing.zh-CN.md` 是缺失的，用户在访问 `www.example.com/zh-CN/missing` 时，dumi 会把 `missing.md` 的内容呈现给用户。
 
-## 和 Umi 项目一起使用
+## Umi 项目集成模式
 
 除了独立的组件库以外，我们大多数的项目还会有自己的内部组件，这些内部的组件库管理通常是一个很头疼的问题，既不需要发布单独的 npm 包，又需要进行迭代、更新、说明、交接；为了让项目内部组件库管理这件事变得更加轻松，dumi 推出了 Umi 项目集成模式：
 
@@ -62,9 +62,13 @@ toc: menu
 
 使用方式很简单：在已有 Umi 项目中安装 `@umijs/preset-dumi` 到 `devDependencies` 中，再根据需要配置 `resolve.includes` 即可（比如约定 `src/components` 目录下为业务组件库和组件库对应的文档）。
 
-## 和 Umi UI 一起使用
+## UI 资产数据化
 
-使用流程如下图所示：
+如何理解资产？从开发者视角狭义的理解，只要是生产出来可以帮助下游提效的实体，都可以称之为资产，比如组件、文档、组件 API、组件 demo 等等。
+
+我们在组件研发的过程中，无时无刻不在创建着资产。发布的 npm 包自然是资产，但编写的 TypeScript 类型定义、精心准备的组件库 demo 也都是资产，现在只需一行命令，即可将 dumi 与开发者共同完成的资产数据化，这份数据可以跟随 npm 包迭代、发布，进而流转给下游工具使用。
+
+此处拿下游工具——Umi UI 作为例子演示资产数据化的使用流程，如下图所示：
 
 <p style="text-align: center;">
   <img src="https://gw.alipayobjects.com/zos/bmw-prod/a873195d-32fe-427d-9756-a002d7644d85/kc5y7qpk_w2078_h1757.png" width="800" >
