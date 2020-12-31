@@ -1,11 +1,11 @@
 import React from 'react';
-import type { IRoute } from '@umijs/types';
-import type { INav } from '../routes/getNavFromRoutes';
-import type { IMenu } from '../routes/getMenuFromRoutes';
-import type { ILocale } from '../routes/getLocaleFromRoutes';
-import type { IDumiOpts } from '..';
+import { IRoute } from '@umijs/types';
+import { INav } from '../routes/getNavFromRoutes';
+import { IMenu } from '../routes/getMenuFromRoutes';
+import { ILocale } from '../routes/getLocaleFromRoutes';
+import { IDumiOpts } from '..';
 
-export type IThemeContext = {
+export interface IThemeContext {
   /**
    * documentation config
    */

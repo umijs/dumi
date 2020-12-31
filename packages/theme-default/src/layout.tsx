@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import type { IRouteComponentProps } from '@umijs/types';
+import { IRouteComponentProps } from '@umijs/types';
 import { context, Link } from 'dumi/theme';
 import Navbar from './components/Navbar';
 import SideMenu from './components/SideMenu';
