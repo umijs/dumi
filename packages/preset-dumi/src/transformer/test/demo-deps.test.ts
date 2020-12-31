@@ -53,7 +53,7 @@ describe('demo transformer: dependencies', () => {
       fileAbsPath: filePath,
     });
 
-    expect(result.dependencies.react).not.toBeUndefined();
+    expect(result.dependencies.typescript).not.toBeUndefined();
   });
 
   it('detect CSS files for dependency', () => {
