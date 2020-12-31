@@ -14,12 +14,12 @@ describe('embed md example', () => {
   });
 
   it('transform md to jsx', () => {
-    const result = transformer.markdown(fs.readFileSync(FILE_PATH, 'utf-8').toString(), FILE_PATH).content;
+    const result = transformer.markdown(fs.readFileSync(FILE_PATH, 'utf8').toString(), FILE_PATH).content;
 
     // compare transform content
     expect(winEOL(result).replace(/(require\(')[^]*?(\/packages)/g, '$1$2')).toEqual(
       winEOL(
-        fs.readFileSync(path.join(__dirname, '../fixtures/expect/remark-embed.html'), 'utf-8').toString(),
+        fs.readFileSync(path.join(__dirname, '../fixtures/expect/remark-embed.html'), 'utf8').toString(),
       ),
     );
   });

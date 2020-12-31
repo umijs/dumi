@@ -151,7 +151,7 @@ function generatePreviewerProps(
   if (isExternalDemo) {
     const lang = node.properties.filePath.match(/\.(\w+)$/)[1];
     const { meta, content } = transformer.code(
-      fs.readFileSync(node.properties.filePath, 'utf-8').toString(),
+      fs.readFileSync(node.properties.filePath, 'utf8').toString(),
     );
 
     fileAbsPath = node.properties.filePath;

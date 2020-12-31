@@ -17,7 +17,7 @@ describe('component api example', () => {
 
   it('transform api for component md', () => {
     const filePath = path.join(fixtures, 'Hello', 'index.md');
-    const result = transformer.markdown(fs.readFileSync(filePath, 'utf-8').toString(), filePath).content;
+    const result = transformer.markdown(fs.readFileSync(filePath, 'utf8').toString(), filePath).content;
 
     // compare transform content
     expect(result).toEqual(
@@ -29,7 +29,7 @@ describe('component api example', () => {
 
   it('transform api when specific src path', () => {
     const filePath = path.join(fixtures, 'custom-src.md');
-    const result = transformer.markdown(fs.readFileSync(filePath, 'utf-8').toString(), filePath).content;
+    const result = transformer.markdown(fs.readFileSync(filePath, 'utf8').toString(), filePath).content;
 
     // compare transform content
     expect(result).toEqual(
@@ -41,7 +41,7 @@ describe('component api example', () => {
 
   it('transform api and show specific exports', () => {
     const filePath = path.join(fixtures, 'custom-exports.md');
-    const result = transformer.markdown(fs.readFileSync(filePath, 'utf-8').toString(), filePath).content;
+    const result = transformer.markdown(fs.readFileSync(filePath, 'utf8').toString(), filePath).content;
 
     // compare transform content
     expect(result).toEqual(
@@ -52,7 +52,7 @@ describe('component api example', () => {
 
   it('transform api and render correct slugs', () => {
     const filePath = path.join(fixtures, 'api-slugs.md');
-    const result = transformer.markdown(fs.readFileSync(filePath, 'utf-8').toString(), filePath);
+    const result = transformer.markdown(fs.readFileSync(filePath, 'utf8').toString(), filePath);
 
     // compare transform meta
     expect(result.meta.slugs).toEqual([
@@ -66,7 +66,7 @@ describe('component api example', () => {
 
   it('should guess filename as component name', () => {
     const filePath = path.join(fixtures, 'guess-name.md');
-    const result = transformer.markdown(fs.readFileSync(filePath, 'utf-8').toString(), filePath);
+    const result = transformer.markdown(fs.readFileSync(filePath, 'utf8').toString(), filePath);
 
     expect(result.content).toContain('identifier="World"');
   });

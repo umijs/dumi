@@ -6,7 +6,7 @@ describe('basic example', () => {
   const FILE_PATH = path.join(__dirname, '../fixtures/raw/remark-header.md');
 
   it('transform md to jsx', () => {
-    const result = transformer.markdown(fs.readFileSync(FILE_PATH, 'utf-8').toString(), FILE_PATH);
+    const result = transformer.markdown(fs.readFileSync(FILE_PATH, 'utf8').toString(), FILE_PATH);
 
     expect(result.meta.slugs).toEqual([
       { depth: 1, value: 'H1', heading: 'h1' },

@@ -6,7 +6,7 @@ describe('home example', () => {
   const FILE_PATH = path.join(__dirname, '../fixtures/raw/remark-home.md');
 
   it('transform md to jsx', () => {
-    const result = transformer.markdown(fs.readFileSync(FILE_PATH, 'utf-8').toString(), FILE_PATH).meta;
+    const result = transformer.markdown(fs.readFileSync(FILE_PATH, 'utf8').toString(), FILE_PATH).meta;
     // compare transform content
     expect(result.hero).not.toBeUndefined();
     expect(result.features).not.toBeUndefined();

@@ -12,7 +12,7 @@ describe('demo transformer: dependencies', () => {
 
   it('basic analysis', () => {
     const filePath = path.join(__dirname, '../fixtures/demo-deps/normal/index.tsx');
-    const result = analyzeDeps(fs.readFileSync(filePath, 'utf-8').toString(), {
+    const result = analyzeDeps(fs.readFileSync(filePath, 'utf8').toString(), {
       isTSX: true,
       fileAbsPath: filePath,
     });
@@ -23,7 +23,7 @@ describe('demo transformer: dependencies', () => {
 
   it('multi level', () => {
     const filePath = path.join(__dirname, '../fixtures/demo-deps/multi-levels/index.ts');
-    const result = analyzeDeps(fs.readFileSync(filePath, 'utf-8').toString(), {
+    const result = analyzeDeps(fs.readFileSync(filePath, 'utf8').toString(), {
       isTSX: false,
       fileAbsPath: filePath,
     });
@@ -36,7 +36,7 @@ describe('demo transformer: dependencies', () => {
 
   it('circular reference', () => {
     const filePath = path.join(__dirname, '../fixtures/demo-deps/circular/index.ts');
-    const result = analyzeDeps(fs.readFileSync(filePath, 'utf-8').toString(), {
+    const result = analyzeDeps(fs.readFileSync(filePath, 'utf8').toString(), {
       isTSX: false,
       fileAbsPath: filePath,
     });
@@ -48,7 +48,7 @@ describe('demo transformer: dependencies', () => {
 
   it("merge dep's peerDependencies", () => {
     const filePath = path.join(__dirname, '../fixtures/demo-deps/peer/index.ts');
-    const result = analyzeDeps(fs.readFileSync(filePath, 'utf-8').toString(), {
+    const result = analyzeDeps(fs.readFileSync(filePath, 'utf8').toString(), {
       isTSX: false,
       fileAbsPath: filePath,
     });
@@ -71,7 +71,7 @@ describe('demo transformer: dependencies', () => {
     await service.init();
 
     const filePath = path.join(__dirname, '../fixtures/demo-deps/local-pkgs/test.ts');
-    const result = analyzeDeps(fs.readFileSync(filePath, 'utf-8').toString(), {
+    const result = analyzeDeps(fs.readFileSync(filePath, 'utf8').toString(), {
       isTSX: false,
       fileAbsPath: filePath,
     });

@@ -18,7 +18,7 @@ interface ISingleRoutetDemos {
 export default (api: IApi) => {
   const demos: ISingleRoutetDemos = {};
   const generateDemosFile = api.utils.lodash.debounce(async () => {
-    const tpl = fs.readFileSync(path.join(__dirname, 'demos.mst'), 'utf-8');
+    const tpl = fs.readFileSync(path.join(__dirname, 'demos.mst'), 'utf8');
     const groups: { [key: string]: any[] } = {};
     const items = Object.keys(demos).map(uuid => {
       const { componentName } = demos[uuid].previewerProps;

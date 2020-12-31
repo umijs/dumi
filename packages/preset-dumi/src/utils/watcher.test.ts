@@ -5,7 +5,7 @@ import {
 } from './watcher';
 
 function triggerFileChange(filePath: string) {
-  fs.writeFileSync(filePath, fs.readFileSync(filePath, 'utf-8'));
+  fs.writeFileSync(filePath, fs.readFileSync(filePath, 'utf8'));
 }
 
 describe('util: watcher', () => {

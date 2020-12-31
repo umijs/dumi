@@ -22,7 +22,7 @@ describe('loader', () => {
     const filePath = path.join(fixture, 'normal.md');
     const result = await loader.call(
       { resource: filePath, resourcePath: filePath },
-      fs.readFileSync(filePath, 'utf-8').toString(),
+      fs.readFileSync(filePath, 'utf8').toString(),
     );
 
     // expect prepend demos
@@ -39,7 +39,7 @@ describe('loader', () => {
     process.env.NODE_ENV = 'production';
     const result = await loader.call(
       { resource: filePath, resourcePath: filePath },
-      fs.readFileSync(filePath, 'utf-8').toString(),
+      fs.readFileSync(filePath, 'utf8').toString(),
     );
     process.env.NODE_ENV = oEnv;
 
@@ -51,7 +51,7 @@ describe('loader', () => {
     const filePath = path.join(fixture, 'katex.md');
     const result = await loader.call(
       { resource: filePath, resourcePath: filePath },
-      fs.readFileSync(filePath, 'utf-8').toString(),
+      fs.readFileSync(filePath, 'utf8').toString(),
     );
 
     // expect import Katex css file
@@ -62,11 +62,11 @@ describe('loader', () => {
     const filePath = path.join(fixture, 'normal.md');
     const singleLine = await loader.call(
       { resource: filePath, resourcePath: filePath, resourceQuery: '?range=L1' },
-      fs.readFileSync(filePath, 'utf-8').toString(),
+      fs.readFileSync(filePath, 'utf8').toString(),
     );
     const rangeLines = await loader.call(
       { resource: filePath, resourcePath: filePath, resourceQuery: '?range=L3-L5' },
-      fs.readFileSync(filePath, 'utf-8').toString(),
+      fs.readFileSync(filePath, 'utf8').toString(),
     );
 
     // expect get correct line
