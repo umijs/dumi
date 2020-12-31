@@ -27,13 +27,13 @@ describe('demo example', () => {
   });
 
   it('transform md to jsx', () => {
-    const result = transformer.markdown(fs.readFileSync(FILE_PATH).toString(), FILE_PATH).content;
+    const result = transformer.markdown(fs.readFileSync(FILE_PATH, 'utf8').toString(), FILE_PATH).content;
 
     // compare transform content
     expect(clearVersion(winEOL(result))).toEqual(
       clearVersion(
         winEOL(
-          fs.readFileSync(path.join(__dirname, '../fixtures/expect/remark-demo.html')).toString(),
+          fs.readFileSync(path.join(__dirname, '../fixtures/expect/remark-demo.html'), 'utf8').toString(),
         ),
       ),
     );

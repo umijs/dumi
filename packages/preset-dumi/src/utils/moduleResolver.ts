@@ -117,5 +117,5 @@ export const getModuleResolveContent = ({
 }: IModuleResolverOpts) => {
   const resolvePath = getModuleResolvePath({ basePath, sourcePath, extensions });
 
-  return resolvePath ? fs.readFileSync(resolvePath).toString() : '';
+  return resolvePath ? fs.readFileSync(resolvePath, 'utf8').toString() : '';
 };

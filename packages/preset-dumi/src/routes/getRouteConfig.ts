@@ -82,10 +82,7 @@ export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
       });
 
       // use example component as original example component
-      route.component = path.relative(
-        path.join(paths.absTmpPath, 'core'),
-        path.join(__dirname, '../themes/default/builtins/Example'),
-      );
+      route.component = theme.builtins.concat(theme.fallbacks).find(i => i.identifier === 'Example').modulePath;
       route.meta.examplePath = examplePath;
     }
   });

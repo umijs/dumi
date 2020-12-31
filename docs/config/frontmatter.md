@@ -1,38 +1,41 @@
 ---
-title: FrontMatter
 toc: menu
 ---
 
 # FrontMatter
 
-Like most documentation tools, in order to enable Markdown files to perform configurations capabilities, dumi also provides some FrontMatter configurations; There are some specials that dumi not only supports Markdown files for FrontMatter configuration, but also supports FrontMatter configuration of TSX/JSX imported by external demos.
+FrontMatter refers to the part where the text is configured at the **top of the file**. In dumi, FrontMatter is written in YAML syntax; in addition to the Markdown file, dumi also supports the configuration of FrontMatter for demo display in the demo. Let’s look at two Examples:
 
-The FrontMatter for Markdown files is as follows:
+Write FrontMatter in Markdown file:
 
-<pre>---
-title: title content
+<pre lang="md">---
+title: The title content
 ---
 </pre>
 
-The FrontMatter for TSX/JSX files is as follows:
+Write FrontMatter in the demo:
 
-<pre>
+<pre lang="js">
 /**
- * title: title content
+ * title: The title content
  */
 </pre>
 
-## The FrontMatter configurations supported by Markdown
+Both the form of code blocks and external demos support FrontMatter. The external demos not only support configuration in the source code, but also add attributes to the `code` tag for configuration, such as:
+
+```html
+<code src="/path/to/demo.tsx" title="This way you can also configure the demo title"></code>
+```
+
+## Markdown configurations
 
 ### title
 
 - Type: `String`
-- Default: `null`
+- Default: The first heading of the body
 - Details:
 
 Configure the page title, which will be used as the subtitle of the page title and the left menu.
-
-If the user does not configure, the website title will only present the main title; The name of the left menu defaults to the file name of the Markdown file (without suffix).
 
 ### sidemenu
 
@@ -216,7 +219,7 @@ Configure the footer of the current page. It is recommended to configure the hom
 
 Whether to present the 『Help Translation』 prompt at the top of the page.
 
-### hide <Badge>1.1.0-beta.30+</Badge>
+### hide <Badge>1.1.0+</Badge>
 
 - Type: `Boolean`
 - Default: `false`
@@ -224,7 +227,7 @@ Whether to present the 『Help Translation』 prompt at the top of the page.
 
 You can hide specific documentation that you do not want to display on the webpack in production env, and this option does not affect the development env.
 
-## FrontMatter configurations supported by TSX/JSX
+## Demo configurations
 
 ### title
 
@@ -282,7 +285,7 @@ It is used to control whether the demo wrapper sets the CSS value of `transform`
 
 It is used to control whether the demo wrapper expands the presentation of source code by default.
 
-### debug <Badge>1.1.0-beta.30+</Badge>
+### debug <Badge>1.1.0+</Badge>
 
 - Type: `Boolean`
 - Default: `false`
@@ -320,18 +323,10 @@ Configure via frontmatter:
 // Both of the above methods can be identified
 ```
 
-### iframe <Badge>1.1.0-beta.30+</Badge>
+### iframe <Badge>1.1.0+</Badge>
 
 - Type: `Boolean | Number`
 - Default: `false`
 - Details:
 
-Use iframe mode to render this demo, it is very useful for layout demo, we can control the iframe height via pass a number value, check out [iframe mode](/guide/control-demo-render#iframe-mode) to get more informations.
-
-### Controlled by `code` tag
-
-All configurations supported by TSX/JSX can also be used when importing external demos using the `code` tag, like this:
-
-```html
-<code title="title" desc="desc" src="/path/to/demo" />
-```
+Use iframe mode to render this demo, it is very useful for layout demo, we can control the iframe height via pass a number value, check out [iframe mode](/guide/basic#iframe-mode) to get more informations.

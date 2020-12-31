@@ -9,7 +9,7 @@ const expectPath = path.join(__dirname, 'fixtures', 'expect');
 function assertResult(filename) {
   expect(winEOL(JSON.stringify(parser(path.join(rawPath, filename)), null, 2))).toEqual(
     winEOL(
-      fs.readFileSync(path.join(expectPath, `${path.basename(filename, '.tsx')}.json`)).toString(),
+      fs.readFileSync(path.join(expectPath, `${path.basename(filename, '.tsx')}.json`), 'utf8').toString(),
     ),
   );
 }

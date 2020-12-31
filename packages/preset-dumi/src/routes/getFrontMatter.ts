@@ -7,7 +7,7 @@ import transformer from '../transformer';
  */
 export default (fileAbsPath: string): { [key: string]: any } => {
   const { ext } = path.parse(fileAbsPath);
-  const content = fs.readFileSync(fileAbsPath).toString();
+  const content = fs.readFileSync(fileAbsPath, 'utf8').toString();
   let meta;
 
   switch (ext) {

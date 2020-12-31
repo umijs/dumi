@@ -48,7 +48,7 @@ describe('moduleResolver', () => {
 
   it('get expected local module content', () => {
     const content = getModuleResolveContent({ basePath: __dirname, sourcePath: '../context' });
-    const expectedContent = fs.readFileSync(path.join(__dirname, '../context.ts')).toString();
+    const expectedContent = fs.readFileSync(path.join(__dirname, '../context.ts'), 'utf8').toString();
 
     expect(content).toEqual(expectedContent);
   });

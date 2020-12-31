@@ -18,8 +18,14 @@ export const getDemoRouteName = () => {
  * @param demoId  demo identifier
  */
 export const getDemoUrl = (demoId: string) => {
+  const {
+    location: { href, origin },
+  } = window;
+  const [base, hashRoute] = href.split(/#\//);
+  const isHashRoute = typeof hashRoute === 'string';
+
   return [
-    window.location.origin,
+    isHashRoute ? `${base}#` : origin,
     // compatible with (empty), /base & /base/
     `${(window as any)?.routerBase || ''}/`.replace(/\/\/$/, '/'),
     getDemoRouteName(),
