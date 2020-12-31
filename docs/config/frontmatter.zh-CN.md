@@ -1,38 +1,41 @@
 ---
-title: FrontMatter
 toc: menu
 ---
 
 # FrontMatter
 
-和大多数文档工具一样，为了使 Markdown 文件能发挥出配置能力，dumi 也不能免俗地提供了一些 FrontMatter 的配置；有些特殊的是，dumi 不仅支持 Markdown 文件进行 FrontMatter 配置，也支持外部 Demo 引入的 TSX/JSX 文件的 FrontMatter 配置。
+FrontMatter 是指**文件最顶部**对正文进行配置的部分，在 dumi 中，FrontMatter 均以 YAML 语法进行编写；除了 Markdown 文件，dumi 也支持在 demo 中配置用于 demo 展示的 FrontMatter，来看两个范例：
 
-Markdown 文件的 FrontMatter 编写方法如下：
+在 Markdown 文件中编写 FrontMatter：
 
-<pre>---
+<pre lang="md">---
 title: 标题内容
 ---
 </pre>
 
-TSX/JSX 文件的 FrontMatter 编写方法如下：
+在 demo 中编写 FrontMatter：
 
-<pre>
+<pre lang="js">
 /**
  * title: 标题内容
  */
 </pre>
 
-## Markdown 支持的 FrontMatter 配置项
+无论是代码块的形式还是外部 demo，均支持 FrontMatter，外部 demo 不仅支持在源代码中进行配置，也可以给 `code` 标签添加属性进行配置，比如：
+
+```html
+<code src="/path/to/demo.tsx" title="这样也可以配置 demo 标题"></code>
+```
+
+## Markdown 配置项
 
 ### title
 
 - 类型：`String`
-- 默认值：`null`
+- 默认值：正文第一个标题
 - 详细：
 
 用于配置该页面的标题，将会被用作该页面标题的子标题以及左侧菜单。
-
-如果用户不进行配置，网站标题将会仅显示主标题；左侧菜单项名称默认为该 Markdown 文件的文件名（不含后缀）。
 
 ### sidemenu
 
@@ -195,8 +198,8 @@ hero:
 ```yaml
 features:
   - icon: 图标的 URL 地址，建议切图尺寸为 144 * 144（可选）
-    title: 特性标题
-    link: 可以配置跳转链接
+    title: 性能强大
+    link: 可为标题配置超链接
     desc: 可以配置 `markdown` 文本
 ```
 
@@ -216,7 +219,7 @@ features:
 
 是否在该页面顶部展示『帮助翻译』的提示框。
 
-### hide <Badge>1.1.0-beta.30+</Badge>
+### hide <Badge>1.1.0+</Badge>
 
 - 类型：`Boolean`
 - 默认值：`false`
@@ -224,7 +227,7 @@ features:
 
 如果你暂时不希望在生产环境的站点中展示某些文档，可以打开这个配置临时隐藏它，该配置不会影响开发环境的渲染。
 
-## TSX/JSX 支持的 FrontMatter 配置项
+## demo 配置项
 
 ### title
 
@@ -282,7 +285,7 @@ features:
 
 用于控制当前 demo 的包裹容器是否默认展开源代码显示。
 
-### debug <Badge>1.1.0-beta.30+</Badge>
+### debug <Badge>1.1.0+</Badge>
 
 - 类型：`Boolean`
 - 默认值：`false`
@@ -320,18 +323,10 @@ features:
 // 以上两种方式均可识别
 ```
 
-### iframe <Badge>1.1.0-beta.30+</Badge>
+### iframe <Badge>1.1.0+</Badge>
 
 - 类型：`Boolean | Number`
 - 默认值：`false`
 - 详细：
 
-使用 iframe 模式渲染当前 demo，对于渲染 layout 型的 demo 非常有用，当我们传递数值时可以控制 iframe 的高度，访问 [iframe 模式](/zh-CN/guide/control-demo-render#iframe-模式) 了解更多。
-
-### 通过 `code` 标签控制
-
-所有 TSX/JSX 支持的配置项，在使用 `code` 标签引入外部 demo 时也可以使用，就像这样：
-
-```html
-<code title="标题" desc="说明文字" src="/path/to/demo" />
-```
+使用 iframe 模式渲染当前 demo，对于渲染 layout 型的 demo 非常有用，当我们传递数值时可以控制 iframe 的高度，访问 [iframe 模式](/zh-CN/guide/basic#iframe-模式) 了解更多。

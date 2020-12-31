@@ -4,60 +4,6 @@ export default {
   title: 'dumi',
   mode: 'site',
   favicon: 'https://img.alicdn.com/tfs/TB1YHEpwUT1gK0jSZFhXXaAtVXa-28-27.svg',
-  menus: {
-    '/zh-CN/guide': [
-      {
-        title: '介绍',
-        children: ['guide/index', 'guide/getting-started'],
-      },
-      {
-        title: '写组件 Demo',
-        children: ['guide/demo-principle', 'guide/demo-types', 'guide/control-demo-render'],
-      },
-      {
-        title: '控制菜单和路由生成',
-        children: [
-          'guide/control-route-generate',
-          'guide/control-menu-generate',
-          'guide/control-nav-generate',
-        ],
-      },
-      {
-        title: '更多用法',
-        children: ['guide/mode', 'guide/multi-language', 'guide/seo'],
-      },
-      {
-        title: '其他',
-        children: ['guide/migration', 'guide/faq'],
-      },
-    ],
-    '/guide': [
-      {
-        title: 'Introducation',
-        children: ['guide/index', 'guide/getting-started'],
-      },
-      {
-        title: 'How to write a demo',
-        children: ['guide/demo-principle', 'guide/demo-types', 'guide/control-demo-render'],
-      },
-      {
-        title: 'Control and generate',
-        children: [
-          'guide/control-route-generate',
-          'guide/control-menu-generate',
-          'guide/control-nav-generate',
-        ],
-      },
-      {
-        title: 'More usage',
-        children: ['guide/mode', 'guide/multi-language', 'guide/seo'],
-      },
-      {
-        title: 'Others',
-        children: ['guide/migration', 'guide/faq'],
-      },
-    ],
-  },
   navs: {
     'en-US': [
       null,

@@ -1,5 +1,6 @@
 ---
-title: FAQ
+title: 常见问题
+order: 4
 ---
 
 ## dumi 和 Umi 的关系是什么？

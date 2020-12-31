@@ -32,7 +32,7 @@ $ yarn dev
       <td align="center">
         <a target="_blank" href="https://umijs.org">
           <img
-            width="32"
+            width="40"
             src="https://gw.alipayobjects.com/zos/bmw-prod/598d14af-4f1c-497d-b579-5ac42cd4dd1f/k7bjua9c_w132_h130.png"
           />
           <br>
@@ -42,8 +42,7 @@ $ yarn dev
       <td align="center">
         <a target="_blank" href="https://ahooks.js.org/">
           <img
-            height="32"
-            style="vertical-align: -0.32em; margin-right: 8px;"
+            height="40"
             src="https://ahooks.js.org/logo.svg"
           />
           <br>
@@ -53,8 +52,7 @@ $ yarn dev
       <td align="center">
         <a target="_blank" href="https://procomponents.ant.design/">
           <img
-            width="32"
-            style="vertical-align: -0.32em; margin-right: 8px;"
+            width="40"
             src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
           />
           <br>
@@ -64,19 +62,19 @@ $ yarn dev
       <td align="center">
         <a target="_blank" href="https://github.com/react-component">
           <img
-            width="32"
-            style="vertical-align: -0.32em; margin-right: 8px;"
+            width="40"
             src="https://avatars3.githubusercontent.com/u/9441414?s=200&v=4"
           />
           <br>
           <strong>react-component</strong>
         </a>
       </td>
+    </tr>
+    <tr>
       <td align="center">
         <a target="_blank" href="https://ggeditor.com">
           <img
-            width="32"
-            style="vertical-align: -0.32em; margin-right: 8px;"
+            width="40"
             src="https://img.alicdn.com/tfs/TB1FFA1CFP7gK0jSZFjXXc5aXXa-214-200.png"
           />
           <br>
@@ -86,8 +84,7 @@ $ yarn dev
       <td align="center">
         <a target="_blank" href="https://remaxjs.org">
           <img
-            width="32"
-            style="vertical-align: -0.32em; margin-right: 8px;"
+            width="40"
             src="https://gw.alipayobjects.com/mdn/rms_b5fcc5/afts/img/A*1NHAQYduQiQAAAAAAAAAAABkARQnAQ"
           />
           <br>
@@ -97,8 +94,7 @@ $ yarn dev
       <td align="center">
         <a target="_blank" href="https://lightproxy.org">
           <img
-            width="32"
-            style="vertical-align: -0.32em; margin-right: 8px;"
+            width="40"
             src="https://user-images.githubusercontent.com/5436704/81533849-83e00f00-9399-11ea-943d-ac5fd4653906.png"
           />
           <br>
@@ -108,8 +104,7 @@ $ yarn dev
       <td align="center">
         <a target="_blank" href="https://juejin-im.github.io/open-source/">
           <img
-            width="32"
-            style="vertical-align: -0.32em; margin-right: 8px;"
+            width="40"
             src="https://avatars3.githubusercontent.com/u/69633008?s=200&v=4"
           />
           <br>

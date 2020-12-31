@@ -1,25 +1,23 @@
 ---
 order: 1
-nav:
-  order: 2
-  title: 配置项
 toc: menu
+nav:
+  title: 配置项
+  order: 3
 ---
-
-<Alert>
-提示：dumi 基于 Umi，即除了本页提到的配置项以外，还支持 <a target="_blank" href="https://umijs.org/zh-CN/config">所有 Umi 的配置项</a>，并且也支持 <a target="_blank" href="https://umijs.org/zh-CN/plugins/preset-react">Umi 生态的插件</a>。
-</Alert>
 
 # Config
 
-dumi 基于 Umi，配置的方式与 Umi 项目一致，使用 `.umirc.js` 或 `config/config.js` 都可进行配置，内容大致如下：
+在项目根目录创建 `.umirc.ts` 或 `config/config.ts` 文件，都可对 dumi 进行配置：
 
-```js
-// 配置文件内容
+```ts
+// 配置文件
 export default {
-  // 配置项
+  // 具体配置项
 };
 ```
+
+目前 dumi 支持以下配置项。
 
 ## algolia
 
@@ -27,7 +25,7 @@ export default {
 - 默认值：`null`
 - 详细：
 
-配置 Algolia 的 [DocSearch](https://docsearch.algolia.com/) 服务。
+配置 Algolia 的 [DocSearch](https://docsearch.algolia.com/) 服务，通常你会需要启用 sitemap.xml 的自动生成，以便顺利接入 Algolia，参考 [配置项 - sitemap](#sitemap)。
 
 示例：
 
@@ -40,13 +38,6 @@ export default {
 }
 ```
 
-## base
-
-- Type: `string`
-- Default: `/`
-
-设置路由前缀，通常用于部署到非根目录。
-
 ## description
 
 - 类型：`String`
@@ -54,41 +45,6 @@ export default {
 - 详细：
 
 配置文档的介绍，会显示在侧边栏菜单标题的下方，仅 `doc` 模式下可用。
-
-## dynamicImport
-
-- Type: `object`
-- Default: `false`
-
-是否启用按需加载，即是否把构建产物进行拆分，在需要的时候下载额外的 JS 再执行。
-
-详见：[Umi 配置 - dynamicImport](https://umijs.org/zh-CN/config#dynamicimport);
-
-## exportStatic
-
-- Type: `object`
-
-配置 html 的输出形式，默认只输出 `index.html`。
-
-如果开启 `exportStatic`，则会针对每个路由输出 html 文件。
-
-详见：[Umi 配置 - exportStatic](https://umijs.org/zh-CN/config#exportstatic);
-
-## favicon
-
-- Type: `string`
-
-配置 favicon 地址（href 属性）。
-
-比如，
-
-```js
-export default {
-  favicon: '/assets/favicon.ico',
-};
-```
-
-> 如果要使用本地的图片，图片请放到 `public` 目录
 
 ## logo
 
@@ -118,9 +74,15 @@ export default {
 - 默认值：`doc`
 - 详细：
 
-用于设定文档的展现模式，默认为文档模式（左侧菜单 + 右侧内容），配置为 `site` 时可无缝切换为站点模式（导航头 + 左侧菜单 + 右侧内容）。如果希望对导航菜单项展示的文本和顺序，可参考 frontmatter 配置中的 `nav` 配置项。
+用于设定文档的展现模式，默认为文档模式，配置为 `site` 时可无缝切换为站点模式。如果希望对导航菜单项展示的文本和顺序，可参考 frontmatter 配置中的 `nav` 配置项。
 
-两种模式的效果可见 [指南 - 多种呈现模式](/zh-CN/guide/mode)。
+两种模式的效果如下，文档模式：
+
+![](https://gw.alipayobjects.com/zos/bmw-prod/86ddc125-75e0-49e0-920b-f9497e806cf1/k7iyfr0t_w2600_h1754.png)
+
+站点模式：
+
+![](https://gw.alipayobjects.com/zos/bmw-prod/7ce6770d-df19-48fa-853e-64cbbf41b762/k7iyfarw_w2600_h1754.png)
 
 ## menus
 
@@ -128,7 +90,30 @@ export default {
 - 默认值：`自动生成的菜单`
 - 详细：
 
-该配置项用于自定义侧边菜单的展示，目前仅 `site` 模式下可用，分多语言模式和单语言模式，使用方式详见 [指南 - 配置式侧边菜单](/zh-CN/guide/control-menu-generate#配置式侧边菜单)。
+该配置项用于自定义侧边菜单的展示，目前仅 `site` 模式下可用，分多语言模式和单语言模式，使用方式：
+
+```ts
+// config/config.ts 或 .umirc.ts
+export default {
+  menus: {
+    // 需要自定义侧边菜单的路径，没有配置的路径还是会使用自动生成的配置
+    '/guide': [
+      {
+        title: '菜单项',
+        path: '菜单路由（可选）',
+        children: [
+          // 菜单子项（可选）
+          'guide/index.md', // 对应的 Markdown 文件，路径是相对于 resolve.includes 目录识别的
+        ],
+      },
+    ],
+    // 如果该路径有其他语言，需在前面加上语言前缀，需与 locales 配置中的路径一致
+    '/zh-CN/guide': [
+      // 省略，配置同上
+    ],
+  },
+};
+```
 
 ## navs
 
@@ -136,28 +121,53 @@ export default {
 - 默认值：`自动生成的导航`
 - 详细：
 
-该配置项用于自定义导航栏的展示，仅 `site` 模式下可用，分多语言模式和单语言模式，使用方式详见 [指南 - 配置式导航](/zh-CN/guide/control-nav-generate#配置式导航)。
+该配置项用于自定义导航栏的展示，仅 `site` 模式下可用，分多语言模式和单语言模式，使用方式：
 
-可通过如下形式嵌套二级导航菜单，目前暂不支持更多层级嵌套：
-
-```js
+```ts
+// config/config.ts 或 .umirc.ts
 export default {
+  // 单语言配置方式如下
   navs: [
+    null, // null 值代表保留约定式生成的导航，只做增量配置
+    {
+      title: 'GitHub',
+      path: 'https://github.com/umijs/dumi',
+    },
     {
       title: '我有二级导航',
       path: '链接是可选的',
+      // 可通过如下形式嵌套二级导航菜单，目前暂不支持更多层级嵌套：
       children: [
         { title: '第一项', path: 'https://d.umijs.org' },
         { title: '第二项', path: '/guide' },
       ],
     },
   ],
+
+  // 多语言配置方式如下
+  navs: {
+    // 多语言 key 值需与 locales 配置中的 key 一致
+    'en-US': [
+      null, // null 值代表保留约定式生成的导航，只做增量配置
+      {
+        title: 'GitHub',
+        path: 'https://github.com/umijs/dumi',
+      },
+    ],
+    'zh-CN': [
+      null, // null 值代表保留约定式生成的导航，只做增量配置
+      {
+        title: 'GitHub',
+        path: 'https://github.com/umijs/dumi',
+      },
+    ],
+  },
 };
 ```
 
 ## resolve
 
-`resolve` 是一个 `Object` 类型，包含如下配置：
+`resolve` 是一个 `Object` 类型，用于配置 dumi 的解析行为，包含如下配置：
 
 ### includes
 
@@ -175,38 +185,7 @@ export default {
 
 配置 dumi 默认会转换为 ReactComponent 组件渲染的代码块，如果不希望做任何转换，例如类似 Umi 官网的纯站点，那么将该项设置为空数组即可。
 
-## publicPath
-
-- Type: `String`
-- Default: `/`
-
-配置 webpack 的 publicPath。当打包的时候，webpack 会在静态文件路径前面添加 `publicPath` 的值，当你需要修改静态文件地址时，比如使用 CDN 部署，把 `publicPath` 的值设为 CDN 的值就可以。
-
-## routes
-
-- 类型：`Array`
-- 默认值：`null`
-- 详细：
-
-配置式路由，配置方式与 Umi 一致，可通过 `meta` 属性传递支持的 [frontmatter](/zh-CN/config/frontmatter) 属性。
-
-## ssr
-
-- Type: `object`
-- Default: `false`
-
-配置是否开启服务端渲染，开启后所有路由会预渲染为 HTML，有利于搜索引擎爬取。
-
-详见：[Umi 配置 - ssr](https://umijs.org/zh-CN/config#ssr);
-
-## scripts
-
-- Type: `Array`
-- Default: `[]`
-
-同 [headScripts](https://umijs.org/config#headscripts)，配置 `<body>` 里的额外脚本。
-
-## sitemap <Badge>1.1.0-beta.30+</Badge>
+## sitemap
 
 - Type: `{ hostname: string, excludes?: string[] }`
 - Default: `null`
@@ -216,32 +195,18 @@ export default {
 ## title
 
 - 类型：`String`
-- 默认值：`package.name`
+- 默认值：`{package.name}`
 - 详细：
 
-配置文档的名称，通常是所开发的组件的名称。
+配置文档的名称，导航栏或侧边栏上。
 
-## theme
+## themeConfig
 
 - 类型：`Object`
-- 默认值：`默认主题`
+- 默认值：`{}`
 - 详细：
 
-主题颜色变量名称参照 https://github.com/umijs/dumi/blob/master/packages/theme-default/src/style/variables.less
+用于配置当前使用的主题包，具体配置项取决于主题包提供哪些配置，可访问 [主题列表](/zh-CN/theme) 查看目前可用的主题。
 
-```js
-  theme: {
-    '@c-primary': '#ff652f',
-  }
-```
-
-## targets
-
-- Type: `object`
-- Default: `{ chrome: 49, firefox: 64, safari: 10, edge: 13, ios: 10 }`
-
-配置需要兼容的浏览器最低版本，会自动引入 polyfill 和做语法转换。
-
-## 其他配置
-
-详见 Umi 的 [官方文档](https://umijs.org/zh-CN/config)。
+<!-- 以下是 Umi 配置项，由 scripts/sync-from-umi.js 从 Umi 仓库同步及过滤 -->
+<embed src="../.upstream/config.md"></embed>
