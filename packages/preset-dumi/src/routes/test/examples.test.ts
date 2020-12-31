@@ -14,7 +14,7 @@ describe('routes: examples', () => {
         cwd,
         paths: { cwd, absNodeModulesPath: cwd },
         ApplyPluginsType: {},
-        applyPlugins: (() => ({ layoutPaths: { _: '' } })) as any,
+        applyPlugins: (() => ({ layoutPaths: { _: '' }, builtins: [{ identifier: 'Example', modulePath: '' }], fallbacks: [] })) as any,
       } as IApi,
       {} as IDumiOpts,
     );
