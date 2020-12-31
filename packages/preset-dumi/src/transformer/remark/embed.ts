@@ -44,7 +44,7 @@ export default function embed(): IDumiUnifiedTransformer {
                   ),
                   [EMBED_SLUGS]: transformer.markdown(
                     getFileRangeLines(
-                      fs.readFileSync(absPath).toString(),
+                      fs.readFileSync(absPath, 'utf-8').toString(),
                       parsed.hash?.replace('#', ''),
                     ),
                     absPath,

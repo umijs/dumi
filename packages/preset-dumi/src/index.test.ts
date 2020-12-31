@@ -279,7 +279,7 @@ describe('preset-dumi', () => {
     });
 
     // expect sitemap.xml content correctly
-    expect(fs.readFileSync(path.join(api.paths.absOutputPath, 'sitemap.xml')).toString()).toEqual(
+    expect(fs.readFileSync(path.join(api.paths.absOutputPath, 'sitemap.xml'), 'utf-8').toString()).toEqual(
       '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://d.umijs.org/</loc></url><url><loc>https://d.umijs.org/test</loc></url></urlset>',
     );
   });
