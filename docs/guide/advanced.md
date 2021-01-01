@@ -86,7 +86,7 @@ Install `@umijs/preset-dumi` in the existing Umi project into `devDependencies`,
 
 How to understand assets meta data? From the developer's perspective, in a narrow sense, any entity that can be produced to help downstream improve efficiency can be called an asset, such as components, documents, component APIs, component demos & etc.
 
-In the process of component development, we create assets all the time. The released npm package is naturally an asset, but the written TypeScript type definitions and carefully prepared component library demos are also assets. Now only one command is needed to digitize the assets completed by dumi and the developer. This data can Follow the npm package iteration, release, and then transfer to downstream tools.
+In the process of component development, we create assets all the time. The released npm package is naturally an asset, and the written TypeScript type definitions and carefully prepared component library demos are also assets. Now only one command is needed to digitize the assets completed by dumi and the developer. This data can Follow the npm package iteration, release, and then transfer to downstream tools.
 
 We select Umi UI for example, the usage process is shown in the figure below:
 
