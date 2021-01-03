@@ -1,3 +1,3 @@
-import Clipboard from 'react-clipboard.js';
+import Clipboard from 'react-docgen-typescript';
 
 export default Clipboard;
