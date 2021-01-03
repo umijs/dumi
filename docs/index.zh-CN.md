@@ -31,7 +31,7 @@ footer: Open-source MIT Licensed | Copyright © 2019-present<br />Powered by sel
 
 ## 谁在使用
 
-<embed src="../packages/dumi/README.md#L28-L117"></embed>
+<embed src="../packages/dumi/README.md#L29-L97"></embed>
 
 ## 反馈与共建
 
