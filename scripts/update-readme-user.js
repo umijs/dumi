@@ -25,7 +25,7 @@ let users = [
   },
   {
     name: 'GGEditor',
-    url: 'https://ggeditor.com"',
+    url: 'https://ggeditor.com',
     logo: 'https://img.alicdn.com/tfs/TB1FFA1CFP7gK0jSZFjXXc5aXXa-214-200.png'
   },
   {

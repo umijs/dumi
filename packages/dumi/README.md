@@ -36,7 +36,7 @@ $ yarn dev
 </a>
 </td>
 <td width="160" align="center">
-<a target="_blank" href="https://ggeditor.com"">
+<a target="_blank" href="https://ggeditor.com">
   <img src="https://img.alicdn.com/tfs/TB1FFA1CFP7gK0jSZFjXXc5aXXa-214-200.png" height="40" />
   <br />
   <strong>GGEditor</strong>
