@@ -61,11 +61,16 @@ if (lastNo != 0) row += 1;
 for (let j = 1; j <= row; j++) {
   let data = '';
   data = `  <tr>
-    <td width="160" align="center">${getShow(users[(j-1)*5])}</td>
-    <td width="160" align="center">${getShow(users[(j-1)*5+1])}</td>
-    <td width="160" align="center">${getShow(users[(j-1)*5+2])}</td>
-    <td width="160" align="center">${getShow(users[(j-1)*5+3])}</td>
-    <td width="160" align="center">${getShow(users[(j-1)*5+4])}</td>
+    <td width="160" align="center">${getShow(users[(j-1)*5])}
+    </td>
+    <td width="160" align="center">${getShow(users[(j-1)*5+1])}
+    </td>
+    <td width="160" align="center">${getShow(users[(j-1)*5+2])}
+    </td>
+    <td width="160" align="center">${getShow(users[(j-1)*5+3])}
+    </td>
+    <td width="160" align="center">${getShow(users[(j-1)*5+4])}
+    </td>
   </tr>`;
   table += data
 };
@@ -91,6 +96,23 @@ const newReadme = readmeBefore + table + readmeAfter;
 writeFileSync('./packages/dumi/README.md', newReadme);
 console.log(`🎉 Update readme user done!`);
 
+const readmeArr = newReadme.split('\n');
+const start = readmeArr.indexOf('<table>') + 1;
+const end = readmeArr.indexOf('</table>') + 1;
+// 可对照验证下~
+console.log(readmeArr.length, start, end)
+const newSrc = `<embed src="../packages/dumi/README.md#L${start}-L${end}"></embed>`
+
+let en = readFileSync('./docs/index.md', 'utf8');
+let cn = readFileSync('./docs/index.zh-CN.md', 'utf8');
+en = en.replace(/^<embed.*embed>$/g, newSrc);
+cn= cn.replace(/^<embed.*embed>$/g, newSrc);
+
+writeFileSync('./docs/index.md', en);
+console.log(`🎉 Update doc user en done!`);
+writeFileSync('./docs/index.zh-CN.md', cn);
+console.log(`🎉 Update doc user cn done!`);
+
 // **************************************************************************
 
 function getShow (o) {
@@ -100,8 +122,7 @@ function getShow (o) {
         <img src="${o.logo}" height="40" />
         <br />
         <strong>${o.name}</strong>
-      </a>
-`
+      </a>`
   }
   return ``
 };
