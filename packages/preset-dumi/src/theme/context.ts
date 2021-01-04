@@ -28,6 +28,7 @@ export interface IThemeContext {
     repository: {
       url?: string;
       branch: string;
+      platform?: string;
     };
     /**
      * logo image URL

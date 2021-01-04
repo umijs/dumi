@@ -46,7 +46,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
     meta,
     locale,
   } = useContext(context);
-  const { url: repoUrl, branch } = repository;
+  const { url: repoUrl, branch, platform } = repository;
   const [menuCollapsed, setMenuCollapsed] = useState<boolean>(true);
   const isSiteMode = mode === 'site';
   const showHero = isSiteMode && meta.hero;
@@ -62,7 +62,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
   const updatedTime: any = new Date(meta.updatedTime).toLocaleString([], { hour12: false });
   const repoPlatform = { github: 'GitHub', gitlab: 'GitLab' }[
     (repoUrl || '').match(/(github|gitlab)/)?.[1] || 'nothing'
-  ];
+  ] || platform;
 
   return (
     <div
