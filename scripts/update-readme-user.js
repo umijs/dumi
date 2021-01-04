@@ -60,13 +60,13 @@ let lastNo = users.length % 5;
 if (lastNo != 0) row += 1;
 for (let j = 1; j <= row; j++) {
   let data = '';
-  data = `<tr>
-<td width="160" align="center">${getShow(users[(j-1)*5])}</td>
-<td width="160" align="center">${getShow(users[(j-1)*5+1])}</td>
-<td width="160" align="center">${getShow(users[(j-1)*5+2])}</td>
-<td width="160" align="center">${getShow(users[(j-1)*5+3])}</td>
-<td width="160" align="center">${getShow(users[(j-1)*5+4])}</td>
-</tr>`;
+  data = `  <tr>
+    <td width="160" align="center">${getShow(users[(j-1)*5])}</td>
+    <td width="160" align="center">${getShow(users[(j-1)*5+1])}</td>
+    <td width="160" align="center">${getShow(users[(j-1)*5+2])}</td>
+    <td width="160" align="center">${getShow(users[(j-1)*5+3])}</td>
+    <td width="160" align="center">${getShow(users[(j-1)*5+4])}</td>
+  </tr>`;
   table += data
 };
 
