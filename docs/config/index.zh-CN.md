@@ -1,4 +1,5 @@
 ---
+title: 基础配置
 order: 1
 toc: menu
 nav:
@@ -6,7 +7,7 @@ nav:
   order: 3
 ---
 
-# Config
+# 基础配置
 
 在项目根目录创建 `.umirc.ts` 或 `config/config.ts` 文件，都可对 dumi 进行配置：
 
@@ -207,6 +208,3 @@ export default {
 - 详细：
 
 用于配置当前使用的主题包，具体配置项取决于主题包提供哪些配置，可访问 [主题列表](/zh-CN/theme) 查看目前可用的主题。
-
-<!-- 以下是 Umi 配置项，由 scripts/sync-from-umi.js 从 Umi 仓库同步及过滤 -->
-<embed src="../.upstream/config.md"></embed>
