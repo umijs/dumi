@@ -193,7 +193,7 @@ const Hello: React.FC<IHelloProps> = () => <>Hello World!</>;
 export default Hello;
 ```
 
-dumi 后背的类型解析工具是 `react-docgen-typescript`，更多类型和注解的用法可参考 [它的文档](https://github.com/styleguidist/react-docgen-typescript#example)。
+dumi 背后的类型解析工具是 `react-docgen-typescript`，更多类型和注解的用法可参考 [它的文档](https://github.com/styleguidist/react-docgen-typescript#example)。
 
 ### 在文档中展示 API
 
