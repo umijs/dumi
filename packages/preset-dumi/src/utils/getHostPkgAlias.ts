@@ -16,6 +16,7 @@ function getPkgAliasForPath(absPath: string) {
 }
 
 export default (paths: IApi['paths']) => {
+  const catalogPattern = /EnumerateProviders (catalog|totalPro)=\d+/g;
   const isLerna = fs.existsSync(path.join(paths.cwd, 'lerna.json'));
   const pkgs: [string, string][] = [];
 
@@ -24,11 +25,14 @@ export default (paths: IApi['paths']) => {
     const { version: lernaVersion } = require('lerna/package.json');
 
     if (lernaVersion.startsWith('3')) {
-      JSON.parse(
-        execSync(`${path.join(paths.cwd, 'node_modules/.bin/lerna')} ls --json --all`, {
-          stdio: 'pipe',
-        }).toString(),
-      ).forEach(pkg => {
+      let res = execSync(`${path.join(paths.cwd, 'node_modules/.bin/lerna')} ls --json --all`, {
+        stdio: 'pipe',
+      }).toString();
+      // 修复windows环境下出现的 EnumerateProviders log导致的parse错误
+      if (catalogPattern.test(res)) {
+        res = res.replace(catalogPattern, "").trim()
+      }
+      JSON.parse(res).forEach(pkg => {
         pkgs.push([pkg.name, pkg.location]);
       });
     } else if (require.resolve('lerna/lib/PackageUtilities', { paths: [paths.cwd] })) {
