@@ -25,12 +25,10 @@ export default (paths: IApi['paths']) => {
     if (lernaVersion.startsWith('3')) {
       JSON.parse(execSync(`${path.join(paths.cwd, 'node_modules/.bin/lerna')} ls --json --all`, {
         stdio: 'pipe',
-      })
-        .toString()
         // fix: 修复windows环境下有多余输出导致JSON.parse报错的问题
-        .replace(/([\r\n]\])[^]*$/, '$1')).forEach(pkg => {
-          pkgs.push([pkg.name, pkg.location]);
-        });
+      }).toString().replace(/([\r\n]\])[^]*$/, '$1')).forEach(pkg => {
+        pkgs.push([pkg.name, pkg.location]);
+      });
     } else if (require.resolve('lerna/lib/PackageUtilities', { paths: [paths.cwd] })) {
       // reference: https://github.com/azz/lerna-get-packages/blob/master/index.js
       const PackageUtilities = require(require.resolve('lerna/lib/PackageUtilities', {
