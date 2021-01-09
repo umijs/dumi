@@ -45,15 +45,17 @@ export const LinkWrapper = (Component: React.FC<LinkProps | NavLinkProps>) => {
             : undefined
         }
         {...props}
-        {...(isExternal ? {} : {
-          // scroll to top while change url
-          onClick(...args) {
-            window.scrollTo({
-              top: 0,
-            });
-            props.onClick?.apply(this, args);
-          }
-        })}
+        {...(isExternal
+          ? {}
+          : {
+              // scroll to top while change url
+              onClick(...args) {
+                window.scrollTo({
+                  top: 0,
+                });
+                props.onClick?.apply(this, args);
+              },
+            })}
       />
     );
   };

@@ -21,6 +21,7 @@ dumi, pronounced like [duːmɪ], is a documentation tool for developing librarie
 - 📡 One-line command digitizes component assets and connects them with downstream productivity tools
 
 ## Getting Started
+
 ### Environment setup
 
 First, you should have [node](https://nodejs.org/en/), and ensure that the node version is 10.13 or above.

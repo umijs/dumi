@@ -28,7 +28,7 @@ export default (api: IApi) => {
       repository: {
         url: getRepoUrl(api.pkg.repository?.url || api.pkg.repository),
         branch: api.pkg.repository?.branch || 'master',
-        platform: api.pkg.repository?.platform
+        platform: api.pkg.repository?.platform,
       },
       algolia: ctx.opts.algolia,
       theme: ctx.opts.theme,

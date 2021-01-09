@@ -2,8 +2,10 @@ import React from 'react';
 import { NavLink } from '@umijs/runtime';
 import { NavLinkProps } from 'react-router-dom';
 
-function getElmScrollPosition (elm: HTMLElement) {
-  return elm.offsetTop + (elm.offsetParent ? getElmScrollPosition(elm.offsetParent as HTMLElement) : 0);
+function getElmScrollPosition(elm: HTMLElement) {
+  return (
+    elm.offsetTop + (elm.offsetParent ? getElmScrollPosition(elm.offsetParent as HTMLElement) : 0)
+  );
 }
 
 const AnchorLink: React.FC<NavLinkProps> & { scrollToAnchor: (anchor: string) => void } = props => {

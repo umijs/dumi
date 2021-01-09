@@ -60,9 +60,10 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
     !meta.gapless;
   const isCN = /^zh|cn$/i.test(locale);
   const updatedTime: any = new Date(meta.updatedTime).toLocaleString([], { hour12: false });
-  const repoPlatform = { github: 'GitHub', gitlab: 'GitLab' }[
-    (repoUrl || '').match(/(github|gitlab)/)?.[1] || 'nothing'
-  ] || platform;
+  const repoPlatform =
+    { github: 'GitHub', gitlab: 'GitLab' }[
+      (repoUrl || '').match(/(github|gitlab)/)?.[1] || 'nothing'
+    ] || platform;
 
   return (
     <div

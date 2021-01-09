@@ -27,7 +27,7 @@ const getPkgPathsFromPath = (identifier: string) => {
     absNodeModulesPath: matches[1],
     pkgName: matches[2],
   };
-}
+};
 
 /**
  * get package root path if it is a local package
@@ -42,7 +42,7 @@ const getHostPkgPath = (() => {
     }
 
     return cache.find(([name]) => name === pkg)?.[1];
-  }
+  };
 })();
 
 /**

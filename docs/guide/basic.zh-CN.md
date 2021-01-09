@@ -304,9 +304,7 @@ dumi 目前支持如下 demo 控制能力。
 
 import React from 'react';
 
-export default () => (
-  <h1 style={{ position: 'fixed', top: 0, left: 0 }}>我不会飞出去</h1>
-);
+export default () => <h1 style={{ position: 'fixed', top: 0, left: 0 }}>我不会飞出去</h1>;
 ```
 
 #### 修改背景色
@@ -395,7 +393,7 @@ export default () => '我会被直接嵌入';
 
 #### 调试型 demo
 
-设置 `debug` 为true，则该 demo 仅在开发环境下展示、且会有一个特殊标记：
+设置 `debug` 为 true，则该 demo 仅在开发环境下展示、且会有一个特殊标记：
 
 ```jsx
 /**
@@ -405,7 +403,17 @@ import React from 'react';
 import Previewer from 'dumi-theme-default/src/builtins/Previewer';
 
 export default () => (
-  <Previewer sources={{ _: { jsx: "/**\n * debug: true\n */\n\nimport React from 'react';\n\nexport default () => '我仅在开发环境下展示';" } }} dependencies={{}} debug defaultShowCode>
+  <Previewer
+    sources={{
+      _: {
+        jsx:
+          "/**\n * debug: true\n */\n\nimport React from 'react';\n\nexport default () => '我仅在开发环境下展示';",
+      },
+    }}
+    dependencies={{}}
+    debug
+    defaultShowCode
+  >
     我仅在开发环境下展示
   </Previewer>
 );

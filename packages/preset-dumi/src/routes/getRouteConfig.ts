@@ -20,11 +20,13 @@ export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
   const exampleRoutePrefix = opts.mode === 'site' ? '/_' : '/_examples/';
   const theme = await getTheme();
   const userRoutes = opts.isIntegrate
-    ? (await api.applyPlugins({
-        key: 'dumi.getRootRoute',
-        type: api.ApplyPluginsType.modify,
-        initialValue: api.userConfig.routes,
-      }))?.routes
+    ? (
+        await api.applyPlugins({
+          key: 'dumi.getRootRoute',
+          type: api.ApplyPluginsType.modify,
+          initialValue: api.userConfig.routes,
+        })
+      )?.routes
     : api.userConfig.routes;
 
   if (userRoutes) {
@@ -82,7 +84,9 @@ export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
       });
 
       // use example component as original example component
-      route.component = theme.builtins.concat(theme.fallbacks).find(i => i.identifier === 'Example').modulePath;
+      route.component = theme.builtins
+        .concat(theme.fallbacks)
+        .find(i => i.identifier === 'Example').modulePath;
       route.meta.examplePath = examplePath;
     }
   });

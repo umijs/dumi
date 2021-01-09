@@ -51,7 +51,7 @@ The introduction of the configuration document will be displayed under the sideb
 
 - Type: `String`
 - Default: The LOGO of Umi
-- Details: 
+- Details:
 
 To set the LOGO of the document.
 
@@ -210,4 +210,5 @@ Configure the name of the document on the navigation bar or sidebar.
 It's used to configure the theme package currently used. The specific configuration items depend on which configuration the theme package provides. You can visit [Theme list](/theme) to view the currently available themes.
 
 <!-- The following are Umi configuration items, which are synchronized and filtered from Umi repository by scripts/sync-from-umi.js -->
+
 <embed src="../.upstream/config.md"></embed>

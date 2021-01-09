@@ -37,11 +37,11 @@ Generate a function based on the props of `Previewer`, and open the demo in [cod
 import React from 'react';
 import { useCodeSandbox } from 'dumi/theme';
 
-export default (props) => {
+export default props => {
   const openCSB = useCodeSandbox(props);
 
-  return <button onClick={openCSB}>Click will open the demo on CodeSandbox.io</button>
-}
+  return <button onClick={openCSB}>Click will open the demo on CodeSandbox.io</button>;
+};
 ```
 
 ## useCopy
@@ -58,14 +58,11 @@ Provide copy function and copy status to facilitate source code copy and status 
 import React from 'react';
 import { useCopy } from 'dumi/theme';
 
-export default (props) => {
+export default props => {
   const [copyCode, copyStatus] = useCopy();
 
-  return (
-    <button onClick={() => copyCode('Hello')}>Click will copy text</button>
-  )
-}
-
+  return <button onClick={() => copyCode('Hello')}>Click will copy text</button>;
+};
 ```
 
 ## useSearch

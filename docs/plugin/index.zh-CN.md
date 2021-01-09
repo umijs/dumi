@@ -21,7 +21,7 @@ $ npm i @umijs/plugin-name -D
 export default {
   // 其他配置项
   field: {},
-}
+};
 ```
 
 ## 插件列表
@@ -41,7 +41,7 @@ export default {
     // 百度统计代码，配置后会启用
     baidu: '5a66cxxxxxxxxxx9e13',
   },
-}
+};
 ```
 
 更多信息可访问：[Umi 插件 - @umijs/plugin-analytics](https://umijs.org/zh-CN/plugins/plugin-analytics)。
@@ -59,7 +59,7 @@ export default {
     // 传递给 Dart Sass 或 Node Sass 的配置项，可以是一个 Function
     sassOptions: {},
   },
-}
+};
 ```
 
 更多信息可访问：[Umi 插件 - @umijs/plugin-sass](https://umijs.org/zh-CN/plugins/plugin-sass)。
@@ -72,7 +72,7 @@ export default {
 ```ts
 export default {
   esbuild: {}, // 启用 esbuild 压缩
-}
+};
 ```
 
 更多信息可访问：[Umi 插件 - @umijs/plugin-esbuild](https://umijs.org/zh-CN/plugins/plugin-esbuild)。
@@ -87,7 +87,7 @@ import { IApi } from 'dumi';
 
 export default (api: IApi) => {
   // 编写插件内容
-}
+};
 ```
 
 然后在 dumi 配置文件中启用它即可：
@@ -95,7 +95,7 @@ export default (api: IApi) => {
 ```ts
 export default {
   plugins: ['/path/to/plugin.ts'],
-}
+};
 ```
 
 ## 插件 API
@@ -120,7 +120,7 @@ export default async (api: IApi) => {
     type: api.ApplyPluginsType.modify,
     initialValue: routes,
   });
-}
+};
 ```
 
 ### `dumi.modifyAssetsMeta`
@@ -142,7 +142,7 @@ export default (api: IApi) => {
       return pkg;
     },
   });
-}
+};
 ```
 
 ### `dumi.detectCodeBlock`
@@ -161,7 +161,7 @@ export default (api: IApi) => {
       // 可以对 block 做统计、存储等
     },
   });
-}
+};
 ```
 
 ### `dumi.detectAtomAsset`
@@ -180,7 +180,7 @@ export default (api: IApi) => {
       // 可以对 atom 做统计、存储等
     },
   });
-}
+};
 ```
 
 ### `dumi.detectApi`
@@ -198,7 +198,7 @@ export default (api: IApi) => {
       // identifier 是 API 导出标识符，data 是 API 属性数据
     },
   });
-}
+};
 ```
 
 ### `dumi.modifyThemeResolved`
@@ -218,5 +218,5 @@ export default (api: IApi) => {
       return resolved;
     },
   });
-}
+};
 ```

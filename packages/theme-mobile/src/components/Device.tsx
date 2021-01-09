@@ -34,7 +34,13 @@ const Device: FC<IDeviceProps> = ({ url, className }) => {
         <button className="__dumi-default-icon" role="qrcode">
           <QRCode value={url} size={96} />
         </button>
-        <a href={url} target="_blank" rel="noreferrer" className="__dumi-default-icon" role="open-demo" />
+        <a
+          href={url}
+          target="_blank"
+          rel="noreferrer"
+          className="__dumi-default-icon"
+          role="open-demo"
+        />
       </div>
     </div>
   );

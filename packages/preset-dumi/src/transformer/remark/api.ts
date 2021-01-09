@@ -117,7 +117,9 @@ function watchComponentUpdate(absPath: string, componentName: string, identifier
 
     try {
       definitions = parser(absPath, componentName);
-    } catch (err) { /* noting */ }
+    } catch (err) {
+      /* noting */
+    }
 
     // update api data
     applyApiData(identifier, definitions);

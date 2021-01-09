@@ -11,7 +11,7 @@ export default (api: IApi) => {
       path: 'dumi/apis.json',
       content: JSON.stringify(apis, null, 2),
     });
-  }
+  };
 
   // write all apis into .umi dir
   api.onGenerateFiles(() => {

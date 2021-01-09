@@ -15,4 +15,4 @@ export default (content: string, range: string) => {
   }
 
   return content;
-}
+};
