@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import slash from 'slash2';
 import deepmerge from 'deepmerge';
-import { RouteProcessor } from '.';
+import type { RouteProcessor } from '.';
 
 function replaceLocaleForPath(
   pathname: string,

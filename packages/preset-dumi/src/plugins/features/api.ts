@@ -1,11 +1,11 @@
-import { IApi } from '@umijs/types';
-import { IApiDefinition } from '../../api-parser';
+import type { IApi } from '@umijs/types';
+import type { IApiDefinition } from '../../api-parser';
 
 /**
  * plugin for generate apis.json into .umi temp directory
  */
 export default (api: IApi) => {
-  const apis: { [key: string]: IApiDefinition } = {};
+  const apis: Record<string, IApiDefinition> = {};
   const generateApisFile = () => {
     api.writeTmpFile({
       path: 'dumi/apis.json',

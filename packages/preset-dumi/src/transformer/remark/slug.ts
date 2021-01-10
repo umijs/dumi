@@ -3,7 +3,7 @@ import visit from 'unist-util-visit';
 import toString from 'hast-util-to-string';
 import is from 'hast-util-is-element';
 import has from 'hast-util-has-property';
-import { IDumiUnifiedTransformer, IDumiElmNode } from '.';
+import type { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 import { EMBED_SLUGS } from './embed';
 
 const slugs = slugger();

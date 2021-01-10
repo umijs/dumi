@@ -2,7 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import { Service } from '@umijs/core';
 import { winEOL } from '@umijs/utils';
-import { IDumiOpts, init } from '../../context';
+import type { IDumiOpts} from '../../context';
+import { init } from '../../context';
 import transformer from '..';
 
 function clearVersion(source: string) {

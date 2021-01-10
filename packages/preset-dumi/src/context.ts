@@ -1,6 +1,6 @@
-import { IApi } from '@umijs/types';
-import { IMenuItem } from './routes/getMenuFromRoutes';
-import { INav, INavItem } from './routes/getNavFromRoutes';
+import type { IApi } from '@umijs/types';
+import type { IMenuItem } from './routes/getMenuFromRoutes';
+import type { INav, INavItem } from './routes/getNavFromRoutes';
 
 export interface IDumiOpts {
   /**
@@ -52,7 +52,7 @@ export interface IDumiOpts {
    * customize the side menu
    * @note  only available in site mode
    */
-  menus?: { [key: string]: IMenuItem[] };
+  menus?: Record<string, IMenuItem[]>;
   /**
    * customize the navigations
    * @note  only available in site mode
@@ -74,9 +74,7 @@ export interface IDumiOpts {
   /**
    * theme config
    */
-  theme: {
-    [key: string]: any;
-  };
+  theme: Record<string, any>;
 }
 
 const context: { umi?: IApi; opts?: IDumiOpts } = {};

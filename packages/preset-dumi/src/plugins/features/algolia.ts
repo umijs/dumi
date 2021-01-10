@@ -1,4 +1,4 @@
-import { IApi } from '@umijs/types';
+import type { IApi } from '@umijs/types';
 import { setOptions } from '../../context';
 
 /**

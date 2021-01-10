@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
-import Previewer, { IPreviewerProps } from 'dumi-theme-default/src/builtins/Previewer';
+import type { IPreviewerProps } from 'dumi-theme-default/src/builtins/Previewer';
+import Previewer from 'dumi-theme-default/src/builtins/Previewer';
 import debounce from 'lodash.debounce';
 import './Previewer.less';
 
@@ -55,7 +56,7 @@ export default (props: IPreviewerProps) => {
     }
 
     return () => window.removeEventListener('scroll', handler);
-  }, []);
+  }, [props]);
 
   return (
     <div className="__dumi-default-mobile-previewer" ref={ref}>

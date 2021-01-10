@@ -1,4 +1,4 @@
-import { IApi } from '@umijs/types';
+import type { IApi } from '@umijs/types';
 
 /**
  * generate a 404.html to make sure dynamic routes can be resolved on deploy platform

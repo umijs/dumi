@@ -1,4 +1,4 @@
-import { IApi, IRoute } from '@umijs/types';
+import type { IApi, IRoute } from '@umijs/types';
 import ctx from '../../context';
 import getRouteConfig, { DUMI_ROOT_FLAG } from '../../routes/getRouteConfig';
 

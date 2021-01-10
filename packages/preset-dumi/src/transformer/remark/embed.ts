@@ -5,7 +5,7 @@ import is from 'hast-util-is-element';
 import has from 'hast-util-has-property';
 import visit from 'unist-util-visit';
 import { getModuleResolvePath } from '../../utils/moduleResolver';
-import { IDumiUnifiedTransformer, IDumiElmNode } from '.';
+import type { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 import getFileRangeLines from '../../utils/getFileRangeLines';
 import transformer from '..';
 

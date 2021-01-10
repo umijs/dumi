@@ -1,7 +1,8 @@
 import '@testing-library/jest-dom';
 import React from 'react';
 import { render, act, waitFor } from '@testing-library/react';
-import { createMemoryHistory, MemoryHistory, Router } from '@umijs/runtime';
+import type { MemoryHistory} from '@umijs/runtime';
+import { createMemoryHistory, Router } from '@umijs/runtime';
 
 import Previewer from '../builtins/Previewer';
 import Layout from '../layouts';

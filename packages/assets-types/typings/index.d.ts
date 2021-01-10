@@ -1,5 +1,5 @@
-import AtomAsset from './atom';
-import ExampleAsset from './example';
+import type AtomAsset from './atom';
+import type ExampleAsset from './example';
 
 export { default as AtomAsset } from './atom';
 export { default as ExampleAsset } from './example';

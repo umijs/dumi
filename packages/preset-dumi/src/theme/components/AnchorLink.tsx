@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from '@umijs/runtime';
-import { NavLinkProps } from 'react-router-dom';
+import type { NavLinkProps } from 'react-router-dom';
 
 function getElmScrollPosition(elm: HTMLElement) {
   return (

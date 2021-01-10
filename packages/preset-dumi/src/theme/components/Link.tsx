@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from '@umijs/runtime';
-import { LinkProps, NavLinkProps } from 'react-router-dom';
+import type { LinkProps, NavLinkProps } from 'react-router-dom';
 
 /**
  * Link component wrapper for render external link

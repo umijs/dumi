@@ -1,6 +1,7 @@
 import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
-import Context, { IThemeContext } from '../context';
+import type { IThemeContext } from '../context';
+import Context from '../context';
 import useSearch from './useSearch';
 
 describe('theme API: useSearch', () => {

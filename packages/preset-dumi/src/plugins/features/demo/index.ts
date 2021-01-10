@@ -1,25 +1,23 @@
 import fs from 'fs';
 import path from 'path';
-import React from 'react';
-import { IApi, IRoute } from '@umijs/types';
+import type React from 'react';
+import type { IApi, IRoute } from '@umijs/types';
 import { createDebug } from '@umijs/utils';
 import getTheme from '../../../theme/loader';
 import { getDemoRouteName } from '../../../theme/hooks/useDemoUrl';
 
 const debug = createDebug('dumi:demos');
 
-interface ISingleRoutetDemos {
-  [key: string]: {
-    previewerProps: { [key: string]: any };
+type ISingleRoutetDemos = Record<string, {
+    previewerProps: Record<string, any>;
     component: React.ReactNode;
-  };
-}
+  }>;
 
 export default (api: IApi) => {
   const demos: ISingleRoutetDemos = {};
   const generateDemosFile = api.utils.lodash.debounce(async () => {
     const tpl = fs.readFileSync(path.join(__dirname, 'demos.mst'), 'utf8');
-    const groups: { [key: string]: any[] } = {};
+    const groups: Record<string, any[]> = {};
     const items = Object.keys(demos).map(uuid => {
       const { componentName } = demos[uuid].previewerProps;
       let demoComponent = demos[uuid].component;

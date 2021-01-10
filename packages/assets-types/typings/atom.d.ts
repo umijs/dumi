@@ -3,11 +3,7 @@
  * @note  for example, a Button component is an atom asset
  */
 
-export interface AtomPropsDefinition {
-  /**
-   * export name
-   */
-  [key: string]: {
+export type AtomPropsDefinition = Record<string, {
     /**
      * component property name
      */
@@ -34,8 +30,7 @@ export interface AtomPropsDefinition {
      * property whether required
      */
     required?: true;
-  }[];
-}
+  }[]>;
 
 export default interface AtomAsset {
   /**

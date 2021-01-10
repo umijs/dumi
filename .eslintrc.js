@@ -20,5 +20,7 @@ module.exports = {
     'react/react-in-jsx-scope': 0,
     'prefer-destructuring': 0,
     'array-callback-return': 0,
+    '@typescript-eslint/consistent-type-definitions': 0,
+    '@typescript-eslint/no-invalid-this': 0,
   },
 };

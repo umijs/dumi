@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDemoUrl } from 'dumi/theme';
 import Layout from 'dumi-theme-default/src/layout';
-import { IRouteComponentProps } from '@umijs/types';
+import type { IRouteComponentProps } from '@umijs/types';
 import Device from '../components/Device';
 import { ACTIVE_MSG_TYPE } from '../builtins/Previewer';
 import '../style/layout.less';

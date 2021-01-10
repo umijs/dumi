@@ -1,5 +1,6 @@
-import React, { ComponentProps, ReactNode } from 'react';
-import { IRouteComponentProps } from '@umijs/types';
+import type { ComponentProps, ReactNode } from 'react';
+import React from 'react';
+import type { IRouteComponentProps } from '@umijs/types';
 // @ts-ignore
 import demos from '@@/dumi/demos';
 

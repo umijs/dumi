@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
-import { IApi } from '@umijs/types';
+import type { IApi } from '@umijs/types';
 
 function getPkgAliasForPath(absPath: string) {
   const result: [string, string] = [path.basename(absPath), absPath];

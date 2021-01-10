@@ -1,7 +1,8 @@
-import { IApi } from '@umijs/types';
-import ctx, { setOptions, IDumiOpts } from '../../context';
+import type { IApi } from '@umijs/types';
+import type { IDumiOpts } from '../../context';
+import ctx, { setOptions } from '../../context';
 import { prefix } from '../../routes/decorator/integrate';
-import { INavItem } from '../../routes/getNavFromRoutes';
+import type { INavItem } from '../../routes/getNavFromRoutes';
 
 export default (api: IApi) => {
   api.describe({

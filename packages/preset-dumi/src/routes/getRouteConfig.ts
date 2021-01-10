@@ -1,13 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 import slash from 'slash2';
-import { IApi, IRoute } from '@umijs/types';
+import type { IApi, IRoute } from '@umijs/types';
 import { createDebug } from '@umijs/utils';
 import getRouteConfigFromDir from './getRouteConfigFromDir';
 import getTheme from '../theme/loader';
 import decorateRoutes from './decorator';
 import { prefix } from './decorator/integrate';
-import { IDumiOpts } from '../index';
+import type { IDumiOpts } from '../index';
 
 const debug = createDebug('dumi:routes:get');
 

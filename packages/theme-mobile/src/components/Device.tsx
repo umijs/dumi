@@ -1,4 +1,5 @@
-import React, { FC, useState, useContext } from 'react';
+import type { FC} from 'react';
+import React, { useState, useContext } from 'react';
 import QRCode from 'qrcode.react';
 import { context } from 'dumi/theme';
 import './Device.less';

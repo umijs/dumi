@@ -1,24 +1,21 @@
 import path from 'path';
 import slash from 'slash2';
-import { IRoute, IApi } from '@umijs/types';
+import type { IRoute, IApi } from '@umijs/types';
 import ctx from '../context';
-import { IDumiOpts } from '..';
+import type { IDumiOpts } from '..';
 
 export interface IMenuItem {
   path?: string;
   title: string;
-  meta?: { [key: string]: any };
+  meta?: Record<string, any>;
   children?: IMenuItem[];
 }
 
-export interface IMenu {
-  // locale level
-  [key: string]: {
+export type IMenu = Record<string, {
     // path level
     '*'?: IMenuItem[];
     [key: string]: IMenuItem[];
-  };
-}
+  }>;
 
 function isValidMenuRoutes(route: IRoute) {
   return Boolean(route.path) && !route.redirect;
@@ -124,16 +121,7 @@ export default function getMenuFromRoutes(
   paths: IApi['paths'],
 ): IMenu {
   // temporary menus mapping
-  const localeMenusMapping: {
-    // locale level
-    [key: string]: {
-      // path level
-      [key: string]: {
-        // group path level (only use for group routes by path)
-        [key: string]: IMenuItem;
-      };
-    };
-  } = {};
+  const localeMenusMapping: Record<string, Record<string, Record<string, IMenuItem>>> = {};
   const { menus: userMenus = {} } = opts;
   const localeMenus: IMenu = {};
 

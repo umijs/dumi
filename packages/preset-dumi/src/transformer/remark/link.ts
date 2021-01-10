@@ -4,7 +4,7 @@ import has from 'hast-util-has-property';
 import is from 'hast-util-is-element';
 import url from 'url';
 import raw from './raw';
-import { IDumiUnifiedTransformer, IDumiElmNode } from '.';
+import type { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 
 export default function link(): IDumiUnifiedTransformer {
   return (ast, vFile) => {

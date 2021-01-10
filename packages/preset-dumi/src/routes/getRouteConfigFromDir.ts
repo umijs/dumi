@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import slash from 'slash2';
-import { IRoute } from '@umijs/types';
-import { IDumiOpts } from '../index';
+import type { IRoute } from '@umijs/types';
+import type { IDumiOpts } from '../index';
 import ctx from '../context';
 
 const IGNORE_DIR = ['node_modules', 'fixtures'];

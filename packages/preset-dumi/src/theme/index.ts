@@ -1,4 +1,4 @@
-import { IDepAnalyzeResult } from '../transformer/demo/dependencies';
+import type { IDepAnalyzeResult } from '../transformer/demo/dependencies';
 
 export { default as context } from './context';
 export { default as Link } from './components/Link';
@@ -25,17 +25,12 @@ export interface IPreviewerComponentProps {
          */
         _: { jsx: string; tsx?: string };
       }
-    | {
-        /**
-         * other file source code which imported in demo
-         */
-        [key: string]: {
+    | Record<string, {
           import: string;
           content: string;
           // reserved for transform JSX for other TypeScript file
           tsx?: string;
-        };
-      };
+        }>;
   /**
    * third-party dependencies of demo
    */

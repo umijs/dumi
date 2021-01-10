@@ -1,9 +1,9 @@
-import { IApi } from '@umijs/types';
+import type { IApi } from '@umijs/types';
 import getLocaleFromRoutes from '../../routes/getLocaleFromRoutes';
 import getMenuFromRoutes from '../../routes/getMenuFromRoutes';
 import getNavFromRoutes from '../../routes/getNavFromRoutes';
 import getRepoUrl from '../../utils/getRepoUrl';
-import { IThemeContext } from '../../theme/context';
+import type { IThemeContext } from '../../theme/context';
 import ctx from '../../context';
 
 /**

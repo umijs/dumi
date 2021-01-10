@@ -1,7 +1,8 @@
 import path from 'path';
-import { IApi } from '@umijs/types';
+import type { IApi } from '@umijs/types';
 import getRoutes from '../getRouteConfig';
-import { init, IDumiOpts } from '../../context';
+import type { IDumiOpts } from '../../context';
+import { init } from '../../context';
 
 const FIXTURES_PATH = path.join(__dirname, '..', 'fixtures');
 
