@@ -12,7 +12,7 @@ const FILE_LIST = [
       // remove head content
       { type: 'slice', value: [13] },
       // replace h2 -> h3
-      { type: 'replace', value: [/^\n## /g, '\n### '] },
+      { type: 'replace', value: [/(\n?)##/g, '\n###'] },
       // replace jsx to jsx | pure
       { type: 'replace', value: [/\n```(jsx|tsx)\s*\n/g, '\n```$1 | pure\n'] },
       // remove badges
