@@ -24,7 +24,7 @@ export default (props: IPreviewerProps) => {
         (scrollTop > ref?.current?.offsetTop &&
           scrollTop < ref?.current?.offsetTop + ref?.current?.offsetHeight)
       ) {
-        window.postMessage({ type: ACTIVE_MSG_TYPE, value: props.identifier }, '*');
+        window.postMessage({ type: ACTIVE_MSG_TYPE, value: props }, '*');
         setIsActive(true);
       } else {
         setIsActive(false);
