@@ -1,7 +1,7 @@
 import fs from 'fs';
 
 export default class FileCache {
-  cache: { [key: string]: { filePath: string; updatedTime: number; value: any } } = {};
+  cache: Record<string, { filePath: string; updatedTime: number; value: any }> = {};
 
   add(filePath: string, value: any, key?: string) {
     this.cache[key || filePath] = {

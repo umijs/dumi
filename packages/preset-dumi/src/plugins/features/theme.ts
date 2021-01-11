@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { IApi } from '@umijs/types';
+import type { IApi } from '@umijs/types';
 import getTheme from '../../theme/loader';
 import { setOptions } from '../../context';
 

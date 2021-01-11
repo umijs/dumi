@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import LZString from 'lz-string';
-import { IPreviewerComponentProps } from '..';
+import type { IPreviewerComponentProps } from '..';
 
 const CSB_API_ENDPOINT = 'https://codesandbox.io/api/v1/sandboxes/define';
 
 // ref: https://github.com/codesandbox/codesandbox-importers/blob/master/packages/import-utils/src/api/define.ts
-function serialize(data: object) {
+function serialize(data: Record<string, any>) {
   return LZString.compressToBase64(JSON.stringify(data))
     .replace(/\+/g, '-') // Convert '+' to '-'
     .replace(/\//g, '_') // Convert '/' to '_'
@@ -14,10 +14,9 @@ function serialize(data: object) {
 
 function getTextContent(raw: string) {
   const elm = document.createElement('span');
-  let text: string;
 
   elm.innerHTML = raw;
-  text = elm.textContent;
+  const text = elm.textContent;
   elm.remove();
 
   return text;
@@ -30,8 +29,8 @@ function getTextContent(raw: string) {
 function getCSBData(opts: IPreviewerComponentProps) {
   const isTSX = Boolean(opts.sources._.tsx);
   const ext = isTSX ? '.tsx' : '.jsx';
-  const files: { [key: string]: { content: string } } = {};
-  const deps: { [key: string]: string } = {};
+  const files: Record<string, { content: string }> = {};
+  const deps: Record<string, string> = {};
   const CSSDeps = Object.values(opts.dependencies).filter(dep => dep.css);
   const appFileName = `App${ext}`;
   const entryFileName = `index${ext}`;
@@ -43,7 +42,7 @@ function getCSBData(opts: IPreviewerComponentProps) {
 
   // add react-dom dependency
   if (!deps['react-dom']) {
-    deps['react-dom'] = deps['react'] || 'latest';
+    deps['react-dom'] = deps.react || 'latest';
   }
 
   // append sandbox.config.json

@@ -1,6 +1,6 @@
 import path from 'path';
 import deepmerge from 'deepmerge';
-import { RouteProcessor } from '.';
+import type { RouteProcessor } from '.';
 import getFrontMatter from '../getFrontMatter';
 
 /**

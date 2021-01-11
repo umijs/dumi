@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { IApi } from '@umijs/types';
+import type { IApi } from '@umijs/types';
 import { init, setOptions } from '../../context';
 
 const UMI_LIKE_PKGS = ['umi', '@alipay/bigfish'];
@@ -36,7 +36,7 @@ export default (api: IApi) => {
 
   // re-enable @ & @@ umi default alias for integrated mode
   if (isIntegrateUmi) {
-    api.modifyDefaultConfig((memo) => {
+    api.modifyDefaultConfig(memo => {
       memo.alias['@'] = api.paths.absSrcPath;
       memo.alias['@@'] = api.paths.absTmpPath;
 

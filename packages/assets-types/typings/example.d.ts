@@ -50,8 +50,7 @@ export interface ExampleBlockAsset extends ExampleBaseAsset {
    * The dependencies of example asset
    * @note  a npm package can be used as a dependency, a local file alse can be used as a dependency
    */
-  dependencies: {
-    [key: string]: {
+  dependencies: Record<string, {
       /**
        * Dependency type
        * @note  NPM:  a npm package dependency, like antd
@@ -64,8 +63,7 @@ export interface ExampleBlockAsset extends ExampleBaseAsset {
        *        FILE: a local file content
        */
       value: string;
-    };
-  };
+    }>;
 }
 
 /**

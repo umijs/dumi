@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { IPreviewerComponentProps } from '..';
+import type { IPreviewerComponentProps } from '..';
 
 /**
  * execute motions
@@ -27,7 +27,9 @@ function runner(
 
       // actions
       case 'click':
+        // eslint-disable-next-line no-case-declarations
         const [, isGlobal, selector] = value.match(/^(global\()?(.+?)\)?$/) || [];
+        // eslint-disable-next-line no-case-declarations
         const container = isGlobal ? document : wrapper;
         // @ts-ignore
         container.querySelector(selector)?.click();

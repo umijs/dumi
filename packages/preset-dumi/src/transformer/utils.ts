@@ -3,7 +3,7 @@
  * transform props base on JSX rule
  * @param props   original props
  */
-export const formatJSXProps = (props: { [key: string]: any }): { [key: string]: any } => {
+export const formatJSXProps = (props: Record<string, any>): Record<string, any> => {
   const OMIT_NULL_PROPS = ['alt', 'align'];
 
   return Object.keys(props || {}).reduce((result, key) => {

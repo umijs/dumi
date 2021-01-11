@@ -94,7 +94,7 @@ The so-called theme development is essentially writing React components, but in 
 
 Constant debugging is required during the development of the theme.
 
-For local themes, dumi is fully automatically detected. As long as the `.dumi/theme` folder exists, dumi will be mounted during build; for independent theme npm packages, it needs to be written into `devDependencies `And link the npm package to the project, dumi will automatically mount the theme, for example:
+For local themes, dumi is fully automatically detected. As long as the `.dumi/theme` folder exists, dumi will be mounted during build; for independent theme npm packages, it needs to be written into `devDependencies`And link the npm package to the project, dumi will automatically mount the theme, for example:
 
 ```json
 {

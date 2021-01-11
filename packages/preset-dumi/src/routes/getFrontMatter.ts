@@ -5,7 +5,7 @@ import transformer from '../transformer';
 /**
  * extract Front Matter config from markdown file
  */
-export default (fileAbsPath: string): { [key: string]: any } => {
+export default (fileAbsPath: string): Record<string, any> => {
   const { ext } = path.parse(fileAbsPath);
   const content = fs.readFileSync(fileAbsPath, 'utf8').toString();
   let meta;

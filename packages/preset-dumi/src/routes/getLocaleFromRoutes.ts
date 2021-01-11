@@ -1,5 +1,5 @@
-import { IRoute } from '@umijs/types';
-import { IDumiOpts } from '..';
+import type { IRoute } from '@umijs/types';
+import type { IDumiOpts } from '..';
 
 export interface ILocale {
   name: string;

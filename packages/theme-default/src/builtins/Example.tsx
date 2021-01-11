@@ -7,7 +7,7 @@ export default (props: { route: any }) => {
 
   useEffect(() => {
     setHeight(elm.current.contentWindow.document.documentElement.scrollHeight);
-  }, [elm?.current]);
+  }, [elm]);
 
   return (
     props.route.meta.examplePath && (

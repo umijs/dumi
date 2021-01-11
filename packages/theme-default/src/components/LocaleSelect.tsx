@@ -1,4 +1,5 @@
-import React, { FC, useContext } from 'react';
+import type { FC} from 'react';
+import React, { useContext } from 'react';
 // @ts-ignore
 import { history } from 'dumi';
 import { context, Link } from 'dumi/theme';

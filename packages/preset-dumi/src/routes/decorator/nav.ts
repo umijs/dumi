@@ -1,4 +1,4 @@
-import { RouteProcessor } from '.';
+import type { RouteProcessor } from '.';
 
 export default (function nav(routes) {
   // only apply for site mode

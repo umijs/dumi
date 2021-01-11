@@ -1,6 +1,6 @@
 import path from 'path';
 import slash from 'slash2';
-import { RouteProcessor } from '.';
+import type { RouteProcessor } from '.';
 
 /**
  * generate route group & update route path by group path

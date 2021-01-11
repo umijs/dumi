@@ -1,5 +1,5 @@
 import React from 'react';
-import { IAProps } from './class';
+import type { IAProps } from './class';
 
 export interface IBProps extends IAProps {
   /**

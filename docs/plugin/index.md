@@ -21,7 +21,7 @@ If the plug-in provides configuration items, please configure in `config/config.
 export default {
   // Other configuration items
   field: {},
-}
+};
 ```
 
 ## Plugin list
@@ -43,7 +43,7 @@ export default {
     // Baidu statistics code, will be enabled after configuration
     baidu: '5a66cxxxxxxxxxx9e13',
   },
-}
+};
 ```
 
 For more information, please visit: [Umi plugin - @umijs/plugin-analytics](https://umijs.org/zh-CN/plugins/plugin-analytics).
@@ -61,7 +61,7 @@ export default {
     // The configuration item passed to Dart Sass or Node Sass can be a Function
     sassOptions: {},
   },
-}
+};
 ```
 
 For more information, please visit: [Umi plugin - @umijs/plugin-sass](https://umijs.org/zh-CN/plugins/plugin-sass).
@@ -74,7 +74,7 @@ For more information, please visit: [Umi plugin - @umijs/plugin-sass](https://um
 ```ts
 export default {
   esbuild: {}, // Enable esbuild compression
-}
+};
 ```
 
 For more information, please visit: [Umi plugin - @umijs/plugin-esbuild](https://umijs.org/zh-CN/plugins/plugin-esbuild).
@@ -89,7 +89,7 @@ import { IApi } from 'dumi';
 
 export default (api: IApi) => {
   // Write plugin content
-}
+};
 ```
 
 Then enable it in the dumi configuration file:
@@ -97,7 +97,7 @@ Then enable it in the dumi configuration file:
 ```ts
 export default {
   plugins: ['/path/to/plugin.ts'],
-}
+};
 ```
 
 ## Plugin API
@@ -124,7 +124,7 @@ export default async (api: IApi) => {
     type: api.ApplyPluginsType.modify,
     initialValue: routes,
   });
-}
+};
 ```
 
 ### `dumi.modifyAssetsMeta`
@@ -150,7 +150,7 @@ export default (api: IApi) => {
       return pkg;
     },
   });
-}
+};
 ```
 
 ### `dumi.detectCodeBlock`
@@ -169,7 +169,7 @@ export default (api: IApi) => {
       // You can do statistics, storage, etc. on the block
     },
   });
-}
+};
 ```
 
 ### `dumi.detectAtomAsset`
@@ -190,7 +190,7 @@ export default (api: IApi) => {
       // Statistics and storage of atom can be done
     },
   });
-}
+};
 ```
 
 ### `dumi.detectApi`
@@ -208,7 +208,7 @@ export default (api: IApi) => {
       // identifier is the API export identifier, data is the API attribute data
     },
   });
-}
+};
 ```
 
 ### `dumi.modifyThemeResolved`
@@ -228,5 +228,5 @@ export default (api: IApi) => {
       return resolved;
     },
   });
-}
+};
 ```

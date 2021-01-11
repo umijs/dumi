@@ -1,5 +1,6 @@
 import React from 'react';
-import A, { IAProps } from './class';
+import type { IAProps } from './class';
+import A from './class';
 
 export interface IBProps extends IAProps {
   ref?: React.LegacyRef<HTMLDivElement>,

@@ -42,13 +42,18 @@ FILE_LIST.forEach(file => {
   https.get(file.upstream, res => {
     let content = '';
 
-    res.on('data', chunk => { content += chunk });
+    res.on('data', chunk => {
+      content += chunk;
+    });
     res.on('end', () => {
       // execute process actions
       (file.actions || []).forEach(action => {
         switch (action.type) {
           case 'slice':
-            content = content.split(/\n/g).slice(action.value[0], action.value[1]).join('\n');
+            content = content
+              .split(/\n/g)
+              .slice(action.value[0], action.value[1])
+              .join('\n');
             break;
 
           case 'replace':

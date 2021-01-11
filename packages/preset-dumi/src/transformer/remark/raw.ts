@@ -1,13 +1,13 @@
 import visit from 'unist-util-visit';
 import has from 'hast-util-has-property';
 import raw from 'hast-util-raw';
-import { IDumiUnifiedTransformer, IDumiElmNode } from '.';
+import type { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 
 /**
  * detect properties whether has complex value
  * @param props
  */
-function hasComplexProp(props: object) {
+function hasComplexProp(props: Record<string, any>) {
   return Object.values(props).some(
     prop => ['object', 'function'].includes(typeof prop) || Array.isArray(prop),
   );

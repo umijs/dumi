@@ -48,11 +48,13 @@ const useListToTree = (nodes: ReactNode) => {
 export default (props: ComponentProps<'div'>) => {
   const data = useListToTree(props.children);
 
-  return <Tree.DirectoryTree
-    className="__dumi-site-tree"
-    showLine={{ showLeafIcon: false }}
-    selectable={false}
-    treeData={[{ key: '0', title: props.title || '<root>', children: data }]}
-    defaultExpandAll
-  />;
+  return (
+    <Tree.DirectoryTree
+      className="__dumi-site-tree"
+      showLine={{ showLeafIcon: false }}
+      selectable={false}
+      treeData={[{ key: '0', title: props.title || '<root>', children: data }]}
+      defaultExpandAll
+    />
+  );
 };

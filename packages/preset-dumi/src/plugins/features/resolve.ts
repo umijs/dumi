@@ -1,5 +1,5 @@
 import path from 'path';
-import { IApi } from '@umijs/types';
+import type { IApi } from '@umijs/types';
 import { setOptions } from '../../context';
 import getHostPkgAlias from '../../utils/getHostPkgAlias';
 

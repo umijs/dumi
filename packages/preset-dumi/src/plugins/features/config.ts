@@ -1,9 +1,9 @@
-import { IApi } from '@umijs/types';
+import type { IApi } from '@umijs/types';
 import getLocaleFromRoutes from '../../routes/getLocaleFromRoutes';
 import getMenuFromRoutes from '../../routes/getMenuFromRoutes';
 import getNavFromRoutes from '../../routes/getNavFromRoutes';
 import getRepoUrl from '../../utils/getRepoUrl';
-import { IThemeContext } from '../../theme/context';
+import type { IThemeContext } from '../../theme/context';
 import ctx from '../../context';
 
 /**
@@ -28,7 +28,7 @@ export default (api: IApi) => {
       repository: {
         url: getRepoUrl(api.pkg.repository?.url || api.pkg.repository),
         branch: api.pkg.repository?.branch || 'master',
-        platform: api.pkg.repository?.platform
+        platform: api.pkg.repository?.platform,
       },
       algolia: ctx.opts.algolia,
       theme: ctx.opts.theme,

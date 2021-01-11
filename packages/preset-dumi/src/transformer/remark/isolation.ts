@@ -1,6 +1,7 @@
-import { Node } from 'unist';
-import visit, { Visitor } from 'unist-util-visit';
-import { IDumiElmNode, IDumiUnifiedTransformer } from '.';
+import type { Node } from 'unist';
+import type { Visitor } from 'unist-util-visit';
+import visit from 'unist-util-visit';
+import type { IDumiElmNode, IDumiUnifiedTransformer } from '.';
 
 const visitor: Visitor<IDumiElmNode> = function visitor(node) {
   // wrap all noddes except previewer nodes into markdown elements for isolate styles
@@ -27,6 +28,6 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node) {
   }, []);
 };
 
-export default (options: { [key: string]: any } = {}): IDumiUnifiedTransformer => (ast: Node) => {
+export default (options: Record<string, any> = {}): IDumiUnifiedTransformer => (ast: Node) => {
   visit(ast, 'root', visitor.bind({ className: options.className || 'markdown' }));
 };

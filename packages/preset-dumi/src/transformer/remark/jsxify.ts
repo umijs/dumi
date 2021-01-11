@@ -1,4 +1,4 @@
-import { Processor } from 'unified';
+import type { Processor } from 'unified';
 import toJSX from '@mapbox/hast-util-to-jsx';
 import visit from 'unist-util-visit';
 import { formatJSXProps } from '../utils';

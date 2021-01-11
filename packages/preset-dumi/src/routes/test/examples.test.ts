@@ -1,7 +1,8 @@
 import path from 'path';
-import { IApi } from '@umijs/types';
+import type { IApi } from '@umijs/types';
 import getRoutes from '../getRouteConfig';
-import { init, IDumiOpts } from '../../context';
+import type { IDumiOpts } from '../../context';
+import { init } from '../../context';
 
 const FIXTURES_PATH = path.join(__dirname, '..', 'fixtures');
 
@@ -14,7 +15,11 @@ describe('routes: examples', () => {
         cwd,
         paths: { cwd, absNodeModulesPath: cwd },
         ApplyPluginsType: {},
-        applyPlugins: (() => ({ layoutPaths: { _: '' }, builtins: [{ identifier: 'Example', modulePath: '' }], fallbacks: [] })) as any,
+        applyPlugins: (() => ({
+          layoutPaths: { _: '' },
+          builtins: [{ identifier: 'Example', modulePath: '' }],
+          fallbacks: [],
+        })) as any,
       } as IApi,
       {} as IDumiOpts,
     );

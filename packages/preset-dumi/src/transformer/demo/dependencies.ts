@@ -10,8 +10,10 @@ import {
   getModuleResolveContent,
 } from '../../utils/moduleResolver';
 import FileCache from '../../utils/cache';
-import { IWatcherItem, listenFileOnceChange } from '../../utils/watcher';
-import { getBabelOptions, IDemoOpts } from './options';
+import type { IWatcherItem} from '../../utils/watcher';
+import { listenFileOnceChange } from '../../utils/watcher';
+import type { IDemoOpts } from './options';
+import { getBabelOptions } from './options';
 
 const cachers = {
   file: new FileCache(),
@@ -39,13 +41,11 @@ interface IAnalyzeCache {
 }
 
 export interface IDepAnalyzeResult {
-  dependencies: {
-    [key: string]: {
+  dependencies: Record<string, {
       version: string;
       css?: string;
-    };
-  };
-  files: { [key: string]: { import: string; content: string } };
+    }>;
+  files: Record<string, { import: string; content: string }>;
 }
 
 export const LOCAL_DEP_EXT = ['.jsx', '.tsx', '.js', '.ts'];

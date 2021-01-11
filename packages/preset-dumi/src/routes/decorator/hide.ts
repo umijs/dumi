@@ -1,4 +1,4 @@
-import { RouteProcessor } from '.';
+import type { RouteProcessor } from '.';
 
 /**
  * hide specific doc in production mode

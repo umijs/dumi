@@ -1,10 +1,11 @@
 import fs from 'fs';
 import path from 'path';
-import { IApi } from '@umijs/types';
+import type { IApi } from '@umijs/types';
 import ctx from '../../context';
 import getRouteConfig from '../../routes/getRouteConfig';
-import AssetsPackage, { AtomAsset } from '../../../../assets-types/typings';
-import { ExampleBlockAsset } from '../../../../assets-types/typings/example';
+import type { AtomAsset } from '../../../../assets-types/typings';
+import type AssetsPackage from '../../../../assets-types/typings';
+import type { ExampleBlockAsset } from '../../../../assets-types/typings/example';
 
 export default (api: IApi) => {
   const assetsPkg: AssetsPackage = {
@@ -23,7 +24,7 @@ export default (api: IApi) => {
   api.registerCommand({
     name: 'assets',
     async fn({ args }) {
-      const assetsOutputPath = path.resolve(api.paths.cwd, args._[0] || 'assets.json');
+      const assetsOutputPath = path.resolve(api.paths.cwd, (args._[0] || 'assets.json') as string);
       const fileName = path.parse(assetsOutputPath).base;
 
       api.logger.log(`Start to generate ${fileName}...`);

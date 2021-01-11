@@ -1,5 +1,5 @@
 import path from 'path';
-import { RouteProcessor } from '.';
+import type { RouteProcessor } from '.';
 
 /**
  * set title for route
