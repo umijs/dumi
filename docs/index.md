@@ -31,7 +31,7 @@ footer: Open-source MIT Licensed | Copyright © 2019-present<br />Powered by sel
 
 ## Who are using
 
-<embed src="../packages/dumi/README.md#L29-L98"></embed>
+<embed src="../packages/dumi/README.md#RE-/<table>[^]+?[\r\n]<\/table>/"></embed>
 
 ## Feedback
 
