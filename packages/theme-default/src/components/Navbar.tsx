@@ -2,7 +2,7 @@ import type { FC, MouseEvent } from 'react';
 import React, { useContext } from 'react';
 import { context, Link, NavLink } from 'dumi/theme';
 import LocaleSelect from './LocaleSelect';
-import SwitchDark from './SwitchDark';
+import Dark from './Dark';
 import './Navbar.less';
 
 interface INavbarProps {
@@ -61,7 +61,7 @@ const Navbar: FC<INavbarProps> = ({ onMobileMenuClick, navPrefix, location }) =>
           );
         })}
         <LocaleSelect location={location} />
-        <SwitchDark />
+        <Dark />
       </nav>
     </div>
   );
