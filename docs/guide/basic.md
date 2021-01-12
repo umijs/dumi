@@ -218,7 +218,7 @@ If you want to control the generation of navigation/grouping/titles, you can con
 ```markdown
 ---
 title: Custom page name
-nav:
+navs:
   path: /Custom navigation route
   title: Custom navigation name
   order: Control the navigation order, the smaller the number, the higher the order, the default is to sort by path length and dictionary order
