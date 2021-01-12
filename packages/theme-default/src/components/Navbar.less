@@ -15,6 +15,11 @@
   background: #fff;
   box-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.05);
 
+  .dark & {
+    background: #000;
+    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.65);
+  }
+
   @media @mobile {
     display: flex;
     justify-content: center;
@@ -46,6 +51,10 @@
     text-decoration: none;
     font-size: 24px;
     line-height: 40px;
+
+    .dark & {
+      color: rgba(255, 255, 255, 0.85);
+    }
 
     &:not([data-plaintext]) {
       padding-left: 56px;
@@ -83,6 +92,10 @@
       > a {
         color: #4d5164;
         text-decoration: none;
+
+        .dark & {
+          color: #e2e5f5;
+        }
 
         &:hover,
         &.active {
