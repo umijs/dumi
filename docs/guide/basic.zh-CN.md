@@ -210,7 +210,7 @@ dumi 默认会以 `packages/[包名]/src` 为基础路径搜寻所有子包的 M
 ```markdown
 ---
 title: 自定义页面名称
-nav:
+navs:
   path: /自定义导航路由
   title: 自定义导航名称
   order: 控制导航顺序，数字越小越靠前，默认以路径长度和字典序排序
