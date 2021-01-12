@@ -2,51 +2,53 @@ const { readFileSync, writeFileSync } = require('fs');
 
 // **************************************************************************
 
-let users = [
+const users = [
   {
     name: 'UmiJS',
     url: 'https://umijs.org',
-    logo: 'https://gw.alipayobjects.com/zos/bmw-prod/598d14af-4f1c-497d-b579-5ac42cd4dd1f/k7bjua9c_w132_h130.png'
+    logo:
+      'https://gw.alipayobjects.com/zos/bmw-prod/598d14af-4f1c-497d-b579-5ac42cd4dd1f/k7bjua9c_w132_h130.png',
   },
   {
     name: 'ahooks',
     url: 'https://ahooks.js.org/',
-    logo: 'https://ahooks.js.org/logo.svg'
+    logo: 'https://ahooks.js.org/logo.svg',
   },
   {
     name: 'Pro Components',
     url: 'https://procomponents.ant.design/',
-    logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg'
+    logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
   },
   {
     name: 'react-component',
     url: 'https://github.com/react-component',
-    logo: 'https://avatars3.githubusercontent.com/u/9441414?s=200&v=4'
+    logo: 'https://avatars3.githubusercontent.com/u/9441414?s=200&v=4',
   },
   {
     name: 'GGEditor',
     url: 'https://ggeditor.com',
-    logo: 'https://img.alicdn.com/tfs/TB1FFA1CFP7gK0jSZFjXXc5aXXa-214-200.png'
+    logo: 'https://img.alicdn.com/tfs/TB1FFA1CFP7gK0jSZFjXXc5aXXa-214-200.png',
   },
   {
     name: 'Remax',
     url: 'https://remaxjs.org',
-    logo: 'https://gw.alipayobjects.com/mdn/rms_b5fcc5/afts/img/A*1NHAQYduQiQAAAAAAAAAAABkARQnAQ'
+    logo: 'https://gw.alipayobjects.com/mdn/rms_b5fcc5/afts/img/A*1NHAQYduQiQAAAAAAAAAAABkARQnAQ',
   },
   {
     name: 'LightProxy',
     url: 'https://lightproxy.org',
-    logo: 'https://user-images.githubusercontent.com/5436704/81533849-83e00f00-9399-11ea-943d-ac5fd4653906.png'
+    logo:
+      'https://user-images.githubusercontent.com/5436704/81533849-83e00f00-9399-11ea-943d-ac5fd4653906.png',
   },
   {
     name: 'juejin-im',
     url: 'https://juejin-im.github.io/open-source/',
-    logo: 'https://avatars3.githubusercontent.com/u/69633008?s=200&v=4'
+    logo: 'https://avatars3.githubusercontent.com/u/69633008?s=200&v=4',
   },
   {
     name: 'issues-helper',
     url: 'https://actions-cool.github.io/issues-helper/',
-    logo: 'https://avatars1.githubusercontent.com/u/73879334?s=200&v=4'
+    logo: 'https://avatars1.githubusercontent.com/u/73879334?s=200&v=4',
   },
 ];
 
@@ -56,24 +58,25 @@ users.sort((a, b) => a.name.localeCompare(b.name));
 
 let table = '';
 let row = users.length / 5;
-let lastNo = users.length % 5;
-if (lastNo != 0) row += 1;
-for (let j = 1; j <= row; j++) {
+const lastNo = users.length % 5;
+if (lastNo !== 0) row += 1;
+for (let j = 1; j <= row; j += 1) {
   let data = '';
-  data = `  <tr>
-    <td width="160" align="center">${getShow(users[(j-1)*5])}
+  data = `
+  <tr>
+    <td width="160" align="center">${getShow(users[(j - 1) * 5])}
     </td>
-    <td width="160" align="center">${getShow(users[(j-1)*5+1])}
+    <td width="160" align="center">${getShow(users[(j - 1) * 5 + 1])}
     </td>
-    <td width="160" align="center">${getShow(users[(j-1)*5+2])}
+    <td width="160" align="center">${getShow(users[(j - 1) * 5 + 2])}
     </td>
-    <td width="160" align="center">${getShow(users[(j-1)*5+3])}
+    <td width="160" align="center">${getShow(users[(j - 1) * 5 + 3])}
     </td>
-    <td width="160" align="center">${getShow(users[(j-1)*5+4])}
+    <td width="160" align="center">${getShow(users[(j - 1) * 5 + 4])}
     </td>
   </tr>`;
-  table += data
-};
+  table += data;
+}
 
 table = `<table>
 ${table}
@@ -96,35 +99,18 @@ const newReadme = readmeBefore + table + readmeAfter;
 writeFileSync('./packages/dumi/README.md', newReadme);
 console.log(`🎉 Update readme user done!`);
 
-const readmeArr = newReadme.split('\n');
-const start = readmeArr.indexOf('<table>') + 1;
-const end = readmeArr.indexOf('</table>') + 1;
-// 可对照验证下~
-console.log(readmeArr.length, start, end)
-const newSrc = `<embed src="../packages/dumi/README.md#L${start}-L${end}"></embed>`
-
-let en = readFileSync('./docs/index.md', 'utf8');
-let cn = readFileSync('./docs/index.zh-CN.md', 'utf8');
-en = en.replace(/^<embed.*embed>$/g, newSrc);
-cn= cn.replace(/^<embed.*embed>$/g, newSrc);
-
-writeFileSync('./docs/index.md', en);
-console.log(`🎉 Update doc user en done!`);
-writeFileSync('./docs/index.zh-CN.md', cn);
-console.log(`🎉 Update doc user cn done!`);
-
 // **************************************************************************
 
-function getShow (o) {
+function getShow(o) {
   if (o) {
     return `
       <a target="_blank" href="${o.url}">
         <img src="${o.logo}" height="40" />
         <br />
         <strong>${o.name}</strong>
-      </a>`
+      </a>`;
   }
-  return ``
-};
+  return ``;
+}
 
 // **************************************************************************
