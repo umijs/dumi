@@ -2,7 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import { Service } from '@umijs/core';
 import { winEOL } from '@umijs/utils';
-import { IDumiOpts, init } from '../../context';
+import type { IDumiOpts} from '../../context';
+import { init } from '../../context';
 import transformer from '..';
 
 function clearVersion(source: string) {
@@ -27,13 +28,16 @@ describe('demo example', () => {
   });
 
   it('transform md to jsx', () => {
-    const result = transformer.markdown(fs.readFileSync(FILE_PATH, 'utf8').toString(), FILE_PATH).content;
+    const result = transformer.markdown(fs.readFileSync(FILE_PATH, 'utf8').toString(), FILE_PATH)
+      .content;
 
     // compare transform content
     expect(clearVersion(winEOL(result))).toEqual(
       clearVersion(
         winEOL(
-          fs.readFileSync(path.join(__dirname, '../fixtures/expect/remark-demo.html'), 'utf8').toString(),
+          fs
+            .readFileSync(path.join(__dirname, '../fixtures/expect/remark-demo.html'), 'utf8')
+            .toString(),
         ),
       ),
     );

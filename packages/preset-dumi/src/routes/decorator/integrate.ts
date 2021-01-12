@@ -1,4 +1,4 @@
-import { RouteProcessor } from '.';
+import type { RouteProcessor } from '.';
 
 /**
  * global route prefix in integrate mode

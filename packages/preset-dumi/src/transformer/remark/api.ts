@@ -1,5 +1,5 @@
 import path from 'path';
-import { Node } from 'unist';
+import type { Node } from 'unist';
 import deepmerge from 'deepmerge';
 import is from 'hast-util-is-element';
 import has from 'hast-util-has-property';
@@ -9,7 +9,7 @@ import parser from '../../api-parser';
 import { getModuleResolvePath } from '../../utils/moduleResolver';
 import { listenFileOnceChange } from '../../utils/watcher';
 import ctx from '../../context';
-import { IDumiUnifiedTransformer, IDumiElmNode } from '.';
+import type { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 
 function applyApiData(identifier: string, definitions: ReturnType<typeof parser>) {
   if (identifier && definitions) {
@@ -117,7 +117,9 @@ function watchComponentUpdate(absPath: string, componentName: string, identifier
 
     try {
       definitions = parser(absPath, componentName);
-    } catch (err) { /* noting */ }
+    } catch (err) {
+      /* noting */
+    }
 
     // update api data
     applyApiData(identifier, definitions);

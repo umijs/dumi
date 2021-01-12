@@ -1,6 +1,7 @@
 import { createDebug } from '@umijs/utils';
-import unified, { Transformer } from 'unified';
-import { Node } from 'unist';
+import type { Transformer } from 'unified';
+import unified from 'unified';
+import type { Node } from 'unist';
 import frontmatter from 'remark-frontmatter';
 import math from 'remark-math';
 import katex from 'rehype-katex';

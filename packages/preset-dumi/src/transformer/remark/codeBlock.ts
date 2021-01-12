@@ -1,7 +1,7 @@
 import visit from 'unist-util-visit';
 import { winEOL } from '@umijs/utils';
-import { Code } from 'mdast';
-import { IDumiUnifiedTransformer } from '.';
+import type { Code } from 'mdast';
+import type { IDumiUnifiedTransformer } from '.';
 import transformer from '..';
 import ctx from '../../context';
 
@@ -9,7 +9,7 @@ import ctx from '../../context';
  * parser for parse modifier of code block
  * @param meta  meta raw string
  */
-function codeBlockModifierParser(meta: string): { [key: string]: any } {
+function codeBlockModifierParser(meta: string): Record<string, any> {
   return (meta || '').split('|').reduce((result, item) => {
     item = String.prototype.trim.call(item);
 

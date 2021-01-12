@@ -1,11 +1,11 @@
 import React, { useEffect, useContext } from 'react';
-import { IRouteComponentProps } from '@umijs/types';
+import type { IRouteComponentProps } from '@umijs/types';
 import { context } from 'dumi/theme';
 import vl from 'umi-hd';
 import flex from 'umi-hd/lib/flex';
 import vw from 'umi-hd/lib/vw';
 import vh from 'umi-hd/lib/vh';
-import IThemeConfig from '../typings/config';
+import type IThemeConfig from '../typings/config';
 
 // available HD modes
 const HD_MODES = {
@@ -51,7 +51,7 @@ const MobileDemoLayout: React.FC<IRouteComponentProps> = ({ children }) => {
     window.addEventListener('resize', handler);
 
     return () => window.removeEventListener('resize', handler);
-  }, []);
+  }, [rules]);
 
   return <div className="__dumi-default-mobile-demo-layout">{children}</div>;
 };

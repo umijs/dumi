@@ -1,7 +1,8 @@
 import '@testing-library/jest-dom';
 import React from 'react';
 import { render, act, waitFor } from '@testing-library/react';
-import { createMemoryHistory, MemoryHistory, Router } from '@umijs/runtime';
+import type { MemoryHistory} from '@umijs/runtime';
+import { createMemoryHistory, Router } from '@umijs/runtime';
 
 import Previewer from '../builtins/Previewer';
 import Layout from '../layouts';
@@ -132,6 +133,7 @@ describe('mobile theme', () => {
             <Previewer
               title="demo-2"
               identifier="demo-2"
+              demoUrl="http://localhost/~demos/demo-2-custom"
               sources={{
                 _: {
                   jsx: "export default () => 'Main'",
@@ -185,7 +187,7 @@ describe('mobile theme', () => {
     // expect initialize to render the second demo
     await waitFor(() =>
       expect((getByTitle('dumi-previewer') as HTMLIFrameElement).src).toEqual(
-        'http://localhost/~demos/demo-2',
+        'http://localhost/~demos/demo-2-custom',
       ),
     );
   });

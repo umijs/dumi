@@ -1,5 +1,5 @@
 import * as parser from 'react-docgen-typescript';
-import { AtomPropsDefinition } from 'dumi-assets-types';
+import type { AtomPropsDefinition } from 'dumi-assets-types';
 import FileCache from '../utils/cache';
 
 const cacher = new FileCache();

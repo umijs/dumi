@@ -1,15 +1,30 @@
 import transformer from '../transformer';
 import getTheme from '../theme/loader';
 import getFileRangeLines from '../utils/getFileRangeLines';
+import ctx from '../context';
 
 let useKatexFilePath = '';
 
 export default async function loader(raw: string) {
   let content = raw;
-  const range = new URLSearchParams(this.resourceQuery).get('range');
+  const params = new URLSearchParams(this.resourceQuery);
+  const range = params.get('range');
+  const regexp = params.get('regexp');
 
-  // get line range of markdown file
-  content = getFileRangeLines(content, range);
+  // extract content of markdown file
+  if (range) {
+    content = getFileRangeLines(content, range);
+  } else if (regexp) {
+    try {
+      // eslint-disable-next-line no-eval
+      content = content.match(eval(regexp))[0];
+    } catch (err) {
+      ctx.umi?.logger.error(`[dumi]: extract content failed, use the full content.
+  RegExp: ${regexp}
+  File: ${this.resourcePath}
+  Error: ${err}`);
+    }
+  }
 
   const result = transformer.markdown(content, this.resourcePath, { noCache: content !== raw });
   const theme = await getTheme();

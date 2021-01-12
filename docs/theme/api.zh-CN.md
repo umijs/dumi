@@ -35,11 +35,11 @@ toc: menu
 import React from 'react';
 import { useCodeSandbox } from 'dumi/theme';
 
-export default (props) => {
+export default props => {
   const openCSB = useCodeSandbox(props);
 
-  return <button onClick={openCSB}>点我会在 CodeSandbox.io 上打开 demo</button>
-}
+  return <button onClick={openCSB}>点我会在 CodeSandbox.io 上打开 demo</button>;
+};
 ```
 
 ## useCopy
@@ -56,14 +56,11 @@ export default (props) => {
 import React from 'react';
 import { useCopy } from 'dumi/theme';
 
-export default (props) => {
+export default props => {
   const [copyCode, copyStatus] = useCopy();
 
-  return (
-    <button onClick={() => copyCode('Hello')}>点我会复制文字</button>
-  )
-}
-
+  return <button onClick={() => copyCode('Hello')}>点我会复制文字</button>;
+};
 ```
 
 ## useSearch

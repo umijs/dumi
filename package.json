@@ -16,7 +16,7 @@
     "test:unit": "umi-test \"test.(j|t)s\" --coverage",
     "test:e2e": "umi-test \"e2e.(j|t)s\"",
     "debug": "umi-test",
-    "lint": "eslint --cache --ext .js,.jsx,.ts,.tsx --format=pretty \"./packages/preset-dumi/src\"",
+    "lint": "eslint --cache --ext .js,.jsx,.ts,.tsx --format=pretty \"./packages\"",
     "prettier": "prettier -c --write \"**/*\"",
     "publish": "umi-test && npm run changelog && npm run build && lerna publish -m \"chore: publish\"",
     "now-build": "echo \"hello\""

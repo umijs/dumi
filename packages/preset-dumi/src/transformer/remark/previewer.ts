@@ -1,14 +1,15 @@
 import fs from 'fs';
 import path from 'path';
-import { Node } from 'unist';
-import visit, { Visitor } from 'unist-util-visit';
+import type { Node } from 'unist';
+import type { Visitor } from 'unist-util-visit';
+import visit from 'unist-util-visit';
 import { createDebug } from '@umijs/utils';
 import slash from 'slash2';
 import ctx from '../../context';
 import demoTransformer, { DEMO_COMPONENT_NAME, getDepsForDemo } from '../demo';
-import { IPreviewerComponentProps } from '../../theme';
+import type { IPreviewerComponentProps } from '../../theme';
 import transformer from '..';
-import { IDumiElmNode, IDumiUnifiedTransformer } from '.';
+import type { IDumiElmNode, IDumiUnifiedTransformer } from '.';
 
 const debug = createDebug('dumi:previewer');
 
@@ -95,7 +96,7 @@ function getPreviewerId(yaml: any, mdAbsPath: string, codeAbsPath: string, compo
  * transform meta data for node
  * @param meta  node meta data from attribute & frontmatter
  */
-function transformNodeMeta(meta: { [key: string]: any }) {
+function transformNodeMeta(meta: Record<string, any>) {
   Object.keys(meta).forEach(key => {
     const matched = key.match(/^desc(?:(\.[\w-]+$)|$)/);
 
@@ -143,7 +144,7 @@ function generatePreviewerProps(
   mdAbsPath: string,
   componentName: string,
   identifier?: string,
-): IPreviewerComponentProps & { [key: string]: any } {
+): IPreviewerComponentProps & Record<string, any> {
   const isExternalDemo = Boolean(node.properties.filePath);
   let fileAbsPath = mdAbsPath;
 

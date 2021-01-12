@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { IRouteComponentProps } from '@umijs/types';
+import type { IRouteComponentProps } from '@umijs/types';
 import { context, Link } from 'dumi/theme';
 import Navbar from './components/Navbar';
 import SideMenu from './components/SideMenu';
@@ -46,7 +46,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
     meta,
     locale,
   } = useContext(context);
-  const { url: repoUrl, branch } = repository;
+  const { url: repoUrl, branch, platform } = repository;
   const [menuCollapsed, setMenuCollapsed] = useState<boolean>(true);
   const isSiteMode = mode === 'site';
   const showHero = isSiteMode && meta.hero;
@@ -60,9 +60,10 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
     !meta.gapless;
   const isCN = /^zh|cn$/i.test(locale);
   const updatedTime: any = new Date(meta.updatedTime).toLocaleString([], { hour12: false });
-  const repoPlatform = { github: 'GitHub', gitlab: 'GitLab' }[
-    (repoUrl || '').match(/(github|gitlab)/)?.[1] || 'nothing'
-  ];
+  const repoPlatform =
+    { github: 'GitHub', gitlab: 'GitLab' }[
+      (repoUrl || '').match(/(github|gitlab)/)?.[1] || 'nothing'
+    ] || platform;
 
   return (
     <div

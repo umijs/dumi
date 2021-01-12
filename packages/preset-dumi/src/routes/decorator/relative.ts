@@ -1,6 +1,6 @@
 import path from 'path';
 import slash from 'slash2';
-import { RouteProcessor } from '.';
+import type { RouteProcessor } from '.';
 
 /**
  * Umi process route component from pages path but dumi process with cwd, so the path need to be converted

@@ -1,6 +1,6 @@
-import { IRoute } from '@umijs/types';
+import type { IRoute } from '@umijs/types';
 import { addHtmlSuffix } from './getMenuFromRoutes';
-import { IDumiOpts } from '..';
+import type { IDumiOpts } from '..';
 
 export interface INavItem {
   title: string;
@@ -9,9 +9,7 @@ export interface INavItem {
   children: INavItem[];
 }
 
-export interface INav {
-  [key: string]: INavItem[];
-}
+export type INav = Record<string, INavItem[]>;
 
 export default (routes: IRoute[], opts: IDumiOpts, userCustomNavs: INav | INavItem[]): INav => {
   const localeNavs = {};

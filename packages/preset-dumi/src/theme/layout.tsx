@@ -1,10 +1,11 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { IRouteProps, IRouteComponentProps } from '@umijs/types';
+import type { IRouteProps, IRouteComponentProps } from '@umijs/types';
 // @ts-ignore
 import config from '@@/dumi/config';
 import AnchorLink from './components/AnchorLink';
-import Context, { IThemeContext } from './context';
-import { IMenu } from '../routes/getMenuFromRoutes';
+import type { IThemeContext } from './context';
+import Context from './context';
+import type { IMenu } from '../routes/getMenuFromRoutes';
 
 export interface IOuterLayoutProps {
   mode: IThemeContext['config']['mode'];

@@ -3,7 +3,7 @@ import has from 'hast-util-has-property';
 import visit from 'unist-util-visit';
 import { parseElmAttrToProps } from './utils';
 import { getModuleResolvePath } from '../../utils/moduleResolver';
-import { IDumiUnifiedTransformer, IDumiElmNode } from '.';
+import type { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 
 /**
  * remark plugin for parse code tag to external demo

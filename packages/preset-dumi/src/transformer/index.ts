@@ -4,7 +4,7 @@ import yaml from '../utils/yaml';
 
 export interface TransformResult {
   content: string;
-  meta: { [key: string]: any };
+  meta: Record<string, any>;
 }
 
 const cachers = {

@@ -7,7 +7,7 @@ nav:
   order: 3
 ---
 
-# Configuration
+# Config
 
 Create a `.umirc.ts` or `config/config.ts` file in the project root directory to configure dumi:
 
@@ -20,7 +20,9 @@ export default {
 
 Currently dumi supports the following configuration items.
 
-## algolia
+## Basic Config
+
+### algolia
 
 - Type: `Object`
 - Default: `null`
@@ -39,7 +41,7 @@ Example：
 }
 ```
 
-## description
+### description
 
 - Type: `String`
 - Default: `null`
@@ -47,17 +49,17 @@ Example：
 
 The introduction of the configuration document will be displayed under the sidebar menu title, only available in `doc` mode.
 
-## logo
+### logo
 
 - Type: `String`
 - Default: The LOGO of Umi
-- Details: 
+- Details:
 
 To set the LOGO of the document.
 
 > If you are using a local image, such as `/public/images/xxx.png`, then configure `/images/xx.png` to import it.
 
-## locales
+### locales
 
 - Type: `Array<[String, String]>`
 - Default: `[['en-US', 'English'], ['zh-CN', '中文']]`
@@ -69,7 +71,7 @@ Each configuration is an array of length 2. The first value of the array represe
 
 The file name suffix of the default locale is optional. For example, in the default configuration, `index.md` and `index.en-US.md` are equivalent.
 
-## mode
+### mode
 
 - Type: `doc | site`
 - Default: `doc`
@@ -85,7 +87,7 @@ Site mode:
 
 ![](https://gw.alipayobjects.com/zos/bmw-prod/7ce6770d-df19-48fa-853e-64cbbf41b762/k7iyfarw_w2600_h1754.png)
 
-## menus
+### menus
 
 - Type: `Object`
 - Default: `Auto-generated menu`
@@ -116,7 +118,7 @@ export default {
 };
 ```
 
-## navs
+### navs
 
 - Type: `Object | Array`
 - Default: `Auto-generated navigation`
@@ -166,11 +168,11 @@ export default {
 };
 ```
 
-## resolve
+### resolve
 
 `resolve` is an `Object` type, used to configure dumi's resolution behavior, including the following configuration:
 
-### includes
+#### includes
 
 - Type: `Array<String>`
 - Default: `['docs', 'src']` or `['docs', 'packages/pkg/src']`
@@ -178,7 +180,7 @@ export default {
 
 Configure the document directory for dumi sniffing. Dumi will try to recursively find markdown files in the configured directory. The default values are the `docs` directory and the `src` directory (common projects). If the environment is the lerna project, the `src` directory will change It is the `packages/pkg/src` directory, and usually does not need to be configured, unless the automatic sniffing appears 『injuryed』.
 
-### previewLangs
+#### previewLangs
 
 - Type: `Array<String>`
 - Default: `['jsx', 'tsx']`
@@ -186,14 +188,14 @@ Configure the document directory for dumi sniffing. Dumi will try to recursively
 
 The configuration dumi will be converted to the code block rendered by the ReactComponent component by default. If you don't want to do any conversion, such as a pure site like Umi's official website, then set this item to an empty array.
 
-## sitemap
+### sitemap
 
 - Type: `{ hostname: string, excludes?: string[] }`
 - Default: `null`
 
 Enable the automatic generation feature of `sitemap.xml`. The `hostname` configuration item is used to specify the domain name prefix of the URL, and the `excludes` configuration item is used to ignore certain routes that do not need to be included in the sitemap.
 
-## title
+### title
 
 - Type: `String`
 - Default: `{package.name}`
@@ -201,7 +203,7 @@ Enable the automatic generation feature of `sitemap.xml`. The `hostname` configu
 
 Configure the name of the document on the navigation bar or sidebar.
 
-## themeConfig
+### themeConfig
 
 - Type: `Object`
 - Default: `{}`
@@ -209,5 +211,8 @@ Configure the name of the document on the navigation bar or sidebar.
 
 It's used to configure the theme package currently used. The specific configuration items depend on which configuration the theme package provides. You can visit [Theme list](/theme) to view the currently available themes.
 
-<!-- The following are Umi configuration items, which are synchronized and filtered from Umi repository by scripts/sync-from-umi.js -->
+## More Config
+
+<!-- The followings are Umi configuration items, which are synchronized and filtered from Umi repository by scripts/sync-from-umi.js -->
+
 <embed src="../.upstream/config.md"></embed>

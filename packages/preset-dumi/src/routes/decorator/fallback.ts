@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import slash from 'slash2';
 import deepmerge from 'deepmerge';
-import { RouteProcessor } from '.';
+import type { RouteProcessor } from '.';
 
 function replaceLocaleForPath(
   pathname: string,
@@ -33,7 +33,7 @@ export default (function fallback(routes) {
       if (fs.existsSync(readmePath)) {
         const component = `./README${localeFileAddon}.md`;
         const readme = fs.readFileSync(readmePath, 'utf8');
-        const reg  = /(?:^|[\r\n])#+\s+(.+)/;
+        const reg = /(?:^|[\r\n])#+\s+(.+)/;
         const title = reg.test(readme) ? reg.exec(readme)[1] : 'README';
 
         routes.unshift({

@@ -1,6 +1,6 @@
-import { IApi, IRoute } from '@umijs/types';
+import type { IApi, IRoute } from '@umijs/types';
 import { createDebug } from '@umijs/utils';
-import { IDumiOpts } from '../..';
+import type { IDumiOpts } from '../..';
 import flat from './flat';
 import frontMatter from './frontMatter';
 import hide from './hide';
@@ -14,7 +14,7 @@ import relative from './relative';
 import integrate from './integrate';
 
 export type RouteProcessor = (
-  this: { options: IDumiOpts; umi: IApi; data: { [key: string]: any } },
+  this: { options: IDumiOpts; umi: IApi; data: Record<string, any> },
   routes: IRoute[],
 ) => IRoute[];
 
@@ -30,7 +30,7 @@ class RouteDecorator {
   /**
    * shared storage for all processors
    */
-  private data: { [key: string]: any } = {};
+  private data: Record<string, any> = {};
 
   constructor(options: IDumiOpts, umi: IApi) {
     this.options = options;

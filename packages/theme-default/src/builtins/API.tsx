@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
-import { context, useApiData, IApiComponentProps, AnchorLink } from 'dumi/theme';
+import type { IApiComponentProps} from 'dumi/theme';
+import { context, useApiData, AnchorLink } from 'dumi/theme';
 
 const LOCALE_TEXTS = {
   'zh-CN': {

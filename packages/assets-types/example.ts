@@ -1,4 +1,4 @@
-import AssetsPackage from './typings';
+import type AssetsPackage from './typings';
 
 const examplePackage: AssetsPackage = {
   name: 'Ant Design',

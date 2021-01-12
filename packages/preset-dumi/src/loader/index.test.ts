@@ -12,6 +12,7 @@ describe('loader', () => {
       paths: { cwd: process.cwd(), absNodeModulesPath: '' },
       ApplyPluginsType: {},
       applyPlugins: ({ initialValue }) => initialValue,
+      logger: console,
     });
     ctx.opts = Object.assign({}, ctx.opts, {
       resolve: { previewLangs: ['jsx', 'tsx'] },
@@ -79,5 +80,37 @@ describe('loader', () => {
 
     // expect parse previewer
     expect(rangeLines).toContain('Previewer');
+  });
+
+  it('should load part of md by regexp', async () => {
+    const filePath = path.join(fixture, 'normal.md');
+    const codeLines = await loader.call(
+      {
+        resource: filePath,
+        resourcePath: filePath,
+        resourceQuery: `?regexp=${encodeURIComponent('/[\\r\\n]```[^]+?[\\r\\n]```/')}`,
+      },
+      fs.readFileSync(filePath, 'utf8').toString(),
+    );
+    const fallbackLines = await loader.call(
+      {
+        resource: filePath,
+        resourcePath: filePath,
+        resourceQuery: `?regexp=${encodeURIComponent('/<abc \\/>/')}`,
+      },
+      fs.readFileSync(filePath, 'utf8').toString(),
+    );
+
+    // expect not include title
+    expect(codeLines).not.toContain('id="hello-world"');
+
+    // expect fallback parse code to previewer
+    expect(codeLines).toContain('Previewer');
+
+    // expect fallback not include title
+    expect(fallbackLines).toContain('id="hello-world"');
+
+    // expect fallback parse code to previewer
+    expect(fallbackLines).toContain('Previewer');
   });
 });

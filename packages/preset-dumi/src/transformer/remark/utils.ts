@@ -11,8 +11,8 @@ const ATTR_MAPPING = {
  * @param   attrs   original attributes
  * @return  parsed properties
  */
-export const parseElmAttrToProps = (attrs: { [key: string]: string }) => {
-  const parsed: { [key: string]: any } = Object.assign({}, attrs);
+export const parseElmAttrToProps = (attrs: Record<string, string>) => {
+  const parsed: Record<string, any> = Object.assign({}, attrs);
 
   // restore camelCase attrs, because hast-util-raw will transform camlCase to lowercase
   Object.entries(ATTR_MAPPING).forEach(([mark, attr]) => {

@@ -12,7 +12,9 @@ describe('basic example', () => {
     // compare transform content
     expect(winEOL(result.content)).toEqual(
       winEOL(
-        fs.readFileSync(path.join(__dirname, '../fixtures/expect/remark-basic.html'), 'utf8').toString(),
+        fs
+          .readFileSync(path.join(__dirname, '../fixtures/expect/remark-basic.html'), 'utf8')
+          .toString(),
       ),
     );
   });

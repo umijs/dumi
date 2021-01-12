@@ -4,7 +4,8 @@ import * as types from '@babel/types';
 import traverse from '@babel/traverse';
 import generator from '@babel/generator';
 import { winPath } from '@umijs/utils';
-import { getBabelOptions, IDemoOpts } from './options';
+import type { IDemoOpts } from './options';
+import { getBabelOptions } from './options';
 
 interface IDemoTransformResult {
   content: string;

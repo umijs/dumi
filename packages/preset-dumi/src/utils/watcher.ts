@@ -6,7 +6,7 @@ export interface IWatcherItem {
 }
 
 const isDev = () => process.env.NODE_ENV === 'development' || process.env.TEST_WATCHER;
-const watchers: { [key: string]: IWatcherItem } = {};
+const watchers: Record<string, IWatcherItem> = {};
 
 export const closeFileWatcher = (filePath: string) => {
   // close & remove listeners

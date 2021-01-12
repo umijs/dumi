@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 // @ts-ignore
 import apis from '@@/dumi/apis';
 import context from '../context';
-import { IApiDefinition } from '../../api-parser';
+import type { IApiDefinition } from '../../api-parser';
 
 /**
  * get API data
@@ -53,7 +53,7 @@ export default (identifier: string) => {
 
   useEffect(() => {
     setData(getApiData(identifier, locale, isDefaultLocale));
-  }, [identifier, locale]);
+  }, [identifier, locale, isDefaultLocale]);
 
   return data;
 };

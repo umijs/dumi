@@ -17,7 +17,8 @@ describe('component api example', () => {
 
   it('transform api for component md', () => {
     const filePath = path.join(fixtures, 'Hello', 'index.md');
-    const result = transformer.markdown(fs.readFileSync(filePath, 'utf8').toString(), filePath).content;
+    const result = transformer.markdown(fs.readFileSync(filePath, 'utf8').toString(), filePath)
+      .content;
 
     // compare transform content
     expect(result).toEqual(
@@ -29,7 +30,8 @@ describe('component api example', () => {
 
   it('transform api when specific src path', () => {
     const filePath = path.join(fixtures, 'custom-src.md');
-    const result = transformer.markdown(fs.readFileSync(filePath, 'utf8').toString(), filePath).content;
+    const result = transformer.markdown(fs.readFileSync(filePath, 'utf8').toString(), filePath)
+      .content;
 
     // compare transform content
     expect(result).toEqual(
@@ -41,7 +43,8 @@ describe('component api example', () => {
 
   it('transform api and show specific exports', () => {
     const filePath = path.join(fixtures, 'custom-exports.md');
-    const result = transformer.markdown(fs.readFileSync(filePath, 'utf8').toString(), filePath).content;
+    const result = transformer.markdown(fs.readFileSync(filePath, 'utf8').toString(), filePath)
+      .content;
 
     // compare transform content
     expect(result).toEqual(

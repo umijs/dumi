@@ -1,4 +1,5 @@
-import React, { useContext, FC, MouseEvent } from 'react';
+import type { FC, MouseEvent } from 'react';
+import React, { useContext } from 'react';
 import { context, Link, NavLink } from 'dumi/theme';
 import LocaleSelect from './LocaleSelect';
 import './Navbar.less';

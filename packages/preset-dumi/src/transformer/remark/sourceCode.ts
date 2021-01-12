@@ -1,9 +1,9 @@
-import { Node } from 'unist';
+import type { Node } from 'unist';
 import visit from 'unist-util-visit';
 import toString from 'hast-util-to-string';
 import raw from 'hast-util-raw';
 import { winEOL } from '@umijs/utils';
-import { IDumiUnifiedTransformer, IDumiElmNode } from '.';
+import type { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 
 function createSourceCode(lang: string, code: string, position: any) {
   return {

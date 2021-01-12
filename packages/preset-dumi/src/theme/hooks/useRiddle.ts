@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { IPreviewerComponentProps } from '..';
+import type { IPreviewerComponentProps } from '..';
 
 const RIDDLE_API_ENDPOINT = 'https://riddle.alibaba-inc.com/riddles/define';
 let isInternalNetwork: boolean | undefined;

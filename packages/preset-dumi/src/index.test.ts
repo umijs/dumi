@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { IApi } from '@umijs/types';
+import type { IApi } from '@umijs/types';
 import { rimraf } from '@umijs/utils';
 import { Service } from '@umijs/core';
 import { render } from '@testing-library/react';
@@ -65,9 +65,7 @@ describe('preset-dumi', () => {
       },
     });
 
-    expect(fs.readFileSync(path.join(cwd, 'dist', 'index.html'), 'utf8')).toContain(
-      'docsearch.js',
-    );
+    expect(fs.readFileSync(path.join(cwd, 'dist', 'index.html'), 'utf8')).toContain('docsearch.js');
   });
 
   it('demos', async () => {
@@ -250,7 +248,10 @@ describe('preset-dumi', () => {
     });
 
     // expect dumi disabled in integrate with production
-    expect((await (api as any).getRoutes())[0].routes.map(route => route.path)).toEqual(['/A', '/']);
+    expect((await (api as any).getRoutes())[0].routes.map(route => route.path)).toEqual([
+      '/A',
+      '/',
+    ]);
   });
 
   it('should generate sitemap.xml', async () => {
@@ -279,7 +280,9 @@ describe('preset-dumi', () => {
     });
 
     // expect sitemap.xml content correctly
-    expect(fs.readFileSync(path.join(api.paths.absOutputPath, 'sitemap.xml'), 'utf8').toString()).toEqual(
+    expect(
+      fs.readFileSync(path.join(api.paths.absOutputPath, 'sitemap.xml'), 'utf8').toString(),
+    ).toEqual(
       '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://d.umijs.org/</loc></url><url><loc>https://d.umijs.org/test</loc></url></urlset>',
     );
   });

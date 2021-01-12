@@ -1,8 +1,8 @@
-/* eslint-disable jsx-a11y/control-has-associated-label */
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import Tabs, { TabPane } from 'rc-tabs';
 // @ts-ignore
 import { history } from 'dumi';
+import type { IPreviewerComponentProps} from 'dumi/theme';
 import {
   context,
   useCodeSandbox,
@@ -13,10 +13,10 @@ import {
   useDemoUrl,
   useTSPlaygroundUrl,
   Link,
-  AnchorLink,
-  IPreviewerComponentProps,
+  AnchorLink
 } from 'dumi/theme';
-import SourceCode, { ICodeBlockProps } from './SourceCode';
+import type { ICodeBlockProps } from './SourceCode';
+import SourceCode from './SourceCode';
 import './Previewer.less';
 
 export interface IPreviewerProps extends IPreviewerComponentProps {

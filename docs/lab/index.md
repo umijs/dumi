@@ -33,7 +33,12 @@ export default () => {
       <button type="button" data-action="addon" onClick={() => setCount(count + 1)}>
         add
       </button>
-      <button type="button" data-action="reset" onClick={() => setCount(0)} style={{marginLeft: 8}}>
+      <button
+        type="button"
+        data-action="reset"
+        onClick={() => setCount(0)}
+        style={{ marginLeft: 8 }}
+      >
         reset
       </button>
     </>
@@ -42,7 +47,6 @@ export default () => {
 ```
 
 You will get the following Demo, try to click the play button on the operation bar, the motions predefined by developer will be executed in sequence:
-
 
 ```tsx
 /**
@@ -64,7 +68,12 @@ export default () => {
       <button type="button" data-action="addon" onClick={() => setCount(count + 1)}>
         add
       </button>
-      <button type="button" data-action="reset" onClick={() => setCount(0)} style={{marginLeft: 8}}>
+      <button
+        type="button"
+        data-action="reset"
+        onClick={() => setCount(0)}
+        style={{ marginLeft: 8 }}
+      >
         reset
       </button>
     </>

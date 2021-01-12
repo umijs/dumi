@@ -1,5 +1,5 @@
-import { IRoute } from '@umijs/types';
-import { RouteProcessor } from '.';
+import type { IRoute } from '@umijs/types';
+import type { RouteProcessor } from '.';
 
 function process(routes: IRoute[], parent?: IRoute) {
   const result: IRoute[] = [];

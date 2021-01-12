@@ -2,7 +2,7 @@ import path from 'path';
 import visit from 'unist-util-visit';
 import has from 'hast-util-has-property';
 import is from 'hast-util-is-element';
-import { IDumiElmNode, IDumiUnifiedTransformer } from '.';
+import type { IDumiElmNode, IDumiUnifiedTransformer } from '.';
 
 function isRelativeUrl(url) {
   return typeof url === 'string' && !/^(?:\w+:)?\/\//.test(url) && !path.isAbsolute(url);

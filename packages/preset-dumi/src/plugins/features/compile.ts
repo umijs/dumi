@@ -1,5 +1,5 @@
 import path from 'path';
-import { IApi } from '@umijs/types';
+import type { IApi } from '@umijs/types';
 import ctx from '../../context';
 
 /**

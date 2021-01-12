@@ -1,8 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import {
-  listenFileOnceChange
-} from './watcher';
+import { listenFileOnceChange } from './watcher';
 
 function triggerFileChange(filePath: string) {
   fs.writeFileSync(filePath, fs.readFileSync(filePath, 'utf8'));

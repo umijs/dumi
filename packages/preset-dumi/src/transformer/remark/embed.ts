@@ -5,7 +5,7 @@ import is from 'hast-util-is-element';
 import has from 'hast-util-has-property';
 import visit from 'unist-util-visit';
 import { getModuleResolvePath } from '../../utils/moduleResolver';
-import { IDumiUnifiedTransformer, IDumiElmNode } from '.';
+import type { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 import getFileRangeLines from '../../utils/getFileRangeLines';
 import transformer from '..';
 
@@ -28,6 +28,17 @@ export default function embed(): IDumiUnifiedTransformer {
         });
 
         if (absPath) {
+          const hash = decodeURIComponent(parsed.hash || '').replace('#', '');
+          const query = new URLSearchParams();
+
+          // generate loader query
+          if (hash[0] === 'L') {
+            query.append('range', hash);
+          } else if (hash.startsWith('RE-')) {
+            query.append('regexp', hash.substring(3));
+          }
+
+          // process node via file type
           switch (path.extname(parsed.pathname)) {
             case '.md':
             default:
@@ -37,11 +48,7 @@ export default function embed(): IDumiUnifiedTransformer {
                 tagName: 'React.Fragment',
                 properties: {
                   // eslint-disable-next-line no-new-wrappers
-                  children: new String(
-                    `require('${absPath}${
-                      parsed.hash ? `?range=${parsed.hash.replace('#', '')}` : ''
-                    }').default()`,
-                  ),
+                  children: new String(`require('${absPath}${String(query) ? `?${query}` : ''}').default()`),
                   [EMBED_SLUGS]: transformer.markdown(
                     getFileRangeLines(
                       fs.readFileSync(absPath, 'utf8').toString(),

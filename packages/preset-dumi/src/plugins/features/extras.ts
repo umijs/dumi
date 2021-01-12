@@ -1,4 +1,4 @@
-import { IApi } from '@umijs/types';
+import type { IApi } from '@umijs/types';
 
 const INTEGRATE_PLUGINS = ['@umijs/plugin-analytics'];
 
