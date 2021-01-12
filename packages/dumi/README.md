@@ -27,92 +27,74 @@ $ yarn dev
 ## Who are using dumi?
 
 <table>
-  <tbody>
-    <tr>
-      <td align="center">
-        <a target="_blank" href="https://umijs.org">
-          <img
-            width="40"
-            src="https://gw.alipayobjects.com/zos/bmw-prod/598d14af-4f1c-497d-b579-5ac42cd4dd1f/k7bjua9c_w132_h130.png"
-          />
-          <br>
-          <strong>UmiJS</strong>
-        </a>
-      </td>
-      <td align="center">
-        <a target="_blank" href="https://ahooks.js.org/">
-          <img
-            height="40"
-            src="https://ahooks.js.org/logo.svg"
-          />
-          <br>
-          <strong>ahooks</strong>
-        </a>
-      </td>
-      <td align="center">
-        <a target="_blank" href="https://procomponents.ant.design/">
-          <img
-            width="40"
-            src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
-          />
-          <br>
-          <strong>Pro Components</strong>
-        </a>
-      </td>
-      <td align="center">
-        <a target="_blank" href="https://github.com/react-component">
-          <img
-            width="40"
-            src="https://avatars3.githubusercontent.com/u/9441414?s=200&v=4"
-          />
-          <br>
-          <strong>react-component</strong>
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center">
-        <a target="_blank" href="https://ggeditor.com">
-          <img
-            width="40"
-            src="https://img.alicdn.com/tfs/TB1FFA1CFP7gK0jSZFjXXc5aXXa-214-200.png"
-          />
-          <br>
-          <strong>GGEditor</strong>
-        </a>
-      </td>
-      <td align="center">
-        <a target="_blank" href="https://remaxjs.org">
-          <img
-            width="40"
-            src="https://gw.alipayobjects.com/mdn/rms_b5fcc5/afts/img/A*1NHAQYduQiQAAAAAAAAAAABkARQnAQ"
-          />
-          <br>
-          <strong>Remax</strong>
-        </a>
-      </td>
-      <td align="center">
-        <a target="_blank" href="https://lightproxy.org">
-          <img
-            width="40"
-            src="https://user-images.githubusercontent.com/5436704/81533849-83e00f00-9399-11ea-943d-ac5fd4653906.png"
-          />
-          <br>
-          <strong>LightProxy</strong>
-        </a>
-      </td>
-      <td align="center">
-        <a target="_blank" href="https://juejin-im.github.io/open-source/">
-          <img
-            width="40"
-            src="https://avatars3.githubusercontent.com/u/69633008?s=200&v=4"
-          />
-          <br>
-          <strong>juejin-im</strong>
-        </a>
-      </td>
-    </tr>
-  </tbody>
+  <tr>
+    <td width="160" align="center">
+      <a target="_blank" href="https://ahooks.js.org/">
+        <img src="https://ahooks.js.org/logo.svg" height="40" />
+        <br />
+        <strong>ahooks</strong>
+      </a>
+    </td>
+    <td width="160" align="center">
+      <a target="_blank" href="https://ggeditor.com">
+        <img src="https://img.alicdn.com/tfs/TB1FFA1CFP7gK0jSZFjXXc5aXXa-214-200.png" height="40" />
+        <br />
+        <strong>GGEditor</strong>
+      </a>
+    </td>
+    <td width="160" align="center">
+      <a target="_blank" href="https://actions-cool.github.io/issues-helper/">
+        <img src="https://avatars1.githubusercontent.com/u/73879334?s=200&v=4" height="40" />
+        <br />
+        <strong>issues-helper</strong>
+      </a>
+    </td>
+    <td width="160" align="center">
+      <a target="_blank" href="https://juejin-im.github.io/open-source/">
+        <img src="https://avatars3.githubusercontent.com/u/69633008?s=200&v=4" height="40" />
+        <br />
+        <strong>juejin-im</strong>
+      </a>
+    </td>
+    <td width="160" align="center">
+      <a target="_blank" href="https://lightproxy.org">
+        <img src="https://user-images.githubusercontent.com/5436704/81533849-83e00f00-9399-11ea-943d-ac5fd4653906.png" height="40" />
+        <br />
+        <strong>LightProxy</strong>
+      </a>
+    </td>
+  </tr>  <tr>
+    <td width="160" align="center">
+      <a target="_blank" href="https://procomponents.ant.design/">
+        <img src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" height="40" />
+        <br />
+        <strong>Pro Components</strong>
+      </a>
+    </td>
+    <td width="160" align="center">
+      <a target="_blank" href="https://github.com/react-component">
+        <img src="https://avatars3.githubusercontent.com/u/9441414?s=200&v=4" height="40" />
+        <br />
+        <strong>react-component</strong>
+      </a>
+    </td>
+    <td width="160" align="center">
+      <a target="_blank" href="https://remaxjs.org">
+        <img src="https://gw.alipayobjects.com/mdn/rms_b5fcc5/afts/img/A*1NHAQYduQiQAAAAAAAAAAABkARQnAQ" height="40" />
+        <br />
+        <strong>Remax</strong>
+      </a>
+    </td>
+    <td width="160" align="center">
+      <a target="_blank" href="https://umijs.org">
+        <img src="https://gw.alipayobjects.com/zos/bmw-prod/598d14af-4f1c-497d-b579-5ac42cd4dd1f/k7bjua9c_w132_h130.png" height="40" />
+        <br />
+        <strong>UmiJS</strong>
+      </a>
+    </td>
+    <td width="160" align="center">
+    </td>
+  </tr>
 </table>
 
 ### README Badge
