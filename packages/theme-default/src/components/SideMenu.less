@@ -121,6 +121,10 @@
           outline: none;
           transition: color 0.3s, background 0.3s;
 
+          .dark & {
+            color: #fff;
+          }
+
           span {
             display: block;
             overflow: hidden;
@@ -190,7 +194,9 @@
     > ul ul {
       a {
         color: @c-secondary;
-
+        .dark & {
+          color: #d6d8de;
+        }
         &.active {
           color: @c-primary;
         }
@@ -263,6 +269,10 @@
     &::after {
       width: 1px;
       background: @c-border;
+
+      .dark & {
+        background: #5a5757;
+      }
     }
 
     .@{prefix}-menu-list {
@@ -290,6 +300,9 @@
           z-index: 1;
           background: linear-gradient(to left, #f8faff, rgba(248, 250, 255, 0));
 
+          .dark & {
+            background: linear-gradient(to left, #636c82, rgba(248, 250, 255, 0));
+          }
           &::after {
             opacity: 1;
             visibility: visible;

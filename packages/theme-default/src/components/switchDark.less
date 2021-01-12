@@ -1,0 +1,25 @@
+@import (reference) '../style/variables.less';
+
+.__dumi-default-switchDark {
+  position: fixed;
+  right: 20px;
+  top: 20px;
+
+  &-sun,
+  &-moon {
+    cursor: pointer;
+  }
+
+  &-sun {
+    display: none;
+    .dark & {
+      display: block;
+    }
+  }
+
+  &-moon {
+    .dark & {
+      display: none;
+    }
+  }
+}
