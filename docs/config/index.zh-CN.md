@@ -20,9 +20,9 @@ export default {
 
 目前 dumi 支持以下配置项。
 
-# 基础配置
+## 基础配置
 
-## algolia
+### algolia
 
 - 类型: `Object`
 - 默认值：`null`
@@ -41,7 +41,7 @@ export default {
 }
 ```
 
-## description
+### description
 
 - 类型：`String`
 - 默认值：`null`
@@ -49,7 +49,7 @@ export default {
 
 配置文档的介绍，会显示在侧边栏菜单标题的下方，仅 `doc` 模式下可用。
 
-## logo
+### logo
 
 - 类型：`String`
 - 默认值：Umi 的 LOGO
@@ -59,7 +59,7 @@ export default {
 
 > 如果是使用本地图片，比如：`/public/images/xxx.png`，那么配置 `/images/xx.png` 引入即可。
 
-## locales
+### locales
 
 - 类型：`Array<[String, String]>`
 - 默认值：`[['en-US', 'English'], ['zh-CN', '中文']]`
@@ -71,7 +71,7 @@ export default {
 
 默认 locale 的文件名后缀是可选的，比如，在默认配置下，`index.md` 和 `index.en-US.md` 等价。
 
-## mode
+### mode
 
 - 类型：`doc | site`
 - 默认值：`doc`
@@ -87,7 +87,7 @@ export default {
 
 ![](https://gw.alipayobjects.com/zos/bmw-prod/7ce6770d-df19-48fa-853e-64cbbf41b762/k7iyfarw_w2600_h1754.png)
 
-## menus
+### menus
 
 - 类型：`Object`
 - 默认值：`自动生成的菜单`
@@ -118,7 +118,7 @@ export default {
 };
 ```
 
-## navs
+### navs
 
 - 类型：`Object | Array`
 - 默认值：`自动生成的导航`
@@ -168,11 +168,11 @@ export default {
 };
 ```
 
-## resolve
+### resolve
 
 `resolve` 是一个 `Object` 类型，用于配置 dumi 的解析行为，包含如下配置：
 
-### includes
+#### includes
 
 - 类型：`Array<String>`
 - 默认值：`['docs', 'src']` or `['docs', 'packages/pkg/src']`
@@ -180,7 +180,7 @@ export default {
 
 配置 dumi 嗅探的文档目录，dumi 会尝试在配置的目录中递归寻找 markdown 文件，默认值为 `docs` 目录、`src` 目录（普通项目），如果环境为 lerna 项目，则 `src` 目录变为 `packages/pkg/src` 目录，通常不需要配置，除非自动嗅探出现了『误伤』。
 
-### previewLangs
+#### previewLangs
 
 - 类型：`Array<String>`
 - 默认值：`['jsx', 'tsx']`
@@ -188,14 +188,14 @@ export default {
 
 配置 dumi 默认会转换为 ReactComponent 组件渲染的代码块，如果不希望做任何转换，例如类似 Umi 官网的纯站点，那么将该项设置为空数组即可。
 
-## sitemap
+### sitemap
 
 - Type: `{ hostname: string, excludes?: string[] }`
 - Default: `null`
 
 启用 `sitemap.xml` 自动生成特性。`hostname` 配置项用来指定 URL 的域名前缀，`excludes` 配置项用来忽略某些不需要包含在 sitemap 中的路由。
 
-## title
+### title
 
 - 类型：`String`
 - 默认值：`{package.name}`
@@ -203,7 +203,7 @@ export default {
 
 配置文档的名称，导航栏或侧边栏上。
 
-## themeConfig
+### themeConfig
 
 - 类型：`Object`
 - 默认值：`{}`
@@ -211,7 +211,7 @@ export default {
 
 用于配置当前使用的主题包，具体配置项取决于主题包提供哪些配置，可访问 [主题列表](/zh-CN/theme) 查看目前可用的主题。
 
-# 更多配置
+## 更多配置
 
 <!-- 以下是 Umi 配置项，由 scripts/sync-from-umi.js 从 Umi 仓库同步及过滤 -->
 
