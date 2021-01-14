@@ -50,6 +50,11 @@ const users = [
     url: 'https://actions-cool.github.io/issues-helper/',
     logo: 'https://avatars1.githubusercontent.com/u/73879334?s=200&v=4',
   },
+  {
+    name: 'alitajs',
+    url: 'https://alitajs.com/',
+    logo: 'https://user-images.githubusercontent.com/11746742/104428726-c2c90300-55bf-11eb-9b84-d52a86050b9a.png',
+  },
 ];
 
 users.sort((a, b) => a.name.localeCompare(b.name));
