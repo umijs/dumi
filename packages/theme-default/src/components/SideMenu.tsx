@@ -3,6 +3,7 @@ import React, { useContext } from 'react';
 import { context, Link, NavLink } from 'dumi/theme';
 import LocaleSelect from './LocaleSelect';
 import SlugList from './SlugList';
+import Dark from './Dark';
 import './SideMenu.less';
 
 interface INavbarProps {
@@ -84,11 +85,13 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location }) => {
             </ul>
             {/* site mode locale select */}
             <LocaleSelect location={location} />
+            <Dark />
           </div>
         ) : (
           <div className="__dumi-default-menu-doc-locale">
             {/* doc mode locale select */}
             <LocaleSelect location={location} />
+            <Dark />
           </div>
         )}
         {/* menu list */}

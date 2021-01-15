@@ -13,8 +13,8 @@ body {
   transition: background 0.5s cubic-bezier(0.075,0.82,0.165,1), color 0.5s cubic-bezier(0.075,0.82,0.165,1);
 
   .dark & {
-    color: rgba(255,255,255,0.65);
-    background-color: #000;
+    color: @c-text-dark;
+    background-color: @c-bg-dark;
   }
 }
 
@@ -76,7 +76,7 @@ body {
     background-color: #f5f6f8;
 
     .dark & {
-      background-color: rgba(255,255,255,0.08);
+      background-color: @c-light-bg-dark;
     }
 
     @media @mobile {
@@ -98,7 +98,7 @@ body {
       color: #080e29;
 
       .dark & {
-        color: rgba(255,255,255,0.85);
+        color: @c-heading-dark;
       }
 
       + div {
@@ -164,7 +164,7 @@ body {
         line-height: 1;
         color: @c-heading;
         .dark & {
-          color: rgba(255,255,255,0.85);
+          color: @c-text-dark;
         }
       }
 
@@ -192,6 +192,10 @@ body {
           color: @c-secondary;
           font-size: 14px;
           line-height: 22px;
+
+          .dark & {
+            color: @c-secondary-dark;
+          }
 
           > p:first-child {
             margin-top: 0;
@@ -246,9 +250,13 @@ body {
     margin: 0;
     padding: 0 24px 0 0;
     background-color: #fff;
-    box-shadow: 0 0 16px 16px #fff;
     box-sizing: content-box;
     overflow: auto;
+
+    .dark & {
+      background-color: @c-bg-dark;
+      box-shadow: none;
+    }
 
     @media @mobile {
       display: none;
@@ -269,6 +277,10 @@ body {
         color: @c-text;
         text-decoration: none;
 
+        .dark & {
+          color: @c-text-dark;
+        }
+
         &::before {
           content: '';
           position: absolute;
@@ -282,17 +294,33 @@ body {
 
         &:hover {
           color: lighten(@c-primary, 5%);
+
+          .dark & {
+            color: lighten(@c-primary-dark, 5%);
+          }
         }
 
         &:active {
           color: lighten(@c-primary, 3%);
+
+          .dark & {
+            color: lighten(@c-primary-dark, 3%);
+          }
         }
 
         &.active {
           color: @c-primary;
 
+          .dark & {
+            color: @c-primary-dark;
+          }
+
           &::before {
             background: @c-primary;
+
+            .dark & {
+              background: @c-primary-dark;
+            }
           }
         }
       }
@@ -308,6 +336,11 @@ body {
     justify-content: space-between;
     border-top: 1px solid @c-border;
 
+    .dark & {
+      color: @c-secondary-dark;
+      border-color: @c-border-dark;
+    }
+
     @media only screen and (max-width: 960px) {
       display: block;
     }
@@ -317,12 +350,20 @@ body {
       display: block;
       color: @c-primary;
       text-decoration: none;
+
+      .dark & {
+        color: @c-primary-dark;
+      }
     }
 
     > span:last-child {
       &::before {
         content: attr(data-updated-text);
         color: @c-primary;
+
+        .dark & {
+          color: @c-primary-dark;
+        }
       }
     }
   }
@@ -334,7 +375,15 @@ body {
   border-top: 1px solid @c-border;
   text-align: center;
 
+  .dark & {
+    border-color: @c-border-dark;
+  }
+
   .markdown {
     color: #b0b1ba;
+
+    .dark & {
+      color: rgba(255,255,255,0.45);
+    }
   }
 }

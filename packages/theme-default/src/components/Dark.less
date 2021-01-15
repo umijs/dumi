@@ -5,9 +5,16 @@
   right: 20px;
   top: 20px;
 
+  @media @mobile {
+    position: absolute;
+    left: 16px;
+    right: auto;
+  }
+
   &-sun,
   &-moon {
     cursor: pointer;
+    animation: fadeInDown .2s linear;
   }
 
   &-sun {
@@ -21,5 +28,17 @@
     .dark & {
       display: none;
     }
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -100%, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
   }
 }

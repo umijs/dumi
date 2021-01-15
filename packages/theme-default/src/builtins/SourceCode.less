@@ -5,7 +5,8 @@
   background-color: @c-light-bg;
 
   .dark & {
-    background: #2f2d2d;
+    color: @c-text-dark;
+    background: #262626;
   }
 
   & + &,
@@ -58,5 +59,33 @@
   &:not(:hover) &-copy-btn {
     visibility: hidden;
     opacity: 0;
+  }
+}
+
+.dark {
+  code[class*="language-"], pre[class*="language-"] {
+    color: @c-text-dark;
+    text-shadow: 0 1px #000;
+  }
+  .token.operator, .token.entity, .token.url, .language-css .token.string, .style .token.string {
+    background: transparent;
+  }
+  .token.property, .token.tag, .token.constant, .token.symbol, .token.deleted {
+    color: #f92672;
+  }
+  .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin, .token.inserted {
+    color: #a6e22e;
+  }
+  .token.atrule, .token.attr-value, .token.keyword {
+    color: #e6db74;
+  }
+  .token.punctuation {
+    color: @c-text-dark;
+  }
+  .token.keyword {
+    color: #66d9ef;
+  }
+  .token.boolean, .token.number {
+    color: #ae81ff;
   }
 }

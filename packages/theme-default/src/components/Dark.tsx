@@ -1,7 +1,6 @@
-// @ts-ignore
 import './Dark.less';
 
-const SwitchDark = () => {
+const Dark = () => {
   const html = document.documentElement;
 
   const changeDark = () => {
@@ -24,4 +23,4 @@ const SwitchDark = () => {
   )
 };
 
-export default SwitchDark;
+export default Dark;
