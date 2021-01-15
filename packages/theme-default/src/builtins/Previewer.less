@@ -65,8 +65,8 @@
   }
 
   &-desc {
-    &:not(:empty) {
-      padding: 1em;
+    > div:last-child {
+      padding: 1.2em 1em 1em;
       color: @c-text;
       border-top: 1px solid @c-border;
     }
@@ -81,7 +81,6 @@
 
     &[data-title] {
       position: relative;
-      padding-top: 1.2em;
 
       > a:first-child {
         position: absolute;
