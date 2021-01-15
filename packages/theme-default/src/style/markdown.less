@@ -137,6 +137,11 @@
     color: fadeout(@c-text, 30%);
     border-left: 4px solid @c-border;
     overflow: hidden;
+
+    .dark & {
+      color: fadeout(@c-text-dark, 30%);
+      border-color: @c-border-dark;
+    }
   }
 
   // list
@@ -230,11 +235,6 @@
   h2,
   h3,
   h4 {
-    color: @c-heading-dark;
-  }
-
-  button {
-    background: @c-bg-dark;
     color: @c-heading-dark;
   }
 }
