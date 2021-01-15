@@ -30,14 +30,14 @@ export default () => {
   return (
     <>
       <p>{count}</p>
-      <button type="button" data-action="addon" onClick={() => setCount(count + 1)}>
+      <button type="button" style={{ color: '#000' }} data-action="addon" onClick={() => setCount(count + 1)}>
         add
       </button>
       <button
         type="button"
         data-action="reset"
         onClick={() => setCount(0)}
-        style={{ marginLeft: 8 }}
+        style={{ marginLeft: 8, color: '#000' }}
       >
         reset
       </button>
@@ -65,14 +65,14 @@ export default () => {
   return (
     <>
       <p>{count}</p>
-      <button type="button" data-action="addon" onClick={() => setCount(count + 1)}>
+      <button type="button" style={{ color: '#000' }} data-action="addon" onClick={() => setCount(count + 1)}>
         add
       </button>
       <button
         type="button"
         data-action="reset"
         onClick={() => setCount(0)}
-        style={{ marginLeft: 8 }}
+        style={{ marginLeft: 8, color: '#000' }}
       >
         reset
       </button>
