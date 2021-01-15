@@ -1,6 +1,8 @@
+import type { FC } from 'react';
+import React from 'react';
 import './Dark.less';
 
-const Dark = () => {
+const Dark: FC<{}> = () => {
   const html = document.documentElement;
 
   const changeDark = () => {
