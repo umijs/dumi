@@ -5,6 +5,11 @@
   border: 1px solid @c-border;
   border-radius: 1px;
 
+  .dark & {
+    background-color: @c-bg-dark;
+    border-color: @c-border-dark;
+  }
+
   &[data-debug] {
     margin-top: 32px;
     border-color: #ffcb00;
@@ -69,6 +74,10 @@
       padding: 1.2em 1em 1em;
       color: @c-text;
       border-top: 1px solid @c-border;
+
+      .dark & {
+        border-color: @c-border-dark;
+      }
     }
 
     .markdown > p:first-child {
@@ -95,6 +104,11 @@
         transform: translateY(-50%);
         pointer-events: auto;
         cursor: pointer;
+
+        .dark & {
+          color: @c-heading-dark;
+          background-color: @c-bg-dark;
+        }
       }
 
       &:empty {
@@ -115,6 +129,10 @@
     padding: 0 1em;
     align-items: center;
     border-top: 1px dashed @c-border;
+
+    .dark & {
+      border-color: @c-border-dark;
+    }
 
     > a:not(:last-child),
     > button:not(:last-child) {
@@ -137,6 +155,10 @@
       opacity: 0.6;
       outline: none;
       transition: opacity 0.2s, background 0.2s;
+
+      .dark & {
+        opacity: 1;
+      }
 
       // expand click area
       &::after {
@@ -221,8 +243,16 @@
   &-source {
     border-top: 1px dashed @c-border;
 
+    .dark & {
+      border-color: @c-border-dark;
+    }
+
     &-tab {
       border-top: 1px dashed @c-border;
+
+      .dark & {
+        border-color: @c-border-dark;
+      }
 
       .@{prefix}-tabs-tab-btn {
         position: relative;
@@ -254,6 +284,9 @@
           background: #fff;
           border-bottom: 1px solid @c-secondary;
           transform: rotate(45deg);
+          .dark & {
+            background: @c-bg-dark;
+          }
         }
       }
     }
@@ -328,6 +361,10 @@
     background: @c-primary;
     transition: left 0.2s, width 0.2s;
     pointer-events: none;
+
+    .dark & {
+      background: @c-primary-dark;
+    }
   }
 
   &-dropdown {

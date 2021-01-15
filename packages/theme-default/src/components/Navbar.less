@@ -16,7 +16,7 @@
   box-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.05);
 
   .dark & {
-    background: #000;
+    background: @c-bg-dark;
     box-shadow: 0 2px 8px 0 rgba(0,0,0,0.65);
   }
 
@@ -36,7 +36,7 @@
     border: 0;
     outline: none;
     background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFgAAAA4CAYAAAB5YT9uAAAAAXNSR0IArs4c6QAAASVJREFUeAHt3DuOwjAUBVAHscWZjaSkAIqU2QjskV80QwpsF3ArdGiw3hW3OGnQM2Iof6/dfr7+n71/LjAdx+HRsvm8SkNPAHBPJ5ABDiD2KgD3dAIZ4ABirwJwTyeQAQ4g9ioA93QC2fbZsSm/z7MDAQIECBAgQIAAAQIECBAgQIAAAQKvAsvV8mO8O8yn19jkXYHpMC7byXVdeS0/75b5XFvAwr1tE0kARxjbJYDbNpEEcISxXQK4bRNJAEcY2yWA2zaRZP0ePJRzpFEJAQIECBAgQIAAAQIECBAgQIAAgW8VWK/tj7Nb5eBTnvbjsp1c15WX4ncRQeB7lb8zyHrW29xo1F1iU8AxynoR4LpLbAo4RlkvAlx3iU0BxyjrRYDrLrHpDVSAEEPXScHTAAAAAElFTkSuQmCC')
-      no-repeat center / contain;
+      no-repeat center / contain !important;
 
     @media @mobile {
       display: block;
@@ -53,17 +53,12 @@
     line-height: 40px;
 
     .dark & {
-      color: rgba(255, 255, 255, 0.85);
+      color: @c-heading-dark;
     }
 
     &:not([data-plaintext]) {
       padding-left: 56px;
       background: url(@img-logo) no-repeat 0 / contain;
-    }
-
-    &:active,
-    &:hover {
-      color: #080e29;
     }
 
     @media @mobile {
@@ -94,12 +89,15 @@
         text-decoration: none;
 
         .dark & {
-          color: #e2e5f5;
+          color: @c-heading-dark;
         }
 
         &:hover,
         &.active {
           color: @c-primary;
+          .dark & {
+            color: @c-primary-dark;
+          }
         }
 
         &::before {

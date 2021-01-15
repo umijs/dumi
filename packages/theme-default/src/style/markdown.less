@@ -6,7 +6,7 @@
   line-height: 1.60625;
 
   .dark & {
-    color: aliceblue;
+    color: @c-secondary-dark;
   }
 
   &:not(:first-child):empty {
@@ -24,6 +24,10 @@
     color: @c-heading;
     font-weight: 500;
     line-height: 1.40625;
+
+    .dark & {
+      color: @c-heading-dark;
+    }
 
     // anchor link
     &:hover > a[aria-hidden] {
@@ -98,6 +102,11 @@
     padding: 2px 5px;
     color: #d56161;
     background: darken(@c-light-bg, 1%);
+
+    .dark & {
+      color: #ff7875;
+      background: @c-light-bg-dark;
+    }
   }
 
   code {
@@ -147,15 +156,27 @@
     border-collapse: collapse;
     border: 1px solid @c-border;
 
+    .dark & {
+      border: 1px solid #3b434b;
+    }
+
     th,
     td {
       padding: 10px 24px;
       border: 1px solid @c-border;
+
+      .dark & {
+        border: 1px solid #3b434b;
+      }
     }
 
     th {
       font-weight: 600;
       background: @c-light-bg;
+
+      .dark & {
+        background: @c-light-bg-dark;
+      }
     }
 
     td:first-child {
@@ -175,6 +196,10 @@
     text-decoration: none;
     transition: opacity 0.2s;
     outline: none;
+
+    .dark & {
+      color: @c-primary-dark;
+    }
 
     &:hover {
       opacity: 0.7;
@@ -196,5 +221,20 @@
   &-external-link-icon {
     vertical-align: -0.155em;
     margin-left: 2px;
+  }
+}
+
+// For demo
+.dark {
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: @c-heading-dark;
+  }
+
+  button {
+    background: @c-bg-dark;
+    color: @c-heading-dark;
   }
 }

@@ -6,10 +6,19 @@
   border-radius: 2px;
   background-color: @c-light-bg;
 
+  .dark & {
+    border-color: @c-border-dark;
+    background-color: @c-light-bg-dark;
+  }
+
   small {
     padding-left: 24px;
     font-size: 14px;
     color: @c-secondary;
+
+    .dark & {
+      color: @c-secondary-dark;
+    }
 
     &::before {
       content: '# ';
@@ -18,5 +27,15 @@
 
   .ant-tree-switcher {
     background: transparent;
+  }
+}
+
+.dark {
+  .ant-tree {
+    color: @c-text-dark;;
+  }
+
+  .ant-tree.ant-tree-directory .ant-tree-treenode:hover::before {
+    background-color: @c-light-bg-dark;
   }
 }
