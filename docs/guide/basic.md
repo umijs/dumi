@@ -497,6 +497,9 @@ dumi has extended the HTML default `embed` tag to embed the content of another M
 
 <!-- Introduce part of the Markdown file content based on the line number -->
 <embed src="/path/to/some.md#L1-L10"></embed>
+
+<!-- Introduce part of the Markdown file content based on the regular expression -->
+<embed src="/path/to/some.md#RE-/^[^\r\n]+/"></embed>
 ```
 
 We can also use the theme API provided by dumi to replicate and add built-in components. Visit [Theme-Theme Development](/theme/development) to learn more.

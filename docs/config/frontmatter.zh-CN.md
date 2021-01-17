@@ -330,3 +330,13 @@ features:
 - 详细：
 
 使用 iframe 模式渲染当前 demo，对于渲染 layout 型的 demo 非常有用，当我们传递数值时可以控制 iframe 的高度，访问 [iframe 模式](/zh-CN/guide/basic#iframe-模式) 了解更多。
+
+### demoUrl <Badge>1.1.1+</Badge>
+
+- 类型：`String`
+- 默认值：dumi 自动生成的 demo 独立访问链接
+- 详细：
+
+用于指定该 demo 的访问链接，通常在 dumi 默认渲染的 demo 无法满足展示需要时使用，例如需要呈现 ReactNative 的渲染结果。
+
+在默认主题时，仅在 `iframe` 呈现模式下才会生效；在移动端研发主题中，会作为右侧手机预览框中的 demo 渲染链接。

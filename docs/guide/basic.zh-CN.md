@@ -479,6 +479,9 @@ dumi 对 HTML 默认的 `embed` 标签做了扩展，可以在一个 Markdown �
 
 <!-- 根据行号引入部分 Markdown 文件内容 -->
 <embed src="/path/to/some.md#L1-L10"></embed>
+
+<!-- 根据正则引入部分 Markdown 文件内容 -->
+<embed src="/path/to/some.md#RE-/^[^\r\n]+/"></embed>
 ```
 
 我们也可以通过 dumi 提供的主题 API 实现内置组件的复写和新增，可访问 [主题 - 主题开发](/zh-CN/theme/development) 了解更多。
