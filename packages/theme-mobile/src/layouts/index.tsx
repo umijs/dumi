@@ -14,7 +14,7 @@ const MobileLayout: React.FC<IRouteComponentProps> = ({ children, ...props }) =>
   useEffect(() => {
     const handler = (ev: any) => {
       if (ev.data.type === ACTIVE_MSG_TYPE) {
-        setDemo(ev.data.value);
+        setDemo(JSON.parse(ev.data.value));
       }
     };
 
