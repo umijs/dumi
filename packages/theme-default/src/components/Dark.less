@@ -3,28 +3,42 @@
 .__dumi-default-dark {
   position: fixed;
   right: 20px;
-  top: 20px;
+  top: 16px;
 
   @media @mobile {
-    left: 50px;
-    top: 13px;
+    position: relative;
+    top: 6px;
     right: auto;
+    display: flex;
+    justify-content: center;
   }
 
   &-sun,
   &-moon {
+    background-color: transparent;
+    border-radius: 50%;
+    outline: none;
     cursor: pointer;
     animation: fadeInDown .2s linear;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   &-sun {
     display: none;
+    border: 1px solid @c-light-bg;
+    background-color: @c-light-bg;
     .dark & {
-      display: block;
+      display: flex;
     }
   }
 
   &-moon {
+    border: 1px solid @c-bg-dark;
+    background-color: @c-bg-dark;
     .dark & {
       display: none;
     }
