@@ -56,6 +56,10 @@
     text-align: center;
     border-bottom: 1px solid @c-border;
 
+    .dark & {
+      border-color: @c-border-dark;
+    }
+
     @media @mobile {
       display: none;
     }
@@ -93,6 +97,12 @@
     padding: 16px 0;
     text-align: center;
     border-bottom: 1px solid @c-border;
+    display: flex;
+    justify-content: space-evenly;
+
+    .dark & {
+      border-color: @c-border-dark;
+    }
 
     &:empty {
       display: none;
@@ -104,6 +114,10 @@
     height: 100%;
     overflow: auto;
     overscroll-behavior: contain;
+
+    .dark & {
+      background-color: #262626;
+    }
 
     // common list styles
     ul {
@@ -262,6 +276,10 @@
 
         &.active {
           background: linear-gradient(to left, #e8ecf4, rgba(232, 236, 244, 0));
+
+          .dark & {
+            background: linear-gradient(to left, #3d3d3e, rgba(255, 255, 255, 0.06));
+          }
         }
 
         ~ ul {

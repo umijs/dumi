@@ -5,12 +5,23 @@
   right: 20px;
   top: 16px;
 
+  [data-mode="doc"] & {
+    position: relative;
+    top: 0;
+    right: 0;
+    display: inline-block;
+  }
+
   @media @mobile {
     position: relative;
     top: 6px;
     right: auto;
     display: flex;
     justify-content: center;
+
+    .__dumi-default-navbar & {
+      display: none;
+    }
   }
 
   &-sun,
