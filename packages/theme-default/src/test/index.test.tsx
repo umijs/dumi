@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import React from 'react';
-import { render, queryByAttribute, fireEvent } from '@testing-library/react';
+import { render, queryByAttribute, queryAllByAttribute, fireEvent } from '@testing-library/react';
 import type { MemoryHistory} from '@umijs/runtime';
 import { createMemoryHistory, Router } from '@umijs/runtime';
 import { context as Context } from 'dumi/theme';
@@ -128,6 +128,13 @@ describe('default theme', () => {
     // expect features be rendered
     expect(getByText('Feature')).not.toBeNull();
     expect(getByText('Feat2')).not.toBeNull();
+
+    // dark check
+    queryAllByAttribute('class', container, '__dumi-default-dark-moon')[0].click();
+    expect(document.documentElement.className).toEqual('dark');
+
+    queryAllByAttribute('class', container, '__dumi-default-dark-sun')[0].click();
+    expect(document.documentElement.className).toEqual('');
 
     // trigger mobile menu display
     queryByAttribute('class', container, '__dumi-default-navbar-toggle').click();
