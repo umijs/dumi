@@ -47,7 +47,7 @@ function getPreviewerId(yaml: any, mdAbsPath: string, codeAbsPath: string, compo
       const idMap = mdCodeBlockIdMap.get(mdAbsPath);
       const prefix =
         componentName ||
-        path.basename(slash(mdAbsPath).replace(/(index|readme)?(\.[\w-]+)?\.md/i, ''));
+        path.basename(slash(mdAbsPath).replace(/(?:\/(?:index|readme))?(\.[\w-]+)?\.md/i, '$1'));
 
       id = `${prefix}-demo`;
 
