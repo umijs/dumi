@@ -4,6 +4,20 @@ import './Dark.less';
 
 const Dark: FC<{}> = () => {
   const html = document.documentElement;
+  const media = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
+
+  let callback = (e) => {
+    let prefersDarkMode = e.matches;
+    prefersDarkMode ? changeDark() : removeDark();
+  };
+
+  if (typeof media.addEventListener === 'function') {
+    media.addEventListener('change', callback);
+  } 
+
+  React.useEffect(() => {
+    media.matches ? changeDark() : removeDark();
+  }, []);
 
   const changeDark = () => {
     html.classList.add('dark');
