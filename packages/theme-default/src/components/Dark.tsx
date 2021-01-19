@@ -10,12 +10,12 @@ const Dark: FC<{}> = () => {
     e.matches ? changeDark() : removeDark();
   };
 
-  if (typeof media.addEventListener === 'function') {
+  if (media && typeof media.addEventListener === 'function') {
     media.addEventListener('change', callback);
   } 
 
   React.useEffect(() => {
-    media.matches ? changeDark() : removeDark();
+    media?.matches ? changeDark() : removeDark();
   }, []);
 
   const changeDark = () => {
