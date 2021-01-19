@@ -6,9 +6,8 @@ const Dark: FC<{}> = () => {
   const html = document.documentElement;
   const media = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
 
-  let callback = (e) => {
-    let prefersDarkMode = e.matches;
-    prefersDarkMode ? changeDark() : removeDark();
+  const callback = (e) => {
+    e.matches ? changeDark() : removeDark();
   };
 
   if (typeof media.addEventListener === 'function') {
