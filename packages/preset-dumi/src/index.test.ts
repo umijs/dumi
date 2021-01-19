@@ -11,7 +11,7 @@ describe('preset-dumi', () => {
 
   afterAll(() => {
     // clear all node_modules
-    ['', 'basic', 'algolia', 'demos', 'assets', 'local-theme', 'integrate'].forEach(dir => {
+    ['', 'basic', 'algolia', 'demos', 'assets', 'integrate', 'local-theme', 'progressive-theme', 'sitemap'].forEach(dir => {
       rimraf.sync(path.join(fixtures, dir, 'node_modules'));
     });
   });
@@ -141,6 +141,37 @@ describe('preset-dumi', () => {
     const { findByText } = render(reactNode);
 
     expect(await findByText('local theme layout')).not.toBeNull();
+  });
+
+  it('fallback for progressive theme', async () => {
+    const cwd = path.join(fixtures, 'progressive-theme');
+    const service = new Service({
+      cwd,
+      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+    });
+
+    // alias dumi-theme-default
+    symlink(
+      path.join(__dirname, '../../theme-default'),
+      path.join(service.paths.absNodeModulesPath, 'dumi-theme-default'),
+    );
+
+    // force use empty theme
+    process.env.DUMI_THEME = './.empty-theme';
+
+    await service.run({
+      name: 'g',
+      args: {
+        _: ['g', 'tmp'],
+      },
+    });
+
+    delete process.env.DUMI_THEME;
+
+    const reactNode = require(path.join(cwd, '.umi-test', 'umi.ts')).default;
+    const { findAllByText } = render(reactNode);
+
+    expect(await findAllByText('dumi')).not.toBeNull();
   });
 
   it('platform env', async () => {
