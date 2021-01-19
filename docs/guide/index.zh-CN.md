@@ -77,4 +77,6 @@ $ yarn create @umijs/dumi-app
 
 ### 构建及部署
 
-执行 `npm run build` 或 `npx dumi build` 即可对我们的文档站点做构建，构建产物默认会输出到 `dist` 目录下，我们可以将 `dist` 目录部署在 now.sh、GitHub Pages 等静态站点托管平台或者某台服务器上。
+执行 `npm run docs:build` 或 `npx dumi docs:build` 即可对我们的文档站点做构建，构建产物默认会输出到 `docs-dist` 目录下，我们可以将 `dist` 目录部署在 now.sh、GitHub Pages 等静态站点托管平台或者某台服务器上。
+
+执行 `npm run build` 或 `npx dumi build` 即可对我们的组件做构建，构建产物默认会输出到 `dist` 目录下，我们可以将其进行发布。
