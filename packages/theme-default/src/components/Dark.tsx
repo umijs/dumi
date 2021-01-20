@@ -3,26 +3,25 @@ import React from 'react';
 import './Dark.less';
 
 const Dark: FC<{}> = () => {
-  const html = document.documentElement;
-  const media = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
-
   const callback = (e) => {
     e.matches ? changeDark() : removeDark();
   };
 
-  if (media && typeof media.addEventListener === 'function') {
-    media.addEventListener('change', callback);
-  } 
-
   React.useEffect(() => {
+    const media = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
+    if (media && typeof media.addEventListener === 'function') {
+      media.addEventListener('change', callback);
+    }
     media?.matches ? changeDark() : removeDark();
   }, []);
 
   const changeDark = () => {
+    const html = document.documentElement;
     html.classList.add('dark');
   };
 
   const removeDark = () => {
+    const html = document.documentElement;
     html.classList.remove('dark');
   };
 
