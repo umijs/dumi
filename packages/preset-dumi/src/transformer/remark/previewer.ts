@@ -157,7 +157,9 @@ function generatePreviewerProps(
 
     fileAbsPath = node.properties.filePath;
     node.properties.source = { [lang]: content };
-    node.properties.meta = Object.assign(meta, node.properties.meta);
+    // save original attr meta on code tag, for HMR
+    node.properties._ATTR_META = node.properties._ATTR_META || node.properties.meta;
+    node.properties.meta = Object.assign(meta, node.properties._ATTR_META);
   }
 
   const yaml = transformNodeMeta(node.properties.meta || {});
@@ -167,16 +169,14 @@ function generatePreviewerProps(
     {
       isTSX: Boolean(node.properties.source.tsx),
       fileAbsPath,
-      depChangeListener() {
-        if (!yaml.inline && isExternalDemo) {
-          debug(`regenerate demo props for: ${node.properties.filePath}`);
-          // update @@/demos module if external demo changed, to update previewerProps for page component
-          applyDemo(
-            generatePreviewerProps(node, mdAbsPath, componentName, previewId),
-            transformCode(node, mdAbsPath),
-          );
-        }
-      },
+      depChangeListener: !yaml.inline && isExternalDemo && (() => {
+        debug(`regenerate demo props for: ${node.properties.filePath}`);
+        // update @@/demos module if external demo changed, to update previewerProps for page component
+        applyDemo(
+          generatePreviewerProps(node, mdAbsPath, componentName, previewId),
+          transformCode(node, mdAbsPath),
+        );
+      }),
     },
   );
 

@@ -217,6 +217,11 @@ function analyzeDeps(
     cachers.file.add(fileAbsPath, cache, cacheKey);
   }
 
+  // trigger listener to update previewer props when dep file change
+  if (depChangeListener) {
+    listenFileOnceChange(fileAbsPath, depChangeListener);
+  }
+
   return { files, dependencies };
 }
 
