@@ -63,29 +63,31 @@ function getPreviewerId(yaml: any, mdAbsPath: string, codeAbsPath: string, compo
       // use cache first
       id = externalCache.get(codeAbsPath);
 
-      const words = (slash(codeAbsPath) as string)
-        // discard index & suffix like index.tsx
-        .replace(/(?:\/index)?(\.[\w-]+)?\.\w+$/, '$1')
-        .split(/\//)
-        .map(w => w.toLowerCase());
-      // /path/to/index.tsx -> to || /path/to.tsx -> to
-      const demoName = words[words.length - 1] || 'demo';
-      const prefix = words
-        .slice(0, -1)
-        .filter(word => !/^(src|_?demos?|_?examples?)$/.test(word))
-        .pop();
+      if (!id) {
+        const words = (slash(codeAbsPath) as string)
+          // discard index & suffix like index.tsx
+          .replace(/(?:\/index)?(\.[\w-]+)?\.\w+$/, '$1')
+          .split(/\//)
+          .map(w => w.toLowerCase());
+        // /path/to/index.tsx -> to || /path/to.tsx -> to
+        const demoName = words[words.length - 1] || 'demo';
+        const prefix = words
+          .slice(0, -1)
+          .filter(word => !/^(src|_?demos?|_?examples?)$/.test(word))
+          .pop();
 
-      id = `${prefix}-${demoName}`;
+        id = `${prefix}-${demoName}`;
 
-      // record id count
-      const currentIdCount = externalIdMap.get(id) || 0;
+        // record id count
+        const currentIdCount = externalIdMap.get(id) || 0;
 
-      externalIdMap.set(id, currentIdCount + 1);
+        externalIdMap.set(id, currentIdCount + 1);
 
-      // append count suffix
-      id += currentIdCount ? `-${currentIdCount}` : '';
+        // append count suffix
+        id += currentIdCount ? `-${currentIdCount}` : '';
 
-      externalCache.set(codeAbsPath, id);
+        externalCache.set(codeAbsPath, id);
+      }
     }
   }
 
