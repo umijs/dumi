@@ -11,7 +11,7 @@ describe('preset-dumi', () => {
 
   afterAll(() => {
     // clear all node_modules
-    ['', 'basic', 'algolia', 'demos', 'assets', 'integrate', 'local-theme', 'progressive-theme', 'sitemap'].forEach(dir => {
+    ['', 'basic', 'algolia', 'demos', 'assets', 'integrate', 'local-theme', 'progressive-theme', 'side-effects', 'sitemap'].forEach(dir => {
       rimraf.sync(path.join(fixtures, dir, 'node_modules'));
     });
   });
@@ -283,6 +283,31 @@ describe('preset-dumi', () => {
       '/A',
       '/',
     ]);
+  });
+
+  it('avoid tree-shaking for .umi', async () => {
+    const cwd = path.join(fixtures, 'side-effects');
+    const service = new Service({
+      cwd,
+      env: 'production',
+      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+    });
+
+    const api = service.getPluginAPI({
+      service,
+      key: 'test',
+      id: 'test',
+    });
+    service.plugins.test = { key: 'test', id: 'test' } as any;
+
+    // add UMI_DIR to avoid alias error
+    process.env.UMI_DIR = path.dirname(require.resolve('umi/package'));
+
+    // execute build
+    await api.service.run({ name: 'build' });
+
+    // expect css not be tree shaked
+    expect(fs.readFileSync(path.join((api as any).paths.absOutputPath, 'umi.css')).toString()).toContain('data-side-effects-test');
   });
 
   it('should generate sitemap.xml', async () => {
