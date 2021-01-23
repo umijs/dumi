@@ -1,5 +1,5 @@
 export default {
-  ssr: {},
+  ssr: process.env.Node_ENV === 'production' ? {} : false,
   hash: true,
   title: 'dumi',
   mode: 'site',
