@@ -26,7 +26,7 @@ export default (api: IApi) => {
       description: ctx.opts.description,
       mode: ctx.opts.mode,
       repository: {
-        url: getRepoUrl(api.pkg.repository?.url || api.pkg.repository),
+        url: getRepoUrl(api.pkg.repository?.url || api.pkg.repository, api.pkg.repository?.platform),
         branch: api.pkg.repository?.branch || 'master',
         platform: api.pkg.repository?.platform,
       },
