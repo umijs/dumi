@@ -11,6 +11,11 @@ const FILE_LIST = [
     actions: [
       // remove head content
       { type: 'slice', value: [13] },
+      // remove unnecessary option
+      ...['title', 'singular', 'routes', 'mpa', 'mountElementId'].map(option => ({
+        type: 'replace',
+        value: [new RegExp(`(?:^|[\r\n])## ${option}[^]+?([\r\n]#|$)`), '$1'],
+      })),
       // replace h2 -> h3
       { type: 'replace', value: [/(\n?)##/g, '\n###'] },
       // replace jsx to jsx | pure
@@ -21,11 +26,6 @@ const FILE_LIST = [
       { type: 'replace', value: [/]\(\//g, '](https://umijs.org/'] },
       // prepend anchor link prefix
       { type: 'replace', value: [/]\(#/g, '](https://umijs.org/zh-CN/config#'] },
-      // remove unnecessary option
-      ...['title', 'singular', 'routes', 'mpa', 'mountElementId'].map(option => ({
-        type: 'replace',
-        value: [new RegExp(`(?:^|[\r\n])## ${option}[^]+?([\r\n]#|$)`), '$1'],
-      })),
     ],
   },
 ];
