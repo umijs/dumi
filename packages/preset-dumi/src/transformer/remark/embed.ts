@@ -6,7 +6,7 @@ import has from 'hast-util-has-property';
 import visit from 'unist-util-visit';
 import { getModuleResolvePath } from '../../utils/moduleResolver';
 import type { IDumiUnifiedTransformer, IDumiElmNode } from '.';
-import getFileRangeLines from '../../utils/getFileRangeLines';
+import { getFileRangeLines, getFileContentByRegExp } from '../../utils/getFileContent';
 import transformer from '..';
 
 export const EMBED_SLUGS = 'dumi-embed-file-slugs';
@@ -30,12 +30,22 @@ export default function embed(): IDumiUnifiedTransformer {
         if (absPath) {
           const hash = decodeURIComponent(parsed.hash || '').replace('#', '');
           const query = new URLSearchParams();
+          let content = fs.readFileSync(absPath, 'utf8').toString();
 
           // generate loader query
           if (hash[0] === 'L') {
             query.append('range', hash);
+            content = getFileRangeLines(
+              content,
+              hash,
+            );
           } else if (hash.startsWith('RE-')) {
             query.append('regexp', hash.substring(3));
+            content = getFileContentByRegExp(
+              content,
+              hash.substring(3),
+              absPath,
+            );
           }
 
           // process node via file type
@@ -50,10 +60,7 @@ export default function embed(): IDumiUnifiedTransformer {
                   // eslint-disable-next-line no-new-wrappers
                   children: new String(`require('${absPath}${String(query) ? `?${query}` : ''}').default()`),
                   [EMBED_SLUGS]: transformer.markdown(
-                    getFileRangeLines(
-                      fs.readFileSync(absPath, 'utf8').toString(),
-                      parsed.hash?.replace('#', ''),
-                    ),
+                    content,
                     absPath,
                   ).meta.slugs,
                 },

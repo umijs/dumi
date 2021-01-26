@@ -69,6 +69,10 @@ describe('loader', () => {
       { resource: filePath, resourcePath: filePath, resourceQuery: '?range=L3-L5' },
       fs.readFileSync(filePath, 'utf8').toString(),
     );
+    const fallbackFullContent =  await loader.call(
+      { resource: filePath, resourcePath: filePath, resourceQuery: '?range=LA-LB' },
+      fs.readFileSync(filePath, 'utf8').toString(),
+    );
 
     // expect get correct line
     expect(singleLine).toContain('id="hello-world"');
@@ -80,6 +84,10 @@ describe('loader', () => {
 
     // expect parse previewer
     expect(rangeLines).toContain('Previewer');
+
+    // expect fallback full content if line is invalid
+    expect(fallbackFullContent).toContain('Previewer');
+    expect(fallbackFullContent).toContain('id="hello-world"');
   });
 
   it('should load part of md by regexp', async () => {
