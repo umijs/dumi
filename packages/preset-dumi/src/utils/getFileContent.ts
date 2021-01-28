@@ -9,7 +9,6 @@ export const getFileRangeLines = (content: string, range: string) => {
   if (start) {
     const lineStart = parseInt(start, 10) - 1;
     const lineEnd = end ? parseInt(end, 10) : lineStart + 1;
-    const wrap = process.platform.includes('win') ? '\r\n' : '\n';
 
     content = content
       .split(/\r\n|\n/g)
