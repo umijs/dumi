@@ -41,7 +41,6 @@ async function main() {
     const res = await axios.get(file.upstream);
 
     let content = '';
-
     content += res.data;
 
     // execute process actions
