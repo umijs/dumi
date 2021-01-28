@@ -25,8 +25,6 @@ export default async function loader(raw: string) {
     useKatexFilePath = this.resource;
   }
 
-  const translateHelpHints = result.meta.translateHelpHints || 'This article has not been translated yet. Want to help us out? Click the Edit this doc on GitHub at the end of the page.';
-
   return `
     import React from 'react';
     import { Link, AnchorLink } from 'dumi/theme';
@@ -48,7 +46,9 @@ export default async function loader(raw: string) {
         <>
           ${
             result.meta.translateHelp
-              ? `<Alert>${translateHelpHints}</Alert>`
+              ? result.meta.translateHelp === true
+                  ? `<Alert>This article has not been translated yet. Want to help us out? Click the Edit this doc on GitHub at the end of the page.</Alert>`
+                  : `<Alert>${result.meta.translateHelp}</Alert>`
               : ''
           }
           ${result.content}

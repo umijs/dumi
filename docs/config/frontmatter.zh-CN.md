@@ -213,19 +213,11 @@ features:
 
 ### translateHelp
 
-- 类型：`Boolean`
+- 类型：`Boolean | String`
 - 默认值：`false`
 - 详细：
 
-是否在该页面顶部展示『帮助翻译』的提示框。
-
-### translateHelpHints
-
-- 类型：`String`
-- 默认值：`This article has not been translated yet. Want to help us out? Click the Edit this doc on GitHub at the end of the page.`
-- 详细：
-
-帮助翻译提示语。
+是否在该页面顶部展示『帮助翻译』的提示框。当设置 `String` 类型时，会自定义提示语内容。
 
 ### hide <Badge>1.1.0+</Badge>
 
