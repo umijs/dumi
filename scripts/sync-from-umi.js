@@ -1,6 +1,6 @@
+const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
-const https = require('https');
 
 const UMI_DOC_DIR = path.join(__dirname, '..', 'docs', '.upstream');
 const FILE_LIST = [
@@ -34,39 +34,37 @@ if (!fs.existsSync(UMI_DOC_DIR)) {
   fs.mkdirSync(UMI_DOC_DIR);
 }
 
-// process files
-FILE_LIST.forEach(file => {
-  const localPath = path.join(UMI_DOC_DIR, file.localname);
+async function main() {
+  for await (let file of FILE_LIST) {
+    const localPath = path.join(UMI_DOC_DIR, file.localname);
+    // get file from upstream
+    const res = await axios.get(file.upstream);
 
-  // get file from upstream
-  https.get(file.upstream, res => {
     let content = '';
+    content += res.data;
 
-    res.on('data', chunk => {
-      content += chunk;
+    // execute process actions
+    (file.actions || []).forEach(action => {
+      switch (action.type) {
+        case 'slice':
+          content = content
+            .split(/\n/g)
+            .slice(action.value[0], action.value[1])
+            .join('\n');
+          break;
+
+        case 'replace':
+          content = content.replace(action.value[0], action.value[1]);
+          break;
+
+        default:
+      }
     });
-    res.on('end', () => {
-      // execute process actions
-      (file.actions || []).forEach(action => {
-        switch (action.type) {
-          case 'slice':
-            content = content
-              .split(/\n/g)
-              .slice(action.value[0], action.value[1])
-              .join('\n');
-            break;
 
-          case 'replace':
-            content = content.replace(action.value[0], action.value[1]);
-            break;
+    // write back to file
+    fs.writeFileSync(localPath, content);
+    console.log('sync', file.localname, 'from upstream successfully!');
+  }
+}
 
-          default:
-        }
-      });
-
-      // write back to file
-      fs.writeFileSync(localPath, content);
-      console.log('sync', file.localname, 'from upstream successfully!');
-    });
-  });
-});
+main();

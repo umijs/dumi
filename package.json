@@ -34,6 +34,7 @@
     "@umijs/plugin-analytics": "^0.2.2",
     "@umijs/test": "^3.0.3",
     "antd": "^4.8.2",
+    "axios": "^0.21.1",
     "babel-plugin-import": "^1.13.0",
     "cross-env": "^6.0.3",
     "eslint": "^7.0.0",
