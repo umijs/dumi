@@ -11,7 +11,7 @@ export const getFileRangeLines = (content: string, range: string) => {
     const lineEnd = end ? parseInt(end, 10) : lineStart + 1;
 
     content = content
-      .split(/\r|\n/g)
+      .split(/\r\n|\n/g)
       .slice(lineStart, lineEnd)
       .join('\n');
   }
