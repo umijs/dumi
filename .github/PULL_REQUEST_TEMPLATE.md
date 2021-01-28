@@ -8,11 +8,11 @@ First of all, thank you for your contribution! 😄
 - [ ] 新特性提交 / New feature
 - [ ] bug 修复 / Fix bug
 - [ ] 样式优化 / Style optimization
-- [ ] 包体积优化 / Package size optimization
-- [ ] 性能优化 / Performance optimization
 - [ ] 代码风格优化 / Code style optimization
+- [ ] 性能优化 / Performance optimization
 - [ ] 构建优化 / Build optimization
 - [ ] 网站、文档、Demo 改进 / Website, documentation, demo improvements
+- [ ] 重构代码或样式 / Refactor code or style
 - [ ] 测试相关 / Test related
 - [ ] 其他 / Other
 
