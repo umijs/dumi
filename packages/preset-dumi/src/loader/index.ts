@@ -46,7 +46,9 @@ export default async function loader(raw: string) {
         <>
           ${
             result.meta.translateHelp
-              ? '<Alert>This article has not been translated yet. Want to help us out? Click the Edit this doc on GitHub at the end of the page.</Alert>'
+              ? result.meta.translateHelp === true
+                  ? `<Alert>This article has not been translated yet. Want to help us out? Click the Edit this doc on GitHub at the end of the page.</Alert>`
+                  : `<Alert>${result.meta.translateHelp}</Alert>`
               : ''
           }
           ${result.content}

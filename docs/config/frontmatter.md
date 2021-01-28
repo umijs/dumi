@@ -213,11 +213,11 @@ Configure the footer of the current page. It is recommended to configure the hom
 
 ### translateHelp
 
-- Type: `Boolean`
+- Type: `Boolean | String`
 - Default: `false`
 - Details:
 
-Whether to present the 『Help Translation』 prompt at the top of the page.
+Whether to present the 『Help Translation』 prompt at the top of the page. When set `String` type, the prompt content will be customized.
 
 ### hide <Badge>1.1.0+</Badge>
 

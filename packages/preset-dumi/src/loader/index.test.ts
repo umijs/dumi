@@ -31,6 +31,20 @@ describe('loader', () => {
 
     // expect import components from theme package
     expect(result).toContain("from 'dumi-theme-default");
+
+    // show default translateHelp
+    expect(result).toContain("This article has not been translated yet. Want to help us out? Click the Edit this doc on GitHub at the end of the page.");
+  });
+
+  it('should load customize md', async () => {
+    const filePath = path.join(fixture, 'customize.md');
+    const result = await loader.call(
+      { resource: filePath, resourcePath: filePath },
+      fs.readFileSync(filePath, 'utf8').toString(),
+    );
+
+    // show customize translateHelp
+    expect(result).toContain("Customize Help!");
   });
 
   it('should load normal md without Katex style in production', async () => {
@@ -62,11 +76,11 @@ describe('loader', () => {
   it('should load part of md by range', async () => {
     const filePath = path.join(fixture, 'normal.md');
     const singleLine = await loader.call(
-      { resource: filePath, resourcePath: filePath, resourceQuery: '?range=L1' },
+      { resource: filePath, resourcePath: filePath, resourceQuery: '?range=L5' },
       fs.readFileSync(filePath, 'utf8').toString(),
     );
     const rangeLines = await loader.call(
-      { resource: filePath, resourcePath: filePath, resourceQuery: '?range=L3-L5' },
+      { resource: filePath, resourcePath: filePath, resourceQuery: '?range=L7-L9' },
       fs.readFileSync(filePath, 'utf8').toString(),
     );
     const fallbackFullContent =  await loader.call(

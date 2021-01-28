@@ -213,11 +213,11 @@ features:
 
 ### translateHelp
 
-- 类型：`Boolean`
+- 类型：`Boolean | String`
 - 默认值：`false`
 - 详细：
 
-是否在该页面顶部展示『帮助翻译』的提示框。
+是否在该页面顶部展示『帮助翻译』的提示框。当设置 `String` 类型时，会自定义提示语内容。
 
 ### hide <Badge>1.1.0+</Badge>
 
