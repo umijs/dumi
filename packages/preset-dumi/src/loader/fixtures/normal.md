@@ -1,3 +1,7 @@
+---
+translateHelp: true
+---
+
 ## Hello World!
 
 ```jsx
