@@ -12,7 +12,7 @@ export const getFileRangeLines = (content: string, range: string) => {
     const wrap = process.platform.includes('win') ? '\r\n' : '\n';
 
     content = content
-      .split(wrap)
+      .split(/\r\n|\n/g)
       .slice(lineStart, lineEnd)
       .join('\n');
   }
