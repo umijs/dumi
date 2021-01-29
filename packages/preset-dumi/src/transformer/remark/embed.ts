@@ -62,6 +62,7 @@ export default function embed(): IDumiUnifiedTransformer {
                   [EMBED_SLUGS]: transformer.markdown(
                     content,
                     absPath,
+                    { noCache: true },
                   ).meta.slugs,
                 },
                 position: node.position,
