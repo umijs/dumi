@@ -42,6 +42,7 @@ FILE_LIST.forEach(file => {
   https.get(file.upstream, res => {
     let content = '';
 
+    res.setEncoding('utf8');
     res.on('data', chunk => {
       content += chunk;
     });
