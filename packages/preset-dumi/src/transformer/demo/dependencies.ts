@@ -62,12 +62,16 @@ function analyzeDeps(
     fileAbsPath,
     entryAbsPath,
     depChangeListener,
-  }: IDemoOpts & { entryAbsPath?: string; depChangeListener?: IWatcherItem['listeners'][0] },
+    files = {},
+  }: IDemoOpts & {
+    entryAbsPath?: string;
+    depChangeListener?: IWatcherItem['listeners'][0];
+    files?: IDepAnalyzeResult['files'];
+  },
 ): IDepAnalyzeResult {
   const cacheKey = fileAbsPath.endsWith('.md')
     ? `${fileAbsPath}-${getContentHash(raw)}`
     : fileAbsPath;
-  const files: IDepAnalyzeResult['files'] = {};
   const dependencies: IDepAnalyzeResult['dependencies'] = {};
   let cache: IAnalyzeCache = fileAbsPath && cachers.file.get(fileAbsPath);
 
@@ -200,6 +204,7 @@ function analyzeDeps(
           fileAbsPath: item.resolvePath,
           entryAbsPath: entryAbsPath || fileAbsPath,
           depChangeListener,
+          files,
         });
 
         Object.assign(files, result.files);
