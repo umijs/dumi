@@ -48,8 +48,8 @@ describe('component api example', () => {
 
     // compare transform content
     expect(result).toEqual(
-      `<div className="markdown"><p><h2 id="api"><AnchorLink to="#api" aria-hidden="true" tabIndex={-1}><span className={["icon","icon-link"]} /></AnchorLink>API</h2>
-<API src="./Hello/index.tsx" identifier="Hello" export="default" /></p></div>`,
+      `<div className="markdown"><h2 id="api"><AnchorLink to="#api" aria-hidden="true" tabIndex={-1}><span className={["icon","icon-link"]} /></AnchorLink>API</h2>
+<API src="./Hello/index.tsx" identifier="Hello" export="default" /></div>`,
     );
   });
 
