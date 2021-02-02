@@ -185,7 +185,10 @@ export default function api(): IDumiUnifiedTransformer {
 
     if (extraReplacement) {
       visit<IDumiElmNode>(ast, 'element', (node, i, parent) => {
-        if (is(node, 'p')) {
+        if (
+          is(node, 'p') &&
+          node.children?.some(child => is(child, 'h2'))
+        ) {
           parent.children.splice(
             i,
             1,

@@ -79,7 +79,10 @@ export default function embed(): IDumiUnifiedTransformer {
 
     if (extraReplacement) {
       visit<IDumiElmNode>(ast, 'element', (node, i, parent) => {
-        if (is(node, 'p')) {
+        if (
+          is(node, 'p') &&
+          node.children.length == 1 
+        ) {
           parent.children.splice(
             i,
             1,
