@@ -134,6 +134,7 @@ function watchComponentUpdate(absPath: string, componentName: string, identifier
  */
 export default function api(): IDumiUnifiedTransformer {
   return (ast, vFile) => {
+    let extraReplacement = false;
     visit<IDumiElmNode>(ast, 'element', (node, i, parent) => {
       if (is(node, 'API') && !node._dumi_parsed) {
         let identifier: string;
@@ -175,7 +176,23 @@ export default function api(): IDumiUnifiedTransformer {
           // apply api data
           applyApiData(identifier, definitions);
         }
+
+        if (parent.tagName === 'p') {
+          extraReplacement = true;
+        }
       }
     });
+
+    if (extraReplacement) {
+      visit<IDumiElmNode>(ast, 'element', (node, i, parent) => {
+        if (is(node, 'p')) {
+          parent.children.splice(
+            i,
+            1,
+            ...node.children
+          )
+        }
+      })
+    }
   };
 }

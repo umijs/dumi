@@ -16,6 +16,7 @@ export const EMBED_SLUGS = 'dumi-embed-file-slugs';
  */
 export default function embed(): IDumiUnifiedTransformer {
   return ast => {
+    let extraReplacement = false;
     visit<IDumiElmNode>(ast, 'element', (node, i, parent) => {
       if (is(node, 'embed') && has(node, 'src')) {
         const { src } = node.properties;
@@ -69,7 +70,23 @@ export default function embed(): IDumiUnifiedTransformer {
               });
           }
         }
+
+        if (parent.tagName === 'p') {
+          extraReplacement = true;
+        }
       }
     });
+
+    if (extraReplacement) {
+      visit<IDumiElmNode>(ast, 'element', (node, i, parent) => {
+        if (is(node, 'p')) {
+          parent.children.splice(
+            i,
+            1,
+            ...node.children
+          )
+        }
+      })
+    }
   };
 }
