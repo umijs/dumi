@@ -99,7 +99,7 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location }) => {
               const hasSlugs = Boolean(meta.slugs?.length);
               const hasChildren = item.children && Boolean(item.children.length);
               const show1LevelSlugs =
-                meta.toc === 'menu' && !hasChildren && hasSlugs && item.path === location.pathname;
+                meta.toc === 'menu' && !hasChildren && hasSlugs && item.path === location.pathname.replace(/([^^])\/$/, '$1');
 
               return (
                 <li key={item.path || item.title}>

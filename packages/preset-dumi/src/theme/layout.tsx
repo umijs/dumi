@@ -27,7 +27,7 @@ export interface IOuterLayoutProps {
  */
 const useCurrentRouteMeta = (routes: IOuterLayoutProps['routes'], pathname: string) => {
   const handler = (...args: [IOuterLayoutProps['routes'], string]) => {
-    const pathWithoutSuffix = args[1].replace(/[^^]\/$/, '');
+    const pathWithoutSuffix = args[1].replace(/([^^])\/$/, '$1');
 
     return args[0].find(({ path }) => path === pathWithoutSuffix)?.meta || {};
   };
