@@ -74,7 +74,8 @@
     "@types/unist": "^2.0.3",
     "@umijs/core": "^3.2.6",
     "react-test-renderer": "^16.13.1",
-    "sitemap": "^6.3.3"
+    "sitemap": "^6.3.3",
+    "terser": "^5.5.1"
   },
   "license": "MIT"
 }

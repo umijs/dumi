@@ -1,8 +1,19 @@
 import fs from 'fs';
 import path from 'path';
+import { minify } from 'terser';
 import type { IApi } from '@umijs/types';
 import getTheme from '../../theme/loader';
 import { setOptions } from '../../context';
+
+// initialize data-prefers-color attr for HTML tag
+const COLOR_HEAD_SCP = `
+(function () {
+  var cache = localStorage.getItem('dumi:prefers-color');
+  var isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  document.documentElement.setAttribute('data-prefers-color', cache || (isDark ? 'dark' : 'light'));
+})();
+`;
 
 /**
  * plugin for alias dumi/theme module for export theme API
@@ -39,4 +50,7 @@ export default (api: IApi) => {
 
     return memo;
   });
+
+  // add head script to initialize prefers-color-schema for HTML tag
+  api.addHTMLHeadScripts(async () => [{ content: (await minify(COLOR_HEAD_SCP, { ecma: 5 })).code }]);
 };
