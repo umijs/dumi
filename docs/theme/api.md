@@ -109,3 +109,50 @@ To get the API metadata of the specified component, please refer to the [API com
 - **return:** `String`. The url go to TypeScript Playground
 
 Get the link to the Playground of the current TypeScript official website to submit the TSX code to the Playground to display the JSX code.
+
+## usePrefersColor
+
+- **props:** none
+- **return:**
+  - color: `'dark' | 'light'`. Current prefers color, can only be `dark` or `light`
+  - toggleColor: `() => void`. A function to reverse current prefers color for site
+
+This API will be useful if we want to implement dark/light mode for our theme.
+
+For theme developer:
+
+- Can write dark mode styles incrementally with `[data-prefers-color=dark]` CSS attribute selector, for example:
+
+```less
+.navbar { /* light styles */ }
+[data-prefers-color=dark] .navbar { /* dark styles */ }
+
+// or
+.navbar {
+  /* light styles */
+  [data-prefers-color-dark] & {
+    /* dark styles */
+  }
+}
+```
+
+- Get current prefers color & toggle function via this react hook, to provide a button to toggle dark/light mode for user, for example:
+
+```tsx | pure
+import React from 'react';
+import { usePrefersColor } from 'dumi/theme';
+
+export default props => {
+  const [color, toggleColor] = usePrefersColor();
+
+  return (
+    <button onClick={toggleColor}>
+      Enable
+      {color === 'light' ? 'dark' : 'light'}
+      mode
+    </button>
+  );
+};
+```
+
+More informations in [#543](https://github.com/umijs/dumi/pull/543)。
