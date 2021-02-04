@@ -66,7 +66,7 @@ toc: menu
 如果只希望控制正文区域的渲染，可以选择包裹默认主题的 `layout`、控制 `layout` 的 `children` 来实现。例如，给正文区域增加一个反馈按钮：
 
 ```tsx | pure
-// src/layout.tsx
+// .dumi/theme/layout.tsx(本地主题) 或 src/layout.tsx(主题包)
 import React from 'react';
 import Layout from 'dumi-theme-default/src/layout';
 

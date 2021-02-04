@@ -74,7 +74,7 @@ If you only want to control the rendering of the text area, you can choose the `
 For example, add a feedback button to the text area:
 
 ```tsx | pure
-// src/layout.tsx
+// .dumi/theme/layout.tsx(local theme) 或 src/layout.tsx(theme package)
 import React from 'react';
 import Layout from 'dumi-theme-default/src/layout';
 
