@@ -19,7 +19,6 @@ export const getFileRangeLines = (content: string, range: string) => {
   return content;
 };
 
-
 /**
  * get file content by regular expression
  * @param content   source file content
@@ -37,4 +36,4 @@ File: ${filePath}
 Error: ${err}`);
     return content;
   }
-}
+};

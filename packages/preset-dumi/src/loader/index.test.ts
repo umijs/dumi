@@ -33,7 +33,9 @@ describe('loader', () => {
     expect(result).toContain("from 'dumi-theme-default");
 
     // show default translateHelp
-    expect(result).toContain("This article has not been translated yet. Want to help us out? Click the Edit this doc on GitHub at the end of the page.");
+    expect(result).toContain(
+      'This article has not been translated yet. Want to help us out? Click the Edit this doc on GitHub at the end of the page.',
+    );
   });
 
   it('should load customize md', async () => {
@@ -44,7 +46,7 @@ describe('loader', () => {
     );
 
     // show customize translateHelp
-    expect(result).toContain("Customize Help!");
+    expect(result).toContain('Customize Help!');
   });
 
   it('should load normal md without Katex style in production', async () => {
@@ -83,7 +85,7 @@ describe('loader', () => {
       { resource: filePath, resourcePath: filePath, resourceQuery: '?range=L7-L9' },
       fs.readFileSync(filePath, 'utf8').toString(),
     );
-    const fallbackFullContent =  await loader.call(
+    const fallbackFullContent = await loader.call(
       { resource: filePath, resourcePath: filePath, resourceQuery: '?range=LA-LB' },
       fs.readFileSync(filePath, 'utf8').toString(),
     );
