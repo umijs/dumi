@@ -4,16 +4,23 @@ import type { IApi } from '@umijs/types';
 import { rimraf } from '@umijs/utils';
 import { Service } from '@umijs/core';
 import { render } from '@testing-library/react';
+import MatchMediaMock from 'jest-matchmedia-mock';
 import symlink from './utils/symlink';
 
 describe('preset-dumi', () => {
+  let matchMedia: MatchMediaMock;
   const fixtures = path.join(__dirname, 'fixtures');
+
+  beforeAll(() => {
+    matchMedia = new MatchMediaMock();
+  });
 
   afterAll(() => {
     // clear all node_modules
     ['', 'basic', 'algolia', 'demos', 'assets', 'integrate', 'local-theme', 'progressive-theme', 'side-effects', 'sitemap'].forEach(dir => {
       rimraf.sync(path.join(fixtures, dir, 'node_modules'));
     });
+    matchMedia.clear();
   });
 
   it('init', async () => {
