@@ -1,4 +1,5 @@
 module.exports = {
+  setupFiles: ['<rootDir>/scripts/jest-setup.js'],
   coveragePathIgnorePatterns: [
     '/packages/dumi/src/index.ts',
     '/packages/create-dumi-lib/src/cli.ts',

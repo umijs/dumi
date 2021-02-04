@@ -6,6 +6,8 @@ import AnchorLink from './components/AnchorLink';
 import type { IThemeContext } from './context';
 import Context from './context';
 import type { IMenu } from '../routes/getMenuFromRoutes';
+// for listen prefers-color-schema media change
+import './hooks/usePrefersColor';
 
 export interface IOuterLayoutProps {
   mode: IThemeContext['config']['mode'];

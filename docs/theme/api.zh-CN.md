@@ -103,3 +103,50 @@ export default props => {
 - **返回：** `String`。前往 TypeScript Playground 的 url
 
 获取当前 TypeScript 官网 Playground 的链接，用于将 TSX 代码提交到 Playground 中展示 JSX 代码。
+
+## usePrefersColor
+
+- **参数：** 无
+- **返回：**
+  - color: `'dark' | 'light'`。当前的 color 值，只可能为 `dark` 或 `light`
+  - toggleColor: `() => void`。反转当前 color 的函数，执行后 color 会进行反转
+
+当我们需要为主题增加暗黑/明亮模式的切换能力时，需要用到该 API。
+
+对于开发者而言：
+
+- 可以通过 `[data-prefers-color=dark]` 的属性选择器，在主题 Less 中增量编写暗黑模式的样式，例如
+
+```less
+.navbar { /* 明亮样式 */ }
+[data-prefers-color=dark] .navbar { /* 暗黑样式 */ }
+
+// 或者
+.navbar {
+  /* 明亮样式 */
+  [data-prefers-color-dark] & {
+    /* 暗黑样式 */
+  }
+}
+```
+
+- 可以通过该 hook，可以拿到当前色彩偏好的值以及切换函数，以便为用户提供开关来切换暗黑/明亮模式，例如：
+
+```tsx | pure
+import React from 'react';
+import { usePrefersColor } from 'dumi/theme';
+
+export default props => {
+  const [color, toggleColor] = usePrefersColor();
+
+  return (
+    <button onClick={toggleColor}>
+      切换到
+      {color === 'light' ? '暗黑' : '明亮'}
+      模式
+    </button>
+  );
+};
+```
+
+更多信息可参考 [#543](https://github.com/umijs/dumi/pull/543)。

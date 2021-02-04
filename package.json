@@ -39,6 +39,7 @@
     "eslint": "^7.0.0",
     "father-build": "^1.14.2",
     "husky": "^4.2.5",
+    "jest-matchmedia-mock": "^1.1.0",
     "lerna": "^3.6.0",
     "lerna-changelog": "^0.8.2",
     "prettier": "^1.19.1",
