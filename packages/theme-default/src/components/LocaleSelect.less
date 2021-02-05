@@ -7,13 +7,13 @@
   border-radius: 14px;
   transition: background 0.2s;
 
-  .dark & {
+  [data-prefers-color=dark] & {
     border: 1px solid #464646;
   }
 
   &:hover {
     background-color: #fafafa;
-    .dark & {
+    [data-prefers-color=dark] & {
       background-color: rgba(255, 255, 255, 0.1);
     }
   }

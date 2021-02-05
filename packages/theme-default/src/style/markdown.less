@@ -5,7 +5,7 @@
   font-size: 15px;
   line-height: 1.60625;
 
-  .dark & {
+  [data-prefers-color=dark] & {
     color: @c-secondary-dark;
   }
 
@@ -25,7 +25,7 @@
     font-weight: 500;
     line-height: 1.40625;
 
-    .dark & {
+    [data-prefers-color=dark] & {
       color: @c-heading-dark;
     }
 
@@ -103,7 +103,7 @@
     color: #d56161;
     background: darken(@c-light-bg, 1%);
 
-    .dark & {
+    [data-prefers-color=dark] & {
       color: #ff7875;
       background: @c-light-bg-dark;
     }
@@ -138,7 +138,7 @@
     border-left: 4px solid @c-border;
     overflow: hidden;
 
-    .dark & {
+    [data-prefers-color=dark] & {
       color: fadeout(@c-text-dark, 30%);
       border-color: @c-border-dark;
     }
@@ -161,7 +161,7 @@
     border-collapse: collapse;
     border: 1px solid @c-border;
 
-    .dark & {
+    [data-prefers-color=dark] & {
       border: 1px solid #3b434b;
     }
 
@@ -170,7 +170,7 @@
       padding: 10px 24px;
       border: 1px solid @c-border;
 
-      .dark & {
+      [data-prefers-color=dark] & {
         border: 1px solid #3b434b;
       }
     }
@@ -179,7 +179,7 @@
       font-weight: 600;
       background: @c-light-bg;
 
-      .dark & {
+      [data-prefers-color=dark] & {
         background: @c-light-bg-dark;
       }
     }
@@ -202,7 +202,7 @@
     transition: opacity 0.2s;
     outline: none;
 
-    .dark & {
+    [data-prefers-color=dark] & {
       color: @c-primary-dark;
     }
 
@@ -230,7 +230,7 @@
 }
 
 // For demo
-.dark {
+[data-prefers-color=dark] {
   h1,
   h2,
   h3,
