@@ -5,7 +5,7 @@
   border: 1px solid @c-border;
   border-radius: 1px;
 
-  .dark & {
+  [data-prefers-color=dark] & {
     background-color: @c-bg-dark;
     border-color: @c-border-dark;
   }
@@ -75,7 +75,7 @@
       color: @c-text;
       border-top: 1px solid @c-border;
 
-      .dark & {
+      [data-prefers-color=dark] & {
         border-color: @c-border-dark;
       }
     }
@@ -105,7 +105,7 @@
         pointer-events: auto;
         cursor: pointer;
 
-        .dark & {
+        [data-prefers-color=dark] & {
           color: @c-heading-dark;
           background-color: @c-bg-dark;
         }
@@ -130,7 +130,7 @@
     align-items: center;
     border-top: 1px dashed @c-border;
 
-    .dark & {
+    [data-prefers-color=dark] & {
       border-color: @c-border-dark;
     }
 
@@ -156,7 +156,7 @@
       outline: none;
       transition: opacity 0.2s, background 0.2s;
 
-      .dark & {
+      [data-prefers-color=dark] & {
         opacity: 1;
       }
 
@@ -243,14 +243,14 @@
   &-source {
     border-top: 1px dashed @c-border;
 
-    .dark & {
+    [data-prefers-color=dark] & {
       border-color: @c-border-dark;
     }
 
     &-tab {
       border-top: 1px dashed @c-border;
 
-      .dark & {
+      [data-prefers-color=dark] & {
         border-color: @c-border-dark;
       }
 
@@ -284,7 +284,7 @@
           background: #fff;
           border-bottom: 1px solid @c-secondary;
           transform: rotate(45deg);
-          .dark & {
+          [data-prefers-color=dark] & {
             background: @c-bg-dark;
           }
         }
@@ -362,7 +362,7 @@
     transition: left 0.2s, width 0.2s;
     pointer-events: none;
 
-    .dark & {
+    [data-prefers-color=dark] & {
       background: @c-primary-dark;
     }
   }

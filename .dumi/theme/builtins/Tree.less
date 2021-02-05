@@ -6,7 +6,7 @@
   border-radius: 2px;
   background-color: @c-light-bg;
 
-  .dark & {
+  [data-prefers-color=dark] & {
     border-color: @c-border-dark;
     background-color: @c-light-bg-dark;
   }
@@ -16,7 +16,7 @@
     font-size: 14px;
     color: @c-secondary;
 
-    .dark & {
+    [data-prefers-color=dark] & {
       color: @c-secondary-dark;
     }
 
@@ -30,9 +30,9 @@
   }
 }
 
-.dark {
+[data-prefers-color=dark] {
   .ant-tree {
-    color: @c-text-dark;;
+    color: @c-text-dark;
   }
 
   .ant-tree.ant-tree-directory .ant-tree-treenode:hover::before {

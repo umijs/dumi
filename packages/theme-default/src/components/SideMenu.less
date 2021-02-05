@@ -26,7 +26,7 @@
       left: 0;
     }
 
-    .dark & {
+    [data-prefers-color=dark] & {
       background-color: @c-bg-dark;
     }
   }
@@ -56,7 +56,7 @@
     text-align: center;
     border-bottom: 1px solid @c-border;
 
-    .dark & {
+    [data-prefers-color=dark] & {
       border-color: @c-border-dark;
     }
 
@@ -100,7 +100,7 @@
     display: flex;
     justify-content: space-evenly;
 
-    .dark & {
+    [data-prefers-color=dark] & {
       border-color: @c-border-dark;
     }
 
@@ -115,7 +115,7 @@
     overflow: auto;
     overscroll-behavior: contain;
 
-    .dark & {
+    [data-prefers-color=dark] & {
       background-color: #262626;
     }
 
@@ -139,7 +139,7 @@
           outline: none;
           transition: color 0.3s, background 0.3s;
 
-          .dark & {
+          [data-prefers-color=dark] & {
             color: @c-heading-dark;
           }
 
@@ -154,7 +154,7 @@
           &.active {
             color: @c-primary;
 
-            .dark & {
+            [data-prefers-color=dark] & {
               color: @c-primary-dark;
             }
           }
@@ -216,12 +216,12 @@
     > ul ul {
       a {
         color: @c-secondary;
-        .dark & {
+        [data-prefers-color=dark] & {
           color: @c-secondary-dark;
         }
         &.active {
           color: @c-primary;
-          .dark & {
+          [data-prefers-color=dark] & {
             color: @c-primary-dark;
           }
         }
@@ -235,7 +235,7 @@
       text-align: center;
       border-bottom: 1px solid @c-border;
 
-      .dark & {
+      [data-prefers-color=dark] & {
         border-color: @c-border-dark;
       }
 
@@ -277,7 +277,7 @@
         &.active {
           background: linear-gradient(to left, #e8ecf4, rgba(232, 236, 244, 0));
 
-          .dark & {
+          [data-prefers-color=dark] & {
             background: linear-gradient(to left, #3d3d3e, rgba(255, 255, 255, 0.06));
           }
         }
@@ -303,7 +303,7 @@
       width: 1px;
       background: @c-border;
 
-      .dark & {
+      [data-prefers-color=dark] & {
         background: @c-border-dark;
       }
     }
@@ -333,7 +333,7 @@
           z-index: 1;
           background: linear-gradient(to left, #f8faff, rgba(248, 250, 255, 0));
 
-          .dark & {
+          [data-prefers-color=dark] & {
             background: linear-gradient(to left, #3d3d3e, rgba(255, 255, 255, 0.06));
           }
           &::after {

@@ -4,7 +4,7 @@
   position: relative;
   background-color: @c-light-bg;
 
-  .dark & {
+  [data-prefers-color=dark] & {
     color: @c-text-dark;
     background: #262626;
   }
@@ -62,7 +62,7 @@
   }
 }
 
-.dark {
+[data-prefers-color=dark] {
   code[class*="language-"], pre[class*="language-"] {
     color: @c-text-dark;
     text-shadow: 0 1px #000;

@@ -25,45 +25,63 @@
   }
 
   &-sun,
-  &-moon {
-    background-color: transparent;
+  &-moon,
+  &-auto {
+    position: relative;
     border-radius: 50%;
     outline: none;
     cursor: pointer;
-    animation: fadeInDown .2s linear;
     width: 30px;
     height: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
+    svg {
+      transition: all 0.3s linear;
+      &:hover {
+        transform: scale(1.2);
+      }
+    }
   }
 
   &-sun {
-    display: none;
     border: 1px solid @c-light-bg;
     background-color: @c-light-bg;
-    .dark & {
-      display: flex;
-    }
   }
 
   &-moon {
     border: 1px solid @c-bg-dark;
     background-color: @c-bg-dark;
-    .dark & {
-      display: none;
+  }
+
+  &-auto {
+    border: 1px solid @c-light-bg;
+    background-color: @c-light-bg;
+  }
+
+  &-switch {
+    button {
+      z-index: 102;
+    }
+    &-list {
+      animation: dropDown 0.3s linear 0s 1;
+      button {
+        z-index: 101;
+        margin-top: 4px;
+      }
+      .__dumi-default-dark-sun,
+      .__dumi-default-dark-auto {
+        border-color: #dadadf;
+      }
     }
   }
 }
 
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translate3d(0, -100%, 0);
+@keyframes dropDown {
+  0% {
+    margin-top: -100%;
   }
-
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
+  100% {
+    margin-top: 0;
   }
 }

@@ -12,7 +12,7 @@ body {
   font-feature-settings: 'tnum';
   transition: background 0.2s cubic-bezier(0.075,0.82,0.165,1), color 0.2s cubic-bezier(0.075,0.82,0.165,1);
 
-  .dark & {
+  [data-prefers-color=dark] & {
     color: @c-text-dark;
     background-color: @c-bg-dark;
   }
@@ -75,7 +75,7 @@ body {
     text-align: center;
     background-color: #f5f6f8;
 
-    .dark & {
+    [data-prefers-color=dark] & {
       background-color: @c-light-bg-dark;
     }
 
@@ -97,7 +97,7 @@ body {
       line-height: 56px;
       color: #080e29;
 
-      .dark & {
+      [data-prefers-color=dark] & {
         color: @c-heading-dark;
       }
 
@@ -163,7 +163,7 @@ body {
         font-size: 20px;
         line-height: 1;
         color: @c-heading;
-        .dark & {
+        [data-prefers-color=dark] & {
           color: @c-text-dark;
         }
       }
@@ -193,7 +193,7 @@ body {
           font-size: 14px;
           line-height: 22px;
 
-          .dark & {
+          [data-prefers-color=dark] & {
             color: @c-secondary-dark;
           }
 
@@ -253,7 +253,7 @@ body {
     box-sizing: content-box;
     overflow: auto;
 
-    .dark & {
+    [data-prefers-color=dark] & {
       background-color: @c-bg-dark;
     }
 
@@ -276,7 +276,7 @@ body {
         color: @c-text;
         text-decoration: none;
 
-        .dark & {
+        [data-prefers-color=dark] & {
           color: @c-text-dark;
         }
 
@@ -294,7 +294,7 @@ body {
         &:hover {
           color: lighten(@c-primary, 5%);
 
-          .dark & {
+          [data-prefers-color=dark] & {
             color: lighten(@c-primary-dark, 5%);
           }
         }
@@ -302,7 +302,7 @@ body {
         &:active {
           color: lighten(@c-primary, 3%);
 
-          .dark & {
+          [data-prefers-color=dark] & {
             color: lighten(@c-primary-dark, 3%);
           }
         }
@@ -310,14 +310,14 @@ body {
         &.active {
           color: @c-primary;
 
-          .dark & {
+          [data-prefers-color=dark] & {
             color: @c-primary-dark;
           }
 
           &::before {
             background: @c-primary;
 
-            .dark & {
+            [data-prefers-color=dark] & {
               background: @c-primary-dark;
             }
           }
@@ -335,7 +335,7 @@ body {
     justify-content: space-between;
     border-top: 1px solid @c-border;
 
-    .dark & {
+    [data-prefers-color=dark] & {
       color: @c-secondary-dark;
       border-color: @c-border-dark;
     }
@@ -350,7 +350,7 @@ body {
       color: @c-primary;
       text-decoration: none;
 
-      .dark & {
+      [data-prefers-color=dark] & {
         color: @c-primary-dark;
       }
     }
@@ -360,7 +360,7 @@ body {
         content: attr(data-updated-text);
         color: @c-primary;
 
-        .dark & {
+        [data-prefers-color=dark] & {
           color: @c-primary-dark;
         }
       }
@@ -374,14 +374,14 @@ body {
   border-top: 1px solid @c-border;
   text-align: center;
 
-  .dark & {
+  [data-prefers-color=dark] & {
     border-color: @c-border-dark;
   }
 
   .markdown {
     color: #b0b1ba;
 
-    .dark & {
+    [data-prefers-color=dark] & {
       color: rgba(255,255,255,0.45);
     }
   }

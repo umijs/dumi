@@ -15,7 +15,7 @@
   background: #fff;
   box-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.05);
 
-  .dark & {
+  [data-prefers-color=dark] & {
     background: @c-bg-dark;
     box-shadow: 0 2px 8px 0 rgba(0,0,0,0.65);
   }
@@ -52,7 +52,7 @@
     font-size: 24px;
     line-height: 40px;
 
-    .dark & {
+    [data-prefers-color=dark] & {
       color: @c-heading-dark;
     }
 
@@ -88,14 +88,14 @@
         color: #4d5164;
         text-decoration: none;
 
-        .dark & {
+        [data-prefers-color=dark] & {
           color: @c-heading-dark;
         }
 
         &:hover,
         &.active {
           color: @c-primary;
-          .dark & {
+          [data-prefers-color=dark] & {
             color: @c-primary-dark;
           }
         }
