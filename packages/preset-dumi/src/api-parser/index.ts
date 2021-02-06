@@ -76,6 +76,11 @@ export default (filePath: string, componentName?: string) => {
                 }
                 break;
 
+              case 'required':
+                // set default value of required as false
+                result[field] = prop[field] || false;
+                break;
+
               default:
                 if (prop[field]) {
                   result[field] = prop[field];

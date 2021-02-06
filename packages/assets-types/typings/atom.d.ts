@@ -29,7 +29,7 @@ export type AtomPropsDefinition = Record<string, {
     /**
      * property whether required
      */
-    required?: true;
+    required: boolean;
   }[]>;
 
 export default interface AtomAsset {
