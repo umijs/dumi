@@ -3,12 +3,14 @@
     {
       "identifier": "className",
       "description": "extra CSS className for this component",
-      "type": "string"
+      "type": "string",
+      "required": false
     },
     {
       "identifier": "style",
       "description": "inline styles",
-      "type": "CSSProperties"
+      "type": "CSSProperties",
+      "required": false
     },
     {
       "identifier": "size",
@@ -19,11 +21,13 @@
     },
     {
       "identifier": "ref",
-      "type": "Ref<HTMLDivElement>"
+      "type": "Ref<HTMLDivElement>",
+      "required": false
     },
     {
       "identifier": "key",
-      "type": "ReactText"
+      "type": "ReactText",
+      "required": false
     }
   ]
 }

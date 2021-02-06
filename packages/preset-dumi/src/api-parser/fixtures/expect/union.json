@@ -7,7 +7,8 @@
     },
     {
       "identifier": "className",
-      "type": "string"
+      "type": "string",
+      "required": false
     },
     {
       "identifier": "href",

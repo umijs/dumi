@@ -5,7 +5,8 @@
       "description": "default version",
       "description.zh-CN": "中文说明",
       "type": "string",
-      "default": "{ type: 'A', value: [{ name: 'B' }] }"
+      "default": "{ type: 'A', value: [{ name: 'B' }] }",
+      "required": false
     }
   ]
 }

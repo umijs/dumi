@@ -9,12 +9,14 @@
     {
       "identifier": "className",
       "description": "extra CSS className for this component",
-      "type": "string"
+      "type": "string",
+      "required": false
     },
     {
       "identifier": "style",
       "description": "inline styles",
-      "type": "CSSProperties"
+      "type": "CSSProperties",
+      "required": false
     },
     {
       "identifier": "size",
