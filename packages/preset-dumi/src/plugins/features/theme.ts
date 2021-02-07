@@ -10,8 +10,14 @@ const COLOR_HEAD_SCP = `
 (function () {
   var cache = localStorage.getItem('dumi:prefers-color');
   var isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  var enums = ['light', 'dark', 'auto'];
 
-  document.documentElement.setAttribute('data-prefers-color', cache || (isDark ? 'dark' : 'light'));
+  document.documentElement.setAttribute(
+    'data-prefers-color',
+    cache === enums[2]
+      ? (isDark ? enums[1] : enums[0])
+      : (enums.includes(cache) ? cache : enums[0])
+  );
 })();
 `;
 

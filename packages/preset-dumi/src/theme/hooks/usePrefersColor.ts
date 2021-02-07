@@ -2,29 +2,26 @@ import { useState, useEffect, useCallback } from 'react';
 
 const COLOR_ATTR_NAME = 'data-prefers-color';
 const COLOR_LS_NAME = 'dumi:prefers-color';
-const COLOR_MAPPING = {
-  light: 'dark',
-  dark: 'light',
-};
+
+export type PrefersColorValue = 'dark' | 'light' | 'auto';
 const colorChanger = new (class {
   /**
    * current color
    * @note  initial value from head script in src/plugins/theme.ts
    */
-  color = document.documentElement.getAttribute(COLOR_ATTR_NAME);
+  color = document.documentElement.getAttribute(COLOR_ATTR_NAME) as PrefersColorValue;
 
   /**
    * color change callbacks
    */
-  private callbacks: ((color: string) => void)[] = [];
+  private callbacks: ((color: PrefersColorValue) => void)[] = [];
 
   constructor() {
     // listen prefers color change
-    Object.keys(COLOR_MAPPING).forEach(color => {
+    (['light', 'dark'] as PrefersColorValue[]).forEach(color => {
       this.getColorMedia(color).addEventListener('change', (ev) => {
-        // only apply media prefers color when user did not configure theme
-        if (ev.matches && !localStorage.getItem(COLOR_LS_NAME)) {
-          this.color = color;
+        // only apply media prefers color in auto mode
+        if (ev.matches && this.color === 'auto') {
           document.documentElement.setAttribute(COLOR_ATTR_NAME, color);
           this.applyCallbacks();
         }
@@ -36,7 +33,7 @@ const colorChanger = new (class {
    * get media instance for prefers color
    * @param color   prefers color
    */
-  getColorMedia(color: string) {
+  getColorMedia(color: PrefersColorValue) {
     return window.matchMedia(`(prefers-color-scheme: ${color})`);
   }
 
@@ -44,7 +41,7 @@ const colorChanger = new (class {
    * detect color whether matches current color mode
    * @param color   expected color
    */
-  isColorMode(color: string) {
+  isColorMode(color: PrefersColorValue) {
     return this.getColorMedia(color).matches;
   }
 
@@ -59,7 +56,7 @@ const colorChanger = new (class {
    * listen color change
    * @param cb  callback
    */
-  listen(cb: (color: string) => void) {
+  listen(cb: (color: PrefersColorValue) => void) {
     this.callbacks.push(cb);
   }
 
@@ -67,38 +64,36 @@ const colorChanger = new (class {
    * unlisten color change
    * @param cb  callback
    */
-  unlisten(cb: (color: string) => void) {
+  unlisten(cb: (color: PrefersColorValue) => void) {
     this.callbacks.splice(this.callbacks.indexOf(cb), 1);
   }
 
   /**
-   * change prefers color
+   * set prefers color
    */
-  toggle() {
-    const targetColor = COLOR_MAPPING[this.color];
+  set(color: PrefersColorValue) {
+    this.color = color;
+    localStorage.setItem(COLOR_LS_NAME, color);
 
-    document.documentElement.setAttribute(COLOR_ATTR_NAME, targetColor);
-    this.color = targetColor;
-
-    // save prefers color to local storage if it is different with media rule
-    if (!this.isColorMode(targetColor)) {
-      localStorage.setItem(COLOR_LS_NAME, targetColor);
+    if (color === 'auto') {
+      document.documentElement.setAttribute(COLOR_ATTR_NAME, this.isColorMode('dark') ? 'dark' : 'light');
     } else {
-      localStorage.removeItem(COLOR_LS_NAME);
+      document.documentElement.setAttribute(COLOR_ATTR_NAME, color);
     }
 
-    return targetColor;
+    return color;
   }
 })();
 
 /**
- * hook for get/toggle prefers-color-schema, use to control color mode for theme package
+ * hook for get/set prefers-color-schema, use to control color mode for theme package
  * @see https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme
  */
-export default (): [string, () => void] => {
-  const [color, setColor] = useState(colorChanger.color);
-  const toggleColor = useCallback(() => {
-    setColor(colorChanger.toggle());
+export default () => {
+  const [color, setColor] = useState<PrefersColorValue>(colorChanger.color);
+  const changeColor = useCallback((val: PrefersColorValue) => {
+    setColor(val);
+    colorChanger.set(val);
   }, []);
 
   useEffect(() => {
@@ -107,5 +102,5 @@ export default (): [string, () => void] => {
     return () => colorChanger.unlisten(setColor);
   }, []);
 
-  return [color, toggleColor];
+  return [color, changeColor] as [PrefersColorValue, typeof changeColor];
 };

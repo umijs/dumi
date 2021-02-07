@@ -24,42 +24,46 @@ describe('theme API: usePrefersColor', () => {
     // expect to equal initial value from html tag
     expect(result.current[0]).toEqual('light');
 
-    // change media query to dark
+    // set color to dark
     act(() => {
-      matchMedia.useMediaQuery('(prefers-color-scheme: dark)');
+      result.current[1]('dark');
     });
 
-    // expect response media query change
+    // expect response color change
     expect(result.current[0]).toEqual('dark');
 
-    // detect local storage value be empty
-    expect(localStorage.getItem('dumi:prefers-color')).toBeNull();
+    // expect save to local storage
+    expect(localStorage.getItem('dumi:prefers-color')).toEqual('dark');
 
-    // toggle color manually
+    // trigger media change
     act(() => {
-      result.current[1]();
+      matchMedia.useMediaQuery('(prefers-color-scheme: light)');
     });
 
-    // expect color changed
-    expect(result.current[0]).toEqual('light');
+    // expect not response media change if color mode not be auto
+    expect(result.current[0]).toEqual('dark');
+    expect(document.documentElement.getAttribute(attrName)).toEqual('dark');
 
-    // expect save to local storage if current color was not matched prefers-color-schema
-    expect(localStorage.getItem('dumi:prefers-color')).toEqual('light');
+    // set color to auto then trigger media change
+    act(() => {
+      result.current[1]('auto');
+      matchMedia.useMediaQuery('(prefers-color-scheme: light)');
+    });
 
-    // trigger dark media query again
+    // expect real attribute color be light but color changer still be auto
+    expect(result.current[0]).toEqual('auto');
+    expect(document.documentElement.getAttribute(attrName)).toEqual('light');
+
+    // expect local storage value be auto
+    expect(localStorage.getItem('dumi:prefers-color')).toEqual('auto');
+
+    // trigger media change to dark then set color to auto
     act(() => {
       matchMedia.useMediaQuery('(prefers-color-scheme: dark)');
+      result.current[1]('auto');
     });
 
-    // expect color not be changed by media query if user toggle color manually
-    expect(result.current[0]).toEqual('light');
-
-    // toggle color manually
-    act(() => {
-      result.current[1]();
-    });
-
-    // detect local storage value be empty if current color matched prefers-color-schema
-    expect(localStorage.getItem('dumi:prefers-color')).toBeNull();
+    // expect real attribute color be dark
+    expect(document.documentElement.getAttribute(attrName)).toEqual('dark');
   });
 });
