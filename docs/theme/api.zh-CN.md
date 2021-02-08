@@ -108,8 +108,8 @@ export default props => {
 
 - **参数：** 无
 - **返回：**
-  - color: `'dark' | 'light'`。当前的 color 值，只可能为 `dark` 或 `light`
-  - toggleColor: `() => void`。反转当前 color 的函数，执行后 color 会进行反转
+  - color: `'light' | 'dark' | 'auto'`。当前的 color 值
+  - setColor: `(color: 'light' | 'dark' | 'auto') => void`。设置当前 color 的函数，设置为 `auto` 时意味着跟随操作系统的偏好设置
 
 当我们需要为主题增加暗黑/明亮模式的切换能力时，需要用到该 API。
 
@@ -124,7 +124,7 @@ export default props => {
 // 或者
 .navbar {
   /* 明亮样式 */
-  [data-prefers-color-dark] & {
+  [data-prefers-color=dark] & {
     /* 暗黑样式 */
   }
 }
@@ -137,14 +137,13 @@ import React from 'react';
 import { usePrefersColor } from 'dumi/theme';
 
 export default props => {
-  const [color, toggleColor] = usePrefersColor();
+  const [color, setColor] = usePrefersColor();
 
   return (
-    <button onClick={toggleColor}>
-      切换到
-      {color === 'light' ? '暗黑' : '明亮'}
-      模式
-    </button>
+    <>
+      <button onClick={() => setColor('auto')}>启用自动主题色</button>
+      当前主题色配置为：{color}
+    </>
   );
 };
 ```

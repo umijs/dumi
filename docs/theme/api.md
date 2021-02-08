@@ -114,8 +114,8 @@ Get the link to the Playground of the current TypeScript official website to sub
 
 - **props:** none
 - **return:**
-  - color: `'dark' | 'light'`. Current prefers color, can only be `dark` or `light`
-  - toggleColor: `() => void`. A function to reverse current prefers color for site
+  - color: `'light' | 'dark' | 'auto'`. Current prefers color
+  - toggleColor: `(color: 'light' | 'dark' | 'auto') => void`. A function to change current prefers color for site, the prefers color will follow OS preferences if set `auto`
 
 This API will be useful if we want to implement dark/light mode for our theme.
 
@@ -130,7 +130,7 @@ For theme developer:
 // or
 .navbar {
   /* light styles */
-  [data-prefers-color-dark] & {
+  [data-prefers-color=dark] & {
     /* dark styles */
   }
 }
@@ -143,14 +143,13 @@ import React from 'react';
 import { usePrefersColor } from 'dumi/theme';
 
 export default props => {
-  const [color, toggleColor] = usePrefersColor();
+  const [color, setColor] = usePrefersColor();
 
   return (
-    <button onClick={toggleColor}>
-      Enable
-      {color === 'light' ? 'dark' : 'light'}
-      mode
-    </button>
+    <>
+      <button onClick={() => setColor('auto')}>Enable auto prefers color</button>
+      Current prefers color: {color}
+    </>
   );
 };
 ```
