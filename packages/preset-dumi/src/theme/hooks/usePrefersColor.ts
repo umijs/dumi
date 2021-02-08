@@ -92,8 +92,7 @@ const colorChanger = new (class {
 export default () => {
   const [color, setColor] = useState<PrefersColorValue>(colorChanger.color);
   const changeColor = useCallback((val: PrefersColorValue) => {
-    setColor(val);
-    colorChanger.set(val);
+    setColor(colorChanger.set(val));
   }, []);
 
   useEffect(() => {
