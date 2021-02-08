@@ -151,6 +151,10 @@ body {
         color: @c-heading;
       }
 
+      a {
+        transition-duration: none;
+      }
+
       a dt {
         color: @c-link;
         transition: opacity 0.2s;
@@ -205,6 +209,7 @@ body {
   &-features,
   &-features + &-content,
   &-hero + &-content {
+    margin-top: 60px;
     margin-left: auto;
     margin-right: auto;
     max-width: 960px;
