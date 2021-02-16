@@ -8,10 +8,12 @@ import './Navbar.less';
 interface INavbarProps {
   location: any;
   navPrefix?: React.ReactNode;
+  darkSwitch: boolean;
+  onDarkSwitchClick: (ev) => void;
   onMobileMenuClick: (ev: MouseEvent<HTMLButtonElement>) => void;
 }
 
-const Navbar: FC<INavbarProps> = ({ onMobileMenuClick, navPrefix, location }) => {
+const Navbar: FC<INavbarProps> = ({ onMobileMenuClick, navPrefix, location, darkSwitch, onDarkSwitchClick }) => {
   const {
     base,
     config: { mode, title, logo },
@@ -61,7 +63,7 @@ const Navbar: FC<INavbarProps> = ({ onMobileMenuClick, navPrefix, location }) =>
           );
         })}
         <LocaleSelect location={location} />
-        <Dark />
+        <Dark darkSwitch={darkSwitch} onDarkSwitchClick={onDarkSwitchClick} mobile={false}/>
       </nav>
     </div>
   );

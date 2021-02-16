@@ -48,6 +48,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
   } = useContext(context);
   const { url: repoUrl, branch, platform } = repository;
   const [menuCollapsed, setMenuCollapsed] = useState<boolean>(true);
+  const [darkSwitch, setDarkSwitch] = useState<boolean>(false);
   const isSiteMode = mode === 'site';
   const showHero = isSiteMode && meta.hero;
   const showFeatures = isSiteMode && meta.features;
@@ -75,6 +76,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
       data-site-mode={isSiteMode}
       data-gapless={String(!!meta.gapless)}
       onClick={() => {
+        setDarkSwitch(false);
         if (menuCollapsed) return;
         setMenuCollapsed(true);
       }}
@@ -82,12 +84,25 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
       <Navbar
         location={location}
         navPrefix={<SearchBar />}
+        darkSwitch={darkSwitch}
+        onDarkSwitchClick={ev => {
+          setDarkSwitch(val => !val);
+          ev.stopPropagation();
+        }}
         onMobileMenuClick={ev => {
           setMenuCollapsed(val => !val);
           ev.stopPropagation();
         }}
       />
-      <SideMenu mobileMenuCollapsed={menuCollapsed} location={location} />
+      <SideMenu
+        darkSwitch={darkSwitch}
+        onDarkSwitchClick={ev => {
+          setDarkSwitch(val => !val);
+          ev.stopPropagation();
+        }}
+        mobileMenuCollapsed={menuCollapsed}
+        location={location}
+      />
       {showSlugs && <SlugList slugs={meta.slugs} className="__dumi-default-layout-toc" />}
       {showHero && Hero(meta.hero)}
       {showFeatures && Features(meta.features)}
