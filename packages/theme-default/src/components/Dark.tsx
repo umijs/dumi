@@ -21,9 +21,7 @@ const Dark: FC<darkProps> = ({ darkSwitch, onDarkSwitchClick, mobile }) => {
 
   const changeColor = (ev, color) => {
     setColor(color);
-    if (!mobile) {
-      onDarkSwitchClick(ev);
-    }
+    onDarkSwitchClick(ev);
   };
 
   const getSvg = (currentColor) => {
