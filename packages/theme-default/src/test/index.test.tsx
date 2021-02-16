@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import React from 'react';
-import { render, queryByAttribute, queryAllByAttribute, fireEvent } from '@testing-library/react';
+import { render, queryByAttribute, fireEvent } from '@testing-library/react';
 import type { MemoryHistory} from '@umijs/runtime';
 import { createMemoryHistory, Router } from '@umijs/runtime';
 import { context as Context } from 'dumi/theme';
