@@ -49,7 +49,7 @@ const Dark: FC<darkProps> = ({ darkSwitch, onDarkSwitchClick, mobile }) => {
       default:
     }
   };
-  console.log(mobile)
+
   return (
     <div className="__dumi-default-dark">
       <div
