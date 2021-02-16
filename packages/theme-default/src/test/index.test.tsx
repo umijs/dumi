@@ -129,14 +129,6 @@ describe('default theme', () => {
     expect(getByText('Feature')).not.toBeNull();
     expect(getByText('Feat2')).not.toBeNull();
 
-    // dark check
-    const originalColor = document.documentElement.getAttribute('data-prefers-color');
-    queryAllByAttribute('class', container, '__dumi-default-dark-moon')[0].click();
-    console.log(document.documentElement)
-
-    queryAllByAttribute('class', container, '__dumi-default-dark-sun')[0].click();
-    expect(document.documentElement.getAttribute('prefers-color-scheme')).toEqual('light');
-
     // trigger mobile menu display
     queryByAttribute('class', container, '__dumi-default-navbar-toggle').click();
 

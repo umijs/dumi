@@ -9,9 +9,11 @@ import Dark from './Dark';
 interface INavbarProps {
   mobileMenuCollapsed: boolean;
   location: any;
+  darkSwitch: boolean;
+  onDarkSwitchClick: (ev) => void;
 }
 
-const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location }) => {
+const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location, darkSwitch, onDarkSwitchClick }) => {
   const {
     config: {
       logo,
@@ -85,13 +87,13 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location }) => {
             </ul>
             {/* site mode locale select */}
             <LocaleSelect location={location} />
-            <Dark />
+            <Dark darkSwitch={darkSwitch} onDarkSwitchClick={onDarkSwitchClick} mobile={true}/>
           </div>
         ) : (
           <div className="__dumi-default-menu-doc-locale">
+            <Dark darkSwitch={darkSwitch} onDarkSwitchClick={onDarkSwitchClick} mobile={!mobileMenuCollapsed}/>
             {/* doc mode locale select */}
             <LocaleSelect location={location} />
-            <Dark />
           </div>
         )}
         {/* menu list */}

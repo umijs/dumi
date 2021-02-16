@@ -142,15 +142,27 @@
         border-radius: 1px;
         transition: all 0.2s;
 
+        [data-prefers-color=dark] & {
+          background-color: @c-bg-dark;
+        }
+
         a {
           position: relative;
           display: block;
           color: @c-text;
           text-decoration: none;
 
+          [data-prefers-color=dark] & {
+            color: @c-text-dark;
+          }
+
           &:hover,
           &.active {
             color: @c-primary;
+
+            [data-prefers-color=dark] & {
+              color: @c-primary-dark;
+            }
           }
         }
       }
