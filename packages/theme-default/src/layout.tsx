@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import SideMenu from './components/SideMenu';
 import SlugList from './components/SlugList';
 import SearchBar from './components/SearchBar';
+import Dark from './components/Dark';
 import './style/layout.less';
 
 const Hero = hero => (
@@ -43,6 +44,7 @@ const Features = features => (
 const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
   const {
     config: { mode, repository },
+    nav: navItems,
     meta,
     locale,
   } = useContext(context);
@@ -84,22 +86,32 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
       <Navbar
         location={location}
         navPrefix={<SearchBar />}
-        darkSwitch={darkSwitch}
-        onDarkSwitchClick={ev => {
-          setDarkSwitch(val => !val);
-          ev.stopPropagation();
-        }}
+        darkPrefix={
+          <Dark
+            darkSwitch={darkSwitch}
+            onDarkSwitchClick={ev => {
+              setDarkSwitch(val => !val);
+              ev.stopPropagation();
+            }}
+            mobile={false}
+          />
+        }
         onMobileMenuClick={ev => {
           setMenuCollapsed(val => !val);
           ev.stopPropagation();
         }}
       />
       <SideMenu
-        darkSwitch={darkSwitch}
-        onDarkSwitchClick={ev => {
-          setDarkSwitch(val => !val);
-          ev.stopPropagation();
-        }}
+        darkPrefix={
+          <Dark
+            darkSwitch={darkSwitch}
+            onDarkSwitchClick={ev => {
+              setDarkSwitch(val => !val);
+              ev.stopPropagation();
+            }}
+            mobile={navItems.length ? true : !menuCollapsed}
+          />
+        }
         mobileMenuCollapsed={menuCollapsed}
         location={location}
       />
