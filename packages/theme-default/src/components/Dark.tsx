@@ -30,19 +30,19 @@ const Dark: FC<darkProps> = ({ darkSwitch, onDarkSwitchClick, mobile }) => {
     switch (currentColor) {
       case 'dark':
         return (
-          <button onClick={ev => changeColor(ev, 'dark')} className={`__dumi-default-dark-moon ${currentColor === color ? '__dumi-default-dark-switch-active' : ''}`}>
+          <button key="dumi-dark-btn-moon" title="Dark theme" onClick={ev => changeColor(ev, 'dark')} className={`__dumi-default-dark-moon ${currentColor === color ? '__dumi-default-dark-switch-active' : ''}`}>
             {moonSvg}
           </button>
         );
       case 'light':
         return (
-          <button onClick={ev => changeColor(ev, 'light')} className={`__dumi-default-dark-sun ${currentColor === color ? '__dumi-default-dark-switch-active' : ''}`}>
+          <button key="dumi-dark-btn-sun" title="Light theme" onClick={ev => changeColor(ev, 'light')} className={`__dumi-default-dark-sun ${currentColor === color ? '__dumi-default-dark-switch-active' : ''}`}>
             {sunSvg}
           </button>
         );
       case 'auto':
         return (
-          <button onClick={ev => changeColor(ev, 'auto')} className={`__dumi-default-dark-auto ${currentColor === color ? '__dumi-default-dark-switch-active' : ''}`}>
+          <button key="dumi-dark-btn-auto" title="Default to system" onClick={ev => changeColor(ev, 'auto')} className={`__dumi-default-dark-auto ${currentColor === color ? '__dumi-default-dark-switch-active' : ''}`}>
             {autoSvg}
           </button>
         )
