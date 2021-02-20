@@ -139,7 +139,7 @@ describe('default theme', () => {
     document.documentElement.setAttribute('data-prefers-color', 'light');
     expect(queryAllByAttribute('class', container, '__dumi-default-dark')).not.toBeNull();
     expect(queryAllByAttribute('class', container, '__dumi-default-dark-sun')).not.toBeNull();
-    expect(queryAllByAttribute('class', container, '__dumi-default-dark-moon __dumi-default-dark-switch-active')).not.toBeNull();
+    expect(queryAllByAttribute('class', container, '__dumi-default-dark-sun')).not.toBeNull();
     expect(queryAllByAttribute('class', container, '__dumi-default-dark-auto')).not.toBeNull();
     queryAllByAttribute('class', container, '__dumi-default-dark-moon')[0].click();
     expect(document.documentElement.getAttribute('data-prefers-color')).toEqual('dark');
