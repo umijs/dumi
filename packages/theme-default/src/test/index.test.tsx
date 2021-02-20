@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import React from 'react';
-import { render, queryByAttribute, fireEvent } from '@testing-library/react';
+import { render, queryByAttribute, queryAllByAttribute, fireEvent } from '@testing-library/react';
 import type { MemoryHistory} from '@umijs/runtime';
 import { createMemoryHistory, Router } from '@umijs/runtime';
 import { context as Context } from 'dumi/theme';
@@ -134,6 +134,16 @@ describe('default theme', () => {
 
     // expect sidemenu display for mobile
     expect(queryByAttribute('data-mobile-show', container, 'true')).not.toBeNull();
+
+    // expect dark render and click success
+    document.documentElement.setAttribute('data-prefers-color', 'light');
+    expect(queryAllByAttribute('class', container, '__dumi-default-dark')).not.toBeNull();
+    expect(queryAllByAttribute('class', container, '__dumi-default-dark-sun')).not.toBeNull();
+    expect(queryAllByAttribute('class', container, '__dumi-default-dark-moon __dumi-default-dark-switch-active')).not.toBeNull();
+    expect(queryAllByAttribute('class', container, '__dumi-default-dark-auto')).not.toBeNull();
+    queryAllByAttribute('class', container, '__dumi-default-dark-moon')[0].click();
+    expect(document.documentElement.getAttribute('data-prefers-color')).toEqual('dark');
+    expect(queryByAttribute('data-mobile-show', container, 'true')).toBeNull();
   });
 
   it('should render documentation page', async () => {
