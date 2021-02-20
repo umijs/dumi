@@ -100,14 +100,14 @@
         color: @c-heading;
         font-size: inherit;
         font-weight: 500;
-        background: linear-gradient(to top, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+        background: linear-gradient(to top, rgba(255, 255, 255, 1), rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0)) 100%;
         transform: translateY(-50%);
         pointer-events: auto;
         cursor: pointer;
 
         [data-prefers-color=dark] & {
           color: @c-heading-dark;
-          background-color: @c-bg-dark;
+          background: linear-gradient(to top, @c-bg-dark, @c-bg-dark 50%, rgba(255, 255, 255, 0)) 100%;
         }
       }
 
