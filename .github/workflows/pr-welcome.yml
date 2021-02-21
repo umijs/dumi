@@ -8,6 +8,6 @@ jobs:
   welcome:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions-cool/pr-welcome@v1.1.1
+      - uses: actions-cool/pr-welcome@v1.1.2
         with:
           pr-emoji: '+1, heart'
