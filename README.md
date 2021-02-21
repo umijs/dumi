@@ -1,1 +1,1 @@
-packages/dumi/README.md
+packages/dumi/README.mds
