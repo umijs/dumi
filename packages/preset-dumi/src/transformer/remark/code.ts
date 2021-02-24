@@ -10,7 +10,6 @@ import type { IDumiUnifiedTransformer, IDumiElmNode } from '.';
  */
 export default function code(): IDumiUnifiedTransformer {
   return ast => {
-    let extraReplacement = false;
     visit<IDumiElmNode>(ast, 'element', (node, index, parent) => {
       if (is(node, 'code') && has(node, 'src')) {
         const { src, ...attrs } = node.properties;
@@ -34,47 +33,7 @@ export default function code(): IDumiUnifiedTransformer {
             },
           },
         });
-
-        // https://github.com/umijs/dumi/issues/418
-        // remark-parse will create a extra paragraph ast node as container when <code src="..." /> wraps.
-        if (parent.tagName === 'p') {
-          extraReplacement = true;
-        }
       }
     });
-
-    if (extraReplacement) {
-      visit<IDumiElmNode>(ast, 'element', (node, index, parent) => {
-        if (
-          is(node, 'p') &&
-          node.children?.some(child => is(child, 'div') && child.properties.type === 'previewer')
-        ) {
-          parent.children.splice(
-            index,
-            1,
-            ...node.children.reduce((hoists, child) => {
-              if (child.properties?.type === 'previewer') {
-                hoists.push(child);
-              } else {
-                const latestHoist = hoists[hoists.length - 1];
-                if (!latestHoist || latestHoist.properties.type === 'previewer') {
-                  hoists.push({
-                    type: 'element',
-                    tagName: 'p',
-                    properties: {},
-                    children: [],
-                  });
-                }
-
-                hoists[hoists.length - 1].children.push(child);
-              }
-              return hoists;
-            }, [] as IDumiElmNode[]),
-          );
-
-          return [visit.SKIP, index];
-        }
-      });
-    }
   };
 }
