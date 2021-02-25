@@ -4,7 +4,9 @@ const COLOR_ATTR_NAME = 'data-prefers-color';
 const COLOR_LS_NAME = 'dumi:prefers-color';
 
 export type PrefersColorValue = 'dark' | 'light' | 'auto';
-const colorChanger = new (class {
+
+let colorChanger: ColorChanger;
+class ColorChanger {
   /**
    * current color
    * @note  initial value from head script in src/plugins/theme.ts
@@ -19,7 +21,7 @@ const colorChanger = new (class {
   constructor() {
     // listen prefers color change
     (['light', 'dark'] as PrefersColorValue[]).forEach(color => {
-      this.getColorMedia(color).addEventListener('change', (ev) => {
+      this.getColorMedia(color).addEventListener('change', ev => {
         // only apply media prefers color in auto mode
         if (ev.matches && this.color === 'auto') {
           document.documentElement.setAttribute(COLOR_ATTR_NAME, color);
@@ -76,20 +78,27 @@ const colorChanger = new (class {
     localStorage.setItem(COLOR_LS_NAME, color);
 
     if (color === 'auto') {
-      document.documentElement.setAttribute(COLOR_ATTR_NAME, this.isColorMode('dark') ? 'dark' : 'light');
+      document.documentElement.setAttribute(
+        COLOR_ATTR_NAME,
+        this.isColorMode('dark') ? 'dark' : 'light',
+      );
     } else {
       document.documentElement.setAttribute(COLOR_ATTR_NAME, color);
     }
 
     return color;
   }
-})();
+}
 
 /**
  * hook for get/set prefers-color-schema, use to control color mode for theme package
  * @see https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme
  */
 export default () => {
+  // lazy initialize, for SSR
+  if (!colorChanger) {
+    colorChanger = new ColorChanger();
+  }
   const [color, setColor] = useState<PrefersColorValue>(colorChanger.color);
   const changeColor = useCallback((val: PrefersColorValue) => {
     setColor(colorChanger.set(val));
