@@ -23,6 +23,7 @@ import previewer from './previewer';
 import raw from './raw';
 import jsxify from './jsxify';
 import isolation from './isolation';
+import domWarn from './domWarn';
 import sourceCode from './sourceCode';
 
 const log = createDebug('dumi:remark');
@@ -114,6 +115,8 @@ export default (source: string, fileAbsPath: string, type: 'jsx' | 'html') => {
     .use(debug('sourceCode'))
     .use(raw)
     .use(debug('raw'))
+    .use(domWarn)
+    .use(debug('domWarn'))
     .use(comments, { removeConditional: true })
     .use(debug('comments'))
     .use(img)
