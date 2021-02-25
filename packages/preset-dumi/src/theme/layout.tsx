@@ -2,6 +2,8 @@ import React, { useEffect, useLayoutEffect, useState } from 'react';
 import type { IRouteProps, IRouteComponentProps } from '@umijs/types';
 // @ts-ignore
 import config from '@@/dumi/config';
+// @ts-ignore
+import metas from '@@/dumi/metas';
 import AnchorLink from './components/AnchorLink';
 import type { IThemeContext } from './context';
 import Context from './context';
@@ -24,21 +26,17 @@ export interface IOuterLayoutProps {
 
 /**
  * hooks for get meta data of current route
- * @param routes    project route configurations
  * @param pathname  pathname of location
  */
-const useCurrentRouteMeta = (routes: IOuterLayoutProps['routes'], pathname: string) => {
-  const handler = (...args: [IOuterLayoutProps['routes'], string]) => {
-    const pathWithoutSuffix = args[1].replace(/([^^])\/$/, '$1');
-
-    return args[0].find(({ path }) => path === pathWithoutSuffix)?.meta || {};
+const useCurrentRouteMeta = (pathname: string) => {
+  const handler = (...args: [any, string]) => {
+    return args[0][args[1]]?.meta || {};
   };
-  const [meta, setMeta] = useState<IThemeContext['meta']>(handler(routes, pathname));
+  const [meta, setMeta] = useState<IThemeContext['meta']>(handler(metas,pathname));
 
   useLayoutEffect(() => {
-    setMeta(handler(routes, pathname));
+    setMeta(metas[pathname]);
   }, [pathname]);
-
   return meta;
 };
 
@@ -153,7 +151,7 @@ const OuterLayout: React.FC<IOuterLayoutProps & IRouteComponentProps> = props =>
     '',
   );
   const routes = findDumiRoot(props.routes) || [];
-  const meta = useCurrentRouteMeta(routes, location.pathname);
+  const meta = useCurrentRouteMeta(pathWithoutPrefix);
   // use non-prefix for detect current locale, such as /~docs/en-US -> /en-US
   const locale = useCurrentLocale(config.locales, pathWithoutPrefix);
   const menu = useCurrentMenu(config, locale, location.pathname);

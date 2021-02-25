@@ -6,13 +6,13 @@ export interface ILocale {
   label: string;
 }
 
-export default (routes: IRoute[], opts: IDumiOpts): ILocale[] => {
+export default (routes: IRoute[], opts: IDumiOpts,metas:any): ILocale[] => {
   const validLocales = new Set<string>();
   const locales: ILocale[] = [];
 
   // collect valid locales set
   routes.forEach(route => {
-    const localeName = route.meta?.locale || opts.locales[0][0];
+    const localeName = metas[route.path]?.locale || opts.locales[0][0];
     const locale = opts.locales.find(([name]) => name === localeName);
 
     if (locale) {

@@ -12,10 +12,10 @@ export interface IMenuItem {
 }
 
 export type IMenu = Record<string, {
-    // path level
-    '*'?: IMenuItem[];
-    [key: string]: IMenuItem[];
-  }>;
+  // path level
+  '*'?: IMenuItem[];
+  [key: string]: IMenuItem[];
+}>;
 
 function isValidMenuRoutes(route: IRoute) {
   return Boolean(route.path) && !route.redirect;
@@ -43,6 +43,7 @@ function convertUserMenuChilds(
   isDefaultLocale: boolean,
   includes: IDumiOpts['resolve']['includes'],
   paths: IApi['paths'],
+  metas: any,
 ) {
   return menus.map(menu => {
     // copy menu config to avoid modify user config
@@ -58,10 +59,11 @@ function convertUserMenuChilds(
 
         if (typeof child === 'string') {
           const route = routes.find(routeItem => {
+            const routeMeta = metas[routeItem.path];
             if (
               routeItem.component &&
               isSameRouteComponent(child, routeItem.component, includes, paths) &&
-              (routeItem.meta?.locale === locale || (!routeItem.meta?.locale && isDefaultLocale))
+              (routeMeta?.locale === locale || (!routeMeta?.locale && isDefaultLocale))
             ) {
               return true;
             }
@@ -78,14 +80,23 @@ function convertUserMenuChilds(
             title: route.title,
           };
 
-          route.meta = route.meta || {};
-
-          // update original route group
-          route.meta.group = {
-            title: menu.title,
-            ...(menu.path ? { path: menu.path } : {}),
-            ...(route.meta?.group || {}),
-          };
+          if (route.path) {
+            const meta = metas[route.path];
+            // update original route group
+            meta.group = {
+              title: menu.title,
+              ...(menu.path ? { path: menu.path } : {}),
+              ...(meta?.group || {}),
+            };
+            ctx.umi?.applyPlugins({
+              key: 'dumi.detectMetas',
+              type: ctx.umi.ApplyPluginsType.event,
+              args: {
+                identifier: route.path,
+                data: meta,
+              },
+            });
+          }
         }
 
         return childItem;
@@ -119,6 +130,7 @@ export default function getMenuFromRoutes(
   routes: IRoute[],
   opts: IDumiOpts,
   paths: IApi['paths'],
+  metas: any,
 ): IMenu {
   // temporary menus mapping
   const localeMenusMapping: Record<string, Record<string, Record<string, IMenuItem>>> = {};
@@ -127,21 +139,22 @@ export default function getMenuFromRoutes(
 
   routes.forEach(route => {
     if (isValidMenuRoutes(route)) {
-      const { group } = route.meta;
-      const nav = addHtmlSuffix(route.meta.nav?.path) || '*';
-      const locale = route.meta.locale || opts.locales[0][0];
+      const meta = metas[route.path];
+      const { group } = meta;
+      const nav = addHtmlSuffix(meta.nav?.path) || '*';
+      const locale = meta.locale || opts.locales[0][0];
       const menuItem: IMenuItem = {
         path: route.path,
         title: route.title,
         meta: {},
       };
 
-      if (typeof route.meta?.order === 'number') {
-        menuItem.meta.order = route.meta.order;
+      if (typeof meta?.order === 'number') {
+        menuItem.meta.order = meta.order;
       }
 
       if (group?.path) {
-        const { title, path: groupPath, ...meta } = group;
+        const { title, path: groupPath, ...other } = group;
         const groupKey = addHtmlSuffix(groupPath) || title;
 
         // group route items by group path & locale
@@ -155,7 +168,7 @@ export default function getMenuFromRoutes(
               meta: {
                 // merge group meta
                 ...(localeMenusMapping[locale]?.[nav]?.[groupKey]?.meta || {}),
-                ...meta,
+                ...other,
               },
               children: (localeMenusMapping[locale]?.[nav]?.[groupKey]?.children || []).concat(
                 menuItem,
@@ -219,6 +232,7 @@ export default function getMenuFromRoutes(
           isDefaultLocale,
           opts.resolve.includes,
           paths,
+          metas,
         );
 
         localeMenus[locale[0]][navPath] = convertedMenus;

@@ -1,6 +1,9 @@
 import type { IApi, IRoute } from '@umijs/types';
 import ctx from '../../context';
 import getRouteConfig, { DUMI_ROOT_FLAG } from '../../routes/getRouteConfig';
+import separateMetaFromRoutes from '../../routes/separateMetaFromRoutes';
+
+let metas = {}
 
 /**
  * plugin for generate routes
@@ -11,16 +14,17 @@ export default (api: IApi) => {
     // only deal with the top level routes
     if (!parentRoute) {
       const result = await getRouteConfig(api, ctx.opts);
-
+      const { routes: separateRoutes, metas: separateMetas } = separateMetaFromRoutes([...result])
+      metas = separateMetas;
       if (ctx.opts.isIntegrate) {
         // unshit docs routes in integrate mode
-        routes.unshift(...result);
+        routes.unshift(...separateRoutes);
       } else {
         // clear original routes
         routes.splice(0, routes.length);
 
         // append new routes
-        routes.push(...result);
+        routes.push(...separateRoutes);
       }
     }
   });
@@ -45,6 +49,38 @@ export default (api: IApi) => {
       };
 
       return findRoot(oRoutes);
+    },
+  });
+
+  api.registerMethod({
+    name: 'getMetas',
+    async fn() {
+      return metas;
+    },
+  });
+
+  const generateMetasFile = () => {
+    api.writeTmpFile({
+      path: 'dumi/metas.json',
+      content: JSON.stringify(metas, null, 2),
+    });
+  };
+
+  // write all metas into .umi dir
+  api.onGenerateFiles(() => {
+    generateMetasFile();
+  });
+
+  api.register({
+    key: 'dumi.detectMetas',
+    async fn({ identifier, data }) {
+      const isUpdated = Boolean(metas[identifier]);
+
+      metas[identifier] = data;
+
+      if (isUpdated) {
+        generateMetasFile();
+      }
     },
   });
 

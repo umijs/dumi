@@ -1,3 +1,5 @@
+const isProduction = process.env.NODE_ENV === 'production';
+
 export default {
   ssr: {},
   hash: true,
@@ -27,9 +29,11 @@ export default {
     ],
   ],
   scripts: ['https://v1.cnzz.com/z_stat.php?id=1278653578&web_id=1278653578'],
-  analytics: {
-    ga: 'UA-128069695-2',
-  },
+  analytics: isProduction
+    ? {
+      ga: 'UA-128069695-2',
+    }
+    : false,
   styles: ['a[title=站长统计] { display: none; }'],
   exportStatic: {},
   sitemap: {
