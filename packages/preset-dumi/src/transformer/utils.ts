@@ -22,6 +22,11 @@ export const formatJSXProps = (props: Record<string, any>): Record<string, any> 
       result[key] = new String(JSON.stringify(props[key]));
     }
 
+    // join className to string
+    if (key === 'className' && Array.isArray(props[key])) {
+      result[key] = props[key].join(' ');
+    }
+
     return result;
   }, {});
 };

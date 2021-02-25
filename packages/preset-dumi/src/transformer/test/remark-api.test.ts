@@ -22,8 +22,8 @@ describe('component api example', () => {
 
     // compare transform content
     expect(result).toEqual(
-      `<div className="markdown"><h2 id="api"><AnchorLink to="#api" aria-hidden="true" tabIndex={-1}><span className={["icon","icon-link"]} /></AnchorLink>API</h2>
-<API identifier="Hello" export="default" /><h3 id="api-world"><AnchorLink to="#api-world" aria-hidden="true" tabIndex={-1}><span className={["icon","icon-link"]} /></AnchorLink>World</h3>
+      `<div className="markdown"><h2 id="api"><AnchorLink to="#api" aria-hidden="true" tabIndex={-1}><span className="icon icon-link" /></AnchorLink>API</h2>
+<API identifier="Hello" export="default" /><h3 id="api-world"><AnchorLink to="#api-world" aria-hidden="true" tabIndex={-1}><span className="icon icon-link" /></AnchorLink>World</h3>
 <API identifier="Hello" export="World" /></div>`,
     );
   });
@@ -35,8 +35,8 @@ describe('component api example', () => {
 
     // compare transform content
     expect(result).toEqual(
-      `<div className="markdown"><h2 id="api"><AnchorLink to="#api" aria-hidden="true" tabIndex={-1}><span className={["icon","icon-link"]} /></AnchorLink>API</h2>
-<API src="./Hello/index.tsx" identifier="Hello" export="default" /><h3 id="api-world"><AnchorLink to="#api-world" aria-hidden="true" tabIndex={-1}><span className={["icon","icon-link"]} /></AnchorLink>World</h3>
+      `<div className="markdown"><h2 id="api"><AnchorLink to="#api" aria-hidden="true" tabIndex={-1}><span className="icon icon-link" /></AnchorLink>API</h2>
+<API src="./Hello/index.tsx" identifier="Hello" export="default" /><h3 id="api-world"><AnchorLink to="#api-world" aria-hidden="true" tabIndex={-1}><span className="icon icon-link" /></AnchorLink>World</h3>
 <API src="./Hello/index.tsx" identifier="Hello" export="World" /></div>`,
     );
   });
@@ -48,7 +48,7 @@ describe('component api example', () => {
 
     // compare transform content
     expect(result).toEqual(
-      `<div className="markdown"><h2 id="api"><AnchorLink to="#api" aria-hidden="true" tabIndex={-1}><span className={["icon","icon-link"]} /></AnchorLink>API</h2>
+      `<div className="markdown"><h2 id="api"><AnchorLink to="#api" aria-hidden="true" tabIndex={-1}><span className="icon icon-link" /></AnchorLink>API</h2>
 <API src="./Hello/index.tsx" identifier="Hello" export="default" /></div>`,
     );
   });
