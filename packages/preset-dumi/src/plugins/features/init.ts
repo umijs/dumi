@@ -37,7 +37,7 @@ export default (api: IApi) => {
 
   // always use <rootDir>/.umi as tmp path to avoid npm publish include it
   api.modifyPaths(memo => {
-    memo.absTmpPath = api.utils.winPath(path.join(api.cwd, '.umi'));
+    memo.absTmpPath = memo.absTmpPath.replace('/src/.umi', '/.umi');
 
     return memo;
   });
