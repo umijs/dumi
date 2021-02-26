@@ -36,7 +36,7 @@ jobs:
           name: pr
           path: ./pr-id.txt
 
-   build-preview-mobile:
+  build-preview-mobile:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
