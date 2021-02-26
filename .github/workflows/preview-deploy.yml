@@ -37,4 +37,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           build: echo done
           number: ${{ steps.pr.outputs.id }}
-          dist: dist
+          dist: ./
