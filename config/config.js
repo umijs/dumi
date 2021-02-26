@@ -27,6 +27,7 @@ export default {
     ],
   ],
   scripts: ['https://v1.cnzz.com/z_stat.php?id=1278653578&web_id=1278653578'],
+  exportStatic: {},
   analytics: {
     ga: 'UA-128069695-2',
   },
