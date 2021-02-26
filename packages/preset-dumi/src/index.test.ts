@@ -254,7 +254,7 @@ describe('preset-dumi', () => {
       },
     });
 
-    const reactNode = require(path.join(cwd, '.umi', 'umi.ts')).default;
+    const reactNode = require(path.join(cwd, 'src', '.umi', 'umi.ts')).default;
 
     // expect find correct dumi root routes, to not throw error
     render(reactNode);
