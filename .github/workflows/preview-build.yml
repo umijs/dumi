@@ -20,7 +20,7 @@ jobs:
           yarn doc:build
 
       - name: upload dist artifact
-        uses: actions/upload-artifact@v2
+        uses: actions-cool/upload-artifact@v3
         with:
           name: dist
           path: dist/
