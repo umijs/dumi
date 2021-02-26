@@ -29,7 +29,7 @@ features:
 footer: Open-source MIT Licensed | Copyright © 2019-present<br />Powered by self
 ---
 
-## Who are using?
+## Who are using
 
 <embed src="../packages/dumi/README.md#RE-/<table>[^]+?[\r\n]<\/table>/"></embed>
 
