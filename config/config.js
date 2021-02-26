@@ -31,7 +31,6 @@ export default {
     ga: 'UA-128069695-2',
   },
   styles: ['a[title=站长统计] { display: none; }'],
-  exportStatic: {},
   sitemap: {
     hostname: 'https://d.umijs.org',
   },
