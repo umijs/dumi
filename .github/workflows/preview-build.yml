@@ -1,0 +1,72 @@
+name: Preview Build
+
+on: pull_request
+
+jobs:
+  build-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-cool/surge-preview@main
+        with:
+          surge_token: ${{ secrets.SURGE_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          build: |
+            yarn
+            yarn build
+            yarn doc:build
+          dist: dist
+
+      - name: upload site artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: dist/
+          retention-days: 5
+
+      # Upload PR id for next workflow use
+      - name: Save PR number
+        if: ${{ always() }}
+        run: echo ${{ github.event.number }} > ./pr-id.txt
+
+      - name: Upload PR number
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: pr
+          path: ./pr-id.txt
+
+   build-preview-mobile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-cool/surge-preview@main
+        env:
+          DUMI_THEME: ./packages/theme-mobile
+        with:
+          surge_token: ${{ secrets.SURGE_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          build: |
+            yarn
+            yarn build
+            yarn doc:build
+          dist: dist
+
+      - name: upload site artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist-mobile
+          path: dist/
+          retention-days: 5
+
+      # Upload PR id for next workflow use
+      - name: Save PR number
+        if: ${{ always() }}
+        run: echo ${{ github.event.number }} > ./pr-id-m.txt
+
+      - name: Upload PR number
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: pr-m
+          path: ./pr-id-m.txt
