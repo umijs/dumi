@@ -17,18 +17,3 @@ jobs:
 
             <!-- Sticky Pull Request Comment: Surge Preview preview -->
           body-include: '<!-- Sticky Pull Request Comment: Surge Preview preview -->'
-
-  preview-mobile:
-    runs-on: ubuntu-latest
-    steps:
-      - name: update status comment
-        uses: actions-cool/maintain-one-comment@v1.1.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          body: |
-            ⚡️ Deploying PR Preview...
-
-            ![Prepare preview](https://user-images.githubusercontent.com/507615/90240294-8d2abd00-de5b-11ea-8140-4840a0b2d571.gif)
-
-            <!-- Sticky Pull Request Comment: Surge Preview preview-mobile -->
-          body-include: '<!-- Sticky Pull Request Comment: Surge Preview preview-mobile -->'
