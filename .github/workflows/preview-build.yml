@@ -28,6 +28,21 @@ jobs:
           name: dist
           path: dist.zip
           retention-days: 5
+          
+      - name: build mobile
+        run: |
+          yarn build
+          yarn doc:build DUMI_THEME: ./packages/theme-mobile
+
+      - run: |
+          zip -r dist-mobile.zip dist
+
+      - name: upload dist artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist-mobile
+          path: dist-mobile.zip
+          retention-days: 5
 
       - name: Save PR number
         if: ${{ always() }}
