@@ -31,7 +31,6 @@ jobs:
           
       - name: build mobile
         run: |
-          yarn build
           yarn doc:mobile-build 
 
       - run: |
