@@ -24,7 +24,7 @@ jobs:
         with:
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: success
-          name: dist.zip
+          name: dist
       - run: |
           unzip dist.zip
       - name: upload surge service
