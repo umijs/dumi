@@ -31,7 +31,7 @@ jobs:
         id: deploy
         run: |
           export DEPLOY_DOMAIN=https://dumi-preview-pr-${{ steps.pr.outputs.id }}.surge.sh
-          npx surge --project ./dist --domain $DEPLOY_DOMAIN --token e04107e581a08453e21e8e1c7f220b3a
+          npx surge --project ./dist --domain $DEPLOY_DOMAIN --token ${{ secrets.SURGE_TOKEN }}
       - name: update status comment
         uses: actions-cool/maintain-one-comment@v1.1.0
         with:
@@ -58,7 +58,7 @@ jobs:
         id: deploy-mobile
         run: |
           export DEPLOY_DOMAIN=https://dumi-mobile-preview-pr-${{ steps.pr.outputs.id }}.surge.sh
-          npx surge --project ./dist --domain $DEPLOY_DOMAIN --token e04107e581a08453e21e8e1c7f220b3a
+          npx surge --project ./dist --domain $DEPLOY_DOMAIN --token ${{ secrets.SURGE_TOKEN }}
       - name: update status comment
         uses: actions-cool/maintain-one-comment@v1.1.0
         with:
