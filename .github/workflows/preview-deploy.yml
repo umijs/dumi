@@ -24,12 +24,14 @@ jobs:
         with:
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: success
-          name: dist
+          name: dist.zip
+      - run: |
+          unzip dist.zip
       - name: upload surge service
         id: deploy
         run: |
           export DEPLOY_DOMAIN=https://dumi-preview-pr-${{ steps.pr.outputs.id }}.surge.sh
-          npx surge --project ./ --domain $DEPLOY_DOMAIN --token ${{ secrets.SURGE_TOKEN }}
+          npx surge --project ./dist --domain $DEPLOY_DOMAIN --token e04107e581a08453e21e8e1c7f220b3a
       - name: update status comment
         uses: actions-cool/maintain-one-comment@v1.1.0
         with:
