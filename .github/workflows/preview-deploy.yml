@@ -44,7 +44,32 @@ jobs:
             <!-- Sticky Pull Request Comment -->
           body-include: '<!-- Sticky Pull Request Comment -->'
           number: ${{ steps.pr.outputs.id }}
-      - name: The job has failed
+      - name: download dist artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: ${{ github.event.workflow_run.workflow_id }}
+          workflow_conclusion: success
+          name: dist-mobile
+      - run: |
+          unzip dist-mobile.zip
+      - name: upload surge service
+        id: deploy-mobile
+        run: |
+          export DEPLOY_DOMAIN=https://dumi-mobile-preview-pr-${{ steps.pr.outputs.id }}.surge.sh
+          npx surge --project ./dist-mobile --domain $DEPLOY_DOMAIN --token e04107e581a08453e21e8e1c7f220b3a
+      - name: update status comment
+        uses: actions-cool/maintain-one-comment@v1.1.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+            🎊 PR Mobile Preview has been successfully built and deployed to https://dumi-mobile-preview-pr-${{ steps.pr.outputs.id }}.surge.sh
+            
+            <img width="300" src="https://user-images.githubusercontent.com/507615/90250366-88233900-de6e-11ea-95a5-84f0762ffd39.png">
+
+            <!-- Sticky Pull Request Mobile Comment -->
+          body-include: '<!-- Sticky Pull Request Mobile Comment -->'
+          number: ${{ steps.pr.outputs.id }}
+      - name: The job failed
         if: ${{ failure() }}
         uses: actions-cool/maintain-one-comment@v1.1.0
         with:
@@ -57,6 +82,19 @@ jobs:
             <!-- Sticky Pull Request Comment -->
           body-include: '<!-- Sticky Pull Request Comment -->'
           number: ${{ steps.pr.outputs.id }}  
+      - name: The job mobile failed
+        if: ${{ failure() }}
+        uses: actions-cool/maintain-one-comment@v1.1.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+            😭 Deploy PR Mobile Preview failed.
+
+            <img width="300" src="https://user-images.githubusercontent.com/507615/90250824-4e066700-de6f-11ea-8230-600ecc3d6a6b.png">
+
+            <!-- Sticky Pull Request Mobile Comment -->
+          body-include: '<!-- Sticky Pull Request Mobile Comment -->'
+          number: ${{ steps.pr.outputs.id }}
 
   failed:
     runs-on: ubuntu-latest
@@ -70,7 +108,7 @@ jobs:
       - name: save PR id
         id: pr
         run: echo "::set-output name=id::$(<pr-id.txt)"
-      - name: The job has failed
+      - name: The job failed
         uses: actions-cool/maintain-one-comment@v1.1.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -81,4 +119,17 @@ jobs:
 
             <!-- Sticky Pull Request Comment -->
           body-include: '<!-- Sticky Pull Request Comment -->'
-          number: ${{ steps.pr.outputs.id }}  
+          number: ${{ steps.pr.outputs.id }}
+      - name: The job mobile failed
+        if: ${{ failure() }}
+        uses: actions-cool/maintain-one-comment@v1.1.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+            😭 Deploy PR Mobile Preview failed.
+
+            <img width="300" src="https://user-images.githubusercontent.com/507615/90250824-4e066700-de6f-11ea-8230-600ecc3d6a6b.png">
+
+            <!-- Sticky Pull Request Mobile Comment -->
+          body-include: '<!-- Sticky Pull Request Mobile Comment -->'
+          number: ${{ steps.pr.outputs.id }}
