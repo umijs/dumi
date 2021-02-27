@@ -27,11 +27,11 @@ export default {
     ],
   ],
   scripts: ['https://v1.cnzz.com/z_stat.php?id=1278653578&web_id=1278653578'],
-  exportStatic: {},
   analytics: {
     ga: 'UA-128069695-2',
   },
   styles: ['a[title=站长统计] { display: none; }'],
+  exportStatic: {},
   sitemap: {
     hostname: 'https://d.umijs.org',
   },
