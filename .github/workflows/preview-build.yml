@@ -32,7 +32,7 @@ jobs:
       - name: build mobile
         run: |
           yarn build
-          yarn doc:build DUMI_THEME: ./packages/theme-mobile
+          DUMI_THEME: ./packages/theme-mobile yarn doc:build 
 
       - run: |
           zip -r dist-mobile.zip dist
