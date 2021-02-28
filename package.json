@@ -7,7 +7,6 @@
     "dev": "npm run doc:sync && cross-env BROWSER=none node ./packages/dumi/bin/dumi.js dev",
     "dev:mobile": "npm run doc:sync && cross-env BROWSER=none DUMI_THEME=./packages/theme-mobile node ./packages/dumi/bin/dumi.js dev",
     "doc:build": "npm run doc:sync && cross-env BROWSER=none node ./packages/dumi/bin/dumi.js build",
-    "doc:mobile-build": "npm run doc:sync && cross-env BROWSER=none DUMI_THEME=./packages/theme-mobile node ./packages/dumi/bin/dumi.js build",
     "doc:sync": "node scripts/sync-from-umi.js",
     "watch": "npm run build -- --watch",
     "build": "father-build",
