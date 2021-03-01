@@ -1,5 +1,4 @@
 import fs from 'fs';
-import path from 'path';
 import type { IApi } from '@umijs/types';
 import { init, setOptions } from '../../context';
 
@@ -31,13 +30,6 @@ export default (api: IApi) => {
     if (!memo.routes && !fs.existsSync(api.paths.absPagesPath)) {
       memo.routes = [];
     }
-
-    return memo;
-  });
-
-  // always use <rootDir>/.umi as tmp path to avoid npm publish include it
-  api.modifyPaths(memo => {
-    memo.absTmpPath = api.utils.winPath(path.join(api.cwd, '.umi'));
 
     return memo;
   });

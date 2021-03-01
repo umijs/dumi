@@ -1,4 +1,6 @@
+import type { IRoute } from '@umijs/types';
 import type { RouteProcessor } from '.';
+import type { IMenuItem } from '../getMenuFromRoutes';
 import { menuSorter } from '../getMenuFromRoutes';
 
 /**
@@ -15,6 +17,34 @@ const genValidGroups = validRoutes =>
 
     return result;
   }, []);
+
+/**
+ * get first menu route in current nav
+ * @param childRoutes   nav child routes
+ * @param customMenus   user custom menus
+ */
+function getFirstMenuInNav(childRoutes: IRoute[], customMenus?: IMenuItem[]) {
+  let firstMenuInNav: IRoute;
+  const firstMenuItem = customMenus?.[0].children?.[0];
+
+  // find first if user configured the first menu item for current nav
+  if (typeof firstMenuItem === 'string') {
+    // find first menu route by string menu item, like src/Button/index.md
+    firstMenuInNav = childRoutes.find(route => {
+      if (route.component?.includes(firstMenuItem)) {
+        return route;
+      }
+    });
+  } else if (firstMenuItem?.path) {
+    // use menu item config as first menu route if it is object
+    firstMenuInNav = firstMenuItem;
+  } else if (!firstMenuInNav) {
+    // use first child routes of nav as menu route by default
+    firstMenuInNav = childRoutes.sort(menuSorter)[0];
+  }
+
+  return firstMenuInNav;
+}
 
 /**
  * generate redirects for missing group index routes & legacy route paths
@@ -60,7 +90,7 @@ export default (function redirect(routes) {
           ...resNavMeta,
         },
         exact: true,
-        redirect: validRoutes.concat(validGroups).sort(menuSorter)[0].path,
+        redirect: getFirstMenuInNav(validRoutes.concat(validGroups), this.options.menus?.[path]).path,
       };
     }
 

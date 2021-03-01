@@ -21,7 +21,7 @@ export default async function loader(raw: string) {
   const theme = await getTheme();
 
   // mark current file if it contains Katex and there has not another file used Katex
-  if (result.content.includes('className={["katex"]}') && !useKatexFilePath) {
+  if (result.content.includes('className="katex"') && !useKatexFilePath) {
     useKatexFilePath = this.resource;
   }
 
