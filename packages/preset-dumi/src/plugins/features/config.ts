@@ -9,19 +9,18 @@ import ctx from '../../context';
 /**
  * plugin for generate dumi config into .umi temp directory
  */
-export default (api: IApi & { getMetas: () => any }) => {
+export default (api: IApi & { getMetaRoutes: () => any }) => {
   // write config.json when generating temp files
   api.onGenerateFiles(async () => {
     const { routes } = await api.applyPlugins({
-      key: 'dumi.getRootRoute',
+      key: 'dumi.getMetaRoutes',
       type: api.ApplyPluginsType.modify,
       initialValue: await api.getRoutes(),
     });
-    const metas = await api!.getMetas();
     const config: IThemeContext['config'] = {
-      menus: getMenuFromRoutes(routes, ctx.opts, api.paths, metas),
-      locales: getLocaleFromRoutes(routes, ctx.opts,metas),
-      navs: getNavFromRoutes(routes, ctx.opts, ctx.opts.navs,metas),
+      menus: getMenuFromRoutes(routes, ctx.opts, api.paths),
+      locales: getLocaleFromRoutes(routes, ctx.opts),
+      navs: getNavFromRoutes(routes, ctx.opts, ctx.opts.navs),
       title: ctx.opts.title,
       logo: ctx.opts.logo,
       description: ctx.opts.description,

@@ -11,7 +11,7 @@ export interface INavItem {
 
 export type INav = Record<string, INavItem[]>;
 
-export default (routes: IRoute[], opts: IDumiOpts, userCustomNavs: INav | INavItem[],metas:any): INav => {
+export default (routes: IRoute[], opts: IDumiOpts, userCustomNavs: INav | INavItem[]): INav => {
   const localeNavs = {};
   let customNavs = userCustomNavs || {};
 
@@ -21,16 +21,15 @@ export default (routes: IRoute[], opts: IDumiOpts, userCustomNavs: INav | INavIt
 
   // group navs by locale
   routes.forEach(route => {
-    const meta = metas[route.path];
-    if (meta?.nav) {
-      const locale = meta?.locale || opts.locales[0][0];
-      const navPath = addHtmlSuffix(meta.nav?.path);
+    if (route.meta?.nav) {
+      const locale = route.meta.locale || opts.locales[0][0];
+      const navPath = addHtmlSuffix(route.meta.nav.path);
 
       localeNavs[locale] = {
         ...(localeNavs[locale] || {}),
         [navPath]: {
           ...(localeNavs[locale]?.[navPath] || {}),
-          ...(meta?.nav || {}),
+          ...(route.meta.nav || {}),
           path: navPath,
         },
       };

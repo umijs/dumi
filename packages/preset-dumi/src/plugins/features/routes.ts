@@ -3,8 +3,23 @@ import ctx from '../../context';
 import getRouteConfig, { DUMI_ROOT_FLAG } from '../../routes/getRouteConfig';
 import separateMetaFromRoutes from '../../routes/separateMetaFromRoutes';
 
-let metas = {}
+let metas = {};
+let metaRoutes = [];
+const findRoot = (routes: IRoute[]) => {
+  for (let i = 0; i < routes.length; i += 1) {
+    if (routes[i][DUMI_ROOT_FLAG]) {
+      return routes[i];
+    }
 
+    const childRoot = findRoot(routes[i].routes || []);
+
+    if (childRoot) {
+      return childRoot;
+    }
+  }
+
+  return null;
+};
 /**
  * plugin for generate routes
  */
@@ -14,17 +29,15 @@ export default (api: IApi) => {
     // only deal with the top level routes
     if (!parentRoute) {
       const result = await getRouteConfig(api, ctx.opts);
-      const { routes: separateRoutes, metas: separateMetas } = separateMetaFromRoutes([...result])
-      metas = separateMetas;
       if (ctx.opts.isIntegrate) {
         // unshit docs routes in integrate mode
-        routes.unshift(...separateRoutes);
+        routes.unshift(...result);
       } else {
         // clear original routes
         routes.splice(0, routes.length);
 
         // append new routes
-        routes.push(...separateRoutes);
+        routes.push(...result);
       }
     }
   });
@@ -32,30 +45,14 @@ export default (api: IApi) => {
   api.register({
     key: 'dumi.getRootRoute',
     async fn(oRoutes: IRoute[] = []) {
-      const findRoot = (routes: IRoute[]) => {
-        for (let i = 0; i < routes.length; i += 1) {
-          if (routes[i][DUMI_ROOT_FLAG]) {
-            return routes[i];
-          }
-
-          const childRoot = findRoot(routes[i].routes || []);
-
-          if (childRoot) {
-            return childRoot;
-          }
-        }
-
-        return null;
-      };
-
       return findRoot(oRoutes);
     },
   });
 
-  api.registerMethod({
-    name: 'getMetas',
-    async fn() {
-      return metas;
+  api.register({
+    key: 'dumi.getMetaRoutes',
+    async fn(oRoutes: IRoute[] = []) {
+      return findRoot(metaRoutes);
     },
   });
 
@@ -100,4 +97,12 @@ export default (api: IApi) => {
       routes.splice(rootHtmlIndex, 1);
     }
   });
+
+  api.modifyRoutes((routes) => {
+    metaRoutes = JSON.parse(JSON.stringify(routes));
+    const { routes: separateRoutes, metas: separateMetas } = separateMetaFromRoutes(routes);
+    metas = separateMetas;
+    return separateRoutes;
+  });
+
 };

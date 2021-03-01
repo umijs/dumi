@@ -14,7 +14,7 @@ export default (data: IRoute[]): { routes: IRoute[]; metas: Object; } => {
       return other;
     })
   }
-  const routes = separate([...data]);
+  const routes = separate(data);
   return {
     routes,
     metas
