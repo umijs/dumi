@@ -109,7 +109,7 @@ export default (source: string, fileAbsPath: string, type: 'jsx' | 'html') => {
     .use(rehype)
     .use(debug('rehype'))
     // rehype plugins
-    .use(katex)
+    .use(katex, { strict: false })
     .use(debug('katex'))
     .use(sourceCode)
     .use(debug('sourceCode'))
