@@ -22,7 +22,8 @@ export default (paths: IApi['paths']) => {
   if (isLerna) {
     // for lerna repo
     const { version: lernaVersion } = require('lerna/package.json');
-    if (lernaVersion.startsWith('3')) {
+    const lernaMainVersion = lernaVersion.split('.')[0]
+    if (lernaMainVersion >= 3) {
       JSON.parse(
         execSync(`${path.join(paths.cwd, 'node_modules/.bin/lerna')} ls --json --all`, {
           stdio: 'pipe',
