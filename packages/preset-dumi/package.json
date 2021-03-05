@@ -55,6 +55,7 @@
     "remark-parse": "^9.0.0",
     "remark-rehype": "^8.0.0",
     "remark-stringify": "^9.0.0",
+    "sitemap": "^6.3.3",
     "slash2": "^2.0.0",
     "terser": "^5.5.1",
     "unified": "^8.4.1",
@@ -74,8 +75,7 @@
     "@types/mdast": "^3.0.3",
     "@types/unist": "^2.0.3",
     "@umijs/core": "^3.2.6",
-    "react-test-renderer": "^16.13.1",
-    "sitemap": "^6.3.3"
+    "react-test-renderer": "^16.13.1"
   },
   "license": "MIT"
 }
