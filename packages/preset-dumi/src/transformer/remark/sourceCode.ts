@@ -34,7 +34,7 @@ export default function sourceCode(): IDumiUnifiedTransformer {
         parent.children.splice(
           i,
           1,
-          createSourceCode(lang, winEOL(toString(node.children[0])), node.position),
+          createSourceCode(lang, winEOL(toString(node.children[0]).trim()), node.position),
         );
       }
     });
