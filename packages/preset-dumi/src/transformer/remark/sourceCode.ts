@@ -51,7 +51,7 @@ export default function sourceCode(): IDumiUnifiedTransformer {
             parent.children.splice(
               i,
               1,
-              createSourceCode(parsed.properties.lang, content, node.position),
+              createSourceCode(parsed.properties.lang, content.trim(), node.position),
             );
           }
         }
