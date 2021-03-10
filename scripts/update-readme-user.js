@@ -41,8 +41,8 @@ const users = [
       'https://user-images.githubusercontent.com/5436704/81533849-83e00f00-9399-11ea-943d-ac5fd4653906.png',
   },
   {
-    name: 'juejin-im',
-    url: 'https://juejin-im.github.io/open-source/',
+    name: 'juejin-cn',
+    url: 'https://juejin-cn.github.io/open-source/',
     logo: 'https://avatars3.githubusercontent.com/u/69633008?s=200&v=4',
   },
   {
@@ -59,6 +59,11 @@ const users = [
     name: 'Graphin',
     url: 'https://graphin.antv.vision/',
     logo: 'https://camo.githubusercontent.com/53886f0e306c9f01c96dee2edca3992830b7cbb769118029a7e5d677deb7e67e/68747470733a2f2f67772e616c697061796f626a656374732e636f6d2f7a6f732f616e7466696e63646e2f306234487a4f63454a592f4772617068696e2e737667',
+  },
+  {
+    name: 'qiankun',
+    url: 'https://qiankun.umijs.org/',
+    logo: 'https://gw.alipayobjects.com/zos/bmw-prod/8a74c1d3-16f3-4719-be63-15e467a68a24/km0cv8vn_w500_h500.png',
   },
 ];
 
