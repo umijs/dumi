@@ -1,65 +1,56 @@
 import fs from 'fs';
 import path from 'path';
-import type React from 'react';
 import type { IApi, IRoute } from '@umijs/types';
 import { createDebug } from '@umijs/utils';
 import getTheme from '../../../theme/loader';
 import { getDemoRouteName } from '../../../theme/hooks/useDemoUrl';
+import { decodeRawRequire } from '../../../transformer/utils';
 
 const debug = createDebug('dumi:demos');
 
-type ISingleRoutetDemos = Record<string, {
+type ISingleRoutetDemos = Record<
+  string,
+  {
     previewerProps: Record<string, any>;
-    component: React.ReactNode;
-  }>;
+    component: string;
+  }
+>;
 
 export default (api: IApi) => {
   const demos: ISingleRoutetDemos = {};
   const generateDemosFile = api.utils.lodash.debounce(async () => {
     const tpl = fs.readFileSync(path.join(__dirname, 'demos.mst'), 'utf8');
-    const groups: Record<string, any[]> = {};
     const items = Object.keys(demos).map(uuid => {
       const { componentName } = demos[uuid].previewerProps;
+      // collect component related module (react component & source code) into one chunk
+      const chunkName =
+        (componentName &&
+          `demos_${[...componentName]
+            // reverse component name to avoid some special component (such as Advertisement) be blocked by ADBlock when dynamic loading
+            .reverse()
+            .join('')}`) ||
+        'demos_no_comp';
       let demoComponent = demos[uuid].component;
 
-      // dynamic import demos for performance if it is belongs to some component
-      if (componentName) {
-        groups[componentName] = (groups[componentName] || []).concat({
-          uuid,
-          component: demoComponent,
-        });
-        demoComponent = `() => React.createElement(dynamic({
-      loader: async function() {
-        const { default: demos } = await import(/* webpackChunkName: "demos_${[...componentName]
-          // reverse component name to avoid some special component (such as Advertisement) be blocked by ADBlock when dynamic loading
-          .reverse()
-          .join('')}" */'./${componentName}');
-
-        return demos['${uuid}'].component;
-      },
+      // replace to dynamic component for await import component
+      if (demoComponent.startsWith('(await import(')) {
+        demoComponent = `dynamic({
+      loader: async () => ${decodeRawRequire(demoComponent, chunkName)},
       loading: () => null,
-    }))`;
+    })`;
       }
 
       return {
         uuid,
         component: demoComponent,
-        previewerProps: JSON.stringify(demos[uuid].previewerProps),
+        previewerProps: decodeRawRequire(JSON.stringify(demos[uuid].previewerProps), 'dumi_raw_source_code'),
       };
     });
 
     // write demos entry file
     api.writeTmpFile({
       path: 'dumi/demos/index.ts',
-      content: api.utils.Mustache.render(tpl, { demos: items, isDemoEntry: true }),
-    });
-
-    // write demos which belongs to component into a single module for dynamic import
-    Object.entries(groups).forEach(([componentName, groupDemos]) => {
-      api.writeTmpFile({
-        path: `dumi/demos/${componentName}.ts`,
-        content: api.utils.Mustache.render(tpl, { demos: groupDemos }),
-      });
+      content: api.utils.Mustache.render(tpl, { demos: items }),
     });
 
     debug('.dumi/demos files generated');

@@ -42,6 +42,9 @@ export default (api: IApi) => {
       .loader(require.resolve('../../loader'))
       .options({ previewLangs: ctx.opts.resolve.previewLangs });
 
+    // add raw code loader (like raw-loader but without frontmatter)
+    config.resolveLoader.alias.set('dumi-raw-code-loader', `${require.resolve('../../loader/rawCode')}`);
+
     return config;
   });
 

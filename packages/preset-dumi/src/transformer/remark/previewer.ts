@@ -10,6 +10,7 @@ import demoTransformer, { DEMO_COMPONENT_NAME, getDepsForDemo } from '../demo';
 import type { IPreviewerComponentProps } from '../../theme';
 import transformer from '..';
 import type { IDumiElmNode, IDumiUnifiedTransformer } from '.';
+import { encodeRawRequire } from '../utils';
 
 const debug = createDebug('dumi:previewer');
 
@@ -171,26 +172,37 @@ function generatePreviewerProps(
     {
       isTSX: Boolean(node.properties.source.tsx),
       fileAbsPath,
-      depChangeListener: !yaml.inline && isExternalDemo && (() => {
-        debug(`regenerate demo props for: ${node.properties.filePath}`);
-        // update @@/demos module if external demo changed, to update previewerProps for page component
-        applyDemo(
-          generatePreviewerProps(node, mdAbsPath, componentName, previewId),
-          transformCode(node, mdAbsPath),
-        );
-      }),
+      depChangeListener:
+        !yaml.inline &&
+        isExternalDemo &&
+        (() => {
+          debug(`regenerate demo props for: ${node.properties.filePath}`);
+          // update @@/demos module if external demo changed, to update previewerProps for page component
+          applyDemo(
+            generatePreviewerProps(node, mdAbsPath, componentName, previewId),
+            transformCode(node, mdAbsPath),
+          );
+        }),
     },
   );
 
   return {
     sources: {
-      _: node.properties.source,
+      _: isExternalDemo
+        ? Object.keys(node.properties.source).reduce(
+            (r, lang) => ({
+              ...r,
+              [lang]: encodeRawRequire(node.properties.filePath),
+            }),
+            {},
+          )
+        : node.properties.source,
       ...Object.keys(files).reduce(
         (result, file) => ({
           ...result,
           [file]: {
             import: files[file].import,
-            content: files[file].content,
+            content: encodeRawRequire(files[file].fileAbsPath),
           },
         }),
         {},

@@ -86,11 +86,10 @@ describe('preset-dumi', () => {
     await new Promise(resolve => setTimeout(resolve));
 
     // expect demos generate
-    const demos = require(path.join(service.paths.absTmpPath, 'dumi', 'demos')).default;
+    const demos = fs.readFileSync(path.join(service.paths.absTmpPath, 'dumi', 'demos', 'index.ts')).toString();
 
-    expect(Object.keys(demos).length).toEqual(3);
-    expect(demos['tsx-demo']).not.toBeUndefined();
-    expect(demos['component-demo'].previewerProps.componentName).toEqual('ForceComponent');
+    expect(demos.includes("'tsx-demo'")).toBeTruthy();
+    expect(demos.includes('"componentName":"ForceComponent","identifier":"component-demo"')).toBeTruthy();
   });
 
   it('assets command', async () => {

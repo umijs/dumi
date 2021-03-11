@@ -1,13 +1,13 @@
 import React from 'react';
-{{#isDemoEntry}}import { dynamic } from 'dumi';{{/isDemoEntry}}
+import { dynamic } from 'dumi';
 
 export default {
   {{#demos}}
   '{{uuid}}': {
     component: {{{component}}},
-    {{#isDemoEntry}}
+    {{#previewerProps}}
     previewerProps: {{{previewerProps}}},
-    {{/isDemoEntry}}
+    {{/previewerProps}}
   },
   {{/demos}}
 };
