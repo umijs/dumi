@@ -4,7 +4,7 @@ import type { IApi, IRoute } from '@umijs/types';
 import { createDebug } from '@umijs/utils';
 import getTheme from '../../../theme/loader';
 import { getDemoRouteName } from '../../../theme/hooks/useDemoUrl';
-import { decodeRawRequire } from '../../../transformer/utils';
+import { decodeRawRequire, isDynamicEnable } from '../../../transformer/utils';
 
 const debug = createDebug('dumi:demos');
 
@@ -110,19 +110,8 @@ export default (api: IApi) => {
       });
     }
 
-    prependRoutes[0].wrappers = [
-      // builtin outer layout, for initialize context
-      api.utils.winPath(path.join(__dirname, '../../../theme/layout')),
-      theme.layoutPaths.demo,
-    ].filter(Boolean);
-    prependRoutes[0].component = `(props) => {
-      const React = require('react');
-      const renderArgs = require('${api.utils.winPath(
-        path.relative(
-          path.join(api.paths.absTmpPath, 'core'),
-          path.join(__dirname, './getDemoRenderArgs'),
-        ),
-      )}').default(props);
+    const demoRenderBody = `
+      const renderArgs = getDemoRenderArgs(props, demos);
 
       switch (renderArgs.length) {
         case 1:
@@ -132,15 +121,46 @@ export default (api: IApi) => {
         case 2:
           // render demo with previewer
           return React.createElement(
-            require('${Previewer.source}').default,
+            Previewer,
             renderArgs[0],
             renderArgs[1],
           );
 
         default:
-          return \`Demo $\{uuid\} not found :(\`;
+          return \`Demo $\{props.match.params.uuid\} not found :(\`;
       }
-    }`;
+    `;
+    const demoRouteComponent = isDynamicEnable()
+      ? `React.createElement(
+        dynamic({
+          loader: async () => {
+            const { default: getDemoRenderArgs } = await import('${api.utils.winPath(
+              path.join(__dirname, './getDemoRenderArgs'),
+            )}');
+            const { default: Previewer } = await import('${Previewer.source}');
+            const { default: demos } = await import('@@/dumi/demos');
+
+            return props => {
+              ${demoRenderBody}
+            }
+          }
+        }), props)`
+      : `{
+        const { default: getDemoRenderArgs } = require('${api.utils.winPath(
+          path.join(__dirname, './getDemoRenderArgs'),
+        )}');
+        const { default: Previewer } = require('${Previewer.source}');
+        const { default: demos } = require('@@/dumi/demos');
+
+        ${demoRenderBody}
+        }`;
+
+    prependRoutes[0].wrappers = [
+      // builtin outer layout, for initialize context
+      api.utils.winPath(path.join(__dirname, '../../../theme/layout')),
+      theme.layoutPaths.demo,
+    ].filter(Boolean);
+    prependRoutes[0].component = `(props) => ${demoRouteComponent}`;
 
     routes.unshift(...prependRoutes);
 

@@ -27,7 +27,7 @@ describe('loader', () => {
     );
 
     // expect prepend demos
-    expect(result).toContain("const DumiDemo1 = React.memo(require('@@/dumi/demos')");
+    expect(result).toContain("const DumiDemo1 = React.memo(DUMI_ALL_DEMOS");
 
     // expect import components from theme package
     expect(result).toContain("from 'dumi-theme-default");

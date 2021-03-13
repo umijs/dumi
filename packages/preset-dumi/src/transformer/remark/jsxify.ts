@@ -18,7 +18,7 @@ export default (function jsxify() {
     // append previewProps for previewer
     JSX = JSX.replace(
       /data-previewer-props-replaced="([^"]+)"/g,
-      "{...require('@@/dumi/demos').default['$1'].previewerProps}",
+      "{...DUMI_ALL_DEMOS['$1'].previewerProps}",
     );
 
     return JSX;

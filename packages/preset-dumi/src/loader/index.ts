@@ -38,6 +38,7 @@ export default async function loader(raw: string) {
       .concat(theme.fallbacks)
       .map(component => `import ${component.identifier} from '${component.source}';`)
       .join('\n')}
+    import DUMI_ALL_DEMOS from '@@/dumi/demos';
 
     ${(result.meta.demos || []).join('\n')}
 

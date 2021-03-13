@@ -3,14 +3,14 @@ import path from 'path';
 import type { Node } from 'unist';
 import type { Visitor } from 'unist-util-visit';
 import visit from 'unist-util-visit';
-import { createDebug } from '@umijs/utils';
+import { winPath, createDebug } from '@umijs/utils';
 import slash from 'slash2';
 import ctx from '../../context';
 import demoTransformer, { DEMO_COMPONENT_NAME, getDepsForDemo } from '../demo';
 import type { IPreviewerComponentProps } from '../../theme';
 import transformer from '..';
 import type { IDumiElmNode, IDumiUnifiedTransformer } from '.';
-import { encodeRawRequire } from '../utils';
+import { encodeRawRequire, decodeRawRequire, isDynamicEnable, RAW_CHUNK_ID } from '../utils';
 
 const debug = createDebug('dumi:previewer');
 
@@ -129,7 +129,9 @@ function transformNodeMeta(meta: Record<string, any>) {
 function transformCode(node: IDumiElmNode, mdAbsPath: string) {
   return node.properties.filePath
     ? // export external demo directly for collect right sourcemap in dev
-      `require('${node.properties.filePath}').default`
+      `(${isDynamicEnable() ? `await import(${RAW_CHUNK_ID}` : 'require('}'${
+        winPath(node.properties.filePath)
+      }')).default`
     : demoTransformer(node.properties.source.tsx || node.properties.source.jsx, {
         isTSX: Boolean(node.properties.source.tsx),
         fileAbsPath: node.properties.filePath || mdAbsPath,
@@ -297,9 +299,9 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
     // declare demo on the top page component for memo
     const demoComponentCode = previewerProps.inline
       ? // insert directly for inline demo
-        `React.memo(${code})`
+        `React.memo(${decodeRawRequire(code, 'demos_md_inline')})`
       : // render other demo from the common demo module: @@/dumi/demos
-        `React.memo(require('@@/dumi/demos').default['${previewerProps.identifier}'].component)`;
+        `React.memo(DUMI_ALL_DEMOS['${previewerProps.identifier}'].component)`;
 
     this.vFile.data.demos = (this.vFile.data.demos || []).concat(
       `const ${DEMO_COMPONENT_NAME}${(this.vFile.data.demos?.length || 0) +
