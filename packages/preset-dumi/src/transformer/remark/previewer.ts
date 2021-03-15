@@ -3,14 +3,14 @@ import path from 'path';
 import type { Node } from 'unist';
 import type { Visitor } from 'unist-util-visit';
 import visit from 'unist-util-visit';
-import { winPath, createDebug } from '@umijs/utils';
+import { createDebug } from '@umijs/utils';
 import slash from 'slash2';
 import ctx from '../../context';
 import demoTransformer, { DEMO_COMPONENT_NAME, getDepsForDemo } from '../demo';
 import type { IPreviewerComponentProps } from '../../theme';
 import transformer from '..';
 import type { IDumiElmNode, IDumiUnifiedTransformer } from '.';
-import { encodeRawRequire, decodeRawRequire, isDynamicEnable, RAW_CHUNK_ID } from '../utils';
+import { encodeHoistImport, encodeImportRequire, decodeImportRequire } from '../utils';
 
 const debug = createDebug('dumi:previewer');
 
@@ -127,11 +127,9 @@ function transformNodeMeta(meta: Record<string, any>) {
  * @param mdAbsPath   md absolute path
  */
 function transformCode(node: IDumiElmNode, mdAbsPath: string) {
+  // export external demo directly
   return node.properties.filePath
-    ? // export external demo directly for collect right sourcemap in dev
-      `(${isDynamicEnable() ? `await import(${RAW_CHUNK_ID}` : 'require('}'${
-        winPath(node.properties.filePath)
-      }')).default`
+    ? encodeImportRequire(node.properties.filePath)
     : demoTransformer(node.properties.source.tsx || node.properties.source.jsx, {
         isTSX: Boolean(node.properties.source.tsx),
         fileAbsPath: node.properties.filePath || mdAbsPath,
@@ -194,7 +192,7 @@ function generatePreviewerProps(
         ? Object.keys(node.properties.source).reduce(
             (r, lang) => ({
               ...r,
-              [lang]: encodeRawRequire(node.properties.filePath),
+              [lang]: encodeHoistImport(node.properties.filePath),
             }),
             {},
           )
@@ -204,7 +202,7 @@ function generatePreviewerProps(
           ...result,
           [file]: {
             import: files[file].import,
-            content: encodeRawRequire(files[file].fileAbsPath),
+            content: encodeHoistImport(files[file].fileAbsPath),
           },
         }),
         {},
@@ -299,7 +297,7 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
     // declare demo on the top page component for memo
     const demoComponentCode = previewerProps.inline
       ? // insert directly for inline demo
-        `React.memo(${decodeRawRequire(code, 'demos_md_inline')})`
+        `React.memo(${decodeImportRequire(code, 'demos_md_inline')})`
       : // render other demo from the common demo module: @@/dumi/demos
         `React.memo(DUMI_ALL_DEMOS['${previewerProps.identifier}'].component)`;
 

@@ -4,7 +4,13 @@ import type { IApi, IRoute } from '@umijs/types';
 import { createDebug } from '@umijs/utils';
 import getTheme from '../../../theme/loader';
 import { getDemoRouteName } from '../../../theme/hooks/useDemoUrl';
-import { decodeRawRequire, isDynamicEnable } from '../../../transformer/utils';
+import {
+  isEncodeImport,
+  decodeImportRequire,
+  isDynamicEnable,
+  isHoistImport,
+  decodeHoistImport,
+} from '../../../transformer/utils';
 
 const debug = createDebug('dumi:demos');
 
@@ -19,6 +25,8 @@ type ISingleRoutetDemos = Record<
 export default (api: IApi) => {
   const demos: ISingleRoutetDemos = {};
   const generateDemosFile = api.utils.lodash.debounce(async () => {
+    let hoistImportCount = 0;
+    const hoistImports: Record<string, number> = {};
     const tpl = fs.readFileSync(path.join(__dirname, 'demos.mst'), 'utf8');
     const items = Object.keys(demos).map(uuid => {
       const { componentName } = demos[uuid].previewerProps;
@@ -30,27 +38,53 @@ export default (api: IApi) => {
             .reverse()
             .join('')}`) ||
         'demos_no_comp';
+      const itemHoistImports: Record<string, number> = {};
       let demoComponent = demos[uuid].component;
 
       // replace to dynamic component for await import component
-      if (demoComponent.startsWith('(await import(')) {
+      if (isEncodeImport(demoComponent)) {
         demoComponent = `dynamic({
-      loader: async () => ${decodeRawRequire(demoComponent, chunkName)},
+      loader: async () => ${decodeImportRequire(demoComponent, chunkName)},
       loading: () => null,
     })`;
       }
 
+      // hoist all raw code import statements
+      Object.entries(demos[uuid].previewerProps.sources).forEach(([file, oContent]: [string, any]) => {
+        const content = file === '_' ? Object.values(oContent)[0] : oContent.content;
+
+        if (isHoistImport(content)) {
+          if (!hoistImports[content]) {
+            hoistImports[content] = hoistImportCount;
+            hoistImportCount += 1;
+          }
+
+          itemHoistImports[content] = hoistImports[content];
+        }
+      });
+
+      // replace collected import statments to rawCode var
+      const previewerPropsStr = Object.entries(itemHoistImports).reduce(
+        (str, [stmt, no]) => str.replace(new RegExp(`"${stmt.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`, 'g'), `rawCode${no}`),
+        JSON.stringify(demos[uuid].previewerProps),
+      );
+
       return {
         uuid,
         component: demoComponent,
-        previewerProps: decodeRawRequire(JSON.stringify(demos[uuid].previewerProps), 'dumi_raw_source_code'),
+        previewerProps: previewerPropsStr,
       };
     });
 
     // write demos entry file
     api.writeTmpFile({
       path: 'dumi/demos/index.ts',
-      content: api.utils.Mustache.render(tpl, { demos: items }),
+      content: api.utils.Mustache.render(tpl, {
+        demos: items,
+        rawCodes: Object.entries(hoistImports).map(([stmt, no]) =>
+          decodeHoistImport(stmt, `rawCode${no}`),
+        ),
+      }),
     });
 
     debug('.dumi/demos files generated');

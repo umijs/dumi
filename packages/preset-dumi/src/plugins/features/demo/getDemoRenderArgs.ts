@@ -1,7 +1,8 @@
 import type { ComponentProps, ReactNode } from 'react';
+import type { IRouteComponentProps } from 'dumi';
 import React from 'react';
+// @ts-ignore
 import { useMotions } from 'dumi/theme';
-import type { IRouteComponentProps } from '@umijs/types';
 
 type IGetDemoRenderArgs = [ComponentProps<any>, ReactNode] | [ReactNode] | [];
 

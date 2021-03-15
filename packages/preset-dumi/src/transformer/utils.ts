@@ -42,26 +42,26 @@ export function isDynamicEnable() {
 }
 
 /**
- * encode file require statement with raw loader & identifier, it can be decode after JSON.stringify
+ * encode & decode import statement which need to hoist at the top of file
  */
-export const RAW_ID = '^R^A^W^';
-export const RAW_CHUNK_ID = '^C^H^U^N^K^';
-export const encodeRawRequire = (resolvePath: string) =>
-  `${RAW_ID}(${
-    isDynamicEnable() ? `await import(${RAW_CHUNK_ID}` : 'require('
-  }'!!dumi-raw-code-loader!${winPath(resolvePath)}')).default${RAW_ID}`;
+const HOIST_ID = '^H^O^I^S^T^';
+export const encodeHoistImport = (resolvePath: string) =>
+  `import ${HOIST_ID} from '!!dumi-raw-code-loader!${winPath(resolvePath)}'`;
+export const decodeHoistImport = (str: string, id: string) =>
+  str.replace(new RegExp(HOIST_ID.replace(/\^/g, '\\^'), 'g'), id);
+export const isHoistImport = (str: string) => str.startsWith(`import ${HOIST_ID} from`);
 
-export const decodeRawRequire = (str: string, chunkName: string) => {
-  const escaped = RAW_ID.replace(/\^/g, '\\^');
-
-  str = str.replace(new RegExp(`"${escaped}|${escaped}"`, 'g'), '');
-
-  if (chunkName) {
-    str = str.replace(
-      new RegExp(RAW_CHUNK_ID.replace(/\^/g, '\\^'), 'g'),
-      `/* webpackChunkName: "${chunkName}" */`,
-    );
-  }
-
-  return str;
-};
+/**
+ * encode import/require statement by dynamicImport, it can be decode to await import statement with chunkName
+ */
+export const CHUNK_ID = '^C^H^U^N^K^';
+export const encodeImportRequire = (resolvePath: string) =>
+  `(${isDynamicEnable() ? `await import(${CHUNK_ID}` : 'require('}'${winPath(
+    resolvePath,
+  )}')).default`;
+export const decodeImportRequire = (str: string, chunkName: string) =>
+  str.replace(
+    new RegExp(CHUNK_ID.replace(/\^/g, '\\^'), 'g'),
+    `/* webpackChunkName: "${chunkName}" */`,
+  );
+export const isEncodeImport = (str: string) => str.startsWith(`(await import(${CHUNK_ID}`);
