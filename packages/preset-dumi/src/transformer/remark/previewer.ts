@@ -10,7 +10,7 @@ import demoTransformer, { DEMO_COMPONENT_NAME, getDepsForDemo } from '../demo';
 import type { IPreviewerComponentProps } from '../../theme';
 import transformer from '..';
 import type { IDumiElmNode, IDumiUnifiedTransformer } from '.';
-import { encodeHoistImport, encodeImportRequire, decodeImportRequire } from '../utils';
+import { encodeHoistImport, encodeImportRequire, decodeImportRequireWithAutoDynamic } from '../utils';
 
 const debug = createDebug('dumi:previewer');
 
@@ -297,7 +297,7 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
     // declare demo on the top page component for memo
     const demoComponentCode = previewerProps.inline
       ? // insert directly for inline demo
-        `React.memo(${decodeImportRequire(code, 'demos_md_inline')})`
+        `React.memo(${decodeImportRequireWithAutoDynamic(code, 'demos_md_inline')})`
       : // render other demo from the common demo module: @@/dumi/demos
         `React.memo(DUMI_ALL_DEMOS['${previewerProps.identifier}'].component)`;
 

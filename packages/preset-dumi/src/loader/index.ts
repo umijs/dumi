@@ -27,6 +27,7 @@ export default async function loader(raw: string) {
 
   return `
     import React from 'react';
+    import { dynamic } from 'dumi';
     import { Link, AnchorLink } from 'dumi/theme';
     ${
       // add Katex css import statement if required or not in production mode, to reduce dist size

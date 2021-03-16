@@ -5,8 +5,7 @@ import { createDebug } from '@umijs/utils';
 import getTheme from '../../../theme/loader';
 import { getDemoRouteName } from '../../../theme/hooks/useDemoUrl';
 import {
-  isEncodeImport,
-  decodeImportRequire,
+  decodeImportRequireWithAutoDynamic,
   isDynamicEnable,
   isHoistImport,
   decodeHoistImport,
@@ -42,12 +41,7 @@ export default (api: IApi) => {
       let demoComponent = demos[uuid].component;
 
       // replace to dynamic component for await import component
-      if (isEncodeImport(demoComponent)) {
-        demoComponent = `dynamic({
-      loader: async () => ${decodeImportRequire(demoComponent, chunkName)},
-      loading: () => null,
-    })`;
-      }
+      demoComponent = decodeImportRequireWithAutoDynamic(demoComponent, chunkName);
 
       // hoist all raw code import statements
       Object.entries(demos[uuid].previewerProps.sources).forEach(([file, oContent]: [string, any]) => {

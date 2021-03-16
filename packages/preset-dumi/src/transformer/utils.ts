@@ -65,3 +65,9 @@ export const decodeImportRequire = (str: string, chunkName: string) =>
     `/* webpackChunkName: "${chunkName}" */`,
   );
 export const isEncodeImport = (str: string) => str.startsWith(`(await import(${CHUNK_ID}`);
+export const decodeImportRequireWithAutoDynamic = (str: string, chunkName: string) =>
+  isEncodeImport(str)
+    ? `dynamic({
+      loader: async () => ${decodeImportRequire(str, chunkName)},
+    })`
+    : decodeImportRequire(str, chunkName);
