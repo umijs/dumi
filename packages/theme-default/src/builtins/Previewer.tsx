@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from 'react';
+import React, { useState, useContext, useRef, useEffect } from 'react';
 import Tabs, { TabPane } from 'rc-tabs';
 // @ts-ignore
 import { history } from 'dumi';
@@ -13,7 +13,8 @@ import {
   useDemoUrl,
   useTSPlaygroundUrl,
   Link,
-  AnchorLink
+  AnchorLink,
+  usePrefersColor
 } from 'dumi/theme';
 import type { ICodeBlockProps } from './SourceCode';
 import SourceCode from './SourceCode';
@@ -87,6 +88,13 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
   const currentFileCode =
     props.sources[currentFile][sourceType] || props.sources[currentFile].content;
   const playgroundUrl = useTSPlaygroundUrl(locale, currentFileCode);
+  const iframeRef = useRef<HTMLIFrameElement>();
+  const [color] = usePrefersColor();
+
+  // re-render iframe if prefers color changed
+  useEffect(() => {
+    setIframeKey(Math.random());
+  }, [color]);
 
   function handleFileChange(filename: string) {
     setCurrentFile(filename);
@@ -126,6 +134,7 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
             }}
             key={iframeKey}
             src={demoUrl}
+            ref={iframeRef}
           />
         ) : (
           props.children
