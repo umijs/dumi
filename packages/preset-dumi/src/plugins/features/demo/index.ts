@@ -25,7 +25,7 @@ export default (api: IApi) => {
   const demos: ISingleRoutetDemos = {};
   const generateDemosFile = api.utils.lodash.debounce(async () => {
     let hoistImportCount = 0;
-    const hoistImports: Record<string, number> = {};
+    const hoistImports: Record<string, number[]> = {};
     const tpl = fs.readFileSync(path.join(__dirname, 'demos.mst'), 'utf8');
     const items = Object.keys(demos).map(uuid => {
       const { componentName } = demos[uuid].previewerProps;
@@ -48,16 +48,16 @@ export default (api: IApi) => {
         const content = file === '_' ? Object.values(oContent)[0] : oContent.content;
 
         if (isHoistImport(content)) {
-          if (!hoistImports[content]) {
-            hoistImports[content] = hoistImportCount;
-            hoistImportCount += 1;
+          if (!itemHoistImports[content]) {
+            itemHoistImports[content] = hoistImportCount
+            hoistImports[content] = (hoistImports[content] || []).concat(itemHoistImports[content])
+            hoistImportCount+=1
           }
 
-          itemHoistImports[content] = hoistImports[content];
         }
       });
-
-      // replace collected import statments to rawCode var
+ 
+      // replace collected import statements to rawCode var
       const previewerPropsStr = Object.entries(itemHoistImports).reduce(
         (str, [stmt, no]) => str.replace(new RegExp(`"${stmt.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`, 'g'), `rawCode${no}`),
         JSON.stringify(demos[uuid].previewerProps),
@@ -75,8 +75,9 @@ export default (api: IApi) => {
       path: 'dumi/demos/index.ts',
       content: api.utils.Mustache.render(tpl, {
         demos: items,
-        rawCodes: Object.entries(hoistImports).map(([stmt, no]) =>
-          decodeHoistImport(stmt, `rawCode${no}`),
+        rawCodes: Object.entries(hoistImports).reduce((statements, [stmt, nos]) =>
+          statements.concat(nos.map(no => decodeHoistImport(stmt, `rawCode${no}`))),
+          []
         ),
       }),
     });
