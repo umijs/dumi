@@ -24,7 +24,8 @@ type ISingleRoutetDemos = Record<
 export default (api: IApi) => {
   const demos: ISingleRoutetDemos = {};
   const generateDemosFile = api.utils.lodash.debounce(async () => {
-    let hoistImportCount = 0;
+    // must start with 1 instead of 0 (falsy value), otherwise, rawCode0 could be override by rawCode1 when rawCode0 and rawCode1 is the same importation.
+    let hoistImportCount = 1;
     const hoistImports: Record<string, number> = {};
     const tpl = fs.readFileSync(path.join(__dirname, 'demos.mst'), 'utf8');
     const items = Object.keys(demos).map(uuid => {
