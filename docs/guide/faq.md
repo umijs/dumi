@@ -13,7 +13,7 @@ dumi is based on Umi, Which means in addition to the configurations provided by 
 
 ## Why `README.md` appears on the homepage of the document?
 
-Whether it is a document or an website, there must be a home page. Dumi will first look for `index.md` or `REAdME.md` as the homepage in all `resolve.includes` folders, if not found, it will use `README.md` in the project root directory as the homepage.
+Whether it is a document or an website, there must be a home page. Dumi will first look for `index.md` or `README.md` as the homepage in all `resolve.includes` folders, if not found, it will use `README.md` in the project root directory as the homepage.
 
 ## How to deploy documents to a non-root directory of a domain name?
 

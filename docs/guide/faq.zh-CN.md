@@ -13,7 +13,7 @@ dumi 基于 Umi，即除了自己提供的配置项以外，还支持[所有 Umi
 
 ## 为什么 `README.md` 会出现在文档的首页？
 
-无论是文档还是官网，一定会有首页。dumi 会优先在所有的 `resolve.includes` 文件夹下寻找 `index.md` 或者 `REAdME.md`，如果找不到的话则会使用项目根目录的 `README.md`。
+无论是文档还是官网，一定会有首页。dumi 会优先在所有的 `resolve.includes` 文件夹下寻找 `index.md` 或者 `README.md`，如果找不到的话则会使用项目根目录的 `README.md`。
 
 ## 如何将文档部署到域名的非根目录？
 
