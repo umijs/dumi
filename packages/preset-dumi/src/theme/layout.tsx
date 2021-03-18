@@ -29,7 +29,10 @@ const useCurrentRouteMeta = (routes: IOuterLayoutProps['routes'], pathname: stri
   const handler = (...args: [IOuterLayoutProps['routes'], string]) => {
     const pathWithoutSuffix = args[1].replace(/([^^])\/$/, '$1');
 
-    return args[0].find(({ path }) => path === pathWithoutSuffix)?.meta || {};
+    return ({
+      ...(args[0].find(({ path }) => path === pathWithoutSuffix)?.meta || {}),
+      __pathname: pathname,
+    });
   };
   const [meta, setMeta] = useState<IThemeContext['meta']>(handler(routes, pathname));
 
@@ -176,7 +179,7 @@ const OuterLayout: React.FC<IOuterLayoutProps & IRouteComponentProps> = props =>
         routes,
       }}
     >
-      {children}
+      {meta.__pathname === location.pathname && children}
     </Context.Provider>
   );
 };
