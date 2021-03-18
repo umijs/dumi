@@ -163,11 +163,11 @@ export default (api: IApi) => {
       ? `React.createElement(
         dynamic({
           loader: async () => {
-            const { default: getDemoRenderArgs } = await import('${api.utils.winPath(
+            const { default: getDemoRenderArgs } = await import(/* webpackChunkName: 'dumi_demos' */ '${api.utils.winPath(
               path.join(__dirname, './getDemoRenderArgs'),
             )}');
-            const { default: Previewer } = await import('${Previewer.source}');
-            const { default: demos } = await import('@@/dumi/demos');
+            const { default: Previewer } = await import(/* webpackChunkName: 'dumi_demos' */ '${Previewer.source}');
+            const { default: demos } = await import(/* webpackChunkName: 'dumi_demos' */ '@@/dumi/demos');
 
             return props => {
               ${demoRenderBody}
