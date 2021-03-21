@@ -46,7 +46,7 @@ export function isDynamicEnable() {
  */
 const HOIST_ID = '^H^O^I^S^T^';
 export const encodeHoistImport = (resolvePath: string) =>
-  `import ${HOIST_ID} from '!!dumi-raw-code-loader!${winPath(resolvePath)}'`;
+  `import ${HOIST_ID} from '!!dumi-raw-code-loader!${winPath(resolvePath)}?dumi-raw-code'`;
 export const decodeHoistImport = (str: string, id: string) =>
   str.replace(new RegExp(HOIST_ID.replace(/\^/g, '\\^'), 'g'), id);
 export const isHoistImport = (str: string) => str.startsWith(`import ${HOIST_ID} from`);
