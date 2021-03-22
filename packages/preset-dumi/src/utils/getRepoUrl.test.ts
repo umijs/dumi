@@ -20,4 +20,10 @@ describe('getRepoUrl', () => {
       'https://some.other.com/umijs/dumi',
     );
   });
+
+  it('for other protocol', () => {
+    expect(getRepoUrl('git@http://self.gitlab.com:umijs/dumi.git')).toEqual(
+      'http://self.gitlab.com/umijs/dumi',
+    );
+  });
 });
