@@ -63,7 +63,7 @@ const Dark: FC<darkProps> = ({ darkSwitch, onDarkSwitchClick, mobile }) => {
           ))
         ) : getSvg(color)}
       </div>
-      { !mobile && darkSwitch && (
+      {!mobile && darkSwitch && (
         <div className="__dumi-default-dark-switch-list">
           {
             list.map(item => (
