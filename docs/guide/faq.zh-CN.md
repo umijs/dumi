@@ -31,6 +31,27 @@ dumi 基于 Umi，即除了自己提供的配置项以外，还支持[所有 Umi
 
 详细使用可参考 Ant Design Landing 的 [use in dumi](https://landing.ant.design/docs/use/dumi-cn)
 
+## 如何自定义“编辑此页”？
+
+当您在根目录的 package.json 中设置 `repository` 后，dumi 就会在页面底部生成相应的**编辑功能**按钮。例如：
+
+```json
+// package.json
+{
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/umijs/dumi.git",
+    "branch": "master",
+    "platform": "github"
+  }
+}
+```
+
+其中:
+- `url`：决定跳转仓库仓库路径
+- `branch`：对应仓库分支。默认为 `master`
+- `platform`：对应平台。当前设置为 `gitlab` 时，若 url 涉及 subgroups 会对其进行特殊处理
+
 ## dumi 支持使用 `.md` 之外的其他方式编写文档吗？
 
 暂不支持。
