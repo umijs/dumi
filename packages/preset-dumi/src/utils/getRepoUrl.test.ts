@@ -13,6 +13,10 @@ describe('getRepoUrl', () => {
     expect(getRepoUrl('git+https://self.gitlab.com/umijs/subgroup/dumi.git', 'gitlab')).toEqual(
       'https://self.gitlab.com/umijs/subgroup/dumi',
     );
+
+    expect(getRepoUrl('git+http://self.gitlab.com/umijs/subgroup/dumi.git', 'gitlab')).toEqual(
+      'http://self.gitlab.com/umijs/subgroup/dumi',
+    );
   });
 
   it('for other hosts', () => {
