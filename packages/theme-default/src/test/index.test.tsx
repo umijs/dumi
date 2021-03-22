@@ -86,6 +86,8 @@ describe('default theme', () => {
   };
 
   it('should render site home page', () => {
+    const attrName = 'data-prefers-color';
+    document.documentElement.setAttribute(attrName, 'light');
     const wrapper = ({ children }) => (
       <Context.Provider
         value={{
@@ -140,9 +142,18 @@ describe('default theme', () => {
     expect(queryAllByAttribute('class', container, '__dumi-default-dark-sun')).not.toBeNull();
     expect(queryAllByAttribute('class', container, '__dumi-default-dark-moon')).not.toBeNull();
     expect(queryAllByAttribute('class', container, '__dumi-default-dark-auto')).not.toBeNull();
-    queryAllByAttribute('class', container, '__dumi-default-dark-moon')[0].click();
-    expect(document.documentElement.getAttribute('data-prefers-color')).toEqual('dark');
-    expect(queryByAttribute('data-mobile-show', container, 'true')).toBeNull();
+    const navbar = queryByAttribute('class', container, '__dumi-default-navbar');
+    const dark = queryByAttribute('class', navbar, '__dumi-default-dark');
+    const sun = queryByAttribute('class', dark, '__dumi-default-dark-sun __dumi-default-dark-switch-active');
+    sun.click();
+    expect(queryByAttribute('class', dark, '__dumi-default-dark-switch __dumi-default-dark-switch-open')).not.toBeNull();
+    const switchList = queryByAttribute('class', dark, '__dumi-default-dark-switch-list');
+    expect(switchList).not.toBeNull();
+    expect(queryByAttribute('class', switchList, '__dumi-default-dark-moon')).not.toBeNull();
+    queryByAttribute('class', switchList, '__dumi-default-dark-moon').click();
+    expect(document.documentElement.getAttribute(attrName)).toEqual('dark');
+    expect(queryByAttribute('class', dark, '__dumi-default-dark-switch-list')).toBeNull();
+    expect(queryByAttribute('class', dark, '__dumi-default-dark-switch __dumi-default-dark-switch-open')).toBeNull();
   });
 
   it('should render documentation page', async () => {
