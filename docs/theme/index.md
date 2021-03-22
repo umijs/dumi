@@ -51,6 +51,17 @@ export default {
 }
 ```
 
+_Note: After the mobile theme enabled, we also can switch the demo previewer to default mode for some pages via `mobile: false` in Markdown frontmatter area:_
+
+```md
+---
+mobile: false
+---
+
+Markdown content
+```
+
+
 ## Vacant
 
 If you have created a good dumi theme and want to share it with everyone.
