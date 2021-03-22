@@ -45,7 +45,7 @@ describe('default theme', () => {
       title: 'test',
       logo: '/',
       mode: 'site' as 'doc' | 'site',
-      repository: { branch: 'mater' },
+      repository: { branch: 'master' },
     },
     meta: {},
     menu: [
@@ -138,10 +138,6 @@ describe('default theme', () => {
     expect(queryByAttribute('data-mobile-show', container, 'true')).not.toBeNull();
 
     // expect dark render and click success
-    expect(queryAllByAttribute('class', container, '__dumi-default-dark')).not.toBeNull();
-    expect(queryAllByAttribute('class', container, '__dumi-default-dark-sun')).not.toBeNull();
-    expect(queryAllByAttribute('class', container, '__dumi-default-dark-moon')).not.toBeNull();
-    expect(queryAllByAttribute('class', container, '__dumi-default-dark-auto')).not.toBeNull();
     const navbar = queryByAttribute('class', container, '__dumi-default-navbar');
     const dark = queryByAttribute('class', navbar, '__dumi-default-dark');
     const sun = queryByAttribute('class', dark, '__dumi-default-dark-sun __dumi-default-dark-switch-active');
@@ -154,6 +150,19 @@ describe('default theme', () => {
     expect(document.documentElement.getAttribute(attrName)).toEqual('dark');
     expect(queryByAttribute('class', dark, '__dumi-default-dark-switch-list')).toBeNull();
     expect(queryByAttribute('class', dark, '__dumi-default-dark-switch __dumi-default-dark-switch-open')).toBeNull();
+
+    document.documentElement.setAttribute(attrName, 'light');
+    const sidemenu = queryByAttribute('class', container, '__dumi-default-menu');
+    const darkMenu = queryByAttribute('class', sidemenu, '__dumi-default-dark');
+    expect(queryByAttribute('class', darkMenu, '__dumi-default-dark-switch')).not.toBeNull();
+    expect(queryByAttribute('class', darkMenu, '__dumi-default-dark-switch-list')).toBeNull();
+    expect(queryByAttribute('class', darkMenu, '__dumi-default-dark-sun __dumi-default-dark-switch-active')).not.toBeNull();
+    expect(queryByAttribute('class', darkMenu, '__dumi-default-dark-moon')).not.toBeNull();
+    expect(queryByAttribute('class', darkMenu, '__dumi-default-dark-auto')).not.toBeNull();
+    queryByAttribute('class', darkMenu, '__dumi-default-dark-moon').click();
+    expect(document.documentElement.getAttribute(attrName)).toEqual('dark');
+    expect(queryByAttribute('class', darkMenu, '__dumi-default-dark-moon __dumi-default-dark-switch-active')).not.toBeNull();
+    expect(queryByAttribute('data-mobile-show', container, 'true')).toBeNull();
   });
 
   it('should render documentation page', async () => {
