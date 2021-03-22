@@ -23,8 +23,9 @@ export default (url: string, platform?: 'gitlab') => {
     }
 
     // process other case, protocol://domain/group/repo{discard remaining paths}
+    const protocol = url.includes('http://') ? 'http' : 'https';
     repoUrl =
-      repoUrl || url.replace(/^.*?((?:[\w-]+\.?)+)+[:/]([\w-]+)\/([\w-]+).*$/, 'https://$1/$2/$3');
+      repoUrl || url.replace(/^.*?((?:[\w-]+\.?)+)+[:/]([\w-]+)\/([\w-]+).*$/, `${protocol}://$1/$2/$3`);
   }
 
   return repoUrl;
