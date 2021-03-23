@@ -6,7 +6,6 @@ import AnchorLink from './components/AnchorLink';
 import type { IThemeContext } from './context';
 import Context from './context';
 import type { IMenu } from '../routes/getMenuFromRoutes';
-import usePrefersColor from './hooks/usePrefersColor';
 
 export interface IOuterLayoutProps {
   mode: IThemeContext['config']['mode'];
@@ -30,7 +29,10 @@ const useCurrentRouteMeta = (routes: IOuterLayoutProps['routes'], pathname: stri
   const handler = (...args: [IOuterLayoutProps['routes'], string]) => {
     const pathWithoutSuffix = args[1].replace(/([^^])\/$/, '$1');
 
-    return args[0].find(({ path }) => path === pathWithoutSuffix)?.meta || {};
+    return ({
+      ...(args[0].find(({ path }) => path === pathWithoutSuffix)?.meta || {}),
+      __pathname: pathname,
+    });
   };
   const [meta, setMeta] = useState<IThemeContext['meta']>(handler(routes, pathname));
 
@@ -165,9 +167,6 @@ const OuterLayout: React.FC<IOuterLayoutProps & IRouteComponentProps> = props =>
     }
   }, []);
 
-  // for listen prefers-color-schema media change
-  usePrefersColor();
-
   return (
     <Context.Provider
       value={{
@@ -180,7 +179,7 @@ const OuterLayout: React.FC<IOuterLayoutProps & IRouteComponentProps> = props =>
         routes,
       }}
     >
-      {children}
+      {meta.__pathname === location.pathname && children}
     </Context.Provider>
   );
 };

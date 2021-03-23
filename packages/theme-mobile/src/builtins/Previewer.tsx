@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useContext } from 'react';
+import { context } from 'dumi/theme';
 import type { IPreviewerProps } from 'dumi-theme-default/src/builtins/Previewer';
 import Previewer from 'dumi-theme-default/src/builtins/Previewer';
 import debounce from 'lodash.debounce';
@@ -8,6 +9,7 @@ export const ACTIVE_MSG_TYPE = 'dumi:scroll-into-demo';
 
 export default (props: IPreviewerProps) => {
   const ref = useRef<HTMLDivElement>();
+  const { meta } = useContext(context);
   const [previewerProps, setPreviewerProps] = useState<null | IPreviewerProps>(null);
   const [isActive, setIsActive] = useState(false);
 
@@ -32,7 +34,7 @@ export default (props: IPreviewerProps) => {
     }, 50);
 
     // only render mobile phone when screen max than 960px
-    if (window?.outerWidth > 960) {
+    if (window?.outerWidth > 960 && meta.mobile !== false) {
       // active source code wrapper if scroll into demo
       handler();
       window.addEventListener('scroll', handler);
@@ -56,10 +58,10 @@ export default (props: IPreviewerProps) => {
     }
 
     return () => window.removeEventListener('scroll', handler);
-  }, [props]);
+  }, [props, meta.mobile]);
 
   return (
-    <div className="__dumi-default-mobile-previewer" ref={ref}>
+    <div className={meta.mobile !== false ? '__dumi-default-mobile-previewer' : null} ref={ref}>
       {previewerProps && (
         <Previewer
           className={isActive ? '__dumi-default-previewer-target' : null}

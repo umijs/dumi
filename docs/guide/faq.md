@@ -31,6 +31,27 @@ At present, dumi has not yet support the theme customization function, but it ca
 
 For detailed usage, please refer to [use in dumi](https://landing.ant.design/docs/use/dumi) of Ant Design Landing
 
+## How to customize "Edit this page"?
+
+When you set the `repository` in the package.json of the root directory, dumi will generate the corresponding **edit doc** button at the bottom of the page. E.g:
+
+```json
+// package.json
+{
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/umijs/dumi.git",
+    "branch": "master",
+    "platform": "github"
+  }
+}
+```
+
+Among:
+- `url`: Decide to jump to the repository path
+- `branch`: Corresponding to the repository branch. Default is `master`
+- `platform`: Corresponding platform. When the current setting is `gitlab`, if the url involves subgroups, it will be treated specially
+
 ## Does dumi support to write documents in other ways rather than `.md`?
 
 Sorry, it is not supported yet
