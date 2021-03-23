@@ -75,7 +75,7 @@ yarn add dumi cross-env -D
   },
 ```
 
-3. Create `config/config.js`, and add configuration
+3. Create `dumi/config/config.js`, and add configuration
 
 ```js
 export default {
