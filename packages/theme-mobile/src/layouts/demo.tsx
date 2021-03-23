@@ -29,8 +29,6 @@ const MobileDemoLayout: React.FC<IRouteComponentProps> = ({ children }) => {
       const target = document.getElementsByClassName('__dumi-default-mobile-demo-layout');
       if (target && target[0]) {
         TouchEmulator(target[0]);
-      } else {
-        TouchEmulator(window);
       }
       rules
         // discard invalid rules
