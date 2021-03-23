@@ -45,7 +45,7 @@ export interface IDepAnalyzeResult {
       version: string;
       css?: string;
     }>;
-  files: Record<string, { import: string; content: string }>;
+  files: Record<string, { import: string; fileAbsPath: string }>;
 }
 
 export const LOCAL_DEP_EXT = ['.jsx', '.tsx', '.js', '.ts'];
@@ -187,11 +187,7 @@ function analyzeDeps(
 
       files[item.filename] = cachers.content.get(item.resolvePath) || {
         import: item.requireStr,
-        content: getModuleResolveContent({
-          basePath: fileAbsPath,
-          sourcePath: item.requireStr,
-          extensions: LOCAL_MODULE_EXT,
-        }),
+        fileAbsPath: item.resolvePath,
       };
 
       // cache resolve content
@@ -199,7 +195,12 @@ function analyzeDeps(
 
       // continue to collect deps for dep
       if (LOCAL_DEP_EXT.includes(ext)) {
-        const result = analyzeDeps(files[item.filename].content, {
+        const content = getModuleResolveContent({
+          basePath: fileAbsPath,
+          sourcePath: item.resolvePath,
+          extensions: LOCAL_DEP_EXT,
+        });
+        const result = analyzeDeps(content, {
           isTSX: /\.tsx?/.test(ext),
           fileAbsPath: item.resolvePath,
           entryAbsPath: entryAbsPath || fileAbsPath,

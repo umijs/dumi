@@ -1,8 +1,8 @@
 import type { ComponentProps, ReactNode } from 'react';
+import type { IRouteComponentProps } from 'dumi';
 import React from 'react';
-import type { IRouteComponentProps } from '@umijs/types';
 // @ts-ignore
-import demos from '@@/dumi/demos';
+import { useMotions } from 'dumi/theme';
 
 type IGetDemoRenderArgs = [ComponentProps<any>, ReactNode] | [ReactNode] | [];
 
@@ -12,6 +12,7 @@ type IGetDemoRenderArgs = [ComponentProps<any>, ReactNode] | [ReactNode] | [];
  */
 export default (
   props: IRouteComponentProps<{ uuid: string }, { wrapper?: string; capture?: string }>,
+  demos: any,
 ): IGetDemoRenderArgs => {
   let result = [] as IGetDemoRenderArgs;
   const uuid = props.match.params.uuid;
@@ -43,7 +44,7 @@ export default (
       // return demo component with motions handler
       result = [
         React.createElement(() => {
-          require('dumi/theme').useMotions(previewerProps.motions || [], document);
+          useMotions(previewerProps.motions || [], document.documentElement);
 
           return React.createElement('div', {}, React.createElement(demo.component));
         }),

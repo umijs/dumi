@@ -15,7 +15,7 @@ describe('feature: getDemoRenderArgs', () => {
   } as IRouteComponentProps<{ uuid: string }, { wrapper: string; capture: string }>;
 
   it('should return args for inline mode', () => {
-    const args = getDemoRenderArgs(baseProps);
+    const args = getDemoRenderArgs(baseProps, demos);
 
     // expect children element
     expect(args).toHaveLength(1);
@@ -30,15 +30,18 @@ describe('feature: getDemoRenderArgs', () => {
   });
 
   it('should return args for wrapper mode', () => {
-    const args = getDemoRenderArgs({
-      ...baseProps,
-      location: {
-        ...baseProps.location,
-        query: {
-          wrapper: null,
+    const args = getDemoRenderArgs(
+      {
+        ...baseProps,
+        location: {
+          ...baseProps.location,
+          query: {
+            wrapper: null,
+          },
         },
       },
-    });
+      demos,
+    );
 
     // expect props & children element
     expect(args).toHaveLength(2);
@@ -51,16 +54,19 @@ describe('feature: getDemoRenderArgs', () => {
   });
 
   it('should return args for capture mode', () => {
-    const args = getDemoRenderArgs({
-      ...baseProps,
-      location: {
-        ...baseProps.location,
-        query: {
-          wrapper: null,
-          capture: null,
+    const args = getDemoRenderArgs(
+      {
+        ...baseProps,
+        location: {
+          ...baseProps.location,
+          query: {
+            wrapper: null,
+            capture: null,
+          },
         },
       },
-    });
+      demos,
+    );
 
     // expect motions props whatever
     expect(Array.isArray(args[0].motions)).toBeTruthy();

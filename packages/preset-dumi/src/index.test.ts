@@ -11,7 +11,19 @@ describe('preset-dumi', () => {
 
   afterAll(() => {
     // clear all node_modules
-    ['', 'basic', 'algolia', 'demos', 'assets', 'integrate', 'local-theme', 'progressive-theme', 'side-effects', 'sitemap'].forEach(dir => {
+    [
+      '',
+      'basic',
+      'algolia',
+      'demos',
+      'assets',
+      'integrate',
+      'local-theme',
+      'progressive-theme',
+      'side-effects',
+      'sitemap',
+      'dynamic-import',
+    ].forEach(dir => {
       rimraf.sync(path.join(fixtures, dir, 'node_modules'));
     });
   });
@@ -86,11 +98,14 @@ describe('preset-dumi', () => {
     await new Promise(resolve => setTimeout(resolve));
 
     // expect demos generate
-    const demos = require(path.join(service.paths.absTmpPath, 'dumi', 'demos')).default;
+    const demos = fs
+      .readFileSync(path.join(service.paths.absTmpPath, 'dumi', 'demos', 'index.ts'))
+      .toString();
 
-    expect(Object.keys(demos).length).toEqual(3);
-    expect(demos['tsx-demo']).not.toBeUndefined();
-    expect(demos['component-demo'].previewerProps.componentName).toEqual('ForceComponent');
+    expect(demos.includes("'tsx-demo'")).toBeTruthy();
+    expect(
+      demos.includes('"componentName":"ForceComponent","identifier":"component-demo"'),
+    ).toBeTruthy();
   });
 
   it('assets command', async () => {
@@ -293,21 +308,16 @@ describe('preset-dumi', () => {
       presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
     });
 
-    const api = service.getPluginAPI({
-      service,
-      key: 'test',
-      id: 'test',
-    });
-    service.plugins.test = { key: 'test', id: 'test' } as any;
-
     // add UMI_DIR to avoid alias error
     process.env.UMI_DIR = path.dirname(require.resolve('umi/package'));
 
     // execute build
-    await api.service.run({ name: 'build' });
+    await service.run({ name: 'build' });
 
     // expect css not be tree shaked
-    expect(fs.readFileSync(path.join((api as any).paths.absOutputPath, 'umi.css')).toString()).toContain('data-side-effects-test');
+    expect(fs.readFileSync(path.join(service.paths.absOutputPath, 'umi.css')).toString()).toContain(
+      'data-side-effects-test',
+    );
   });
 
   it('should generate sitemap.xml', async () => {
@@ -341,5 +351,24 @@ describe('preset-dumi', () => {
     ).toEqual(
       '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://d.umijs.org/</loc></url><url><loc>https://d.umijs.org/test</loc></url></urlset>',
     );
+  });
+
+  it('dynamic import', async () => {
+    const cwd = path.join(fixtures, 'dynamic-import');
+    const service = new Service({
+      cwd,
+      env: 'production',
+      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+    });
+
+    // add UMI_DIR to avoid alias error
+    process.env.UMI_DIR = path.dirname(require.resolve('umi/package'));
+
+    await service.run({
+      name: 'build',
+    });
+
+    // expect split chunk by component name
+    expect(fs.existsSync(path.join(service.paths.absOutputPath, 'demos_olleH.js'))).toBeTruthy();
   });
 });

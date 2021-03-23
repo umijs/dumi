@@ -13,7 +13,7 @@ dumi is based on Umi, Which means in addition to the configurations provided by 
 
 ## Why `README.md` appears on the homepage of the document?
 
-Whether it is a document or an website, there must be a home page. Dumi will first look for `index.md` or `REAdME.md` as the homepage in all `resolve.includes` folders, if not found, it will use `README.md` in the project root directory as the homepage.
+Whether it is a document or an website, there must be a home page. Dumi will first look for `index.md` or `README.md` as the homepage in all `resolve.includes` folders, if not found, it will use `README.md` in the project root directory as the homepage.
 
 ## How to deploy documents to a non-root directory of a domain name?
 
@@ -30,6 +30,27 @@ At present, dumi has not yet support the theme customization function, but it ca
 ```
 
 For detailed usage, please refer to [use in dumi](https://landing.ant.design/docs/use/dumi) of Ant Design Landing
+
+## How to customize "Edit this page"?
+
+When you set the `repository` in the package.json of the root directory, dumi will generate the corresponding **edit doc** button at the bottom of the page. E.g:
+
+```json
+// package.json
+{
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/umijs/dumi.git",
+    "branch": "master",
+    "platform": "github"
+  }
+}
+```
+
+Among:
+- `url`: Decide to jump to the repository path
+- `branch`: Corresponding to the repository branch. Default is `master`
+- `platform`: Corresponding platform. When the current setting is `gitlab`, if the url involves subgroups, it will be treated specially
 
 ## Does dumi support to write documents in other ways rather than `.md`?
 

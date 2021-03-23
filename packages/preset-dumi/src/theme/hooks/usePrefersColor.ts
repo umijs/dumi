@@ -76,6 +76,7 @@ class ColorChanger {
   set(color: PrefersColorValue) {
     this.color = color;
     localStorage.setItem(COLOR_LS_NAME, color);
+    this.applyCallbacks();
 
     if (color === 'auto') {
       document.documentElement.setAttribute(
@@ -101,7 +102,7 @@ export default () => {
   }
   const [color, setColor] = useState<PrefersColorValue>(colorChanger.color);
   const changeColor = useCallback((val: PrefersColorValue) => {
-    setColor(colorChanger.set(val));
+    colorChanger.set(val);
   }, []);
 
   useEffect(() => {

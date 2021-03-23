@@ -27,6 +27,7 @@ export default async function loader(raw: string) {
 
   return `
     import React from 'react';
+    import { dynamic } from 'dumi';
     import { Link, AnchorLink } from 'dumi/theme';
     ${
       // add Katex css import statement if required or not in production mode, to reduce dist size
@@ -38,6 +39,7 @@ export default async function loader(raw: string) {
       .concat(theme.fallbacks)
       .map(component => `import ${component.identifier} from '${component.source}';`)
       .join('\n')}
+    import DUMI_ALL_DEMOS from '@@/dumi/demos';
 
     ${(result.meta.demos || []).join('\n')}
 

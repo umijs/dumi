@@ -1,65 +1,85 @@
 import fs from 'fs';
 import path from 'path';
-import type React from 'react';
 import type { IApi, IRoute } from '@umijs/types';
 import { createDebug } from '@umijs/utils';
 import getTheme from '../../../theme/loader';
 import { getDemoRouteName } from '../../../theme/hooks/useDemoUrl';
+import {
+  decodeImportRequireWithAutoDynamic,
+  isDynamicEnable,
+  isHoistImport,
+  decodeHoistImport,
+} from '../../../transformer/utils';
 
 const debug = createDebug('dumi:demos');
 
-type ISingleRoutetDemos = Record<string, {
+type ISingleRoutetDemos = Record<
+  string,
+  {
     previewerProps: Record<string, any>;
-    component: React.ReactNode;
-  }>;
+    component: string;
+  }
+>;
 
 export default (api: IApi) => {
   const demos: ISingleRoutetDemos = {};
   const generateDemosFile = api.utils.lodash.debounce(async () => {
+    // must start with 1 instead of 0 (falsy value), otherwise, rawCode0 could be override by rawCode1 when rawCode0 and rawCode1 is the same importation.
+    let hoistImportCount = 1;
+    const hoistImports: Record<string, number> = {};
     const tpl = fs.readFileSync(path.join(__dirname, 'demos.mst'), 'utf8');
-    const groups: Record<string, any[]> = {};
     const items = Object.keys(demos).map(uuid => {
       const { componentName } = demos[uuid].previewerProps;
+      // collect component related module (react component & source code) into one chunk
+      const chunkName =
+        (componentName &&
+          `demos_${[...componentName]
+            // reverse component name to avoid some special component (such as Advertisement) be blocked by ADBlock when dynamic loading
+            .reverse()
+            .join('')}`) ||
+        'demos_no_comp';
+      const itemHoistImports: Record<string, number> = {};
       let demoComponent = demos[uuid].component;
 
-      // dynamic import demos for performance if it is belongs to some component
-      if (componentName) {
-        groups[componentName] = (groups[componentName] || []).concat({
-          uuid,
-          component: demoComponent,
-        });
-        demoComponent = `() => React.createElement(dynamic({
-      loader: async function() {
-        const { default: demos } = await import(/* webpackChunkName: "demos_${[...componentName]
-          // reverse component name to avoid some special component (such as Advertisement) be blocked by ADBlock when dynamic loading
-          .reverse()
-          .join('')}" */'./${componentName}');
+      // replace to dynamic component for await import component
+      demoComponent = decodeImportRequireWithAutoDynamic(demoComponent, chunkName);
 
-        return demos['${uuid}'].component;
-      },
-      loading: () => null,
-    }))`;
-      }
+      // hoist all raw code import statements
+      Object.entries(demos[uuid].previewerProps.sources).forEach(([file, oContent]: [string, any]) => {
+        const content = file === '_' ? Object.values(oContent)[0] : oContent.content;
+
+        if (isHoistImport(content)) {
+          if (!hoistImports[content]) {
+            hoistImports[content] = hoistImportCount;
+            hoistImportCount += 1;
+          }
+
+          itemHoistImports[content] = hoistImports[content];
+        }
+      });
+
+      // replace collected import statments to rawCode var
+      const previewerPropsStr = Object.entries(itemHoistImports).reduce(
+        (str, [stmt, no]) => str.replace(new RegExp(`"${stmt.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`, 'g'), `rawCode${no}`),
+        JSON.stringify(demos[uuid].previewerProps),
+      );
 
       return {
         uuid,
         component: demoComponent,
-        previewerProps: JSON.stringify(demos[uuid].previewerProps),
+        previewerProps: previewerPropsStr,
       };
     });
 
     // write demos entry file
     api.writeTmpFile({
       path: 'dumi/demos/index.ts',
-      content: api.utils.Mustache.render(tpl, { demos: items, isDemoEntry: true }),
-    });
-
-    // write demos which belongs to component into a single module for dynamic import
-    Object.entries(groups).forEach(([componentName, groupDemos]) => {
-      api.writeTmpFile({
-        path: `dumi/demos/${componentName}.ts`,
-        content: api.utils.Mustache.render(tpl, { demos: groupDemos }),
-      });
+      content: api.utils.Mustache.render(tpl, {
+        demos: items,
+        rawCodes: Object.entries(hoistImports).map(([stmt, no]) =>
+          decodeHoistImport(stmt, `rawCode${no}`),
+        ),
+      }),
     });
 
     debug('.dumi/demos files generated');
@@ -119,19 +139,11 @@ export default (api: IApi) => {
       });
     }
 
-    prependRoutes[0].wrappers = [
-      // builtin outer layout, for initialize context
-      api.utils.winPath(path.join(__dirname, '../../../theme/layout')),
-      theme.layoutPaths.demo,
-    ].filter(Boolean);
-    prependRoutes[0].component = `(props) => {
-      const React = require('react');
-      const renderArgs = require('${api.utils.winPath(
-        path.relative(
-          path.join(api.paths.absTmpPath, 'core'),
-          path.join(__dirname, './getDemoRenderArgs'),
-        ),
-      )}').default(props);
+    const demoRenderBody = `
+      const renderArgs = getDemoRenderArgs(props, demos);
+
+      // for listen prefers-color-schema media change in demo single route
+      usePrefersColor();
 
       switch (renderArgs.length) {
         case 1:
@@ -141,15 +153,48 @@ export default (api: IApi) => {
         case 2:
           // render demo with previewer
           return React.createElement(
-            require('${Previewer.source}').default,
+            Previewer,
             renderArgs[0],
             renderArgs[1],
           );
 
         default:
-          return \`Demo $\{uuid\} not found :(\`;
+          return \`Demo $\{props.match.params.uuid\} not found :(\`;
       }
-    }`;
+    `;
+    const demoRouteComponent = isDynamicEnable()
+      ? `React.createElement(
+        dynamic({
+          loader: async () => {
+            const { default: getDemoRenderArgs } = await import(/* webpackChunkName: 'dumi_demos' */ '${api.utils.winPath(
+              path.join(__dirname, './getDemoRenderArgs'),
+            )}');
+            const { default: Previewer } = await import(/* webpackChunkName: 'dumi_demos' */ '${Previewer.source}');
+            const { default: demos } = await import(/* webpackChunkName: 'dumi_demos' */ '@@/dumi/demos');
+            const { usePrefersColor } = await import(/* webpackChunkName: 'dumi_demos' */ 'dumi/theme');
+
+            return props => {
+              ${demoRenderBody}
+            }
+          }
+        }), props)`
+      : `{
+        const { default: getDemoRenderArgs } = require('${api.utils.winPath(
+          path.join(__dirname, './getDemoRenderArgs'),
+        )}');
+        const { default: Previewer } = require('${Previewer.source}');
+        const { default: demos } = require('@@/dumi/demos');
+        const { usePrefersColor } = require('dumi/theme');
+
+        ${demoRenderBody}
+        }`;
+
+    prependRoutes[0].wrappers = [
+      // builtin outer layout, for initialize context
+      api.utils.winPath(path.join(__dirname, '../../../theme/layout')),
+      theme.layoutPaths.demo,
+    ].filter(Boolean);
+    prependRoutes[0].component = `(props) => ${demoRouteComponent}`;
 
     routes.unshift(...prependRoutes);
 

@@ -13,7 +13,7 @@ dumi 基于 Umi，即除了自己提供的配置项以外，还支持[所有 Umi
 
 ## 为什么 `README.md` 会出现在文档的首页？
 
-无论是文档还是官网，一定会有首页。dumi 会优先在所有的 `resolve.includes` 文件夹下寻找 `index.md` 或者 `REAdME.md`，如果找不到的话则会使用项目根目录的 `README.md`。
+无论是文档还是官网，一定会有首页。dumi 会优先在所有的 `resolve.includes` 文件夹下寻找 `index.md` 或者 `README.md`，如果找不到的话则会使用项目根目录的 `README.md`。
 
 ## 如何将文档部署到域名的非根目录？
 
@@ -30,6 +30,27 @@ dumi 基于 Umi，即除了自己提供的配置项以外，还支持[所有 Umi
 ```
 
 详细使用可参考 Ant Design Landing 的 [use in dumi](https://landing.ant.design/docs/use/dumi-cn)
+
+## 如何自定义“编辑此页”？
+
+当您在根目录的 package.json 中设置 `repository` 后，dumi 就会在页面底部生成相应的**编辑功能**按钮。例如：
+
+```json
+// package.json
+{
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/umijs/dumi.git",
+    "branch": "master",
+    "platform": "github"
+  }
+}
+```
+
+其中:
+- `url`：决定跳转仓库仓库路径
+- `branch`：对应仓库分支。默认为 `master`
+- `platform`：对应平台。当前设置为 `gitlab` 时，若 url 涉及 subgroups 会对其进行特殊处理
 
 ## dumi 支持使用 `.md` 之外的其他方式编写文档吗？
 
