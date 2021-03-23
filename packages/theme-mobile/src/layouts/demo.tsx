@@ -1,6 +1,7 @@
 import React, { useEffect, useContext } from 'react';
 import type { IRouteComponentProps } from '@umijs/types';
 import { context } from 'dumi/theme';
+import TouchEmulator from 'f2-touchemulator';
 import vl from 'umi-hd';
 import flex from 'umi-hd/lib/flex';
 import vw from 'umi-hd/lib/vw';
@@ -24,7 +25,13 @@ const MobileDemoLayout: React.FC<IRouteComponentProps> = ({ children }) => {
   useEffect(() => {
     const handler = () => {
       const { clientWidth } = document.documentElement;
-
+      // Simulate the touch event of mobile terminal
+      const target = document.getElementsByClassName('__dumi-default-mobile-demo-layout');
+      if (target && target[0]) {
+        TouchEmulator(target[0]);
+      } else {
+        TouchEmulator(window);
+      }
       rules
         // discard invalid rules
         .filter(rule => HD_MODES[rule.mode])

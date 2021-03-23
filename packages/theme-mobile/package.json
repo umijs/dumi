@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "dumi-theme-default": "1.0.7",
+    "f2-touchemulator": "^0.0.1",
     "lodash.debounce": "^4.0.8",
     "qrcode.react": "^1.0.0",
     "umi-hd": "^5.0.1"
