@@ -98,6 +98,7 @@ function guessComponentName(fileAbsPath: string) {
   if (parsed.name === 'index') {
     // button/index.tsx => button
     // button/src/index.tsx => button
+    // packages/button/src/index.tsx => button
     return path.basename(parsed.dir.replace(/\/src$/, ''));
   }
 
@@ -141,9 +142,9 @@ export default function api(): IDumiUnifiedTransformer {
 
         if (has(node, 'src')) {
           const src = node.properties.src || '';
-          // guess component name if there has no identifier property
-          const componentName = node.properties.identifier || guessComponentName(src);
           const absPath = path.join(path.dirname(this.data('fileAbsPath')), src);
+          // guess component name if there has no identifier property
+          const componentName = node.properties.identifier || guessComponentName(absPath);
 
           definitions = parser(absPath, componentName);
           identifier = componentName || src;

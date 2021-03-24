@@ -73,4 +73,11 @@ describe('component api example', () => {
 
     expect(result.content).toContain('identifier="World"');
   });
+
+  it('should guess monorepo package name as component name', () => {
+    const filePath = path.join(fixtures, 'packages', 'pkgA', 'README.md');
+    const result = transformer.markdown(fs.readFileSync(filePath, 'utf8').toString(), filePath);
+
+    expect(result.content).toContain('identifier="pkgA"');
+  });
 });
