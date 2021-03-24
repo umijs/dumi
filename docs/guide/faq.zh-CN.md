@@ -15,10 +15,6 @@ dumi 基于 Umi，即除了自己提供的配置项以外，还支持[所有 Umi
 
 无论是文档还是官网，一定会有首页。dumi 会优先在所有的 `resolve.includes` 文件夹下寻找 `index.md` 或者 `README.md`，如果找不到的话则会使用项目根目录的 `README.md`。
 
-## 如何将文档部署到域名的非根目录？
-
-使用 Umi 的 [base 配置项](https://umijs.org/zh-CN/config#base)即可。
-
 ## 如何完全自定义首页？
 
 目前 dumi 尚未开放主题自定义功能，可以通过引入外部嵌入式 Demo 的形式来实现：
@@ -48,6 +44,7 @@ dumi 基于 Umi，即除了自己提供的配置项以外，还支持[所有 Umi
 ```
 
 其中:
+
 - `url`：决定跳转仓库仓库路径
 - `branch`：对应仓库分支。默认为 `master`
 - `platform`：对应平台。当前设置为 `gitlab` 时，若 url 涉及 subgroups 会对其进行特殊处理
@@ -95,7 +92,7 @@ export default {
 
 6. 将 dumi 的临时文件添加到 `.gitignore` 中。
 
-```
+```text
 .umi
 ```
 
@@ -115,20 +112,28 @@ export default {
 
 配置 `config.dynamicImport` 为 `{}`，此配置项的更多用法可参考 Umi 文档：[Config - dynamicImport](https://umijs.org/zh-CN/config#dynamicimport)。
 
-## 部署到 Github Pages
+## 部署文档
 
-由于 GitHub Pages 是非域名根路径部署，部署之前请先确保设置了 `base` 和 `publicPath` 配置项为仓库名称：
+### 非根目录部署
+
+非根目录部署需要修改 Umi 的 [base 配置项](https://umijs.org/zh-CN/config#base) 和 **视实际情况** 修改 [publicPath 配置项](https://umijs.org/zh-CN/config#publicpath)。
 
 ```ts
 export default {
-  base: '/仓库名称',
-  publicPath: '/仓库名称/',
+  base: '/文档起始路由',
+  publicPath: '/静态资源起始路径/',
   exportStatic: {}, // 将所有路由输出为 HTML 目录结构，以免刷新页面时 404
   // 其他配置
 };
 ```
 
-### 手动部署
+> 文档项目独立时, 通常 `base` 和 `publicPath` 配置项相同。
+
+### 部署到GitHub Pages
+
+由于 GitHub Pages 是非域名根路径部署, `base` 和 `publicPath` 配置项需改为 **仓库名称** 。参考 [非根目录部署](#非根目录部署)
+
+#### 手动部署
 
 借助 [gh-pages](https://github.com/tschaub/gh-pages) 可以轻松帮助我们部署文档到 Github Page
 
@@ -162,7 +167,7 @@ npm run docs:build
 npm run deploy
 ```
 
-### 自动部署
+#### 自动部署
 
 利用 [Github Action](https://github.com/features/actions) 在每次 `master` 分支更新后自动部署
 
