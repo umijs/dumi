@@ -127,7 +127,7 @@ export default {
 };
 ```
 
-> 文档项目独立时, 通常 `base` 和 `publicPath` 配置项的目录相同。
+> 文档项目独立时, 通常 `base` 和 `publicPath` 配置项相同。
 
 ### 部署到GitHub Pages
 
