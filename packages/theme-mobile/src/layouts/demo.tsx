@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useRef } from 'react';
 import type { IRouteComponentProps } from '@umijs/types';
 import { context } from 'dumi/theme';
 import TouchEmulator from 'f2-touchemulator';
@@ -18,18 +18,22 @@ const HD_MODES = {
 
 const MobileDemoLayout: React.FC<IRouteComponentProps> = ({ children }) => {
   const { config } = useContext(context);
+  const target = useRef<HTMLDivElement>(null);
   const {
     hd: { rules = [{ mode: 'vw', options: [100, 750] }] } = {},
   } = config.theme as IThemeConfig;
 
   useEffect(() => {
+    // Simulate the touch event of mobile terminal
+    if (target.current) {
+      TouchEmulator(target.current);
+    }
+  }, []);
+
+  useEffect(() => {
     const handler = () => {
       const { clientWidth } = document.documentElement;
-      // Simulate the touch event of mobile terminal
-      const target = document.getElementsByClassName('__dumi-default-mobile-demo-layout');
-      if (target && target[0]) {
-        TouchEmulator(target[0]);
-      }
+
       rules
         // discard invalid rules
         .filter(rule => HD_MODES[rule.mode])
@@ -58,7 +62,7 @@ const MobileDemoLayout: React.FC<IRouteComponentProps> = ({ children }) => {
     return () => window.removeEventListener('resize', handler);
   }, [rules]);
 
-  return <div className="__dumi-default-mobile-demo-layout">{children}</div>;
+  return <div className="__dumi-default-mobile-demo-layout" ref={target}>{children}</div>;
 };
 
 export default MobileDemoLayout;
