@@ -120,8 +120,8 @@ export default {
 
 ```ts
 export default {
-  base: '/非根目录',
-  publicPath: '/公共文件目录/',
+  base: '/文档起始路由',
+  publicPath: '/静态资源起始路径/',
   exportStatic: {}, // 将所有路由输出为 HTML 目录结构，以免刷新页面时 404
   // 其他配置
 };

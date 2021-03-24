@@ -120,8 +120,8 @@ Configurating [base](https://umijs.org/config#base) and [publicPath](https://umi
 
 ```ts
 export default {
-  base: '/non-root directory',
-  publicPath: '/public assets directory/',
+  base: '/docs-base-route-path',
+  publicPath: '/assets-files-base-path/',
   exportStatic: {}, // Export all routes as HTML directory structure to avoid 404 when refreshing the page
   // Other configuration
 };
