@@ -94,10 +94,10 @@ function serializeAPINodes(
  */
 function guessComponentName(fileAbsPath: string) {
   const parsed = path.parse(fileAbsPath);
+  console.log(parsed);
 
   if (parsed.name === 'index') {
     // button/index.tsx => button
-    // button/src/index.tsx => button
     // packages/button/src/index.tsx => button
     return path.basename(parsed.dir.replace(/\/src$/, ''));
   }
