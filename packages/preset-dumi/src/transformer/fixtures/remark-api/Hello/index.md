@@ -1,5 +1,5 @@
 ---
-componentName: Hello
+componentName: Helloooo
 ---
 
 <API />

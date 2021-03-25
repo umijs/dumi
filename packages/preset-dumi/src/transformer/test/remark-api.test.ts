@@ -23,8 +23,8 @@ describe('component api example', () => {
     // compare transform content
     expect(result).toEqual(
       `<div className="markdown"><h2 id="api"><AnchorLink to="#api" aria-hidden="true" tabIndex={-1}><span className="icon icon-link" /></AnchorLink>API</h2>
-<API identifier="Hello" export="default" /><h3 id="api-world"><AnchorLink to="#api-world" aria-hidden="true" tabIndex={-1}><span className="icon icon-link" /></AnchorLink>World</h3>
-<API identifier="Hello" export="World" /></div>`,
+<API identifier="Helloooo" export="default" /><h3 id="api-world"><AnchorLink to="#api-world" aria-hidden="true" tabIndex={-1}><span className="icon icon-link" /></AnchorLink>World</h3>
+<API identifier="Helloooo" export="World" /></div>`,
     );
   });
 
@@ -79,5 +79,12 @@ describe('component api example', () => {
     const result = transformer.markdown(fs.readFileSync(filePath, 'utf8').toString(), filePath);
 
     expect(result.content).toContain('identifier="pkgA"');
+  });
+
+  it('should guess folder name as component name', () => {
+    const filePath = path.join(fixtures, 'auto-detect', 'index.md');
+    const result = transformer.markdown(fs.readFileSync(filePath, 'utf8').toString(), filePath);
+
+    expect(result.content).toContain('identifier="auto-detect"');
   });
 });
