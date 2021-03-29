@@ -56,7 +56,15 @@ export interface IThemeLoadResult {
 const THEME_PREFIX = 'dumi-theme-';
 const LOCAL_THEME_PATH = '.dumi/theme';
 const FALLBACK_THEME = `${THEME_PREFIX}default`;
-const REQUIRED_THEME_BUILTINS = ['Previewer', 'SourceCode', 'Alert', 'Badge', 'Example', 'API'];
+const REQUIRED_THEME_BUILTINS = [
+  'Alert',
+  'API',
+  'Badge',
+  'Example',
+  'Previewer',
+  'SourceCode',
+  'Tree',
+];
 let cache: IThemeLoadResult | null;
 
 /**
