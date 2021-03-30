@@ -1,6 +1,6 @@
-import type { IRoute } from '@umijs/types';
-import type { RouteProcessor } from '.';
-import type { IMenuItem } from '../getMenuFromRoutes';
+import { IRoute } from '@umijs/types';
+import { RouteProcessor } from '.';
+import { IMenuItem } from '../getMenuFromRoutes';
 import { menuSorter } from '../getMenuFromRoutes';
 
 /**
@@ -25,7 +25,9 @@ const genValidGroups = validRoutes =>
  */
 function getFirstMenuInNav(childRoutes: IRoute[], customMenus?: IMenuItem[]) {
   let firstMenuInNav: IRoute;
-  const firstMenuItem = customMenus?.[0].children?.[0];
+
+  const customFirstMenu = customMenus?.[0];
+  const firstMenuItem = customFirstMenu?.path ? customFirstMenu : customFirstMenu?.children?.[0];
 
   // find first if user configured the first menu item for current nav
   if (typeof firstMenuItem === 'string') {
@@ -47,6 +49,46 @@ function getFirstMenuInNav(childRoutes: IRoute[], customMenus?: IMenuItem[]) {
 }
 
 /**
+ * get first menu in side menu
+ * @param childRoutes      menu child routes
+ * @param currentMenuPath  current menu path
+ * @param customMenus      user custom menus
+ */
+function getFirstMenuInMenu(
+  childRoutes: IRoute[],
+  currentMenuPath: string,
+  customMenus?: Record<string, IMenuItem[]>,
+) {
+  let firstMenuInMenu: IRoute;
+  const haveOrderChild = childRoutes.some(route => typeof route.meta?.order === 'number');
+
+  // if any of children menus don't have order attr
+  if (!haveOrderChild) {
+    // flat config menus once for finding children menus easier
+    const flatMenus = Object.keys(customMenus || {}).reduce(
+      (pre, curr) => [...pre, ...customMenus[curr]],
+      [],
+    );
+    // find the first child of current Menu
+    const targetMenus = flatMenus.find(i => i.path === currentMenuPath)?.children?.[0];
+
+    if (typeof targetMenus === 'string') {
+      // in case menu is a string
+      firstMenuInMenu = childRoutes.find(route => route.component?.includes(targetMenus));
+    } else if (targetMenus?.path) {
+      // use menu item config as first menu route if it is object
+      firstMenuInMenu = targetMenus;
+    }
+  }
+
+  if (!firstMenuInMenu) {
+    // use first child routes of current menus as menu route by default
+    firstMenuInMenu = childRoutes.sort(menuSorter)[0];
+  }
+  return firstMenuInMenu;
+}
+
+/**
  * generate redirects for missing group index routes & legacy route paths
  */
 export default (function redirect(routes) {
@@ -61,15 +103,15 @@ export default (function redirect(routes) {
     ) {
       const { title, path, ...resGroupMeta } = route.meta.group;
 
+      const childRoutes = routes.filter(item => item.meta.group?.path === route.meta.group.path);
+
       redirects[path] = {
         path,
         meta: {
           ...resGroupMeta,
         },
         exact: true,
-        redirect: routes
-          .filter(item => item.meta.group?.path === route.meta.group.path)
-          .sort(menuSorter)[0].path,
+        redirect: getFirstMenuInMenu(childRoutes, path, this.options.menus).path,
       };
     }
 
@@ -90,7 +132,8 @@ export default (function redirect(routes) {
           ...resNavMeta,
         },
         exact: true,
-        redirect: getFirstMenuInNav(validRoutes.concat(validGroups), this.options.menus?.[path]).path,
+        redirect: getFirstMenuInNav(validRoutes.concat(validGroups), this.options.menus?.[path])
+          .path,
       };
     }
 
