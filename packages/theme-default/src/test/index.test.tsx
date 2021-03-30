@@ -7,6 +7,7 @@ import { context as Context } from 'dumi/theme';
 import SourceCode from '../builtins/SourceCode';
 import Alert from '../builtins/Alert';
 import Badge from '../builtins/Badge';
+import Tree from '../builtins/Tree';
 import Previewer from '../builtins/Previewer';
 import API from '../builtins/API';
 import Layout from '../layout';
@@ -225,6 +226,65 @@ describe('default theme', () => {
             <SourceCode code={code} lang="javascript" />
             <Alert type="info">Alert</Alert>
             <Badge type="info">Badge</Badge>
+            <Tree>
+              <ul>
+                <li>
+                  docs
+                  <small>Component library document directory</small>
+                  <ul>
+                    <li>
+                      index.md
+                      <small>Documentation Home (If it does not exist, it will fallback to README.md)</small>
+                    </li>
+                    <li>
+                      guide
+                      <small>Component library document other routing (Signal)</small>
+                      <ul>
+                        <li>index.md</li>
+                        <li>sample.md</li>
+                        <li>help.md</li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  src
+                  <small>Source code directory</small>
+                  <ul>
+                    <li>
+                      Button
+                      <small>Single component</small>
+                      <ul>
+                        <li>
+                          index.tsx
+                          <small>Single component</small>
+                        </li>
+                        <li>
+                          index.less
+                          <small>Component style</small>
+                        </li>
+                        <li>
+                          index.md
+                          <small>Component documentation</small>
+                        </li>
+                      </ul>
+                    </li>
+                    <li>
+                      index.ts
+                      <small>Component library entry file</small>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  .umirc.ts
+                  <small>dumi configuration file (Can also be config/config.ts)</small>
+                </li>
+                <li>
+                  .fatherrc.ts
+                  <small>father-build configuration file, used for component library packaging</small>
+                </li>
+              </ul>
+            </Tree>
             <Previewer
               title="demo-1"
               identifier="demo-1"
@@ -294,6 +354,8 @@ describe('default theme', () => {
         cancelable: true,
       }),
     );
+
+    expect(queryByAttribute('class', container, 'rc-tree __dumi-site-tree rc-tree-show-line')).toMatchSnapshot();
 
     // expect SourceCode highlight
     expect(getByText('console')).toHaveClass('token');
