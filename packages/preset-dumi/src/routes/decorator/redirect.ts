@@ -1,6 +1,6 @@
-import { IRoute } from '@umijs/types';
-import { RouteProcessor } from '.';
-import { IMenuItem } from '../getMenuFromRoutes';
+import type { IRoute } from '@umijs/types';
+import type { RouteProcessor } from '.';
+import type { IMenuItem } from '../getMenuFromRoutes';
 import { menuSorter } from '../getMenuFromRoutes';
 
 /**
