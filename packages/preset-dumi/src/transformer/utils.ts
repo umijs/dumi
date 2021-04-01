@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { winPath } from '@umijs/utils';
 import ctx from '../context';
 
@@ -50,6 +51,15 @@ export const encodeHoistImport = (resolvePath: string) =>
 export const decodeHoistImport = (str: string, id: string) =>
   str.replace(new RegExp(HOIST_ID.replace(/\^/g, '\\^'), 'g'), id);
 export const isHoistImport = (str: string) => str.startsWith(`import ${HOIST_ID} from`);
+export const decodeHoistImportToContent = (str: string) => {
+  if (isHoistImport(str)) {
+    const filePath = str.match(/dumi\-raw\-code\-loader!([^\?]+)\?/)?.[1];
+
+    return fs.readFileSync(filePath, 'utf-8').toString();
+  }
+
+  return str;
+}
 
 /**
  * encode import/require statement by dynamicImport, it can be decode to await import statement with chunkName

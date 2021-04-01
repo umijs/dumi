@@ -10,7 +10,12 @@ import demoTransformer, { DEMO_COMPONENT_NAME, getDepsForDemo } from '../demo';
 import type { IPreviewerComponentProps } from '../../theme';
 import transformer from '..';
 import type { IDumiElmNode, IDumiUnifiedTransformer } from '.';
-import { encodeHoistImport, encodeImportRequire, decodeImportRequireWithAutoDynamic } from '../utils';
+import {
+  encodeHoistImport,
+  encodeImportRequire,
+  decodeImportRequireWithAutoDynamic,
+  decodeHoistImportToContent,
+} from '../utils';
 
 const debug = createDebug('dumi:previewer');
 
@@ -256,7 +261,7 @@ function applyCodeBlock(props: IPreviewerComponentProps, componentName: string) 
               // handle main file
               [file === '_' ? `index.${tsx ? 'tsx' : 'jsx'}` : file]: {
                 type: 'FILE',
-                value: tsx || jsx || content,
+                value: decodeHoistImportToContent(tsx || jsx || content),
               },
             }),
           {},
