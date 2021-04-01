@@ -21,13 +21,19 @@ class ColorChanger {
   constructor() {
     // listen prefers color change
     (['light', 'dark'] as PrefersColorValue[]).forEach(color => {
-      this.getColorMedia(color).addEventListener('change', ev => {
+      const mediaQueryList = this.getColorMedia(color);
+      const handler = (ev: any) => {
         // only apply media prefers color in auto mode
         if (ev.matches && this.color === 'auto') {
           document.documentElement.setAttribute(COLOR_ATTR_NAME, color);
           this.applyCallbacks();
         }
-      });
+      };
+      if (mediaQueryList.addEventListener) {
+        mediaQueryList.addEventListener('change', handler);
+        return;
+      }
+      mediaQueryList.addListener(handler);
     });
   }
 
