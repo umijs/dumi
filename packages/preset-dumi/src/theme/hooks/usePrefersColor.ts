@@ -11,7 +11,7 @@ class ColorChanger {
    * current color
    * @note  initial value from head script in src/plugins/theme.ts
    */
-  color = document.documentElement.getAttribute(COLOR_ATTR_NAME) as PrefersColorValue;
+  color:PrefersColorValue = "auto"
 
   /**
    * color change callbacks
@@ -19,6 +19,9 @@ class ColorChanger {
   private callbacks: ((color: PrefersColorValue) => void)[] = [];
 
   constructor() {
+    if(typeof document === undefined) return
+
+    this.color = document.documentElement.getAttribute(COLOR_ATTR_NAME) as PrefersColorValue;
     // listen prefers color change
     (['light', 'dark'] as PrefersColorValue[]).forEach(color => {
       this.getColorMedia(color).addEventListener('change', ev => {
