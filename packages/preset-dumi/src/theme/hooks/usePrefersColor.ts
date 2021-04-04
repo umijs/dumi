@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { isBrowser } from 'umi'
 
 const COLOR_ATTR_NAME = 'data-prefers-color';
 const COLOR_LS_NAME = 'dumi:prefers-color';
@@ -19,7 +20,7 @@ class ColorChanger {
   private callbacks: ((color: PrefersColorValue) => void)[] = [];
 
   constructor() {
-    if(typeof document === undefined) return
+    if(!isBrowser()) return
 
     this.color = document.documentElement.getAttribute(COLOR_ATTR_NAME) as PrefersColorValue;
     // listen prefers color change
