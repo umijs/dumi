@@ -259,6 +259,27 @@ import React from 'react';
 export default () => <h1>Hello dumi!</h1>;
 ```
 
+#### Using component in demo
+
+dumi has a very important principle: **developers should use components like users**.
+
+How to explain? If we are developing a library called `hello-dumi`, and we are wrting a demo for `Button` component in it, the following are examples of the correct way and errors:
+
+``` jsx | pure
+// Correct
+import { Button } from 'hello-dumi';
+
+// Error, user does not know how to get Button component
+import Button from './index.tsx';
+import Button from '@/Button/index.tsx';
+```
+
+It means that the demos we write can not only be used to debug components and write documents, but can also be copied directly to the project by users.
+
+You may have question, how it works before the source code was released as an npm package? Do not worry, dumi will create an alias for us between library NPM package and library source code, it also works for all sub-packages in lerna project.
+
+#### Render as source code
+
 If we want a block of `jsx`/`tsx` code to be rendered as source code, we can use the `pure` modifier to tell dumi:
 
 <pre lang="markdown">
