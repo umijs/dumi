@@ -19,67 +19,30 @@ const genValidGroups = validRoutes =>
   }, []);
 
 /**
- * to find current path's children in menus
- * @param path  current path
- * @param menus user config menus
+ * get first menu route in current nav/menu
+ * @param childRoutes   nav/menu child routes
+ * @param customMenus   user custom menus
  */
-function getTargetPathChildren(path: string, menus?: Record<string, IMenuItem[]>) {
-  if (!menus) {
-    return null;
-  }
-  let res: IMenuItem;
-  /**
-   * to destructe menus object to array
-   * @example { '/a': [{...}] } => [{...}]
-   */
-  let targets: IMenuItem[] = Object.keys(menus).reduce((pre, curr) => [...pre, ...menus[curr]], []);
-  while (targets.length) {
-    const currentMenu = targets.find(menu => menu.path === path);
-    // to find target menu among current level menus
-    if (currentMenu) {
-      res = currentMenu;
-      targets = [];
-    } else {
-      // if find nothing, continue to find children menus util there is no children menus
-      targets = targets.reduce((pre, curr) => {
-        return [...pre, ...(curr.children || [])];
-      }, []);
-    }
-  }
-  return res?.children || [];
-}
-
-function getFirstMenuFromMenus(
-  childRoutes: IRoute[],
-  currentPath: string,
-  customMenus?: Record<string, IMenuItem[]>,
-) {
-  let firstMenuInMenu: IRoute;
-  const haveOrderChild = childRoutes.some(route => typeof route.meta?.order === 'number');
-
-  // if any of children menus don't have order attr
-  if (!haveOrderChild) {
-    // to find the children of this menu corresponding to the current path
-    const currentMenus = (customMenus || {}).hasOwnProperty(currentPath)
-      ? customMenus[currentPath]
-      : getTargetPathChildren(currentPath, customMenus);
-
-    const firstMenu = currentMenus?.[0];
-    // determine whether the current menu is valid according to the path
-    const firstMenuItem = firstMenu?.path ? firstMenu : firstMenu?.children?.[0];
-
-    if (typeof firstMenuItem === 'string') {
-      firstMenuInMenu = childRoutes.find(route => route.component?.includes(firstMenuItem));
-    } else if (firstMenuItem?.path) {
-      firstMenuInMenu = firstMenuItem;
-    }
+function getFirstMenuInParent(childRoutes: IRoute[], customMenus?: IMenuItem[]) {
+  let firstMenuInParent: IRoute;
+  const firstMenuItem = customMenus?.[0].children?.[0] || customMenus?.[0];
+  // find first if user configured the first menu item for current nav/menu
+  if (typeof firstMenuItem === 'string') {
+    // find first menu route by string menu item, like src/Button/index.md
+    firstMenuInParent = childRoutes.find(route => {
+      if (route.component?.includes(firstMenuItem)) {
+        return route;
+      }
+    });
+  } else if (firstMenuItem?.path) {
+    // use menu item config as first menu route if it is object
+    firstMenuInParent = firstMenuItem;
+  } else if (!firstMenuInParent) {
+    // use first child routes of nav/menu as menu route by default
+    firstMenuInParent = childRoutes.sort(menuSorter)[0];
   }
 
-  if (!firstMenuInMenu) {
-    // use first child routes of current menus as menu route by default
-    firstMenuInMenu = childRoutes.sort(menuSorter)[0];
-  }
-  return firstMenuInMenu;
+  return firstMenuInParent;
 }
 
 /**
@@ -96,8 +59,10 @@ export default (function redirect(routes) {
       !routes.some(item => item.path === route.meta.group.path)
     ) {
       const { title, path, ...resGroupMeta } = route.meta.group;
-
-      const childRoutes = routes.filter(item => item.meta.group?.path === route.meta.group.path);
+      const validRoutes = routes.filter(item => item.meta.group?.path === route.meta.group.path);
+      const validItems = Object.values(this.options.menus || {})
+        .reduce((r, i) => r.concat(i), [])
+        .find(item => item.path === path)?.children;
 
       redirects[path] = {
         path,
@@ -105,7 +70,7 @@ export default (function redirect(routes) {
           ...resGroupMeta,
         },
         exact: true,
-        redirect: getFirstMenuFromMenus(childRoutes, path, this.options.menus).path,
+        redirect: getFirstMenuInParent(validRoutes, validItems).path,
       };
     }
 
@@ -126,7 +91,7 @@ export default (function redirect(routes) {
           ...resNavMeta,
         },
         exact: true,
-        redirect: getFirstMenuFromMenus(validRoutes.concat(validGroups), path, this.options.menus)
+        redirect: getFirstMenuInParent(validRoutes.concat(validGroups), this.options.menus?.[path])
           .path,
       };
     }
