@@ -29,11 +29,13 @@ class ColorChanger {
           this.applyCallbacks();
         }
       };
+      // compatible with Safari 13-
+      /* istanbul ignore else */
       if (mediaQueryList.addEventListener) {
         mediaQueryList.addEventListener('change', handler);
-        return;
+      } else if (mediaQueryList.addListener) {
+        mediaQueryList.addListener(handler);
       }
-      mediaQueryList.addListener(handler);
     });
   }
 
