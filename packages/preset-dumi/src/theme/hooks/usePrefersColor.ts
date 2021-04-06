@@ -20,7 +20,7 @@ class ColorChanger {
   private callbacks: ((color: PrefersColorValue) => void)[] = [];
 
   constructor() {
-    if(!isBrowser()) return
+    if (!isBrowser()) return;
 
     this.color = document.documentElement.getAttribute(COLOR_ATTR_NAME) as PrefersColorValue;
     // listen prefers color change
