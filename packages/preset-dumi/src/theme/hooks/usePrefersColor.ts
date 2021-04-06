@@ -12,7 +12,7 @@ class ColorChanger {
    * current color
    * @note  initial value from head script in src/plugins/theme.ts
    */
-  color:PrefersColorValue = "auto"
+  color:PrefersColorValue = 'light'
 
   /**
    * color change callbacks
