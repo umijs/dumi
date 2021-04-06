@@ -261,7 +261,11 @@ function applyCodeBlock(props: IPreviewerComponentProps, componentName: string) 
               // handle main file
               [file === '_' ? `index.${tsx ? 'tsx' : 'jsx'}` : file]: {
                 type: 'FILE',
-                value: decodeHoistImportToContent(tsx || jsx || content),
+                value:
+                  file === '_'
+                    // strip frontmatter for main file
+                    ? transformer.code(decodeHoistImportToContent(tsx || jsx)).content
+                    : decodeHoistImportToContent(content),
               },
             }),
           {},
