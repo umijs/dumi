@@ -65,6 +65,11 @@ const users = [
     url: 'https://qiankun.umijs.org/',
     logo: 'https://gw.alipayobjects.com/zos/bmw-prod/8a74c1d3-16f3-4719-be63-15e467a68a24/km0cv8vn_w500_h500.png',
   },
+  {
+    name: 'Formily',
+    url: 'https://v2.formilyjs.org/',
+    logo: 'https://img.alicdn.com/imgextra/i2/O1CN01Kq3OHU1fph6LGqjIz_!!6000000004056-55-tps-1141-150.svg',
+  },
 ];
 
 users.sort((a, b) => a.name.localeCompare(b.name));
@@ -120,7 +125,7 @@ function getShow(o) {
   if (o) {
     return `
       <a target="_blank" href="${o.url}">
-        <img src="${o.logo}" height="40" />
+        <img src="${o.logo}" style="max-height: 40px;" />
         <br />
         <strong>${o.name}</strong>
       </a>`;
