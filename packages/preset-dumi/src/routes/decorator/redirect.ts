@@ -19,31 +19,30 @@ const genValidGroups = validRoutes =>
   }, []);
 
 /**
- * get first menu route in current nav
- * @param childRoutes   nav child routes
+ * get first menu route in current nav/menu
+ * @param childRoutes   nav/menu child routes
  * @param customMenus   user custom menus
  */
-function getFirstMenuInNav(childRoutes: IRoute[], customMenus?: IMenuItem[]) {
-  let firstMenuInNav: IRoute;
-  const firstMenuItem = customMenus?.[0].children?.[0];
-
-  // find first if user configured the first menu item for current nav
+function getFirstMenuInParent(childRoutes: IRoute[], customMenus?: IMenuItem[]) {
+  let firstMenuInParent: IRoute;
+  const firstMenuItem = customMenus?.[0].children?.[0] || customMenus?.[0];
+  // find first if user configured the first menu item for current nav/menu
   if (typeof firstMenuItem === 'string') {
     // find first menu route by string menu item, like src/Button/index.md
-    firstMenuInNav = childRoutes.find(route => {
+    firstMenuInParent = childRoutes.find(route => {
       if (route.component?.includes(firstMenuItem)) {
         return route;
       }
     });
   } else if (firstMenuItem?.path) {
     // use menu item config as first menu route if it is object
-    firstMenuInNav = firstMenuItem;
-  } else if (!firstMenuInNav) {
-    // use first child routes of nav as menu route by default
-    firstMenuInNav = childRoutes.sort(menuSorter)[0];
+    firstMenuInParent = firstMenuItem;
+  } else if (!firstMenuInParent) {
+    // use first child routes of nav/menu as menu route by default
+    firstMenuInParent = childRoutes.sort(menuSorter)[0];
   }
 
-  return firstMenuInNav;
+  return firstMenuInParent;
 }
 
 /**
@@ -60,6 +59,10 @@ export default (function redirect(routes) {
       !routes.some(item => item.path === route.meta.group.path)
     ) {
       const { title, path, ...resGroupMeta } = route.meta.group;
+      const validRoutes = routes.filter(item => item.meta.group?.path === route.meta.group.path);
+      const validItems = Object.values(this.options.menus || {})
+        .reduce((r, i) => r.concat(i), [])
+        .find(item => item.path === path)?.children;
 
       redirects[path] = {
         path,
@@ -67,9 +70,7 @@ export default (function redirect(routes) {
           ...resGroupMeta,
         },
         exact: true,
-        redirect: routes
-          .filter(item => item.meta.group?.path === route.meta.group.path)
-          .sort(menuSorter)[0].path,
+        redirect: getFirstMenuInParent(validRoutes, validItems).path,
       };
     }
 
@@ -90,7 +91,8 @@ export default (function redirect(routes) {
           ...resNavMeta,
         },
         exact: true,
-        redirect: getFirstMenuInNav(validRoutes.concat(validGroups), this.options.menus?.[path]).path,
+        redirect: getFirstMenuInParent(validRoutes.concat(validGroups), this.options.menus?.[path])
+          .path,
       };
     }
 
