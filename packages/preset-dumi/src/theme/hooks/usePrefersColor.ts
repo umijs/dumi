@@ -21,13 +21,21 @@ class ColorChanger {
   constructor() {
     // listen prefers color change
     (['light', 'dark'] as PrefersColorValue[]).forEach(color => {
-      this.getColorMedia(color).addEventListener('change', ev => {
+      const mediaQueryList = this.getColorMedia(color);
+      const handler = (ev: any) => {
         // only apply media prefers color in auto mode
         if (ev.matches && this.color === 'auto') {
           document.documentElement.setAttribute(COLOR_ATTR_NAME, color);
           this.applyCallbacks();
         }
-      });
+      };
+      // compatible with Safari 13-
+      /* istanbul ignore else */
+      if (mediaQueryList.addEventListener) {
+        mediaQueryList.addEventListener('change', handler);
+      } else if (mediaQueryList.addListener) {
+        mediaQueryList.addListener(handler);
+      }
     });
   }
 
