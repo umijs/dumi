@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { isBrowser } from 'dumi';
+import { isBrowser } from 'umi';
 
 const COLOR_ATTR_NAME = 'data-prefers-color';
 const COLOR_LS_NAME = 'dumi:prefers-color';
