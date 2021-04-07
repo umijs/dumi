@@ -58,7 +58,7 @@ const users = [
   {
     name: 'Graphin',
     url: 'https://graphin.antv.vision/',
-    logo: 'https://camo.githubusercontent.com/53886f0e306c9f01c96dee2edca3992830b7cbb769118029a7e5d677deb7e67e/68747470733a2f2f67772e616c697061796f626a656374732e636f6d2f7a6f732f616e7466696e63646e2f306234487a4f63454a592f4772617068696e2e737667',
+    logo: 'https://gw.alipayobjects.com/zos/antfincdn/0b4HzOcEJY/Graphin.svg',
   },
   {
     name: 'qiankun',
@@ -70,6 +70,11 @@ const users = [
     url: 'https://v2.formilyjs.org/',
     logo: 'https://img.alicdn.com/imgextra/i2/O1CN01Kq3OHU1fph6LGqjIz_!!6000000004056-55-tps-1141-150.svg',
   },
+];
+
+const LongLogos = [
+  'ahooks',
+  'Formily',
 ];
 
 users.sort((a, b) => a.name.localeCompare(b.name));
@@ -123,9 +128,10 @@ console.log(`🎉 Update readme user done!`);
 
 function getShow(o) {
   if (o) {
+    const width = LongLogos.includes(o.name) ? '' : ' width="42"';
     return `
       <a target="_blank" href="${o.url}">
-        <img src="${o.logo}" style="max-height: 40px;" />
+        <img src="${o.logo}"${width} />
         <br />
         <strong>${o.name}</strong>
       </a>`;
