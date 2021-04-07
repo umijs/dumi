@@ -12,7 +12,7 @@ class ColorChanger {
    * current color
    * @note  initial value from head script in src/plugins/theme.ts
    */
-  color:PrefersColorValue = 'light'
+  color: PrefersColorValue = 'light'
 
   /**
    * color change callbacks
@@ -20,7 +20,7 @@ class ColorChanger {
   private callbacks: ((color: PrefersColorValue) => void)[] = [];
 
   constructor() {
-    if (!isBrowser()) return;
+    if (typeof isBrowser === 'function' && !isBrowser()) return;
 
     this.color = document.documentElement.getAttribute(COLOR_ATTR_NAME) as PrefersColorValue;
     // listen prefers color change
