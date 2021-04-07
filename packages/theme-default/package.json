@@ -1,6 +1,6 @@
 {
   "name": "dumi-theme-default",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "The official default theme of dumi",
   "files": [
     "es",
@@ -25,7 +25,7 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.3",
     "@testing-library/react": "^10.4.8",
-    "dumi": "1.1.11",
+    "dumi": "1.1.12",
     "react-test-renderer": "^16.13.1"
   },
   "peerDependencies": {
