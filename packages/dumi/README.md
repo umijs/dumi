@@ -31,35 +31,35 @@ $ yarn dev
   <tr>
     <td width="160" align="center">
       <a target="_blank" href="https://ahooks.js.org/">
-        <img src="https://ahooks.js.org/logo.svg" style="height: 40px; object-fit: contain;" />
+        <img src="https://ahooks.js.org/logo.svg" style="" />
         <br />
         <strong>ahooks</strong>
       </a>
     </td>
     <td width="160" align="center">
       <a target="_blank" href="https://alitajs.com/">
-        <img src="https://user-images.githubusercontent.com/11746742/104428726-c2c90300-55bf-11eb-9b84-d52a86050b9a.png" style="height: 40px; object-fit: contain;" />
+        <img src="https://user-images.githubusercontent.com/11746742/104428726-c2c90300-55bf-11eb-9b84-d52a86050b9a.png" style="height: 40px;" />
         <br />
         <strong>alitajs</strong>
       </a>
     </td>
     <td width="160" align="center">
       <a target="_blank" href="https://v2.formilyjs.org/">
-        <img src="https://img.alicdn.com/imgextra/i2/O1CN01Kq3OHU1fph6LGqjIz_!!6000000004056-55-tps-1141-150.svg" style="height: 40px; object-fit: contain;" />
+        <img src="https://img.alicdn.com/imgextra/i2/O1CN01Kq3OHU1fph6LGqjIz_!!6000000004056-55-tps-1141-150.svg" style="" />
         <br />
         <strong>Formily</strong>
       </a>
     </td>
     <td width="160" align="center">
       <a target="_blank" href="https://ggeditor.com">
-        <img src="https://img.alicdn.com/tfs/TB1FFA1CFP7gK0jSZFjXXc5aXXa-214-200.png" style="height: 40px; object-fit: contain;" />
+        <img src="https://img.alicdn.com/tfs/TB1FFA1CFP7gK0jSZFjXXc5aXXa-214-200.png" style="height: 40px;" />
         <br />
         <strong>GGEditor</strong>
       </a>
     </td>
     <td width="160" align="center">
       <a target="_blank" href="https://graphin.antv.vision/">
-        <img src="https://camo.githubusercontent.com/53886f0e306c9f01c96dee2edca3992830b7cbb769118029a7e5d677deb7e67e/68747470733a2f2f67772e616c697061796f626a656374732e636f6d2f7a6f732f616e7466696e63646e2f306234487a4f63454a592f4772617068696e2e737667" style="height: 40px; object-fit: contain;" />
+        <img src="https://camo.githubusercontent.com/53886f0e306c9f01c96dee2edca3992830b7cbb769118029a7e5d677deb7e67e/68747470733a2f2f67772e616c697061796f626a656374732e636f6d2f7a6f732f616e7466696e63646e2f306234487a4f63454a592f4772617068696e2e737667" style="height: 40px;" />
         <br />
         <strong>Graphin</strong>
       </a>
@@ -68,35 +68,35 @@ $ yarn dev
   <tr>
     <td width="160" align="center">
       <a target="_blank" href="https://actions-cool.github.io/issues-helper/">
-        <img src="https://avatars1.githubusercontent.com/u/73879334?s=200&v=4" style="height: 40px; object-fit: contain;" />
+        <img src="https://avatars1.githubusercontent.com/u/73879334?s=200&v=4" style="height: 40px;" />
         <br />
         <strong>issues-helper</strong>
       </a>
     </td>
     <td width="160" align="center">
       <a target="_blank" href="https://juejin-cn.github.io/open-source/">
-        <img src="https://avatars3.githubusercontent.com/u/69633008?s=200&v=4" style="height: 40px; object-fit: contain;" />
+        <img src="https://avatars3.githubusercontent.com/u/69633008?s=200&v=4" style="height: 40px;" />
         <br />
         <strong>juejin-cn</strong>
       </a>
     </td>
     <td width="160" align="center">
       <a target="_blank" href="https://lightproxy.org">
-        <img src="https://user-images.githubusercontent.com/5436704/81533849-83e00f00-9399-11ea-943d-ac5fd4653906.png" style="height: 40px; object-fit: contain;" />
+        <img src="https://user-images.githubusercontent.com/5436704/81533849-83e00f00-9399-11ea-943d-ac5fd4653906.png" style="height: 40px;" />
         <br />
         <strong>LightProxy</strong>
       </a>
     </td>
     <td width="160" align="center">
       <a target="_blank" href="https://procomponents.ant.design/">
-        <img src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" style="height: 40px; object-fit: contain;" />
+        <img src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" style="height: 40px;" />
         <br />
         <strong>Pro Components</strong>
       </a>
     </td>
     <td width="160" align="center">
       <a target="_blank" href="https://qiankun.umijs.org/">
-        <img src="https://gw.alipayobjects.com/zos/bmw-prod/8a74c1d3-16f3-4719-be63-15e467a68a24/km0cv8vn_w500_h500.png" style="height: 40px; object-fit: contain;" />
+        <img src="https://gw.alipayobjects.com/zos/bmw-prod/8a74c1d3-16f3-4719-be63-15e467a68a24/km0cv8vn_w500_h500.png" style="height: 40px;" />
         <br />
         <strong>qiankun</strong>
       </a>
@@ -105,21 +105,21 @@ $ yarn dev
   <tr>
     <td width="160" align="center">
       <a target="_blank" href="https://github.com/react-component">
-        <img src="https://avatars3.githubusercontent.com/u/9441414?s=200&v=4" style="height: 40px; object-fit: contain;" />
+        <img src="https://avatars3.githubusercontent.com/u/9441414?s=200&v=4" style="height: 40px;" />
         <br />
         <strong>react-component</strong>
       </a>
     </td>
     <td width="160" align="center">
       <a target="_blank" href="https://remaxjs.org">
-        <img src="https://gw.alipayobjects.com/mdn/rms_b5fcc5/afts/img/A*1NHAQYduQiQAAAAAAAAAAABkARQnAQ" style="height: 40px; object-fit: contain;" />
+        <img src="https://gw.alipayobjects.com/mdn/rms_b5fcc5/afts/img/A*1NHAQYduQiQAAAAAAAAAAABkARQnAQ" style="height: 40px;" />
         <br />
         <strong>Remax</strong>
       </a>
     </td>
     <td width="160" align="center">
       <a target="_blank" href="https://umijs.org">
-        <img src="https://gw.alipayobjects.com/zos/bmw-prod/598d14af-4f1c-497d-b579-5ac42cd4dd1f/k7bjua9c_w132_h130.png" style="height: 40px; object-fit: contain;" />
+        <img src="https://gw.alipayobjects.com/zos/bmw-prod/598d14af-4f1c-497d-b579-5ac42cd4dd1f/k7bjua9c_w132_h130.png" style="height: 40px;" />
         <br />
         <strong>UmiJS</strong>
       </a>

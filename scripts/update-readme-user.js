@@ -72,6 +72,11 @@ const users = [
   },
 ];
 
+const LongLogos = [
+  'ahooks',
+  'Formily',
+];
+
 users.sort((a, b) => a.name.localeCompare(b.name));
 
 // **************************************************************************
@@ -123,9 +128,10 @@ console.log(`🎉 Update readme user done!`);
 
 function getShow(o) {
   if (o) {
+    const style = LongLogos.includes(o.name) ? '' : 'height: 40px;';
     return `
       <a target="_blank" href="${o.url}">
-        <img src="${o.logo}" style="height: 40px; object-fit: contain;" />
+        <img src="${o.logo}" style="${style}" />
         <br />
         <strong>${o.name}</strong>
       </a>`;
