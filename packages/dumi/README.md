@@ -31,7 +31,7 @@ $ yarn dev
   <tr>
     <td width="160" align="center">
       <a target="_blank" href="https://ahooks.js.org/">
-        <img src="https://ahooks.js.org/logo.svg"  />
+        <img src="https://ahooks.js.org/logo.svg" />
         <br />
         <strong>ahooks</strong>
       </a>
@@ -45,7 +45,7 @@ $ yarn dev
     </td>
     <td width="160" align="center">
       <a target="_blank" href="https://v2.formilyjs.org/">
-        <img src="https://img.alicdn.com/imgextra/i2/O1CN01Kq3OHU1fph6LGqjIz_!!6000000004056-55-tps-1141-150.svg"  />
+        <img src="https://img.alicdn.com/imgextra/i2/O1CN01Kq3OHU1fph6LGqjIz_!!6000000004056-55-tps-1141-150.svg" />
         <br />
         <strong>Formily</strong>
       </a>
