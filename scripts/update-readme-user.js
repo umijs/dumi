@@ -128,7 +128,7 @@ console.log(`🎉 Update readme user done!`);
 
 function getShow(o) {
   if (o) {
-    const style = LongLogos.includes(o.name) ? '' : 'height: 40px;';
+    const style = LongLogos.includes(o.name) ? '' : 'width: 42px;';
     return `
       <a target="_blank" href="${o.url}">
         <img src="${o.logo}" style="${style}" />
