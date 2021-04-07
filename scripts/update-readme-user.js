@@ -58,7 +58,7 @@ const users = [
   {
     name: 'Graphin',
     url: 'https://graphin.antv.vision/',
-    logo: 'https://camo.githubusercontent.com/53886f0e306c9f01c96dee2edca3992830b7cbb769118029a7e5d677deb7e67e/68747470733a2f2f67772e616c697061796f626a656374732e636f6d2f7a6f732f616e7466696e63646e2f306234487a4f63454a592f4772617068696e2e737667',
+    logo: 'https://gw.alipayobjects.com/zos/antfincdn/0b4HzOcEJY/Graphin.svg',
   },
   {
     name: 'qiankun',
