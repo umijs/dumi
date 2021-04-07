@@ -125,7 +125,7 @@ function getShow(o) {
   if (o) {
     return `
       <a target="_blank" href="${o.url}">
-        <img src="${o.logo}" style="max-height: 40px;" />
+        <img src="${o.logo}" style="height: 40px; object-fit: contain;" />
         <br />
         <strong>${o.name}</strong>
       </a>`;
