@@ -36,7 +36,7 @@ jobs:
 
       - run:
           name: Run Tests
-          command: yarn test:unit -- --forceExit --detectOpenHandles --runInBand --maxWorkers=2
+          command: yarn test:unit -- --forceExit --detectOpenHandles --runInBand --maxWorkers=2 NODE_OPTIONS='--max-old-space-size=4096'
           no_output_timeout: 300m
 
       - run:
