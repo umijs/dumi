@@ -1,5 +1,5 @@
 import path from 'path';
-import slash from 'slash';
+import slash from 'slash2';
 import crypto from 'crypto';
 import * as babel from '@babel/core';
 import * as types from '@babel/types';
