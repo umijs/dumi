@@ -38,7 +38,3 @@ footer: Open-source MIT Licensed | Copyright © 2019-present<br />Powered by sel
 Please visit [GitHub](https://github.com/umijs/dumi) or join the discuss group:
 
 <embed src='../packages/dumi/README.md#RE-/<img data-type="dingtalk"[^>]+\/>[\r\n\s]*<img data-type="wechat"[^>]+\/>/'></embed>
-
-$$
-I = I_1 + I_2 + 2\sqrt{I_1I_2}\cos\delta
-$$
