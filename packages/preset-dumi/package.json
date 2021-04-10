@@ -63,7 +63,8 @@
     "unist-util-visit-parents": "^3.0.1"
   },
   "peerDependencies": {
-    "umi": "3.x"
+    "umi": "3.x",
+    "typescript": ">= 3.x"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.3",

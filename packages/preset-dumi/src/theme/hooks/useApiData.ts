@@ -11,7 +11,7 @@ import type { IApiDefinition } from '../../api-parser';
  * @param isDefaultLocale default locale flag
  */
 function getApiData(identifier: string, locale: string, isDefaultLocale: boolean) {
-  return Object.entries(apis[identifier] as IApiDefinition).reduce<IApiDefinition>(
+  return Object.entries(apis[identifier] as IApiDefinition[number]).reduce<IApiDefinition[number]>(
     (expts, [expt, rows]) => {
       expts[expt] = rows.map(props => {
         // copy original data
@@ -49,7 +49,7 @@ export default (identifier: string) => {
     config: { locales },
   } = useContext(context);
   const isDefaultLocale = !locales.length || locales[0].name === locale;
-  const [data, setData] = useState<IApiDefinition>(getApiData(identifier, locale, isDefaultLocale));
+  const [data, setData] = useState<IApiDefinition[number]>(getApiData(identifier, locale, isDefaultLocale));
 
   useEffect(() => {
     setData(getApiData(identifier, locale, isDefaultLocale));

@@ -11,7 +11,7 @@ import { listenFileOnceChange } from '../../utils/watcher';
 import ctx from '../../context';
 import type { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 
-function applyApiData(identifier: string, definitions: ReturnType<typeof parser>) {
+function applyApiData(identifier: string, definitions: ReturnType<typeof parser>[number]) {
   if (identifier && definitions) {
     ctx.umi?.applyPlugins({
       key: 'dumi.detectApi',
@@ -24,6 +24,13 @@ function applyApiData(identifier: string, definitions: ReturnType<typeof parser>
   }
 }
 
+function transformToAtomProps(data: ReturnType<typeof parser>, isParseTypes: boolean) {
+  if (isParseTypes) {
+    return data.reduce((pre, curr) => ({ ...pre, ...curr }), {});
+  }
+  return data[0];
+}
+
 /**
  * serialize api node to [title, node, title, node, ...]
  * @param node        original api node
@@ -33,7 +40,7 @@ function applyApiData(identifier: string, definitions: ReturnType<typeof parser>
 function serializeAPINodes(
   node: IDumiElmNode,
   identifier: string,
-  definitions: ReturnType<typeof parser>,
+  definitions: ReturnType<typeof parser>[number],
 ) {
   const parsedAttrs = parseElmAttrToProps(node.properties);
   const expts: string[] = parsedAttrs.exports || Object.keys(definitions);
@@ -112,12 +119,12 @@ function guessComponentName(fileAbsPath: string) {
  * @param componentName component name
  * @param identifier    api identifier
  */
-function watchComponentUpdate(absPath: string, componentName: string, identifier: string) {
+function watchComponentUpdate(absPath: string, componentName: string, identifier: string, isParseTypes: boolean) {
   listenFileOnceChange(absPath, () => {
-    let definitions: ReturnType<typeof parser>;
+    let definitions: ReturnType<typeof parser>[number];
 
     try {
-      definitions = parser(absPath, componentName);
+      definitions = transformToAtomProps(parser(absPath, componentName), isParseTypes);
     } catch (err) {
       /* noting */
     }
@@ -126,7 +133,7 @@ function watchComponentUpdate(absPath: string, componentName: string, identifier
     applyApiData(identifier, definitions);
 
     // watch next turn
-    watchComponentUpdate(absPath, componentName, identifier);
+    watchComponentUpdate(absPath, componentName, identifier, isParseTypes);
   });
 }
 
@@ -138,7 +145,10 @@ export default function api(): IDumiUnifiedTransformer {
     visit<IDumiElmNode>(ast, 'element', (node, i, parent) => {
       if (is(node, 'API') && !node._dumi_parsed) {
         let identifier: string;
-        let definitions: ReturnType<typeof parser>;
+        let definitions: ReturnType<typeof parser>[number];
+
+        // do not parse types as default 
+        const { types: isParseTypes = false } = parseElmAttrToProps(node.properties);
 
         if (has(node, 'src')) {
           const src = node.properties.src || '';
@@ -146,11 +156,12 @@ export default function api(): IDumiUnifiedTransformer {
           // guess component name if there has no identifier property
           const componentName = node.properties.identifier || guessComponentName(absPath);
 
-          definitions = parser(absPath, componentName);
+          definitions = transformToAtomProps(parser(absPath, componentName), isParseTypes);
+
           identifier = componentName || src;
 
           // trigger listener to update previewer props after this file changed
-          watchComponentUpdate(absPath, componentName, identifier);
+          watchComponentUpdate(absPath, componentName, identifier, isParseTypes);
         } else if (vFile.data.componentName) {
           try {
             const sourcePath = getModuleResolvePath({
@@ -159,11 +170,11 @@ export default function api(): IDumiUnifiedTransformer {
               silent: true,
             });
 
-            definitions = parser(sourcePath, vFile.data.componentName);
+            definitions = transformToAtomProps(parser(sourcePath, vFile.data.componentName), isParseTypes);
             identifier = vFile.data.componentName;
 
             // trigger listener to update previewer props after this file changed
-            watchComponentUpdate(sourcePath, vFile.data.componentName, identifier);
+            watchComponentUpdate(sourcePath, vFile.data.componentName, identifier, isParseTypes);
           } catch (err) {
             /* noting */
           }

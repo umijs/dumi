@@ -73,6 +73,7 @@ export interface IDumiElmNode extends Node {
   properties: {
     id?: string;
     href?: string;
+    types?: string;
     [key: string]: any;
   };
   tagName: string;

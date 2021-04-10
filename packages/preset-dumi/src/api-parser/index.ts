@@ -1,4 +1,4 @@
-import * as parser from 'react-docgen-typescript';
+import parser from "./parser";
 import type { AtomPropsDefinition } from 'dumi-assets-types';
 import FileCache from '../utils/cache';
 
@@ -15,35 +15,30 @@ const DEFAULT_EXPORTS = [
   'ForwardRefExoticComponent',
 ];
 
-export type IApiDefinition = AtomPropsDefinition;
+// first is types of components, second is types of types
+export type IApiDefinition = [AtomPropsDefinition, AtomPropsDefinition];
 
 export default (filePath: string, componentName?: string) => {
   let definitions: IApiDefinition = cacher.get(filePath);
   const isDefaultRegExp = new RegExp(`^${componentName}$`, 'i');
 
   if (!definitions) {
-    let defaultDefinition: IApiDefinition[''];
+    let defaultDefinition: AtomPropsDefinition[string];
+    definitions = [{}, {}];
 
-    definitions = {};
-    parser
-      .withCompilerOptions(
-        { esModuleInterop: true, jsx: 'preserve' as any },
-        {
-          savePropValueAsString: true,
-          shouldExtractLiteralValuesFromEnum: true,
-          shouldRemoveUndefinedFromOptional: true,
-          componentNameResolver: source => {
-            // use parsed component name from remark pipeline as default export's displayName
-            return DEFAULT_EXPORTS.includes(source.getName()) ? componentName : undefined;
-          },
+    parser(
+      filePath,
+      { esModuleInterop: true, jsx: 'preserve' as any },
+      {
+        componentNameResolver: source => {
+          // use parsed component name from remark pipeline as default export's displayName
+          return DEFAULT_EXPORTS.includes(source.getName()) ? componentName : undefined;
         },
-      )
-      .parse(filePath)
-      .forEach(item => {
+      }).forEach(item => {
         // convert result to IApiDefinition
-        const exportName = isDefaultRegExp.test(item.displayName) ? 'default' : item.displayName;
+        const exportName = isDefaultRegExp.test(item.displayName) ? 'default' : (item.displayName || item.interfaceName);
         const props = Object.entries(item.props).map(([identifier, prop]) => {
-          const result = { identifier } as IApiDefinition[''][0];
+          const result = { identifier } as IApiDefinition[number][string][0];
           const fields = ['identifier', 'description', 'type', 'defaultValue', 'required'];
           const localeDescReg = /(?:^|\n+)@description\s+/;
 
@@ -89,17 +84,17 @@ export default (filePath: string, componentName?: string) => {
         if (exportName === 'default') {
           defaultDefinition = props;
         } else {
-          definitions[exportName] = props;
+          definitions[item.type === 'component' ? 0 : 1][exportName] = props;
         }
       });
 
     // to make sure default export always in the top
     if (defaultDefinition) {
-      definitions = Object.assign({ default: defaultDefinition }, definitions);
+      definitions[0] = Object.assign({ default: defaultDefinition }, definitions[0]);
     }
+
+    cacher.add(filePath, definitions);
   }
 
-  cacher.add(filePath, definitions);
-
   return definitions;
-};
+}
