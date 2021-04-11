@@ -8,9 +8,12 @@ A Umi-based doc tool can assist you to develop libraries & write docs.
 
 ### Features
 
-- 📦 Out of the box, focus on development & documentation
-- 🚀 Based on [Umi 3](https://umijs.org), high-performance & extensible
-- 📋 Powerful Markdown extensions, support to embed demo or import external demo & inline demo
+- 📦 Out of the box, focus on component development and documentation
+- 📋 Rich Markdown extensions, more than just rendering component demo
+- 🏷 Automatically generate component API based on TypeScript type definition
+- 🎨 Easily customize the theme, and create your own Markdown components
+- 📱 Support mobile component library development, built-in mobile HD rendering solution
+- 📡 One-line command digitizes component assets and connects them with downstream productivity tools
 
 ## Usage & Guide
 
