@@ -12,9 +12,7 @@ export default () => <h1>Hello World!</h1>;
  * desc.zh-CN: 测试依赖中的 CSS，[链接](https://d.umijs.org)
  */
 import React from 'react';
-import katex from 'katex';
-
-export default () => <h1>Hello {typeof katex}!</h1>;
+export default () => <h1>Hello!</h1>;
 ```
 
 ```tsx

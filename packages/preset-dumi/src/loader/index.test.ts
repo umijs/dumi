@@ -49,32 +49,6 @@ describe('loader', () => {
     expect(result).toContain('Customize Help!');
   });
 
-  it('should load normal md without Katex style in production', async () => {
-    const filePath = path.join(fixture, 'normal.md');
-    const oEnv = process.env.NODE_ENV;
-
-    process.env.NODE_ENV = 'production';
-    const result = await loader.call(
-      { resource: filePath, resourcePath: filePath },
-      fs.readFileSync(filePath, 'utf8').toString(),
-    );
-    process.env.NODE_ENV = oEnv;
-
-    // expect import Katex css file
-    expect(result).not.toContain("import 'katex");
-  });
-
-  it('should load math md with Katex style', async () => {
-    const filePath = path.join(fixture, 'katex.md');
-    const result = await loader.call(
-      { resource: filePath, resourcePath: filePath },
-      fs.readFileSync(filePath, 'utf8').toString(),
-    );
-
-    // expect import Katex css file
-    expect(result).toContain("import 'katex");
-  });
-
   it('should load part of md by range', async () => {
     const filePath = path.join(fixture, 'normal.md');
     const singleLine = await loader.call(
