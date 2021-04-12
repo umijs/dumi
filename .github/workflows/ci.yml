@@ -24,7 +24,7 @@ jobs:
       - run: yarn -v
       - run: yarn --ignore-engines
       - run: yarn build
-      - run: yarn test:unit --forceExit
+      - run: yarn test --forceExit --coverage
         env:
           CI: true
           HEADLESS: false
