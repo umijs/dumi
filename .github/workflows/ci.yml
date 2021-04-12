@@ -24,7 +24,7 @@ jobs:
       - run: yarn -v
       - run: yarn --ignore-engines
       - run: yarn build
-      - run: yarn test --forceExit --coverage
+      - run: yarn test:e2e --forceExit
         env:
           CI: true
           HEADLESS: false
@@ -34,4 +34,4 @@ jobs:
 
       - name: Generate coverage
         if: matrix.node_version == '12.x' && matrix.os == 'ubuntu-latest'
-        run: bash <(curl -s https://codecov.io/bash)
+        run: NODE_OPTIONS="--max-old-space-size=4096" yarn test:unit -- --forceExit --detectOpenHandles --runInBand --maxWorkers=2 && bash <(curl -s https://codecov.io/bash)
