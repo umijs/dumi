@@ -54,7 +54,8 @@ export default {
       .replace(/^\/|\/$/g, '')
       // remove * from comments
       .replace(/(^|\n)\s*\*+/g, '$1');
+    const meta = yaml(frontmatter);
 
-    return { content, meta: yaml(frontmatter) };
+    return { content: Object.keys(meta).length ? content : raw, meta, };
   },
 };
