@@ -46,9 +46,13 @@ describe('api parser', () => {
   });
 
   it('should guess component name correctly', () => {
-    expect(parser(path.join(rawPath, 'guess', 'FileName.tsx'))).toHaveProperty('FileName');
-    expect(
-      parser(path.join(rawPath, 'guess', 'NestSrc', 'src', 'index.tsx'), 'NestSrc'),
-    ).toHaveProperty('default');
+    const FileNameRes = parser(path.join(rawPath, 'guess', 'FileName.tsx'));
+    const NestSrcRes = parser(path.join(rawPath, 'guess', 'NestSrc', 'src', 'index.tsx'), 'NestSrc');
+    // to be sure result is a tuple
+    expect(FileNameRes).toHaveLength(2);
+    expect(NestSrcRes).toHaveLength(2);
+
+    expect(FileNameRes[0]).toHaveProperty('FileName');
+    expect(NestSrcRes[0]).toHaveProperty('default');
   });
 });

@@ -45,7 +45,7 @@ function getAllPropsParent(docs: ModuleDoc[]) {
                 propsSet.add(parentName);
             }
         })
-    })
+    });
     return Array.from(propsSet);
 }
 

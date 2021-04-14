@@ -1,18 +1,21 @@
-{
-  "union": [
-    {
-      "identifier": "type",
-      "type": "\"primary\" | \"link\"",
-      "required": true
-    },
-    {
-      "identifier": "className",
-      "type": "string"
-    },
-    {
-      "identifier": "href",
-      "type": "string",
-      "required": true
-    }
-  ]
-}
+[
+  {
+    "union": [
+      {
+        "identifier": "type",
+        "type": "\"primary\" | \"link\"",
+        "required": true
+      },
+      {
+        "identifier": "className",
+        "type": "string"
+      },
+      {
+        "identifier": "href",
+        "type": "string",
+        "required": true
+      }
+    ]
+  },
+  {}
+]

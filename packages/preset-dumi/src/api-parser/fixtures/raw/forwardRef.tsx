@@ -4,6 +4,10 @@ import A from './class';
 
 export interface IBProps extends IAProps {
   ref?: React.LegacyRef<HTMLDivElement>,
+  /**
+   * this is id
+   */
+  id?: string;
 }
 
 class B extends React.Component<IBProps> {
