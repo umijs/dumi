@@ -28,8 +28,12 @@ export default function codeBlock(): IDumiUnifiedTransformer {
   return ast => {
     // handle md code block syntax
     visit<Code>(ast, 'code', node => {
-      if (ctx.opts?.resolve.previewLangs.includes(node.lang)) {
-        const modifier = codeBlockModifierParser(node.meta);
+      const { passivePreview, previewLangs } = ctx.opts?.resolve
+      const modifier = codeBlockModifierParser(node.meta);
+      if (
+        (!passivePreview && previewLangs.includes(node.lang)) ||
+        (passivePreview && modifier.preview)
+      ) {
         // extract frontmatters for embedded demo
         const { content, meta } = transformer.code(winEOL(node.value));
 
