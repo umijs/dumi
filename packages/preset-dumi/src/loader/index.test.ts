@@ -62,7 +62,7 @@ describe('loader', () => {
     expect(result).toContain('const DumiDemo2 = React.memo(DUMI_ALL_DEMOS');
     expect(result).not.toContain('const DumiDemo3 = React.memo(DUMI_ALL_DEMOS');
     expect(result).not.toContain('const DumiDemo4 = React.memo(DUMI_ALL_DEMOS');
-    expect(result).toMatchSnapshot();
+    expect(result).not.toContain('const DumiDemo5 = React.memo(DUMI_ALL_DEMOS');
 
     // expect import components from theme package
     expect(result).toContain("from 'dumi-theme-default");

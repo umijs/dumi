@@ -12,6 +12,10 @@ export default () => null;
 export default () => null;
 ```
 
+```js
+export default () => null;
+```
+
 ```jsx | preview
 export default () => null;
 ```
