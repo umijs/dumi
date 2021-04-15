@@ -255,7 +255,7 @@ dumi 有一个非常重要的原则——**开发者应该像用户一样使用�
 
 如何理解？假设我们正在研发的组件库 NPM 包名叫做 `hello-dumi`，我们正在为其中的 `Button` 组件编写 demo，下面列举出引入组件的正确方式及错误示例：
 
-``` jsx | pure
+```jsx | pure
 // 正确示例
 import { Button } from 'hello-dumi';
 
@@ -275,6 +275,14 @@ import Button from '@/Button/index.tsx';
 <pre lang="markdown">
 ```jsx | pure
 // 我不会被渲染为 React 组件
+```
+</pre>
+
+相似地，如果我们在众多符合 `resolve.previewLangs` 的代码块中，仅仅希望渲染 `previewLangs` 中的一小部分，并且想避免给大部分 `resolve.previewLangs` 代码块手动添加 `pure` 时，我们可以通过配置 `resolve.passivePreview` 为 true 来开启被动渲染 `previewLangs` 代码块。此时对我们想要渲染的 `previewLangs` 代码块使用 `preview` 修饰符即可：
+
+<pre lang="markdown">
+```jsx | preview
+// 当开启 resolve.passivePreview 时，仅有添加了 preview 修饰符的 previewLangs 代码块才会被渲染为 React 组件，反之，仅为常规代码块。
 ```
 </pre>
 
