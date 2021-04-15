@@ -188,6 +188,14 @@ Configure the document directory for dumi sniffing. Dumi will try to recursively
 
 The configuration dumi will be converted to the code block rendered by the ReactComponent component by default. If you don't want to do any conversion, such as a pure site like Umi's official website, then set this item to an empty array.
 
+#### passivePreview
+
+- Type：`Boolean`
+- Default：`false`
+- Details：
+
+Passive preview mode. Only codeblocks belonging to `resolve.previewLangs` and having the `preview` modifier are rendered as ReactComponent. Generally used to render only a few code blocks in `resolve.previewLangs`, but not all of them.
+
 ### sitemap
 
 - Type: `{ hostname: string, excludes?: string[] }`

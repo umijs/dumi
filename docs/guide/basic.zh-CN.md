@@ -223,7 +223,7 @@ group:
 <!-- 其他 Markdown 内容 -->
 ```
 
-在 site 模式下，我们也可以通过配置项对导航和左侧菜单进行增量自定义，请参考 [配置项 - navs]() 以及 [配置项 - menus]()。
+在 site 模式下，我们也可以通过配置项对导航和左侧菜单进行增量自定义，请参考 [配置项 - navs](/zh-CN/config#navs) 以及 [配置项 - menus](/zh-CN/config#menus)。
 
 ## 写组件 demo
 
@@ -278,11 +278,15 @@ import Button from '@/Button/index.tsx';
 ```
 </pre>
 
-相似地，如果我们在众多符合 `resolve.previewLangs` 的代码块中，仅仅希望渲染 `previewLangs` 中的一小部分，并且想避免给大部分 `resolve.previewLangs` 代码块手动添加 `pure` 时，我们可以通过配置 `resolve.passivePreview` 为 true 来开启被动渲染 `previewLangs` 代码块。此时对我们想要渲染的 `previewLangs` 代码块使用 `preview` 修饰符即可：
+相似地，我们可以搭配 [配置项 - resolve.passivePreview](/zh-CN/config#passivepreview) 和 `preview` 修饰符来开启代码块的被动渲染模式，该模式用于仅将具有 `preview` 修饰符的 `jsx`/`tsx` 代码块渲染为 React 组件，而不再是全部 `jsx`/`tsx` 代码块。该方案一般用于避免给过多的 `jsx`/`tsx` 代码块手动添加 `pure` 修饰符。
 
 <pre lang="markdown">
 ```jsx | preview
-// 当开启 resolve.passivePreview 时，仅有添加了 preview 修饰符的 previewLangs 代码块才会被渲染为 React 组件，反之，仅为常规代码块。
+// 我会被渲染为 React 组件
+```
+```jsx
+// 在默认情况下，我会被渲染为 React 组件
+// 在开启代码块被动渲染的情况下，我不会被主动渲染为 React 组件，除非添加 preview 修饰符
 ```
 </pre>
 

@@ -265,7 +265,7 @@ dumi has a very important principle: **developers should use components like use
 
 How to explain? If we are developing a library called `hello-dumi`, and we are wrting a demo for `Button` component in it, the following are examples of the correct way and errors:
 
-``` jsx | pure
+```jsx | pure
 // Correct
 import { Button } from 'hello-dumi';
 
@@ -285,6 +285,19 @@ If we want a block of `jsx`/`tsx` code to be rendered as source code, we can use
 <pre lang="markdown">
 ```jsx | pure
 // I will not be rendered as a React component
+```
+</pre>
+
+Also, we can use the `preview` modifier with [Configuration Item-resolve.passivePreview](/config#passivepreview) to render a part of `jsx`/`tsx` codeblocks as React components, not all of them. This approach is used to avoid to add many `pure` modifiers to most of `jsx`/`tsx` codeblocks.
+
+<pre lang="markdown">
+```jsx | preview
+// I will be rendered as a React component
+```
+
+```jsx
+// I will be rendered as a React component by default
+// I will not be rendered as React component in the passive preview mode
 ```
 </pre>
 

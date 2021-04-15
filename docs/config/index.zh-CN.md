@@ -188,6 +188,14 @@ export default {
 
 配置 dumi 默认会转换为 ReactComponent 组件渲染的代码块，如果不希望做任何转换，例如类似 Umi 官网的纯站点，那么将该项设置为空数组即可。
 
+#### passivePreview
+
+- 类型：`Boolean`
+- 默认值：`false`
+- 详细：
+
+代码块被动渲染模式，当为 true 时，仅将属于 `resolve.previewLangs` 且具有 `preview` 修饰符的代码块渲染为 ReactComponent 代码块。一般用于仅希望渲染 `resolve.previewLangs` 中的少部分代码块，而不是全部。
+
 ### sitemap
 
 - Type: `{ hostname: string, excludes?: string[] }`
