@@ -47,6 +47,10 @@ export interface IDumiOpts {
      * TBD
      */
     examples: string[];
+    /**
+     * Should we treat previewLangs codeblock as demo component
+     */
+    passivePreview: boolean
   };
   /**
    * customize the side menu

@@ -223,7 +223,7 @@ group:
 <!-- 其他 Markdown 内容 -->
 ```
 
-在 site 模式下，我们也可以通过配置项对导航和左侧菜单进行增量自定义，请参考 [配置项 - navs]() 以及 [配置项 - menus]()。
+在 site 模式下，我们也可以通过配置项对导航和左侧菜单进行增量自定义，请参考 [配置项 - navs](/zh-CN/config#navs) 以及 [配置项 - menus](/zh-CN/config#menus)。
 
 ## 写组件 demo
 
@@ -255,7 +255,7 @@ dumi 有一个非常重要的原则——**开发者应该像用户一样使用�
 
 如何理解？假设我们正在研发的组件库 NPM 包名叫做 `hello-dumi`，我们正在为其中的 `Button` 组件编写 demo，下面列举出引入组件的正确方式及错误示例：
 
-``` jsx | pure
+```jsx | pure
 // 正确示例
 import { Button } from 'hello-dumi';
 
@@ -275,6 +275,18 @@ import Button from '@/Button/index.tsx';
 <pre lang="markdown">
 ```jsx | pure
 // 我不会被渲染为 React 组件
+```
+</pre>
+
+相似地，我们可以搭配 [配置项 - resolve.passivePreview](/zh-CN/config#passivepreview) 和 `preview` 修饰符来开启代码块的被动渲染模式，该模式用于仅将具有 `preview` 修饰符的 `jsx`/`tsx` 代码块渲染为 React 组件，而不再是全部 `jsx`/`tsx` 代码块。该方案一般用于避免给过多的 `jsx`/`tsx` 代码块手动添加 `pure` 修饰符。
+
+<pre lang="markdown">
+```jsx | preview
+// 我会被渲染为 React 组件
+```
+```jsx
+// 在默认情况下，我会被渲染为 React 组件
+// 在开启代码块被动渲染的情况下，我不会被主动渲染为 React 组件，除非添加 preview 修饰符
 ```
 </pre>
 

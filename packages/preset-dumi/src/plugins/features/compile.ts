@@ -40,7 +40,10 @@ export default (api: IApi) => {
       .end()
       .use('dumi-loader')
       .loader(require.resolve('../../loader'))
-      .options({ previewLangs: ctx.opts.resolve.previewLangs });
+      .options({
+        previewLangs: ctx.opts.resolve.previewLangs,
+        passivePreview: ctx.opts.resolve.passivePreview
+      });
 
     // set asset type to javascript/auto to skip webpack internal json loader
     // refer: https://webpack.js.org/guides/asset-modules/

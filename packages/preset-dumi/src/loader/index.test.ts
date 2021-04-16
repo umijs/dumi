@@ -27,7 +27,7 @@ describe('loader', () => {
     );
 
     // expect prepend demos
-    expect(result).toContain("const DumiDemo1 = React.memo(DUMI_ALL_DEMOS");
+    expect(result).toContain('const DumiDemo1 = React.memo(DUMI_ALL_DEMOS');
 
     // expect import components from theme package
     expect(result).toContain("from 'dumi-theme-default");
@@ -47,6 +47,32 @@ describe('loader', () => {
 
     // show customize translateHelp
     expect(result).toContain('Customize Help!');
+  });
+
+  it('should load passive md', async () => {
+    ctx.opts.resolve.passivePreview = true;
+
+    const filePath = path.join(fixture, 'passive.md');
+    const result = await loader.call(
+      { resource: filePath, resourcePath: filePath },
+      fs.readFileSync(filePath, 'utf8').toString(),
+    );
+
+    expect(result).toContain('const DumiDemo1 = React.memo(DUMI_ALL_DEMOS');
+    expect(result).toContain('const DumiDemo2 = React.memo(DUMI_ALL_DEMOS');
+    expect(result).not.toContain('const DumiDemo3 = React.memo(DUMI_ALL_DEMOS');
+    expect(result).not.toContain('const DumiDemo4 = React.memo(DUMI_ALL_DEMOS');
+    expect(result).not.toContain('const DumiDemo5 = React.memo(DUMI_ALL_DEMOS');
+
+    // expect import components from theme package
+    expect(result).toContain("from 'dumi-theme-default");
+
+    // show default translateHelp
+    expect(result).toContain(
+      'This article has not been translated yet. Want to help us out? Click the Edit this doc on GitHub at the end of the page.',
+    );
+
+    ctx.opts.resolve.passivePreview = false;
   });
 
   it('should load part of md by range', async () => {
