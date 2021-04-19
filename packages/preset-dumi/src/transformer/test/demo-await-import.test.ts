@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { winPath, winEOL } from '@umijs/utils';
 import demo from '../demo';
 import ctx, { init } from '../../context';
 
@@ -24,10 +25,16 @@ describe('demo: await import', () => {
 
     // compare transform content
     expect(
-      result.content.replace(
-        new RegExp(process.cwd().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
-        '$CWD',
+      winEOL(
+        result.content.replace(
+          new RegExp(winPath(process.cwd()).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
+          '$CWD',
+        ),
       ),
-    ).toEqual(fs.readFileSync(path.join(__dirname, '../fixtures/expect/demo-await-import.js')).toString());
+    ).toEqual(
+      winEOL(
+        fs.readFileSync(path.join(__dirname, '../fixtures/expect/demo-await-import.js')).toString(),
+      ),
+    );
   });
 });
