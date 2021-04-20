@@ -40,6 +40,30 @@ describe('util: watcher', () => {
     }, 10);
   });
 
+  it('should not double register same listener', done => {
+    let count = 0;
+
+    const fn = () => {
+      count += 1;
+    }
+
+    fn._identifier = 'fn';
+
+    listenFileOnceChange(filePath, fn);
+    listenFileOnceChange(filePath, fn);
+    listenFileOnceChange(filePath, fn);
+    listenFileOnceChange(filePath, () => {
+      setTimeout(() => {
+        expect(count).toEqual(1);
+        done();
+      });
+    });
+
+    setTimeout(() => {
+      triggerFileChange(filePath);
+    }, 10);
+  });
+
   it('should not to watch in non-dev env', done => {
     let count = 0;
     delete process.env.TEST_WATCHER;
