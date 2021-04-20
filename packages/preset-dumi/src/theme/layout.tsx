@@ -1,8 +1,7 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import type { IRouteProps, IRouteComponentProps } from '@umijs/types';
 // @ts-ignore
 import config from '@@/dumi/config';
-import AnchorLink from './components/AnchorLink';
 import type { IThemeContext } from './context';
 import Context from './context';
 import type { IMenu } from '../routes/getMenuFromRoutes';
@@ -159,13 +158,6 @@ const OuterLayout: React.FC<IOuterLayoutProps & IRouteComponentProps> = props =>
   const locale = useCurrentLocale(config.locales, pathWithoutPrefix);
   const menu = useCurrentMenu(config, locale, location.pathname);
   const base = useCurrentBase(locale, config.locales, route);
-
-  // scroll to anchor if hash exists
-  useEffect(() => {
-    if (location.hash) {
-      AnchorLink.scrollToAnchor(decodeURIComponent(location.hash.slice(1)));
-    }
-  }, []);
 
   return (
     <Context.Provider

@@ -30,7 +30,14 @@ export default async function loader(raw: string) {
 
     ${(result.meta.demos || []).join('\n')}
 
-    export default function () {
+    export default () => {
+      // scroll to anchor after page component loaded
+      React.useEffect(() => {
+        if (window.location.hash) {
+          AnchorLink.scrollToAnchor(decodeURIComponent(window.location.hash.slice(1)));
+        }
+      }, []);
+
       return (
         <>
           ${(result.meta.translateHelp || '') &&
