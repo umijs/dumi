@@ -33,13 +33,12 @@ export default async function loader(raw: string) {
     export default function () {
       return (
         <>
-          ${
-            result.meta.translateHelp
-              ? result.meta.translateHelp === true
-                ? `<Alert>This article has not been translated yet. Want to help us out? Click the Edit this doc on GitHub at the end of the page.</Alert>`
-                : `<Alert>${result.meta.translateHelp}</Alert>`
-              : ''
-          }
+          ${(result.meta.translateHelp || '') &&
+            `<Alert>${
+              typeof result.meta.translateHelp === 'string'
+                ? result.meta.translateHelp
+                : 'This article has not been translated yet. Want to help us out? Click the Edit this doc on GitHub at the end of the page.'
+            }</Alert>`}
           ${result.content}
         </>
       );
