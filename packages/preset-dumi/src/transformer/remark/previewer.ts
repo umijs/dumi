@@ -170,24 +170,30 @@ function generatePreviewerProps(
     node.properties.meta = Object.assign(meta, node.properties._ATTR_META);
   }
 
+  let depChangeListener: Parameters<typeof getDepsForDemo>[1]['depChangeListener'];
   const yaml = transformNodeMeta(node.properties.meta || {});
   const previewId = identifier || getPreviewerId(yaml, mdAbsPath, fileAbsPath, componentName);
+
+  if (!yaml.inline && isExternalDemo) {
+    const listener = () => {
+      debug(`regenerate demo props for: ${node.properties.filePath}`);
+      // update @@/demos module if external demo changed, to update previewerProps for page component
+      applyDemo(
+        generatePreviewerProps(node, mdAbsPath, componentName, previewId),
+        transformCode(node, mdAbsPath),
+      );
+    };
+
+    listener._identifier = fileAbsPath;
+    depChangeListener = listener;
+  }
+
   const { files, dependencies } = getDepsForDemo(
     node.properties.source.tsx || node.properties.source.jsx,
     {
       isTSX: Boolean(node.properties.source.tsx),
       fileAbsPath,
-      depChangeListener:
-        !yaml.inline &&
-        isExternalDemo &&
-        (() => {
-          debug(`regenerate demo props for: ${node.properties.filePath}`);
-          // update @@/demos module if external demo changed, to update previewerProps for page component
-          applyDemo(
-            generatePreviewerProps(node, mdAbsPath, componentName, previewId),
-            transformCode(node, mdAbsPath),
-          );
-        }),
+      depChangeListener,
     },
   );
 
@@ -263,8 +269,8 @@ function applyCodeBlock(props: IPreviewerComponentProps, componentName: string) 
                 type: 'FILE',
                 value:
                   file === '_'
-                    // strip frontmatter for main file
-                    ? transformer.code(decodeHoistImportToContent(tsx || jsx)).content
+                    ? // strip frontmatter for main file
+                      transformer.code(decodeHoistImportToContent(tsx || jsx)).content
                     : decodeHoistImportToContent(content),
               },
             }),

@@ -1,7 +1,7 @@
 import fs from 'fs';
 
 export interface IWatcherItem {
-  listeners?: ((event: string, filename: string) => void)[];
+  listeners?: (((event: string, filename: string) => void) & { _identifier?: string })[];
   watcher: fs.FSWatcher;
 }
 
@@ -25,6 +25,15 @@ export const listenFileOnceChange = (filePath: string, listener: IWatcherItem['l
         listeners.forEach(fn => fn(...args));
       }),
     };
+
+    const existingListenerIndex = watchers[filePath].listeners.findIndex(
+      fn => (fn._identifier || listener._identifier) && fn._identifier === listener._identifier,
+    );
+
+    if (existingListenerIndex > -1) {
+      watchers[filePath].listeners.splice(existingListenerIndex, 1);
+    }
+
     watchers[filePath].listeners.push(listener);
   }
 };
