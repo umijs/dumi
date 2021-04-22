@@ -163,7 +163,7 @@ const OuterLayout: React.FC<IOuterLayoutProps & IRouteComponentProps> = props =>
     <Context.Provider
       value={{
         config,
-        meta,
+        meta: meta.__pathname === location.pathname ? meta : {} as any,
         locale,
         nav: config.navs[locale] || [],
         menu,
@@ -171,7 +171,7 @@ const OuterLayout: React.FC<IOuterLayoutProps & IRouteComponentProps> = props =>
         routes,
       }}
     >
-      {meta.__pathname === location.pathname && children}
+      {children}
     </Context.Provider>
   );
 };
