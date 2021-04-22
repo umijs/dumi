@@ -11,6 +11,7 @@ interface IDeviceProps {
 
 const Device: FC<IDeviceProps> = ({ url, className }) => {
   const [renderKey, setRenderKey] = useState(Math.random());
+  const [dateTime, setDateTime] = useState(new Date());
   const [color] = usePrefersColor();
   const {
     config: { mode },
@@ -20,6 +21,14 @@ const Device: FC<IDeviceProps> = ({ url, className }) => {
   useEffect(() => {
     setRenderKey(Math.random());
   }, [color]);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setDateTime(new Date())
+    }, 60000);
+    return () => {
+      clearInterval(timer);
+    }
+  }, [])
 
   return (
     <div
@@ -29,7 +38,7 @@ const Device: FC<IDeviceProps> = ({ url, className }) => {
     >
       <div className="__dumi-default-device-status">
         <span>dumi</span>
-        <span>10:24</span>
+        <span>{`${dateTime.getHours()}:${dateTime.getMinutes()}`}</span>
       </div>
       <iframe title="dumi-previewer" src={url} key={renderKey} />
       <div className="__dumi-default-device-action">
