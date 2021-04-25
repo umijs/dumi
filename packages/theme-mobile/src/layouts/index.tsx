@@ -11,9 +11,7 @@ import '../style/layout.less';
 const MobileLayout: React.FC<IRouteComponentProps> = ({ children, ...props }) => {
   const [demo, setDemo] = useState<IPreviewerComponentProps>(null);
   const builtinDemoUrl = useDemoUrl(demo?.identifier);
-    const {
-    meta: { mobile },
-  } = useContext(context);
+  const { meta: { mobile } } = useContext(context);
 
   useEffect(() => {
     const handler = (ev: any) => {
