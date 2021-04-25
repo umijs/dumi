@@ -32,6 +32,7 @@ jobs:
           PROGRESS: none
           NODE_ENV: test
           NODE_OPTIONS: --max_old_space_size=4096
+          CODECOV_TOKEN: 62ae403d-5113-41be-81b0-7272dc1cd967
 
       - name: Generate coverage
         if: matrix.node_version == '12.x' && matrix.os == 'ubuntu-latest'
