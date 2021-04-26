@@ -10,7 +10,12 @@ import demoTransformer, { DEMO_COMPONENT_NAME, getDepsForDemo } from '../demo';
 import type { IPreviewerComponentProps } from '../../theme';
 import transformer from '..';
 import type { IDumiElmNode, IDumiUnifiedTransformer } from '.';
-import { encodeHoistImport, encodeImportRequire, decodeImportRequire } from '../utils';
+import {
+  encodeHoistImport,
+  encodeImportRequire,
+  decodeImportRequireWithAutoDynamic,
+  decodeHoistImportToContent,
+} from '../utils';
 
 const debug = createDebug('dumi:previewer');
 
@@ -165,24 +170,30 @@ function generatePreviewerProps(
     node.properties.meta = Object.assign(meta, node.properties._ATTR_META);
   }
 
+  let depChangeListener: Parameters<typeof getDepsForDemo>[1]['depChangeListener'];
   const yaml = transformNodeMeta(node.properties.meta || {});
   const previewId = identifier || getPreviewerId(yaml, mdAbsPath, fileAbsPath, componentName);
+
+  if (!yaml.inline && isExternalDemo) {
+    const listener = () => {
+      debug(`regenerate demo props for: ${node.properties.filePath}`);
+      // update @@/demos module if external demo changed, to update previewerProps for page component
+      applyDemo(
+        generatePreviewerProps(node, mdAbsPath, componentName, previewId),
+        transformCode(node, mdAbsPath),
+      );
+    };
+
+    listener._identifier = fileAbsPath;
+    depChangeListener = listener;
+  }
+
   const { files, dependencies } = getDepsForDemo(
     node.properties.source.tsx || node.properties.source.jsx,
     {
       isTSX: Boolean(node.properties.source.tsx),
       fileAbsPath,
-      depChangeListener:
-        !yaml.inline &&
-        isExternalDemo &&
-        (() => {
-          debug(`regenerate demo props for: ${node.properties.filePath}`);
-          // update @@/demos module if external demo changed, to update previewerProps for page component
-          applyDemo(
-            generatePreviewerProps(node, mdAbsPath, componentName, previewId),
-            transformCode(node, mdAbsPath),
-          );
-        }),
+      depChangeListener,
     },
   );
 
@@ -256,7 +267,11 @@ function applyCodeBlock(props: IPreviewerComponentProps, componentName: string) 
               // handle main file
               [file === '_' ? `index.${tsx ? 'tsx' : 'jsx'}` : file]: {
                 type: 'FILE',
-                value: tsx || jsx || content,
+                value:
+                  file === '_'
+                    ? // strip frontmatter for main file
+                      transformer.code(decodeHoistImportToContent(tsx || jsx)).content
+                    : decodeHoistImportToContent(content),
               },
             }),
           {},
@@ -297,7 +312,7 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
     // declare demo on the top page component for memo
     const demoComponentCode = previewerProps.inline
       ? // insert directly for inline demo
-        `React.memo(${decodeImportRequire(code, 'demos_md_inline')})`
+        `React.memo(${decodeImportRequireWithAutoDynamic(code, 'demos_md_inline')})`
       : // render other demo from the common demo module: @@/dumi/demos
         `React.memo(DUMI_ALL_DEMOS['${previewerProps.identifier}'].component)`;
 

@@ -259,11 +259,45 @@ import React from 'react';
 export default () => <h1>Hello dumi!</h1>;
 ```
 
+#### Using component in demo
+
+dumi has a very important principle: **developers should use components like users**.
+
+How to explain? If we are developing a library called `hello-dumi`, and we are wrting a demo for `Button` component in it, the following are examples of the correct way and errors:
+
+```jsx | pure
+// Correct
+import { Button } from 'hello-dumi';
+
+// Error, user does not know how to get Button component
+import Button from './index.tsx';
+import Button from '@/Button/index.tsx';
+```
+
+It means that the demos we write can not only be used to debug components and write documents, but can also be copied directly to the project by users.
+
+You may have question, how it works before the source code was released as an npm package? Do not worry, dumi will create an alias for us between library NPM package and library source code, it also works for all sub-packages in lerna project.
+
+#### Render as source code
+
 If we want a block of `jsx`/`tsx` code to be rendered as source code, we can use the `pure` modifier to tell dumi:
 
 <pre lang="markdown">
 ```jsx | pure
 // I will not be rendered as a React component
+```
+</pre>
+
+Also, we can use the `preview` modifier with [Configuration Item-resolve.passivePreview](/config#passivepreview) to render a part of `jsx`/`tsx` codeblocks as React components, not all of them. This approach is used to avoid to add many `pure` modifiers to most of `jsx`/`tsx` codeblocks.
+
+<pre lang="markdown">
+```jsx | preview
+// I will be rendered as a React component
+```
+
+```jsx
+// I will be rendered as a React component by default
+// I will not be rendered as React component in the passive preview mode
 ```
 </pre>
 

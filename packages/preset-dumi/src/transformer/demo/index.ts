@@ -6,10 +6,10 @@ import generator from '@babel/generator';
 import { winPath } from '@umijs/utils';
 import type { IDemoOpts } from './options';
 import { getBabelOptions } from './options';
+import { isDynamicEnable } from '../utils';
 
 interface IDemoTransformResult {
   content: string;
-  ast: babel.BabelFileResult['ast'];
 }
 
 export { default as getDepsForDemo } from './dependencies';
@@ -61,20 +61,26 @@ export default (raw: string, opts: IDemoOpts): IDemoTransformResult => {
         // remove original export expression
         if (types.isIdentifier(callPathNode.right)) {
           // save export function as return statement arg
-          const reactIdentifier = reactVar
-            ? types.memberExpression(
-                types.identifier(reactVar),
-                types.stringLiteral('default'),
-                true,
-              )
-            : types.identifier('React');
+          if (isDynamicEnable()) {
+            // for dynamic({ loader }), transform to return _default;
+            returnStatement = types.returnStatement(callPathNode.right);
+          } else {
+            // for function component, transform to _react['default'].createElement(_default, null);
+            const reactIdentifier = reactVar
+              ? types.memberExpression(
+                  types.identifier(reactVar),
+                  types.stringLiteral('default'),
+                  true,
+                )
+              : types.identifier('React');
 
-          returnStatement = types.returnStatement(
-            types.callExpression(
-              types.memberExpression(reactIdentifier, types.identifier('createElement')),
-              [callPathNode.right],
-            ),
-          );
+            returnStatement = types.returnStatement(
+              types.callExpression(
+                types.memberExpression(reactIdentifier, types.identifier('createElement')),
+                [callPathNode.right],
+              ),
+            );
+          }
           callPath.remove();
         }
 
@@ -87,16 +93,35 @@ export default (raw: string, opts: IDemoOpts): IDemoTransformResult => {
     CallExpression(callPath) {
       const callPathNode = callPath.node;
 
-      // transform all relative import to absolute import
+      // transform all require
       if (
         types.isIdentifier(callPathNode.callee) &&
         callPathNode.callee.name === 'require' &&
-        types.isStringLiteral(callPathNode.arguments[0]) &&
-        callPathNode.arguments[0].value.startsWith('.')
+        types.isStringLiteral(callPathNode.arguments[0])
       ) {
-        callPathNode.arguments[0].value = winPath(
-          path.join(path.dirname(opts.fileAbsPath), callPathNode.arguments[0].value),
+        const isRelativeModule = callPathNode.arguments[0].value.startsWith('.');
+        // about header helpers: https://github.com/babel/babel/blob/master/packages/babel-plugin-transform-runtime/src/index.js#L177
+        const isHeaderHelpers = /@babel\/runtime\/helpers\/(interopRequireWildcard|interopRequireDefault)$/.test(
+          callPathNode.arguments[0].value,
         );
+
+        if (isRelativeModule) {
+          // transform all require('./other.jsx') to require('/absolute/path/to/other.jsx')
+          callPathNode.arguments[0].value = winPath(
+            path.join(path.dirname(opts.fileAbsPath), callPathNode.arguments[0].value),
+          );
+        }
+
+        if (isDynamicEnable() && !isHeaderHelpers) {
+          // transform require('react') to await import ('react')
+          callPath.replaceWith(
+            types.awaitExpression(
+              types.callExpression(types.import(), [
+                types.stringLiteral(callPathNode.arguments[0].value),
+              ]),
+            ),
+          );
+        }
       }
     },
   });
@@ -114,14 +139,28 @@ export default (raw: string, opts: IDemoOpts): IDemoTransformResult => {
   }
 
   // create demo function
-  const demoFunction = types.functionDeclaration(
-    types.identifier(DEMO_COMPONENT_NAME),
-    [],
-    types.blockStatement(body),
-  );
+  let demoFunction: types.FunctionExpression | types.CallExpression;
+
+  if (isDynamicEnable()) {
+    // wrap as dynamic({ loader: async function () {} })
+    demoFunction = types.callExpression(types.identifier('dynamic'), [
+      types.objectExpression([
+        types.objectProperty(
+          types.identifier('loader'),
+          types.functionExpression(null, [], types.blockStatement(body), false, true),
+        ),
+      ]),
+    ]);
+  } else {
+    // wrap as function DumiDemo() {}
+    demoFunction = types.functionExpression(
+      types.identifier(DEMO_COMPONENT_NAME),
+      [],
+      types.blockStatement(body),
+    );
+  }
 
   return {
-    ast: code.ast,
-    content: generator(types.program([demoFunction]), {}, raw).code,
+    content: generator(demoFunction, {}, raw).code,
   };
 };

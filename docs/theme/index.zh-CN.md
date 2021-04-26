@@ -49,6 +49,16 @@ export default {
 }
 ```
 
+_注：如果希望在启用移动端主题后，在某些页面仍采用默认模式展示组件 demo，可以在 Markdown 的 frontmatter 中设置 `mobile: false` 切换：_
+
+```md
+---
+mobile: false
+---
+
+Markdown 正文
+```
+
 ## 虚位以待
 
 如果你创建了不错的 dumi 主题、想分享给大家使用，请将你的主题信息通过 Pull Request [更新到此文档](https://github.com/umijs/dumi/edit/master/docs/theme/index.zh-CN.md)。

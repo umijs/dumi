@@ -1,7 +1,7 @@
 import type { FC} from 'react';
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import QRCode from 'qrcode.react';
-import { context } from 'dumi/theme';
+import { context, usePrefersColor } from 'dumi/theme';
 import './Device.less';
 
 interface IDeviceProps {
@@ -11,9 +11,15 @@ interface IDeviceProps {
 
 const Device: FC<IDeviceProps> = ({ url, className }) => {
   const [renderKey, setRenderKey] = useState(Math.random());
+  const [color] = usePrefersColor();
   const {
     config: { mode },
   } = useContext(context);
+
+  // re-render iframe if prefers color changed
+  useEffect(() => {
+    setRenderKey(Math.random());
+  }, [color]);
 
   return (
     <div

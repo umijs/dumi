@@ -5,8 +5,7 @@ import { createDebug } from '@umijs/utils';
 import getTheme from '../../../theme/loader';
 import { getDemoRouteName } from '../../../theme/hooks/useDemoUrl';
 import {
-  isEncodeImport,
-  decodeImportRequire,
+  decodeImportRequireWithAutoDynamic,
   isDynamicEnable,
   isHoistImport,
   decodeHoistImport,
@@ -25,7 +24,8 @@ type ISingleRoutetDemos = Record<
 export default (api: IApi) => {
   const demos: ISingleRoutetDemos = {};
   const generateDemosFile = api.utils.lodash.debounce(async () => {
-    let hoistImportCount = 0;
+    // must start with 1 instead of 0 (falsy value), otherwise, rawCode0 could be override by rawCode1 when rawCode0 and rawCode1 is the same importation.
+    let hoistImportCount = 1;
     const hoistImports: Record<string, number> = {};
     const tpl = fs.readFileSync(path.join(__dirname, 'demos.mst'), 'utf8');
     const items = Object.keys(demos).map(uuid => {
@@ -42,12 +42,7 @@ export default (api: IApi) => {
       let demoComponent = demos[uuid].component;
 
       // replace to dynamic component for await import component
-      if (isEncodeImport(demoComponent)) {
-        demoComponent = `dynamic({
-      loader: async () => ${decodeImportRequire(demoComponent, chunkName)},
-      loading: () => null,
-    })`;
-      }
+      demoComponent = decodeImportRequireWithAutoDynamic(demoComponent, chunkName);
 
       // hoist all raw code import statements
       Object.entries(demos[uuid].previewerProps.sources).forEach(([file, oContent]: [string, any]) => {
@@ -147,6 +142,9 @@ export default (api: IApi) => {
     const demoRenderBody = `
       const renderArgs = getDemoRenderArgs(props, demos);
 
+      // for listen prefers-color-schema media change in demo single route
+      usePrefersColor();
+
       switch (renderArgs.length) {
         case 1:
           // render demo directly
@@ -168,11 +166,12 @@ export default (api: IApi) => {
       ? `React.createElement(
         dynamic({
           loader: async () => {
-            const { default: getDemoRenderArgs } = await import('${api.utils.winPath(
+            const { default: getDemoRenderArgs } = await import(/* webpackChunkName: 'dumi_demos' */ '${api.utils.winPath(
               path.join(__dirname, './getDemoRenderArgs'),
             )}');
-            const { default: Previewer } = await import('${Previewer.source}');
-            const { default: demos } = await import('@@/dumi/demos');
+            const { default: Previewer } = await import(/* webpackChunkName: 'dumi_demos' */ '${Previewer.source}');
+            const { default: demos } = await import(/* webpackChunkName: 'dumi_demos' */ '@@/dumi/demos');
+            const { usePrefersColor } = await import(/* webpackChunkName: 'dumi_demos' */ 'dumi/theme');
 
             return props => {
               ${demoRenderBody}
@@ -185,6 +184,7 @@ export default (api: IApi) => {
         )}');
         const { default: Previewer } = require('${Previewer.source}');
         const { default: demos } = require('@@/dumi/demos');
+        const { usePrefersColor } = require('dumi/theme');
 
         ${demoRenderBody}
         }`;

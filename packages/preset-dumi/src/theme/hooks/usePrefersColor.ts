@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { isBrowser } from 'umi';
 
 const COLOR_ATTR_NAME = 'data-prefers-color';
 const COLOR_LS_NAME = 'dumi:prefers-color';
@@ -11,7 +12,7 @@ class ColorChanger {
    * current color
    * @note  initial value from head script in src/plugins/theme.ts
    */
-  color = document.documentElement.getAttribute(COLOR_ATTR_NAME) as PrefersColorValue;
+  color: PrefersColorValue = 'light'
 
   /**
    * color change callbacks
@@ -19,15 +20,26 @@ class ColorChanger {
   private callbacks: ((color: PrefersColorValue) => void)[] = [];
 
   constructor() {
+    if (typeof isBrowser === 'function' && !isBrowser()) return;
+
+    this.color = document.documentElement.getAttribute(COLOR_ATTR_NAME) as PrefersColorValue;
     // listen prefers color change
     (['light', 'dark'] as PrefersColorValue[]).forEach(color => {
-      this.getColorMedia(color).addEventListener('change', ev => {
+      const mediaQueryList = this.getColorMedia(color);
+      const handler = (ev: any) => {
         // only apply media prefers color in auto mode
         if (ev.matches && this.color === 'auto') {
           document.documentElement.setAttribute(COLOR_ATTR_NAME, color);
           this.applyCallbacks();
         }
-      });
+      };
+      // compatible with Safari 13-
+      /* istanbul ignore else */
+      if (mediaQueryList.addEventListener) {
+        mediaQueryList.addEventListener('change', handler);
+      } else if (mediaQueryList.addListener) {
+        mediaQueryList.addListener(handler);
+      }
     });
   }
 
@@ -76,6 +88,7 @@ class ColorChanger {
   set(color: PrefersColorValue) {
     this.color = color;
     localStorage.setItem(COLOR_LS_NAME, color);
+    this.applyCallbacks();
 
     if (color === 'auto') {
       document.documentElement.setAttribute(
@@ -101,7 +114,7 @@ export default () => {
   }
   const [color, setColor] = useState<PrefersColorValue>(colorChanger.color);
   const changeColor = useCallback((val: PrefersColorValue) => {
-    setColor(colorChanger.set(val));
+    colorChanger.set(val);
   }, []);
 
   useEffect(() => {

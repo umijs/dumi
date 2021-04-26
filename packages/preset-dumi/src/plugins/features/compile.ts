@@ -40,7 +40,20 @@ export default (api: IApi) => {
       .end()
       .use('dumi-loader')
       .loader(require.resolve('../../loader'))
-      .options({ previewLangs: ctx.opts.resolve.previewLangs });
+      .options({
+        previewLangs: ctx.opts.resolve.previewLangs,
+        passivePreview: ctx.opts.resolve.passivePreview
+      });
+
+    // set asset type to javascript/auto to skip webpack internal json loader
+    // refer: https://webpack.js.org/guides/asset-modules/
+    config.module
+      .rule('dumi-raw-code')
+      // only apply for inline way with query
+      .resourceQuery(/dumi\-raw\-code/)
+      .type('javascript/auto')
+      .use('dumi-raw-code-loader')
+      .loader(require.resolve('../../loader/rawCode'));
 
     // add raw code loader (like raw-loader but without frontmatter)
     config.resolveLoader.alias.set('dumi-raw-code-loader', `${require.resolve('../../loader/rawCode')}`);

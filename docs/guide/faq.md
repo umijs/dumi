@@ -13,11 +13,7 @@ dumi is based on Umi, Which means in addition to the configurations provided by 
 
 ## Why `README.md` appears on the homepage of the document?
 
-Whether it is a document or an website, there must be a home page. Dumi will first look for `index.md` or `REAdME.md` as the homepage in all `resolve.includes` folders, if not found, it will use `README.md` in the project root directory as the homepage.
-
-## How to deploy documents to a non-root directory of a domain name?
-
-Configurating [base 配置项](https://umijs.org/config#base) of Umi will works
+Whether it is a document or an website, there must be a home page. Dumi will first look for `index.md` or `README.md` as the homepage in all `resolve.includes` folders, if not found, it will use `README.md` in the project root directory as the homepage.
 
 ## How to fully customize the homepage?
 
@@ -30,6 +26,28 @@ At present, dumi has not yet support the theme customization function, but it ca
 ```
 
 For detailed usage, please refer to [use in dumi](https://landing.ant.design/docs/use/dumi) of Ant Design Landing
+
+## How to customize "Edit this page"?
+
+When you set the `repository` in the package.json of the root directory, dumi will generate the corresponding **edit doc** button at the bottom of the page. E.g:
+
+```json
+// package.json
+{
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/umijs/dumi.git",
+    "branch": "master",
+    "platform": "github"
+  }
+}
+```
+
+Among:
+
+- `url`: Decide to jump to the repository path
+- `branch`: Corresponding to the repository branch. Default is `master`
+- `platform`: Corresponding platform. When the current setting is `gitlab`, if the url involves subgroups, it will be treated specially
 
 ## Does dumi support to write documents in other ways rather than `.md`?
 
@@ -54,7 +72,7 @@ yarn add dumi cross-env -D
   },
 ```
 
-3. Create `config/config.js`, and add configuration
+3. Create `dumi/config/config.js`, and add configuration
 
 ```js
 export default {
@@ -74,7 +92,7 @@ export default {
 
 6. Add the temporary files of dumi into `.gitignore`.
 
-```
+```text
 .umi
 ```
 
@@ -94,20 +112,28 @@ There is only one `index.html` is output as the entry HTML file by default. The 
 
 You can set `config.dynamicImport` to `{}`. For more usage fo this configuration, please refer to the Umi document: [Config - dynamicImport](https://umijs.org/config#dynamicimport).
 
-## Deploy on Github Pages
+## Deploy documents
 
-Since GitHub Pages is deployed in a non-domain name root path, please ensure that the `base` and `publicPath` configurations are set to the repository name before deployment:
+### Deploy to a non-root directory of domain
+
+Configurating [base](https://umijs.org/config#base) and [publicPath](https://umijs.org/config#publicpath) (depends on the actual situation) of Umi will works
 
 ```ts
 export default {
-  base: '/repositoryName',
-  publicPath: '/repositoryName/',
+  base: '/docs-base-route-path',
+  publicPath: '/assets-files-base-path/',
   exportStatic: {}, // Export all routes as HTML directory structure to avoid 404 when refreshing the page
   // Other configuration
 };
 ```
 
-### Manual deployment
+> If the document project were independent, you would configure `base` and `publicPath` as same!
+
+### Deploy on Github Pages
+
+Since GitHub Pages is deployed in a non-domain name root path, the `base` and `publicPath` configurations are set to the repository name before deployment. See [Deploy to a non-root directory of domain](#deploy-to-a-non-root-directory-of-domain)
+
+#### Manual deployment
 
 With the help of [gh-pages](https://github.com/tschaub/gh-pages), you can easily deploy documents to Github Page
 
@@ -141,7 +167,7 @@ One-click release
 npm run deploy
 ```
 
-### Automatic deployment
+#### Automatic deployment
 
 With the help of [Github Action](https://github.com/features/actions), projects will automatically deployed after each update of `master` branch
 
