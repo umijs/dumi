@@ -45,7 +45,7 @@
     "lz-string": "^1.4.4",
     "react-docgen-typescript": "^1.20.5",
     "rehype-autolink-headings": "^4.0.0",
-    "rehype-mathjax-dumi-tmp": "^3.1.1-0",
+    "rehype-mathjax": "^3.1.0",
     "rehype-remove-comments": "^4.0.2",
     "rehype-stringify": "^8.0.0",
     "remark-frontmatter": "^3.0.0",

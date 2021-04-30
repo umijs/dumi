@@ -4,7 +4,7 @@ import unified from 'unified';
 import type { Node } from 'unist';
 import frontmatter from 'remark-frontmatter';
 import math from 'remark-math';
-import mathjax from 'rehype-mathjax-dumi-tmp';
+import mathjax from 'rehype-mathjax';
 import headings from 'rehype-autolink-headings';
 import comments from 'rehype-remove-comments';
 import stringify from 'rehype-stringify';
