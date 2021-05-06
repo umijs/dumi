@@ -88,6 +88,7 @@ describe('default theme', () => {
   it('should render site home page', () => {
     const attrName = 'data-prefers-color';
     document.documentElement.setAttribute(attrName, 'light');
+    localStorage.setItem('dumi:prefers-color', 'light');
     const wrapper = ({ children }) => (
       <Context.Provider
         value={{
@@ -138,18 +139,25 @@ describe('default theme', () => {
     expect(queryByAttribute('data-mobile-show', container, 'true')).not.toBeNull();
 
     // expect dark render and click success
-    const navbar = queryByAttribute('class', container, '__dumi-default-navbar');
-    const dark = queryByAttribute('class', navbar, '__dumi-default-dark');
-    const sun = queryByAttribute('class', dark, '__dumi-default-dark-sun __dumi-default-dark-switch-active');
-    sun.click();
-    expect(queryByAttribute('class', dark, '__dumi-default-dark-switch __dumi-default-dark-switch-open')).not.toBeNull();
-    const switchList = queryByAttribute('class', dark, '__dumi-default-dark-switch-list');
-    expect(switchList).not.toBeNull();
-    expect(queryByAttribute('class', switchList, '__dumi-default-dark-moon')).not.toBeNull();
-    queryByAttribute('class', switchList, '__dumi-default-dark-moon').click();
+    const menu = queryByAttribute('class', container, '__dumi-default-menu');
+    const sunMenu = queryByAttribute('class', menu, '__dumi-default-dark-sun __dumi-default-dark-switch-active');
+    expect(sunMenu).not.toBeNull();
+    const moonMenu = queryByAttribute('class', container, '__dumi-default-dark-moon');
+    expect(moonMenu).not.toBeNull();
+    moonMenu.click();
     expect(document.documentElement.getAttribute(attrName)).toEqual('dark');
-    expect(queryByAttribute('class', dark, '__dumi-default-dark-switch-list')).toBeNull();
-    expect(queryByAttribute('class', dark, '__dumi-default-dark-switch __dumi-default-dark-switch-open')).toBeNull();
+    expect(queryByAttribute('data-mobile-show', container, 'true')).toBeNull();
+
+    const navbar = queryByAttribute('class', container, '__dumi-default-navbar');
+    const moonNav = queryByAttribute('class', navbar, '__dumi-default-dark-moon __dumi-default-dark-switch-active');
+    moonNav.click();
+    expect(queryByAttribute('class', navbar, '__dumi-default-dark-switch __dumi-default-dark-switch-open')).not.toBeNull();
+    const switchList = queryByAttribute('class', navbar, '__dumi-default-dark-switch-list');
+    expect(switchList).not.toBeNull();
+    queryByAttribute('class', switchList, '__dumi-default-dark-sun').click();
+    expect(document.documentElement.getAttribute(attrName)).toEqual('light');
+    expect(queryByAttribute('class', navbar, '__dumi-default-dark-switch-list')).toBeNull();
+    expect(queryByAttribute('class', navbar, '__dumi-default-dark-switch __dumi-default-dark-switch-open')).toBeNull();
   });
 
   it('should render documentation page', async () => {
