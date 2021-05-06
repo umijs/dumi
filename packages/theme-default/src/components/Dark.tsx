@@ -6,7 +6,7 @@ import './Dark.less';
 interface darkProps {
   darkSwitch: boolean;
   isSideMenu: boolean;
-  onDarkSwitchClick: (ev) => void;
+  onDarkSwitchClick?: (ev) => void;
 };
 
 const Dark: FC<darkProps> = ({ darkSwitch, onDarkSwitchClick, isSideMenu }) => {
@@ -22,7 +22,7 @@ const Dark: FC<darkProps> = ({ darkSwitch, onDarkSwitchClick, isSideMenu }) => {
   const list = allState.filter(state => state != prefersColor);
 
   const changeColor = (ev, color) => {
-    if (!isSideMenu) {
+    if (!isSideMenu && onDarkSwitchClick) {
       onDarkSwitchClick(ev);
     }
     if (color === currentColor) return;

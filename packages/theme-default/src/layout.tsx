@@ -105,10 +105,6 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
         darkPrefix={
           <Dark
             darkSwitch={darkSwitch}
-            onDarkSwitchClick={ev => {
-              setDarkSwitch(val => !val);
-              ev.stopPropagation();
-            }}
             isSideMenu={true}
           />
         }
