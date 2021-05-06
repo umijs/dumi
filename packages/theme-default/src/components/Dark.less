@@ -1,6 +1,6 @@
 @import (reference) '../style/variables.less';
 
-.__dumi-default-dark {
+.@{prefix}-dark {
   position: fixed;
   right: 20px;
   top: 16px;
@@ -19,7 +19,7 @@
     display: flex;
     justify-content: center;
 
-    .__dumi-default-navbar & {
+    .@{prefix}-navbar & {
       display: none;
     }
   }
@@ -80,9 +80,11 @@
     }
 
     &-active {
-      border-color: @c-primary;
-      [data-prefers-color=dark] & {
-        border-color: @c-primary-dark;
+      .@{prefix}-menu & {
+        border-color: @c-primary;
+        [data-prefers-color=dark] & {
+          border-color: @c-primary-dark;
+        }
       }
     }
 
