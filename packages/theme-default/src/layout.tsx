@@ -93,7 +93,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
               setDarkSwitch(val => !val);
               ev.stopPropagation();
             }}
-            mobile={false}
+            isSideMenu={false}
           />
         }
         onMobileMenuClick={ev => {
@@ -109,7 +109,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
               setDarkSwitch(val => !val);
               ev.stopPropagation();
             }}
-            mobile={navItems.length ? true : !menuCollapsed}
+            isSideMenu={true}
           />
         }
         mobileMenuCollapsed={menuCollapsed}

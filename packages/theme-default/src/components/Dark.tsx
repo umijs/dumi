@@ -5,11 +5,11 @@ import './Dark.less';
 
 interface darkProps {
   darkSwitch: boolean;
-  mobile: boolean;
+  isSideMenu: boolean;
   onDarkSwitchClick: (ev) => void;
 };
 
-const Dark: FC<darkProps> = ({ darkSwitch, onDarkSwitchClick, mobile }) => {
+const Dark: FC<darkProps> = ({ darkSwitch, onDarkSwitchClick, isSideMenu }) => {
   const allState = ['dark', 'light', 'auto'];
   const prefersColor = window.localStorage.getItem('dumi:prefers-color');
   const [color, setColor] = usePrefersColor();
@@ -22,7 +22,7 @@ const Dark: FC<darkProps> = ({ darkSwitch, onDarkSwitchClick, mobile }) => {
   const list = allState.filter(state => state != prefersColor);
 
   const changeColor = (ev, color) => {
-    if (!mobile) {
+    if (!isSideMenu) {
       onDarkSwitchClick(ev);
     }
     if (color === currentColor) return;
@@ -57,14 +57,14 @@ const Dark: FC<darkProps> = ({ darkSwitch, onDarkSwitchClick, mobile }) => {
   return (
     <div className="__dumi-default-dark">
       <div
-        className={`__dumi-default-dark-switch ${!mobile && darkSwitch ? "__dumi-default-dark-switch-open" : ""}`}>
-        {mobile ? (
+        className={`__dumi-default-dark-switch ${!isSideMenu && darkSwitch ? "__dumi-default-dark-switch-open" : ""}`}>
+        {isSideMenu ? (
           allState.map(item => (
             getSvg(item)
           ))
         ) : getSvg(prefersColor)}
       </div>
-      {!mobile && darkSwitch && (
+      {!isSideMenu && darkSwitch && (
         <div className="__dumi-default-dark-switch-list">
           {
             list.map(item => (

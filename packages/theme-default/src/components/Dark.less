@@ -65,18 +65,24 @@
   }
 
   &-switch {
+    [data-mode=doc] & {
+      display: flex;
+      button + button {
+        margin-left: 4px;
+      }
+    }
+
     @media @mobile {
       display: flex;
       button + button {
         margin-left: 10px;
       }
+    }
 
-      &-active {
-        border-color: @c-primary;
-
-        [data-prefers-color=dark] & {
-          border-color: @c-primary-dark;
-        }
+    &-active {
+      border-color: @c-primary;
+      [data-prefers-color=dark] & {
+        border-color: @c-primary-dark;
       }
     }
 
