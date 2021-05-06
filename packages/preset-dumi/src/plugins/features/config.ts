@@ -10,6 +10,17 @@ import ctx from '../../context';
  * plugin for generate dumi config into .umi temp directory
  */
 export default (api: IApi) => {
+
+  const getUrl = (repo) => {
+    if (repo.url && typeof(repo.url) === 'string') {
+      return repo.url;
+    }
+    if (repo && typeof(repo) === 'string') {
+      return repo;
+    }
+    return '';
+  };
+
   // write config.json when generating temp files
   api.onGenerateFiles(async () => {
     const { routes } = await api.applyPlugins({
@@ -26,7 +37,7 @@ export default (api: IApi) => {
       description: ctx.opts.description,
       mode: ctx.opts.mode,
       repository: {
-        url: getRepoUrl(api.pkg.repository?.url || typeof(api.pkg.repository) === 'string' ? api.pkg.repository : '', api.pkg.repository?.platform),
+        url: getRepoUrl(getUrl(api.pkg.repository), api.pkg.repository?.platform),
         branch: api.pkg.repository?.branch || 'master',
         platform: api.pkg.repository?.platform,
       },
