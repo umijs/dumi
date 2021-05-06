@@ -1,7 +1,7 @@
 import hostedGit from 'hosted-git-info';
 
-export default (url: string, platform?: 'gitlab') => {
-  if (!url) return '';
+export default (url: any, platform?: 'gitlab') => {
+  if (!url || typeof(url) !== 'string') return '';
 
   let repoUrl = hostedGit.fromUrl(url)?.browse();
 
