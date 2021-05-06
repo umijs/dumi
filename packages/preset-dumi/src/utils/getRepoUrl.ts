@@ -2,9 +2,10 @@ import hostedGit from 'hosted-git-info';
 
 export default (url: string, platform?: 'gitlab') => {
   if (!url || typeof(url) !== 'string') return '';
+
   let repoUrl = hostedGit.fromUrl(url)?.browse();
 
-  if (!repoUrl && url) {
+  if (!repoUrl) {
     const isHttpProtocol = url.includes('http://');
 
     if (platform === 'gitlab') {
