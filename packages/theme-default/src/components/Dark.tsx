@@ -11,7 +11,7 @@ interface darkProps {
 
 const Dark: FC<darkProps> = ({ darkSwitch, onDarkSwitchClick, isSideMenu }) => {
   const allState = ['dark', 'light', 'auto'];
-  const prefersColor = window.localStorage.getItem('dumi:prefers-color');
+  const prefersColor = localStorage.getItem('dumi:prefers-color');
   const [color, setColor] = usePrefersColor();
   const [currentColor, setCurrentColor] = React.useState(color);
 
