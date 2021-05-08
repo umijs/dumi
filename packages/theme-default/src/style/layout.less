@@ -348,10 +348,20 @@ body {
       margin-bottom: 4px;
       display: block;
       color: @c-primary;
+      transition: opacity 0.2s;
       text-decoration: none;
 
       [data-prefers-color=dark] & {
         color: @c-primary-dark;
+      }
+
+      &:hover {
+        opacity: 0.7;
+        text-decoration: underline;
+      }
+
+      &:active {
+        opacity: 0.9;
       }
     }
 
