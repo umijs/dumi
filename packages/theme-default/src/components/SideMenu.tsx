@@ -1,4 +1,4 @@
-import type { FC} from 'react';
+import type { FC } from 'react';
 import React, { useContext } from 'react';
 import { context, Link, NavLink } from 'dumi/theme';
 import LocaleSelect from './LocaleSelect';
@@ -8,9 +8,10 @@ import './SideMenu.less';
 interface INavbarProps {
   mobileMenuCollapsed: boolean;
   location: any;
+  darkPrefix?: React.ReactNode;
 }
 
-const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location }) => {
+const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location, darkPrefix }) => {
   const {
     config: {
       logo,
@@ -84,9 +85,11 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location }) => {
             </ul>
             {/* site mode locale select */}
             <LocaleSelect location={location} />
+            {darkPrefix}
           </div>
         ) : (
           <div className="__dumi-default-menu-doc-locale">
+            {darkPrefix}
             {/* doc mode locale select */}
             <LocaleSelect location={location} />
           </div>

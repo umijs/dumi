@@ -15,6 +15,11 @@
   background: #fff;
   box-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.05);
 
+  [data-prefers-color=dark] & {
+    background: @c-bg-dark;
+    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.65);
+  }
+
   @media @mobile {
     display: flex;
     justify-content: center;
@@ -47,14 +52,13 @@
     font-size: 24px;
     line-height: 40px;
 
+    [data-prefers-color=dark] & {
+      color: @c-heading-dark;
+    }
+
     &:not([data-plaintext]) {
       padding-left: 56px;
       background: url(@img-logo) no-repeat 0 / contain;
-    }
-
-    &:active,
-    &:hover {
-      color: #080e29;
     }
 
     @media @mobile {
@@ -84,9 +88,16 @@
         color: #4d5164;
         text-decoration: none;
 
+        [data-prefers-color=dark] & {
+          color: @c-heading-dark;
+        }
+
         &:hover,
         &.active {
           color: @c-primary;
+          [data-prefers-color=dark] & {
+            color: @c-primary-dark;
+          }
         }
 
         &::before {
@@ -131,15 +142,27 @@
         border-radius: 1px;
         transition: all 0.2s;
 
+        [data-prefers-color=dark] & {
+          background-color: @c-bg-dark;
+        }
+
         a {
           position: relative;
           display: block;
           color: @c-text;
           text-decoration: none;
 
+          [data-prefers-color=dark] & {
+            color: @c-text-dark;
+          }
+
           &:hover,
           &.active {
             color: @c-primary;
+
+            [data-prefers-color=dark] & {
+              color: @c-primary-dark;
+            }
           }
         }
       }
