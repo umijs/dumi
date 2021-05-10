@@ -17,6 +17,7 @@ export interface IOuterLayoutProps {
   locales: IThemeContext['config']['locales'];
   algolia: IThemeContext['config']['algolia'];
   routes: IThemeContext['routes'];
+  darkSwitch: IThemeContext['config']['darkSwitch'];
 }
 
 /**

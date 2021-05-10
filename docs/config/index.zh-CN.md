@@ -41,6 +41,14 @@ export default {
 }
 ```
 
+### darkSwitch
+
+- 类型：`Boolean`
+- 默认值：`true`
+- 详细：
+
+是否显示 Dark 切换按钮。
+
 ### description
 
 - 类型：`String`

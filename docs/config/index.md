@@ -41,6 +41,14 @@ Example：
 }
 ```
 
+### darkSwitch
+
+- Type: `Boolean`
+- Default: `true`
+- Details:
+
+Whether to display the dark switch button.
+
 ### description
 
 - Type: `String`

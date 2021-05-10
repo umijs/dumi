@@ -54,6 +54,10 @@ export interface IThemeContext {
      * theme config
      */
     theme: IDumiOpts['theme'];
+    /**
+     * dark config
+     */
+    darkSwitch?: boolean;
   };
   /**
    * the meta information of current route
@@ -105,6 +109,7 @@ export default React.createContext<IThemeContext>({
     locales: [],
     repository: { branch: 'master' },
     theme: {},
+    darkSwitch: true,
   },
   meta: { title: '' },
   menu: [],

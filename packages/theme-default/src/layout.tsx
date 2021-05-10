@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import type { IRouteComponentProps } from '@umijs/types';
 import { context, Link } from 'dumi/theme';
 import Navbar from './components/Navbar';
@@ -43,8 +43,7 @@ const Features = features => (
 
 const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
   const {
-    config: { mode, repository },
-    nav: navItems,
+    config: { mode, repository, darkSwitch: darkSwitchConfig },
     meta,
     locale,
   } = useContext(context);
@@ -86,7 +85,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
       <Navbar
         location={location}
         navPrefix={<SearchBar />}
-        darkPrefix={
+        darkPrefix={ darkSwitchConfig &&
           <Dark
             darkSwitch={darkSwitch}
             onDarkSwitchClick={ev => {
@@ -102,7 +101,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
         }}
       />
       <SideMenu
-        darkPrefix={
+        darkPrefix={ darkSwitchConfig &&
           <Dark
             darkSwitch={darkSwitch}
             isSideMenu={true}

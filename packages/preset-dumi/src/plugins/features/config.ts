@@ -25,6 +25,7 @@ export default (api: IApi) => {
       logo: ctx.opts.logo,
       description: ctx.opts.description,
       mode: ctx.opts.mode,
+      darkSwitch: ctx.opts.darkSwitch,
       repository: {
         url: getRepoUrl(api.pkg.repository?.url || api.pkg.repository, api.pkg.repository?.platform),
         branch: api.pkg.repository?.branch || 'master',

@@ -79,6 +79,10 @@ export interface IDumiOpts {
    * theme config
    */
   theme: Record<string, any>;
+  /**
+   * whether show dark icon, default true
+   */
+  darkSwitch: boolean;
 }
 
 const context: { umi?: IApi; opts?: IDumiOpts } = {};
