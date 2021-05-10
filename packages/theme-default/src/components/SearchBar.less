@@ -126,3 +126,35 @@
     display: block !important;
   }
 }
+
+.@{prefix}-menu .@{prefix}-search-doc {
+  padding: 16px;
+  border-bottom: 1px solid #ebedf1;
+
+  @media only screen and (max-width: 1024px) {
+    > input:not(:focus) {
+      width: 200px;
+    }
+  }
+
+  > ul {
+    position: initial;
+    margin-left: -36px;
+    background-color: initial;
+    box-shadow: initial;
+    border: none;
+    li a {
+      white-space: inherit;
+      &:hover,
+      &.active {
+        color: @c-primary;
+        background-color: initial;
+
+        [data-prefers-color=dark] & {
+          color: @c-primary-dark;
+        }
+      }
+    }
+  }
+
+}

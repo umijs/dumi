@@ -18,6 +18,7 @@
   "bugs": "http://github.com/umijs/dumi/issues",
   "authors": [],
   "dependencies": {
+    "classnames": "^2.3.1",
     "prism-react-renderer": "^1.1.1",
     "prismjs": "^1.21.0",
     "rc-tabs": "^11.7.1"

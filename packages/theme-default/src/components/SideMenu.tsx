@@ -1,7 +1,8 @@
 import type { FC } from 'react';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { context, Link, NavLink } from 'dumi/theme';
 import LocaleSelect from './LocaleSelect';
+import SearchBar from './SearchBar';
 import SlugList from './SlugList';
 import './SideMenu.less';
 
@@ -25,6 +26,9 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location, darkPrefix 
     base,
     meta,
   } = useContext(context);
+  const [isSearch, setIsSearch] = useState<boolean>(false);
+  console.log(meta)
+
   const isHiddenMenus =
     Boolean((meta.hero || meta.features || meta.gapless) && mode === 'site') ||
     meta.sidemenu === false ||
@@ -94,8 +98,9 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location, darkPrefix 
             <LocaleSelect location={location} />
           </div>
         )}
+        <SearchBar setIsSearch={setIsSearch}/>
         {/* menu list */}
-        <ul className="__dumi-default-menu-list">
+        {!isSearch && <ul className="__dumi-default-menu-list">
           {!isHiddenMenus &&
             menu.map(item => {
               // always use meta from routes to reduce menu data size
@@ -120,9 +125,9 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location, darkPrefix 
                           {/* group children slugs */}
                           {Boolean(
                             meta.toc === 'menu' &&
-                              typeof window !== 'undefined' &&
-                              child.path === location.pathname &&
-                              hasSlugs,
+                            typeof window !== 'undefined' &&
+                            child.path === location.pathname &&
+                            hasSlugs,
                           ) && <SlugList slugs={meta.slugs} />}
                         </li>
                       ))}
@@ -133,7 +138,7 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location, darkPrefix 
                 </li>
               );
             })}
-        </ul>
+        </ul>}
       </div>
     </div>
   );
