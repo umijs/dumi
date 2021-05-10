@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useSearch, AnchorLink, context } from 'dumi/theme';
-import c from 'classnames';
+import classnames from 'classnames';
 import './SearchBar.less';
 
 type StateChangeHandler<StateType> = (state: StateType) => any;
@@ -41,11 +41,11 @@ export default (props: SearchBarProps) => {
     </AnchorLink>
   }
   return (
-    <div className={c("__dumi-default-search", {
+    <div className={classnames("__dumi-default-search", {
       "__dumi-default-search-doc": isDocAndPc,
     })}>
       <input
-        className={c("__dumi-default-search-input", {
+        className={classnames("__dumi-default-search-input", {
           "__dumi-default-search-doc-input": isDocAndPc,
         })}
         type="search"
@@ -59,7 +59,7 @@ export default (props: SearchBarProps) => {
           }
           : {})}
       />
-      <ul className={c({"__dumi-default-menu-list": isDocAndPc})}>
+      <ul className={classnames({"__dumi-default-menu-list": isDocAndPc})}>
         {items.map(meta => (
           <li key={meta.path} onClick={() => {
             setKeywords('');
