@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import type { IRouteComponentProps } from '@umijs/types';
 import { context, Link } from 'dumi/theme';
 import Navbar from './components/Navbar';
@@ -43,11 +43,11 @@ const Features = features => (
 
 const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
   const {
-    config: { mode, repository },
-    nav: navItems,
+    config: { mode, repository, theme },
     meta,
     locale,
   } = useContext(context);
+  const hiddenDarkSwitch = theme.darkSwitch === false;
   const { url: repoUrl, branch, platform } = repository;
   const [menuCollapsed, setMenuCollapsed] = useState<boolean>(true);
   const [darkSwitch, setDarkSwitch] = useState<boolean>(false);
@@ -86,7 +86,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
       <Navbar
         location={location}
         navPrefix={<SearchBar />}
-        darkPrefix={
+        darkPrefix={ !hiddenDarkSwitch &&
           <Dark
             darkSwitch={darkSwitch}
             onDarkSwitchClick={ev => {
@@ -102,7 +102,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
         }}
       />
       <SideMenu
-        darkPrefix={
+        darkPrefix={ !hiddenDarkSwitch &&
           <Dark
             darkSwitch={darkSwitch}
             isSideMenu={true}

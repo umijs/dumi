@@ -262,6 +262,8 @@ Configure the name of the document on the navigation bar or sidebar.
 
 It's used to configure the theme package currently used. The specific configuration items depend on which configuration the theme package provides. You can visit [Theme list](/theme) to view the currently available themes.
 
+You can set `darkSwitch: false` to turn off the dark mode button.
+
 ## More Config
 
 <!-- The followings are Umi configuration items, which are synchronized and filtered from Umi repository by scripts/sync-from-umi.js -->
