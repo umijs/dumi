@@ -97,7 +97,7 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location, darkPrefix 
             <LocaleSelect location={location} />
           </div>
         )}
-        <SearchBar setIsSearch={setIsSearch}/>
+        {mode === 'doc' && <SearchBar setIsSearch={setIsSearch} />}
         {/* menu list */}
         {!isSearch && <ul className="__dumi-default-menu-list">
           {!isHiddenMenus &&
