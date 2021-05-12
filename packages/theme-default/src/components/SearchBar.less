@@ -30,17 +30,19 @@
     list-style: none;
     position: absolute;
     top: 100%;
-    left: 0;
+    right: 0;
     z-index: 10;
     margin: 8px 0 0;
     min-width: 280px;
     max-width: 400px;
+    max-height: 230px;
     padding: 6px 0;
     background-color: #fff;
     border: 1px solid @c-border;
     border-radius: 1px;
     box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.05);
     box-sizing: border-box;
+    overflow-y: auto;
 
     [data-prefers-color=dark] & {
       border: none;
