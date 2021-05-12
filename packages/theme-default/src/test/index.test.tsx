@@ -46,6 +46,7 @@ describe('default theme', () => {
       logo: '/',
       mode: 'site' as 'doc' | 'site',
       repository: { branch: 'master' },
+      theme: {},
     },
     meta: {},
     menu: [
