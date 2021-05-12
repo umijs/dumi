@@ -1,7 +1,18 @@
 import { useEffect, useState } from 'react';
 
-function useLinkHighlight(anchors: any): HTMLAnchorElement {
-  const [activeHash, setActiveHash] = useState<HTMLAnchorElement | undefined>(undefined);
+/**
+ * get active anchor
+ * @param anchors anchor list
+ */
+
+interface anchor {
+  depth: number;
+  value: string;
+  heading: string;
+}
+
+function useLinkHighlight(anchors: anchor[]): string {
+  const [activeHash, setActiveHash] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     // Remove brower memory browsing
@@ -14,12 +25,13 @@ function useLinkHighlight(anchors: any): HTMLAnchorElement {
         const headersAnchors: Element[] = [];
 
         anchors.map(slug => {
-          headersAnchors.push(document.querySelector(`#${slug.heading}`));
+          const target = document.querySelector(`#${slug.heading}`)
+          target ?? headersAnchors.push(target);
         });
 
         const firstAnchorUnderViewportTop = headersAnchors.find(anchor => {
-          const { top } = anchor?.getBoundingClientRect();
-          return top > 100;
+            const { top } = anchor.getBoundingClientRect();
+            return top > 100;
         });
 
         if (firstAnchorUnderViewportTop) {
