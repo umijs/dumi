@@ -262,7 +262,17 @@ Configure the name of the document on the navigation bar or sidebar.
 
 It's used to configure the theme package currently used. The specific configuration items depend on which configuration the theme package provides. You can visit [Theme list](/theme) to view the currently available themes.
 
-You can set `darkSwitch: false` to turn off the dark mode button.
+#### darkMode
+
+```js
+themeConfig: {
+  darkMode: 'hidden' | 'simple' | other else
+}
+```
+
+- The Dark switch button is displayed by default, including light, dark, and automatic
+- `hidden`：Hide the Dark button
+- `simple`: Simple mode, only display dark and light color switching
 
 ## More Config
 

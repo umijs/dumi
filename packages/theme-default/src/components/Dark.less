@@ -49,16 +49,30 @@
   &-moon,
   &-auto {
     border: 1px solid @c-btn-border;
-    background-color: @c-light-bg;
+
+    &,
+    .@{prefix}-dark-simple & {
+      [data-prefers-color=dark] & {
+        background-color: @c-light-bg;
+      }
+    }
 
     svg {
-      fill: @c-text;
-      [data-prefers-color=dark] & {
+      &,
+      .@{prefix}-dark-simple & {
+        [data-prefers-color=dark] & {
+          fill: @c-text;
+        }
+      }
+
+      [data-prefers-color=dark] &,
+      .@{prefix}-dark-simple & {
         fill: @c-text-dark;
       }
     }
 
-    [data-prefers-color=dark] & {
+    [data-prefers-color=dark] &,
+    .@{prefix}-dark-simple & {
       border-color: @c-btn-border-dark;
       background-color: @c-bg-dark;
     }

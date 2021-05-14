@@ -47,7 +47,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
     meta,
     locale,
   } = useContext(context);
-  const hiddenDarkSwitch = theme.darkSwitch === false;
+  const hiddenDarkSwitch = theme.darkMode === 'hidden';
   const { url: repoUrl, branch, platform } = repository;
   const [menuCollapsed, setMenuCollapsed] = useState<boolean>(true);
   const [darkSwitch, setDarkSwitch] = useState<boolean>(false);
