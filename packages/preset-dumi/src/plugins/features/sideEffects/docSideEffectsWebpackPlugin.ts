@@ -17,17 +17,21 @@ export default class docSideEffectsWebpackPlugin {
   apply(compiler: webpack.Compiler) {
     compiler.hooks.normalModuleFactory.tap(this.constructor.name, normalModuleFactory => {
       normalModuleFactory.hooks.afterResolve.tap(this.constructor.name, data => {
-        const descriptionFileData = data.resourceResolveData?.descriptionFileData;
-        const sideEffectsFlag = descriptionFileData?.sideEffects;
+        // compatible with webpack5 (data.createData) & webpack4 (data)
+        const createData = data.createData || data;
+        const resourceResolveData = createData.resourceResolveData;
+        const sideEffectsFlag = resourceResolveData?.descriptionFileData?.sideEffects;
 
         if (
+          resourceResolveData &&
           (sideEffectsFlag === false || Array.isArray(sideEffectsFlag)) &&
-          path.normalize(data.resourceResolveData.descriptionFilePath) === this.opts.pkgPath
+          path.normalize(resourceResolveData.descriptionFilePath) === this.opts.pkgPath
         ) {
           const list = new Set(sideEffectsFlag || []);
 
           this.opts.sideEffects.forEach(item => list.add(item));
-          descriptionFileData.sideEffects = Array.from(list);
+
+          resourceResolveData.descriptionFileData.sideEffects = Array.from(list);
         }
       });
     });
