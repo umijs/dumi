@@ -211,7 +211,49 @@ describe('default theme', () => {
     expect(document.documentElement.getAttribute(attrName)).toEqual('dark');
     const sunMenu = queryByAttribute('class', menu, '__dumi-default-dark-sun');
     expect(sunMenu).not.toBeNull();
-  })
+  });
+
+  it('should render site with hidden dark', () => {
+    const wrapper = ({ children }) => (
+      <Context.Provider
+        value={{
+          ...baseCtx,
+          config: {
+            ...baseCtx.config,
+            theme: {
+              darkMode: 'hidden',
+            },
+          },
+          meta: {
+            title: 'test',
+            hero: {
+              title: 'Hero',
+              desc: 'Hero Description',
+              actions: [{ text: '开始', link: '/' }],
+            },
+            features: [
+              { title: 'Feat', desc: 'Feature' },
+              { title: 'Feat2', link: '/' },
+            ],
+          },
+        }}
+      >
+        {children}
+      </Context.Provider>
+    );
+    const { container } = render(
+      <Router history={history}>
+        <Layout {...baseProps}>
+          <h1>Home Page</h1>
+        </Layout>
+      </Router>,
+      { wrapper },
+    );
+
+    const menu = queryByAttribute('class', container, '__dumi-default-menu');
+    const dark = queryByAttribute('class', menu, '__dumi-default-dark');
+    expect(dark).toBeNull();
+  });
 
   it('should render documentation page', async () => {
     const updatedTime = 1604026996000;
