@@ -53,16 +53,16 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location, darkPrefix 
             <p>
               <object
                 type="image/svg+xml"
-                data={`https://img.shields.io/github/stars${
-                  repoUrl.match(/((\/[^\/]+){2})$/)[1]
-                }?style=social`}
+                data={`https://img.shields.io/github/stars${repoUrl.match(/((\/[^\/]+){2})$/)[1]
+                  }?style=social`}
               />
             </p>
           )}
         </div>
         {/* mobile nav list */}
-        {navItems.length ? (
-          <div className="__dumi-default-menu-mobile-area">
+
+        <div className="__dumi-default-menu-mobile-area">
+          {!!navItems.length && (
             <ul className="__dumi-default-menu-nav-list">
               {navItems.map(nav => {
                 const child = Boolean(nav.children?.length) && (
@@ -83,17 +83,11 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location, darkPrefix 
                 );
               })}
             </ul>
-            {/* site mode locale select */}
-            <LocaleSelect location={location} />
-            {darkPrefix}
-          </div>
-        ) : (
-          <div className="__dumi-default-menu-doc-locale">
-            {darkPrefix}
-            {/* doc mode locale select */}
-            <LocaleSelect location={location} />
-          </div>
-        )}
+          )}
+          {/* site mode locale select */}
+          <LocaleSelect location={location} />
+          {darkPrefix}
+        </div>
         {/* menu list */}
         <ul className="__dumi-default-menu-list">
           {!isHiddenMenus &&
@@ -120,9 +114,9 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location, darkPrefix 
                           {/* group children slugs */}
                           {Boolean(
                             meta.toc === 'menu' &&
-                              typeof window !== 'undefined' &&
-                              child.path === location.pathname &&
-                              hasSlugs,
+                            typeof window !== 'undefined' &&
+                            child.path === location.pathname &&
+                            hasSlugs,
                           ) && <SlugList slugs={meta.slugs} />}
                         </li>
                       ))}
