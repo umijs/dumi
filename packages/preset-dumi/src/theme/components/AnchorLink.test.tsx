@@ -13,7 +13,7 @@ describe('theme API: AnchorLink', () => {
   beforeAll(async () => {
     render(
       <Router history={createMemoryHistory({ initialEntries: ['/'], initialIndex: 0 })}>
-        <AnchorLink to="#anchor" id="anchor" active-hash="anchor">
+        <AnchorLink to="#anchor" id="anchor" activeOnHashChange={true}>
           Anchor
         </AnchorLink>
       </Router>,

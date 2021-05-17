@@ -3,7 +3,7 @@ import { NavLink } from '@umijs/runtime';
 import type { NavLinkProps } from 'react-router-dom';
 
 interface AnchorLinkProps extends NavLinkProps {
-  'active-hash': string;
+  activeOnHashChange: boolean;
 }
 
 function getElmScrollPosition(elm: HTMLElement) {
@@ -16,13 +16,13 @@ const AnchorLink: React.FC<AnchorLinkProps> & { scrollToAnchor: (anchor: string)
   props => {
     const hash = (props.to as string).match(/(#.+)$/)?.[1] || '';
 
-    const { 'active-hash': activeHash, ...restProp } = props;
+    const { activeOnHashChange, ...restProp } = props;
 
     return (
       <NavLink
         {...restProp}
         onClick={() => AnchorLink.scrollToAnchor(hash.substring(1))}
-        isActive={(_, location) => hash && `#${activeHash}` === hash}
+        isActive={(_, location) => hash && activeOnHashChange}
       />
     );
   };
