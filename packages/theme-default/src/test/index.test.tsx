@@ -209,6 +209,8 @@ describe('default theme', () => {
     expect(moonMenu).not.toBeNull();
     moonMenu.click();
     expect(document.documentElement.getAttribute(attrName)).toEqual('dark');
+    const sunMenu = queryByAttribute('class', menu, '__dumi-default-dark-sun');
+    expect(sunMenu).not.toBeNull();
   })
 
   it('should render documentation page', async () => {
