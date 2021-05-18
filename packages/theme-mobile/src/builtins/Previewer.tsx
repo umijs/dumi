@@ -14,6 +14,10 @@ export default (props: IPreviewerProps) => {
   const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
+    // skip if page not loaded
+    /* istanbul ignore next */
+    if (!meta.title) return;
+
     const isFirstDemo = document.querySelector('.__dumi-default-mobile-previewer') === ref.current;
     const handler = debounce(() => {
       const scrollTop = document.documentElement.scrollTop + 128;
@@ -42,8 +46,6 @@ export default (props: IPreviewerProps) => {
     if (
       // only render mobile phone when screen max than 960px
       window?.outerWidth > 960 &&
-      // page meta loaded
-      meta.title &&
       // do not disable mobile simulator
       meta.mobile !== false
     ) {
