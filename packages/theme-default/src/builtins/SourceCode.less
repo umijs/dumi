@@ -62,10 +62,20 @@
   }
 }
 
+code[class*="language-"], pre[class*="language-"] {
+  &::selection, & ::selection{
+    color: inherit;
+  }
+}
+
 [data-prefers-color=dark] {
   code[class*="language-"], pre[class*="language-"] {
     color: @c-text-dark;
     text-shadow: 0 1px #000;
+
+    &::selection, & ::selection{
+      background-color: #364a63;
+    }
   }
   .token.operator, .token.entity, .token.url, .language-css .token.string, .style .token.string {
     background: transparent;
