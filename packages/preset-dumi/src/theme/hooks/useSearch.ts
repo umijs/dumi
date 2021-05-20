@@ -65,8 +65,7 @@ const useBuiltinSearch = (keywords: string) => {
     if (val) {
       const result = [];
 
-      // at least find 5 results
-      for (let i = 0; i < metas.length && result.length < 6; i += 1) {
+      for (let i = 0; i < metas.length; i += 1) {
         if (metas[i].title.toUpperCase().indexOf(val) > -1) {
           result.push(metas[i]);
         }
