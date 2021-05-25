@@ -73,7 +73,7 @@ const users = [
   {
     name: 'react-org-tree',
     url: 'https://artdong.github.io/react-org-tree/',
-    logo: 'https://github.com/artdong/react-org-tree/blob/master/img/logo.svg',
+    logo: 'https://raw.githubusercontent.com/artdong/react-org-tree/156fc0975511f20923788e10d011bc8e55ace37b/img/logo.svg',
   },
 ];
 
