@@ -70,6 +70,11 @@ const users = [
     url: 'https://v2.formilyjs.org/',
     logo: 'https://img.alicdn.com/imgextra/i2/O1CN01Kq3OHU1fph6LGqjIz_!!6000000004056-55-tps-1141-150.svg',
   },
+  {
+    name: 'react-org-tree',
+    url: 'https://artdong.github.io/react-org-tree/',
+    logo: 'https://raw.githubusercontent.com/artdong/react-org-tree/156fc0975511f20923788e10d011bc8e55ace37b/img/logo.svg',
+  },
 ];
 
 const LongLogos = [
