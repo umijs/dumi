@@ -1,4 +1,23 @@
+import path from 'path';
+import { winPath } from '@umijs/utils';
 import type { RouteProcessor } from '.';
+
+/**
+ * get parent directories for route component
+ * @param component   route component path
+ * @param ctx         processor ctx
+ */
+export function getRouteComponentDirs(component: string, ctx: ThisParameterType<RouteProcessor>) {
+  // remove ./ for include paths & component path
+  const clearIncludes = ctx.options.resolve.includes.map(item => `${winPath(path.join(item))}/`);
+  const clearComponentPath = winPath(path.join(component));
+
+  // find include path for current component path
+  const entryIncludePath = clearIncludes.find(item => clearComponentPath.startsWith(item));
+
+  // extract component directories and split
+  return winPath(path.dirname(clearComponentPath.replace(entryIncludePath, '')).replace(/^\./, '')).split('/');
+}
 
 export default (function nav(routes) {
   // only apply for site mode
@@ -49,6 +68,8 @@ export default (function nav(routes) {
         route.meta.nav.title =
           // use other same nav path title first
           userCustomNavTitles[route.meta.nav.path] ||
+          // then use first directory name
+          getRouteComponentDirs(route.component, this).shift()?.replace(/^[a-z]/, s => s.toUpperCase()) ||
           // fallback nav title by nav path
           route.meta.nav.path
             // discard locale prefix
