@@ -94,6 +94,8 @@ export default (function group(routes) {
         route.meta.group.title =
           // use second dir as group title
           dirs.shift()?.replace(/^[a-z]/, s => s.toUpperCase()) ||
+          // then use nav title
+          route.meta.nav?.title ||
           // fallback group title if there only has group path
           route.meta.group.path
             // discard nav prefix path or locale prefix path
