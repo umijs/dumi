@@ -32,6 +32,7 @@ describe('routes: redirect', () => {
             },
           ],
         },
+        resolve: { includes: [] },
       } as any,
       {
         paths: {
@@ -78,6 +79,7 @@ describe('routes: redirect', () => {
             },
           ],
         },
+        resolve: { includes: [] },
       } as any,
       {
         paths: {
