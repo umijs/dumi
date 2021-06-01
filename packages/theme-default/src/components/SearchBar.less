@@ -32,6 +32,7 @@
     top: 100%;
     left: 0;
     z-index: 10;
+    text-align: center;
     margin: 8px 0 0;
     min-width: 280px;
     max-width: 400px;
@@ -104,6 +105,14 @@
     }
   }
 
+  &-empty {
+    margin: 6px 0;
+    fill: @c-text;
+    [data-prefers-color=dark] & {
+      fill: @c-text-dark;
+    }
+  }
+
   @media only screen and (max-width: 1024px) {
     margin-right: -14px;
 
@@ -126,5 +135,10 @@
     top: 9px;
     right: 24px;
     display: block !important;
+
+    > ul {
+      right: 0;
+      left: auto;
+    }
   }
 }
