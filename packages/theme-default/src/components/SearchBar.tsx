@@ -20,15 +20,12 @@ export default () => {
 
   const highLight = (title) => {
     const index = title.toLowerCase().indexOf(keywords.toLowerCase());
-    if (index > -1) {
-      const l = keywords.length;
-      return <>
-        {index != 0 && <span>{title.substring(0, index)}</span>}
-        <span className="__dumi-default-search-highlight">{title.substring(index, index+l)}</span>
-        <span>{title.substring(index+l ,title.length)}</span>
-      </>
-    }
-    return title;
+    const l = keywords.length;
+    return <>
+      {index != 0 && <span>{title.substring(0, index)}</span>}
+      <span className="__dumi-default-search-highlight">{title.substring(index, index+l)}</span>
+      <span>{title.substring(index+l ,title.length)}</span>
+    </>
   };
 
   return (
