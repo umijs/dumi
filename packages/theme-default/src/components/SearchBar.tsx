@@ -37,7 +37,7 @@ export default () => {
             </AnchorLink>
           </li>
         ))}
-        {items.length == 0 && keywords && emptySvg}
+        {items.length == 0 && keywords && <li style={{ textAlign: "center" }}>{emptySvg}</li>}
       </ul>
     </div>
   );
