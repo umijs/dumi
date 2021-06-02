@@ -1,5 +1,6 @@
 import path from 'path';
 import slash from 'slash2';
+import { getRouteComponentDirs } from './nav';
 import type { RouteProcessor } from '.';
 
 /**
@@ -82,17 +83,28 @@ export default (function group(routes) {
   // fallback groups title
   routes.forEach(route => {
     if (route.meta.group?.path && !route.meta.group.title) {
-      route.meta.group.title =
-        // use other same group path title first
-        userCustomGroupTitles[route.meta.group.path] ||
-        // fallback group title if there only has group path
-        route.meta.group.path
-          // discard nav prefix path or locale prefix path
-          .replace(route.meta.nav?.path || `/${route.meta.locale || ''}`, '')
-          // discard start slash
-          .replace(/^\//g, '')
-          // upper case the first english letter
-          .replace(/^[a-z]/, s => s.toUpperCase());
+      // use other same group path title first
+      route.meta.group.title = userCustomGroupTitles[route.meta.group.path];
+
+      // fallback use directory name
+      if (!route.meta.group.title) {
+        // discard first level dir if there has nav title
+        const dirs = getRouteComponentDirs(route.component, this).slice(route.meta.nav ? 1 : 0);
+
+        route.meta.group.title =
+          // use second dir as group title
+          dirs.shift()?.replace(/^[a-z]/, s => s.toUpperCase()) ||
+          // then use nav title
+          route.meta.nav?.title ||
+          // fallback group title if there only has group path
+          route.meta.group.path
+            // discard nav prefix path or locale prefix path
+            .replace(route.meta.nav?.path || `/${route.meta.locale || ''}`, '')
+            // discard start slash
+            .replace(/^\//g, '')
+            // upper case the first english letter
+            .replace(/^[a-z]/, s => s.toUpperCase());
+      }
     }
   });
 
