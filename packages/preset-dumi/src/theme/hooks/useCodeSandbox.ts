@@ -111,20 +111,19 @@ ReactDOM.render(
  * @param opts  previewer opts
  * @note  return a open function for open demo on codesandbox.io
  */
-export default (opts: IPreviewerComponentProps | null) => {
+export default (opts: IPreviewerComponentProps | null, api: string = CSB_API_ENDPOINT) => {
   const [handler, setHandler] = useState<(...args: any) => void | undefined>();
 
   useEffect(() => {
     if (opts) {
       const form = document.createElement('form');
       const input = document.createElement('input');
-      const endpoint = opts.host ? `https://${opts.host}/api/v1/sandboxes/define` : CSB_API_ENDPOINT;
       const data = getCSBData(opts);
 
       form.method = 'POST';
       form.target = '_blank';
       form.style.display = 'none';
-      form.action = endpoint;
+      form.action = api;
       form.appendChild(input);
       form.setAttribute('data-demo', opts.title || '');
 
