@@ -76,7 +76,7 @@ const users = [
     logo: 'https://raw.githubusercontent.com/artdong/react-org-tree/156fc0975511f20923788e10d011bc8e55ace37b/img/logo.svg',
   },
   {
-    name: 'antd-country-phone-input',
+    name: 'antd-cpi',
     url: 'https://boyuai.github.io/antd-country-phone-input/',
     logo: 'https://staticcdn.boyuai.com/user-assets/6074/vF5on4266Geu54q8dM7mEU/Lark20200122-235918.svg',
   },

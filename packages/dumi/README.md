@@ -50,7 +50,7 @@ $ yarn dev
       <a target="_blank" href="https://boyuai.github.io/antd-country-phone-input/">
         <img src="https://staticcdn.boyuai.com/user-assets/6074/vF5on4266Geu54q8dM7mEU/Lark20200122-235918.svg" width="42" />
         <br />
-        <strong>antd-country-phone-input</strong>
+        <strong>antd-cpi</strong>
       </a>
     </td>
     <td width="160" align="center">
