@@ -25,7 +25,9 @@ toc: menu
 
 ## useCodeSandbox
 
-- **参数：** `Object`。主题 `Previewer` 组件接收到的 props
+- **参数：** 
+  - host：`String`。Codesandbox私有化部署对应的域名，例如：`webide.example.com`
+  - props：`Object`。主题 `Previewer` 组件接收到的 props
 - **返回：** `Function`。在 CodeSandbox.io 打开 demo 的执行函数
 
 根据 `Previewer` 的 props 生成一个函数，执行后可在 [codesandbox.io](https://codesandbox.io) 打开该 demo，例如：

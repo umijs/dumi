@@ -118,12 +118,13 @@ export default (opts: IPreviewerComponentProps | null) => {
     if (opts) {
       const form = document.createElement('form');
       const input = document.createElement('input');
+      const endpoint = opts.host ? `https://${opts.host}/api/v1/sandboxes/define` : CSB_API_ENDPOINT;
       const data = getCSBData(opts);
 
       form.method = 'POST';
       form.target = '_blank';
       form.style.display = 'none';
-      form.action = CSB_API_ENDPOINT;
+      form.action = endpoint;
       form.appendChild(input);
       form.setAttribute('data-demo', opts.title || '');
 

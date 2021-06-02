@@ -27,7 +27,9 @@ The packaged umi `NavLink` is used for links with anchor points and can be highl
 
 ## useCodeSandbox
 
-- **props:** `Object`. The props received by the theme `Previewer` component
+- **props:**
+  - host `String`. Self-Hosted CodeSandbox domain. (e.g. `webide.example.com`)
+  - props `Object`. The props received by the theme `Previewer` component
 - **return:** `Function`. Open the execution function of the demo in CodeSandbox.io
 
 Generate a function based on the props of `Previewer`, and open the demo in [codesandbox.io](https://codesandbox.io) after execution, for example:
