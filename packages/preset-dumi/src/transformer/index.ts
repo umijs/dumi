@@ -21,21 +21,32 @@ export default {
   markdown(
     raw: string,
     fileAbsPath: string | null,
-    { type = 'jsx', noCache }: { type?: 'jsx' | 'html'; noCache?: boolean } = {},
+    { type = 'jsx', noCache, throwError }: { type?: 'jsx' | 'html'; noCache?: boolean; throwError?: boolean } = {},
   ): TransformResult {
     // use cache first
-    const result =
-      (fileAbsPath && !noCache && cachers.markdown.get(fileAbsPath)) ||
-      remark(raw, fileAbsPath, type);
+    let result = fileAbsPath && !noCache && cachers.markdown.get(fileAbsPath);
 
-    // save cache for the content which has real path
-    if (fileAbsPath && !noCache) {
-      cachers.markdown.add(fileAbsPath, result);
+    if (!result) {
+      try {
+        result = { value: remark(raw, fileAbsPath, type) };
+      } catch (error) {
+        // return empty result & cache error
+        result = { value: { contents: '', data: {} }, error };
+      } finally {
+        if (fileAbsPath && !noCache) {
+          cachers.markdown.add(fileAbsPath, result);
+        }
+      }
+    }
+
+    // throw error for webpack loader but not throw for route initialize stage
+    if (result.error && throwError) {
+      throw result.error;
     }
 
     return {
-      content: result.contents,
-      meta: result.data,
+      content: result.value.contents,
+      meta: result.value.data,
     } as TransformResult;
   },
   /**
