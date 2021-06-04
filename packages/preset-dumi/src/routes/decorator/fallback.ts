@@ -33,9 +33,6 @@ export default (function fallback(routes) {
 
       if (fs.existsSync(readmePath)) {
         const component = `./README${localeFileAddon}.md`;
-        const readme = fs.readFileSync(readmePath, 'utf8');
-        const reg = /(?:^|[\r\n])#+\s+(.+)/;
-        const title = reg.test(readme) ? reg.exec(readme)[1] : 'README';
         const frontMatter = getFrontMatter(readmePath);
 
         routes.unshift({
@@ -44,11 +41,10 @@ export default (function fallback(routes) {
           exact: true,
           meta: {
             locale,
-            title,
             order: -Infinity, // keep readme on the top
             ...frontMatter, // use custom front matter
           },
-          title,
+          title: frontMatter.title,
         });
       }
     }
