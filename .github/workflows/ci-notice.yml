@@ -1,0 +1,21 @@
+name: CI Notice
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@main
+
+      - uses: actions-cool/ci-notice@v1.0.0
+        with:
+          ci: |
+            npm install
+            npm run build
+          notice-types: 'dingding, issue'
+          dingding-token: ${{ secrets.DINGTALK_CI_NOTICE_TOKEN }}
+          issue-assignees: 'xrkffgg, PeachScript'
