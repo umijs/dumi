@@ -2,7 +2,8 @@ name: CI Notice
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 1 * * *'
+  workflow_dispatch:
 
 jobs:
   setup:
@@ -11,11 +12,11 @@ jobs:
       - name: checkout
         uses: actions/checkout@main
 
-      - uses: actions-cool/ci-notice@v1.0.0
+      - uses: actions-cool/ci-notice@v1.0.1
         with:
           ci: |
-            npm install
-            npm run build
+            yarn
+            yarn run build
           notice-types: 'dingding, issue'
           dingding-token: ${{ secrets.DINGTALK_CI_NOTICE_TOKEN }}
           issue-assignees: 'xrkffgg, PeachScript'
