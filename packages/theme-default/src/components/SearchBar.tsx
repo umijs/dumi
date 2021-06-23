@@ -2,6 +2,16 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSearch, AnchorLink } from 'dumi/theme';
 import './SearchBar.less';
 
+export const highlight = (key: string, title: string) => {
+  const index = title.toLowerCase().indexOf(key.toLowerCase());
+  const l = key.length;
+  return <>
+    {index != 0 && <span>{title.substring(0, index)}</span>}
+    <span className="__dumi-default-search-highlight">{title.substring(index, index+l)}</span>
+    <span>{title.substring(index+l ,title.length)}</span>
+  </>
+};
+
 export default () => {
   const [keywords, setKeywords] = useState<string>('');
   const [items, setItems] = useState([]);
@@ -18,16 +28,6 @@ export default () => {
     }
   }, [result]);
 
-  const highLight = (title) => {
-    const index = title.toLowerCase().indexOf(keywords.toLowerCase());
-    const l = keywords.length;
-    return <>
-      {index != 0 && <span>{title.substring(0, index)}</span>}
-      <span className="__dumi-default-search-highlight">{title.substring(index, index+l)}</span>
-      <span>{title.substring(index+l ,title.length)}</span>
-    </>
-  };
-
   return (
     <div className="__dumi-default-search">
       <input
@@ -43,7 +43,7 @@ export default () => {
           <li key={meta.path} onClick={() => setKeywords('')}>
             <AnchorLink to={meta.path}>
               {meta.parent?.title && <span>{meta.parent.title}</span>}
-              {highLight(meta.title)}
+              {highlight(keywords, meta.title)}
             </AnchorLink>
           </li>
         ))}

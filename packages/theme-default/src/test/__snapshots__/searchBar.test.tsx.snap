@@ -1,0 +1,117 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[` 1`] = `
+<React.Fragment>
+  <span
+    className="__dumi-default-search-highlight"
+  >
+    
+  </span>
+  <span>
+    1234
+  </span>
+</React.Fragment>
+`;
+
+exports[` 2`] = `
+<React.Fragment>
+  <span
+    className="__dumi-default-search-highlight"
+  >
+    1
+  </span>
+  <span>
+    234
+  </span>
+</React.Fragment>
+`;
+
+exports[` 3`] = `
+<React.Fragment>
+  <span>
+    1
+  </span>
+  <span
+    className="__dumi-default-search-highlight"
+  >
+    2
+  </span>
+  <span>
+    34
+  </span>
+</React.Fragment>
+`;
+
+exports[` 4`] = `
+<React.Fragment>
+  <span>
+    1
+  </span>
+  <span
+    className="__dumi-default-search-highlight"
+  >
+    23
+  </span>
+  <span>
+    4
+  </span>
+</React.Fragment>
+`;
+
+exports[`test highlight should render right 1`] = `
+<React.Fragment>
+  <span
+    className="__dumi-default-search-highlight"
+  >
+    
+  </span>
+  <span>
+    1234
+  </span>
+</React.Fragment>
+`;
+
+exports[`test highlight should render right 2`] = `
+<React.Fragment>
+  <span
+    className="__dumi-default-search-highlight"
+  >
+    1
+  </span>
+  <span>
+    234
+  </span>
+</React.Fragment>
+`;
+
+exports[`test highlight should render right 3`] = `
+<React.Fragment>
+  <span>
+    1
+  </span>
+  <span
+    className="__dumi-default-search-highlight"
+  >
+    2
+  </span>
+  <span>
+    34
+  </span>
+</React.Fragment>
+`;
+
+exports[`test highlight should render right 4`] = `
+<React.Fragment>
+  <span>
+    1
+  </span>
+  <span
+    className="__dumi-default-search-highlight"
+  >
+    23
+  </span>
+  <span>
+    4
+  </span>
+</React.Fragment>
+`;
