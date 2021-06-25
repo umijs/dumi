@@ -10,6 +10,13 @@ import symlink from '../../utils/symlink';
 export default (api: IApi) => {
   const hostPkgAlias = getHostPkgAlias(api.paths).filter(([pkgName]) => pkgName);
 
+  /* istanbul ignore if */
+  if (hostPkgAlias.length === 1 && hostPkgAlias[0][0] === 'dumi') {
+    // exit if this project called dumi, will cause import x from 'dumi' not work
+    api.logger.error('[dumi]: cannot start, detected this project is named \'dumi\', please rename it in package.json file.');
+    process.exit(1);
+  }
+
   // create symlink for packages
   hostPkgAlias.forEach(([pkgName, pkgPath]) => {
     const linkPath = path.join(api.paths.cwd, 'node_modules', pkgName);
