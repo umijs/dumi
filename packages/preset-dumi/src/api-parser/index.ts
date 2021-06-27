@@ -1,4 +1,4 @@
-import * as parser from 'react-docgen-typescript';
+import * as parser from 'react-docgen-typescript-dumi-tmp';
 import type { AtomPropsDefinition } from 'dumi-assets-types';
 import FileCache from '../utils/cache';
 
