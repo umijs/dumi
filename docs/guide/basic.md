@@ -202,8 +202,8 @@ Give a few examples to facilitate understanding:
 | Disk path/mode | doc mode | site mode |
 | --- | --- | --- |
 | /path/to/src/index.md | - group: none<br >- page routing: / | - navigate: none<br >- group: none<br>- page routing: / |
-| /path/to/src/hello.md | - group: none<br >- page routing: /hello | - navigate: none<br >- group: none<br>- page routing: /hello |
-| /path/to/src/hello/index.md | - group: /hello<br >- page routing: /hello | - navigate: /hello<br >- group:/hello<br>- page routing: /hello |
+| /path/to/src/hello.md | - group: none<br >- page routing: /hello | - navigate: /hello<br >- group: /hello<br>- page routing: /hello |
+| /path/to/src/hello/index.md | - group: /hello<br >- page routing: /hello | - navigate: /hello<br >- group: /hello<br>- page routing: /hello |
 | /path/to/src/hello/world.md | - group: /hello<br >- page routing: /hello/world | - navigate: /hello<br >- group: /hello<br>- page routing: /hello/world |
 | /path/to/src/hello/world/dumi.md | - group: /hello/world<br >- page routing: /hello/world/dumi | - navigate: /hello<br >- group: /hello/world<br>- page routing: /hello/world/dumi |
 
