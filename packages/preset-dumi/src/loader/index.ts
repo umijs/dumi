@@ -33,7 +33,7 @@ export default async function loader(raw: string) {
     export default (props) => {
       // scroll to anchor after page component loaded
       React.useEffect(() => {
-        if (props?.location.hash) {
+        if (props?.location?.hash) {
           AnchorLink.scrollToAnchor(decodeURIComponent(props.location.hash.slice(1)));
         }
       }, []);
