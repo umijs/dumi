@@ -61,7 +61,9 @@ export default (api: IApi) => {
     if (api.config.exportStatic && parentRoute?.[DUMI_ROOT_FLAG]) {
       const rootHtmlIndex = routes.findIndex(route => route.path === '/index.html');
 
-      routes.splice(rootHtmlIndex, 1);
+      if (rootHtmlIndex > -1) {
+        routes.splice(rootHtmlIndex, 1);
+      }
     }
   });
 };
