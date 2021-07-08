@@ -125,6 +125,11 @@ export default (api: IApi) => {
         // use to disable pro-layout in integrated mode
         layout: false,
       },
+      ...Object.keys(demos).map(uuid => ({
+        path: `/${getDemoRouteName()}/${uuid}`,
+        // use to disable pro-layout in integrated mode
+        layout: false,
+      })),
     ];
     const Previewer = theme.builtins
       .concat(theme.fallbacks)
