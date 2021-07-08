@@ -21,11 +21,11 @@ export default (paths: IApi['paths']) => {
 
   if (isLerna) {
     // for lerna repo
-    const { version: lernaVersion } = require('lerna/package.json');
+    const { version: lernaVersion } = require(require.resolve('lerna/package.json'));
     const lernaMainVersion = Number(lernaVersion.split('.')[0]);
     if (lernaMainVersion >= 3) {
       JSON.parse(
-        execSync(`${path.join(paths.cwd, 'node_modules/.bin/lerna')} ls --json --all`, {
+        execSync(`${path.join(require.resolve('lerna'), '..', '..', '.bin/lerna')} ls --json --all`, {
           stdio: 'pipe',
           // fix: 修复windows环境下有多余输出导致JSON.parse报错的问题
         })
