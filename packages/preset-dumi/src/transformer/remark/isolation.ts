@@ -29,5 +29,5 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node) {
 };
 
 export default (options: Record<string, any> = {}): IDumiUnifiedTransformer => (ast: Node) => {
-  visit(ast, 'root', visitor.bind({ className: options.className || 'markdown' }));
+  visit<IDumiElmNode>(ast, 'root', visitor.bind({ className: options.className || 'markdown' }));
 };

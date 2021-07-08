@@ -135,7 +135,7 @@ function watchComponentUpdate(absPath: string, componentName: string, identifier
  */
 export default function api(): IDumiUnifiedTransformer {
   return (ast, vFile) => {
-    visit<IDumiElmNode>(ast, 'element', (node, i, parent) => {
+    visit<IDumiElmNode>(ast, 'element', (node, i, parent: IDumiElmNode) => {
       if (is(node, 'API') && !node._dumi_parsed) {
         let identifier: string;
         let definitions: ReturnType<typeof parser>;

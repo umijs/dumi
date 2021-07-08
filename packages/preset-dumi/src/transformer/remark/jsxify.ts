@@ -2,6 +2,7 @@ import type { Processor } from 'unified';
 import toJSX from '@mapbox/hast-util-to-jsx';
 import visit from 'unist-util-visit';
 import { formatJSXProps } from '../utils';
+import type { IDumiElmNode } from '.';
 
 /**
  * rehype compiler for compile hast to jsx
@@ -9,7 +10,7 @@ import { formatJSXProps } from '../utils';
 export default (function jsxify() {
   this.Compiler = function compiler(ast) {
     // format props for JSX element
-    visit(ast, 'element', node => {
+    visit<IDumiElmNode>(ast, 'element', node => {
       node.properties = formatJSXProps(node.properties);
     });
 

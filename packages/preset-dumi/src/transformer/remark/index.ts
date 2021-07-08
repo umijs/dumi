@@ -70,13 +70,15 @@ function debug(name: string) {
 }
 
 export interface IDumiElmNode extends Node {
-  properties: {
+  properties?: {
     id?: string;
     href?: string;
     [key: string]: any;
   };
-  tagName: string;
+  tagName?: string;
   children?: IDumiElmNode[];
+  value?: string;
+  [key: string]: any;
 }
 
 export type IDumiUnifiedTransformer = (

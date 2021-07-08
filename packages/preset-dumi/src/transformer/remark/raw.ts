@@ -19,7 +19,7 @@ function hasComplexProp(props: Record<string, any>) {
 export default (): IDumiUnifiedTransformer => ast => {
   const props = [];
 
-  visit(ast, node => {
+  visit<IDumiElmNode>(ast, '', node => {
     // workaround to avoid lowercase for React Component tag name
     // mark React Compnoent via dumi-raw prefixer, eg Alert => dumi-raw-alert
     if (typeof node.tagName === 'string' && /^[A-Z]/.test(node.tagName)) {
@@ -51,7 +51,7 @@ export default (): IDumiUnifiedTransformer => ast => {
   });
 
   // raw to hast tree
-  const parsed = raw(ast);
+  const parsed = raw(ast) as IDumiElmNode;
 
   // restore React Component & it's properties
   visit<IDumiElmNode>(parsed, 'element', elm => {

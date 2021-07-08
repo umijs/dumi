@@ -29,7 +29,7 @@ function looseCompareProps(oProps: Record<string, any>, eProps: Record<string, a
  */
 export default function domWarn(): IDumiUnifiedTransformer {
   return ast => {
-    visit(ast, 'element', (node: IDumiElmNode, ancestors) => {
+    visit<IDumiElmNode>(ast, 'element', (node: IDumiElmNode, ancestors) => {
       // only process the p elements below the root
       if (
         is(node, 'p') &&

@@ -17,7 +17,7 @@ export const EMBED_SLUGS = 'dumi-embed-file-slugs';
  */
 export default function embed(): IDumiUnifiedTransformer {
   return ast => {
-    visit<IDumiElmNode>(ast, 'element', (node, i, parent) => {
+    visit<IDumiElmNode>(ast, 'element', (node, i, parent: IDumiElmNode) => {
       if (is(node, 'embed') && has(node, 'src')) {
         const { src } = node.properties;
         const parsed = url.parse(src);
@@ -62,12 +62,11 @@ export default function embed(): IDumiUnifiedTransformer {
                 properties: {
                   // eslint-disable-next-line no-new-wrappers
                   children: new String(
-                    `React.createElement(${
-                      isDynamicEnable()
-                        ? `dynamic({
+                    `React.createElement(${isDynamicEnable()
+                      ? `dynamic({
                           loader: async () => import(/* webpackChunkName: "embedded_md" */ '${moduleReqPath}'),
                         })`
-                        : `require('${moduleReqPath}').default`
+                      : `require('${moduleReqPath}').default`
                     })`
                   ),
                   [EMBED_SLUGS]: transformer.markdown(

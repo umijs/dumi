@@ -10,7 +10,7 @@ import type { IDumiUnifiedTransformer, IDumiElmNode } from '.';
  */
 export default function code(): IDumiUnifiedTransformer {
   return ast => {
-    visit<IDumiElmNode>(ast, 'element', (node, index, parent) => {
+    visit<IDumiElmNode>(ast, 'element', (node, index, parent: IDumiElmNode) => {
       if (is(node, 'code') && has(node, 'src')) {
         const { src, ...attrs } = node.properties;
         const absPath = getModuleResolvePath({

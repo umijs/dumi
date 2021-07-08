@@ -26,7 +26,7 @@ function createSourceCode(lang: string, code: string, position: any) {
 export default function sourceCode(): IDumiUnifiedTransformer {
   return ast => {
     // handle md code block syntax
-    visit<IDumiElmNode>(ast, 'element', (node, i, parent) => {
+    visit<IDumiElmNode>(ast, 'element', (node, i, parent: IDumiElmNode) => {
       if (node.tagName === 'pre' && node.children?.[0]?.tagName === 'code') {
         const cls = node.children[0].properties.className || [];
         const lang = cls.join('').match(/language-(\w+)(?:$| )/)?.[1] || 'unknown';
@@ -40,7 +40,7 @@ export default function sourceCode(): IDumiUnifiedTransformer {
     });
 
     // handle pre tag syntax
-    visit<Node & { value: string }>(ast, 'raw', (node, i, parent) => {
+    visit<Node & { value: string }>(ast, 'raw', (node, i, parent: IDumiElmNode) => {
       if (/^<pre/.test(node.value)) {
         const parsed = raw(node) as IDumiElmNode;
 

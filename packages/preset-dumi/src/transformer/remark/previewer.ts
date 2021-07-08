@@ -136,9 +136,9 @@ function transformCode(node: IDumiElmNode, mdAbsPath: string) {
   return node.properties.filePath
     ? encodeImportRequire(node.properties.filePath)
     : demoTransformer(node.properties.source.tsx || node.properties.source.jsx, {
-        isTSX: Boolean(node.properties.source.tsx),
-        fileAbsPath: node.properties.filePath || mdAbsPath,
-      }).content;
+      isTSX: Boolean(node.properties.source.tsx),
+      fileAbsPath: node.properties.filePath || mdAbsPath,
+    }).content;
 }
 
 /**
@@ -201,12 +201,12 @@ function generatePreviewerProps(
     sources: {
       _: isExternalDemo
         ? Object.keys(node.properties.source).reduce(
-            (r, lang) => ({
-              ...r,
-              [lang]: encodeHoistImport(node.properties.filePath),
-            }),
-            {},
-          )
+          (r, lang) => ({
+            ...r,
+            [lang]: encodeHoistImport(node.properties.filePath),
+          }),
+          {},
+        )
         : node.properties.source,
       ...Object.keys(files).reduce(
         (result, file) => ({
@@ -270,7 +270,7 @@ function applyCodeBlock(props: IPreviewerComponentProps, componentName: string) 
                 value:
                   file === '_'
                     ? // strip frontmatter for main file
-                      transformer.code(decodeHoistImportToContent(tsx || jsx)).content
+                    transformer.code(decodeHoistImportToContent(tsx || jsx)).content
                     : decodeHoistImportToContent(content),
               },
             }),
@@ -297,7 +297,7 @@ function applyDemo(props: IPreviewerComponentProps, code: string) {
   });
 }
 
-const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
+const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent: IDumiElmNode) {
   if (node.tagName === 'div' && node.properties?.type === 'previewer') {
     // generate previewer props
     const previewerProps = generatePreviewerProps(
@@ -312,13 +312,13 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
     // declare demo on the top page component for memo
     const demoComponentCode = previewerProps.inline
       ? // insert directly for inline demo
-        `React.memo(${decodeImportRequireWithAutoDynamic(code, 'demos_md_inline')})`
+      `React.memo(${decodeImportRequireWithAutoDynamic(code, 'demos_md_inline')})`
       : // render other demo from the common demo module: @@/dumi/demos
-        `React.memo(DUMI_ALL_DEMOS['${previewerProps.identifier}'].component)`;
+      `React.memo(DUMI_ALL_DEMOS['${previewerProps.identifier}'].component)`;
 
     this.vFile.data.demos = (this.vFile.data.demos || []).concat(
       `const ${DEMO_COMPONENT_NAME}${(this.vFile.data.demos?.length || 0) +
-        1} = ${demoComponentCode};`,
+      1} = ${demoComponentCode};`,
     );
 
     // replace original node
@@ -364,6 +364,6 @@ export default function previewer(): IDumiUnifiedTransformer {
   }
 
   return (ast: Node, vFile) => {
-    visit(ast, 'element', visitor.bind({ vFile, data: this.data }));
+    visit<IDumiElmNode>(ast, 'element', visitor.bind({ vFile, data: this.data }));
   };
 }
