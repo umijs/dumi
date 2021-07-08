@@ -69,6 +69,14 @@ function debug(name: string) {
   };
 }
 
+// reserve unknown property for Node, to avoid custom plugin throw type error after @types/unist@2.0.4
+declare module 'unist' {
+  // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
+  export interface Node {
+    [key: string]: unknown;
+  }
+}
+
 export interface IDumiElmNode extends Node {
   properties: {
     id?: string;
