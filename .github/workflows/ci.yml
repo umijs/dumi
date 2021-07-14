@@ -21,13 +21,18 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node_version }}
+
       - run: yarn -v
       - run: yarn --ignore-engines
       - run: yarn build
-      - run: yarn test --forceExit
+      - run: yarn test --forceExit --coverage
         env:
           CI: true
           HEADLESS: false
           PROGRESS: none
           NODE_ENV: test
           NODE_OPTIONS: --max_old_space_size=4096
+
+      - name: Generate coverage
+        if: matrix.node_version == '12.x' && matrix.os == 'ubuntu-latest'
+        run: bash <(curl -s https://codecov.io/bash)

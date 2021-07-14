@@ -70,6 +70,16 @@ const users = [
     url: 'https://v2.formilyjs.org/',
     logo: 'https://img.alicdn.com/imgextra/i2/O1CN01Kq3OHU1fph6LGqjIz_!!6000000004056-55-tps-1141-150.svg',
   },
+  {
+    name: 'react-org-tree',
+    url: 'https://artdong.github.io/react-org-tree/',
+    logo: 'https://raw.githubusercontent.com/artdong/react-org-tree/156fc0975511f20923788e10d011bc8e55ace37b/img/logo.svg',
+  },
+  {
+    name: 'antd-cpi',
+    url: 'https://boyuai.github.io/antd-country-phone-input/',
+    logo: 'https://staticcdn.boyuai.com/user-assets/6074/vF5on4266Geu54q8dM7mEU/Lark20200122-235918.svg',
+  },
 ];
 
 const LongLogos = [

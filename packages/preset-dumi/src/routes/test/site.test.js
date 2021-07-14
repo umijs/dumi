@@ -57,7 +57,13 @@ describe('routes & menu: site mode', () => {
   it('route decorator', () => {
     routes = decorateRoute(
       routes,
-      { locales: DEFAULT_LOCALES, mode: 'site' },
+      {
+        locales: DEFAULT_LOCALES,
+        mode: 'site',
+        resolve: {
+          includes: ['./packages/preset-dumi/src/routes/fixtures/site'],
+        },
+      },
       {
         paths: {
           cwd: process.cwd(),
@@ -116,10 +122,10 @@ describe('routes & menu: site mode', () => {
           filePath: 'packages/preset-dumi/src/routes/fixtures/site/config/index.md',
           updatedTime: 1582794297000,
           slugs: [],
-          title: 'Index',
+          title: 'Config',
           nav: { path: '/config', title: 'Config' },
         },
-        title: 'Index',
+        title: 'Config',
       },
       {
         path: '/config/others',
@@ -141,12 +147,12 @@ describe('routes & menu: site mode', () => {
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/site/rewrite/index.md',
           updatedTime: 1582794297000,
-          nav: { path: '/test-rewrite', title: 'Test-rewrite' },
+          nav: { path: '/test-rewrite', title: 'Rewrite' },
           slugs: [],
-          title: 'Index',
+          title: 'Rewrite',
           group: { path: '/test-rewrite/rewrite', title: 'Rewrite' },
         },
-        title: 'Index',
+        title: 'Rewrite',
       },
       {
         path: '/zh-CN/api',
@@ -173,11 +179,11 @@ describe('routes & menu: site mode', () => {
           filePath: 'packages/preset-dumi/src/routes/fixtures/site/config/index.md',
           updatedTime: 1582794297000,
           slugs: [],
-          title: 'Index',
+          title: 'Config',
           nav: { path: '/zh-CN/config', title: 'Config' },
           locale: 'zh-CN',
         },
-        title: 'Index',
+        title: 'Config',
       },
       {
         path: '/zh-CN/config/others',
@@ -200,13 +206,13 @@ describe('routes & menu: site mode', () => {
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/site/rewrite/index.md',
           updatedTime: 1582794297000,
-          nav: { path: '/zh-CN/test-rewrite', title: 'Test-rewrite' },
+          nav: { path: '/zh-CN/test-rewrite', title: 'Rewrite' },
           slugs: [],
-          title: 'Index',
+          title: 'Rewrite',
           group: { path: '/zh-CN/test-rewrite/rewrite', title: 'Rewrite' },
           locale: 'zh-CN',
         },
-        title: 'Index',
+        title: 'Rewrite',
       },
       {
         path: '/test-rewrite',
@@ -230,12 +236,12 @@ describe('routes & menu: site mode', () => {
       'en-US': [
         { path: '/api', title: 'Api' },
         { path: '/config', title: 'Config' },
-        { path: '/test-rewrite', title: 'Test-rewrite' },
+        { path: '/test-rewrite', title: 'Rewrite' },
       ],
       'zh-CN': [
         { path: '/zh-CN/api', title: 'Api' },
         { path: '/zh-CN/config', title: 'Config' },
-        { path: '/zh-CN/test-rewrite', title: 'Test-rewrite' },
+        { path: '/zh-CN/test-rewrite', title: 'Rewrite' },
       ],
     });
   });
@@ -253,13 +259,13 @@ describe('routes & menu: site mode', () => {
       'en-US': [
         { path: '/api', title: 'Api' },
         { path: '/config', title: 'Config' },
-        { path: '/test-rewrite', title: 'Test-rewrite' },
+        { path: '/test-rewrite', title: 'Rewrite' },
         { path: '/test', title: 'test' },
       ],
       'zh-CN': [
         { path: '/zh-CN/api', title: 'Api' },
         { path: '/zh-CN/config', title: 'Config' },
-        { path: '/zh-CN/test-rewrite', title: 'Test-rewrite' },
+        { path: '/zh-CN/test-rewrite', title: 'Rewrite' },
       ],
     });
   });
@@ -286,7 +292,7 @@ describe('routes & menu: site mode', () => {
         '/config': [
           {
             path: '/config',
-            title: 'Index',
+            title: 'Config',
             meta: {},
           },
           {
@@ -300,13 +306,7 @@ describe('routes & menu: site mode', () => {
             title: 'Rewrite',
             path: '/test-rewrite/rewrite',
             meta: {},
-            children: [
-              {
-                path: '/test-rewrite/rewrite',
-                title: 'Index',
-                meta: {},
-              },
-            ],
+            children: [],
           },
         ],
       },
@@ -328,7 +328,7 @@ describe('routes & menu: site mode', () => {
         '/zh-CN/config': [
           {
             path: '/zh-CN/config',
-            title: 'Index',
+            title: 'Config',
             meta: {},
           },
           {
@@ -342,13 +342,7 @@ describe('routes & menu: site mode', () => {
             title: 'Rewrite',
             path: '/zh-CN/test-rewrite/rewrite',
             meta: {},
-            children: [
-              {
-                path: '/zh-CN/test-rewrite/rewrite',
-                title: 'Index',
-                meta: {},
-              },
-            ],
+            children: [],
           },
         ],
       },
@@ -407,7 +401,7 @@ describe('routes & menu: site mode', () => {
             title: 'Rewrite',
             path: '/test-rewrite/rewrite',
             meta: {},
-            children: [{ path: '/test-rewrite/rewrite', title: 'Index', meta: {} }],
+            children: [],
           },
         ],
       },
@@ -415,7 +409,7 @@ describe('routes & menu: site mode', () => {
         '*': [{ path: '/zh-CN', title: 'Index', meta: {} }],
         '/zh-CN/api': [{ path: '/zh-CN/api', title: 'config.a', meta: {} }],
         '/zh-CN/config': [
-          { path: '/zh-CN/config', title: 'Index', meta: {} },
+          { path: '/zh-CN/config', title: 'Config', meta: {} },
           { path: '/zh-CN/config/others', title: 'Others', meta: {} },
         ],
         '/zh-CN/test-rewrite': [
@@ -423,13 +417,7 @@ describe('routes & menu: site mode', () => {
             title: 'Rewrite',
             path: '/zh-CN/test-rewrite/rewrite',
             meta: {},
-            children: [
-              {
-                path: '/zh-CN/test-rewrite/rewrite',
-                title: 'Index',
-                meta: {},
-              },
-            ],
+            children: [],
           },
         ],
       },

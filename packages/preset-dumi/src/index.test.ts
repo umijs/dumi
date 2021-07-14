@@ -245,6 +245,7 @@ describe('preset-dumi', () => {
       '/_demos/:uuid',
       '/~docs',
       '/A',
+      '/index.html',
       '/',
     ]);
 
@@ -296,6 +297,7 @@ describe('preset-dumi', () => {
     // expect dumi disabled in integrate with production
     expect((await (api as any).getRoutes())[0].routes.map(route => route.path)).toEqual([
       '/A',
+      '/index.html',
       '/',
     ]);
   });

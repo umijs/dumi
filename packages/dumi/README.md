@@ -1,6 +1,6 @@
 # dumi
 
-[![codecov](https://codecov.io/gh/umijs/dumi/branch/master/graph/badge.svg)](https://codecov.io/gh/umijs/dumi) [![NPM version](https://img.shields.io/npm/v/dumi.svg?style=flat)](https://npmjs.org/package/dumi) [![CircleCI](https://circleci.com/gh/umijs/dumi/tree/master.svg?style=svg)](https://circleci.com/gh/umijs/dumi/tree/master) [![GitHub Actions status](https://github.com/umijs/dumi/workflows/Node%20CI/badge.svg)](https://github.com/umijs/dumi) [![NPM downloads](http://img.shields.io/npm/dm/dumi.svg?style=flat)](https://npmjs.org/package/dumi) [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/)
+[![codecov](https://codecov.io/gh/umijs/dumi/branch/master/graph/badge.svg)](https://codecov.io/gh/umijs/dumi) [![NPM version](https://img.shields.io/npm/v/dumi.svg?style=flat)](https://npmjs.org/package/dumi) [![GitHub Actions status](https://github.com/umijs/dumi/workflows/Node%20CI/badge.svg)](https://github.com/umijs/dumi) [![NPM downloads](https://img.shields.io/npm/dm/dumi.svg?style=flat)](https://npmjs.org/package/dumi) [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/)
 
 ## Intro
 
@@ -47,6 +47,13 @@ $ yarn dev
       </a>
     </td>
     <td width="160" align="center">
+      <a target="_blank" href="https://boyuai.github.io/antd-country-phone-input/">
+        <img src="https://staticcdn.boyuai.com/user-assets/6074/vF5on4266Geu54q8dM7mEU/Lark20200122-235918.svg" width="42" />
+        <br />
+        <strong>antd-cpi</strong>
+      </a>
+    </td>
+    <td width="160" align="center">
       <a target="_blank" href="https://v2.formilyjs.org/">
         <img src="https://img.alicdn.com/imgextra/i2/O1CN01Kq3OHU1fph6LGqjIz_!!6000000004056-55-tps-1141-150.svg" />
         <br />
@@ -60,6 +67,8 @@ $ yarn dev
         <strong>GGEditor</strong>
       </a>
     </td>
+  </tr>
+  <tr>
     <td width="160" align="center">
       <a target="_blank" href="https://graphin.antv.vision/">
         <img src="https://gw.alipayobjects.com/zos/antfincdn/0b4HzOcEJY/Graphin.svg" width="42" />
@@ -67,8 +76,6 @@ $ yarn dev
         <strong>Graphin</strong>
       </a>
     </td>
-  </tr>
-  <tr>
     <td width="160" align="center">
       <a target="_blank" href="https://actions-cool.github.io/issues-helper/">
         <img src="https://avatars1.githubusercontent.com/u/73879334?s=200&v=4" width="42" />
@@ -97,6 +104,8 @@ $ yarn dev
         <strong>Pro Components</strong>
       </a>
     </td>
+  </tr>
+  <tr>
     <td width="160" align="center">
       <a target="_blank" href="https://qiankun.umijs.org/">
         <img src="https://gw.alipayobjects.com/zos/bmw-prod/8a74c1d3-16f3-4719-be63-15e467a68a24/km0cv8vn_w500_h500.png" width="42" />
@@ -104,13 +113,18 @@ $ yarn dev
         <strong>qiankun</strong>
       </a>
     </td>
-  </tr>
-  <tr>
     <td width="160" align="center">
       <a target="_blank" href="https://github.com/react-component">
         <img src="https://avatars3.githubusercontent.com/u/9441414?s=200&v=4" width="42" />
         <br />
         <strong>react-component</strong>
+      </a>
+    </td>
+    <td width="160" align="center">
+      <a target="_blank" href="https://artdong.github.io/react-org-tree/">
+        <img src="https://raw.githubusercontent.com/artdong/react-org-tree/156fc0975511f20923788e10d011bc8e55ace37b/img/logo.svg" width="42" />
+        <br />
+        <strong>react-org-tree</strong>
       </a>
     </td>
     <td width="160" align="center">
@@ -126,10 +140,6 @@ $ yarn dev
         <br />
         <strong>UmiJS</strong>
       </a>
-    </td>
-    <td width="160" align="center">
-    </td>
-    <td width="160" align="center">
     </td>
   </tr>
 </table>

@@ -12,6 +12,9 @@ function clearVersion(source: string) {
 
 describe('demo example', () => {
   const FILE_PATH = path.join(__dirname, '../fixtures/raw/remark-demo.md');
+  const ERROR_CODE = `\`\`\`jsx
+import fro 'react';
+\`\`\``;
 
   beforeAll(async () => {
     const service = new Service({
@@ -41,5 +44,18 @@ describe('demo example', () => {
         ),
       ),
     );
+  });
+
+  it('handle error from demo source code', () => {
+    const result = transformer.markdown(ERROR_CODE, FILE_PATH, { noCache: true });
+
+    // expect return empty content if demo has error
+    expect(result.content).toEqual('');
+  });
+
+  it('support to throw error if demo has syntax error', () => {
+    expect(
+      () => transformer.markdown(ERROR_CODE, FILE_PATH, { noCache: true, throwError: true })
+    ).toThrowError();
   });
 });

@@ -3,12 +3,23 @@
 .@{prefix}-locale-select {
   position: relative;
   display: inline-block;
-  border: 1px solid #dadadf;
+  border: 1px solid @c-btn-border;
   border-radius: 14px;
   transition: background 0.2s;
 
+  [data-prefers-color=dark] & {
+    border: 1px solid @c-btn-border-dark;
+  }
+
+  @media @mobile {
+    margin-top: 6px;
+  }
+
   &:hover {
     background-color: #fafafa;
+    [data-prefers-color=dark] & {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
   }
 
   &:not([data-locale-count='1']):not([data-locale-count='2'])::after {

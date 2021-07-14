@@ -23,7 +23,7 @@
   "devDependencies": {
     "dumi": "^{{{ version }}}",
     "lint-staged": "^10.0.7",
-    "prettier": "^1.19.1",
+    "prettier": "^2.2.1",
     "yorkie": "^2.0.0"
   }
 }

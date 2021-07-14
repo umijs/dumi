@@ -111,7 +111,7 @@ ReactDOM.render(
  * @param opts  previewer opts
  * @note  return a open function for open demo on codesandbox.io
  */
-export default (opts: IPreviewerComponentProps | null) => {
+export default (opts: IPreviewerComponentProps | null, api: string = CSB_API_ENDPOINT) => {
   const [handler, setHandler] = useState<(...args: any) => void | undefined>();
 
   useEffect(() => {
@@ -123,7 +123,7 @@ export default (opts: IPreviewerComponentProps | null) => {
       form.method = 'POST';
       form.target = '_blank';
       form.style.display = 'none';
-      form.action = CSB_API_ENDPOINT;
+      form.action = api;
       form.appendChild(input);
       form.setAttribute('data-demo', opts.title || '');
 

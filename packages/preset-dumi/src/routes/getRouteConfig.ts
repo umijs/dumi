@@ -19,15 +19,16 @@ export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
   const childRoutes: IRoute[] = [];
   const exampleRoutePrefix = opts.mode === 'site' ? '/_' : '/_examples/';
   const theme = await getTheme();
-  const userRoutes = opts.isIntegrate
-    ? (
-        await api.applyPlugins({
-          key: 'dumi.getRootRoute',
-          type: api.ApplyPluginsType.modify,
-          initialValue: api.userConfig.routes,
-        })
-      )?.routes
-    : api.userConfig.routes;
+  const userRoutes =
+    opts.isIntegrate || api.args?.dumi !== undefined
+      ? (
+          await api.applyPlugins({
+            key: 'dumi.getRootRoute',
+            type: api.ApplyPluginsType.modify,
+            initialValue: api.userConfig.routes,
+          })
+        )?.routes
+      : api.userConfig.routes;
 
   if (userRoutes) {
     // only apply user's routes if there has routes config

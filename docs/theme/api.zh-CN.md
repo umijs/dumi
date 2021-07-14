@@ -25,7 +25,9 @@ toc: menu
 
 ## useCodeSandbox
 
-- **参数：** `Object`。主题 `Previewer` 组件接收到的 props
+- **参数：** 
+  - opts：`Object`。主题 `Previewer` 组件接收到的 props
+  - api：`String`。CodeSandbox创建 demo 时调用的API地址，默认值为`https://codesandbox.io/api/v1/sandboxes/define`
 - **返回：** `Function`。在 CodeSandbox.io 打开 demo 的执行函数
 
 根据 `Previewer` 的 props 生成一个函数，执行后可在 [codesandbox.io](https://codesandbox.io) 打开该 demo，例如：

@@ -10,7 +10,7 @@ const FILE_LIST = [
     upstream: 'https://cdn.jsdelivr.net/gh/umijs/umi@3/docs/config/README.md',
     actions: [
       // remove head content
-      { type: 'slice', value: [13] },
+      { type: 'slice', value: [12] },
       // remove unnecessary option
       ...['title', 'singular', 'routes', 'mpa', 'mountElementId'].map(option => ({
         type: 'replace',

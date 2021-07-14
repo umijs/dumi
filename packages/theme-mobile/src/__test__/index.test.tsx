@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom';
 import React from 'react';
 import { render, act, waitFor } from '@testing-library/react';
+import { context as Context } from 'dumi/theme';
 import type { MemoryHistory} from '@umijs/runtime';
 import { createMemoryHistory, Router } from '@umijs/runtime';
 
@@ -44,7 +45,7 @@ describe('mobile theme', () => {
       mode: 'site' as 'doc' | 'site',
       repository: { branch: 'mater' },
     },
-    meta: {},
+    meta: { title: 'demo' },
     menu: [
       {
         title: '分组',
@@ -117,7 +118,7 @@ describe('mobile theme', () => {
     const { getByText, getByTitle } = render(
       <Router history={history}>
         <Layout {...baseProps}>
-          <>
+          <Context.Provider value={baseCtx}>
             <Previewer
               title="demo-1"
               identifier="demo-1"
@@ -145,7 +146,7 @@ describe('mobile theme', () => {
               }}
               dependencies={{}}
             />
-          </>
+          </Context.Provider>
         </Layout>
       </Router>,
     );

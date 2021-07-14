@@ -5,6 +5,10 @@
   font-size: 15px;
   line-height: 1.60625;
 
+  [data-prefers-color=dark] & {
+    color: @c-secondary-dark;
+  }
+
   &:not(:first-child):empty {
     min-height: 32px;
   }
@@ -20,6 +24,10 @@
     color: @c-heading;
     font-weight: 500;
     line-height: 1.40625;
+
+    [data-prefers-color=dark] & {
+      color: @c-heading-dark;
+    }
 
     // anchor link
     &:hover > a[aria-hidden] {
@@ -94,6 +102,11 @@
     padding: 2px 5px;
     color: #d56161;
     background: darken(@c-light-bg, 1%);
+
+    [data-prefers-color=dark] & {
+      color: #ff7875;
+      background: @c-light-bg-dark;
+    }
   }
 
   code {
@@ -124,6 +137,11 @@
     color: fadeout(@c-text, 30%);
     border-left: 4px solid @c-border;
     overflow: hidden;
+
+    [data-prefers-color=dark] & {
+      color: fadeout(@c-text-dark, 30%);
+      border-color: @c-border-dark;
+    }
   }
 
   // list
@@ -143,15 +161,27 @@
     border-collapse: collapse;
     border: 1px solid @c-border;
 
+    [data-prefers-color=dark] & {
+      border: 1px solid #3b434b;
+    }
+
     th,
     td {
       padding: 10px 24px;
       border: 1px solid @c-border;
+
+      [data-prefers-color=dark] & {
+        border: 1px solid #3b434b;
+      }
     }
 
     th {
       font-weight: 600;
       background: @c-light-bg;
+
+      [data-prefers-color=dark] & {
+        background: @c-light-bg-dark;
+      }
     }
 
     td:first-child {
@@ -171,6 +201,10 @@
     text-decoration: none;
     transition: opacity 0.2s;
     outline: none;
+
+    [data-prefers-color=dark] & {
+      color: @c-primary-dark;
+    }
 
     &:hover {
       opacity: 0.7;
@@ -192,5 +226,15 @@
   &-external-link-icon {
     vertical-align: -0.155em;
     margin-left: 2px;
+  }
+}
+
+// For demo
+[data-prefers-color=dark] {
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: @c-heading-dark;
   }
 }

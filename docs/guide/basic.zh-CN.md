@@ -196,7 +196,7 @@ dumi 默认会以 `packages/[包名]/src` 为基础路径搜寻所有子包的 M
 | 磁盘路径/模式 | doc 模式 | site 模式 |
 | --- | --- | --- |
 | /path/to/src/index.md | - 分组：无<br >- 页面路由：/ | - 导航：无<br >- 分组：无<br>- 页面路由：/ |
-| /path/to/src/hello.md | - 分组：无<br >- 页面路由：/hello | - 导航：无<br >- 分组：无<br>- 页面路由：/hello |
+| /path/to/src/hello.md | - 分组：无<br >- 页面路由：/hello | - 导航：/hello<br >- 分组：/hello<br>- 页面路由：/hello |
 | /path/to/src/hello/index.md | - 分组：/hello<br >- 页面路由：/hello | - 导航：/hello<br >- 分组：/hello<br>- 页面路由：/hello |
 | /path/to/src/hello/world.md | - 分组：/hello<br >- 页面路由：/hello/world | - 导航：/hello<br >- 分组：/hello<br>- 页面路由：/hello/world |
 | /path/to/src/hello/world/dumi.md | - 分组：/hello/world<br >- 页面路由：/hello/world/dumi | - 导航：/hello<br >- 分组：/hello/world<br>- 页面路由：/hello/world/dumi |
