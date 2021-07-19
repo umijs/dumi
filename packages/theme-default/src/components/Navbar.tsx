@@ -60,8 +60,10 @@ const Navbar: FC<INavbarProps> = ({ onMobileMenuClick, navPrefix, location, dark
             </span>
           );
         })}
-        <LocaleSelect location={location} />
-        {darkPrefix}
+        <div className="__dumi-default-navbar-tool">
+          <LocaleSelect location={location} />
+          {darkPrefix}
+        </div>
       </nav>
     </div>
   );
