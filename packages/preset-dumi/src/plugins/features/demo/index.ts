@@ -125,11 +125,6 @@ export default (api: IApi) => {
         // use to disable pro-layout in integrated mode
         layout: false,
       },
-      ...Object.keys(demos).map(uuid => ({
-        path: `/${getDemoRouteName()}/${uuid}`,
-        // use to disable pro-layout in integrated mode
-        layout: false,
-      })),
     ];
     const Previewer = theme.builtins
       .concat(theme.fallbacks)
@@ -205,4 +200,17 @@ export default (api: IApi) => {
 
     return routes;
   });
+
+  // export static for dynamic demos
+  api.modifyExportRouteMap((memo) => {
+    if (api.config.exportStatic) {
+      memo.push(...Object.keys(demos).map(uuid => {
+        const demoRoutePath = `/${getDemoRouteName()}/${uuid}`;
+
+        return ({ route: { path: demoRoutePath }, file: `${demoRoutePath}.html` });
+      }));
+    }
+
+    return memo;
+  })
 };
