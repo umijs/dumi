@@ -54,6 +54,183 @@ describe('routes & menu: site mode', () => {
     ]);
   });
 
+  const expectedSiteRoutes = [
+    {
+      path: '/api',
+      component: '../../../packages/preset-dumi/src/routes/fixtures/site/api.md',
+      exact: true,
+      meta: {
+        filePath: 'packages/preset-dumi/src/routes/fixtures/site/api.md',
+        updatedTime: 1582794297000,
+        slugs: [
+          { depth: 2, value: 'config.a', heading: 'configa' },
+          { depth: 2, value: 'config.b', heading: 'configb' },
+        ],
+        title: 'config.a',
+        nav: { path: '/api', title: 'Api' },
+      },
+      title: 'config.a',
+    },
+    {
+      path: '/',
+      component: '../../../packages/preset-dumi/src/routes/fixtures/site/index.md',
+      exact: true,
+      meta: {
+        filePath: 'packages/preset-dumi/src/routes/fixtures/site/index.md',
+        updatedTime: 1582794297000,
+        slugs: [],
+        title: 'Index',
+      },
+      title: 'Index',
+    },
+    {
+      path: '/zh-CN',
+      component: '../../../packages/preset-dumi/src/routes/fixtures/site/index.zh-CN.md',
+      exact: true,
+      meta: {
+        filePath: 'packages/preset-dumi/src/routes/fixtures/site/index.zh-CN.md',
+        updatedTime: 1582794297000,
+        slugs: [],
+        locale: 'zh-CN',
+        title: 'Index',
+      },
+      title: 'Index',
+    },
+    {
+      path: '/config',
+      component: '../../../packages/preset-dumi/src/routes/fixtures/site/config/index.md',
+      exact: true,
+      meta: {
+        filePath: 'packages/preset-dumi/src/routes/fixtures/site/config/index.md',
+        updatedTime: 1582794297000,
+        slugs: [],
+        title: 'Config',
+        nav: { path: '/config', title: 'Config' },
+      },
+      title: 'Config',
+    },
+    {
+      path: '/config/others',
+      component: '../../../packages/preset-dumi/src/routes/fixtures/site/config/others.md',
+      exact: true,
+      meta: {
+        filePath: 'packages/preset-dumi/src/routes/fixtures/site/config/others.md',
+        updatedTime: 1582794297000,
+        slugs: [],
+        title: 'Others',
+        nav: { path: '/config', title: 'Config' },
+      },
+      title: 'Others',
+    },
+    {
+      path: '/test-rewrite/rewrite',
+      component: '../../../packages/preset-dumi/src/routes/fixtures/site/rewrite/index.md',
+      exact: true,
+      meta: {
+        filePath: 'packages/preset-dumi/src/routes/fixtures/site/rewrite/index.md',
+        updatedTime: 1582794297000,
+        nav: { path: '/test-rewrite', title: 'Rewrite' },
+        slugs: [],
+        title: 'Rewrite',
+        group: { path: '/test-rewrite/rewrite', title: 'Rewrite' },
+      },
+      title: 'Rewrite',
+    },
+    {
+      path: '/zh-CN/api',
+      component: '../../../packages/preset-dumi/src/routes/fixtures/site/api.md',
+      exact: true,
+      meta: {
+        filePath: 'packages/preset-dumi/src/routes/fixtures/site/api.md',
+        updatedTime: 1582794297000,
+        slugs: [
+          { depth: 2, value: 'config.a', heading: 'configa' },
+          { depth: 2, value: 'config.b', heading: 'configb' },
+        ],
+        title: 'config.a',
+        nav: { path: '/zh-CN/api', title: 'Api' },
+        locale: 'zh-CN',
+      },
+      title: 'config.a',
+    },
+    {
+      path: '/zh-CN/config',
+      component: '../../../packages/preset-dumi/src/routes/fixtures/site/config/index.md',
+      exact: true,
+      meta: {
+        filePath: 'packages/preset-dumi/src/routes/fixtures/site/config/index.md',
+        updatedTime: 1582794297000,
+        slugs: [],
+        title: 'Config',
+        nav: { path: '/zh-CN/config', title: 'Config' },
+        locale: 'zh-CN',
+      },
+      title: 'Config',
+    },
+    {
+      path: '/zh-CN/config/others',
+      component: '../../../packages/preset-dumi/src/routes/fixtures/site/config/others.md',
+      exact: true,
+      meta: {
+        filePath: 'packages/preset-dumi/src/routes/fixtures/site/config/others.md',
+        updatedTime: 1582794297000,
+        slugs: [],
+        title: 'Others',
+        nav: { path: '/zh-CN/config', title: 'Config' },
+        locale: 'zh-CN',
+      },
+      title: 'Others',
+    },
+    {
+      path: '/zh-CN/test-rewrite/rewrite',
+      component: '../../../packages/preset-dumi/src/routes/fixtures/site/rewrite/index.md',
+      exact: true,
+      meta: {
+        filePath: 'packages/preset-dumi/src/routes/fixtures/site/rewrite/index.md',
+        updatedTime: 1582794297000,
+        nav: { path: '/zh-CN/test-rewrite', title: 'Rewrite' },
+        slugs: [],
+        title: 'Rewrite',
+        group: { path: '/zh-CN/test-rewrite/rewrite', title: 'Rewrite' },
+        locale: 'zh-CN',
+      },
+      title: 'Rewrite',
+    },
+    {
+      path: '/test-rewrite',
+      meta: {},
+      exact: true,
+      redirect: '/test-rewrite/rewrite',
+    },
+    {
+      path: '/zh-CN/test-rewrite',
+      meta: {},
+      exact: true,
+      redirect: '/zh-CN/test-rewrite/rewrite',
+    },
+  ];
+
+  it('route decorator with absolute included paths', () => {
+    const decoratedRoutes = decorateRoute(
+      routes,
+      {
+        locales: DEFAULT_LOCALES,
+        mode: 'site',
+        resolve: {
+          includes: [path.resolve(__dirname, '../fixtures/site')],
+        },
+      },
+      {
+        paths: {
+          cwd: process.cwd(),
+          absTmpPath: path.join(process.cwd(), 'src/.umi'),
+        },
+      },
+    );
+
+    expect(decoratedRoutes).toEqual(expectedSiteRoutes);
+  });
+
   it('route decorator', () => {
     routes = decorateRoute(
       routes,
@@ -72,161 +249,7 @@ describe('routes & menu: site mode', () => {
       },
     );
 
-    expect(routes).toEqual([
-      {
-        path: '/api',
-        component: '../../../packages/preset-dumi/src/routes/fixtures/site/api.md',
-        exact: true,
-        meta: {
-          filePath: 'packages/preset-dumi/src/routes/fixtures/site/api.md',
-          updatedTime: 1582794297000,
-          slugs: [
-            { depth: 2, value: 'config.a', heading: 'configa' },
-            { depth: 2, value: 'config.b', heading: 'configb' },
-          ],
-          title: 'config.a',
-          nav: { path: '/api', title: 'Api' },
-        },
-        title: 'config.a',
-      },
-      {
-        path: '/',
-        component: '../../../packages/preset-dumi/src/routes/fixtures/site/index.md',
-        exact: true,
-        meta: {
-          filePath: 'packages/preset-dumi/src/routes/fixtures/site/index.md',
-          updatedTime: 1582794297000,
-          slugs: [],
-          title: 'Index',
-        },
-        title: 'Index',
-      },
-      {
-        path: '/zh-CN',
-        component: '../../../packages/preset-dumi/src/routes/fixtures/site/index.zh-CN.md',
-        exact: true,
-        meta: {
-          filePath: 'packages/preset-dumi/src/routes/fixtures/site/index.zh-CN.md',
-          updatedTime: 1582794297000,
-          slugs: [],
-          locale: 'zh-CN',
-          title: 'Index',
-        },
-        title: 'Index',
-      },
-      {
-        path: '/config',
-        component: '../../../packages/preset-dumi/src/routes/fixtures/site/config/index.md',
-        exact: true,
-        meta: {
-          filePath: 'packages/preset-dumi/src/routes/fixtures/site/config/index.md',
-          updatedTime: 1582794297000,
-          slugs: [],
-          title: 'Config',
-          nav: { path: '/config', title: 'Config' },
-        },
-        title: 'Config',
-      },
-      {
-        path: '/config/others',
-        component: '../../../packages/preset-dumi/src/routes/fixtures/site/config/others.md',
-        exact: true,
-        meta: {
-          filePath: 'packages/preset-dumi/src/routes/fixtures/site/config/others.md',
-          updatedTime: 1582794297000,
-          slugs: [],
-          title: 'Others',
-          nav: { path: '/config', title: 'Config' },
-        },
-        title: 'Others',
-      },
-      {
-        path: '/test-rewrite/rewrite',
-        component: '../../../packages/preset-dumi/src/routes/fixtures/site/rewrite/index.md',
-        exact: true,
-        meta: {
-          filePath: 'packages/preset-dumi/src/routes/fixtures/site/rewrite/index.md',
-          updatedTime: 1582794297000,
-          nav: { path: '/test-rewrite', title: 'Rewrite' },
-          slugs: [],
-          title: 'Rewrite',
-          group: { path: '/test-rewrite/rewrite', title: 'Rewrite' },
-        },
-        title: 'Rewrite',
-      },
-      {
-        path: '/zh-CN/api',
-        component: '../../../packages/preset-dumi/src/routes/fixtures/site/api.md',
-        exact: true,
-        meta: {
-          filePath: 'packages/preset-dumi/src/routes/fixtures/site/api.md',
-          updatedTime: 1582794297000,
-          slugs: [
-            { depth: 2, value: 'config.a', heading: 'configa' },
-            { depth: 2, value: 'config.b', heading: 'configb' },
-          ],
-          title: 'config.a',
-          nav: { path: '/zh-CN/api', title: 'Api' },
-          locale: 'zh-CN',
-        },
-        title: 'config.a',
-      },
-      {
-        path: '/zh-CN/config',
-        component: '../../../packages/preset-dumi/src/routes/fixtures/site/config/index.md',
-        exact: true,
-        meta: {
-          filePath: 'packages/preset-dumi/src/routes/fixtures/site/config/index.md',
-          updatedTime: 1582794297000,
-          slugs: [],
-          title: 'Config',
-          nav: { path: '/zh-CN/config', title: 'Config' },
-          locale: 'zh-CN',
-        },
-        title: 'Config',
-      },
-      {
-        path: '/zh-CN/config/others',
-        component: '../../../packages/preset-dumi/src/routes/fixtures/site/config/others.md',
-        exact: true,
-        meta: {
-          filePath: 'packages/preset-dumi/src/routes/fixtures/site/config/others.md',
-          updatedTime: 1582794297000,
-          slugs: [],
-          title: 'Others',
-          nav: { path: '/zh-CN/config', title: 'Config' },
-          locale: 'zh-CN',
-        },
-        title: 'Others',
-      },
-      {
-        path: '/zh-CN/test-rewrite/rewrite',
-        component: '../../../packages/preset-dumi/src/routes/fixtures/site/rewrite/index.md',
-        exact: true,
-        meta: {
-          filePath: 'packages/preset-dumi/src/routes/fixtures/site/rewrite/index.md',
-          updatedTime: 1582794297000,
-          nav: { path: '/zh-CN/test-rewrite', title: 'Rewrite' },
-          slugs: [],
-          title: 'Rewrite',
-          group: { path: '/zh-CN/test-rewrite/rewrite', title: 'Rewrite' },
-          locale: 'zh-CN',
-        },
-        title: 'Rewrite',
-      },
-      {
-        path: '/test-rewrite',
-        meta: {},
-        exact: true,
-        redirect: '/test-rewrite/rewrite',
-      },
-      {
-        path: '/zh-CN/test-rewrite',
-        meta: {},
-        exact: true,
-        redirect: '/zh-CN/test-rewrite/rewrite',
-      },
-    ]);
+    expect(routes).toEqual(expectedSiteRoutes);
   });
 
   it('getNavFromRoutes', () => {
