@@ -20,4 +20,8 @@
 <AnchorLink to="/a/test?a=1&b=2#header" />
 <Link to="/test"><code>test</code></Link>
 <Link to="https://d.umijs.org/some.md">External Link</Link>
-<Link to="https://d.umijs.org/some.md">External Link</Link></p></div>
+<Link to="https://d.umijs.org/some.md">External Link</Link>
+<Link to="./test"><img src={require('logo.png')} /></Link>
+<Link to="/a/test"><img src={require('./assets/logo.png')} /></Link>
+<AnchorLink to="/a/test?a=1&b=2#header"><img src="/public/logo.png" /></AnchorLink>
+<Link to="https://d.umijs.org/some.md"><img src="https://d.umijs.org/public/logo.png" /></Link></p></div>
