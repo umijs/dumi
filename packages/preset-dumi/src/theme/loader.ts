@@ -150,7 +150,8 @@ export default async () => {
     const components = fs.existsSync(builtinPath)
       ? fs
           .readdirSync(builtinPath)
-          .filter(file => /\.(j|t)sx?$/.test(file))
+          // filter .js/.ts/.jsx/.tsx, and exclude .d.ts
+          .filter(file => /((?<!\.d)\.ts|\.(jsx?|tsx))$/.test(file))
           .map(file => ({
             identifier: path.parse(file).name,
             source: theme.startsWith('.')
