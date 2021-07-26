@@ -9,7 +9,10 @@ import type { RouteProcessor } from '.';
  */
 export function getRouteComponentDirs(component: string, ctx: ThisParameterType<RouteProcessor>) {
   // remove ./ for include paths & component path
-  const clearIncludes = ctx.options.resolve.includes.map(item => `${winPath(path.join(item))}/`);
+  const clearIncludes = ctx.options.resolve.includes.map(item => {
+    const relativePath = path.isAbsolute(item) ? path.relative(ctx.umi?.cwd || process.cwd(), item) : item;
+    return `${winPath(path.join(relativePath))}/`;
+  });
   const clearComponentPath = winPath(path.join(component));
 
   // find include path for current component path
