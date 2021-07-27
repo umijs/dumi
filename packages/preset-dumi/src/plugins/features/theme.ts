@@ -49,6 +49,9 @@ export default (api: IApi) => {
     // set alias for dumi theme api
     memo.resolve.alias.set('dumi/theme', path.join(__dirname, '../../theme'));
 
+    // set alias for builtin default theme
+    memo.resolve.alias.set('dumi-theme-default', path.dirname(require.resolve('dumi-theme-default/package.json')));
+
     // compile theme path for npm linked theme
     if (fs.existsSync(theme.modulePath)) {
       memo.module.rule('js').include.add(fs.realpathSync((await getTheme()).modulePath));
