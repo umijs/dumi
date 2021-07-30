@@ -10,8 +10,6 @@ import {
   getModuleResolveContent,
 } from '../../utils/moduleResolver';
 import FileCache from '../../utils/cache';
-import type { IWatcherItem } from '../../utils/watcher';
-import { listenFileOnceChange } from '../../utils/watcher';
 import type { IDemoOpts } from './options';
 import { getBabelOptions } from './options';
 
@@ -61,11 +59,9 @@ function analyzeDeps(
     isTSX,
     fileAbsPath,
     entryAbsPath,
-    depChangeListener,
     files = {},
   }: IDemoOpts & {
     entryAbsPath?: string;
-    depChangeListener?: IWatcherItem['listeners'][0];
     files?: IDepAnalyzeResult['files'];
   },
 ): IDepAnalyzeResult {
@@ -204,28 +200,17 @@ function analyzeDeps(
           isTSX: /\.tsx?/.test(ext),
           fileAbsPath: item.resolvePath,
           entryAbsPath: entryAbsPath || fileAbsPath,
-          depChangeListener,
           files,
         });
 
         Object.assign(files, result.files);
         Object.assign(dependencies, result.dependencies);
       }
-
-      // trigger listener to update previewer props when dep file change
-      if (depChangeListener) {
-        listenFileOnceChange(item.resolvePath, depChangeListener);
-      }
     });
 
   // cache analyze result for single demo code
   if (fileAbsPath) {
     cachers.file.add(fileAbsPath, cache, cacheKey);
-  }
-
-  // trigger listener to update previewer props when dep file change
-  if (depChangeListener) {
-    listenFileOnceChange(fileAbsPath, depChangeListener);
   }
 
   return { files, dependencies };
