@@ -38,6 +38,9 @@ export default () => {
 
       // for disable dumi
       require.resolve('./plugins/features/disable'),
+
+      // compiletime
+      require.resolve('./plugins/features/compiletime'),
     ],
   };
 };

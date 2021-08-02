@@ -45,7 +45,7 @@ export default (api: IApi) => {
       demoComponent = decodeImportRequireWithAutoDynamic(demoComponent, chunkName);
 
       // hoist all raw code import statements
-      Object.entries(demos[uuid].previewerProps.sources).forEach(([file, oContent]: [string, any]) => {
+      Object.entries(demos[uuid].previewerProps.sources || {}).forEach(([file, oContent]: [string, any]) => {
         const content = file === '_' ? Object.values(oContent)[0] : oContent.content;
 
         if (isHoistImport(content)) {

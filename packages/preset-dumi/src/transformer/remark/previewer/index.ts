@@ -347,6 +347,23 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
   }
 };
 
+export type { IPreviewerTransformer };
+
+/**
+ * register custom previewer transformer
+ * @note    will be execute before builtin transformer
+ * @param t transformer
+ */
+export function registerPreviewerTransformer(t: IPreviewerTransformer) {
+  if (previewerTransforms.every(item => item.type !== t.type)) {
+    previewerTransforms.unshift(t);
+  } else {
+    ctx.umi?.logger.error(
+      `[dumi]: same previewer transformer [${t.type}] cannot be registered twice.`,
+    );
+  }
+}
+
 export default function previewer(): IDumiUnifiedTransformer {
   // clear single paths for a new transform flow
   if (this.data('fileAbsPath')) {
