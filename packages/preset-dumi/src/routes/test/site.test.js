@@ -15,6 +15,38 @@ const DEFAULT_LOCALES = [
 describe('routes & menu: site mode', () => {
   let routes;
 
+  it('getRouteConfigFromDir when has excludes', () => {
+    const includesRoutes = getRoute(path.join(FIXTURES_PATH, 'site'), {
+      locales: DEFAULT_LOCALES,
+      resolve: {
+        excludes: ['**/site/rewrite/*', '**/site/config/others.md'],
+      },
+    });
+
+    expect(includesRoutes).toEqual([
+      {
+        path: '/api',
+        component: './packages/preset-dumi/src/routes/fixtures/site/api.md',
+        exact: true,
+      },
+      {
+        path: '/',
+        component: './packages/preset-dumi/src/routes/fixtures/site/index.md',
+        exact: true,
+      },
+      {
+        path: '/zh-CN',
+        component: './packages/preset-dumi/src/routes/fixtures/site/index.zh-CN.md',
+        exact: true,
+      },
+      {
+        path: '/config',
+        component: './packages/preset-dumi/src/routes/fixtures/site/config/index.md',
+        exact: true,
+      },
+    ]);
+  });
+
   it('getRouteConfigFromDir', () => {
     routes = getRoute(path.join(FIXTURES_PATH, 'site'), {
       locales: DEFAULT_LOCALES,
