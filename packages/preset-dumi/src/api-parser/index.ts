@@ -21,7 +21,7 @@ export type IApiDefinition = AtomPropsDefinition;
 
 export type IApiExtraElement = IDumiOpts['apiParser'];
 
-export default (filePath: string, componentName?: string, apiElements: IApiExtraElement = {}) => {
+export default (filePath: string, apiElements: IApiExtraElement = {}, componentName?: string) => {
   const globalConfig = ctx.opts?.apiParser;
   const {
     excludes = globalConfig?.excludes,
