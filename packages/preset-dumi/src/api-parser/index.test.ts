@@ -6,8 +6,8 @@ import parser from '.';
 const rawPath = path.join(__dirname, 'fixtures', 'raw');
 const expectPath = path.join(__dirname, 'fixtures', 'expect');
 
-function assertResult(filename) {
-  expect(winEOL(JSON.stringify(parser(path.join(rawPath, filename)), null, 2))).toEqual(
+function assertResult(filename, extraProperties?) {
+  expect(winEOL(JSON.stringify(parser(path.join(rawPath, filename), extraProperties), null, 2))).toEqual(
     winEOL(
       fs
         .readFileSync(path.join(expectPath, `${path.basename(filename, '.tsx')}.json`), 'utf8')
@@ -45,10 +45,34 @@ describe('api parser', () => {
     assertResult('localeDescription.tsx');
   });
 
+  it('should parse with propFilter', () => {
+    assertResult('propFilter.tsx', { propFilter: (prop) => {
+      return prop.name !== 'style';
+    }});
+  });
+
+  it('should parse with skipEmptyDoc', () => {
+    assertResult('skipEmptyDoc.tsx', {
+      skipPropsWithoutDoc: true,
+    });
+  });
+
+  it('should parse with skipNodeModules', () => {
+    assertResult('skipNodeModules.tsx', {
+      ignoreNodeModules: true,
+    });
+  });
+
+  it('should parse with excludes', () => {
+    assertResult('excludes.tsx', {
+      excludes: [/[A-Z]+/],
+    });
+  });
+
   it('should guess component name correctly', () => {
     expect(parser(path.join(rawPath, 'guess', 'FileName.tsx'))).toHaveProperty('FileName');
     expect(
-      parser(path.join(rawPath, 'guess', 'NestSrc', 'src', 'index.tsx'), 'NestSrc'),
+      parser(path.join(rawPath, 'guess', 'NestSrc', 'src', 'index.tsx'), { componentName: 'NestSrc' }),
     ).toHaveProperty('default');
   });
 });

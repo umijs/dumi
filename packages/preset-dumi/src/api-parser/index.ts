@@ -22,7 +22,7 @@ export type IApiExtraElement = IDumiOpts['apiParser'] & {
   componentName?: string;
 };
 
-export default (filePath: string, apiElements: IApiExtraElement) => {
+export default (filePath: string, apiElements: IApiExtraElement = {}) => {
   const { componentName, excludes, ignoreNodeModules, skipPropsWithoutDoc, propFilter } =
     apiElements;
   let definitions: IApiDefinition = cacher.get(filePath);
