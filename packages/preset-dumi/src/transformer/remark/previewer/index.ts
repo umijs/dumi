@@ -21,7 +21,7 @@ interface ICurryingPreviewerTransformer extends IPreviewerTransformer {
 type ICurryingCodeTransformer = (props: ReturnType<IPreviewerTransformer['fn']>['props']) => string;
 
 const debug = createDebug('dumi:previewer');
-const previewerTransforms: IPreviewerTransformer[] = [builtinTransformer];
+export const previewerTransforms: IPreviewerTransformer[] = [builtinTransformer];
 
 /**
  * cache id for each external demo file

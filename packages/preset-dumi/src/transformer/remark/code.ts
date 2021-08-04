@@ -2,6 +2,7 @@ import is from 'hast-util-is-element';
 import has from 'hast-util-has-property';
 import visit from 'unist-util-visit';
 import { parseElmAttrToProps } from './utils';
+import { previewerTransforms } from './previewer';
 import { getModuleResolvePath } from '../../utils/moduleResolver';
 import type { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 
@@ -16,7 +17,8 @@ export default function code(): IDumiUnifiedTransformer {
         const absPath = getModuleResolvePath({
           basePath: this.data('fileAbsPath'),
           sourcePath: src,
-          extensions: ['.tsx', '.jsx'],
+          // allow ts/js demo if there has custom compiletime transformer
+          ...(previewerTransforms.length > 1 ? {} : { extensions: ['.tsx', '.jsx'] }),
         });
         const parsedAttrs = parseElmAttrToProps(attrs);
 
