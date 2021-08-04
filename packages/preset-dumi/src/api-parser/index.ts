@@ -1,6 +1,7 @@
 import * as parser from 'react-docgen-typescript-dumi-tmp';
 import type { AtomPropsDefinition } from 'dumi-assets-types';
 import FileCache from '../utils/cache';
+import ctx from '../context';
 import type { IDumiOpts } from '../context';
 
 const cacher = new FileCache();
@@ -18,13 +19,16 @@ const DEFAULT_EXPORTS = [
 
 export type IApiDefinition = AtomPropsDefinition;
 
-export type IApiExtraElement = IDumiOpts['apiParser'] & {
-  componentName?: string;
-};
+export type IApiExtraElement = IDumiOpts['apiParser'];
 
-export default (filePath: string, apiElements: IApiExtraElement = {}) => {
-  const { componentName, excludes, ignoreNodeModules, skipPropsWithoutDoc, propFilter } =
-    apiElements;
+export default (filePath: string, componentName?: string, apiElements: IApiExtraElement = {}) => {
+  const globalConfig = ctx.opts?.apiParser;
+  const {
+    excludes = globalConfig?.excludes,
+    ignoreNodeModules = globalConfig?.ignoreNodeModules,
+    skipPropsWithoutDoc = globalConfig?.skipPropsWithoutDoc,
+    propFilter = globalConfig?.propFilter,
+  } = apiElements;
   let definitions: IApiDefinition = cacher.get(filePath);
   const isDefaultRegExp = new RegExp(`^${componentName}$`, 'i');
 

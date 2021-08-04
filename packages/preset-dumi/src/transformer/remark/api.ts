@@ -112,13 +112,14 @@ function guessComponentName(fileAbsPath: string) {
  * @param absPath       component absolute path
  * @param componentName component name
  * @param identifier    api identifier
+ * @param parseOpts    extra parse options
  */
-function watchComponentUpdate(absPath: string, apiElements: IApiExtraElement, identifier: string) {
+function watchComponentUpdate(absPath: string, componentName: string, identifier: string, parseOpts: IApiExtraElement) {
   listenFileOnceChange(absPath, () => {
     let definitions: ReturnType<typeof parser>;
 
     try {
-      definitions = parser(absPath, apiElements);
+      definitions = parser(absPath, componentName, parseOpts);
     } catch (err) {
       /* noting */
     }
@@ -127,42 +128,8 @@ function watchComponentUpdate(absPath: string, apiElements: IApiExtraElement, id
     applyApiData(identifier, definitions);
 
     // watch next turn
-    watchComponentUpdate(absPath, apiElements, identifier);
+    watchComponentUpdate(absPath, componentName, identifier, parseOpts);
   });
-}
-
-/**
- * transformBoolean from any
- */
-function transformBoolean(strBoolean: any) {
-  if (strBoolean === 'true' || strBoolean === '') {
-    return true;
-  }
-  if (strBoolean === 'false') {
-    return false;
-  }
-  return undefined;
-}
-
-function extractProperties(nodeProperties: IDumiElmNode['properties']) {
-  // https://github.com/umijs/dumi/issues/513
-  // get default config
-  const defaultConfig = ctx.opts?.apiParser;
-  const { excludes, ignorenodemodules, skippropswithoutdoc } = nodeProperties;
-  // nodeProperties have higher priority
-  const finalProperties = {
-    ...defaultConfig,
-    excludes: excludes ? JSON.parse(excludes) : defaultConfig?.excludes,
-    ignoreNodeModules:
-      ignorenodemodules !== undefined
-        ? transformBoolean(ignorenodemodules)
-        : defaultConfig?.ignoreNodeModules,
-    skipPropsWithoutDoc:
-      skippropswithoutdoc !== undefined
-        ? transformBoolean(skippropswithoutdoc)
-        : defaultConfig?.skipPropsWithoutDoc,
-  };
-  return finalProperties;
 }
 
 /**
@@ -174,18 +141,17 @@ export default function api(): IDumiUnifiedTransformer {
       if (is(node, 'API') && !node._dumi_parsed) {
         let identifier: string;
         let definitions: ReturnType<typeof parser>;
-        const extraProperties = extractProperties(node.properties);
+        const parsedAttrs = parseElmAttrToProps(node.properties);
         if (has(node, 'src')) {
           const src = node.properties.src || '';
           const absPath = path.join(path.dirname(this.data('fileAbsPath')), src);
           // guess component name if there has no identifier property
           const componentName = node.properties.identifier || guessComponentName(absPath);
-          const apiElements = { componentName, ...extraProperties };
-          definitions = parser(absPath, apiElements);
+          definitions = parser(absPath, componentName, parsedAttrs);
           identifier = componentName || src;
 
           // trigger listener to update previewer props after this file changed
-          watchComponentUpdate(absPath, apiElements, identifier);
+          watchComponentUpdate(absPath, componentName, identifier, parsedAttrs);
         } else if (vFile.data.componentName) {
           try {
             const sourcePath = getModuleResolvePath({
@@ -193,12 +159,11 @@ export default function api(): IDumiUnifiedTransformer {
               sourcePath: path.dirname(this.data('fileAbsPath')),
               silent: true,
             });
-            const apiElements = { componentName: vFile.data.componentName, ...extraProperties };
-            definitions = parser(sourcePath, apiElements);
+            definitions = parser(sourcePath, vFile.data.componentName, parsedAttrs);
             identifier = vFile.data.componentName;
 
             // trigger listener to update previewer props after this file changed
-            watchComponentUpdate(sourcePath, apiElements, identifier);
+            watchComponentUpdate(sourcePath, vFile.data.componentName, identifier, parsedAttrs);
           } catch (err) {
             /* noting */
           }

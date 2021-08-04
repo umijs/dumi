@@ -7,7 +7,7 @@ const rawPath = path.join(__dirname, 'fixtures', 'raw');
 const expectPath = path.join(__dirname, 'fixtures', 'expect');
 
 function assertResult(filename, extraProperties?) {
-  expect(winEOL(JSON.stringify(parser(path.join(rawPath, filename), extraProperties), null, 2))).toEqual(
+  expect(winEOL(JSON.stringify(parser(path.join(rawPath, filename), undefined, extraProperties), null, 2))).toEqual(
     winEOL(
       fs
         .readFileSync(path.join(expectPath, `${path.basename(filename, '.tsx')}.json`), 'utf8')
@@ -72,7 +72,7 @@ describe('api parser', () => {
   it('should guess component name correctly', () => {
     expect(parser(path.join(rawPath, 'guess', 'FileName.tsx'))).toHaveProperty('FileName');
     expect(
-      parser(path.join(rawPath, 'guess', 'NestSrc', 'src', 'index.tsx'), { componentName: 'NestSrc' }),
+      parser(path.join(rawPath, 'guess', 'NestSrc', 'src', 'index.tsx'), 'NestSrc'),
     ).toHaveProperty('default');
   });
 });
