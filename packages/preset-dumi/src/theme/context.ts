@@ -54,6 +54,10 @@ export interface IThemeContext {
      * theme config
      */
     theme: IDumiOpts['theme'];
+    /**
+     * apiParser config
+     */
+    apiParser: IDumiOpts['apiParser'];
   };
   /**
    * the meta information of current route
@@ -105,6 +109,7 @@ export default React.createContext<IThemeContext>({
     locales: [],
     repository: { branch: 'master' },
     theme: {},
+    apiParser: {},
   },
   meta: { title: '' },
   menu: [],

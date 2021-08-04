@@ -1,6 +1,7 @@
 import * as parser from 'react-docgen-typescript-dumi-tmp';
 import type { AtomPropsDefinition } from 'dumi-assets-types';
 import FileCache from '../utils/cache';
+import type { IDumiOpts } from '../context';
 
 const cacher = new FileCache();
 // ref: https://github.com/styleguidist/react-docgen-typescript/blob/048980a/src/parser.ts#L1110
@@ -17,7 +18,13 @@ const DEFAULT_EXPORTS = [
 
 export type IApiDefinition = AtomPropsDefinition;
 
-export default (filePath: string, componentName?: string) => {
+export type IApiExtraElement = IDumiOpts['apiParser'] & {
+  componentName?: string;
+};
+
+export default (filePath: string, apiElements: IApiExtraElement) => {
+  const { componentName, excludes, ignoreNodeModules, skipPropsWithoutDoc, propFilter } =
+    apiElements;
   let definitions: IApiDefinition = cacher.get(filePath);
   const isDefaultRegExp = new RegExp(`^${componentName}$`, 'i');
 
@@ -36,6 +43,29 @@ export default (filePath: string, componentName?: string) => {
             // use parsed component name from remark pipeline as default export's displayName
             return DEFAULT_EXPORTS.includes(source.getName()) ? componentName : undefined;
           },
+          propFilter:
+            propFilter ||
+            (prop => {
+              let passFlag = true;
+              if (
+                ignoreNodeModules &&
+                prop.declarations !== undefined &&
+                prop.declarations.length > 0
+              ) {
+                const hasPropAdditionalDescription = prop.declarations.find(declaration => {
+                  return !declaration.fileName.includes('node_modules');
+                });
+                passFlag = Boolean(hasPropAdditionalDescription);
+              }
+              if (skipPropsWithoutDoc) {
+                passFlag = passFlag && prop.description.length !== 0;
+              }
+              if (excludes?.length) {
+                passFlag =
+                  passFlag && !excludes?.find(patten => new RegExp(patten).test(prop.name));
+              }
+              return passFlag;
+            }),
         },
       )
       .parse(filePath)

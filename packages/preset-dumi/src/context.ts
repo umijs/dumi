@@ -1,4 +1,5 @@
 import type { IApi } from '@umijs/types';
+import type { PropFilter } from 'react-docgen-typescript-dumi-tmp/lib/parser';
 import type { IMenuItem } from './routes/getMenuFromRoutes';
 import type { INav, INavItem } from './routes/getNavFromRoutes';
 
@@ -50,7 +51,7 @@ export interface IDumiOpts {
     /**
      * Should we treat previewLangs codeblock as demo component
      */
-    passivePreview: boolean
+    passivePreview: boolean;
   };
   /**
    * customize the side menu
@@ -79,6 +80,15 @@ export interface IDumiOpts {
    * theme config
    */
   theme: Record<string, any>;
+  /**
+   * apiParser config
+   */
+  apiParser: {
+    excludes?: RegExp[];
+    ignoreNodeModules?: boolean;
+    skipPropsWithoutDoc?: boolean;
+    propFilter?: PropFilter;
+  };
 }
 
 const context: { umi?: IApi; opts?: IDumiOpts } = {};

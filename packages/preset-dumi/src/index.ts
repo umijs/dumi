@@ -17,6 +17,7 @@ export default () => {
       require.resolve('./plugins/features/menus'),
       require.resolve('./plugins/features/navs'),
       require.resolve('./plugins/features/algolia'),
+      require.resolve('./plugins/features/apiParser'),
 
       // site generate
       require.resolve('./plugins/features/routes'),
