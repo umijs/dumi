@@ -1,5 +1,6 @@
 import type { IApi } from '@umijs/types';
 import type { IApiDefinition } from '../../api-parser';
+import { setOptions } from '../../context';
 
 /**
  * plugin for generate apis.json into .umi temp directory
@@ -30,5 +31,23 @@ export default (api: IApi) => {
         generateApisFile();
       }
     },
+  });
+
+  api.describe({
+    key: 'apiParser',
+    config: {
+      schema(joi) {
+        return joi.object();
+      },
+      default: {},
+      onChange: api.ConfigChangeType.regenerateTmpFiles,
+    },
+  });
+
+  // share config with other source module via context
+  api.modifyConfig(memo => {
+    setOptions('apiParser', memo.apiParser);
+
+    return memo;
   });
 };
