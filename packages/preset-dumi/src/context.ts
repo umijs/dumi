@@ -44,13 +44,17 @@ export interface IDumiOpts {
      */
     includes: string[];
     /**
+     * configure the markdown directory for dumi exclude
+     */
+    excludes: string[];
+    /**
      * TBD
      */
     examples: string[];
     /**
      * Should we treat previewLangs codeblock as demo component
      */
-    passivePreview: boolean
+    passivePreview: boolean;
   };
   /**
    * customize the side menu

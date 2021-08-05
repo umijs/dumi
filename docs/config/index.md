@@ -180,6 +180,14 @@ export default {
 
 Configure the document directory for dumi sniffing. Dumi will try to recursively find markdown files in the configured directory. The default values are the `docs` directory and the `src` directory (common projects). If the environment is the lerna project, the `src` directory will change It is the `packages/pkg/src` directory, and usually does not need to be configured, unless the automatic sniffing appears 『injuryed』.
 
+#### excludes
+
+- Type：`Array<String>`
+- Default：`[]`
+- Details：
+
+The directories or files that need to be excluded. The rules are the same as the configuration of `gitignore`.
+
 #### previewLangs
 
 - Type: `Array<String>`
