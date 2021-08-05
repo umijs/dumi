@@ -30,6 +30,7 @@ export default function code(): IDumiUnifiedTransformer {
           properties: {
             type: 'previewer',
             filePath: absPath,
+            src,
             meta: {
               ...parsedAttrs,
             },

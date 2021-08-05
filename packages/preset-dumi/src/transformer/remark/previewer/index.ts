@@ -239,7 +239,7 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
       previewerTransforms.some(item => {
         const caller = () =>
           item.fn({
-            attrs: node.properties.meta,
+            attrs: { src: node.properties.src, ...node.properties.meta },
             mdAbsPath: this.data('fileAbsPath'),
             node,
           });
