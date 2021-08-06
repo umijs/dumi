@@ -1,5 +1,5 @@
 import React from 'react';
-import type { IRoute } from '@umijs/types';
+import type { IConfig, IRoute } from '@umijs/types';
 import type { INav } from '../routes/getNavFromRoutes';
 import type { IMenu } from '../routes/getMenuFromRoutes';
 import type { ILocale } from '../routes/getLocaleFromRoutes';
@@ -58,6 +58,10 @@ export interface IThemeContext {
      * apiParser config
      */
     apiParser: IDumiOpts['apiParser'];
+    /**
+     * configure how html is output
+     */
+    exportStatic?: IConfig['exportStatic'];
   };
   /**
    * the meta information of current route

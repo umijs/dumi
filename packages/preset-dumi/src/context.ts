@@ -1,4 +1,4 @@
-import type { IApi } from '@umijs/types';
+import type { IApi, IConfig } from '@umijs/types';
 import type { PropFilter } from 'react-docgen-typescript-dumi-tmp/lib/parser';
 import type { IMenuItem } from './routes/getMenuFromRoutes';
 import type { INav, INavItem } from './routes/getNavFromRoutes';
@@ -93,6 +93,10 @@ export interface IDumiOpts {
     skipPropsWithoutDoc?: boolean;
     propFilter?: PropFilter;
   };
+  /**
+   * configure how html is output
+   */
+  exportStatic?: IConfig['exportStatic'];
 }
 
 const context: { umi?: IApi; opts?: IDumiOpts } = {};
