@@ -259,6 +259,8 @@ import React from 'react';
 export default () => <h1>Hello dumi!</h1>;
 ```
 
+Writing code in the markdown is yet not so smooth and easy as in `tsx` due to the absence of type suggestion, and thus we recommend using the [TS in Markdown Visual Studio extension](https://github.com/Dali-Team/vscode-ts-in-markdown).
+
 #### Using component in demo
 
 dumi has a very important principle: **developers should use components like users**.
