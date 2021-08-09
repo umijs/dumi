@@ -178,7 +178,7 @@ Configure the introduction text of the homepage.
 - Default: `null`
 - Details:
 
-Configure the operation buttons of the homepage. The first button will be presented as the main button. The configurations are as follows:
+Configure the operation buttons of the homepage. The last button will be presented as the primary button. The configurations are as follows:
 
 ```yaml
 hero:
