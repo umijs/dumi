@@ -16,6 +16,7 @@ describe('preset-dumi', () => {
       'basic',
       'algolia',
       'demos',
+      'demos-htmlsuffix',
       'assets',
       'integrate',
       'local-theme',
@@ -107,6 +108,23 @@ describe('preset-dumi', () => {
     expect(
       demos.includes('"componentName":"ForceComponent","identifier":"component-demo"'),
     ).toBeTruthy();
+  });
+
+  it('demos-htmlsuffix', async () => {
+    const cwd = path.join(fixtures, 'demos-htmlsuffix');
+    const service = new Service({
+      cwd,
+      env: 'production',
+      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+    });
+
+    // add UMI_DIR to avoid alias error
+    process.env.UMI_DIR = path.dirname(require.resolve('umi/package'));
+
+    await service.run({ name: 'build' });
+
+    // expect generate demo url with html suffix
+    expect(fs.existsSync(path.join(service.paths.absOutputPath, '~demos/test.html'))).toBeTruthy();
   });
 
   it('assets command', async () => {

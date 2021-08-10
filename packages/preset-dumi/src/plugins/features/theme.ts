@@ -16,7 +16,7 @@ const COLOR_HEAD_SCP = `
     'data-prefers-color',
     cache === enums[2]
       ? (isDark ? enums[1] : enums[0])
-      : (enums.includes(cache) ? cache : enums[0])
+      : (enums.indexOf(cache) > -1 ? cache : enums[0])
   );
 })();
 `;

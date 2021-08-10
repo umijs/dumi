@@ -249,6 +249,8 @@ import React from 'react';
 export default () => <h1>Hello dumi!</h1>;
 ```
 
+但是在 markdown 代码块中编写代码会失去类型提示和校验，不能像直接在 `tsx` 中那样丝滑，因此我们推荐使用 VSCode 插件 [TS in Markdown](https://github.com/Dali-Team/vscode-ts-in-markdown)。
+
 #### 在 demo 中引入组件
 
 dumi 有一个非常重要的原则——**开发者应该像用户一样使用组件**。

@@ -1,4 +1,7 @@
+import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
+import type { IThemeContext } from '../context';
+import Context from '../context';
 import useDemoUrl from './useDemoUrl';
 
 describe('theme API: useDemoUrl', () => {
@@ -8,6 +11,28 @@ describe('theme API: useDemoUrl', () => {
     ...saved,
     href: `http://localhost/`,
   } as Window['location'];
+
+  const baseCtx: IThemeContext = {
+    locale: 'zh-CN',
+    routes: [],
+    config: {
+      locales: [{ name: 'zh-CN', label: '中文' }],
+      menus: {},
+      navs: {},
+      title: 'test',
+      mode: 'doc',
+      repository: { branch: 'master' },
+      exportStatic: {
+        htmlSuffix: true,
+      },
+      theme: {},
+      apiParser: {},
+    },
+    meta: { title: '' },
+    menu: [],
+    nav: [],
+    base: '/',
+  };
 
   beforeEach(() => {
     window.location.href = `http://localhost/`;
@@ -68,5 +93,19 @@ describe('theme API: useDemoUrl', () => {
     expect(hashResult1.current).toEqual(`http://localhost/prefix/path/#/_demos/test/index.html`);
 
     process.env.PLATFORM_TYPE = oType;
+  });
+
+  it('should return demo url with html suffix', () => {
+    const wrapper = ({ children }) => (
+      <Context.Provider value={baseCtx}>{children}</Context.Provider>
+    );
+
+    const { result } = renderHook(() => useDemoUrl('test'), { wrapper });
+
+    expect(result.current).toEqual('http://localhost/~demos/test.html');
+
+    window.location.href += '#/';
+    const { result: hashResult } = renderHook(() => useDemoUrl('test'), { wrapper });
+    expect(hashResult.current).toEqual(`http://localhost/#/~demos/test.html`);
   });
 });

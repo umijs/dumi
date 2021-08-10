@@ -9,6 +9,7 @@ import parser from '../../api-parser';
 import { getModuleResolvePath } from '../../utils/moduleResolver';
 import { listenFileOnceChange } from '../../utils/watcher';
 import ctx from '../../context';
+import type { IApiExtraElement } from '../../api-parser';
 import type { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 
 function applyApiData(identifier: string, definitions: ReturnType<typeof parser>) {
@@ -111,13 +112,14 @@ function guessComponentName(fileAbsPath: string) {
  * @param absPath       component absolute path
  * @param componentName component name
  * @param identifier    api identifier
+ * @param parseOpts    extra parse options
  */
-function watchComponentUpdate(absPath: string, componentName: string, identifier: string) {
+function watchComponentUpdate(absPath: string, componentName: string, identifier: string, parseOpts: IApiExtraElement) {
   listenFileOnceChange(absPath, () => {
     let definitions: ReturnType<typeof parser>;
 
     try {
-      definitions = parser(absPath, componentName);
+      definitions = parser(absPath, parseOpts, componentName);
     } catch (err) {
       /* noting */
     }
@@ -126,7 +128,7 @@ function watchComponentUpdate(absPath: string, componentName: string, identifier
     applyApiData(identifier, definitions);
 
     // watch next turn
-    watchComponentUpdate(absPath, componentName, identifier);
+    watchComponentUpdate(absPath, componentName, identifier, parseOpts);
   });
 }
 
@@ -139,18 +141,17 @@ export default function api(): IDumiUnifiedTransformer {
       if (is(node, 'API') && !node._dumi_parsed) {
         let identifier: string;
         let definitions: ReturnType<typeof parser>;
-
+        const parseOpts = parseElmAttrToProps(node.properties);
         if (has(node, 'src')) {
           const src = node.properties.src || '';
           const absPath = path.join(path.dirname(this.data('fileAbsPath')), src);
           // guess component name if there has no identifier property
           const componentName = node.properties.identifier || guessComponentName(absPath);
-
-          definitions = parser(absPath, componentName);
+          definitions = parser(absPath, parseOpts, componentName);
           identifier = componentName || src;
 
           // trigger listener to update previewer props after this file changed
-          watchComponentUpdate(absPath, componentName, identifier);
+          watchComponentUpdate(absPath, componentName, identifier, parseOpts);
         } else if (vFile.data.componentName) {
           try {
             const sourcePath = getModuleResolvePath({
@@ -158,12 +159,11 @@ export default function api(): IDumiUnifiedTransformer {
               sourcePath: path.dirname(this.data('fileAbsPath')),
               silent: true,
             });
-
-            definitions = parser(sourcePath, vFile.data.componentName);
+            definitions = parser(sourcePath, parseOpts, vFile.data.componentName);
             identifier = vFile.data.componentName;
 
             // trigger listener to update previewer props after this file changed
-            watchComponentUpdate(sourcePath, vFile.data.componentName, identifier);
+            watchComponentUpdate(sourcePath, vFile.data.componentName, identifier, parseOpts);
           } catch (err) {
             /* noting */
           }

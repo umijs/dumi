@@ -4,7 +4,7 @@ import { execSync } from 'child_process';
 import type { IApi } from '@umijs/types';
 
 function getPkgAliasForPath(absPath: string) {
-  const result: [string, string] = [path.basename(absPath), absPath];
+  const result: [string, string] = ['', absPath];
   const pkgPath = path.join(absPath, 'package.json');
 
   // use package.name if exists

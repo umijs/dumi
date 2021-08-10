@@ -180,6 +180,14 @@ export default {
 
 配置 dumi 嗅探的文档目录，dumi 会尝试在配置的目录中递归寻找 markdown 文件，默认值为 `docs` 目录、`src` 目录（普通项目），如果环境为 lerna 项目，则 `src` 目录变为 `packages/pkg/src` 目录，通常不需要配置，除非自动嗅探出现了『误伤』。
 
+#### excludes
+
+- 类型：`Array<String>`
+- 默认值：`[]`
+- 详细：
+
+需要排除的目录，会对 `dumi` 嗅探到的目录或文件进行过滤，规则同 `gitignore` 配置。
+
 #### previewLangs
 
 - 类型：`Array<String>`
