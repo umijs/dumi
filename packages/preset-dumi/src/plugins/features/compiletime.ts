@@ -19,16 +19,23 @@ interface ICompiletimeOpts {
 }
 
 export default (api: IApi) => {
-  // register compiletime
-  api.register({
-    key: 'dumi.registerCompiletime',
-    fn(opts: ICompiletimeOpts) {
+  // wait for compiletime be registered
+  api.onPluginReady(async () => {
+    // get registered compiletime
+    const compiletimes: ICompiletimeOpts[] = await api.applyPlugins({
+      type: api.ApplyPluginsType.add,
+      key: 'dumi.registerCompiletime',
+      initialValue: [],
+    });
+
+    // reverse to make sure order is correct, the registerPreviewerTransformer use unshift() method
+    compiletimes.reverse().forEach((opts) => {
       // register transformer
       registerPreviewerTransformer({
         type: opts.name,
         fn: opts.transformer,
         component: opts.component,
       });
-    },
+    });
   });
 };
