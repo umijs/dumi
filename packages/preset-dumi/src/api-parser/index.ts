@@ -1,8 +1,13 @@
 import * as parser from 'react-docgen-typescript-dumi-tmp';
-import type { AtomPropsDefinition } from 'dumi-assets-types';
+import { buildFilter as getBuiltinFilter } from 'react-docgen-typescript-dumi-tmp/lib/buildFilter';
 import FileCache from '../utils/cache';
 import ctx from '../context';
-import type { IDumiOpts } from '../context';
+import type { AtomPropsDefinition } from 'dumi-assets-types';
+import type {
+  PropFilter as IPropFilter,
+  PropItem as IPropItem,
+} from 'react-docgen-typescript-dumi-tmp/lib/parser';
+import type { IDumiOpts, IStaticPropFilter } from '../context';
 
 const cacher = new FileCache();
 // ref: https://github.com/styleguidist/react-docgen-typescript/blob/048980a/src/parser.ts#L1110
@@ -19,19 +24,48 @@ const DEFAULT_EXPORTS = [
 
 export type IApiDefinition = AtomPropsDefinition;
 
-export type IApiExtraElement = IDumiOpts['apiParser'];
+/**
+ * implement skipNodeModules filter option
+ * @param prop  api prop item, from parser
+ * @param opts  filter options
+ */
+function extraFilter(prop: IPropItem, opts: IStaticPropFilter) {
+  // check within node_modules
+  if (opts.skipNodeModules && prop.declarations.find(d => d.fileName.includes('node_modules'))) {
+    return false;
+  }
 
-export default (filePath: string, apiElements: IApiExtraElement = {}, componentName?: string) => {
-  const globalConfig = ctx.opts?.apiParser;
-  const {
-    excludes = globalConfig?.excludes,
-    ignoreNodeModules = globalConfig?.ignoreNodeModules,
-    skipPropsWithoutDoc = globalConfig?.skipPropsWithoutDoc,
-    propFilter = globalConfig?.propFilter,
-  } = apiElements;
+  return true;
+}
+
+export default (
+  filePath: string,
+  { componentName, ...filterOpts }: IStaticPropFilter & { componentName?: string } = {},
+) => {
   let definitions: IApiDefinition = cacher.get(filePath);
+  let localFilter: IDumiOpts['apiParser']['propFilter'] = filterOpts;
+  const globalFilter = ctx.opts?.apiParser?.propFilter;
   const isDefaultRegExp = new RegExp(`^${componentName}$`, 'i');
 
+  switch (typeof globalFilter) {
+    // always use global filter if it is funuction
+    case 'function':
+      localFilter = globalFilter;
+      break;
+
+    // merge passed opts & global opts, and create custom filter
+    default:
+      localFilter = (
+        (mergedOpts): IPropFilter =>
+        (prop, component) => {
+          const builtinFilter = getBuiltinFilter({ propFilter: mergedOpts });
+
+          return builtinFilter(prop, component) && extraFilter(prop, mergedOpts);
+        }
+      )(Object.assign({}, globalFilter, localFilter));
+  }
+
+  // use cache first
   if (!definitions) {
     let defaultDefinition: IApiDefinition[''];
 
@@ -47,29 +81,7 @@ export default (filePath: string, apiElements: IApiExtraElement = {}, componentN
             // use parsed component name from remark pipeline as default export's displayName
             return DEFAULT_EXPORTS.includes(source.getName()) ? componentName : undefined;
           },
-          propFilter:
-            propFilter ||
-            (prop => {
-              let passFlag = true;
-              if (
-                ignoreNodeModules &&
-                prop.declarations !== undefined &&
-                prop.declarations.length > 0
-              ) {
-                const hasPropAdditionalDescription = prop.declarations.find(declaration => {
-                  return !declaration.fileName.includes('node_modules');
-                });
-                passFlag = Boolean(hasPropAdditionalDescription);
-              }
-              if (skipPropsWithoutDoc) {
-                passFlag = passFlag && prop.description.length !== 0;
-              }
-              if (excludes?.length) {
-                passFlag =
-                  passFlag && !excludes?.find(patten => new RegExp(patten).test(prop.name));
-              }
-              return passFlag;
-            }),
+          propFilter: localFilter,
         },
       )
       .parse(filePath)

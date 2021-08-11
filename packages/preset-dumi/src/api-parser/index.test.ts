@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { winEOL } from '@umijs/utils';
+import ctx from '../context';
 import parser from '.';
 
 const rawPath = path.join(__dirname, 'fixtures', 'raw');
@@ -45,10 +46,18 @@ describe('api parser', () => {
     assertResult('localeDescription.tsx');
   });
 
-  it('should parse with propFilter', () => {
-    assertResult('propFilter.tsx', { propFilter: (prop) => {
-      return prop.name !== 'style';
-    }});
+  it('should parse with global propFilter', () => {
+    const oOpts = ctx.opts;
+
+    ctx.opts = {
+      apiParser: {
+        propFilter: (prop) => {
+          return prop.name !== 'style';
+        },
+      },
+    } as any;
+    assertResult('propFilter.tsx');
+    ctx.opts = oOpts;
   });
 
   it('should parse with skipEmptyDoc', () => {
@@ -59,20 +68,20 @@ describe('api parser', () => {
 
   it('should parse with skipNodeModules', () => {
     assertResult('skipNodeModules.tsx', {
-      ignoreNodeModules: true,
+      skipNodeModules: true,
     });
   });
 
-  it('should parse with excludes', () => {
+  it('should parse with skipPropsWithName', () => {
     assertResult('excludes.tsx', {
-      excludes: [/[A-Z]+/],
+      skipPropsWithName: ['className'],
     });
   });
 
   it('should guess component name correctly', () => {
     expect(parser(path.join(rawPath, 'guess', 'FileName.tsx'))).toHaveProperty('FileName');
     expect(
-      parser(path.join(rawPath, 'guess', 'NestSrc', 'src', 'index.tsx'), undefined, 'NestSrc'),
+      parser(path.join(rawPath, 'guess', 'NestSrc', 'src', 'index.tsx'), { componentName: 'NestSrc' }),
     ).toHaveProperty('default');
   });
 });
