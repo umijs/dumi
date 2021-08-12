@@ -55,10 +55,6 @@ export interface IThemeContext {
      */
     theme: IDumiOpts['theme'];
     /**
-     * apiParser config
-     */
-    apiParser: IDumiOpts['apiParser'];
-    /**
      * configure how html is output
      */
     exportStatic?: IConfig['exportStatic'];
@@ -113,7 +109,6 @@ export default React.createContext<IThemeContext>({
     locales: [],
     repository: { branch: 'master' },
     theme: {},
-    apiParser: {},
   },
   meta: { title: '' },
   menu: [],

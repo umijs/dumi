@@ -35,7 +35,6 @@ export default (api: IApi) => {
       },
       algolia: ctx.opts.algolia,
       theme: ctx.opts.theme,
-      apiParser: ctx.opts.apiParser,
       exportStatic: api.config.exportStatic,
     };
 
