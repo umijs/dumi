@@ -41,6 +41,29 @@ Example：
 }
 ```
 
+### apiParser
+
+- Type: `Object`
+- Default: `{}`
+- Details:
+
+Configure API parser, support the following options:
+
+```js
+{
+  apiParser: {
+    // configure property filter, also can be a function, see: https://github.com/styleguidist/react-docgen-typescript/#propfilter
+    propFilter: {
+      // skip props which was parsed from node_modules, default to false
+      skipNodeModules: false,
+      // skip specific properties, default to []
+      skipPropsWithName: ['title'],
+      // skip props which was not be explained via JSDoc, default to false
+      skipPropsWithoutDoc: false,
+    },
+  }
+}
+```
 ### description
 
 - Type: `String`
