@@ -177,11 +177,14 @@ function generatePreviewerProps(
   if (!yaml.inline && isExternalDemo) {
     const listener = () => {
       debug(`regenerate demo props for: ${node.properties.filePath}`);
+
       // update @@/demos module if external demo changed, to update previewerProps for page component
-      applyDemo(
-        generatePreviewerProps(node, mdAbsPath, componentName, previewId),
-        transformCode(node, mdAbsPath),
-      );
+      try {
+        applyDemo(
+          generatePreviewerProps(node, mdAbsPath, componentName, previewId),
+          transformCode(node, mdAbsPath),
+        );
+      } catch (err) { /* nothing */ }
     };
 
     listener._identifier = fileAbsPath;
