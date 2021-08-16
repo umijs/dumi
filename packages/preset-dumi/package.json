@@ -43,6 +43,7 @@
     "hosted-git-info": "^3.0.2",
     "ignore": "^5.1.8",
     "js-yaml": "^3.13.1",
+    "lodash.throttle": "^4.1.1",
     "lz-string": "^1.4.4",
     "react-docgen-typescript-dumi-tmp": "^1.22.1-0",
     "rehype-autolink-headings": "^4.0.0",
