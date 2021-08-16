@@ -81,6 +81,23 @@ describe('preset-dumi', () => {
     expect(fs.readFileSync(path.join(cwd, 'dist', 'index.html'), 'utf8')).toContain('docsearch.js');
   });
 
+  it('algolia self host', async () => {
+    const cwd = path.join(fixtures, 'algolia-self-host');
+    const service = new Service({
+      cwd,
+      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+    });
+
+    await service.run({
+      name: 'g',
+      args: {
+        _: ['g', 'html'],
+      },
+    });
+
+    expect(fs.readFileSync(path.join(cwd, 'dist', 'index.html'), 'utf8')).toContain('docsearch.js');
+  });
+
   it('demos', async () => {
     const cwd = path.join(fixtures, 'demos');
     const service = new Service({
