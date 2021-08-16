@@ -41,6 +41,18 @@ Example：
 }
 ```
 
+If your site doesn't meet DocSearch [free condition](https://docsearch.algolia.com/docs/who-can-apply), you can sign up your own Algolia account then [deploy the crawler](https://docsearch.algolia.com/docs/run-your-own). `appId` is requried in this way.
+
+```js
+{
+  algolia: {
+    appId: 'yourappid',
+    apiKey: 'yourapikey',
+    indexName: 'dumi',
+  }
+}
+```
+
 ### apiParser
 
 - Type: `Object`

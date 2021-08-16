@@ -41,6 +41,18 @@ export default {
 }
 ```
 
+如果你的网站不符合 DocSearch [免费标准](https://docsearch.algolia.com/docs/who-can-apply)，可以自行注册 Algolia 账号并[部署爬虫](https://docsearch.algolia.com/docs/run-your-own)。这种情况下需要提供 `appId`。
+
+```js
+{
+  algolia: {
+    appId: 'yourappid',
+    apiKey: 'yourapikey',
+    indexName: 'dumi',
+  }
+}
+```
+
 ### apiParser
 
 - 类型：`Object`

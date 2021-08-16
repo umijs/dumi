@@ -78,6 +78,7 @@ export interface IDumiOpts {
    * enable algolia searching
    */
   algolia?: {
+    appId?: string;
     apiKey: string;
     indexName: string;
     debug?: boolean;
