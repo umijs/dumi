@@ -2,7 +2,7 @@ import { registerPreviewerTransformer } from '../../transformer/remark/previewer
 import type { IApi } from '@umijs/types';
 import type { IPreviewerTransformer } from '../../transformer/remark/previewer/builtin';
 
-interface ICompiletimeOpts {
+export interface ICompiletimeOpts {
   /**
    * compiletime name
    * @note  will be used as previewer component name
