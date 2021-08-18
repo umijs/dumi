@@ -148,7 +148,16 @@ export default function api(): IDumiUnifiedTransformer {
 
         if (has(node, 'src')) {
           const src = node.properties.src || '';
-          const absPath = path.join(path.dirname(this.data('fileAbsPath')), src);
+          let absPath = path.join(path.dirname(this.data('fileAbsPath')), src);
+          try {
+            absPath = getModuleResolvePath({
+              basePath: process.cwd(),
+              sourcePath: src,
+              silent: true,
+            });
+          } catch (err) {
+            // nothing
+          }
           // guess component name if there has no identifier property
           const componentName = node.properties.identifier || guessComponentName(absPath);
 
