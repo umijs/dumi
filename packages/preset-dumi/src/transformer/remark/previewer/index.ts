@@ -8,17 +8,22 @@ import slash from 'slash2';
 import ctx from '../../../context';
 import demoTransformer, { DEMO_COMPONENT_NAME } from '../../demo';
 import transformer from '../..';
-import { encodeImportRequire, decodeImportRequireWithAutoDynamic } from '../../utils';
+import {
+  encodeImportRequire,
+  decodeImportRequireWithAutoDynamic,
+  encodeHoistImport,
+} from '../../utils';
 import builtinTransformer from './builtin';
 import { listenFileOnceChange } from '../../../utils/watcher';
+import type { ExampleBlockAsset } from 'dumi-assets-types';
 import type { IDumiElmNode, IDumiUnifiedTransformer } from '..';
-import type { IPreviewerTransformer } from './builtin';
+import type { IPreviewerTransformer, IPreviewerTransformerResult } from './builtin';
 
 interface ICurryingPreviewerTransformer extends IPreviewerTransformer {
-  fn: () => ReturnType<IPreviewerTransformer['fn']>;
+  fn: () => IPreviewerTransformerResult;
 }
 
-type ICurryingCodeTransformer = (props: ReturnType<IPreviewerTransformer['fn']>['props']) => string;
+type ICurryingCodeTransformer = (props: IPreviewerTransformerResult['RendererProps']) => string;
 
 const debug = createDebug('dumi:previewer');
 export const previewerTransforms: IPreviewerTransformer[] = [builtinTransformer];
@@ -105,24 +110,69 @@ function getPreviewerId(yaml: any, mdAbsPath: string, codeAbsPath: string, compo
 }
 
 /**
+ * get demo dependencies meta data from previewer props
+ * @param props previewer props
+ */
+function getDemoDeps(
+  props: IPreviewerTransformerResult['previewerProps'],
+): ExampleBlockAsset['dependencies'] {
+  return {
+    // append npm dependencies
+    ...Object.entries(props.dependencies || {}).reduce(
+      (deps, [pkg, { version }]) =>
+        Object.assign(deps, {
+          [pkg]: {
+            type: 'NPM',
+            // TODO: get real version rule from package.json
+            value: version,
+          },
+        }),
+      {},
+    ),
+    // append local file dependencies
+    ...Object.entries(props.sources).reduce(
+      (result, [file, item]) =>
+        Object.assign(result, {
+          // handle main file
+          [file]: {
+            type: 'FILE',
+            value: item.content || fs.readFileSync(item.path, 'utf-8').toString(),
+          },
+        }),
+      {},
+    ),
+  };
+}
+
+/**
+ * get demo dependent files from previewer props
+ * @param props previewer props
+ */
+function getDependentFiles(props: IPreviewerTransformerResult['previewerProps']) {
+  return Object.values(props.sources)
+    .map(file => file.path)
+    .filter(Boolean);
+}
+
+/**
  * transform demo node to real component
  * @param node          demo node
  * @param mdAbsPath     md absolute path
  * @param pTransformer  previewer transformer
- * @param props         previewer props
+ * @param rendererProps demo render props
  */
 function transformCode(
   node: IDumiElmNode,
   mdAbsPath: string,
   pTransformer: ICurryingPreviewerTransformer,
-  props: ReturnType<IPreviewerTransformer['fn']>['props'],
+  rendererProps: IPreviewerTransformerResult['RendererProps'],
 ) {
   // export third-party transformer directly
   if (pTransformer.type !== 'builtin') {
     return `() => React.createElement(${decodeImportRequireWithAutoDynamic(
       encodeImportRequire(pTransformer.component),
       `demos_${pTransformer.type}`,
-    )}, ${JSON.stringify(props)}, [])`;
+    )}, ${JSON.stringify(rendererProps)}, [])`;
   }
 
   // export external demo directly
@@ -135,14 +185,40 @@ function transformCode(
 }
 
 /**
+ * transform meta data for node
+ * @param meta  node meta data from attribute & frontmatter
+ */
+function transformNodeMeta(meta: Record<string, any>) {
+  Object.keys(meta).forEach(key => {
+    const matched = key.match(/^desc(?:(\.[\w-]+$)|$)/);
+
+    // compatible with short-hand usage for description field in previous dumi versions
+    if (matched) {
+      key = `description${matched[1] || ''}`;
+      meta[key] = meta[matched[0]];
+      delete meta[matched[0]];
+    }
+
+    // transform markdown for description field
+    if (/^description(\.|$)/.test(key)) {
+      meta[key] = transformer.markdown(meta[key], null, {
+        type: 'html',
+      }).content;
+    }
+  });
+
+  return meta;
+}
+
+/**
  * apply code block detecting event
  * @param props         previewer props
  * @param dependencies  block example asset value
  * @param componentName the name of related component
  */
 function applyCodeBlock(
-  props: ReturnType<IPreviewerTransformer['fn']>['props'],
-  dependencies: ReturnType<IPreviewerTransformer['fn']>['dependencies'],
+  props: IPreviewerTransformerResult['RendererProps'],
+  dependencies: ExampleBlockAsset['dependencies'],
   componentName: string,
 ) {
   ctx.umi?.applyPlugins({
@@ -168,7 +244,15 @@ function applyCodeBlock(
  * apply demo detecting event
  * @param props previewer props
  */
-function applyDemo(props: ReturnType<IPreviewerTransformer['fn']>['props'], code: string) {
+function applyDemo(props: IPreviewerTransformerResult['previewerProps'], code: string) {
+  // hoist previewerProps.sources to reduce .dumi/demos size
+  Object.values(props.sources).forEach(file => {
+    if (!file.content) {
+      file.content = encodeHoistImport(file.path);
+      delete file.path;
+    }
+  });
+
   ctx.umi?.applyPlugins({
     key: 'dumi.detectDemo',
     type: ctx.umi.ApplyPluginsType.event,
@@ -191,7 +275,7 @@ function listenExtDemoDepsChange(
   node: IDumiElmNode,
   pTransformer: ICurryingPreviewerTransformer,
   cTransformer: ICurryingCodeTransformer,
-  files: ReturnType<IPreviewerTransformer['fn']>['dependentFiles'],
+  files: string[],
 ) {
   let isUpdated = false;
   const listener = () => {
@@ -199,12 +283,15 @@ function listenExtDemoDepsChange(
       isUpdated = true;
       debug(`regenerate demo props for: ${node.properties.filePath}`);
 
-      const { props, dependentFiles } = pTransformer.fn();
+      // update source property
+      node.properties.source = fs.readFileSync(node.properties.filePath, 'utf-8').toString();
 
-      applyDemo(props, cTransformer(props));
+      const { previewerProps, RendererProps } = pTransformer.fn();
+
+      applyDemo(previewerProps, cTransformer(RendererProps));
 
       // continue to listen the next turn
-      listenExtDemoDepsChange(node, pTransformer, cTransformer, dependentFiles);
+      listenExtDemoDepsChange(node, pTransformer, cTransformer, getDependentFiles(previewerProps));
     }
   };
 
@@ -230,9 +317,9 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
       parent.children.splice(i, 1);
     } else {
       // transform node to Previewer meta
-      let previewerProps: ReturnType<IPreviewerTransformer['fn']>['props'];
-      let demoDeps: ReturnType<IPreviewerTransformer['fn']>['dependencies'];
-      let dependentFiles: ReturnType<IPreviewerTransformer['fn']>['dependentFiles'];
+      let RendererProps: IPreviewerTransformerResult['RendererProps'];
+      let previewerProps: IPreviewerTransformerResult['previewerProps'];
+      let demoDeps: ExampleBlockAsset['dependencies'];
       let previewerTransformer: ICurryingPreviewerTransformer;
 
       // execute transformers to get the first valid result, and save currying transformer
@@ -255,25 +342,39 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
             this.vFile.data.componentName,
           );
           // fill fields for tranformer result
-          const decorateResult = (o: ReturnType<IPreviewerTransformer['fn']>) => {
+          const decorateResult = (o: IPreviewerTransformerResult) => {
+            // extra meta for external demo
+            if (node.properties.filePath) {
+              const { meta } = transformer.code(node.properties.source);
+
+              // save original attr meta on code tag, to avoid node meta override frontmatter in HMR
+              node.properties._ATTR_META = node.properties._ATTR_META || node.properties.meta;
+              node.properties.meta = Object.assign(meta, node.properties._ATTR_META);
+            }
+
+            // transform node meta data
+            node.properties.meta = transformNodeMeta(node.properties.meta);
+
             // set componentName for previewer props
-            o.props.componentName = this.vFile.data.componentName;
+            o.previewerProps.componentName = this.vFile.data.componentName;
 
             // assign node meta to previewer props (allow user override props via frontmatter or attribute)
-            Object.assign(o.props, node.properties.meta);
+            Object.assign(o.previewerProps, node.properties.meta);
 
             // force override id for previewer props
-            o.props.identifier = identifier;
+            o.previewerProps.identifier = identifier;
+
+            // fallback dependencies
+            o.previewerProps.dependencies = o.previewerProps.dependencies || {};
+
+            // generate demo dependencies from previewerProps.sources
+            demoDeps = getDemoDeps(o.previewerProps);
 
             return o;
           };
 
           // export result
-          ({
-            props: previewerProps,
-            dependencies: demoDeps,
-            dependentFiles = [],
-          } = decorateResult(result));
+          ({ RendererProps = {}, previewerProps } = decorateResult(result));
 
           // save transformer
           previewerTransformer = {
@@ -290,15 +391,14 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
       const isBuiltinTransformer = previewerTransformer.type === 'builtin';
       const codeTransformer: ICurryingCodeTransformer = props =>
         transformCode(node, this.data('fileAbsPath'), previewerTransformer, props);
-      const code = codeTransformer(previewerProps);
+      const code = codeTransformer(RendererProps);
 
       // declare demo on the top page component for memo
-      const demoComponentCode =
-        previewerProps.inline
-          ? // insert directly for inline demo
-            `React.memo(${decodeImportRequireWithAutoDynamic(code, 'demos_md_inline')})`
-          : // render other demo from the common demo module: @@/dumi/demos
-            `React.memo(DUMI_ALL_DEMOS['${previewerProps.identifier}'].component)`;
+      const demoComponentCode = previewerProps.inline
+        ? // insert directly for inline demo
+          `React.memo(${decodeImportRequireWithAutoDynamic(code, 'demos_md_inline')})`
+        : // render other demo from the common demo module: @@/dumi/demos
+          `React.memo(DUMI_ALL_DEMOS['${previewerProps.identifier}'].component)`;
 
       this.vFile.data.demos = (this.vFile.data.demos || []).concat(
         `const ${DEMO_COMPONENT_NAME}${
@@ -306,7 +406,7 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
         } = ${demoComponentCode};`,
       );
 
-      if (previewerProps.inline || !isBuiltinTransformer) {
+      if (previewerProps.inline) {
         // append demo component directly for inline demo and other transformer result
         parent.children[i] = {
           previewer: true,
@@ -334,14 +434,19 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
 
       // collect demo meta data, exclude inline demo
       if (!previewerProps.inline) {
+        // watch depend files to update demo meta for external demo
+        if (node.properties.filePath) {
+          listenExtDemoDepsChange(
+            node,
+            previewerTransformer,
+            codeTransformer,
+            getDependentFiles(previewerProps),
+          );
+        }
+
         // apply umi plugins
         applyCodeBlock(previewerProps, demoDeps, this.vFile.data.componentName);
         applyDemo(previewerProps, code);
-
-        // watch depend files to update demo meta for external demo
-        if (node.properties.filePath) {
-          listenExtDemoDepsChange(node, previewerTransformer, codeTransformer, dependentFiles);
-        }
       }
     }
   }

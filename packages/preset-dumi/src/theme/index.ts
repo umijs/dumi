@@ -21,6 +21,7 @@ export interface IPreviewerComponentProps {
   sources: Record<
     string,
     {
+      path?: string;
       import?: string;
       content: string;
     }
