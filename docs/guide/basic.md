@@ -455,8 +455,8 @@ import Previewer from 'dumi-theme-default/src/builtins/Previewer';
 export default () => (
   <Previewer
     sources={{
-      _: {
-        jsx:
+      'index.jsx': {
+        content:
           "/**\n * debug: true\n */\n\nimport React from 'react';\n\nexport default () => 'I only show in the development environment';",
       },
     }}

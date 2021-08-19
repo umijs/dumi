@@ -54,17 +54,10 @@ export interface IPreviewerProps extends IPreviewerComponentProps {
 /**
  * get source code type for file
  * @param file    file path
- * @param source  file source object
  */
-function getSourceType(file: string, source: IPreviewerComponentProps['sources']['_']) {
-  // use file extension as source type first
-  let type = file.match(/\.(\w+)$/)?.[1];
-
-  if (!type) {
-    type = source.tsx ? 'tsx' : 'jsx';
-  }
-
-  return type as ICodeBlockProps['lang'];
+function getSourceType(file: string) {
+  // use file extension as source type
+  return file.match(/\.(\w+)$/)?.[1] as ICodeBlockProps['lang'];
 }
 
 const Previewer: React.FC<IPreviewerProps> = oProps => {
@@ -79,9 +72,9 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
   const openRiddle = useRiddle(props.hideActions?.includes('RIDDLE') ? null : props);
   const [execMotions, isMotionRunning] = useMotions(props.motions || [], demoRef.current);
   const [copyCode, copyStatus] = useCopy();
-  const [currentFile, setCurrentFile] = useState('_');
+  const [currentFile, setCurrentFile] = useState(() => Object.keys(props.sources)[0]);
   const [sourceType, setSourceType] = useState(
-    getSourceType(currentFile, props.sources[currentFile]),
+    getSourceType(currentFile),
   );
   const [showSource, setShowSource] = useState(Boolean(props.defaultShowCode));
   const [iframeKey, setIframeKey] = useState(Math.random());
@@ -98,7 +91,7 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
 
   function handleFileChange(filename: string) {
     setCurrentFile(filename);
-    setSourceType(getSourceType(filename, props.sources[filename]));
+    setSourceType(getSourceType(filename));
   }
 
   return (
@@ -231,11 +224,7 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
             >
               {Object.keys(props.sources).map(filename => (
                 <TabPane
-                  tab={
-                    filename === '_'
-                      ? `index.${getSourceType(filename, props.sources[filename])}`
-                      : filename
-                  }
+                  tab={filename}
                   key={filename}
                 />
               ))}

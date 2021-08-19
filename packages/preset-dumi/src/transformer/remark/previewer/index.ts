@@ -128,8 +128,8 @@ function transformCode(
   // export external demo directly
   return node.properties.filePath
     ? encodeImportRequire(node.properties.filePath)
-    : demoTransformer(node.properties.source.tsx || node.properties.source.jsx, {
-        isTSX: Boolean(node.properties.source.tsx),
+    : demoTransformer(node.properties.source, {
+        isTSX: /^tsx?$/.test(node.properties.lang),
         fileAbsPath: node.properties.filePath || mdAbsPath,
       }).content;
 }

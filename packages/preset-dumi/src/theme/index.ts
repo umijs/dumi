@@ -18,20 +18,13 @@ export { default as usePrefersColor } from './hooks/usePrefersColor';
 export interface IPreviewerComponentProps {
   title?: string;
   description?: string;
-  sources:
-    | {
-        /**
-         * self source code for demo
-         * @note  jsx exsits definitely, tsx exists when the source code language is tsx
-         */
-        _: { jsx: string; tsx?: string };
-      }
-    | Record<string, {
-          import: string;
-          content: string;
-          // reserved for transform JSX for other TypeScript file
-          tsx?: string;
-        }>;
+  sources: Record<
+    string,
+    {
+      import?: string;
+      content: string;
+    }
+  >;
   /**
    * third-party dependencies of demo
    */

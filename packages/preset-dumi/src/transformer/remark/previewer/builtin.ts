@@ -4,6 +4,7 @@ import { getDepsForDemo } from '../../demo';
 import { decodeHoistImportToContent, encodeHoistImport } from '../../utils';
 import type { ExampleBlockAsset } from 'dumi-assets-types';
 import type { IDumiElmNode } from '..';
+import type { IPreviewerComponentProps } from '../../../theme';
 
 export type IPreviewerTransformer = {
   /**
@@ -45,14 +46,14 @@ export type IPreviewerTransformer = {
      * all dependent files, use to watch changes
      */
     dependentFiles?: string[];
-  }
+  };
 };
 
 /**
  * transform meta data for node
  * @param meta  node meta data from attribute & frontmatter
  */
- function transformNodeMeta(meta: Record<string, any>) {
+function transformNodeMeta(meta: Record<string, any>) {
   Object.keys(meta).forEach(key => {
     const matched = key.match(/^desc(?:(\.[\w-]+$)|$)/);
 
@@ -83,12 +84,11 @@ const builtinPreviewerTransformer: IPreviewerTransformer['fn'] = ({ mdAbsPath, n
 
   // read frontmatter for external demo
   if (isExternalDemo) {
-    const lang = node.properties.filePath.match(/\.(\w+)$/)[1];
     const { meta, content } = transformer.code(
       fs.readFileSync(node.properties.filePath, 'utf8').toString(),
     );
 
-    node.properties.source = { [lang]: content };
+    node.properties.source = content;
     // save original attr meta on code tag, to avoid node meta override frontmatter in HMR
     node.properties._ATTR_META = node.properties._ATTR_META || node.properties.meta;
     node.properties.meta = Object.assign(meta, node.properties._ATTR_META);
@@ -98,27 +98,20 @@ const builtinPreviewerTransformer: IPreviewerTransformer['fn'] = ({ mdAbsPath, n
   node.properties.meta = transformNodeMeta(node.properties.meta);
 
   // collect third-party dependencies and locale file dependencies for demo
-  const { files, dependencies } = getDepsForDemo(
-    node.properties.source.tsx || node.properties.source.jsx,
-    {
-      isTSX: Boolean(node.properties.source.tsx),
-      fileAbsPath,
-    },
-  );
+  const { files, dependencies } = getDepsForDemo(node.properties.source, {
+    isTSX: /^tsx?$/.test(node.properties.lang),
+    fileAbsPath,
+  });
 
   // generate previewer props
   const props = {
     // source code data
     sources: {
-      _: isExternalDemo
-        ? Object.keys(node.properties.source).reduce(
-            (r, lang) => ({
-              ...r,
-              [lang]: encodeHoistImport(node.properties.filePath),
-            }),
-            {},
-          )
-        : node.properties.source,
+      [`index.${node.properties.lang}`]: {
+        content: isExternalDemo
+          ? encodeHoistImport(node.properties.filePath)
+          : node.properties.source,
+      },
       ...Object.keys(files).reduce(
         (result, file) => ({
           ...result,
@@ -127,7 +120,7 @@ const builtinPreviewerTransformer: IPreviewerTransformer['fn'] = ({ mdAbsPath, n
             content: encodeHoistImport(files[file].fileAbsPath),
           },
         }),
-        {},
+        {} as IPreviewerComponentProps['sources'],
       ),
     },
     // third-party dependencies data
@@ -153,15 +146,14 @@ const builtinPreviewerTransformer: IPreviewerTransformer['fn'] = ({ mdAbsPath, n
       ),
       // append local file dependencies
       ...Object.entries(props.sources).reduce(
-        (result, [file, { tsx, jsx, content }]) =>
+        (result, [file, { content }]) =>
           Object.assign(result, {
-            // handle main file
-            [file === '_' ? `index.${tsx ? 'tsx' : 'jsx'}` : file]: {
+            [file]: {
               type: 'FILE',
               value:
-                file === '_'
+                file === `index.${node.properties.lang}`
                   ? // strip frontmatter for main file
-                    transformer.code(decodeHoistImportToContent(tsx || jsx)).content
+                    transformer.code(decodeHoistImportToContent(content)).content
                   : decodeHoistImportToContent(content),
             },
           }),

@@ -27,8 +27,9 @@ function getTextContent(raw: string) {
  * @param opts  previewer props
  */
 function getCSBData(opts: IPreviewerComponentProps) {
-  const isTSX = Boolean(opts.sources._.tsx);
-  const ext = isTSX ? '.tsx' : '.jsx';
+  const firstFileName = Object.keys(opts.sources)[0];
+  const ext = firstFileName.match(/(\.\w+)$/)[1];
+  const isTSX = ext === '.tsx';
   const files: Record<string, { content: string }> = {};
   const deps: Record<string, string> = {};
   const CSSDeps = Object.values(opts.dependencies).filter(dep => dep.css);
@@ -96,10 +97,9 @@ ReactDOM.render(
   };
 
   // append other imported local files
-  Object.entries(opts.sources).forEach(([filename, { tsx, jsx, content }]) => {
-    // handle primary content
-    files[filename === '_' ? appFileName : filename] = {
-      content: tsx || jsx || content,
+  Object.entries(opts.sources).forEach(([filename, { content }]) => {
+    files[filename === firstFileName ? appFileName : filename] = {
+      content,
     };
   });
 

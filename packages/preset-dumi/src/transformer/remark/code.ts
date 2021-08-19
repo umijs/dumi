@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import is from 'hast-util-is-element';
 import has from 'hast-util-has-property';
 import visit from 'unist-util-visit';
@@ -29,6 +31,8 @@ export default function code(): IDumiUnifiedTransformer {
           position: node.position,
           properties: {
             type: 'previewer',
+            lang: path.extname(absPath).slice(1),
+            source: fs.readFileSync(absPath, 'utf8').toString(),
             filePath: absPath,
             src,
             meta: {
