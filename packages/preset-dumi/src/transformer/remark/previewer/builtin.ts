@@ -4,15 +4,58 @@ import type { IDumiElmNode } from '..';
 import type { IPreviewerComponentProps } from '../../../theme';
 import { encodeHoistImport } from '../../utils';
 
+type KnownKeys<T> = {
+  [K in keyof T as string extends K ? never : number extends K ? never : K]: T[K];
+};
+
+// refer: https://github.com/microsoft/TypeScript/issues/31153#issuecomment-886674446
+type OmitFromKnownKeys<T, K extends keyof T> = KnownKeys<T> extends infer U
+  ? keyof U extends keyof T
+    ? Pick<T, Exclude<keyof U, K>> & Pick<T, Exclude<keyof T, keyof KnownKeys<T>>>
+    : never
+  : never;
+
+interface ITransformerPreviewerProps
+  extends OmitFromKnownKeys<IPreviewerComponentProps, 'sources'> {
+  // override sources type, transformer only need to return { path: string }
+  sources: Record<
+    string,
+    {
+      /**
+       * absolute path for current file
+       */
+      path: string;
+      /**
+       * demo source code, only for code block demo in md
+       */
+      content?: string;
+      /**
+       * import statement for current file
+       */
+      import?: string;
+      /**
+       * legacy jsx entry file
+       * @deprecated
+       */
+      jsx?: string;
+      /**
+       * legacy tsx entry file
+       * @deprecated
+       */
+      tsx?: string;
+    }
+  >;
+}
+
 export type IPreviewerTransformerResult = {
   /**
    * render component props;
    */
-  RendererProps?: Record<string, any>;
+  rendererProps?: Record<string, any>;
   /**
    * previewer component props
    */
-  previewerProps: Partial<IPreviewerComponentProps>;
+  previewerProps: Partial<ITransformerPreviewerProps>;
 };
 
 export type IPreviewerTransformer = {

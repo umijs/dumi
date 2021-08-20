@@ -24,7 +24,7 @@ interface ICurryingPreviewerTransformer extends IPreviewerTransformer {
   fn: () => IPreviewerTransformerResult;
 }
 
-type ICurryingCodeTransformer = (props: IPreviewerTransformerResult['RendererProps']) => string;
+type ICurryingCodeTransformer = (props: IPreviewerTransformerResult['rendererProps']) => string;
 
 const debug = createDebug('dumi:previewer');
 export const previewerTransforms: IPreviewerTransformer[] = [builtinTransformer];
@@ -181,7 +181,7 @@ function transformCode(
   node: IDumiElmNode,
   mdAbsPath: string,
   pTransformer: ICurryingPreviewerTransformer,
-  rendererProps: IPreviewerTransformerResult['RendererProps'],
+  rendererProps: IPreviewerTransformerResult['rendererProps'],
 ) {
   // export third-party transformer directly
   if (pTransformer.type !== 'builtin') {
@@ -233,7 +233,7 @@ function transformNodeMeta(meta: Record<string, any>) {
  * @param componentName the name of related component
  */
 function applyCodeBlock(
-  props: IPreviewerTransformerResult['RendererProps'],
+  props: IPreviewerTransformerResult['rendererProps'],
   dependencies: ExampleBlockAsset['dependencies'],
   componentName: string,
 ) {
@@ -302,9 +302,9 @@ function listenExtDemoDepsChange(
       // update source property
       node.properties.source = fs.readFileSync(node.properties.filePath, 'utf-8').toString();
 
-      const { previewerProps, RendererProps } = pTransformer.fn();
+      const { previewerProps, rendererProps } = pTransformer.fn();
 
-      applyDemo(previewerProps, cTransformer(RendererProps));
+      applyDemo(previewerProps, cTransformer(rendererProps));
 
       // continue to listen the next turn
       listenExtDemoDepsChange(
@@ -338,7 +338,7 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
       parent.children.splice(i, 1);
     } else {
       // transform node to Previewer meta
-      let RendererProps: IPreviewerTransformerResult['RendererProps'];
+      let rendererProps: IPreviewerTransformerResult['rendererProps'];
       let previewerProps: IPreviewerTransformerResult['previewerProps'];
       let demoDeps: ExampleBlockAsset['dependencies'];
       let previewerTransformer: ICurryingPreviewerTransformer;
@@ -395,7 +395,7 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
           };
 
           // export result
-          ({ RendererProps = {}, previewerProps } = decorateResult(result));
+          ({ rendererProps = {}, previewerProps } = decorateResult(result));
 
           // save transformer
           previewerTransformer = {
@@ -411,7 +411,7 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
       // generate demo code
       const codeTransformer: ICurryingCodeTransformer = props =>
         transformCode(node, this.data('fileAbsPath'), previewerTransformer, props);
-      const code = codeTransformer(RendererProps);
+      const code = codeTransformer(rendererProps);
 
       // declare demo on the top page component for memo
       const demoComponentCode = previewerProps.inline
