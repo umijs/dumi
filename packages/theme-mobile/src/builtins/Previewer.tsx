@@ -33,7 +33,11 @@ export default (props: IPreviewerProps) => {
         window.postMessage(
           {
             type: ACTIVE_MSG_TYPE,
-            value: JSON.stringify({ identifier: props.identifier, demoUrl: props.demoUrl }),
+            value: JSON.stringify({
+              identifier: props.identifier,
+              demoUrl: props.demoUrl,
+              simulator: props.simulator,
+            }),
           },
           '*',
         );

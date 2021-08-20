@@ -12,26 +12,29 @@
 .@{prefix}-device {
   position: sticky;
   top: @s-device-gap-top;
-  display: flex;
-  flex-direction: column;
   margin-left: @s-content-margin;
-  width: @s-device-width;
-  min-width: @s-device-width;
-  height: @s-device-width * @s-device-ratio;
-  border-radius: 32px;
-  overflow: hidden;
-  .gen-device-style(1);
 
-  @media only screen and (max-width: 1440px) {
-    .gen-device-style(0.9);
-  }
+  &[data-device-type="iOS"] {
+    display: flex;
+    flex-direction: column;
+    width: @s-device-width;
+    min-width: @s-device-width;
+    height: @s-device-width * @s-device-ratio;
+    border-radius: 32px;
+    overflow: hidden;
+    .gen-device-style(1);
 
-  @media only screen and (max-width: 1360px) {
-    .gen-device-style(0.8);
-  }
+    @media only screen and (max-width: 1440px) {
+      .gen-device-style(0.9);
+    }
 
-  @media only screen and (max-width: 960px) {
-    display: none;
+    @media only screen and (max-width: 1360px) {
+      .gen-device-style(0.8);
+    }
+
+    @media only screen and (max-width: 960px) {
+      display: none;
+    }
   }
 
   &[data-mode='site'] {
