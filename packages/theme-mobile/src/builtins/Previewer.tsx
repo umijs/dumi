@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState, useContext } from 'react';
 import { context } from 'dumi/theme';
-import type { IPreviewerProps } from 'dumi-theme-default/src/builtins/Previewer';
-import Previewer from 'dumi-theme-default/src/builtins/Previewer';
+import type { IPreviewerProps } from 'dumi-theme-default/es/builtins/Previewer';
+import Previewer from 'dumi-theme-default/es/builtins/Previewer';
 import debounce from 'lodash.debounce';
 import './Previewer.less';
 
