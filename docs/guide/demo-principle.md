@@ -1,34 +1,34 @@
-# Demo 理念
+# Demo Principle
 
-dumi 从诞生之初，就有一条重要的 Demo 编写理念：**开发者应该像用户一样写 Demo**。
+From the beginning of dumi, there was an important Demo writing philosophy: **Developers should write Demos like users**.
 
-像用户一样，是指『组件库未来的用户在项目中怎么使用组件，开发者自己在 Demo 里就怎么使用组件』，这意味着开发者编写的 Demo 是能被用户的项目直接使用的。
+Like users, it refers to 『how future users of the component library will use the components in the project, and the developers themselves use the components in the demo』, which means that the demo written by the developer can be directly used by the user's project.
 
-这条理念可以拆分为 3 个原则。
+This can be divided into three principles.
 
-## 原则一：能看能用
+## Principle 1: Can see and use
 
-我们在 Demo 中引入组件的时候，很容易写成这样：
+When we introduce the component in the Demo, it is easy to write it like this:
 
 ```jsx | pure
-// 错误示例
+// Error example
 import Button from './index.tsx';
 import Button from '@/Button/index.tsx';
 ```
 
-虽然它能在组件库文档里正常运行，但用户在查看文档的时候，却不知道在自己的项目里应当如何引入组件，这样的 Demo 是**只能看不能用**的。
+Although it can run normally in the component library document, the user does not know how to introduce the component in his project when viewing the document. Such a demo is **you can only watch it but not use it**.
 
-dumi 为了解决这个问题，会自动帮开发者建立组件库 NPM 包 -> 组件库源代码的映射关系，使得我们可以像用户一样引入组件：
+In order to solve this problem, dumi will automatically help developers to establish the mapping relationship between component library NPM package -> component library source code, so that we can introduce components like users:
 
 ```jsx | pure
-// 正确示例
-// 注：此处假定 package.json 中的 name 是 hello-dumi
+// Correct example
+// Note: It is assumed that the name in package.json is hello-dumi
 import { Button } from 'hello-dumi';
 ```
 
-## 原则二：依赖清晰
+## Principle 2: Rely on clarity
 
-使用 [Umi](https://umijs.org) 开发过项目的朋友可能知道，在写 JSX 时 `React` 的引入不是必须的；但在组件研发场景下，为了确保我们编写的 Demo 复制到任意前端开发框架、任意 React 版本（React 17 的 JSX 转换支持不引入 React）中都能如期运行，Demo 依赖必须足够清晰，所以 React 的引入是必要的：
+Those who have developed projects using [Umi](https://umijs.org) may know that the introduction of `React` is not necessary when writing JSX; but in the component development scenario, in order to ensure that the Demo we write is copied to any front end The development framework and any React version (React 17's JSX conversion support does not introduce React) can run as expected. Demo dependencies must be clear enough, so the introduction of React is necessary:
 
 ```jsx | pure
 import React from 'react';
@@ -36,16 +36,16 @@ import React from 'react';
 export default () => <>Hello World</>;
 ```
 
-## 原则三：易于维护
+## Principle 3: Easy to maintain
 
-用户会在 Markdown 中写项目吗？显然不会。开发者之所以选择直接在 Markdown 中写 Demo，是因为它简单、方便，但倘若某个组件的 Demo 特别复杂，我们却执意在 Markdown 中进行编写，那编写和维护的过程就成了噩梦。
+Will users write projects in Markdown? Obviously not. Developers choose to write Demo directly in Markdown because it is simple and convenient, but if a component's Demo is particularly complicated, we insist on writing it in Markdown, and the process of writing and maintaining it becomes a nightmare.
 
-为了能让开发者能和开发组件一样去编写、维护 Demo，dumi 支持从外部引入一个 Demo，就像这样：
+In order to allow developers to write and maintain demos in the same way as development components, dumi supports the introduction of a demo from the outside, like this:
 
 ```html
 <code src="/path/to/Demo.tsx" />
 ```
 
-同时为了使得它能看能用，在用户需要展示 Demo 源代码的时候，dumi 仍然会为用户展示真正的源代码！这样一来，不仅用户的体验丝毫不受影响，开发者也能享受到编辑器带来的 Code Snippets、ESLint、prettier 等强大的功能。
+At the same time, in order to make it visible and usable, dumi will still show the real source code to the user when the user needs to show the source code of the Demo! In this way, not only the user experience is not affected at all, but developers can also enjoy the powerful functions of the editor such as Code Snippets, ESLint, and prettier.
 
-如果你对组件 Demo 的编写也有自己的想法，欢迎到 [dumi 项目讨论区](https://github.com/umijs/dumi/discussions)分享你的经验。
+If you have your own thoughts on the preparation of component Demo, welcome to [dumi project discussion area](https://github.com/umijs/dumi/discussions) to share your experience.
