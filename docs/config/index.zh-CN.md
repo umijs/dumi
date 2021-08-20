@@ -263,16 +263,16 @@ export default {
 
 用于配置当前使用的主题包，具体配置项取决于主题包提供哪些配置，可访问 [主题列表](/zh-CN/theme) 查看目前可用的主题。
 
-#### darkMode
+#### darkSwitch
 
 ```js
 themeConfig: {
-  darkMode: 'hidden' | 'simple' | other else
+  darkSwitch: false | 'simple' | other else
 }
 ```
 
 - 默认显示 Dark 切换按钮，包含 浅色、深色、自动
-- `hidden`：隐藏 Dark 切换按钮
+- `false`：隐藏 Dark 切换按钮
 - `simple`：简洁模式，只显示深浅色切换
 
 ## 更多配置

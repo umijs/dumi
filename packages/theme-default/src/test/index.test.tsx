@@ -173,7 +173,7 @@ describe('default theme', () => {
           config: {
             ...baseCtx.config,
             theme: {
-              darkMode: 'simple',
+              darkSwitch: 'simple',
             },
           },
           meta: {
@@ -221,7 +221,7 @@ describe('default theme', () => {
           config: {
             ...baseCtx.config,
             theme: {
-              darkMode: 'hidden',
+              darkSwitch: false,
             },
           },
           meta: {
