@@ -12,6 +12,7 @@ import {
   encodeImportRequire,
   decodeImportRequireWithAutoDynamic,
   encodeHoistImport,
+  decodeHoistImportToContent,
 } from '../../utils';
 import builtinTransformer from './builtin';
 import { listenFileOnceChange } from '../../../utils/watcher';
@@ -112,9 +113,11 @@ function getPreviewerId(yaml: any, mdAbsPath: string, codeAbsPath: string, compo
 /**
  * get demo dependencies meta data from previewer props
  * @param props previewer props
+ * @param lang  node lang
  */
 function getDemoDeps(
   props: IPreviewerTransformerResult['previewerProps'],
+  lang: string,
 ): ExampleBlockAsset['dependencies'] {
   return {
     // append npm dependencies
@@ -133,11 +136,20 @@ function getDemoDeps(
     ...Object.entries(props.sources).reduce(
       (result, [file, item]) =>
         Object.assign(result, {
-          // handle main file
-          [file]: {
-            type: 'FILE',
-            value: item.content || fs.readFileSync(item.path, 'utf-8').toString(),
-          },
+          // handle legacy main file
+          ...(file === '_'
+            ? {
+                [`index.${lang}`]: {
+                  type: 'FILE',
+                  value: decodeHoistImportToContent(Object.values(item)[0] as string),
+                },
+              }
+            : {
+                [file]: {
+                  type: 'FILE',
+                  value: item.content || fs.readFileSync(item.path, 'utf-8').toString(),
+                },
+              }),
         }),
       {},
     ),
@@ -146,11 +158,15 @@ function getDemoDeps(
 
 /**
  * get demo dependent files from previewer props
- * @param props previewer props
+ * @param props         previewer props
+ * @param demoFilePath  demo file path
  */
-function getDependentFiles(props: IPreviewerTransformerResult['previewerProps']) {
-  return Object.values(props.sources)
-    .map(file => file.path)
+function getDependentFiles(
+  props: IPreviewerTransformerResult['previewerProps'],
+  demoFilePath?: string,
+) {
+  return Object.entries(props.sources)
+    .map(([file, val]) => (file === '_' ? demoFilePath : val.path))
     .filter(Boolean);
 }
 
@@ -247,7 +263,7 @@ function applyCodeBlock(
 function applyDemo(props: IPreviewerTransformerResult['previewerProps'], code: string) {
   // hoist previewerProps.sources to reduce .dumi/demos size
   Object.values(props.sources).forEach(file => {
-    if (!file.content) {
+    if (file.path) {
       file.content = encodeHoistImport(file.path);
       delete file.path;
     }
@@ -291,7 +307,12 @@ function listenExtDemoDepsChange(
       applyDemo(previewerProps, cTransformer(RendererProps));
 
       // continue to listen the next turn
-      listenExtDemoDepsChange(node, pTransformer, cTransformer, getDependentFiles(previewerProps));
+      listenExtDemoDepsChange(
+        node,
+        pTransformer,
+        cTransformer,
+        getDependentFiles(previewerProps, node.properties.filePath),
+      );
     }
   };
 
@@ -368,7 +389,7 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
             o.previewerProps.dependencies = o.previewerProps.dependencies || {};
 
             // generate demo dependencies from previewerProps.sources
-            demoDeps = getDemoDeps(o.previewerProps);
+            demoDeps = getDemoDeps(o.previewerProps, node.properties.lang);
 
             return o;
           };
@@ -388,7 +409,6 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
       });
 
       // generate demo code
-      const isBuiltinTransformer = previewerTransformer.type === 'builtin';
       const codeTransformer: ICurryingCodeTransformer = props =>
         transformCode(node, this.data('fileAbsPath'), previewerTransformer, props);
       const code = codeTransformer(RendererProps);
@@ -440,7 +460,7 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
             node,
             previewerTransformer,
             codeTransformer,
-            getDependentFiles(previewerProps),
+            getDependentFiles(previewerProps, node.properties.filePath),
           );
         }
 

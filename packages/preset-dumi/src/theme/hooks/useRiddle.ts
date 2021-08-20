@@ -38,7 +38,7 @@ const useInternalNet = () => {
  */
 function getRiddleAppCode(opts: IPreviewerComponentProps) {
   const { dependencies } = opts;
-  let result = Object.values(opts.sources)[0].content;
+  let result = opts.sources._.tsx || (opts.sources._ as any).jsx;
 
   // convert export default to ReactDOM.render for riddle
   result = result
