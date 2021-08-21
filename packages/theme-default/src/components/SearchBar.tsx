@@ -7,9 +7,9 @@ export const highlight = (key: string, title: string) => {
   const l = key.length;
   return (
     <>
-      {index != 0 && <span>{title.substring(0, index)}</span>}
+      {title.substring(0, index)}
       <span className="__dumi-default-search-highlight">{title.substring(index, index + l)}</span>
-      {index + l != title.length && <span>{title.substring(index + l, title.length)}</span>}
+      {title.substring(index + l, title.length)}
     </>
   );
 };
@@ -53,16 +53,15 @@ export default () => {
           : {})}
       />
       <ul>
-        {items.length > 0 &&
-          items.map(meta => (
-            <li key={meta.path} onClick={() => setKeywords('')}>
-              <AnchorLink to={meta.path}>
-                {meta.parent?.title && <span>{meta.parent.title}</span>}
-                {highlight(keywords, meta.title)}
-              </AnchorLink>
-            </li>
-          ))}
-        {items.length == 0 && keywords && <li style={{ textAlign: 'center' }}>{emptySvg}</li>}
+        {items.length > 0 && items.map(meta => (
+          <li key={meta.path} onClick={() => setKeywords('')}>
+            <AnchorLink to={meta.path}>
+              {meta.parent?.title && <span>{meta.parent.title}</span>}
+              {highlight(keywords, meta.title)}
+            </AnchorLink>
+          </li>
+        ))}
+        {items.length === 0 && keywords && <li style={{ textAlign: 'center' }}>{emptySvg}</li>}
       </ul>
     </div>
   );
