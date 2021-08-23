@@ -15,14 +15,31 @@ export default function code(): IDumiUnifiedTransformer {
   return ast => {
     visit<IDumiElmNode>(ast, 'element', (node, index, parent) => {
       if (is(node, 'code') && has(node, 'src')) {
+        const hasCustomTransformer = previewerTransforms.length > 1;
         const { src, ...attrs } = node.properties;
-        const absPath = getModuleResolvePath({
-          basePath: this.data('fileAbsPath'),
-          sourcePath: src,
-          // allow ts/js demo if there has custom compiletime transformer
-          ...(previewerTransforms.length > 1 ? {} : { extensions: ['.tsx', '.jsx'] }),
-        });
+        const props = {
+          source: '',
+          lang: path.extname(src).slice(1),
+          absPath: path.join(this.data('fileAbsPath'), src),
+        };
         const parsedAttrs = parseElmAttrToProps(attrs);
+
+        try {
+          props.absPath = getModuleResolvePath({
+            basePath: this.data('fileAbsPath'),
+            sourcePath: src,
+            // allow set unresolved src then resolve by custom transformer
+            silent: hasCustomTransformer,
+            // allow ts/js demo if there has custom compiletime transformer
+            ...(hasCustomTransformer ? {} : { extensions: ['.tsx', '.jsx'] }),
+          });
+          props.source = fs.readFileSync(props.absPath, 'utf8').toString();
+          props.lang = path.extname(props.absPath).slice(1);
+        } catch (err) {
+          if (!hasCustomTransformer) {
+            throw err;
+          }
+        }
 
         // replace original node
         parent.children.splice(index, 1, {
@@ -31,9 +48,7 @@ export default function code(): IDumiUnifiedTransformer {
           position: node.position,
           properties: {
             type: 'previewer',
-            lang: path.extname(absPath).slice(1),
-            source: fs.readFileSync(absPath, 'utf8').toString(),
-            filePath: absPath,
+            ...props,
             src,
             meta: {
               ...parsedAttrs,
