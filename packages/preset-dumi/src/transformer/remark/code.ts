@@ -20,12 +20,12 @@ export default function code(): IDumiUnifiedTransformer {
         const props = {
           source: '',
           lang: path.extname(src).slice(1),
-          absPath: path.join(this.data('fileAbsPath'), src),
+          filePath: path.join(this.data('fileAbsPath'), src),
         };
         const parsedAttrs = parseElmAttrToProps(attrs);
 
         try {
-          props.absPath = getModuleResolvePath({
+          props.filePath = getModuleResolvePath({
             basePath: this.data('fileAbsPath'),
             sourcePath: src,
             // allow set unresolved src then resolve by custom transformer
@@ -33,8 +33,8 @@ export default function code(): IDumiUnifiedTransformer {
             // allow ts/js demo if there has custom compiletime transformer
             ...(hasCustomTransformer ? {} : { extensions: ['.tsx', '.jsx'] }),
           });
-          props.source = fs.readFileSync(props.absPath, 'utf8').toString();
-          props.lang = path.extname(props.absPath).slice(1);
+          props.source = fs.readFileSync(props.filePath, 'utf8').toString();
+          props.lang = path.extname(props.filePath).slice(1);
         } catch (err) {
           if (!hasCustomTransformer) {
             throw err;
