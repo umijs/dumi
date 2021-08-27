@@ -30,7 +30,7 @@ const externalIdMap = new Map<string, number>();
 /**
  * record code block demo id count
  */
-const mdCodeBlockIdMap = new Map<string, Map<string, number>>();
+const mdCodeBlockIdMap = new Map<string, number>();
 
 /**
  * get unique id for previewer
@@ -50,7 +50,7 @@ function getPreviewerId(yaml: any, mdAbsPath: string, codeAbsPath: string, compo
   if (!id) {
     if (mdAbsPath === codeAbsPath) {
       // for code block demo, format: component-demo-N
-      const idMap = mdCodeBlockIdMap.get(mdAbsPath);
+      // const idMap = mdCodeBlockIdMap.get(mdAbsPath);
       const prefix =
         componentName ||
         path.basename(slash(mdAbsPath).replace(/(?:\/(?:index|readme))?(\.[\w-]+)?\.md/i, '$1'));
@@ -58,9 +58,9 @@ function getPreviewerId(yaml: any, mdAbsPath: string, codeAbsPath: string, compo
       id = `${prefix}-demo`;
 
       // record id count
-      const currentIdCount = idMap.get(id) || 0;
+      const currentIdCount = mdCodeBlockIdMap.get(id) || 0;
 
-      idMap.set(id, currentIdCount + 1);
+      mdCodeBlockIdMap.set(id, currentIdCount + 1);
 
       // append count suffix
       id += currentIdCount ? `-${currentIdCount}` : '';
