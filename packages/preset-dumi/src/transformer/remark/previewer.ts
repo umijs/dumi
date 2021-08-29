@@ -191,14 +191,20 @@ function generatePreviewerProps(
     depChangeListener = listener;
   }
 
-  const { files, dependencies } = getDepsForDemo(
-    node.properties.source.tsx || node.properties.source.jsx,
-    {
-      isTSX: Boolean(node.properties.source.tsx),
-      fileAbsPath,
-      depChangeListener,
-    },
-  );
+  let files: ReturnType<typeof getDepsForDemo>['files'] = {};
+  let dependencies: ReturnType<typeof getDepsForDemo>['dependencies'] = {};
+
+  // skip collect deps for inline demos
+  if (!yaml.inline) {
+    ({ files, dependencies } = getDepsForDemo(
+      node.properties.source.tsx || node.properties.source.jsx,
+      {
+        isTSX: Boolean(node.properties.source.tsx),
+        fileAbsPath,
+        depChangeListener,
+      },
+    ));
+  }
 
   return {
     sources: {
