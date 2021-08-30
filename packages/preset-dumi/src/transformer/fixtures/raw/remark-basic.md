@@ -68,5 +68,3 @@ $ npx dumi dev
 [前往 Umi 官网](https://umijs.org)
 
 自动转换超链接 https://umijs.org
-
-[内部 Markdown 链接](./test.md)

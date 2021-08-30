@@ -1,0 +1,40 @@
+<div className="markdown">
+<p><Link to="/test" />
+<Link to="/test" />
+<Link to="/test" />
+<Link to="/test" />
+<AnchorLink to="/test#header" />
+<AnchorLink to="/test#header" />
+<AnchorLink to="/test?a=1&b=2#header" />
+<AnchorLink to="/test?a=1&b=2#header" /></p>
+
+<p><Link to="/a/test" />
+<Link to="/a/test" />
+<Link to="/a/test" />
+<Link to="/a/test" />
+<AnchorLink to="/a/test#header" />
+<AnchorLink to="/a/test#header" /></p>
+
+<p><Link to="/zh-CN/a/test" />
+<Link to="/zh-CN/a/test" />
+<AnchorLink to="/zh-CN/a/test#%E5%A4%B4%E9%83%A8" />
+<AnchorLink to="/zh-CN/a/test#头部" />
+<AnchorLink to="/zh-CN/a/test?a=1&b=2#%E5%A4%B4%E9%83%A8" />
+<AnchorLink to="/zh-CN/a/test?a=1&b=2#头部" /></p>
+
+<p><Link to="/nav/group/route" />
+<Link to="/nav/group/route" />
+<Link to="/nav/group/route" />
+<Link to="/nav/group/route" />
+<AnchorLink to="/nav/group/route#anchor" />
+<AnchorLink to="/nav/group/route#anchor" /></p>
+
+<p><Link to="https://d.umijs.org/some.md">External Link</Link>
+<Link to="https://d.umijs.org/some.md">External Link</Link>
+<Link to="./test"><img src={require('logo.png')} /></Link>
+<Link to="/a/test"><img src={require('./assets/logo.png')} /></Link>
+<AnchorLink to="/a/test?a=1&b=2#header"><img src="/public/logo.png" /></AnchorLink>
+<Link to="https://d.umijs.org/some.md"><img src="https://d.umijs.org/public/logo.png" /></Link></p>
+
+<p><Link to="../outer.md" />
+<Link to="ethereal.md" /></p></div>

@@ -12,7 +12,7 @@ const IGNORE_DIR = ['node_modules', 'fixtures'];
 /**
  * discard .dirname & _dirname & ignore directories
  */
-function isValidPath(pathname: string) {
+export function isValidPath(pathname: string) {
   return !/(^|\/)[._][^/]+/.test(pathname) && IGNORE_DIR.indexOf(pathname) === -1;
 }
 
@@ -43,7 +43,7 @@ export function normalizePath(
   ).replace(/([^]+)\/$/, '$1'); // discard end slashZ
 }
 
-function splitLocalePathFromFilename(filename: string, locales: IDumiOpts['locales']) {
+export function splitLocalePathFromFilename(filename: string, locales: IDumiOpts['locales']) {
   const matchList = filename.match(/^(.+)\.([^.]+)$/);
   const result: [string, string] = ['', filename];
 
@@ -60,6 +60,44 @@ function splitLocalePathFromFilename(filename: string, locales: IDumiOpts['local
   }
 
   return result;
+}
+
+/**
+ * get route config from specific file path
+ * @param fileAbsPath       file absolute path
+ * @param opts              dumi options
+ * @param parentRoutePath   route path that need prefix for current
+ * @param isExample         React component in example directory
+ */
+export function findFileRoute(
+  fileAbsPath: string,
+  opts: IDumiOpts,
+  parentRoutePath: string,
+  isExample: boolean,
+) {
+  const cwd = ctx.umi?.cwd || process.cwd();
+  const fileParsed = path.parse(fileAbsPath);
+  const [localePath, realFilename] = splitLocalePathFromFilename(fileParsed.name, opts.locales);
+
+  let routePath = path.join(parentRoutePath, realFilename);
+
+  // collect all examples under examples dir path in site mode
+  if (isExample && opts.mode === 'site') {
+    routePath = path.join('/', path.parse(fileParsed.dir).name, routePath);
+  }
+
+  const route: IRoute = {
+    path: normalizePath(routePath, localePath, opts.locales),
+    component: `./${slash(path.relative(cwd, fileAbsPath))}`,
+    exact: true,
+  };
+
+  // add example flag
+  if (isExample) {
+    route.meta = { example: true };
+  }
+
+  return route;
 }
 
 /**
@@ -102,35 +140,17 @@ function findChildRoutes(
   // make sure file is front of child directory in routes
   files.forEach(file => {
     const fileParsed = path.parse(file);
-    const [localePath, realFilename] = splitLocalePathFromFilename(fileParsed.name, opts.locales);
-    const filePath = path.join(absPath, file);
     const isRcFile = ['.tsx', '.jsx'].includes(fileParsed.ext);
     const isExample = isExampleDir && isRcFile;
-    let routePath = path.join(parentRoutePath, realFilename);
-
-    // collect all examples under examples dir path in site mode
-    if (isExampleDir && opts.mode === 'site') {
-      routePath = path.join('/', path.parse(absPath).name, routePath);
-    }
 
     if (
       // process markdown file always
       fileParsed.ext === '.md' ||
       // process React Component if search in example directory
-      (isRcFile && isExampleDir)
+      isExample
     ) {
-      const route: IRoute = {
-        path: normalizePath(routePath, localePath, opts.locales),
-        component: `./${slash(path.relative(cwd, filePath))}`,
-        exact: true,
-      };
-
-      // add example flag
-      if (isExample) {
-        route.meta = { example: true };
-      }
-
-      routes.push(route);
+      const fileAbsPath = path.join(absPath, file);
+      routes.push(findFileRoute(fileAbsPath, opts, parentRoutePath, isExample));
     }
   });
 

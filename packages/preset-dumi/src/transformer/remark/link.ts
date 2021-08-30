@@ -1,9 +1,14 @@
+import path from 'path';
+import slash from 'slash2';
 import visit from 'unist-util-visit';
 import toHtml from 'hast-util-to-html';
 import has from 'hast-util-has-property';
 import is from 'hast-util-is-element';
 import url from 'url';
 import raw from './raw';
+import ctx from '../../context';
+import decorator from '../../routes/decorator';
+import getRouteConfigFromFile from '../../routes/getRouteConfigFromFile';
 import type { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 
 export default function link(): IDumiUnifiedTransformer {
@@ -19,11 +24,15 @@ export default function link(): IDumiUnifiedTransformer {
           .map(prop => `${prop}="${node.properties[prop]}"`)
           .join(' ');
 
-        // compatible with normal markdown link
-        // see https://github.com/umijs/dumi/issues/181
-        // TODO: https://github.com/umijs/dumi/issues/238
+        // if possible, generate route for the markdown link
         if (/\.md$/i.test(parsedUrl.pathname) && !/^(\w+:)?\/\//.test(node.properties.href)) {
-          parsedUrl.pathname = parsedUrl.pathname.replace(/\.md$/i, '');
+          const cwd = ctx.umi?.cwd ?? process.cwd();
+          const filePath = slash(path.join(path.dirname(vFile.data.filePath), parsedUrl.pathname));
+          const routes = getRouteConfigFromFile(path.join(cwd, filePath), ctx.opts);
+          if (routes) {
+            const finalRoutes = decorator([routes], ctx.opts, ctx.umi);
+            parsedUrl.pathname = finalRoutes.find(({ meta }) => meta.filePath === filePath).path;
+          }
         }
 
         // handle internal anchor link
@@ -71,8 +80,7 @@ export default function link(): IDumiUnifiedTransformer {
                           tagName: 'path',
                           properties: {
                             fill: 'currentColor',
-                            d:
-                              'M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z',
+                            d: 'M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z',
                           },
                         },
                         {

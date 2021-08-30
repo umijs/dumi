@@ -1,5 +1,6 @@
 import path from 'path';
 import getRoute from '../getRouteConfigFromDir';
+import getFileRoute from '../getRouteConfigFromFile';
 import decorateRoute from '../decorator';
 import getMenu from '../getMenuFromRoutes';
 
@@ -47,6 +48,35 @@ describe('routes & menu: normal', () => {
         exact: true,
       },
     ]);
+  });
+
+  it('getRouteConfigFromFile', () => {
+    const opts = {
+      mode: 'site',
+      locales: [['en-US', 'EN']],
+      resolve: {
+        includes: ['packages/preset-dumi/src/routes/fixtures/normal'],
+        examples: ['packages/preset-dumi/src/routes/fixtures/examples'],
+        excludes: ['packages/preset-dumi/src/routes/fixtures/demo'],
+      },
+    };
+    let route = getFileRoute(path.join(FIXTURES_PATH, 'normal/index.md'), opts);
+    expect(route).toEqual({
+      path: '/',
+      component: './packages/preset-dumi/src/routes/fixtures/normal/index.md',
+      exact: true,
+    });
+    route = getFileRoute(path.join(FIXTURES_PATH, 'examples/examples/test.tsx'), opts);
+    expect(route).toEqual({
+      path: '/examples/examples/test',
+      component: './packages/preset-dumi/src/routes/fixtures/examples/examples/test.tsx',
+      exact: true,
+      meta: {
+        example: true,
+      },
+    });
+    route = getFileRoute(path.join(FIXTURES_PATH, 'demo/index.md'), opts);
+    expect(route).toEqual(null);
   });
 
   it('route decorator', () => {
