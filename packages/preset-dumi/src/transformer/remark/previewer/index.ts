@@ -317,7 +317,10 @@ function listenExtDemoDepsChange(
   };
 
   // watch dependent files change
-  files.concat(node.properties.filePath).forEach(file => listenFileOnceChange(file, listener));
+  files
+    .concat(node.properties.filePath)
+    .filter(fs.existsSync)
+    .forEach(file => listenFileOnceChange(file, listener));
 }
 
 const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
