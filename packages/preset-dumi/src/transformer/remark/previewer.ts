@@ -55,7 +55,9 @@ function getPreviewerId(yaml: any, mdAbsPath: string, codeAbsPath: string, compo
         componentName ||
         path.basename(slash(mdAbsPath).replace(/(?:\/(?:index|readme))?(\.[\w-]+)?\.md/i, '$1'));
 
-      id = `${prefix}-demo`;
+      const mdCodeBlockId = mdAbsPath.split(path.sep).slice(0, -1).join('_');
+      
+      id = `${mdCodeBlockId}-${prefix}-demo`;
 
       // record id count
       const currentIdCount = idMap.get(id) || 0;
