@@ -264,7 +264,7 @@ function applyDemo(props: IPreviewerTransformerResult['previewerProps'], code: s
   // hoist previewerProps.sources to reduce .dumi/demos size
   Object.values(props.sources).forEach(file => {
     if (file.path) {
-      file.content = encodeHoistImport(file.path);
+      file.content = file.content || encodeHoistImport(file.path);
       delete file.path;
     }
   });
