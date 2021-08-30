@@ -41,6 +41,41 @@ Example：
 }
 ```
 
+If your site doesn't meet DocSearch [free condition](https://docsearch.algolia.com/docs/who-can-apply), you can sign up your own Algolia account then [deploy the crawler](https://docsearch.algolia.com/docs/run-your-own). `appId` is requried in this way.
+
+```js
+{
+  algolia: {
+    appId: 'yourappid',
+    apiKey: 'yourapikey',
+    indexName: 'dumi',
+  }
+}
+```
+
+### apiParser
+
+- Type: `Object`
+- Default: `{}`
+- Details:
+
+Configure API parser, support the following options:
+
+```js
+{
+  apiParser: {
+    // configure property filter, also can be a function, see: https://github.com/styleguidist/react-docgen-typescript/#propfilter
+    propFilter: {
+      // skip props which was parsed from node_modules, default to false
+      skipNodeModules: false,
+      // skip specific properties, default to []
+      skipPropsWithName: ['title'],
+      // skip props which was not be explained via JSDoc, default to false
+      skipPropsWithoutDoc: false,
+    },
+  }
+}
+```
 ### description
 
 - Type: `String`

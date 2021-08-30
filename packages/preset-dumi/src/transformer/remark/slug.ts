@@ -33,7 +33,7 @@ export default (): IDumiUnifiedTransformer => (ast, vFile) => {
 
       // generate id if not exist
       if (!has(node, 'id')) {
-        node.properties.id = slugs.slug(title, false);
+        node.properties.id = slugs.slug(title.trim(), false);
       }
 
       // save slugs

@@ -235,6 +235,10 @@ With the source code that can derive the API, we can render the API table throug
 
 <API src="/path/to/your/component.tsx"></API>
 
+<!-- src can use alias -->
+
+<API src="@/your/component.tsx"></API>
+
 <!-- Passing exports will explicitly indicate which exports to render, please make sure the value is a valid JSON string -->
 
 <API exports='["default", "Other"]'></API>
@@ -243,6 +247,8 @@ With the source code that can derive the API, we can render the API table throug
 The effect is roughly as follows:
 
 <API src="../.demos/Hello/index.tsx"></API>
+
+> When `src` uses `alias`, the built-in `@` and `@@` do not take effect, and you need to manually specify `alias` in the configuration file.
 
 ### Custom API table rendering
 

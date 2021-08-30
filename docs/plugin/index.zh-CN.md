@@ -100,11 +100,9 @@ export default {
 
 ## 插件 API
 
-基础插件 API 由 Umi 提供，包含如下 API。
+dumi 完全使用 Umi 的插件体系，可访问 Umi 的[插件开发最佳实践](https://umijs.org/zh-CN/plugins/best-practice)  了解如何开发一款插件，还可访问 Umi 的 [插件 API](https://umijs.org/zh-CN/plugins/api) 了解我们可以使用哪些基础 API。
 
-<!-- Umi 插件内容嵌入占位，目前 Umi 插件文档只有中文，比较尴尬 -->
-
-除此之外，为了便于插件开发者定制 dumi 的行为，dumi 提供了如下插件 API。
+除了基础 API，dumi 还提供了如下插件 API 以便于开发者定制 dumi 的行为。
 
 ### `dumi.getRootRoute`
 
@@ -118,7 +116,7 @@ export default async (api: IApi) => {
   const rootRoute = await api.applyPlugins({
     key: 'dumi.getRootRoute',
     type: api.ApplyPluginsType.modify,
-    initialValue: routes,
+    initialValue: await api.getRoutes(),
   });
 };
 ```

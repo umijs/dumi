@@ -1,3 +1,3 @@
 export default {
-  algolia: { apiKey: 'test', indexName: 'test' },
+  algolia: { appId: 'test', apiKey: 'test', indexName: 'test' },
 }

@@ -208,6 +208,10 @@
           color: @c-heading !important;
           background: transparent !important;
           cursor: default;
+
+          [data-prefers-color=dark] & {
+            color: @c-heading-dark !important;
+          }
         }
       }
 
@@ -353,6 +357,10 @@
       width: @s-site-menu-width;
       padding-top: 50px;
       background: transparent;
+
+      [data-prefers-color=dark] & {
+        background: @c-light-bg-dark;
+      }
 
       .@{prefix}-menu-nav,
       .@{prefix}-menu-header {

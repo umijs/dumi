@@ -304,7 +304,11 @@ function listenExtDemoDepsChange(
 
       const { previewerProps, rendererProps } = pTransformer.fn();
 
-      applyDemo(previewerProps, cTransformer(rendererProps));
+      try {
+        applyDemo(previewerProps, cTransformer(rendererProps));
+      } catch (e) {
+        /* nothing */
+      }
 
       // continue to listen the next turn
       listenExtDemoDepsChange(

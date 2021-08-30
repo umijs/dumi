@@ -41,6 +41,42 @@ export default {
 }
 ```
 
+如果你的网站不符合 DocSearch [免费标准](https://docsearch.algolia.com/docs/who-can-apply)，可以自行注册 Algolia 账号并[部署爬虫](https://docsearch.algolia.com/docs/run-your-own)。这种情况下需要提供 `appId`。
+
+```js
+{
+  algolia: {
+    appId: 'yourappid',
+    apiKey: 'yourapikey',
+    indexName: 'dumi',
+  }
+}
+```
+
+### apiParser
+
+- 类型：`Object`
+- 默认值：`{}`
+- 详细：
+
+配置 API 解析的行为，支持以下配置项：
+
+```js
+{
+  apiParser: {
+    // 自定义属性过滤配置，也可以是一个函数，用法参考：https://github.com/styleguidist/react-docgen-typescript/#propfilter
+    propFilter: {
+      // 是否忽略从 node_modules 继承的属性，默认值为 false
+      skipNodeModules: false,
+      // 需要忽略的属性名列表，默认为空数组
+      skipPropsWithName: ['title'],
+      // 是否忽略没有文档说明的属性，默认值为 false
+      skipPropsWithoutDoc: false,
+    },
+  }
+}
+```
+
 ### description
 
 - 类型：`String`

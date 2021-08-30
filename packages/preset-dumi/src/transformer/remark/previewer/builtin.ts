@@ -94,12 +94,17 @@ export type IPreviewerTransformer = {
 const builtinPreviewerTransformer: IPreviewerTransformer['fn'] = ({ mdAbsPath, node }) => {
   const isExternalDemo = Boolean(node.properties.filePath);
   const fileAbsPath = node.properties.filePath || mdAbsPath;
+  let files: ReturnType<typeof getDepsForDemo>['files'] = {};
+  let dependencies: ReturnType<typeof getDepsForDemo>['dependencies'] = {};
 
   // collect third-party dependencies and locale file dependencies for demo
-  const { files, dependencies } = getDepsForDemo(node.properties.source, {
-    isTSX: /^tsx?$/.test(node.properties.lang),
-    fileAbsPath,
-  });
+  // FIXME: handle frontmatter in the head of external demo code
+  if (!node.properties.meta?.inline) {
+    ({ files, dependencies } = getDepsForDemo(node.properties.source, {
+      isTSX: /^tsx?$/.test(node.properties.lang),
+      fileAbsPath,
+    }));
+  }
 
   return {
     // previewer props
