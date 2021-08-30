@@ -39,19 +39,7 @@ export const formatJSXProps = (props: Record<string, any>): Record<string, any> 
  * get umi dynamicImport flag
  */
 export function isDynamicEnable() {
-  const isDev = process.env.NODE_ENV === 'development';
-  const isProd = process.env.NODE_ENV === 'production';
-  const isEnableMFSU = Boolean(ctx.umi?.config?.mfsu);
-  const isEnableProdMFSU = Boolean(ctx.umi?.config?.mfsu && ctx.umi.config.mfsu.production);
-
-  return Boolean(
-    // A. enable dynamicImport directly
-    ctx.umi?.config?.dynamicImport ||
-      // B. enable mfsu
-      //    1. dev mode
-      //    2. prod mode and enable prod mfsu
-      (isEnableMFSU && (isDev || (isProd && isEnableProdMFSU))),
-  );
+  return Boolean(ctx.umi?.config?.dynamicImport);
 }
 
 /**
