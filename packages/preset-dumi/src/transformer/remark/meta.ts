@@ -16,9 +16,7 @@ import { getModuleResolvePath } from '../../utils/moduleResolver';
 export default function meta(): IDumiUnifiedTransformer {
   return (ast, vFile) => {
     if (this.data('fileAbsPath')) {
-      const filePath = slash(
-        path.relative(ctx.umi?.cwd || process.cwd(), this.data('fileAbsPath')),
-      );
+      const filePath = slash(path.relative(process.cwd(), this.data('fileAbsPath')));
 
       // append file info
       vFile.data.filePath = filePath;
