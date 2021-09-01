@@ -242,6 +242,11 @@ With the source code that can derive the API, we can render the API table throug
 <!-- Passing exports will explicitly indicate which exports to render, please make sure the value is a valid JSON string -->
 
 <API exports='["default", "Other"]'></API>
+
+<!-- Use hideTitle if you don't need a title -->
+
+<API hideTitle></API>
+
 ```
 
 The effect is roughly as follows:

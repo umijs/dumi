@@ -38,7 +38,8 @@ function serializeAPINodes(
 ) {
   const parsedAttrs = parseElmAttrToProps(node.properties);
   const expts: string[] = parsedAttrs.exports || Object.keys(definitions);
-
+  const showTitle = !has(node, 'hidetitle');
+  
   return expts.reduce<(IDumiElmNode | Node)[]>((list, expt, i) => {
     // render large API title if it is default export
     // or it is the first export and the exports attribute was not custom
@@ -48,7 +49,7 @@ function serializeAPINodes(
     const apiNode = deepmerge({}, node);
 
     // insert API title
-    if (isInsertAPITitle) {
+    if (showTitle && isInsertAPITitle) {
       list.push(
         {
           type: 'element',
@@ -64,7 +65,7 @@ function serializeAPINodes(
     }
 
     // insert export sub title
-    if (isInsertSubTitle) {
+    if (showTitle && isInsertSubTitle) {
       list.push(
         {
           type: 'element',

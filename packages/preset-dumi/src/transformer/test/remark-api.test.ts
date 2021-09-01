@@ -85,6 +85,14 @@ describe('component api example', () => {
     ]);
   });
 
+  it('transform api when use hideTitle', () => {
+    const filePath = path.join(fixtures,  'hide-title.md');
+    const result = transformer.markdown(fs.readFileSync(filePath, 'utf8').toString(), filePath);
+
+    expect(result.content).not.toContain('<h2 id="api">');
+    expect(result.content).not.toContain('<h3 id="api-world">');
+  });
+  
   it('should guess filename as component name', () => {
     const filePath = path.join(fixtures, 'guess-name.md');
     const result = transformer.markdown(fs.readFileSync(filePath, 'utf8').toString(), filePath);
@@ -105,4 +113,5 @@ describe('component api example', () => {
 
     expect(result.content).toContain('identifier="auto-detect"');
   });
+
 });
