@@ -38,7 +38,7 @@ function serializeAPINodes(
 ) {
   const parsedAttrs = parseElmAttrToProps(node.properties);
   const expts: string[] = parsedAttrs.exports || Object.keys(definitions);
-  const showTitle = !has(node, 'hidetitle');
+  const showTitle = !parsedAttrs.hideTitle
   
   return expts.reduce<(IDumiElmNode | Node)[]>((list, expt, i) => {
     // render large API title if it is default export

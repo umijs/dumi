@@ -2,7 +2,8 @@ const ATTR_MAPPING = {
   hideactions: 'hideActions',
   defaultshowcode: 'defaultShowCode',
   skipnodemodules: 'skipNodeModules',
-  skippropswithoutdoc: 'skipPropsWithoutDoc'
+  skippropswithoutdoc: 'skipPropsWithoutDoc',
+  hidetitle: 'hideTitle',
 };
 
 /**

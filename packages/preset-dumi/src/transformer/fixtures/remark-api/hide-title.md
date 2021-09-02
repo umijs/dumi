@@ -1,1 +1,1 @@
-<API src="@/Hello/index.tsx" hidetitle/>
+<API src="@/Hello/index.tsx" hideTitle/>
