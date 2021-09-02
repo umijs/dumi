@@ -20,7 +20,7 @@ export default function code(): IDumiUnifiedTransformer {
         const props = {
           source: '',
           lang: path.extname(src).slice(1),
-          filePath: path.join(this.data('fileAbsPath'), src),
+          filePath: path.join(path.dirname(this.data('fileAbsPath')), src),
         };
         const parsedAttrs = parseElmAttrToProps(attrs);
 
