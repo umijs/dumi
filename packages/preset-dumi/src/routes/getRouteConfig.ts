@@ -67,7 +67,15 @@ export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
       slash(path.relative(api.paths.absPagesPath, theme.layoutPaths._)),
     ],
     // decorate standard umi routes
-    routes: decorateRoutes(childRoutes, opts, api),
+    routes: decorateRoutes(
+      await api.applyPlugins({
+        key: 'dumi.beforeDecorateRoutes',
+        type: api.ApplyPluginsType.modify,
+        initialValue: childRoutes,
+      }),
+      opts,
+      api,
+    ),
     title: opts.title,
   });
   debug('decorateRoutes');
