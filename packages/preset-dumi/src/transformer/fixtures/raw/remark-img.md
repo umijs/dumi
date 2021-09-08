@@ -6,7 +6,13 @@
 
 ![](https://d.umijs.org/public/logo.png)
 
+![](测试.png)
+
+![](/public/测试.png)
+
 <img src="logo.png" />
 <img src="./assets/logo.png" />
 <img src="/public/logo.png" />
 <img src="https://d.umijs.org/public/logo.png" />
+<img src="测试.png" />
+<img src="/public/测试.png" />

@@ -15,8 +15,8 @@ export default function img(): IDumiUnifiedTransformer {
   return ast => {
     visit<IDumiElmNode>(ast, 'element', node => {
       if (is(node, 'img') && has(node, 'src')) {
+        node.properties.src = decodeURI(node.properties.src)
         const { src } = node.properties;
-
         if (isRelativeUrl(src)) {
           // use wrapper element to workaround for skip props escape
           // https://github.com/mapbox/jsxtreme-markdown/blob/main/packages/hast-util-to-jsx/index.js#L159
