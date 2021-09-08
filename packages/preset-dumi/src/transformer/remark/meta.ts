@@ -41,7 +41,7 @@ export default function meta(): IDumiUnifiedTransformer {
       }
 
       // try to find related component of this md
-      if (/(index|readme)?(\.[\w-]+)?\.md/i.test(this.data('fileAbsPath'))) {
+      if (/(?<!readme)(\.[\w-]+)?\.md/i.test(this.data('fileAbsPath'))) {
         try {
           getModuleResolvePath({
             extensions: ['.tsx'],
