@@ -24,14 +24,19 @@ export default function link(): IDumiUnifiedTransformer {
           .map(prop => `${prop}="${node.properties[prop]}"`)
           .join(' ');
 
-        // if possible, generate route for the markdown link
-        if (/\.md$/i.test(parsedUrl.pathname) && !/^(\w+:)?\/\//.test(node.properties.href)) {
+        // if possible, generate route for the markdown link and rcfile link
+        if (
+          (/\.md$/i.test(parsedUrl.pathname) || /\.(t|j)sx$/i.test(parsedUrl.pathname)) &&
+          !/^(\w+:)?\/\//.test(node.properties.href)
+        ) {
           const cwd = ctx.umi?.cwd ?? process.cwd();
           const filePath = slash(path.join(path.dirname(vFile.data.filePath), parsedUrl.pathname));
           const routes = getRouteConfigFromFile(path.join(cwd, filePath), ctx.opts);
           if (routes) {
             const finalRoutes = decorator([routes], ctx.opts, ctx.umi);
-            parsedUrl.pathname = finalRoutes.find(({ meta }) => meta.filePath === filePath).path;
+            parsedUrl.pathname = finalRoutes.find(
+              ({ component }) => component === `../${filePath}`,
+            ).path;
           }
         }
 

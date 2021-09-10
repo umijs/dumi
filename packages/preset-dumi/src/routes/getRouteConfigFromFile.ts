@@ -12,7 +12,7 @@ import type { IDumiOpts } from '../context';
  * @param absPath           absolute path
  * @param opts              dumi options
  */
-export default (absPath: string, opts: IDumiOpts): IRoute => {
+export default (absPath: string, opts: IDumiOpts): IRoute | null => {
   // not exist or invalid
   if (!fs.existsSync(absPath) || !isValidPath(absPath)) {
     return null;
@@ -26,28 +26,30 @@ export default (absPath: string, opts: IDumiOpts): IRoute => {
     return null;
   }
 
-  // not included
-  const fileDirAbsPath = path.dirname(absPath);
-  const getAbsPath = (dir: string) => (path.isAbsolute(dir) ? dir : path.join(cwd, dir));
-  let parentRoute = '';
-  opts?.resolve?.includes?.forEach(item => {
-    const docsDirAbsPath = getAbsPath(item);
-    if (fileDirAbsPath.startsWith(docsDirAbsPath)) {
-      parentRoute = `/${path.relative(docsDirAbsPath, fileDirAbsPath)}`;
+  // check resolve rule
+  const fileParsed = path.parse(absPath);
+  const fileDirAbsPath = fileParsed.dir;
+  const isRcFile = ['.tsx', '.jsx'].includes(fileParsed.ext);
+  const isValidResolveDir = (item: string) => {
+    if (fileDirAbsPath.startsWith(path.resolve(cwd, item))) {
+      return true;
     }
-  });
-  let isExample = false;
-  opts?.resolve?.examples?.forEach(item => {
-    const exampleDirAbsPath = getAbsPath(item);
-    if (fileDirAbsPath.startsWith(exampleDirAbsPath)) {
-      parentRoute = `/${path.relative(exampleDirAbsPath, fileDirAbsPath)}`;
-      isExample = true;
-    }
-  });
-  if (parentRoute === '') {
+  };
+  let isExampleDir;
+  let resolveDir = opts?.resolve?.includes?.find(isValidResolveDir);
+  if (!resolveDir) {
+    resolveDir = opts?.resolve?.examples?.find(isValidResolveDir);
+    isExampleDir = Boolean(resolveDir);
+  }
+  if (!resolveDir || (isRcFile && !isExampleDir)) {
     return null;
   }
 
   // generate route
-  return findFileRoute(absPath, opts, parentRoute, isExample);
+  return findFileRoute(
+    absPath,
+    opts,
+    slash(`/${path.relative(path.resolve(cwd, resolveDir), fileDirAbsPath)}`),
+    isRcFile && isExampleDir,
+  );
 };
