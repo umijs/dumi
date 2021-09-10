@@ -3,6 +3,7 @@ import React from 'react';
 import { render, act, waitFor } from '@testing-library/react';
 import type { MemoryHistory} from '@umijs/runtime';
 import { createMemoryHistory, Router } from '@umijs/runtime';
+import { context as Context } from 'dumi/theme';
 
 import Previewer from '../builtins/Previewer';
 import Layout from '../layouts';
@@ -43,6 +44,9 @@ describe('mobile theme', () => {
       logo: '/',
       mode: 'site' as 'doc' | 'site',
       repository: { branch: 'mater' },
+      theme: {
+        deviceTitle: 'test device title'
+      },
     },
     meta: {},
     menu: [
@@ -193,12 +197,19 @@ describe('mobile theme', () => {
   });
 
   it('should render demos layout', () => {
+    const wrapper = ({ children }) => (
+      <Context.Provider value={baseCtx}>
+        {children}
+      </Context.Provider>
+    );
+    
     const { getByTitle } = render(
       <Router history={history}>
         <DemoLayout {...baseProps}>
           <div title="content">123</div>
         </DemoLayout>
       </Router>,
+      { wrapper },
     );
 
     expect(getByTitle('content')).not.toBeNull();
