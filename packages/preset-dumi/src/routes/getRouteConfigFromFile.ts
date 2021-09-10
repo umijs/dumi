@@ -30,8 +30,8 @@ export default (absPath: string, opts: IDumiOpts): IRoute | null => {
   const fileParsed = path.parse(absPath);
   const fileDirAbsPath = fileParsed.dir;
   const isRcFile = ['.tsx', '.jsx'].includes(fileParsed.ext);
-  const isValidResolveDir = (item: string) => {
-    if (fileDirAbsPath.startsWith(path.resolve(cwd, item))) {
+  const isValidResolveDir = (dir: string) => {
+    if (fileDirAbsPath.startsWith(path.resolve(cwd, dir))) {
       return true;
     }
   };

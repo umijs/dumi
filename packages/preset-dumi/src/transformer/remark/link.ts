@@ -34,9 +34,7 @@ export default function link(): IDumiUnifiedTransformer {
           const routes = getRouteConfigFromFile(path.join(cwd, filePath), ctx.opts);
           if (routes) {
             const finalRoutes = decorator([routes], ctx.opts, ctx.umi);
-            parsedUrl.pathname = finalRoutes.find(
-              ({ component }) => component === `../${filePath}`,
-            ).path;
+            parsedUrl.pathname = finalRoutes.find(({ meta }) => meta.filePath === filePath)?.path;
           }
         }
 
