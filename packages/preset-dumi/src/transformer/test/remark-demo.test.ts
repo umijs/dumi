@@ -12,9 +12,8 @@ function clearVersion(source: string) {
 
 describe('demo example', () => {
   const FILE_PATH = path.join(__dirname, '../fixtures/raw/remark-demo.md');
-  const ERROR_CODE = `\`\`\`jsx
-import fro 'react';
-\`\`\``;
+  const ERROR_FILE_PATH = path.join(__dirname, '../fixtures/raw/remark-demo-error.md');
+  const ERROR_CODE = fs.readFileSync(ERROR_FILE_PATH, 'utf-8').toString();
 
   beforeAll(async () => {
     const service = new Service({
@@ -47,7 +46,7 @@ import fro 'react';
   });
 
   it('handle error from demo source code', () => {
-    const result = transformer.markdown(ERROR_CODE, FILE_PATH, { noCache: true });
+    const result = transformer.markdown(ERROR_CODE, ERROR_FILE_PATH);
 
     // expect return empty content if demo has error
     expect(result.content).toEqual('');
@@ -55,7 +54,7 @@ import fro 'react';
 
   it('support to throw error if demo has syntax error', () => {
     expect(
-      () => transformer.markdown(ERROR_CODE, FILE_PATH, { noCache: true, throwError: true })
+      () => transformer.markdown(ERROR_CODE, ERROR_FILE_PATH, { throwError: true })
     ).toThrowError();
   });
 });
