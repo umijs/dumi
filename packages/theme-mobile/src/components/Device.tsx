@@ -14,9 +14,9 @@ const Device: FC<IDeviceProps> = ({ url, className }) => {
   const [renderKey, setRenderKey] = useState(Math.random());
   const [color] = usePrefersColor();
   const {
-    config: { mode, title = 'dumi', theme = {} },
+    config: { mode, title, theme },
   } = useContext(context);
-  const { deviceTitle = title } = theme as IThemeConfig;
+  const deviceTitle = theme?.deviceTitle || title || 'dumi';
 
   // re-render iframe if prefers color changed
   useEffect(() => {
