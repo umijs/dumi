@@ -92,7 +92,7 @@ export default (function redirect(routes) {
         },
         exact: true,
         redirect: getFirstMenuInParent(validRoutes.concat(validGroups), this.options.menus?.[path])
-          .path,
+          ?.path,
       };
     }
 
