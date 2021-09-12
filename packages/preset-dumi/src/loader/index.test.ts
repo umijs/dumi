@@ -78,15 +78,23 @@ describe('loader', () => {
   it('should load part of md by range', async () => {
     const filePath = path.join(fixture, 'normal.md');
     const singleLine = await loader.call(
-      { resource: filePath, resourcePath: filePath, resourceQuery: '?range=L5' },
+      { resource: `${filePath}?range=L5`, resourcePath: filePath, resourceQuery: '?range=L5' },
       fs.readFileSync(filePath, 'utf8').toString(),
     );
     const rangeLines = await loader.call(
-      { resource: filePath, resourcePath: filePath, resourceQuery: '?range=L7-L9' },
+      {
+        resource: `${filePath}?range=L7-L9`,
+        resourcePath: filePath,
+        resourceQuery: '?range=L7-L9',
+      },
       fs.readFileSync(filePath, 'utf8').toString(),
     );
     const fallbackFullContent = await loader.call(
-      { resource: filePath, resourcePath: filePath, resourceQuery: '?range=LA-LB' },
+      {
+        resource: `${filePath}?range=LA-LB`,
+        resourcePath: filePath,
+        resourceQuery: '?range=LA-LB',
+      },
       fs.readFileSync(filePath, 'utf8').toString(),
     );
 
@@ -110,7 +118,7 @@ describe('loader', () => {
     const filePath = path.join(fixture, 'normal.md');
     const codeLines = await loader.call(
       {
-        resource: filePath,
+        resource: `${filePath}?regexp=${encodeURIComponent('/[\\r\\n]```[^]+?[\\r\\n]```/')}`,
         resourcePath: filePath,
         resourceQuery: `?regexp=${encodeURIComponent('/[\\r\\n]```[^]+?[\\r\\n]```/')}`,
       },
@@ -118,7 +126,7 @@ describe('loader', () => {
     );
     const fallbackLines = await loader.call(
       {
-        resource: filePath,
+        resource: `${filePath}?regexp=${encodeURIComponent('/<abc \\/>/')}`,
         resourcePath: filePath,
         resourceQuery: `?regexp=${encodeURIComponent('/<abc \\/>/')}`,
       },

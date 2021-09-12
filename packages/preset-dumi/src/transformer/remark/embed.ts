@@ -70,11 +70,9 @@ export default function embed(): IDumiUnifiedTransformer {
                         : `require('${moduleReqPath}').default`
                     })`
                   ),
-                  [EMBED_SLUGS]: transformer.markdown(
-                    content,
-                    absPath,
-                    { noCache: true },
-                  ).meta.slugs,
+                  [EMBED_SLUGS]: transformer.markdown(content, absPath, {
+                    cacheKey: moduleReqPath,
+                  }).meta.slugs,
                 },
                 position: node.position,
               });

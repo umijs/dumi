@@ -21,10 +21,18 @@ export default {
   markdown(
     raw: string,
     fileAbsPath: string | null,
-    { type = 'jsx', noCache, throwError }: { type?: 'jsx' | 'html'; noCache?: boolean; throwError?: boolean } = {},
+    {
+      type = 'jsx',
+      cacheKey = fileAbsPath,
+      throwError,
+    }: {
+      type?: 'jsx' | 'html';
+      cacheKey?: string;
+      throwError?: boolean;
+    } = {},
   ): TransformResult {
     // use cache first
-    let result = fileAbsPath && !noCache && cachers.markdown.get(fileAbsPath);
+    let result = cacheKey && cachers.markdown.get(cacheKey);
 
     if (!result) {
       try {
@@ -33,8 +41,8 @@ export default {
         // return empty result & cache error
         result = { value: { contents: '', data: {} }, error };
       } finally {
-        if (fileAbsPath && !noCache) {
-          cachers.markdown.add(fileAbsPath, result);
+        if (cacheKey) {
+          cachers.markdown.add(fileAbsPath, result, cacheKey);
         }
       }
     }
@@ -67,6 +75,6 @@ export default {
       .replace(/(^|\n)\s*\*+/g, '$1');
     const meta = yaml(frontmatter);
 
-    return { content: Object.keys(meta).length ? content : raw, meta, };
+    return { content: Object.keys(meta).length ? content : raw, meta };
   },
 };
