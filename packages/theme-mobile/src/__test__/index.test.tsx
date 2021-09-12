@@ -46,7 +46,7 @@ describe('mobile theme', () => {
       mode: 'site' as 'doc' | 'site',
       repository: { branch: 'mater' },
       theme: {
-        deviceTitle: 'test device title'
+        carrier: 'test carrier'
       },
     },
     meta: { title: 'demo' },
