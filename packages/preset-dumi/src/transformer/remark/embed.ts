@@ -7,6 +7,7 @@ import visit from 'unist-util-visit';
 import { getModuleResolvePath } from '../../utils/moduleResolver';
 import type { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 import { getFileRangeLines, getFileContentByRegExp } from '../../utils/getFileContent';
+import { isDynamicEnable } from '../utils';
 import transformer from '..';
 
 export const EMBED_SLUGS = 'dumi-embed-file-slugs';
@@ -48,6 +49,8 @@ export default function embed(): IDumiUnifiedTransformer {
             );
           }
 
+          const moduleReqPath = `${absPath}${String(query) ? `?${query}` : ''}`;
+
           // process node via file type
           switch (path.extname(parsed.pathname)) {
             case '.md':
@@ -58,7 +61,15 @@ export default function embed(): IDumiUnifiedTransformer {
                 tagName: 'React.Fragment',
                 properties: {
                   // eslint-disable-next-line no-new-wrappers
-                  children: new String(`require('${absPath}${String(query) ? `?${query}` : ''}').default()`),
+                  children: new String(
+                    `React.createElement(${
+                      isDynamicEnable()
+                        ? `dynamic({
+                          loader: async () => import(/* webpackChunkName: "embedded_md" */ '${moduleReqPath}'),
+                        })`
+                        : `require('${moduleReqPath}').default`
+                    })`
+                  ),
                   [EMBED_SLUGS]: transformer.markdown(
                     content,
                     absPath,

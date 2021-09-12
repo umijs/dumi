@@ -4,7 +4,7 @@ import unified from 'unified';
 import type { Node } from 'unist';
 import frontmatter from 'remark-frontmatter';
 import math from 'remark-math';
-import katex from 'rehype-katex';
+import mathjax from 'rehype-mathjax';
 import headings from 'rehype-autolink-headings';
 import comments from 'rehype-remove-comments';
 import stringify from 'rehype-stringify';
@@ -69,6 +69,14 @@ function debug(name: string) {
   };
 }
 
+// reserve unknown property for Node, to avoid custom plugin throw type error after @types/unist@2.0.4
+declare module 'unist' {
+  // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
+  export interface Node {
+    [key: string]: unknown;
+  }
+}
+
 export interface IDumiElmNode extends Node {
   properties: {
     id?: string;
@@ -109,8 +117,8 @@ export default (source: string, fileAbsPath: string, type: 'jsx' | 'html') => {
     .use(rehype)
     .use(debug('rehype'))
     // rehype plugins
-    .use(katex, { strict: false })
-    .use(debug('katex'))
+    .use(mathjax)
+    .use(debug('mathjax'))
     .use(sourceCode)
     .use(debug('sourceCode'))
     .use(raw)
@@ -119,8 +127,6 @@ export default (source: string, fileAbsPath: string, type: 'jsx' | 'html') => {
     .use(debug('domWarn'))
     .use(comments, { removeConditional: true })
     .use(debug('comments'))
-    .use(img)
-    .use(debug('img'))
     .use(code)
     .use(debug('code'))
     .use(embed)
@@ -133,6 +139,8 @@ export default (source: string, fileAbsPath: string, type: 'jsx' | 'html') => {
     .use(debug('headings'))
     .use(link)
     .use(debug('link'))
+    .use(img)
+    .use(debug('img'))
     .use(previewer)
     .use(debug('previewer'))
     .use(isolation)

@@ -11,7 +11,7 @@ class ColorChanger {
    * current color
    * @note  initial value from head script in src/plugins/theme.ts
    */
-  color = document.documentElement.getAttribute(COLOR_ATTR_NAME) as PrefersColorValue;
+  color: PrefersColorValue;
 
   /**
    * color change callbacks
@@ -19,15 +19,25 @@ class ColorChanger {
   private callbacks: ((color: PrefersColorValue) => void)[] = [];
 
   constructor() {
+    this.color = (localStorage.getItem(COLOR_LS_NAME) ||
+      document.documentElement.getAttribute(COLOR_ATTR_NAME)) as PrefersColorValue;
     // listen prefers color change
     (['light', 'dark'] as PrefersColorValue[]).forEach(color => {
-      this.getColorMedia(color).addEventListener('change', ev => {
+      const mediaQueryList = this.getColorMedia(color);
+      const handler = (ev: any) => {
         // only apply media prefers color in auto mode
         if (ev.matches && this.color === 'auto') {
           document.documentElement.setAttribute(COLOR_ATTR_NAME, color);
           this.applyCallbacks();
         }
-      });
+      };
+      // compatible with Safari 13-
+      /* istanbul ignore else */
+      if (mediaQueryList.addEventListener) {
+        mediaQueryList.addEventListener('change', handler);
+      } else if (mediaQueryList.addListener) {
+        mediaQueryList.addListener(handler);
+      }
     });
   }
 
@@ -96,17 +106,16 @@ class ColorChanger {
  * @see https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme
  */
 export default () => {
-  // lazy initialize, for SSR
-  if (!colorChanger) {
-    colorChanger = new ColorChanger();
-  }
-  const [color, setColor] = useState<PrefersColorValue>(colorChanger.color);
+  const [color, setColor] = useState<PrefersColorValue>();
   const changeColor = useCallback((val: PrefersColorValue) => {
     colorChanger.set(val);
   }, []);
 
   useEffect(() => {
+    // lazy initialize, for SSR
+    colorChanger = colorChanger || new ColorChanger();
     colorChanger.listen(setColor);
+    setColor(colorChanger.color);
 
     return () => colorChanger.unlisten(setColor);
   }, []);

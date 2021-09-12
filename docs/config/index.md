@@ -41,6 +41,41 @@ Example：
 }
 ```
 
+If your site doesn't meet DocSearch [free condition](https://docsearch.algolia.com/docs/who-can-apply), you can sign up your own Algolia account then [deploy the crawler](https://docsearch.algolia.com/docs/run-your-own). `appId` is requried in this way.
+
+```js
+{
+  algolia: {
+    appId: 'yourappid',
+    apiKey: 'yourapikey',
+    indexName: 'dumi',
+  }
+}
+```
+
+### apiParser
+
+- Type: `Object`
+- Default: `{}`
+- Details:
+
+Configure API parser, support the following options:
+
+```js
+{
+  apiParser: {
+    // configure property filter, also can be a function, see: https://github.com/styleguidist/react-docgen-typescript/#propfilter
+    propFilter: {
+      // skip props which was parsed from node_modules, default to false
+      skipNodeModules: false,
+      // skip specific properties, default to []
+      skipPropsWithName: ['title'],
+      // skip props which was not be explained via JSDoc, default to false
+      skipPropsWithoutDoc: false,
+    },
+  }
+}
+```
 ### description
 
 - Type: `String`
@@ -180,6 +215,14 @@ export default {
 
 Configure the document directory for dumi sniffing. Dumi will try to recursively find markdown files in the configured directory. The default values are the `docs` directory and the `src` directory (common projects). If the environment is the lerna project, the `src` directory will change It is the `packages/pkg/src` directory, and usually does not need to be configured, unless the automatic sniffing appears 『injuryed』.
 
+#### excludes
+
+- Type：`Array<String>`
+- Default：`[]`
+- Details：
+
+The directories or files that need to be excluded. The rules are the same as the configuration of `gitignore`.
+
 #### previewLangs
 
 - Type: `Array<String>`
@@ -187,6 +230,14 @@ Configure the document directory for dumi sniffing. Dumi will try to recursively
 - Details:
 
 The configuration dumi will be converted to the code block rendered by the ReactComponent component by default. If you don't want to do any conversion, such as a pure site like Umi's official website, then set this item to an empty array.
+
+#### passivePreview
+
+- Type：`Boolean`
+- Default：`false`
+- Details：
+
+Passive preview mode. Only codeblocks belonging to `resolve.previewLangs` and having the `preview` modifier are rendered as ReactComponent. Generally used to render only a few code blocks in `resolve.previewLangs`, but not all of them.
 
 ### sitemap
 

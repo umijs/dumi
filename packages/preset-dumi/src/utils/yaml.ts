@@ -2,7 +2,12 @@ import yaml from 'js-yaml';
 import { winEOL } from '@umijs/utils';
 
 export default (source: string) => {
-  const parsed = yaml.safeLoad(source);
+  let parsed: ReturnType<typeof yaml['safeLoad']>;
+
+  try {
+    parsed = yaml.safeLoad(source);
+  } catch (err) { /* nothing */ }
+
   const data: Record<string, any> = typeof parsed === 'object' ? parsed : {};
 
   // specialize for uuid, to avoid parse as number, error cases: 001, 1e10

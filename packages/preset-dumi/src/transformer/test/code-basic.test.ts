@@ -34,4 +34,20 @@ describe('code transformer: basic', () => {
       },
     });
   });
+
+  it('works with unexpected frontmatter', () => {
+    const raw = `/**
+ * key value
+ * hello: world
+ */
+
+export default null`;
+
+    expect(
+      transformer.code(raw),
+    ).toEqual({
+      content: raw,
+      meta: {},
+    });
+  });
 });

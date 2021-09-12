@@ -26,6 +26,6 @@ jobs:
           actions: 'create-comment'
           issue-number: ${{ github.event.issue.number }}
           body: |
-            Hello @${{ github.event.issue.user.login }}. In order to facilitate location and troubleshooting, we need you to provide a realistic example. You can create a dumi project by clicking [here](https://github.com/umijs/dumi-template) and provide the GitHub warehouse address and reproduce examples.
+            Hello @${{ github.event.issue.user.login }}. In order to facilitate location and troubleshooting, we need you to provide a realistic example. You can create a dumi project by clicking [here](https://github.com/umijs/dumi-template/generate) and provide the GitHub warehouse address and reproduce examples.
 
-            你好 @${{ github.event.issue.user.login }}, 为了方便定位和排查问题，我们需要你提供一个重现实例。你可以通过点击 [此处](https://github.com/umijs/dumi-template) 创建一个 dumi 项目并提供 GitHub 仓库地址和重现实例。
+            你好 @${{ github.event.issue.user.login }}, 为了方便定位和排查问题，我们需要你提供一个重现实例。你可以通过点击 [此处](https://github.com/umijs/dumi-template/generate) 创建一个 dumi 项目并提供 GitHub 仓库地址和重现实例。

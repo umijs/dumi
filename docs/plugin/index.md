@@ -102,11 +102,9 @@ export default {
 
 ## Plugin API
 
-The basic plugin API is provided by Umi and includes the following APIs.
+dumi completely inherits Umi plugin system, we can check out the [Plugin Best Practice](https://umijs.org/plugins/best-practice) from Umi to lean more about plugin development, and check out the [Plugin API](https://umijs.org/plugins/api) from Umi to lean about the basic APIs we can use.
 
-<!-- Umi 插件内容嵌入占位，目前 Umi 插件文档只有中文，比较尴尬 -->
-
-In addition, in order to facilitate plugin developers to customize dumi's behavior, dumi provides the following plugin APIs.
+In addition, dumi provides the following APIs to help us customize dumi's behavior.
 
 ### `dumi.getRootRoute`
 
@@ -122,7 +120,7 @@ export default async (api: IApi) => {
   const rootRoute = await api.applyPlugins({
     key: 'dumi.getRootRoute',
     type: api.ApplyPluginsType.modify,
-    initialValue: routes,
+    initialValue: await api.getRoutes(),
   });
 };
 ```

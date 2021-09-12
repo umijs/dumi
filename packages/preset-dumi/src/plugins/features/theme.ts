@@ -16,7 +16,7 @@ const COLOR_HEAD_SCP = `
     'data-prefers-color',
     cache === enums[2]
       ? (isDark ? enums[1] : enums[0])
-      : (enums.includes(cache) ? cache : enums[0])
+      : (enums.indexOf(cache) > -1 ? cache : enums[0])
   );
 })();
 `;
@@ -48,6 +48,9 @@ export default (api: IApi) => {
 
     // set alias for dumi theme api
     memo.resolve.alias.set('dumi/theme', path.join(__dirname, '../../theme'));
+
+    // set alias for builtin default theme
+    memo.resolve.alias.set('dumi-theme-default', path.dirname(require.resolve('dumi-theme-default/package.json')));
 
     // compile theme path for npm linked theme
     if (fs.existsSync(theme.modulePath)) {

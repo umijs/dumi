@@ -1,4 +1,4 @@
-import type { FC} from 'react';
+import type { FC } from 'react';
 import React, { useContext } from 'react';
 import { context, Link, NavLink } from 'dumi/theme';
 import LocaleSelect from './LocaleSelect';
@@ -8,9 +8,10 @@ import './SideMenu.less';
 interface INavbarProps {
   mobileMenuCollapsed: boolean;
   location: any;
+  darkPrefix?: React.ReactNode;
 }
 
-const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location }) => {
+const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location, darkPrefix }) => {
   const {
     config: {
       logo,
@@ -52,16 +53,16 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location }) => {
             <p>
               <object
                 type="image/svg+xml"
-                data={`https://img.shields.io/github/stars${
-                  repoUrl.match(/((\/[^\/]+){2})$/)[1]
-                }?style=social`}
+                data={`https://img.shields.io/github/stars${repoUrl.match(/((\/[^\/]+){2})$/)[1]
+                  }?style=social`}
               />
             </p>
           )}
         </div>
         {/* mobile nav list */}
-        {navItems.length ? (
-          <div className="__dumi-default-menu-mobile-area">
+
+        <div className="__dumi-default-menu-mobile-area">
+          {!!navItems.length && (
             <ul className="__dumi-default-menu-nav-list">
               {navItems.map(nav => {
                 const child = Boolean(nav.children?.length) && (
@@ -82,15 +83,11 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location }) => {
                 );
               })}
             </ul>
-            {/* site mode locale select */}
-            <LocaleSelect location={location} />
-          </div>
-        ) : (
-          <div className="__dumi-default-menu-doc-locale">
-            {/* doc mode locale select */}
-            <LocaleSelect location={location} />
-          </div>
-        )}
+          )}
+          {/* site mode locale select */}
+          <LocaleSelect location={location} />
+          {darkPrefix}
+        </div>
         {/* menu list */}
         <ul className="__dumi-default-menu-list">
           {!isHiddenMenus &&
@@ -100,10 +97,14 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location }) => {
               const hasChildren = item.children && Boolean(item.children.length);
               const show1LevelSlugs =
                 meta.toc === 'menu' && !hasChildren && hasSlugs && item.path === location.pathname.replace(/([^^])\/$/, '$1');
+              const menuPaths = hasChildren ? item.children.map(i => i.path) : [item.path];
 
               return (
                 <li key={item.path || item.title}>
-                  <NavLink to={item.path} exact={!(item.children && item.children.length)}>
+                  <NavLink
+                    to={item.path}
+                    isActive={() => menuPaths.includes(location.pathname)}
+                  >
                     {item.title}
                   </NavLink>
                   {/* group children */}
@@ -117,9 +118,9 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location }) => {
                           {/* group children slugs */}
                           {Boolean(
                             meta.toc === 'menu' &&
-                              typeof window !== 'undefined' &&
-                              child.path === location.pathname &&
-                              hasSlugs,
+                            typeof window !== 'undefined' &&
+                            child.path === location.pathname &&
+                            hasSlugs,
                           ) && <SlugList slugs={meta.slugs} />}
                         </li>
                       ))}

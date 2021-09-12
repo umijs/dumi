@@ -14,6 +14,10 @@ export default (props: IPreviewerProps) => {
   const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
+    // skip if page not loaded
+    /* istanbul ignore next */
+    if (!meta.title) return;
+
     const isFirstDemo = document.querySelector('.__dumi-default-mobile-previewer') === ref.current;
     const handler = debounce(() => {
       const scrollTop = document.documentElement.scrollTop + 128;
@@ -26,15 +30,25 @@ export default (props: IPreviewerProps) => {
         (scrollTop > ref?.current?.offsetTop &&
           scrollTop < ref?.current?.offsetTop + ref?.current?.offsetHeight)
       ) {
-        window.postMessage({ type: ACTIVE_MSG_TYPE, value: JSON.stringify({ identifier: props.identifier, demoUrl: props.demoUrl }) }, '*');
+        window.postMessage(
+          {
+            type: ACTIVE_MSG_TYPE,
+            value: JSON.stringify({ identifier: props.identifier, demoUrl: props.demoUrl }),
+          },
+          '*',
+        );
         setIsActive(true);
       } else {
         setIsActive(false);
       }
     }, 50);
 
-    // only render mobile phone when screen max than 960px
-    if (window?.outerWidth > 960 && meta.mobile !== false) {
+    if (
+      // only render mobile phone when screen max than 960px
+      window?.outerWidth > 960 &&
+      // do not disable mobile simulator
+      meta.mobile !== false
+    ) {
       // active source code wrapper if scroll into demo
       handler();
       window.addEventListener('scroll', handler);
@@ -58,7 +72,7 @@ export default (props: IPreviewerProps) => {
     }
 
     return () => window.removeEventListener('scroll', handler);
-  }, [props, meta.mobile]);
+  }, [props, meta]);
 
   return (
     <div className={meta.mobile !== false ? '__dumi-default-mobile-previewer' : null} ref={ref}>

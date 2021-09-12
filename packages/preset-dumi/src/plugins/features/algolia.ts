@@ -10,6 +10,7 @@ export default (api: IApi) => {
     config: {
       schema(joi) {
         return joi.object({
+          appId: joi.string(),
           apiKey: joi.string().required(),
           indexName: joi.string().required(),
           debug: joi.boolean(),

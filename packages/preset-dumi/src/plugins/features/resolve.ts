@@ -28,6 +28,7 @@ export default (api: IApi) => {
           .map(([_, pkgPath]) => path.relative(api.paths.cwd, path.join(pkgPath, 'src')))
           .concat(['docs']),
       examples: memo.resolve.examples || ['examples'],
+      passivePreview: memo.resolve.passivePreview || false
     });
 
     return memo;

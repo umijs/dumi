@@ -41,6 +41,42 @@ export default {
 }
 ```
 
+如果你的网站不符合 DocSearch [免费标准](https://docsearch.algolia.com/docs/who-can-apply)，可以自行注册 Algolia 账号并[部署爬虫](https://docsearch.algolia.com/docs/run-your-own)。这种情况下需要提供 `appId`。
+
+```js
+{
+  algolia: {
+    appId: 'yourappid',
+    apiKey: 'yourapikey',
+    indexName: 'dumi',
+  }
+}
+```
+
+### apiParser
+
+- 类型：`Object`
+- 默认值：`{}`
+- 详细：
+
+配置 API 解析的行为，支持以下配置项：
+
+```js
+{
+  apiParser: {
+    // 自定义属性过滤配置，也可以是一个函数，用法参考：https://github.com/styleguidist/react-docgen-typescript/#propfilter
+    propFilter: {
+      // 是否忽略从 node_modules 继承的属性，默认值为 false
+      skipNodeModules: false,
+      // 需要忽略的属性名列表，默认为空数组
+      skipPropsWithName: ['title'],
+      // 是否忽略没有文档说明的属性，默认值为 false
+      skipPropsWithoutDoc: false,
+    },
+  }
+}
+```
+
 ### description
 
 - 类型：`String`
@@ -180,6 +216,14 @@ export default {
 
 配置 dumi 嗅探的文档目录，dumi 会尝试在配置的目录中递归寻找 markdown 文件，默认值为 `docs` 目录、`src` 目录（普通项目），如果环境为 lerna 项目，则 `src` 目录变为 `packages/pkg/src` 目录，通常不需要配置，除非自动嗅探出现了『误伤』。
 
+#### excludes
+
+- 类型：`Array<String>`
+- 默认值：`[]`
+- 详细：
+
+需要排除的目录，会对 `dumi` 嗅探到的目录或文件进行过滤，规则同 `gitignore` 配置。
+
 #### previewLangs
 
 - 类型：`Array<String>`
@@ -187,6 +231,14 @@ export default {
 - 详细：
 
 配置 dumi 默认会转换为 ReactComponent 组件渲染的代码块，如果不希望做任何转换，例如类似 Umi 官网的纯站点，那么将该项设置为空数组即可。
+
+#### passivePreview
+
+- 类型：`Boolean`
+- 默认值：`false`
+- 详细：
+
+代码块被动渲染模式，当为 true 时，仅将属于 `resolve.previewLangs` 且具有 `preview` 修饰符的代码块渲染为 ReactComponent 代码块。一般用于仅希望渲染 `resolve.previewLangs` 中的少部分代码块，而不是全部。
 
 ### sitemap
 

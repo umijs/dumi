@@ -44,7 +44,10 @@ export default (
       // return demo component with motions handler
       result = [
         React.createElement(() => {
-          useMotions(previewerProps.motions || [], document.documentElement);
+          useMotions(
+            previewerProps.motions || [],
+            typeof window !== 'undefined' ? document.documentElement : null,
+          );
 
           return React.createElement('div', {}, React.createElement(demo.component));
         }),

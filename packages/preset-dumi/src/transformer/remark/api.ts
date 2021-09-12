@@ -9,6 +9,7 @@ import parser from '../../api-parser';
 import { getModuleResolvePath } from '../../utils/moduleResolver';
 import { listenFileOnceChange } from '../../utils/watcher';
 import ctx from '../../context';
+import type { ArgsType } from '@umijs/utils';
 import type { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 
 function applyApiData(identifier: string, definitions: ReturnType<typeof parser>) {
@@ -37,7 +38,8 @@ function serializeAPINodes(
 ) {
   const parsedAttrs = parseElmAttrToProps(node.properties);
   const expts: string[] = parsedAttrs.exports || Object.keys(definitions);
-
+  const showTitle = !parsedAttrs.hideTitle
+  
   return expts.reduce<(IDumiElmNode | Node)[]>((list, expt, i) => {
     // render large API title if it is default export
     // or it is the first export and the exports attribute was not custom
@@ -47,7 +49,7 @@ function serializeAPINodes(
     const apiNode = deepmerge({}, node);
 
     // insert API title
-    if (isInsertAPITitle) {
+    if (showTitle && isInsertAPITitle) {
       list.push(
         {
           type: 'element',
@@ -63,7 +65,7 @@ function serializeAPINodes(
     }
 
     // insert export sub title
-    if (isInsertSubTitle) {
+    if (showTitle && isInsertSubTitle) {
       list.push(
         {
           type: 'element',
@@ -97,8 +99,9 @@ function guessComponentName(fileAbsPath: string) {
 
   if (parsed.name === 'index') {
     // button/index.tsx => button
-    // button/src/index.tsx => button
-    return path.basename(parsed.dir.replace(/\/src$/, ''));
+    // packages/button/src/index.tsx => button
+    // windows: button\\src\\index.tsx
+    return path.basename(parsed.dir.replace(/\/src$|\\src$/, ''));
   }
 
   // components/button.tsx => button
@@ -108,15 +111,19 @@ function guessComponentName(fileAbsPath: string) {
 /**
  * watch component change to update api data
  * @param absPath       component absolute path
- * @param componentName component name
  * @param identifier    api identifier
+ * @param parseOpts     extra parse options
  */
-function watchComponentUpdate(absPath: string, componentName: string, identifier: string) {
+function watchComponentUpdate(
+  absPath: string,
+  identifier: string,
+  parseOpts: ArgsType<typeof parser>[1],
+) {
   listenFileOnceChange(absPath, () => {
     let definitions: ReturnType<typeof parser>;
 
     try {
-      definitions = parser(absPath, componentName);
+      definitions = parser(absPath, parseOpts);
     } catch (err) {
       /* noting */
     }
@@ -125,7 +132,7 @@ function watchComponentUpdate(absPath: string, componentName: string, identifier
     applyApiData(identifier, definitions);
 
     // watch next turn
-    watchComponentUpdate(absPath, componentName, identifier);
+    watchComponentUpdate(absPath, identifier, parseOpts);
   });
 }
 
@@ -138,18 +145,29 @@ export default function api(): IDumiUnifiedTransformer {
       if (is(node, 'API') && !node._dumi_parsed) {
         let identifier: string;
         let definitions: ReturnType<typeof parser>;
+        const parseOpts = parseElmAttrToProps(node.properties);
 
         if (has(node, 'src')) {
           const src = node.properties.src || '';
+          let absPath = path.join(path.dirname(this.data('fileAbsPath')), src);
+          try {
+            absPath = getModuleResolvePath({
+              basePath: process.cwd(),
+              sourcePath: src,
+              silent: true,
+            });
+          } catch (err) {
+            // nothing
+          }
           // guess component name if there has no identifier property
-          const componentName = node.properties.identifier || guessComponentName(src);
-          const absPath = path.join(path.dirname(this.data('fileAbsPath')), src);
+          const componentName = node.properties.identifier || guessComponentName(absPath);
 
-          definitions = parser(absPath, componentName);
+          parseOpts.componentName = componentName;
+          definitions = parser(absPath, parseOpts);
           identifier = componentName || src;
 
           // trigger listener to update previewer props after this file changed
-          watchComponentUpdate(absPath, componentName, identifier);
+          watchComponentUpdate(absPath, identifier, parseOpts);
         } else if (vFile.data.componentName) {
           try {
             const sourcePath = getModuleResolvePath({
@@ -158,11 +176,12 @@ export default function api(): IDumiUnifiedTransformer {
               silent: true,
             });
 
-            definitions = parser(sourcePath, vFile.data.componentName);
+            parseOpts.componentName = vFile.data.componentName;
+            definitions = parser(sourcePath, parseOpts);
             identifier = vFile.data.componentName;
 
             // trigger listener to update previewer props after this file changed
-            watchComponentUpdate(sourcePath, vFile.data.componentName, identifier);
+            watchComponentUpdate(sourcePath, identifier, parseOpts);
           } catch (err) {
             /* noting */
           }

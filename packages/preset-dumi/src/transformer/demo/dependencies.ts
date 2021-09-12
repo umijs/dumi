@@ -1,5 +1,5 @@
 import path from 'path';
-import slash from 'slash';
+import slash from 'slash2';
 import crypto from 'crypto';
 import * as babel from '@babel/core';
 import * as types from '@babel/types';
@@ -10,7 +10,7 @@ import {
   getModuleResolveContent,
 } from '../../utils/moduleResolver';
 import FileCache from '../../utils/cache';
-import type { IWatcherItem} from '../../utils/watcher';
+import type { IWatcherItem } from '../../utils/watcher';
 import { listenFileOnceChange } from '../../utils/watcher';
 import type { IDemoOpts } from './options';
 import { getBabelOptions } from './options';
@@ -42,9 +42,9 @@ interface IAnalyzeCache {
 
 export interface IDepAnalyzeResult {
   dependencies: Record<string, {
-      version: string;
-      css?: string;
-    }>;
+    version: string;
+    css?: string;
+  }>;
   files: Record<string, { import: string; fileAbsPath: string }>;
 }
 
@@ -236,8 +236,8 @@ export function getCSSForDep(dep: string) {
   const guessFiles = [
     // @group/pkg-suffic => pkg-suffix
     `${pkgWithoutGroup}`,
-    // @group/pkg-suffix => pkgsuffix
-    ...(pkgWithoutGroup.includes('-') ? [pkgWithoutGroup.replace(/-/g, '')] : []),
+    // @group/pkg-suffix => pkgsuffix @ant-design/pro-card => card
+    ...(pkgWithoutGroup.includes('-') ? [pkgWithoutGroup.replace(/-/g, ''), pkgWithoutGroup.split('-')[1]] : []),
     // guess normal css files
     'main',
     'index',

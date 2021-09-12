@@ -36,5 +36,6 @@ export default {
       redirect: '/~docs'
     }
   ],
-  plugins: ['./wrapper.ts']
+  plugins: ['./wrapper.ts'],
+  exportStatic: {},
 }
