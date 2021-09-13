@@ -61,7 +61,7 @@ export default (function group(routes) {
       } else if (
         route.meta.locale &&
         route.meta.locale !== defaultLocale &&
-        !groupPath.startsWith(`/${route.meta.locale}`)
+        !new RegExp(`/${route.meta.locale}(/|$)`).test(groupPath)
       ) {
         groupPath = `/${route.meta.locale}${groupPath}`;
       }

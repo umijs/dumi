@@ -53,7 +53,7 @@ export default (function nav(routes) {
         if (
           route.meta.locale &&
           route.meta.locale !== defaultLocale &&
-          !route.meta.nav.path.startsWith(`/${route.meta.locale}`)
+          !new RegExp(`/${route.meta.locale}(/|$)`).test(route.meta.nav.path)
         ) {
           route.meta.nav.path = `/${route.meta.locale}${route.meta.nav.path}`;
         }
