@@ -1,4 +1,5 @@
 import path from 'path';
+import slash from 'slash2';
 import slugger from 'github-slugger';
 import visit from 'unist-util-visit';
 import toString from 'hast-util-to-string';
@@ -46,7 +47,7 @@ function getSluggerIns(fileAbsPath: string, masterKey: string) {
  * @param fileAbsPath   file absolute path
  */
 export function getFilePathKey(fileAbsPath: string) {
-  return path.relative(ctx.umi?.cwd || process.cwd(), fileAbsPath);
+  return slash(path.relative(ctx.umi?.cwd || process.cwd(), fileAbsPath));
 }
 
 /**
