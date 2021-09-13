@@ -14,9 +14,9 @@ const Device: FC<IDeviceProps> = ({ url, className }) => {
   const [renderKey, setRenderKey] = useState(Math.random());
   const [color] = usePrefersColor();
   const {
-    config: { mode, title, theme },
+    config: { mode, theme },
   } = useContext(context);
-  const carrier = theme?.carrier || title || 'dumi';
+  const carrier = theme?.carrier || 'dumi';
 
   // re-render iframe if prefers color changed
   useEffect(() => {
@@ -30,7 +30,7 @@ const Device: FC<IDeviceProps> = ({ url, className }) => {
       data-mode={mode}
     >
       <div className="__dumi-default-device-status">
-        <span className="">{carrier}</span>
+        <span className="__dumi-default-device-status-carrier">{carrier}</span>
         <span>10:24</span>
       </div>
       <iframe title="dumi-previewer" src={url} key={renderKey} />

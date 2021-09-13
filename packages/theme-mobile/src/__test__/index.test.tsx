@@ -44,9 +44,6 @@ describe('mobile theme', () => {
       logo: '/',
       mode: 'site' as 'doc' | 'site',
       repository: { branch: 'mater' },
-      theme: {
-        carrier: 'test carrier'
-      },
     },
     meta: { title: 'demo' },
     menu: [
@@ -197,21 +194,54 @@ describe('mobile theme', () => {
   });
 
   it('should render demos layout', () => {
-    const wrapper = ({ children }) => (
-      <Context.Provider value={baseCtx}>
-        {children}
-      </Context.Provider>
-    );
-    
     const { getByTitle } = render(
       <Router history={history}>
         <DemoLayout {...baseProps}>
           <div title="content">123</div>
         </DemoLayout>
       </Router>,
-      { wrapper },
     );
 
     expect(getByTitle('content')).not.toBeNull();
+  });
+
+  it('should render device with carrier', async () => {
+  
+    render(
+      <Router history={history}>
+        <Context.Provider value={{
+          ...baseCtx,
+          config: {
+            ...baseCtx.config,
+            theme: {
+              carrier: 'test carrier'
+            },
+          },
+        }}>
+            <Layout {...baseProps}>
+              <Previewer
+                title="demo-1"
+                identifier="demo-1"
+                demoUrl="http://localhost/~demos/demo-1-custom"
+                sources={{
+                  _: {
+                    tsx: "export default () => 'TypeScript'",
+                  },
+                }}
+                dependencies={{}}
+              >
+                <>demo-1</>
+              </Previewer>
+            </Layout>
+          </Context.Provider>
+      </Router>,
+    );
+
+    // wait for debounce
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    });
+
+    expect(document.querySelector('.__dumi-default-device-status-carrier').innerHTML).toEqual('test carrier')
   });
 });
