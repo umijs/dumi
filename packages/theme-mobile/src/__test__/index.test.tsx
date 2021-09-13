@@ -244,4 +244,52 @@ describe('mobile theme', () => {
 
     expect(document.querySelector('.__dumi-default-device-status-carrier').innerHTML).toEqual('test carrier')
   });
+
+  it('should render previewer without mobile simulator', async () => {
+    render(
+      <Router history={history}>
+        <Context.Provider value={{
+          ...baseCtx,
+          meta: {
+            ...baseCtx.meta,
+            mobile: false,
+          },
+        }}>
+          <Layout {...baseProps}>
+            <Previewer
+              identifier="frontMatter-demo-1"
+              sources={{
+                _: {
+                  tsx: "export default () => 'TypeScript'",
+                },
+              }}
+              dependencies={{}}
+            />
+            <Previewer
+              mobile={true}
+              identifier="frontMatter-demo-2"
+              sources={{
+                _: {
+                  tsx: "export default () => 'TypeScript'",
+                },
+              }}
+              dependencies={{}}
+            />
+          </Layout>
+        </Context.Provider>
+      </Router>,
+    );
+
+    // wait for debounce
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    });
+
+    const checkIsMobileTheme = (id) => 
+      (document.getElementById(id).parentNode as HTMLElement)
+        .classList.contains('__dumi-default-mobile-previewer')
+
+    expect(checkIsMobileTheme('frontMatter-demo-1')).toBeFalsy();
+    expect(checkIsMobileTheme('frontMatter-demo-2')).toBeTruthy();
+  });
 });

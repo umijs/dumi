@@ -7,7 +7,7 @@ import './Previewer.less';
 
 export const ACTIVE_MSG_TYPE = 'dumi:scroll-into-demo';
 
-export default (props: IPreviewerProps) => {
+function MobilePreviewer(props: IPreviewerProps) {
   const ref = useRef<HTMLDivElement>();
   const { meta } = useContext(context);
   const [previewerProps, setPreviewerProps] = useState<null | IPreviewerProps>(null);
@@ -83,5 +83,30 @@ export default (props: IPreviewerProps) => {
         />
       )}
     </div>
+  );
+}
+
+interface MobilePreviewerProps extends IPreviewerProps {
+  mobile?: boolean,
+}
+
+const { Provider } = context
+
+export default (props: MobilePreviewerProps) => {
+  const { meta, ...ctx } = useContext(context);
+  const isMobileDemo = props?.mobile ?? meta?.mobile ?? true;
+
+  const PrevidererComponent = isMobileDemo ? MobilePreviewer : Previewer
+  
+  return (
+    <Provider value={{
+      ...ctx,
+      meta: {
+        ...meta,
+        mobile: isMobileDemo
+      }
+    }}>
+      <PrevidererComponent {...props} />
+    </Provider>
   );
 };

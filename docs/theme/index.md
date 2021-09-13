@@ -62,6 +62,50 @@ mobile: false
 Markdown content
 ```
 
+_`demo.FrontMatter.mobile` is also provided, and the weight of `demo.FrontMatter` is greater than that of `markdown.FrontMatter`_
+
+<pre lang="markdown">
+# Doc A
+
+### Demo 1
+
+```jsx
+export default () => ('📱 Mobile')
+```
+
+### Demo 2
+```jsx
+/**
+ * mobile: false
+ */
+
+export default () => ('💻 Web')
+```
+</pre>
+
+<pre lang="markdown">
+---
+mobile: false
+---
+
+# Doc B
+
+### Demo 3
+
+```jsx
+export default () => ('💻 Web')
+```
+
+### Demo 4
+```jsx
+/**
+ * mobile: true
+ */
+
+export default () => ('📱 Mobile')
+```
+</pre>
+
 
 ## Vacant
 

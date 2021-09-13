@@ -60,6 +60,50 @@ mobile: false
 Markdown 正文
 ```
 
+_同时也提供了 demo 级别的同名 frontmatter，且 `demo.FrontMatter` 权重大于 `markdown.FrontMatter` 权重_
+
+<pre lang="markdown">
+# Doc A
+
+### Demo 1
+
+```jsx
+export default () => ('📱 Mobile')
+```
+
+### Demo 2
+```jsx
+/**
+ * mobile: false
+ */
+
+export default () => ('💻 Web')
+```
+</pre>
+
+<pre lang="markdown">
+---
+mobile: false
+---
+
+# Doc B
+
+### Demo 3
+
+```jsx
+export default () => ('💻 Web')
+```
+
+### Demo 4
+```jsx
+/**
+ * mobile: true
+ */
+
+export default () => ('📱 Mobile')
+```
+</pre>
+
 ## 虚位以待
 
 如果你创建了不错的 dumi 主题、想分享给大家使用，请将你的主题信息通过 Pull Request [更新到此文档](https://github.com/umijs/dumi/edit/master/docs/theme/index.zh-CN.md)。
