@@ -25,10 +25,12 @@ export default {
       type = 'jsx',
       cacheKey = fileAbsPath,
       throwError,
+      masterKey,
     }: {
       type?: 'jsx' | 'html';
       cacheKey?: string;
       throwError?: boolean;
+      masterKey?: string;
     } = {},
   ): TransformResult {
     // use cache first
@@ -36,7 +38,7 @@ export default {
 
     if (!result) {
       try {
-        result = { value: remark(raw, fileAbsPath, type) };
+        result = { value: remark(raw, fileAbsPath, type, masterKey) };
       } catch (error) {
         // return empty result & cache error
         result = { value: { contents: '', data: {} }, error };

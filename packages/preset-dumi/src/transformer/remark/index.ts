@@ -93,7 +93,7 @@ export type IDumiUnifiedTransformer = (
   next?: Parameters<Transformer>[2],
 ) => ReturnType<Transformer>;
 
-export default (source: string, fileAbsPath: string, type: 'jsx' | 'html') => {
+export default (source: string, fileAbsPath: string, type: 'jsx' | 'html', masterKey?: string) => {
   const rehypeCompiler: any = {
     jsx: [jsxify],
     html: [stringify, { allowDangerousHtml: true, closeSelfClosing: true }],
@@ -129,12 +129,12 @@ export default (source: string, fileAbsPath: string, type: 'jsx' | 'html') => {
     .use(debug('comments'))
     .use(code)
     .use(debug('code'))
-    .use(embed)
-    .use(debug('embed'))
     .use(api)
     .use(debug('api'))
     .use(slug)
     .use(debug('slug'))
+    .use(embed)
+    .use(debug('embed'))
     .use(headings)
     .use(debug('headings'))
     .use(link)
@@ -145,6 +145,7 @@ export default (source: string, fileAbsPath: string, type: 'jsx' | 'html') => {
     .use(debug('previewer'))
     .use(isolation)
     .use(debug('isolation'))
+    .data('masterKey', masterKey)
     .data('fileAbsPath', fileAbsPath)
     .data('outputType', type);
 

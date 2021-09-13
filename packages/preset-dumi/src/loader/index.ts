@@ -18,6 +18,7 @@ export default async function loader(raw: string) {
   const result = transformer.markdown(content, this.resourcePath, {
     cacheKey: this.resource,
     throwError: true,
+    masterKey: params.get('master'),
   });
   const theme = await getTheme();
 
