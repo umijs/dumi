@@ -1,6 +1,6 @@
 import path from 'path';
-import type { IApi } from '@umijs/types';
-import { setOptions } from '../../context';
+import type {IApi} from '@umijs/types';
+import {setOptions} from '../../context';
 import getHostPkgAlias from '../../utils/getHostPkgAlias';
 
 export default (api: IApi) => {
@@ -28,7 +28,8 @@ export default (api: IApi) => {
           .map(([_, pkgPath]) => path.relative(api.paths.cwd, path.join(pkgPath, 'src')))
           .concat(['docs']),
       examples: memo.resolve.examples || ['examples'],
-      passivePreview: memo.resolve.passivePreview || false
+      passivePreview: memo.resolve.passivePreview || false,
+      excludes: memo.resolve.excludes || []
     });
 
     return memo;
