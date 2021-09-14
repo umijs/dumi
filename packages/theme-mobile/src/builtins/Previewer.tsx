@@ -99,7 +99,7 @@ export default ({ mobile, ...props }: MobilePreviewerProps) => {
     [meta, mobile],
   );
 
-  const PrevidererComponent = useMemo(
+  const PreviewerComponent = useMemo(
     () => isMobileDemo ? MobilePreviewer : Previewer,
     [isMobileDemo],
   );
@@ -117,7 +117,7 @@ export default ({ mobile, ...props }: MobilePreviewerProps) => {
   
   return (
     <Provider value={overridedContext}>
-      <PrevidererComponent {...props} />
+      <PreviewerComponent {...props} />
     </Provider>
   );
 };
