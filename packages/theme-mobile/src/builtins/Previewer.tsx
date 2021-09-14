@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useContext } from 'react';
+import React, { useRef, useEffect, useState, useContext, useMemo } from 'react';
 import { context } from 'dumi/theme';
 import type { IPreviewerProps } from 'dumi-theme-default/src/builtins/Previewer';
 import Previewer from 'dumi-theme-default/src/builtins/Previewer';
@@ -92,20 +92,31 @@ interface MobilePreviewerProps extends IPreviewerProps {
 
 const { Provider } = context
 
-export default (props: MobilePreviewerProps) => {
+export default ({ mobile, ...props }: MobilePreviewerProps) => {
   const { meta, ...ctx } = useContext(context);
-  const isMobileDemo = props?.mobile ?? meta?.mobile ?? true;
+  const isMobileDemo = useMemo(
+    () => mobile ?? meta?.mobile ?? true,
+    [meta, mobile],
+  );
 
-  const PrevidererComponent = isMobileDemo ? MobilePreviewer : Previewer
-  
-  return (
-    <Provider value={{
+  const PrevidererComponent = useMemo(
+    () => isMobileDemo ? MobilePreviewer : Previewer,
+    [isMobileDemo],
+  );
+
+  const overridedContext = useMemo(
+    () => ({
       ...ctx,
       meta: {
         ...meta,
         mobile: isMobileDemo
       }
-    }}>
+    }),
+    [ctx, meta, isMobileDemo]
+  );
+  
+  return (
+    <Provider value={overridedContext}>
       <PrevidererComponent {...props} />
     </Provider>
   );
