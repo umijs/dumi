@@ -153,7 +153,7 @@ describe('mobile theme', () => {
 
     // wait for debounce
     await act(async () => {
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 300));
     });
 
     // expect initialize to render the first demo
@@ -182,7 +182,7 @@ describe('mobile theme', () => {
       document.documentElement.scrollTop = secondDemo.offsetTop + 1;
 
       // wait for debounce
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 300));
     });
 
     // expect initialize to render the second demo
@@ -206,7 +206,6 @@ describe('mobile theme', () => {
   });
 
   it('should render device with carrier', async () => {
-  
     render(
       <Router history={history}>
         <Context.Provider value={{
@@ -239,7 +238,7 @@ describe('mobile theme', () => {
 
     // wait for debounce
     await act(async () => {
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 300));
     });
 
     expect(document.querySelector('.__dumi-default-device-status-carrier').innerHTML).toEqual('test carrier')
@@ -282,7 +281,7 @@ describe('mobile theme', () => {
 
     // wait for debounce
     await act(async () => {
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 300));
     });
 
     const checkIsMobileTheme = (id) => 
