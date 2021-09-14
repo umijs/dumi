@@ -7,6 +7,12 @@ import './Previewer.less';
 
 export const ACTIVE_MSG_TYPE = 'dumi:scroll-into-demo';
 
+export interface MobilePreviewerProps extends IPreviewerProps {
+  mobile?: boolean;
+}
+
+const { Provider } = context;
+
 function MobilePreviewer(props: IPreviewerProps) {
   const ref = useRef<HTMLDivElement>();
   const { meta } = useContext(context);
@@ -86,38 +92,32 @@ function MobilePreviewer(props: IPreviewerProps) {
   );
 }
 
-interface MobilePreviewerProps extends IPreviewerProps {
-  mobile?: boolean,
-}
-
-const { Provider } = context
-
-export default ({ mobile, ...props }: MobilePreviewerProps) => {
+export default ({ mobile: demoFrontMatterMobile, ...props }: MobilePreviewerProps) => {
   const { meta, ...ctx } = useContext(context);
   const isMobileDemo = useMemo(
-    () => mobile ?? meta?.mobile ?? true,
-    [meta, mobile],
+    // `frontMatter.mobile` fallback from Demo block to Markdown file, the default value is true
+    () => demoFrontMatterMobile ?? meta?.mobile ?? true,
+    [meta, demoFrontMatterMobile],
   );
 
-  const PreviewerComponent = useMemo(
-    () => isMobileDemo ? MobilePreviewer : Previewer,
-    [isMobileDemo],
-  );
-
-  const overridedContext = useMemo(
+  // `ctx.meta.mobile` MUST be true in <Provider value={mobileCtx} />
+  const mobileCtx = useMemo(
     () => ({
       ...ctx,
       meta: {
         ...meta,
-        mobile: isMobileDemo
-      }
+        mobile: true, // constant value
+      },
     }),
-    [ctx, meta, isMobileDemo]
+    [ctx, meta],
   );
-  
-  return (
-    <Provider value={overridedContext}>
-      <PreviewerComponent {...props} />
+
+  return isMobileDemo ? ( // if it is a MobileDemo, <MobilePreviewer /> wrapped with mobileCtx is used
+    <Provider value={mobileCtx}>
+      <MobilePreviewer {...props} />
     </Provider>
+  ) : (
+    // if NOT, the default <Previewer /> is used
+    <Previewer {...props} />
   );
 };
