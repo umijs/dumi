@@ -38,6 +38,8 @@ describe('routes: examples', () => {
           absPagesPath: path.join(cwd, 'pages'),
           absNodeModulesPath: path.join(cwd, 'node_modules'),
         },
+        ApplyPluginsType: {},
+        applyPlugins: ({ initialValue }) => initialValue,
         userConfig: {},
       } as IApi,
       {

@@ -6,7 +6,10 @@ export default (api) => {
     fn: () => ({
       name: 'test',
       component: path.join(__dirname, 'previewer.js'),
-      transformer: () => ({ props: { text: 'World!' }, dependencies: {} }),
+      transformer: () => ({
+        rendererProps: { text: 'World!' },
+        previewerProps: { sources: {}, dependencies: {} },
+      }),
     }),
   });
 }

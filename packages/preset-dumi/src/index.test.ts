@@ -417,7 +417,7 @@ describe('preset-dumi', () => {
 
     expect(demos.includes('/src/fixtures/compiletime/previewer.js')).toBeTruthy();
     expect(
-      demos.includes('{"text":"World!","identifier":"compiletime-demo"}'),
+      demos.includes('{"text":"World!"}'),
     ).toBeTruthy();
   });
 });
