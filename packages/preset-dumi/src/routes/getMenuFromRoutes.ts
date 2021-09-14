@@ -142,7 +142,8 @@ export default function getMenuFromRoutes(
 
       if (group?.path) {
         const { title, path: groupPath, ...meta } = group;
-        const groupKey = addHtmlSuffix(groupPath) || title;
+        const groupKey = (!group.__fallback && addHtmlSuffix(groupPath)) || title;
+        const isGroupPathValid = !(group.__fallback && opts.mode === 'site');
 
         // group route items by group path & locale
         localeMenusMapping[locale] = {
@@ -151,7 +152,11 @@ export default function getMenuFromRoutes(
             ...(localeMenusMapping[locale]?.[nav] || {}),
             [groupKey]: {
               title,
-              path: groupPath,
+              ...(isGroupPathValid
+                ? {
+                    path: localeMenusMapping[locale]?.[nav]?.[groupKey]?.path || groupPath,
+                  }
+                : {}),
               meta: {
                 // merge group meta
                 ...(localeMenusMapping[locale]?.[nav]?.[groupKey]?.meta || {}),

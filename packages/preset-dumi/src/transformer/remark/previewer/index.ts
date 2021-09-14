@@ -40,17 +40,16 @@ const externalIdMap = new Map<string, number>();
 /**
  * record code block demo id count
  */
-const mdCodeBlockIdMap = new Map<string, Map<string, number>>();
+const mdCodeBlockIdMap = new Map<string, { id: string; count: number; map: Map<string, number> }>();
 
 /**
  * get unique id for previewer
  * @param yaml          meta data
  * @param mdAbsPath     md absolute path
  * @param codeAbsPath   code absolute path, it is seem as mdAbsPath for embed demo
- * @param componentName the name of related component
  */
-function getPreviewerId(yaml: any, mdAbsPath: string, codeAbsPath: string, componentName: string) {
-  let id: string = yaml.identifier || yaml.uuid;
+function getPreviewerId(yaml: any, mdAbsPath: string, codeAbsPath: string) {
+  let id = yaml.identifier || yaml.uuid;
 
   // do not generate identifier for inline demo
   if (yaml.inline) {
@@ -61,16 +60,12 @@ function getPreviewerId(yaml: any, mdAbsPath: string, codeAbsPath: string, compo
     if (mdAbsPath === codeAbsPath) {
       // for code block demo, format: component-demo-N
       const idMap = mdCodeBlockIdMap.get(mdAbsPath);
-      const prefix =
-        componentName ||
-        path.basename(slash(mdAbsPath).replace(/(?:\/(?:index|readme))?(\.[\w-]+)?\.md/i, '$1'));
-
-      id = `${prefix}-demo`;
+      id = [idMap.id, idMap.count, 'demo'].filter(Boolean).join('-');
 
       // record id count
-      const currentIdCount = idMap.get(id) || 0;
+      const currentIdCount = idMap.map.get(id) || 0;
 
-      idMap.set(id, currentIdCount + 1);
+      idMap.map.set(id, currentIdCount + 1);
 
       // append count suffix
       id += currentIdCount ? `-${currentIdCount}` : '';
@@ -367,7 +362,6 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
             node.properties.meta,
             this.data('fileAbsPath'),
             node.properties.filePath || this.data('fileAbsPath'),
-            this.vFile.data.componentName,
           );
           // fill fields for tranformer result
           const decorateResult = (o: IPreviewerTransformerResult) => {
@@ -497,12 +491,31 @@ export function registerPreviewerTransformer(t: IPreviewerTransformer) {
 }
 
 export default function previewer(): IDumiUnifiedTransformer {
-  // clear single paths for a new transform flow
-  if (this.data('fileAbsPath')) {
-    mdCodeBlockIdMap.set(this.data('fileAbsPath'), new Map());
-  }
-
   return (ast: Node, vFile) => {
+    // record code block id
+    if (this.data('fileAbsPath')) {
+      const mapObj = mdCodeBlockIdMap.get(this.data('fileAbsPath'));
+
+      if(!mapObj) {
+        // initialize map
+        const prefix =
+          vFile.data.componentName ||
+          path.basename(slash(this.data('fileAbsPath')).replace(/(?:\/(?:index|readme))?(\.[\w-]+)?\.md/i, '$1'));
+
+        mdCodeBlockIdMap.set(this.data('fileAbsPath'), {
+          // save builtin-rule id
+          id: prefix,
+          // save conflict count
+          count: Array.from(mdCodeBlockIdMap.values()).filter(m => m.id === prefix).length,
+          // create code block id map
+          map: new Map(),
+        });
+      } else {
+        // clear single paths for a new transform flow
+        mapObj.map = new Map();
+      }
+    }
+
     visit(ast, 'element', visitor.bind({ vFile, data: this.data }));
   };
 }

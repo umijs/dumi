@@ -15,7 +15,11 @@ export default async function loader(raw: string) {
     content = getFileContentByRegExp(content, regexp, this.resourcePath);
   }
 
-  const result = transformer.markdown(content, this.resourcePath, { noCache: content !== raw, throwError: true });
+  const result = transformer.markdown(content, this.resourcePath, {
+    cacheKey: this.resource,
+    throwError: true,
+    masterKey: params.get('master'),
+  });
   const theme = await getTheme();
 
   return `

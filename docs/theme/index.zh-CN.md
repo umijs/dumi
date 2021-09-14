@@ -33,6 +33,7 @@ nav:
 export default {
   // ...
   themeConfig: {
+    carrier: 'dumi', // 设备状态栏左侧的文本内容
     hd: {
       // umi-hd 的 750 高清方案（默认值）
       [{ mode: 'vw', options: [100, 750] }],

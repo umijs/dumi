@@ -69,4 +69,8 @@ export interface IApiComponentProps {
    * which export should be displayed
    */
   export: string;
+  /**
+   * whether the title is hidden when compiling 
+   */
+  hideTitle: boolean;
 }
