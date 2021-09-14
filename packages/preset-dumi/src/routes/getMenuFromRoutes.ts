@@ -190,6 +190,8 @@ export default function getMenuFromRoutes(
           if (typeof menu.children[0].meta?.order === 'number') {
             menu.meta.order = menu.children[0].meta.order;
           }
+          // fallback to child path if menu has not path
+          menu.path = menu.path || menu.children[0].path;
           menu.children = [];
         }
 

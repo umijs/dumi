@@ -42,12 +42,12 @@ export default (function group(routes) {
       ) {
         groupPath = clearPath.match(/^([^]+?)(\/[^/]+)?$/)[1];
         clearPath = clearPath.replace(groupPath, '');
+      }
 
-        // add fallback flag for menu generator
-        // for support group different 1-level md by group.title, without group.path
-        if ((!clearPath || (!clearPath.lastIndexOf('/') && !isEntryMd)) && groupTitle) {
-          route.meta.group.__fallback = true;
-        }
+      // add fallback flag for menu generator
+      // for support group different 1-level md by group.title, without group.path
+      if ((!clearPath || (!clearPath.lastIndexOf('/') && !isEntryMd)) && groupTitle) {
+        route.meta.group.__fallback = true;
       }
     }
 
