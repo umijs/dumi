@@ -1,6 +1,6 @@
 import path from 'path';
-import type {IApi} from '@umijs/types';
-import {setOptions} from '../../context';
+import type { IApi } from '@umijs/types';
+import { setOptions } from '../../context';
 import getHostPkgAlias from '../../utils/getHostPkgAlias';
 
 export default (api: IApi) => {
