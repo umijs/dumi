@@ -97,7 +97,13 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location, darkPrefix 
               const hasChildren = item.children && Boolean(item.children.length);
               const show1LevelSlugs =
                 meta.toc === 'menu' && !hasChildren && hasSlugs && item.path === location.pathname.replace(/([^^])\/$/, '$1');
-              const menuPaths = hasChildren ? item.children.map(i => i.path) : [item.path];
+              const menuPaths = hasChildren
+                ? item.children.map(i => i.path)
+                : [
+                    item.path,
+                    // handle menu group which has no index route and no valid children
+                    location.pathname.startsWith(`${item.path}/`) ? location.pathname : null,
+                  ];
 
               return (
                 <li key={item.path || item.title}>
