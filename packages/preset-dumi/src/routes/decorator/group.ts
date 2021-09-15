@@ -1,5 +1,6 @@
 import path from 'path';
 import slash from 'slash2';
+import { isPrefixLocalePath, discardLocalePrefix, addLocalePrefix } from './locale';
 import { getRouteComponentDirs } from './nav';
 import type { RouteProcessor } from '.';
 
@@ -22,7 +23,7 @@ export default (function group(routes) {
 
     if (route.meta.locale) {
       // discard locale prefix
-      clearPath = clearPath.replace(`/${route.meta.locale}`, '');
+      clearPath = discardLocalePrefix(clearPath, route.meta.locale);
     }
 
     // generate group if user did not customized group via frontmatter
@@ -61,9 +62,9 @@ export default (function group(routes) {
       } else if (
         route.meta.locale &&
         route.meta.locale !== defaultLocale &&
-        !new RegExp(`/${route.meta.locale}(/|$)`).test(groupPath)
+        !isPrefixLocalePath(groupPath, route.meta.locale)
       ) {
-        groupPath = `/${route.meta.locale}${groupPath}`;
+        groupPath = addLocalePrefix(groupPath, route.meta.locale);
       }
 
       // save user cusomize group title, then will use for other route

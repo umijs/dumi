@@ -1,7 +1,8 @@
 import path from 'path';
 import slash from 'slash2';
-import type { IRoute, IApi } from '@umijs/types';
 import ctx from '../context';
+import { addLocalePrefix, isPrefixLocalePath } from './decorator/locale';
+import type { IRoute, IApi } from '@umijs/types';
 import type { IDumiOpts } from '..';
 
 export interface IMenuItem {
@@ -48,8 +49,8 @@ function convertUserMenuChilds(
     // copy menu config to avoid modify user config
     const menuItem = Object.assign({}, menu);
 
-    if (menuItem.path && locale && !isDefaultLocale && !menuItem.path.startsWith(`/${locale}`)) {
-      menuItem.path = `/${locale}${menu.path}`;
+    if (menuItem.path && locale && !isDefaultLocale && !isPrefixLocalePath(menuItem.path, locale)) {
+      menuItem.path = addLocalePrefix(menu.path, locale);
     }
 
     if (menuItem.children) {
@@ -218,7 +219,7 @@ export default function getMenuFromRoutes(
       const isDefaultLocale = locale[0] === opts.locales[0][0];
       const localePrefix = isDefaultLocale ? '/' : `/${locale[0]}`;
 
-      if (navPath.startsWith(localePrefix)) {
+      if (localePrefix === '/' || isPrefixLocalePath(navPath, locale[0])) {
         const convertedMenus = convertUserMenuChilds(
           userMenus[navPath],
           routes,
