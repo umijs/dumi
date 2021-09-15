@@ -97,7 +97,7 @@ function serializeAPINodes(
 function guessComponentName(fileAbsPath: string) {
   const parsed = path.parse(fileAbsPath);
 
-  if (parsed.name === 'index') {
+  if (['index', 'index.d'].includes(parsed.name)) {
     // button/index.tsx => button
     // packages/button/src/index.tsx => button
     // windows: button\\src\\index.tsx

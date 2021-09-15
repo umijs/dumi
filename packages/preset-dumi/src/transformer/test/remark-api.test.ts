@@ -98,6 +98,7 @@ describe('component api example', () => {
     const result = transformer.markdown(fs.readFileSync(filePath, 'utf8').toString(), filePath);
 
     expect(result.content).toContain('identifier="World"');
+    expect(result.content).toContain('identifier="Hello"');
   });
 
   it('should guess monorepo package name as component name', () => {
