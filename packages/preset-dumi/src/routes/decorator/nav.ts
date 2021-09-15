@@ -1,5 +1,6 @@
 import path from 'path';
 import { winPath } from '@umijs/utils';
+import { isPrefixLocalePath, discardLocalePrefix, addLocalePrefix } from './locale';
 import type { RouteProcessor } from '.';
 
 /**
@@ -36,7 +37,7 @@ export default (function nav(routes) {
 
         // discard locale prefix
         if (route.meta.locale) {
-          clearPath = clearPath.replace(`/${route.meta.locale}`, '');
+          clearPath = discardLocalePrefix(clearPath, route.meta.locale);
         }
 
         if (clearPath && clearPath !== '/') {
@@ -53,9 +54,9 @@ export default (function nav(routes) {
         if (
           route.meta.locale &&
           route.meta.locale !== defaultLocale &&
-          !new RegExp(`/${route.meta.locale}(/|$)`).test(route.meta.nav.path)
+          !isPrefixLocalePath(route.meta.nav.path, route.meta.locale)
         ) {
-          route.meta.nav.path = `/${route.meta.locale}${route.meta.nav.path}`;
+          route.meta.nav.path = addLocalePrefix(route.meta.nav.path, route.meta.locale);
         }
 
         // save user cusomize nav title, then will use for other route
@@ -74,9 +75,8 @@ export default (function nav(routes) {
           // then use first directory name
           getRouteComponentDirs(route.component, this).shift()?.replace(/^[a-z]/, s => s.toUpperCase()) ||
           // fallback nav title by nav path
-          route.meta.nav.path
-            // discard locale prefix
-            .replace(`/${route.meta.locale || ''}`, '')
+          // discard locale prefix
+          discardLocalePrefix(route.meta.nav.path, route.meta.locale)
             // discard start slash
             .replace(/^\//, '')
             // upper case the first english letter

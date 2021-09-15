@@ -1,5 +1,37 @@
 import path from 'path';
+import slash from 'slash2';
 import type { RouteProcessor } from '.';
+
+/**
+ * check route path wether prefix locale path
+ * @param routePath   route path
+ * @param localeName  locale prefix name
+ */
+export function isPrefixLocalePath(routePath: string, localeName: string) {
+  return (
+    routePath === `/${localeName}` || routePath.startsWith(`/${slash(path.join(localeName))}/`)
+  );
+}
+
+/**
+ * discard locale prefix path from route path
+ * @param routePath   route path
+ * @param localeName  locale prefix name
+ */
+export function discardLocalePrefix(routePath: string, localeName: string) {
+  return localeName && isPrefixLocalePath(routePath, localeName)
+    ? routePath.replace(`/${slash(path.join(localeName))}`, '')
+    : routePath;
+}
+
+/**
+ * add locale prefix for route path
+ * @param routePath   route path
+ * @param localeName  locale prefix name
+ */
+export function addLocalePrefix(routePath: string, localeName: string) {
+  return `/${localeName}${routePath}`;
+}
 
 /**
  * set locale for route
