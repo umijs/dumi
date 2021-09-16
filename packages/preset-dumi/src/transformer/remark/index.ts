@@ -46,6 +46,14 @@ interface IDumiVFileData {
    */
   title?: string;
   /**
+   * component keywords
+   */
+  keywords?: string[];
+  /**
+   * mark component deprecated
+   */
+  deprecated?: true;
+  /**
    * component uuid (for HiTu)
    */
   uuid?: string;

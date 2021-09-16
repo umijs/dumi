@@ -94,9 +94,11 @@ export default function meta(): IDumiUnifiedTransformer {
         args: {
           identifier: vFile.data.componentName,
           name: vFile.data.title,
+          keywords: vFile.data.keywords,
           uuid: vFile.data.uuid,
           // use to parse props from component file
           _sourcePath: path.join(path.dirname(this.data('fileAbsPath')), 'index.tsx'),
+          ...(vFile.data.deprecated ? { deprecated: true } : {}),
         },
       });
     }
