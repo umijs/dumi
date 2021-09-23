@@ -25,7 +25,7 @@ export default (api: IApi) => {
         item
           ? {
               ...item,
-              path: /^(\w+:)?\/\//.test(item.path) ? item.path : prefix(item.path),
+              path: /^(\w+:)?\/\/|^(mailto|tel):/.test(item.path) ? item.path : prefix(item.path),
               children: item.children ? navPrefix(item.children) : item.children,
             }
           : item,
