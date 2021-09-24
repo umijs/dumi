@@ -206,7 +206,6 @@ For example：
 Here is the directory structure：
 
 ```shell
-.
 ├── scripts
 │   └── hack-depend.js
 ├── src
