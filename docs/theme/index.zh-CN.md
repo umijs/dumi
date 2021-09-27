@@ -60,6 +60,13 @@ mobile: false
 Markdown 正文
 ```
 
+## `dumi-theme-tuya`
+
+- **仓库地址：** https://github.com/youngjuning/dumi-theme-tuya
+- **文档地址：** https://dumi-theme-tuya.js.org/dumi-theme-tuya/
+- **体验地址：** [Tuya Design](https://panel-docs.tuyacn.com/)
+- **主题简介：** 涂鸦文档平台主题
+
 ## 虚位以待
 
 如果你创建了不错的 dumi 主题、想分享给大家使用，请将你的主题信息通过 Pull Request [更新到此文档](https://github.com/umijs/dumi/edit/master/docs/theme/index.zh-CN.md)。
