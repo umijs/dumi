@@ -482,6 +482,7 @@ export type { IPreviewerTransformer };
  * @param t transformer
  */
 export function registerPreviewerTransformer(t: IPreviewerTransformer) {
+  /* istanbul ignore else */
   if (previewerTransforms.every(item => item.type !== t.type)) {
     previewerTransforms.unshift(t);
   } else {

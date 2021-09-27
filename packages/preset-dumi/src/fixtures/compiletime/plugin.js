@@ -8,7 +8,10 @@ export default (api) => {
       component: path.join(__dirname, 'previewer.js'),
       transformer: () => ({
         rendererProps: { text: 'World!' },
-        previewerProps: { sources: {}, dependencies: {} },
+        previewerProps: {
+          sources: { _: { path: path.join(__dirname, 'demo.js') } },
+          dependencies: {},
+        },
       }),
     }),
   });

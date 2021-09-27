@@ -36,7 +36,7 @@ export default function code(): IDumiUnifiedTransformer {
           props.source = fs.readFileSync(props.filePath, 'utf8').toString();
           props.lang = path.extname(props.filePath).slice(1);
         } catch (err) {
-          /* istanbul ignore if */
+          /* istanbul ignore next */
           if (!hasCustomTransformer) {
             throw err;
           }
