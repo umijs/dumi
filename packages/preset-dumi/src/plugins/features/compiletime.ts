@@ -5,7 +5,6 @@ import type { IPreviewerTransformer } from '../../transformer/remark/previewer/b
 export interface ICompiletimeOpts {
   /**
    * compiletime name
-   * @note  will be used as previewer component name
    */
   name: string;
   /**

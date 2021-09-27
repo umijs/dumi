@@ -386,8 +386,9 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
             // force override id for previewer props
             o.previewerProps.identifier = identifier;
 
-            // fallback dependencies
+            // fallback dependencies & sources
             o.previewerProps.dependencies = o.previewerProps.dependencies || {};
+            o.previewerProps.sources = o.previewerProps.sources || {};
 
             // generate demo dependencies from previewerProps.sources
             demoDeps = getDemoDeps(o.previewerProps, node.properties.lang);
