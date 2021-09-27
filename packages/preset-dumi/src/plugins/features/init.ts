@@ -35,7 +35,7 @@ export default (api: IApi) => {
   });
 
   // re-enable @ & @@ umi default alias for integrated mode
-  if (isIntegrateUmi) {
+  if (isIntegrateUmi || api.args?.dumi) {
     api.modifyDefaultConfig(memo => {
       memo.alias['@'] = api.paths.absSrcPath;
       memo.alias['@@'] = api.paths.absTmpPath;
