@@ -26,12 +26,15 @@ export interface IPreviewerComponentProps {
          */
         _: { jsx: string; tsx?: string };
       }
-    | Record<string, {
+    | Record<
+        string,
+        {
           import: string;
           content: string;
-          // reserved for transform JSX for other TypeScript file
+          path?: string;
           tsx?: string;
-        }>;
+        }
+      >;
   /**
    * third-party dependencies of demo
    */

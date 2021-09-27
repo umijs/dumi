@@ -206,7 +206,7 @@ describe('mobile theme', () => {
   });
 
   it('should render device with carrier', async () => {
-  
+
     render(
       <Router history={history}>
         <Context.Provider value={{
@@ -243,5 +243,34 @@ describe('mobile theme', () => {
     });
 
     expect(document.querySelector('.__dumi-default-device-status-carrier').innerHTML).toEqual('test carrier')
+  });
+
+  it('should render without simulator', async () => {
+    render(
+      <Router history={history}>
+        <Layout {...baseProps}>
+          <Context.Provider value={baseCtx}>
+            <Previewer
+              title="a"
+              identifier="a"
+              sources={{
+                _: {
+                  tsx: "export default () => 'TypeScript'",
+                },
+              }}
+              simulator={false}
+              dependencies={{}}
+            />
+          </Context.Provider>
+        </Layout>
+      </Router>,
+    );
+
+    // wait for debounce
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    });
+
+    expect(document.querySelector('.__dumi-default-device').textContent).toContain("I'm a!");
   });
 });

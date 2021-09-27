@@ -11,7 +11,7 @@ function demoHandler(h, { type, lang, value, position, ...props }) {
   return h(position, 'div', {
     type: 'previewer',
     lang,
-    source: { [lang]: clonedNode.value },
+    source: clonedNode.value,
     ...props,
   });
 }

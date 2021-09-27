@@ -79,7 +79,7 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
   const openRiddle = useRiddle(props.hideActions?.includes('RIDDLE') ? null : props);
   const [execMotions, isMotionRunning] = useMotions(props.motions || [], demoRef.current);
   const [copyCode, copyStatus] = useCopy();
-  const [currentFile, setCurrentFile] = useState('_');
+  const [currentFile, setCurrentFile] = useState(() => props.sources._ ? '_' : Object.keys(props.sources)[0]);
   const [sourceType, setSourceType] = useState(
     getSourceType(currentFile, props.sources[currentFile]),
   );

@@ -5,6 +5,14 @@ import { useCopy } from 'dumi/theme';
 import 'prismjs/themes/prism.css';
 import './SourceCode.less';
 
+/**
+ * define DSL which can be highlighted as similar language
+ */
+const SIMILAR_DSL = {
+  acss: 'css',
+  axml: 'xml',
+};
+
 export interface ICodeBlockProps {
   code: string;
   lang: Language;
@@ -16,7 +24,12 @@ export default ({ code, lang, showCopy = true }: ICodeBlockProps) => {
 
   return (
     <div className="__dumi-default-code-block">
-      <Highlight {...defaultProps} code={code} language={lang} theme={undefined}>
+      <Highlight
+        {...defaultProps}
+        code={code}
+        language={SIMILAR_DSL[lang] || lang}
+        theme={undefined}
+      >
         {({ className, style, tokens, getLineProps, getTokenProps }) => (
           <pre className={className} style={style}>
             {showCopy && (
