@@ -50,10 +50,8 @@ export default (api: IApi) => {
   api.register({
     key: 'dumi.detectCodeBlock',
     fn(block: ExampleBlockAsset) {
-      if (block.name || block.identifier) {
-        const pos = assetsPkg.assets.examples.findIndex(
-          b => b.identifier === block.identifier || b.name === block.name,
-        );
+      if (block.identifier) {
+        const pos = assetsPkg.assets.examples.findIndex(b => b.identifier === block.identifier);
 
         if (pos > -1) {
           assetsPkg.assets.examples.splice(pos, 1, block);

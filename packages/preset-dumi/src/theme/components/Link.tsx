@@ -8,7 +8,7 @@ import type { LinkProps, NavLinkProps } from 'react-router-dom';
  */
 export const LinkWrapper = (Component: React.FC<LinkProps | NavLinkProps>) => {
   return ({ to, ...props }: LinkProps | NavLinkProps) => {
-    const isExternal = /^(\w+:)?\/\//.test(to as string) || !to;
+    const isExternal = /^(\w+:)?\/\/|^(mailto|tel):/.test(to as string) || !to;
     const hasComplexChildren = React.isValidElement(props.children);
 
     return (

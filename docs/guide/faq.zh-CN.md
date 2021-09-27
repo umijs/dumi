@@ -206,7 +206,6 @@ dumi 会对 pkgName/es、pkgName/lib 做 alias，[详情见](https://github.com/
 目录结构：
 
 ```shell
-.
 ├── scripts
 │   └── hack-depend.js
 ├── src

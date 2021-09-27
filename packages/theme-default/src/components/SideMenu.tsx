@@ -102,7 +102,9 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location, darkPrefix 
                 : [
                     item.path,
                     // handle menu group which has no index route and no valid children
-                    location.pathname.startsWith(`${item.path}/`) ? location.pathname : null,
+                    location.pathname.startsWith(`${item.path}/`) && meta.title === item.title
+                      ? location.pathname
+                      : null,
                   ];
 
               return (
