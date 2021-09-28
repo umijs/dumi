@@ -211,7 +211,7 @@ export default (api: IApi) => {
 
 ### `dumi.modifyThemeResolved`
 
-Used to modify the analysis result of dumi's theme package, usually used to customize unique theme behavior, such as adding built-in components through API. Calling method:
+Use to modify the analysis result of dumi's theme package, usually used to customize unique theme behavior, such as adding built-in components through API. Calling method:
 
 ```ts
 // /path/to/plugin.ts
@@ -228,3 +228,53 @@ export default (api: IApi) => {
   });
 };
 ```
+
+### `dumi.registerCompiletime`
+
+Use to register custom demo compiletime, the `transformer` will be called when compiling Markdown code block or external demo via `code` tag, and we can replace the demo node to a wrapped React component in this stage, to implement render non-React tech stack demo.
+
+Usage:
+
+```ts
+// /path/to/plugin.ts
+export default (api) => {
+  // register compiletime
+  api.register({
+    key: 'dumi.registerCompiletime',
+    fn: () => ({
+      // unique compiletime name
+      name: 'test',
+      // runtime demo renderer component, must be a React Component
+      component: path.join(__dirname, 'renderer.js'),
+      // demo mdAST node transformer
+      transformer: (
+        // input:
+        // {
+        //   attrs: Record<string, any>,   attributes from code tag
+        //   mdAbsPath: string,            file absolute path of current Markdown file
+        //   node: mdASTNode,              demo mdAST node
+        // }
+        opts,
+      ) => {
+        // implementation...
+
+        // output type refer: https://github.com/umijs/dumi/blob/master/packages/preset-dumi/src/transformer/remark/previewer/builtin.ts#L50
+        return {
+          // props for Previewer component
+          previewerProps: {
+            // source codes to show
+            sources: {
+              'index.tsx': { path: '/path/to/disk/file' },
+            },
+            // 3rd-party dependencies for this demo
+            dependencies: { antd: { version: '^4.0.0' } },
+          },
+          // props for demo renderer, will pass to the registered component above
+          rendererProps: { text: 'World!' },
+        };
+      },
+    }),
+  });
+}
+```
+More informatios: [#804](https://github.com/umijs/dumi/pull/804)。
