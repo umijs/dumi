@@ -1,6 +1,6 @@
 {
   "name": "dumi-theme-mobile",
-  "version": "1.1.12",
+  "version": "1.1.13",
   "description": "dumi-theme-mobile",
   "files": [
     "es",
@@ -28,10 +28,10 @@
     "access": "public"
   },
   "devDependencies": {
-    "dumi": "1.1.29"
+    "dumi": "1.1.30"
   },
   "dependencies": {
-    "dumi-theme-default": "1.1.12",
+    "dumi-theme-default": "1.1.13",
     "f2-touchemulator": "^0.0.1",
     "lodash.debounce": "^4.0.8",
     "qrcode.react": "^1.0.0",
