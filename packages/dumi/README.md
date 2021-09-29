@@ -1,7 +1,7 @@
 # dumi
 
 [![codecov](https://codecov.io/gh/umijs/dumi/branch/master/graph/badge.svg)](https://codecov.io/gh/umijs/dumi) [![NPM version](https://img.shields.io/npm/v/dumi.svg?style=flat)](https://npmjs.org/package/dumi) [![GitHub Actions status](https://github.com/umijs/dumi/workflows/Node%20CI/badge.svg)](https://github.com/umijs/dumi) [![NPM downloads](https://img.shields.io/npm/dm/dumi.svg?style=flat)](https://npmjs.org/package/dumi) [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/)
-[![issues-helper](https://img.shields.io/badge/Issues%20Manage%20By-issues--helper-orange?style=flat-square)](https://github.com/actions-cool/issues-helper)
+[![issues-helper](https://img.shields.io/badge/Issues%20Manage%20By-issues--helper-orange)](https://github.com/actions-cool/issues-helper)
 
 ## Intro
 
