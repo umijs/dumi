@@ -12,6 +12,14 @@ export default (api: IApi) => {
     urlLoaderExcludes: [/\.md$/],
   }));
 
+  // disable babel config file, to avoid library bundle config affecting docs config
+  api.modifyBabelOpts(memo => {
+    // @ts-ignore
+    memo.configFile = false;
+
+    return memo;
+  });
+
   // configure loader for .md file
   api.chainWebpack(config => {
     const oPlainTextTest = config.module.rule('plaintext').get('test');
