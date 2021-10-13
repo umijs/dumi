@@ -52,6 +52,7 @@ export default function embed(): IDumiUnifiedTransformer {
             default:
               // replace original node
               parent.children.splice(i, 1, {
+                embed: true,
                 type: 'element',
                 tagName: 'React.Fragment',
                 properties: {
