@@ -76,7 +76,7 @@ function convertUserMenuChilds(
 
           childItem = {
             path: route.path,
-            title: route.title,
+            title: route.meta.title,
           };
 
           route.meta = route.meta || {};

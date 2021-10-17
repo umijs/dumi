@@ -89,7 +89,7 @@ export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
       config.unshift({
         path: examplePath,
         component: route.component,
-        title: route.title,
+        title: opts.title ? `${route.meta.title} - ${opts.title}` : route.meta.title,
       });
 
       // use example component as original example component
