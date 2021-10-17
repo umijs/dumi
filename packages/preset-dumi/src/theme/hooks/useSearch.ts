@@ -38,6 +38,7 @@ const useBuiltinSearch = (keywords: string) => {
             title: route.meta?.title || route.title,
             path: route.path,
           };
+
           if (route.meta?.group) {
             routeMetaItem.parent = route.meta.group;
           }
