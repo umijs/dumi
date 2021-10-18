@@ -76,7 +76,7 @@ function convertUserMenuChilds(
 
           childItem = {
             path: route.path,
-            title: route.title,
+            title: route.meta.title,
           };
 
           route.meta = route.meta || {};
@@ -133,7 +133,7 @@ export default function getMenuFromRoutes(
       const locale = route.meta.locale || opts.locales[0][0];
       const menuItem: IMenuItem = {
         path: route.path,
-        title: route.title,
+        title: route.meta.title,
         meta: {},
       };
 

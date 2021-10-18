@@ -35,7 +35,7 @@ const useBuiltinSearch = (keywords: string) => {
         })
         .reduce((result, route) => {
           const routeMetaItem: ISearchMetaItem = {
-            title: route.title,
+            title: route.meta?.title || route.title,
             path: route.path,
           };
 
@@ -46,7 +46,7 @@ const useBuiltinSearch = (keywords: string) => {
           result.push(routeMetaItem);
           result.push(
             ...(route.meta?.slugs || [])
-              .filter(({ value }) => value !== route.title)
+              .filter(({ value }) => value !== (route.meta?.title || route.title))
               .map(slug => ({
                 title: slug.value,
                 path: `${route.path}#${slug.heading}`,
