@@ -224,6 +224,12 @@ export default (api: IApi) => {
           };
         }),
       );
+
+      /* istanbul ignore else */
+      if (api.utils.isWindows) {
+        // do not generate dynamic route file for Windows, to avoid throw error
+        memo = memo.filter(item => !item.route.path.includes('/:'));
+      }
     }
     return memo;
   });
