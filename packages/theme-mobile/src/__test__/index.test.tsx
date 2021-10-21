@@ -191,6 +191,22 @@ describe('mobile theme', () => {
         'http://localhost/~demos/demo-2-custom',
       ),
     );
+
+    // trigger click
+    act(() => {
+      const first = document.querySelector(
+        '.__dumi-default-mobile-previewer:nth-child(1)',
+      ) as HTMLDivElement;
+
+      first.click();
+    });
+
+    // expect initialize to render the first demo
+    await waitFor(() =>
+      expect((getByTitle('dumi-previewer') as HTMLIFrameElement).src).toEqual(
+        'http://localhost/~demos/demo-1',
+      ),
+    );
   });
 
   it('should render demos layout', () => {
