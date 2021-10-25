@@ -1,7 +1,7 @@
-import React, { useRef, useEffect, useState, useContext } from 'react';
+import React, { useRef, useEffect, useState, useContext, useCallback } from 'react';
 import { context } from 'dumi/theme';
-import type { IPreviewerProps } from 'dumi-theme-default/src/builtins/Previewer';
-import Previewer from 'dumi-theme-default/src/builtins/Previewer';
+import type { IPreviewerProps } from 'dumi-theme-default/es/builtins/Previewer';
+import Previewer from 'dumi-theme-default/es/builtins/Previewer';
 import debounce from 'lodash.debounce';
 import './Previewer.less';
 
@@ -12,6 +12,20 @@ export default (props: IPreviewerProps) => {
   const { meta } = useContext(context);
   const [previewerProps, setPreviewerProps] = useState<null | IPreviewerProps>(null);
   const [isActive, setIsActive] = useState(false);
+  const activeSelf = useCallback(() => {
+    window.postMessage(
+      {
+        type: ACTIVE_MSG_TYPE,
+        value: JSON.stringify({
+          identifier: props.identifier,
+          demoUrl: props.demoUrl,
+          simulator: props.simulator,
+        }),
+      },
+      '*',
+    );
+    setIsActive(true);
+  }, [props]);
 
   useEffect(() => {
     // skip if page not loaded
@@ -30,14 +44,7 @@ export default (props: IPreviewerProps) => {
         (scrollTop > ref?.current?.offsetTop &&
           scrollTop < ref?.current?.offsetTop + ref?.current?.offsetHeight)
       ) {
-        window.postMessage(
-          {
-            type: ACTIVE_MSG_TYPE,
-            value: JSON.stringify({ identifier: props.identifier, demoUrl: props.demoUrl }),
-          },
-          '*',
-        );
-        setIsActive(true);
+        activeSelf();
       } else {
         setIsActive(false);
       }
@@ -74,8 +81,33 @@ export default (props: IPreviewerProps) => {
     return () => window.removeEventListener('scroll', handler);
   }, [props, meta]);
 
+  useEffect(() => {
+    const handler = ev => {
+      if (
+        ev.data.type === ACTIVE_MSG_TYPE &&
+        isActive &&
+        JSON.parse(ev.data.value).identifier !== props.identifier
+      ) {
+        setIsActive(false);
+      }
+    };
+
+    window.addEventListener('message', handler);
+
+    return () => window.removeEventListener('message', handler);
+  });
+
   return (
-    <div className={meta.mobile !== false ? '__dumi-default-mobile-previewer' : null} ref={ref}>
+    <div
+      className={meta.mobile !== false ? '__dumi-default-mobile-previewer' : null}
+      onClick={() => {
+        if (!isActive) {
+          activeSelf();
+        }
+      }}
+      data-inactive={!isActive || undefined}
+      ref={ref}
+    >
       {previewerProps && (
         <Previewer
           className={isActive ? '__dumi-default-previewer-target' : null}

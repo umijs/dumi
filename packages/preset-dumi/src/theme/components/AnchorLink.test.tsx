@@ -13,9 +13,14 @@ describe('theme API: AnchorLink', () => {
   beforeAll(async () => {
     render(
       <Router history={createMemoryHistory({ initialEntries: ['/'], initialIndex: 0 })}>
-        <AnchorLink to="#anchor" id="anchor">
+        <AnchorLink to="#anchor">
           Anchor
         </AnchorLink>
+        <h1 id="anchor">
+          <AnchorLink to="#anchor">
+            Anchor Title
+          </AnchorLink>
+        </h1>
       </Router>,
     );
 
@@ -39,17 +44,15 @@ describe('theme API: AnchorLink', () => {
     window.scrollTo = scrollTo;
   });
 
-  it('should scroll to anchor after click', async () => {
+  it('should scroll to title & active self after click anchor', async () => {
     // FIXME: element.offsetTop not working in jest
-    Object.defineProperty(anchor, 'offsetTop', { value: 110 });
+    Object.defineProperty(document.getElementById('anchor'), 'offsetTop', { value: 110 });
 
     // expect scroll to anchor when click (distance 100px from top)
     expect(document.documentElement.scrollTop).toEqual(0);
     anchor.click();
     await waitFor(() => expect(document.documentElement.scrollTop).toEqual(10), { timeout: 100 });
-  });
 
-  it('should active anchor if hash is matched', () => {
     // expect highlight for anchor
     expect(anchor).toHaveClass('active');
   });

@@ -102,11 +102,9 @@ export default {
 
 ## Plugin API
 
-The basic plugin API is provided by Umi and includes the following APIs.
+dumi completely inherits Umi plugin system, we can check out the [Plugin Best Practice](https://umijs.org/plugins/best-practice) from Umi to lean more about plugin development, and check out the [Plugin API](https://umijs.org/plugins/api) from Umi to lean about the basic APIs we can use.
 
-<!-- Umi 插件内容嵌入占位，目前 Umi 插件文档只有中文，比较尴尬 -->
-
-In addition, in order to facilitate plugin developers to customize dumi's behavior, dumi provides the following plugin APIs.
+In addition, dumi provides the following APIs to help us customize dumi's behavior.
 
 ### `dumi.getRootRoute`
 
@@ -122,7 +120,7 @@ export default async (api: IApi) => {
   const rootRoute = await api.applyPlugins({
     key: 'dumi.getRootRoute',
     type: api.ApplyPluginsType.modify,
-    initialValue: routes,
+    initialValue: await api.getRoutes(),
   });
 };
 ```
@@ -213,7 +211,7 @@ export default (api: IApi) => {
 
 ### `dumi.modifyThemeResolved`
 
-Used to modify the analysis result of dumi's theme package, usually used to customize unique theme behavior, such as adding built-in components through API. Calling method:
+Use to modify the analysis result of dumi's theme package, usually used to customize unique theme behavior, such as adding built-in components through API. Calling method:
 
 ```ts
 // /path/to/plugin.ts
@@ -230,3 +228,53 @@ export default (api: IApi) => {
   });
 };
 ```
+
+### `dumi.registerCompiletime`
+
+Use to register custom demo compiletime, the `transformer` will be called when compiling Markdown code block or external demo via `code` tag, and we can replace the demo node to a wrapped React component in this stage, to implement render non-React tech stack demo.
+
+Usage:
+
+```ts
+// /path/to/plugin.ts
+export default (api) => {
+  // register compiletime
+  api.register({
+    key: 'dumi.registerCompiletime',
+    fn: () => ({
+      // unique compiletime name
+      name: 'test',
+      // runtime demo renderer component, must be a React Component
+      component: path.join(__dirname, 'renderer.js'),
+      // demo mdAST node transformer
+      transformer: (
+        // input:
+        // {
+        //   attrs: Record<string, any>,   attributes from code tag
+        //   mdAbsPath: string,            file absolute path of current Markdown file
+        //   node: mdASTNode,              demo mdAST node
+        // }
+        opts,
+      ) => {
+        // implementation...
+
+        // output type refer: https://github.com/umijs/dumi/blob/master/packages/preset-dumi/src/transformer/remark/previewer/builtin.ts#L50
+        return {
+          // props for Previewer component
+          previewerProps: {
+            // source codes to show
+            sources: {
+              'index.tsx': { path: '/path/to/disk/file' },
+            },
+            // 3rd-party dependencies for this demo
+            dependencies: { antd: { version: '^4.0.0' } },
+          },
+          // props for demo renderer, will pass to the registered component above
+          rendererProps: { text: 'World!' },
+        };
+      },
+    }),
+  });
+}
+```
+More informatios: [#804](https://github.com/umijs/dumi/pull/804)。

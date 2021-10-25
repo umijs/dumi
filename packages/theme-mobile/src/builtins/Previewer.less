@@ -2,6 +2,10 @@
 
 @media @v-device-show {
   .@{prefix}-mobile-previewer {
+    &[data-inactive] {
+      cursor: pointer;
+    }
+
     .@{prefix}-previewer-demo {
       display: none;
     }

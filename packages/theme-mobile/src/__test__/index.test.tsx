@@ -191,6 +191,22 @@ describe('mobile theme', () => {
         'http://localhost/~demos/demo-2-custom',
       ),
     );
+
+    // trigger click
+    act(() => {
+      const first = document.querySelector(
+        '.__dumi-default-mobile-previewer:nth-child(1)',
+      ) as HTMLDivElement;
+
+      first.click();
+    });
+
+    // expect initialize to render the first demo
+    await waitFor(() =>
+      expect((getByTitle('dumi-previewer') as HTMLIFrameElement).src).toEqual(
+        'http://localhost/~demos/demo-1',
+      ),
+    );
   });
 
   it('should render demos layout', () => {
@@ -203,5 +219,74 @@ describe('mobile theme', () => {
     );
 
     expect(getByTitle('content')).not.toBeNull();
+  });
+
+  it('should render device with carrier', async () => {
+
+    render(
+      <Router history={history}>
+        <Context.Provider value={{
+          ...baseCtx,
+          config: {
+            ...baseCtx.config,
+            theme: {
+              carrier: 'test carrier'
+            },
+          },
+        }}>
+            <Layout {...baseProps}>
+              <Previewer
+                title="demo-1"
+                identifier="demo-1"
+                demoUrl="http://localhost/~demos/demo-1-custom"
+                sources={{
+                  _: {
+                    tsx: "export default () => 'TypeScript'",
+                  },
+                }}
+                dependencies={{}}
+              >
+                <>demo-1</>
+              </Previewer>
+            </Layout>
+          </Context.Provider>
+      </Router>,
+    );
+
+    // wait for debounce
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    });
+
+    expect(document.querySelector('.__dumi-default-device-status-carrier').innerHTML).toEqual('test carrier')
+  });
+
+  it('should render without simulator', async () => {
+    render(
+      <Router history={history}>
+        <Layout {...baseProps}>
+          <Context.Provider value={baseCtx}>
+            <Previewer
+              title="a"
+              identifier="a"
+              sources={{
+                _: {
+                  tsx: "export default () => 'TypeScript'",
+                },
+              }}
+              simulator={false}
+              dependencies={{}}
+            />
+          </Context.Provider>
+        </Layout>
+      </Router>,
+    );
+
+    // wait for debounce
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    });
+
+    expect(document.querySelector('.__dumi-default-device').textContent).toContain("I'm a!");
   });
 });

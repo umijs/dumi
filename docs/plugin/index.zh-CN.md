@@ -100,11 +100,9 @@ export default {
 
 ## 插件 API
 
-基础插件 API 由 Umi 提供，包含如下 API。
+dumi 完全使用 Umi 的插件体系，可访问 Umi 的[插件开发最佳实践](https://umijs.org/zh-CN/plugins/best-practice)  了解如何开发一款插件，还可访问 Umi 的 [插件 API](https://umijs.org/zh-CN/plugins/api) 了解我们可以使用哪些基础 API。
 
-<!-- Umi 插件内容嵌入占位，目前 Umi 插件文档只有中文，比较尴尬 -->
-
-除此之外，为了便于插件开发者定制 dumi 的行为，dumi 提供了如下插件 API。
+除了基础 API，dumi 还提供了如下插件 API 以便于开发者定制 dumi 的行为。
 
 ### `dumi.getRootRoute`
 
@@ -118,7 +116,7 @@ export default async (api: IApi) => {
   const rootRoute = await api.applyPlugins({
     key: 'dumi.getRootRoute',
     type: api.ApplyPluginsType.modify,
-    initialValue: routes,
+    initialValue: await api.getRoutes(),
   });
 };
 ```
@@ -220,3 +218,52 @@ export default (api: IApi) => {
   });
 };
 ```
+
+### `dumi.registerCompiletime`
+
+用于注册自定义 demo 编译时，会在编译 Markdown 代码块或 `code` 标签引入的外部 demo 时被触发，开发者可以在这个环节将 demo 渲染节点替换成自行包装过的 React 组件，在该 React 组件中做其他技术栈的渲染。
+
+使用方式：
+
+```ts
+// /path/to/plugin.ts
+export default (api) => {
+  // 注册编译时
+  api.register({
+    key: 'dumi.registerCompiletime',
+    fn: () => ({
+      // 编译时名称，唯一
+      name: 'test',
+      // demo 渲染组件
+      component: path.join(__dirname, 'previewer.js'),
+      // demo 语法树节点编译函数
+      transformer: (
+        // 入参，类型：
+        // {
+        //   attrs: Record<string, any>,   code 标签的属性
+        //   mdAbsPath: string,            当前 Markdown 文件的路径
+        //   node: mdASTNode,              语法树节点
+        // }
+        opts,
+      ) => {
+        // 从其他技术栈工具中获取 demo 渲染需要的内容，例如 dev server 的产物地址等
+        // 出参类型参考：https://github.com/umijs/dumi/blob/master/packages/preset-dumi/src/transformer/remark/previewer/builtin.ts#L50
+        return {
+          // 传递给主题预览组件 Previewer 的 props
+          previewerProps: {
+            // 需要展示的源代码
+            sources: {
+              'index.tsx': { path: '/path/to/disk/file' },
+            },
+            // 该 demo 依赖的三方库
+            dependencies: { antd: { version: '^4.0.0' } },
+          },
+          // demo 渲染器的 props，会传递给上面注册的渲染器组件
+          rendererProps: { text: 'World!' },
+        };
+      },
+    }),
+  });
+}
+```
+更多信息参考：[#804](https://github.com/umijs/dumi/pull/804)。

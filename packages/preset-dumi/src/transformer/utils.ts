@@ -39,7 +39,7 @@ export const formatJSXProps = (props: Record<string, any>): Record<string, any> 
  * get umi dynamicImport flag
  */
 export function isDynamicEnable() {
-  return Boolean(ctx.umi?.config?.dynamicImport || ctx.umi?.config?.mfsu);
+  return Boolean(ctx.umi?.config?.dynamicImport);
 }
 
 /**
@@ -59,7 +59,7 @@ export const decodeHoistImportToContent = (str: string) => {
   }
 
   return str;
-}
+};
 
 /**
  * encode import/require statement by dynamicImport, it can be decode to await import statement with chunkName

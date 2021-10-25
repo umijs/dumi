@@ -28,7 +28,7 @@
     ]
   },
   "dependencies": {
-    "react": "^16.12.0"
+    "react": "^16.12.0 || ^17.0.0"
   },
   "devDependencies": {
     "@umijs/test": "^3.0.5",

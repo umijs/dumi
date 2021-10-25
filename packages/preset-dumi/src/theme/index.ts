@@ -26,12 +26,15 @@ export interface IPreviewerComponentProps {
          */
         _: { jsx: string; tsx?: string };
       }
-    | Record<string, {
+    | Record<
+        string,
+        {
           import: string;
           content: string;
-          // reserved for transform JSX for other TypeScript file
+          path?: string;
           tsx?: string;
-        }>;
+        }
+      >;
   /**
    * third-party dependencies of demo
    */
@@ -66,4 +69,8 @@ export interface IApiComponentProps {
    * which export should be displayed
    */
   export: string;
+  /**
+   * whether the title is hidden when compiling 
+   */
+  hideTitle: boolean;
 }

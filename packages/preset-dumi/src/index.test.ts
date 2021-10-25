@@ -24,6 +24,7 @@ describe('preset-dumi', () => {
       'side-effects',
       'sitemap',
       'dynamic-import',
+      'compiletime',
     ].forEach(dir => {
       rimraf.sync(path.join(fixtures, dir, 'node_modules'));
     });
@@ -390,5 +391,33 @@ describe('preset-dumi', () => {
 
     // expect split chunk by component name
     expect(fs.existsSync(path.join(service.paths.absOutputPath, 'demos_olleH.js'))).toBeTruthy();
+  });
+
+  it('custom compiletime', async () => {
+    const cwd = path.join(fixtures, 'compiletime');
+    const service = new Service({
+      cwd,
+      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+    });
+
+    await service.run({
+      name: 'g',
+      args: {
+        _: ['g', 'tmp'],
+      },
+    });
+
+    // wait for debounce
+    await new Promise(resolve => setTimeout(resolve));
+
+    // expect demos generate
+    const demos = fs
+      .readFileSync(path.join(service.paths.absTmpPath, 'dumi', 'demos', 'index.ts'))
+      .toString();
+
+    expect(demos.includes('/src/fixtures/compiletime/previewer.js')).toBeTruthy();
+    expect(
+      demos.includes('{"text":"World!"}'),
+    ).toBeTruthy();
   });
 });

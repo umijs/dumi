@@ -35,6 +35,7 @@ The HD solution can be switched through the `themeConfig` configuration item in 
 export default {
   // ...
   themeConfig: {
+    carrier: 'dumi', // title text at left on status bar of device
     hd: {
       // umi-hd 750 HD solution (default value)
       [{ mode: 'vw', options: [100, 750] }],

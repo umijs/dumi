@@ -1,5 +1,6 @@
 import path from 'path';
 import slash from 'slash2';
+import { isPrefixLocalePath, discardLocalePrefix, addLocalePrefix } from './locale';
 import { getRouteComponentDirs } from './nav';
 import type { RouteProcessor } from '.';
 
@@ -22,27 +23,32 @@ export default (function group(routes) {
 
     if (route.meta.locale) {
       // discard locale prefix
-      clearPath = clearPath.replace(`/${route.meta.locale}`, '');
+      clearPath = discardLocalePrefix(clearPath, route.meta.locale);
     }
 
     // generate group if user did not customized group via frontmatter
     if (!groupPath) {
-      const parsed = path.parse(route.component as string);
+      const parsed = path.parse(path.relative(this.umi.paths.cwd, route.component) as string);
+      const isEntryMd = new RegExp(
+        `^(index|readme)(\\.(${this.options.locales.map(([name]) => name).join('|')}))?$`,
+        'i',
+      ).test(parsed.name);
 
       // only process nested route
       if (
         // at least 2-level path
         (clearPath && clearPath.lastIndexOf('/') !== 0) ||
         // or component filename is the default entry
-        (parsed &&
-          clearPath.length > 1 &&
-          new RegExp(
-            `^(index|readme)(\\.(${this.options.locales.map(([name]) => name).join('|')}))?$`,
-            'i',
-          ).test(parsed.name))
+        (parsed && clearPath.length > 1 && isEntryMd)
       ) {
         groupPath = clearPath.match(/^([^]+?)(\/[^/]+)?$/)[1];
         clearPath = clearPath.replace(groupPath, '');
+      }
+
+      // add fallback flag for menu generator
+      // for support group different 1-level md by group.title, without group.path
+      if ((!clearPath || (!clearPath.lastIndexOf('/') && !isEntryMd)) && groupTitle) {
+        route.meta.group.__fallback = true;
       }
     }
 
@@ -56,9 +62,9 @@ export default (function group(routes) {
       } else if (
         route.meta.locale &&
         route.meta.locale !== defaultLocale &&
-        !groupPath.startsWith(`/${route.meta.locale}`)
+        !isPrefixLocalePath(groupPath, route.meta.locale)
       ) {
-        groupPath = `/${route.meta.locale}${groupPath}`;
+        groupPath = addLocalePrefix(groupPath, route.meta.locale);
       }
 
       // save user cusomize group title, then will use for other route

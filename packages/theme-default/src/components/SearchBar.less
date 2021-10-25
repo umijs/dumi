@@ -83,12 +83,12 @@
         }
       }
 
-      span:first-child {
+      span:first-child:not(.@{prefix}-search-highlight) {
         position: relative;
         display: inline-block;
         max-width: 50%;
         padding-right: 26px;
-        vertical-align: -0.37em;
+        vertical-align: bottom;
         overflow: hidden;
         text-overflow: ellipsis;
         opacity: 0.8;
@@ -114,10 +114,22 @@
     }
   }
 
+  &-highlight {
+    padding: 2px 0;
+    color: #736b2d;
+    vertical-align: bottom;
+    background: #fff9cb;
+
+    [data-prefers-color=dark] & {
+      color: @c-text;
+    }
+  }
+
   @media only screen and (max-width: 1024px) {
     margin-right: -14px;
 
     > input:not(:focus) {
+      color: transparent;
       width: 32px;
       padding-right: 0;
       box-shadow: none;

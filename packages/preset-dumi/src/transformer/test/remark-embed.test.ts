@@ -9,6 +9,7 @@ describe('embed md example', () => {
 
   beforeAll(() => {
     ctx.umi = Object.assign({}, ctx.umi, {
+      cwd: path.basename(FILE_PATH),
       paths: { cwd: path.basename(FILE_PATH) },
     });
   });

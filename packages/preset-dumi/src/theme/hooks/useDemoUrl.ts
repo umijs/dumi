@@ -33,7 +33,7 @@ export const getDemoUrl = (demoId: string, htmlSuffix?: boolean) => {
     getDemoRouteName(),
     '/',
     demoId,
-    isBMW() ? '/index.html' : `${htmlSuffix ? '.html' : ''}`,
+    `${htmlSuffix ? '.html' : ''}`,
   ].join('');
 };
 

@@ -2,17 +2,18 @@ import fs from 'fs';
 import path from 'path';
 import slash from 'slash2';
 import deepmerge from 'deepmerge';
-import type { RouteProcessor } from '.';
+import { isPrefixLocalePath, discardLocalePrefix, addLocalePrefix } from './locale';
 import getFrontMatter from '../getFrontMatter';
+import type { RouteProcessor } from '.';
 
 function replaceLocaleForPath(
   pathname: string,
   prevLocale: string | undefined,
   nextLocale: string,
 ) {
-  const oPath = prevLocale ? pathname.replace(`/${prevLocale}`, '') : pathname;
+  const oPath = prevLocale ? discardLocalePrefix(pathname, prevLocale) : pathname;
 
-  return `/${nextLocale}${oPath}`.replace(/\/$/, '');
+  return addLocalePrefix(oPath, nextLocale).replace(/\/$/, '');
 }
 
 /**
@@ -56,7 +57,7 @@ export default (function fallback(routes) {
 
         // deal with every default route (without locale prefix)
         if (
-          !routePath.startsWith(localePrefix) &&
+          !isPrefixLocalePath(routePath, locale) &&
           !routes.some(route => route.path === currentLocalePath)
         ) {
           const fallbackRoute = deepmerge(

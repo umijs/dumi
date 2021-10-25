@@ -25,7 +25,7 @@ export default (function title(routes) {
     }
 
     // apply meta title for umi routes
-    route.title = route.meta.title;
+    route.title = this.options.title ? `${route.meta.title} - ${this.options.title}` : route.meta.title;
 
     return route;
   });

@@ -18,7 +18,7 @@ const anchorWatcher = new (class {
   private _matchActiveAnchor() {
     // find the first element which close the top of viewport
     const closestElmIndex = this.anchors.findIndex(
-      (elm, i) => elm.getBoundingClientRect().top > 64 || i === this.anchors.length - 1,
+      (elm, i) => elm.getBoundingClientRect().top > 128 || i === this.anchors.length - 1,
     );
     const currentElm = this.anchors[Math.max(0, closestElmIndex - 1)];
     const anchorVal = currentElm.parentElement.id;
@@ -37,6 +37,8 @@ const anchorWatcher = new (class {
     }
 
     this.anchors.push(elm);
+    // match immediately to get initial active anchor
+    this.listener();
   }
 
   /**
@@ -81,7 +83,7 @@ function getElmScrollPosition(elm: HTMLElement) {
 }
 
 const AnchorLink: React.FC<NavLinkProps> & { scrollToAnchor: (anchor: string) => void } = props => {
-  const hash = (props.to as string).match(/(#.+)$/)?.[1] || '';
+  const hash = (props.to as string).match(/(#[^&?]*)/)?.[1] || '';
   const ref = useRef<HTMLAnchorElement>(null);
   const [isActive, setIsActive] = useState(false);
 
@@ -105,7 +107,7 @@ const AnchorLink: React.FC<NavLinkProps> & { scrollToAnchor: (anchor: string) =>
 
     // listen active anchor change for non-title anchor links
     const fn = (anchorVal: string) => {
-      setIsActive((props.to as string).includes(`#${anchorVal}`));
+      setIsActive(hash === `#${anchorVal}`);
     };
 
     anchorWatcher.listen(fn);
@@ -118,7 +120,7 @@ const AnchorLink: React.FC<NavLinkProps> & { scrollToAnchor: (anchor: string) =>
       {...props}
       ref={ref}
       onClick={() => AnchorLink.scrollToAnchor(hash.substring(1))}
-      isActive={(_, location) => (hash && decodeURIComponent(location.hash) === hash) || isActive}
+      isActive={() => isActive}
     />
   );
 };

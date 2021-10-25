@@ -43,7 +43,7 @@ export default () => <>Hello World</>;
 为了能让开发者能和开发组件一样去编写、维护 Demo，dumi 支持从外部引入一个 Demo，就像这样：
 
 ```html
-<code src="/path/to/Demo.tsx" />
+<code src="/path/to/Demo.tsx"></code>
 ```
 
 同时为了使得它能看能用，在用户需要展示 Demo 源代码的时候，dumi 仍然会为用户展示真正的源代码！这样一来，不仅用户的体验丝毫不受影响，开发者也能享受到编辑器带来的 Code Snippets、ESLint、prettier 等强大的功能。
