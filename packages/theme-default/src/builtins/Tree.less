@@ -7,6 +7,7 @@
   background-color: @c-light-bg;
 
   [data-prefers-color=dark] & {
+    color: @c-text-dark;
     border-color: @c-border-dark;
     background-color: @c-light-bg-dark;
   }
@@ -43,6 +44,10 @@
       }
       &:hover:before {
         background: #f5f5f5;
+
+        [data-prefers-color=dark] & {
+          background: @c-light-bg-dark;
+        }
       }
       > * {
         z-index: 1;
@@ -65,7 +70,6 @@
       flex: auto;
       min-height: 24px;
       line-height: 24px;
-      color: rgba(0, 0, 0, 85%);
       .rc-tree-iconEle {
         vertical-align: 0;
         margin-right: 6px;
@@ -124,6 +128,16 @@
           height: 14px;
         }
       }
+    }
+  }
+
+  &-icon {
+    color: @c-text;
+    width: 16px;
+    vertical-align: -.225em;
+
+    [data-prefers-color=dark] & {
+      color: @c-text-dark;
     }
   }
 }

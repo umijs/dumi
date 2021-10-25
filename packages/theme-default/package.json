@@ -18,7 +18,6 @@
   "bugs": "http://github.com/umijs/dumi/issues",
   "authors": [],
   "dependencies": {
-    "@ant-design/icons": "^4.6.2",
     "prism-react-renderer": "^1.1.1",
     "prismjs": "^1.21.0",
     "rc-motion": "^2.4.1",
