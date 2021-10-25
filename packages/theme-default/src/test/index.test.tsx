@@ -229,59 +229,14 @@ describe('default theme', () => {
             <Tree>
               <ul>
                 <li>
-                  docs
-                  <small>Component library document directory</small>
+                  1
+                  <small>test1</small>
                   <ul>
                     <li>
-                      index.md
-                      <small>Documentation Home (If it does not exist, it will fallback to README.md)</small>
-                    </li>
-                    <li>
-                      guide
-                      <small>Component library document other routing (Signal)</small>
-                      <ul>
-                        <li>index.md</li>
-                        <li>sample.md</li>
-                        <li>help.md</li>
-                      </ul>
+                      1-1
+                      <small>test1-1</small>
                     </li>
                   </ul>
-                </li>
-                <li>
-                  src
-                  <small>Source code directory</small>
-                  <ul>
-                    <li>
-                      Button
-                      <small>Single component</small>
-                      <ul>
-                        <li>
-                          index.tsx
-                          <small>Single component</small>
-                        </li>
-                        <li>
-                          index.less
-                          <small>Component style</small>
-                        </li>
-                        <li>
-                          index.md
-                          <small>Component documentation</small>
-                        </li>
-                      </ul>
-                    </li>
-                    <li>
-                      index.ts
-                      <small>Component library entry file</small>
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  .umirc.ts
-                  <small>dumi configuration file (Can also be config/config.ts)</small>
-                </li>
-                <li>
-                  .fatherrc.ts
-                  <small>father-build configuration file, used for component library packaging</small>
                 </li>
               </ul>
             </Tree>
@@ -355,7 +310,18 @@ describe('default theme', () => {
       }),
     );
 
-    expect(queryByAttribute('class', container, 'rc-tree __dumi-site-tree rc-tree-show-line')).toMatchSnapshot();
+    // test tree render
+    expect(queryAllByAttribute('class', container, '__dumi-site-tree-icon icon-minus-square').length).toBe(2);
+    expect(queryAllByAttribute('class', container, '__dumi-site-tree-icon icon-folder-open').length).toBe(2);
+    expect(queryAllByAttribute('class', container, '__dumi-site-tree-icon icon-file').length).toBe(1);
+
+    expect(getByText('<root>')).toHaveClass('rc-tree-title');
+    expect(getByText('1')).toHaveClass('rc-tree-title');
+    expect(getByText('test1')).not.toBeNull();
+
+    getAllByTitle('<root>')[0].click();
+    expect(queryAllByAttribute('class', container, '__dumi-site-tree-icon icon-plus-square').length).toBe(1);
+    expect(queryAllByAttribute('class', container, '__dumi-site-tree-icon icon-folder').length).toBe(1);
 
     // expect SourceCode highlight
     expect(getByText('console')).toHaveClass('token');
