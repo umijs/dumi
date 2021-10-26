@@ -74,9 +74,12 @@ body {
     padding: 100px 0;
     text-align: center;
     background-color: #f5f6f8;
+    background-position: center;
+    background-size: cover;
 
     [data-prefers-color=dark] & {
       background-color: @c-light-bg-dark;
+      background-size: 0 0;
     }
 
     @media @mobile {
