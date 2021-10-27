@@ -32,6 +32,7 @@
     "@types/jest": "^24.0.13",
     "@umijs/fabric": "^2.2.2",
     "@umijs/plugin-analytics": "^0.2.2",
+    "@umijs/umi-plugin-dumi-api": "1.0.0",
     "@umijs/test": "^3.0.3",
     "antd": "^4.8.2",
     "babel-plugin-import": "^1.13.0",

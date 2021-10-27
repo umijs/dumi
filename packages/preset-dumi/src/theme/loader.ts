@@ -3,6 +3,7 @@ import path from 'path';
 import { winPath, createDebug } from '@umijs/utils';
 import { getModuleResolvePath } from '../utils/moduleResolver';
 import ctx from '../context';
+import { IMarkdwonComponent } from '../transformer/remark/api';
 
 const debug = createDebug('dumi:theme');
 
@@ -51,20 +52,16 @@ export interface IThemeLoadResult {
    * fallback components
    */
   fallbacks: ThemeComponent[];
+  /**
+   * customize markdown components
+   */
+  customs: ThemeComponent[];
 }
 
 const THEME_PREFIX = 'dumi-theme-';
 const LOCAL_THEME_PATH = '.dumi/theme';
 const FALLBACK_THEME = `${THEME_PREFIX}default`;
-const REQUIRED_THEME_BUILTINS = [
-  'Alert',
-  'API',
-  'Badge',
-  'Example',
-  'Previewer',
-  'SourceCode',
-  'Tree',
-];
+const REQUIRED_THEME_BUILTINS = ['Alert', 'Badge', 'Example', 'Previewer', 'SourceCode', 'Tree'];
 let cache: IThemeLoadResult | null;
 
 /**
@@ -109,18 +106,24 @@ function getThemeResolvePaths(sourcePath: string) {
   // search compiled module in es/lib instead of src firstly, for compatible with mfsu
   if (srcRegExp.test(sourcePath)) {
     try {
-      compiledModulePaths = getThemeResolvePaths(sourcePath.replace(srcRegExp, '/es/$1')) || /* istanbul ignore next */ getThemeResolvePaths(sourcePath.replace(srcRegExp, '/lib/$1'));
-    } catch (err) { /* nothing */ }
+      compiledModulePaths =
+        getThemeResolvePaths(sourcePath.replace(srcRegExp, '/es/$1')) ||
+        /* istanbul ignore next */ getThemeResolvePaths(sourcePath.replace(srcRegExp, '/lib/$1'));
+    } catch (err) {
+      /* nothing */
+    }
   }
 
-  return compiledModulePaths || {
-    resolved: getModuleResolvePath({
-      basePath,
-      sourcePath,
-      silent: true,
-    }),
-    source: sourcePath,
-  };
+  return (
+    compiledModulePaths || {
+      resolved: getModuleResolvePath({
+        basePath,
+        sourcePath,
+        silent: true,
+      }),
+      source: sourcePath,
+    }
+  );
 }
 
 /**
@@ -136,7 +139,11 @@ function pathJoin(...args: string[]) {
  * @param modulePath  theme package path
  */
 function getThemeEntryDir(modulePath: string) {
-  const dirs = [pathJoin(modulePath, 'es'), pathJoin(modulePath, 'lib'), pathJoin(modulePath, 'src')];
+  const dirs = [
+    pathJoin(modulePath, 'es'),
+    pathJoin(modulePath, 'lib'),
+    pathJoin(modulePath, 'src'),
+  ];
 
   return dirs.find(dir => fs.existsSync(dir));
 }
@@ -144,7 +151,9 @@ function getThemeEntryDir(modulePath: string) {
 export default async () => {
   if (!cache || process.env.NODE_ENV === 'test') {
     const [theme, fb = FALLBACK_THEME] = detectTheme();
-    const fallback = fb.startsWith('.') ? winPath(path.dirname(getThemeResolvePaths(fb).resolved)) : fb;
+    const fallback = fb.startsWith('.')
+      ? winPath(path.dirname(getThemeResolvePaths(fb).resolved))
+      : fb;
     const modulePath = path.isAbsolute(theme)
       ? theme
       : // resolve real absolute path for theme package
@@ -237,6 +246,12 @@ export default async () => {
       },
     );
 
+    const mdComponents: IMarkdwonComponent[] = await ctx.umi.applyPlugins({
+      type: ctx.umi.ApplyPluginsType.add,
+      key: 'dumi.registerMdComponent',
+      initialValue: [],
+    });
+
     cache = await ctx.umi.applyPlugins({
       key: 'dumi.modifyThemeResolved',
       type: ctx.umi.ApplyPluginsType.modify,
@@ -246,6 +261,11 @@ export default async () => {
         builtins: components,
         fallbacks,
         layoutPaths,
+        customs: mdComponents.map(comp => ({
+          identifier: comp.name,
+          source: require.resolve(comp.component),
+          cModulePath: comp.component,
+        })),
       },
     });
 

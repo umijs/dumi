@@ -28,7 +28,6 @@ export default () => {
       // generate files
       require.resolve('./plugins/features/demo'),
       require.resolve('./plugins/features/config'),
-      require.resolve('./plugins/features/api'),
 
       // integrate other umi plugins
       require.resolve('./plugins/features/extras'),
@@ -38,6 +37,9 @@ export default () => {
 
       // for disable dumi
       require.resolve('./plugins/features/disable'),
+
+      // register markdown components
+      require.resolve('./plugins/features/component'),
 
       // compiletime
       require.resolve('./plugins/features/compiletime'),
