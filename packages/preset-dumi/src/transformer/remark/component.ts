@@ -1,14 +1,14 @@
 import is from 'hast-util-is-element';
 import visit from 'unist-util-visit';
 import type { IDumiUnifiedTransformer, IDumiElmNode } from '.';
-import type { Transformer } from 'unified';
 
 type ICompiler = (
   node: Parameters<visit.Visitor<IDumiElmNode>>[0],
   index: Parameters<visit.Visitor<IDumiElmNode>>[1],
   parent: Parameters<visit.Visitor<IDumiElmNode>>[2],
-  vFile: Parameters<Transformer>[1],
+  vFile: Parameters<IDumiUnifiedTransformer>[1],
 ) => void;
+
 export interface IMarkdwonComponent {
   name: string;
   component: string;
@@ -22,9 +22,9 @@ export function registerMdComponent(comp: IMarkdwonComponent) {
 }
 
 /**
- * remark plugin for parse embed tag to external module
+ * rehype plugin for transforming customize markdown component
  */
-export default function api(): IDumiUnifiedTransformer {
+export default function component(): IDumiUnifiedTransformer {
   return (ast, vFile) => {
     visit<IDumiElmNode>(ast, 'element', (node, i, parent) => {
       if (

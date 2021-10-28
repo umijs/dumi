@@ -9,7 +9,6 @@ import Alert from '../builtins/Alert';
 import Badge from '../builtins/Badge';
 import Tree from '../builtins/Tree';
 import Previewer from '../builtins/Previewer';
-import API from '../builtins/API';
 import Layout from '../layout';
 
 let history: MemoryHistory;
@@ -286,7 +285,6 @@ describe('default theme', () => {
             >
               <>demo-3 Content</>
             </Previewer>
-            <API identifier="MultipleExports" export="Other" />
           </>
         </Layout>
       </Router>,
@@ -360,8 +358,5 @@ describe('default theme', () => {
     expect((container.querySelector('[data-iframe] iframe') as HTMLElement).style.height).toEqual(
       '100px',
     );
-
-    // expect render API property
-    expect(getByText('other', { selector: 'table td' })).not.toBeNull();
   });
 });

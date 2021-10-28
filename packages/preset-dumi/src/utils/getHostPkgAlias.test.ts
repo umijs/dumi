@@ -20,6 +20,7 @@ describe('getHostPkgAlias', () => {
       '@umijs/preset-dumi',
       'dumi-theme-default',
       'dumi-theme-mobile',
+      '@umijs/umi-plugin-dumi-api',
     ]);
   });
 });

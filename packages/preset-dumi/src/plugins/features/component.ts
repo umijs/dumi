@@ -1,5 +1,5 @@
 import { IApi } from '@umijs/types';
-import { IMarkdwonComponent, registerMdComponent } from '../../transformer/remark/api';
+import { IMarkdwonComponent, registerMdComponent } from '../../transformer/remark/component';
 
 export default (api: IApi) => {
   api.onPluginReady(async () => {

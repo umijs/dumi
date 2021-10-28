@@ -3,7 +3,7 @@ import path from 'path';
 import { winPath, createDebug } from '@umijs/utils';
 import { getModuleResolvePath } from '../utils/moduleResolver';
 import ctx from '../context';
-import { IMarkdwonComponent } from '../transformer/remark/api';
+import { IMarkdwonComponent } from '../transformer/remark/component';
 
 const debug = createDebug('dumi:theme');
 

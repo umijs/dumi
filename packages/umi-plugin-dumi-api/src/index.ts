@@ -4,140 +4,18 @@ import { IApi } from '@umijs/types';
 // @ts-ignore
 import has from 'hast-util-has-property';
 import { getModuleResolvePath } from '@umijs/preset-dumi/lib/utils/moduleResolver';
-import { listenFileOnceChange } from '@umijs/preset-dumi/lib/utils/watcher';
-import { ArgsType } from '@umijs/utils';
 import path from 'path';
 import { parseElmAttrToProps } from '@umijs/preset-dumi/lib/transformer/remark/utils';
 import parser, { IApiDefinition } from './api-parser';
-import deepmerge from 'deepmerge';
-import { IDumiElmNode } from '@umijs/preset-dumi/lib/transformer/remark';
-
-function applyApiData(api: IApi, identifier: string, definitions: ReturnType<typeof parser>) {
-  if (identifier && definitions) {
-    api.applyPlugins({
-      key: 'dumi.detectApi',
-      type: api.ApplyPluginsType.event,
-      args: {
-        identifier,
-        data: definitions,
-      },
-    });
-  }
-}
+import { guessComponentName, watchComponentUpdate, serializeAPINodes, applyApiData } from './utils';
+import type { IMarkdwonComponent } from '@umijs/preset-dumi/lib/transformer/remark/api';
+import { setOptions } from '@umijs/preset-dumi/lib/context';
 
 /**
- * detect component name via file path
+ * To generate apis.json and support to config api parser
+ * @param api
  */
-function guessComponentName(fileAbsPath: string) {
-  const parsed = path.parse(fileAbsPath);
-
-  if (['index', 'index.d'].includes(parsed.name)) {
-    // button/index.tsx => button
-    // packages/button/src/index.tsx => button
-    // packages/button/lib/index.d.ts => button
-    // windows: button\\src\\index.tsx => button
-    // windows: button\\lib\\index.d.ts => button
-    return path.basename(parsed.dir.replace(/(\/|\\)(src|lib)$/, ''));
-  }
-
-  // components/button.tsx => button
-  return parsed.name;
-}
-
-function serializeAPINodes(
-  node: IDumiElmNode,
-  identifier: string,
-  definitions: ReturnType<typeof parser>,
-) {
-  const parsedAttrs = parseElmAttrToProps(node.properties);
-  const expts: string[] = parsedAttrs.exports || Object.keys(definitions);
-  const showTitle = !parsedAttrs.hideTitle;
-
-  return expts.reduce<(IDumiElmNode | Node)[]>((list, expt, i) => {
-    // render large API title if it is default export
-    // or it is the first export and the exports attribute was not custom
-    const isInsertAPITitle = expt === 'default' || (!i && !parsedAttrs.exports);
-    // render sub title for non-default export
-    const isInsertSubTitle = expt !== 'default';
-    const apiNode = deepmerge({}, node);
-
-    // insert API title
-    if (showTitle && isInsertAPITitle) {
-      list.push(
-        {
-          type: 'element',
-          tagName: 'h2',
-          properties: {},
-          // @ts-ignore
-          children: [{ type: 'text', value: 'API' }],
-        },
-        {
-          type: 'text',
-          value: '\n',
-        },
-      );
-    }
-
-    // insert export sub title
-    if (showTitle && isInsertSubTitle) {
-      list.push(
-        {
-          type: 'element',
-          tagName: 'h3',
-          properties: { id: `api-${expt.toLowerCase()}` },
-          // @ts-ignore
-          children: [{ type: 'text', value: expt }],
-        },
-        {
-          type: 'text',
-          value: '\n',
-        },
-      );
-    }
-
-    // insert API Node
-    delete apiNode.properties.exports;
-    apiNode.properties.identifier = identifier;
-    apiNode.properties.export = expt;
-    apiNode._dumi_parsed = true;
-
-    list.push(apiNode);
-
-    return list;
-  }, []);
-}
-
-/**
- * watch component change to update api data
- * @param absPath       component absolute path
- * @param identifier    api identifier
- * @param parseOpts     extra parse options
- */
-function watchComponentUpdate(
-  api: IApi,
-  absPath: string,
-  identifier: string,
-  parseOpts: ArgsType<typeof parser>[1],
-) {
-  listenFileOnceChange(absPath, () => {
-    let definitions: ReturnType<typeof parser>;
-
-    try {
-      definitions = parser(absPath, parseOpts);
-    } catch (err) {
-      /* noting */
-    }
-
-    // update api data
-    // @ts-ignore
-    applyApiData(api, identifier, definitions);
-
-    // watch next turn
-    watchComponentUpdate(api, absPath, identifier, parseOpts);
-  });
-}
-
-export default function (api: IApi) {
+function generateTmpFile(api: IApi) {
   const apis: Record<string, IApiDefinition> = {};
   const generateApisFile = () => {
     api.writeTmpFile({
@@ -165,6 +43,19 @@ export default function (api: IApi) {
     },
   });
 
+  // share config with other source module via context
+  api.modifyConfig(memo => {
+    setOptions('apiParser', memo.apiParser);
+
+    return memo;
+  });
+}
+
+export default function (api: IApi) {
+  // support to generate temporary api.json
+  generateTmpFile(api);
+
+  // register config apiParser
   api.describe({
     key: 'apiParser',
     config: {
@@ -176,23 +67,12 @@ export default function (api: IApi) {
     },
   });
 
-  // share config with other source module via context
-  api.modifyConfig(memo => {
-    // setOptions('apiParser', memo.apiParser);
-
-    return memo;
-  });
-
   api.register({
     key: 'dumi.registerMdComponent',
-    fn: () => ({
-      // 注册组件的名称，首字母必须大写以符合 JSX 的约定
+    fn: (): IMarkdwonComponent => ({
       name: 'API',
-      // 运行时的组件路径，会被 dumi 注册为全局组件，可在任一 Markdown 中使用
       component: path.join(__dirname, 'API.js'),
-      // 编译时的处理函数，入参是 rehype 解析之后的 HTML Abstract Syntax Tree
-      // refer: https://github.com/syntax-tree/hast
-      compiler(node: any, i: number, parent: any, vFile: any) {
+      compiler(node, i, parent, vFile) {
         let identifier: string;
         let definitions: ReturnType<typeof parser>;
         const parseOpts = parseElmAttrToProps(node.properties);
@@ -240,7 +120,7 @@ export default function (api: IApi) {
         // @ts-ignore
         if (identifier && definitions) {
           // replace original node
-          parent.children.splice(i, 1, ...serializeAPINodes(node, identifier, definitions));
+          parent!.children.splice(i, 1, ...serializeAPINodes(node, identifier, definitions));
           // apply api data
           applyApiData(api, identifier, definitions);
         }
