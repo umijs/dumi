@@ -73,7 +73,7 @@ function detectInstalledTheme() {
  * detect dumi theme in project dependencies
  */
 function detectLocalTheme() {
-  const detectPath = winPath(path.join(ctx.umi.cwd, LOCAL_THEME_PATH));
+  const detectPath = winPath(path.join(ctx.umi.cwd, process.env.LOCAL_THEME_PATH || LOCAL_THEME_PATH));
 
   return fs.existsSync(detectPath) ? detectPath : null;
 }
@@ -133,6 +133,20 @@ function getThemeEntryDir(modulePath: string) {
   return dirs.find(dir => fs.existsSync(dir));
 }
 
+const COMPONENT_FILES = [
+  'index.ts',
+  'index.js',
+  'index.tsx',
+  'index.jsx',
+];
+
+function getComponentFile(p: string): string | null {
+  const componentFile = COMPONENT_FILES.find((f) =>
+    fs.existsSync(pathJoin(p, f)),
+  );
+  return componentFile;
+}
+
 export default async () => {
   if (!cache || process.env.NODE_ENV === 'test') {
     const [theme, fb = FALLBACK_THEME] = detectTheme();
@@ -140,7 +154,7 @@ export default async () => {
     const modulePath = path.isAbsolute(theme)
       ? theme
       : // resolve real absolute path for theme package
-        winPath(path.dirname(getThemeResolvePaths(theme).resolved));
+      winPath(path.dirname(getThemeResolvePaths(theme).resolved));
     // local theme has no src directory but theme package has
     const entryDir = path.isAbsolute(theme) ? theme : getThemeEntryDir(modulePath);
     const builtinPath = pathJoin(entryDir, 'builtins');
@@ -149,18 +163,37 @@ export default async () => {
 
     const components = fs.existsSync(builtinPath)
       ? fs
-          .readdirSync(builtinPath)
+        .readdirSync(builtinPath)
+        .map(file => {
           // filter .js/.ts/.jsx/.tsx, and exclude .d.ts
-          .filter(file => /((?<!\.d)\.ts|\.(jsx?|tsx))$/.test(file))
-          .map(file => ({
-            identifier: path.parse(file).name,
-            source: theme.startsWith('.')
-              ? // use abs path for relative theme folder
+          if (/((?<!\.d)\.ts|\.(jsx?|tsx))$/.test(file)) {
+            return ({
+              identifier: path.parse(file).name,
+              source: theme.startsWith('.')
+                ? // use abs path for relative theme folder
                 pathJoin(builtinPath, file)
-              : // still use module identifier rather than abs path for theme package and absolute theme folder
+                : // still use module identifier rather than abs path for theme package and absolute theme folder
                 pathJoin(theme, builtinPath.replace(modulePath, ''), file),
-            modulePath: pathJoin(builtinPath, file),
-          }))
+              modulePath: pathJoin(builtinPath, file),
+            })
+          }
+          // filter XXX/index.[t|j]s[?x]
+          if (fs.statSync(pathJoin(builtinPath, file)).isDirectory()) {
+            const fileName = getComponentFile(pathJoin(builtinPath, file));
+            if (fileName && fs.existsSync(pathJoin(builtinPath, file, fileName))) {
+              return ({
+                identifier: path.parse(file).name,
+                source: theme.startsWith('.')
+                  ? // use abs path for relative theme folder
+                  pathJoin(builtinPath, fileName)
+                  : // still use module identifier rather than abs path for theme package and absolute theme folder
+                  pathJoin(theme, builtinPath.replace(modulePath, ''), file, fileName),
+                modulePath: pathJoin(builtinPath, file, fileName),
+              })
+            }
+          }
+          return null;
+        }).filter(Boolean)
       : [];
     const fallbacks = REQUIRED_THEME_BUILTINS.reduce((result, bName) => {
       if (components.every(({ identifier }) => identifier !== bName)) {
