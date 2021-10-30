@@ -1,14 +1,16 @@
 import fs from 'fs';
 import path from 'path';
+import ctx from '@umijs/preset-dumi/lib/context';
 import { winEOL } from '@umijs/utils';
-import ctx from '../context';
 import parser from '.';
 
 const rawPath = path.join(__dirname, 'fixtures', 'raw');
 const expectPath = path.join(__dirname, 'fixtures', 'expect');
 
-function assertResult(filename, extraProperties?) {
-  expect(winEOL(JSON.stringify(parser(path.join(rawPath, filename), extraProperties), null, 2))).toEqual(
+function assertResult(filename: string, extraProperties?: Record<string, any>) {
+  expect(
+    winEOL(JSON.stringify(parser(path.join(rawPath, filename), extraProperties), null, 2)),
+  ).toEqual(
     winEOL(
       fs
         .readFileSync(path.join(expectPath, `${path.basename(filename, '.tsx')}.json`), 'utf8')
@@ -51,7 +53,7 @@ describe('api parser', () => {
 
     ctx.opts = {
       apiParser: {
-        propFilter: (prop) => {
+        propFilter: (prop: any) => {
           return prop.name !== 'style';
         },
       },
@@ -81,7 +83,9 @@ describe('api parser', () => {
   it('should guess component name correctly', () => {
     expect(parser(path.join(rawPath, 'guess', 'FileName.tsx'))).toHaveProperty('FileName');
     expect(
-      parser(path.join(rawPath, 'guess', 'NestSrc', 'src', 'index.tsx'), { componentName: 'NestSrc' }),
+      parser(path.join(rawPath, 'guess', 'NestSrc', 'src', 'index.tsx'), {
+        componentName: 'NestSrc',
+      }),
     ).toHaveProperty('default');
   });
 });

@@ -8,7 +8,7 @@ import path from 'path';
 import { parseElmAttrToProps } from '@umijs/preset-dumi/lib/transformer/remark/utils';
 import parser, { IApiDefinition } from './api-parser';
 import { guessComponentName, watchComponentUpdate, serializeAPINodes, applyApiData } from './utils';
-import type { IMarkdwonComponent } from '@umijs/preset-dumi/lib/transformer/remark/api';
+import type { IMarkdwonComponent } from '@umijs/preset-dumi/lib/transformer/remark/component';
 import { setOptions } from '@umijs/preset-dumi/lib/context';
 
 /**

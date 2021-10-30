@@ -1,22 +1,12 @@
 import * as parser from 'react-docgen-typescript-dumi-tmp';
 import { buildFilter as getBuiltinFilter } from 'react-docgen-typescript-dumi-tmp/lib/buildFilter';
 import FileCache from '@umijs/preset-dumi/lib/utils/cache';
-import ctx from '@umijs/preset-dumi/lib/context';
+import ctx, { IDumiOpts, IStaticPropFilter } from '@umijs/preset-dumi/lib/context';
 import type { AtomPropsDefinition } from 'dumi-assets-types';
 import type {
   PropFilter as IPropFilter,
   PropItem as IPropItem,
-  StaticPropFilter,
 } from 'react-docgen-typescript-dumi-tmp/lib/parser';
-
-type IDumiOpts = any;
-
-interface IStaticPropFilter extends StaticPropFilter {
-  /**
-   * skip props which parsed from node_modules
-   */
-  skipNodeModules?: boolean;
-}
 
 const cacher = new FileCache();
 // ref: https://github.com/styleguidist/react-docgen-typescript/blob/048980a/src/parser.ts#L1110

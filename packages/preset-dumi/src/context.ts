@@ -93,7 +93,7 @@ export interface IDumiOpts {
    */
   theme: Record<string, any>;
   /**
-   * apiParser config
+   * apiParser config, powered by @umijs/umi-plugin-dumi-api
    */
   apiParser: {
     propFilter?: IStaticPropFilter | PropFilter;
