@@ -1,19 +1,25 @@
 import '@testing-library/jest-dom';
 import React from 'react';
 import { render, act, waitFor } from '@testing-library/react';
+import { history as mockHistory } from 'dumi';
 import { context as Context } from 'dumi/theme';
-import type { MemoryHistory} from '@umijs/runtime';
+import type { MemoryHistory } from '@umijs/runtime';
 import { createMemoryHistory, Router } from '@umijs/runtime';
 
 import Previewer from '../builtins/Previewer';
 import Layout from '../layouts';
-import DemoLayout from '../layouts/demo';
+import DemoLayout, { ROUTE_MSG_TYPE } from '../layouts/demo';
 
 let history: MemoryHistory;
 
 // mock history location which import from 'dumi'
 jest.mock('dumi', () => ({
-  history: { location: { pathname: '/' } },
+  history: {
+    location: { pathname: '/' },
+    push(val: string) {
+      this.location.pathname = val;
+    },
+  },
 }));
 
 describe('mobile theme', () => {
@@ -172,6 +178,17 @@ describe('mobile theme', () => {
     // trigger demo refresh (only for coverage)
     (document.querySelector('[role=refresh]') as HTMLButtonElement).click();
 
+    // expect iframe page route be updated
+    const routeUpdateDefer = new Promise<void>(resolve => {
+      (getByTitle('dumi-previewer') as HTMLIFrameElement).contentWindow.addEventListener(
+        'message',
+        ev => {
+          expect(ev.data.type).toEqual(ROUTE_MSG_TYPE);
+          resolve();
+        },
+      );
+    });
+
     // trigger scroll
     await act(async () => {
       const secondDemo = document.querySelector(
@@ -185,12 +202,8 @@ describe('mobile theme', () => {
       await new Promise(resolve => setTimeout(resolve, 100));
     });
 
-    // expect initialize to render the second demo
-    await waitFor(() =>
-      expect((getByTitle('dumi-previewer') as HTMLIFrameElement).src).toEqual(
-        'http://localhost/~demos/demo-2-custom',
-      ),
-    );
+    // expect iframe page route be updated
+    await waitFor(() => routeUpdateDefer);
 
     // trigger click
     act(() => {
@@ -209,7 +222,7 @@ describe('mobile theme', () => {
     );
   });
 
-  it('should render demos layout', () => {
+  it('should render demos layout', async () => {
     const { getByTitle } = render(
       <Router history={history}>
         <DemoLayout {...baseProps}>
@@ -219,6 +232,12 @@ describe('mobile theme', () => {
     );
 
     expect(getByTitle('content')).not.toBeNull();
+
+    const testPath = '/demo-layout-test';
+    window.postMessage({ type: ROUTE_MSG_TYPE, value: testPath }, '*');
+
+    // expect pathname be updated
+    await waitFor(() => expect(mockHistory.location.pathname).toEqual(testPath));
   });
 
   it('should render device with carrier', async () => {

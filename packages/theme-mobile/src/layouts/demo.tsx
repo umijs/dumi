@@ -1,5 +1,6 @@
 import React, { useEffect, useContext, useRef } from 'react';
 import type { IRouteComponentProps } from '@umijs/types';
+import { history } from 'dumi';
 import { context } from 'dumi/theme';
 import TouchEmulator from 'f2-touchemulator';
 import vl from 'umi-hd';
@@ -7,6 +8,8 @@ import flex from 'umi-hd/lib/flex';
 import vw from 'umi-hd/lib/vw';
 import vh from 'umi-hd/lib/vh';
 import type IThemeConfig from '../typings/config';
+
+export const ROUTE_MSG_TYPE = 'dumi:update-iframe-route';
 
 // available HD modes
 const HD_MODES = {
@@ -28,6 +31,17 @@ const MobileDemoLayout: React.FC<IRouteComponentProps> = ({ children }) => {
     if (target.current) {
       TouchEmulator(target.current);
     }
+
+    // listen route change message
+    const handler = (ev: MessageEvent) => {
+      if (ev.data.type === ROUTE_MSG_TYPE) {
+        history.push(ev.data.value);
+      }
+    }
+
+    window.addEventListener('message', handler);
+
+    return () => window.removeEventListener('message', handler);
   }, []);
 
   useEffect(() => {
