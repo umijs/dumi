@@ -150,8 +150,17 @@ export default async () => {
     const components = fs.existsSync(builtinPath)
       ? fs
           .readdirSync(builtinPath)
-          // filter .js/.ts/.jsx/.tsx, and exclude .d.ts
-          .filter(file => /((?<!\.d)\.ts|\.(jsx?|tsx))$/.test(file))
+          .filter(file => {
+            const absPath = path.join(builtinPath, file);
+            // filter .js/.ts/.jsx/.tsx, and exclude .d.ts
+            const isFileComponent = /((?<!\.d)\.ts|\.(jsx?|tsx))$/.test(file);
+            // filter Foo/index.(tsx|jsx|js|ts)
+            const isDirComponent =
+              fs.lstatSync(absPath).isDirectory() &&
+              fs.readdirSync(absPath).some(item => /^index.(t|j)sx?$/.test(item));
+
+            return isFileComponent || isDirComponent;
+          })
           .map(file => ({
             identifier: path.parse(file).name,
             source: theme.startsWith('.')
