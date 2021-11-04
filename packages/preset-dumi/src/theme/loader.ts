@@ -261,11 +261,20 @@ export default async () => {
         builtins: components,
         fallbacks,
         layoutPaths,
-        customs: mdComponents.map(comp => ({
+        customs: mdComponents.map(comp => {
+          // transform the ext to .js
+          const componentInfo = path.parse(comp.component);
+          const source = path.format({
+            root: componentInfo.root,
+            base: componentInfo.name + '.js',
+            dir: componentInfo.dir,
+          });
+          return {
           identifier: comp.name,
-          source: require.resolve(comp.component),
+            source,
           cModulePath: comp.component,
-        })),
+          };
+        }),
       },
     });
 

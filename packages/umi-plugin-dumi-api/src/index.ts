@@ -51,7 +51,7 @@ function generateTmpFile(api: IApi) {
   });
 }
 
-export default function (api: IApi) {
+export default (api: IApi) => {
   // support to generate temporary api.json
   generateTmpFile(api);
 
@@ -71,7 +71,7 @@ export default function (api: IApi) {
     key: 'dumi.registerMdComponent',
     fn: (): IMarkdwonComponent => ({
       name: 'API',
-      component: path.join(__dirname, 'API.js'),
+      component: path.join(__dirname, 'API.tsx'),
       compiler(node, i, parent, vFile) {
         let identifier: string;
         let definitions: ReturnType<typeof parser>;
@@ -97,7 +97,7 @@ export default function (api: IApi) {
           identifier = componentName || src;
 
           // trigger listener to update previewer props after this file changed
-          watchComponentUpdate(api, absPath, identifier, parseOpts);
+          watchComponentUpdate(absPath, identifier, parseOpts);
         } else if (vFile.data.componentName) {
           try {
             const sourcePath = getModuleResolvePath({
@@ -111,7 +111,7 @@ export default function (api: IApi) {
             identifier = vFile.data.componentName;
 
             // trigger listener to update previewer props after this file changed
-            watchComponentUpdate(api, sourcePath, identifier, parseOpts);
+            watchComponentUpdate(sourcePath, identifier, parseOpts);
           } catch (err) {
             /* noting */
           }
@@ -122,9 +122,9 @@ export default function (api: IApi) {
           // replace original node
           parent!.children.splice(i, 1, ...serializeAPINodes(node, identifier, definitions));
           // apply api data
-          applyApiData(api, identifier, definitions);
+          applyApiData(identifier, definitions);
         }
       },
     }),
   });
-}
+};

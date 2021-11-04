@@ -6,16 +6,13 @@ import { ArgsType } from '@umijs/utils';
 import deepmerge from 'deepmerge';
 import path from 'path';
 import { parseElmAttrToProps } from '@umijs/preset-dumi/lib/transformer/remark/utils';
+import context from '@umijs/preset-dumi/lib/context';
 
-export function applyApiData(
-  api: IApi,
-  identifier: string,
-  definitions: ReturnType<typeof parser>,
-) {
+export function applyApiData(identifier: string, definitions: ReturnType<typeof parser>) {
   if (identifier && definitions) {
-    api.applyPlugins({
+    context.umi?.applyPlugins({
       key: 'dumi.detectApi',
-      type: api.ApplyPluginsType.event,
+      type: context.umi?.ApplyPluginsType.event,
       args: {
         identifier,
         data: definitions,
@@ -52,7 +49,7 @@ export function serializeAPINodes(
   const expts: string[] = parsedAttrs.exports || Object.keys(definitions);
   const showTitle = !parsedAttrs.hideTitle;
 
-  return expts.reduce<(IDumiElmNode)[]>((list, expt, i) => {
+  return expts.reduce<IDumiElmNode[]>((list, expt, i) => {
     // render large API title if it is default export
     // or it is the first export and the exports attribute was not custom
     const isInsertAPITitle = expt === 'default' || (!i && !parsedAttrs.exports);
@@ -113,7 +110,6 @@ export function serializeAPINodes(
  * @param parseOpts     extra parse options
  */
 export function watchComponentUpdate(
-  api: IApi,
   absPath: string,
   identifier: string,
   parseOpts: ArgsType<typeof parser>[1],
@@ -129,9 +125,9 @@ export function watchComponentUpdate(
 
     // update api data
     // @ts-ignore
-    applyApiData(api, identifier, definitions);
+    applyApiData(identifier, definitions);
 
     // watch next turn
-    watchComponentUpdate(api, absPath, identifier, parseOpts);
+    watchComponentUpdate(absPath, identifier, parseOpts);
   });
 }
