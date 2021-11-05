@@ -4,6 +4,7 @@ const ATTR_MAPPING = {
   skipnodemodules: 'skipNodeModules',
   skippropswithoutdoc: 'skipPropsWithoutDoc',
   hidetitle: 'hideTitle',
+  demourl: 'demoUrl',
 };
 
 /**
