@@ -7,6 +7,7 @@ import { context as Context } from 'dumi/theme';
 import SourceCode from '../builtins/SourceCode';
 import Alert from '../builtins/Alert';
 import Badge from '../builtins/Badge';
+import Tree from '../builtins/Tree';
 import Previewer from '../builtins/Previewer';
 import API from '../builtins/API';
 import Layout from '../layout';
@@ -225,6 +226,20 @@ describe('default theme', () => {
             <SourceCode code={code} lang="javascript" />
             <Alert type="info">Alert</Alert>
             <Badge type="info">Badge</Badge>
+            <Tree>
+              <ul>
+                <li>
+                  1
+                  <small>test1</small>
+                  <ul>
+                    <li>
+                      1-1
+                      <small>test1-1</small>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </Tree>
             <Previewer
               title="demo-1"
               identifier="demo-1"
@@ -294,6 +309,19 @@ describe('default theme', () => {
         cancelable: true,
       }),
     );
+
+    // test tree render
+    expect(queryAllByAttribute('class', container, '__dumi-site-tree-icon icon-minus-square').length).toBe(2);
+    expect(queryAllByAttribute('class', container, '__dumi-site-tree-icon icon-folder-open').length).toBe(2);
+    expect(queryAllByAttribute('class', container, '__dumi-site-tree-icon icon-file').length).toBe(1);
+
+    expect(getByText('<root>')).toHaveClass('rc-tree-title');
+    expect(getByText('1')).toHaveClass('rc-tree-title');
+    expect(getByText('test1')).not.toBeNull();
+
+    getAllByTitle('<root>')[0].click();
+    expect(queryAllByAttribute('class', container, '__dumi-site-tree-icon icon-plus-square').length).toBe(1);
+    expect(queryAllByAttribute('class', container, '__dumi-site-tree-icon icon-folder').length).toBe(1);
 
     // expect SourceCode highlight
     expect(getByText('console')).toHaveClass('token');
