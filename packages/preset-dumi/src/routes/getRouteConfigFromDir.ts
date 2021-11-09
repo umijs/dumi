@@ -76,7 +76,7 @@ function findChildRoutes(
   const cwd = ctx.umi?.cwd || process.cwd();
   const isExampleDir = opts.resolve?.examples?.some(dir => path.join(cwd, dir) === absPath);
   let mixture = fs.readdirSync(absPath).filter(isValidPath);
-  if (opts.resolve?.excludes) {
+  if (opts.resolve?.excludes?.length) {
     const ig = ignore().add(opts.resolve.excludes);
     mixture = mixture.filter(filename => {
       const absoluteFilepath = path.join(absPath, filename);
