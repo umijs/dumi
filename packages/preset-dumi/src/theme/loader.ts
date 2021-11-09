@@ -251,8 +251,8 @@ export default async () => {
 
     const customs = mdComponents.map(component => ({
       identifier: component.name,
-      source: require.resolve(component.component),
-      cModulePath: component.component,
+      source: pathJoin(component.component),
+      cModulePath: pathJoin(component.component),
     }));
 
     cache = await ctx.umi.applyPlugins({
