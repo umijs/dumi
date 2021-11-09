@@ -1,17 +1,17 @@
 import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
-import type { IThemeContext } from '../context';
-import Context from '../context';
+import type { IThemeContext } from '@umijs/preset-dumi/lib/theme/context';
+import Context from '@umijs/preset-dumi/lib/theme/context';
 import useApiData from './useApiData';
 
 describe('theme API: useApiData', () => {
-  const wrapper = ({ children }) => (
+  const wrapper = ({ children }: React.PropsWithChildren<void>) => (
     <Context.Provider
       value={
-        ({
+        {
           locale: 'zh-CN',
           config: { locales: [{ name: 'zh-CN', label: '中文' }] },
-        } as unknown) as IThemeContext
+        } as unknown as IThemeContext
       }
     >
       {children}

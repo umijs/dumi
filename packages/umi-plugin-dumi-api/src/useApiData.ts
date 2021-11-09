@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 // @ts-ignore
 import apis from '@@/dumi/apis';
-import context from '../context';
+import context from '@umijs/preset-dumi/lib/theme/context';
 import type { AtomPropsDefinition } from 'dumi-assets-types';
 /**
  * get API data
@@ -19,7 +19,7 @@ function getApiData(identifier: string, locale: string, isDefaultLocale: boolean
         Object.keys(props).forEach(prop => {
           // discard useless locale property
           if (/^description(\.|$)/.test(prop)) {
-            const [, propLocale] = prop.match(/^description\.?(.*)$/);
+            const [, propLocale] = prop.match(/^description\.?(.*)$/)!;
 
             if ((propLocale && propLocale !== locale) || (!propLocale && !isDefaultLocale)) {
               delete result[prop];
@@ -49,11 +49,11 @@ export default (identifier: string) => {
   } = useContext(context);
   const isDefaultLocale = !locales.length || locales[0].name === locale;
   const [data, setData] = useState<AtomPropsDefinition>(
-    getApiData(identifier, locale, isDefaultLocale),
+    getApiData(identifier, locale!, isDefaultLocale),
   );
 
   useEffect(() => {
-    setData(getApiData(identifier, locale, isDefaultLocale));
+    setData(getApiData(identifier, locale!, isDefaultLocale));
   }, [identifier, locale, isDefaultLocale]);
 
   return data;
