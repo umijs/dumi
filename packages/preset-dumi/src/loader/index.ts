@@ -28,6 +28,7 @@ export default async function loader(raw: string) {
     import { Link, AnchorLink } from 'dumi/theme';
     ${theme.builtins
       .concat(theme.fallbacks)
+      .concat(theme.customs)
       .map(component => `import ${component.identifier} from '${component.source}';`)
       .join('\n')}
     import DUMI_ALL_DEMOS from '@@/dumi/demos';
