@@ -15,11 +15,15 @@ describe('routes: examples', () => {
         cwd,
         paths: { cwd, absNodeModulesPath: cwd },
         ApplyPluginsType: {},
-        applyPlugins: (() => ({
-          layoutPaths: { _: '' },
-          builtins: [{ identifier: 'Example', modulePath: '' }],
-          fallbacks: [],
-        })) as any,
+        applyPlugins: (({ key }) =>
+          key === 'dumi.registerMdComponent'
+            ? []
+            : {
+                layoutPaths: { _: '' },
+                builtins: [{ identifier: 'Example', modulePath: '' }],
+                fallbacks: [],
+                customs: [],
+              }) as any,
       } as IApi,
       {} as IDumiOpts,
     );
