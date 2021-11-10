@@ -11,14 +11,30 @@ type ICompiler = (
 ) => void;
 
 export interface IMarkdwonComponent {
+  /**
+   * The markdown component name which should always start with a capital letter
+   */
   name: string;
+  /**
+   * The component path
+   */
   component: string;
+  /**
+   * The compiler function about how to parse the HTML Abstract Syntax Tree parse by rehype
+   * @refer https://github.com/syntax-tree/hast
+   */
   compiler: ICompiler;
 }
 
 const markdownComponents: IMarkdwonComponent[] = [];
 export function registerMdComponent(comp: IMarkdwonComponent) {
-  markdownComponents.push(comp);
+  const target = markdownComponents.find(item => item.name === comp.name);
+  if (target) {
+    // replace the existed one
+    Object.assign(target, comp);
+  } else {
+    markdownComponents.push(comp);
+  }
 }
 
 /**
@@ -27,14 +43,11 @@ export function registerMdComponent(comp: IMarkdwonComponent) {
 export default function mdComponent(): IDumiUnifiedTransformer {
   return (ast, vFile) => {
     visit<IDumiElmNode>(ast, 'element', (node, i, parent) => {
-      if (
-        is(
-          node,
-          markdownComponents.map(a => a.name),
-        ) &&
-        !node._dumi_parsed
-      ) {
+      const componentNames = markdownComponents.map(a => a.name);
+      if (is(node, componentNames) && !node._dumi_parsed) {
         const target = markdownComponents.find(item => item.name === node.tagName);
+        // mark this node as a parsed node by dumi
+        node._dumi_parsed = true;
         target.compiler.call(this, node, i, parent, vFile);
       }
     });
