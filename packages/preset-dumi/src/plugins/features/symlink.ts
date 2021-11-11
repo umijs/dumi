@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import type { IApi } from '@umijs/types';
+import ctx from '../../context';
 import getHostPkgAlias from '../../utils/getHostPkgAlias';
 import symlink from '../../utils/symlink';
 
@@ -8,6 +9,16 @@ import symlink from '../../utils/symlink';
  * plugin for create node_modules symlink & webpack alias for local packages
  */
 export default (api: IApi) => {
+  // set to umi to be able to use @umijs/preset-dumi alone
+  api.chainWebpack(config => {
+    config.resolve.alias.set('dumi', process.env.UMI_DIR);
+
+    return config;
+  });
+
+  // only apply symlinks for non-integrated mode
+  if (ctx.opts.isIntegrate) return;
+
   const hostPkgAlias = getHostPkgAlias(api.paths).filter(([pkgName]) => pkgName);
 
   /* istanbul ignore if */
@@ -67,9 +78,6 @@ export default (api: IApi) => {
         config.resolve.alias.set(pkgName, pkgPath);
       }
     });
-
-    // set to umi to be able to use @umijs/preset-dumi alone
-    config.resolve.alias.set('dumi', process.env.UMI_DIR);
 
     return config;
   });
