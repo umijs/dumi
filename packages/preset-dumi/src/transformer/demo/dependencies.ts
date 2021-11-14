@@ -137,7 +137,7 @@ function analyzeDeps(
             requireStr.startsWith('.')
           ) {
             // save local deps
-            const filename = slash(path.relative(fileAbsPath, resolvePath)).replace(
+            const filename = slash(path.relative(entryAbsPath || fileAbsPath, resolvePath)).replace(
               /(\.\/|\..\/)/g,
               '',
             );
