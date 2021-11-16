@@ -2,13 +2,15 @@ import is from 'hast-util-is-element';
 import visit from 'unist-util-visit';
 import type { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 import type { Transformer } from 'unified';
+import type unified from 'unified';
 
 type ICompiler = (
+  this: Pick<unified.Processor<unified.Settings>, 'data'>,
   node: Parameters<visit.Visitor<IDumiElmNode>>[0],
   index: Parameters<visit.Visitor<IDumiElmNode>>[1],
   parent: Parameters<visit.Visitor<IDumiElmNode>>[2],
   vFile: Parameters<Transformer>[1],
-) => void;
+) => ReturnType<visit.Visitor<IDumiElmNode>>;
 
 export interface IMarkdwonComponent {
   /**
@@ -20,8 +22,9 @@ export interface IMarkdwonComponent {
    */
   component: string;
   /**
-   * The compiler function about how to parse the HTML Abstract Syntax Tree parse by rehype
-   * @refer https://github.com/syntax-tree/hast
+   * The compiler function about how to parse the HTML Abstract Syntax Tree parsed by rehype
+   * @see https://github.com/syntax-tree/hast for more details about the HTML Abstract Syntax Tree
+   * @see https://github.com/syntax-tree/unist-util-visit-parents#returns for more details about the return value for this function
    */
   compiler: ICompiler;
 }
@@ -48,7 +51,7 @@ export default function mdComponent(): IDumiUnifiedTransformer {
         const target = markdownComponents.find(item => item.name === node.tagName);
         // mark this node as a parsed node by dumi
         node._dumi_parsed = true;
-        target.compiler.call(this, node, i, parent, vFile);
+        return target.compiler.call(this, node, i, parent, vFile);
       }
     });
   };
