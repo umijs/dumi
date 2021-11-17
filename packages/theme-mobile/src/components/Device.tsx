@@ -33,11 +33,14 @@ const Device: FC<IDeviceProps> = ({ url, className }) => {
       // set iframe src directly if it is the first render or custom url
       setIframeSrc(url);
     } else {
+      const pathname = url
+        // discard origin prefix
+        .replace(origin, '')
+        // discard router base
+        .replace(`${(window as any)?.routerBase || ''}`.replace(/\/$/, ''), '');
+
       // update iframe page route via postmessage, to avoid page refresh
-      iframeRef.current?.contentWindow.postMessage(
-        { type: ROUTE_MSG_TYPE, value: url.replace(origin, '') },
-        '*',
-      );
+      iframeRef.current?.contentWindow.postMessage({ type: ROUTE_MSG_TYPE, value: pathname }, '*');
     }
   }, [url]);
 
