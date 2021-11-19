@@ -25,7 +25,8 @@ describe('preset-dumi', () => {
       'sitemap',
       'dynamic-import',
       'compiletime',
-      'custom-components'
+      'custom-components',
+      'md-components'
     ].forEach(dir => {
       rimraf.sync(path.join(fixtures, dir, 'node_modules'));
     });
@@ -442,5 +443,27 @@ describe('preset-dumi', () => {
 
     expect(distContent).toContain('custom-single-component');
     expect(distContent).toContain('custom-directory-component');
+  });
+
+  it('custom md components in compile time', async () => {
+    const cwd = path.join(fixtures, 'md-components');
+    const service = new Service({
+      cwd,
+      env: 'production',
+      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+    });
+
+    // add UMI_DIR to avoid alias error
+    process.env.UMI_DIR = path.dirname(require.resolve('umi/package'));
+
+    await service.run({
+      name: 'build',
+    });
+
+    const distContent = fs
+      .readFileSync(path.join(service.paths.absOutputPath, 'umi.js'))
+      .toString();
+
+    expect(distContent).toContain('for testing markdown component');
   });
 });

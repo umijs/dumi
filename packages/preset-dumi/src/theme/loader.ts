@@ -3,6 +3,7 @@ import path from 'path';
 import { winPath, createDebug } from '@umijs/utils';
 import { getModuleResolvePath } from '../utils/moduleResolver';
 import ctx from '../context';
+import type { IMarkdwonComponent } from '../transformer/remark/mdComponent';
 
 const debug = createDebug('dumi:theme');
 
@@ -51,6 +52,10 @@ export interface IThemeLoadResult {
    * fallback components
    */
   fallbacks: ThemeComponent[];
+  /**
+   * customize markdown components
+   */
+  customs: ThemeComponent[];
 }
 
 const THEME_PREFIX = 'dumi-theme-';
@@ -237,6 +242,19 @@ export default async () => {
       },
     );
 
+    // get markdown components
+    const mdComponents: IMarkdwonComponent[] = await ctx.umi.applyPlugins({
+      type: ctx.umi.ApplyPluginsType.add,
+      key: 'dumi.registerMdComponent',
+      initialValue: [],
+    });
+
+    const customs = mdComponents.map(component => ({
+      identifier: component.name,
+      source: pathJoin(component.component),
+      cModulePath: pathJoin(component.component),
+    }));
+
     cache = await ctx.umi.applyPlugins({
       key: 'dumi.modifyThemeResolved',
       type: ctx.umi.ApplyPluginsType.modify,
@@ -246,6 +264,7 @@ export default async () => {
         builtins: components,
         fallbacks,
         layoutPaths,
+        customs,
       },
     });
 

@@ -17,6 +17,7 @@ import codeBlock from './codeBlock';
 import code from './code';
 import embed from './embed';
 import api from './api';
+import mdComponent from './mdComponent';
 import link from './link';
 import img from './img';
 import previewer from './previewer';
@@ -139,6 +140,7 @@ export default (source: string, fileAbsPath: string, type: 'jsx' | 'html', maste
     .use(debug('code'))
     .use(api)
     .use(debug('api'))
+    .use(mdComponent)
     .use(slug)
     .use(debug('slug'))
     .use(embed)
