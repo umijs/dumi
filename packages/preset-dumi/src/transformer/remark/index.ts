@@ -16,7 +16,6 @@ import meta from './meta';
 import codeBlock from './codeBlock';
 import code from './code';
 import embed from './embed';
-import api from './api';
 import mdComponent from './mdComponent';
 import link from './link';
 import img from './img';
@@ -138,8 +137,6 @@ export default (source: string, fileAbsPath: string, type: 'jsx' | 'html', maste
     .use(debug('comments'))
     .use(code)
     .use(debug('code'))
-    .use(api)
-    .use(debug('api'))
     .use(mdComponent)
     .use(slug)
     .use(debug('slug'))

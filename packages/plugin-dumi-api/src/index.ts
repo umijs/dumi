@@ -1,6 +1,7 @@
 // ref:
 // - https://umijs.org/plugins/api
 import { IApi } from '@umijs/types';
+import fs from 'fs';
 import path from 'path';
 import has from 'hast-util-has-property';
 import type { ArgsType } from '@umijs/utils';
@@ -67,7 +68,14 @@ function watchComponentUpdate(
     applyApiData(api, identifier, definitions);
 
     // watch next turn
-    watchComponentUpdate(api, absPath, identifier, parseOpts);
+    // FIXME: workaround for resolve no such file error
+    /* istanbul ignore next */
+    setTimeout(
+      () => {
+        watchComponentUpdate(api, absPath, identifier, parseOpts);
+      },
+      fs.existsSync(absPath) ? 0 : 50,
+    );
   });
 }
 

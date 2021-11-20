@@ -17,6 +17,7 @@ describe('getHostPkgAlias', () => {
       '@umijs/create-dumi-app',
       '@umijs/create-dumi-lib',
       'dumi',
+      "@umijs/plugin-dumi-api",
       '@umijs/preset-dumi',
       'dumi-theme-default',
       'dumi-theme-mobile',

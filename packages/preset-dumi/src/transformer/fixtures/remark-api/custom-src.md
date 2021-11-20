@@ -1,1 +1,0 @@
-<API src="./Hello/index.tsx" />

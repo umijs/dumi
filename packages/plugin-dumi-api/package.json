@@ -33,7 +33,7 @@
     "react-dom": "^16.12.0"
   },
   "dependencies": {
-    "@umijs/preset-dumi": "1.1.32",
+    "@umijs/preset-dumi": "1.1.33",
     "@umijs/utils": "^3.0.5",
     "deepmerge": "^4.2.2",
     "hast-util-has-property": "^1.0.4",

@@ -3,7 +3,7 @@ import type { IConfig, IRoute } from '@umijs/types';
 import type { INav } from '../routes/getNavFromRoutes';
 import type { IMenu } from '../routes/getMenuFromRoutes';
 import type { ILocale } from '../routes/getLocaleFromRoutes';
-import type { IApiDefinition } from '../api-parser';
+import type { IApiDefinition } from '@umijs/plugin-dumi-api/lib/parser';
 import type { IDumiOpts } from '..';
 import type { IPreviewerComponentProps } from '.';
 

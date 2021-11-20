@@ -11,6 +11,45 @@ describe('theme API: useApiData', () => {
         {
           locale: 'zh-CN',
           config: { locales: [{ name: 'zh-CN', label: '中文' }] },
+          apis: {
+            Normal: {
+              default: [
+                {
+                  identifier: 'normal',
+                  type: 'string',
+                },
+              ],
+            },
+            LocaleDescription: {
+              default: [
+                {
+                  identifier: 'locale',
+                  type: 'string',
+                  description: 'default description',
+                  'description.en-US': 'english description',
+                },
+              ],
+            },
+            MultipleExports: {
+              default: [],
+              Other: [
+                {
+                  identifier: 'other',
+                  type: 'string',
+                },
+                {
+                  identifier: 'another',
+                  type: 'string',
+                  required: true,
+                },
+                {
+                  identifier: 'anotherAgain',
+                  type: 'string',
+                  default: 'again',
+                },
+              ],
+            },
+          },
         } as unknown as IThemeContext
       }
     >

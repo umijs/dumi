@@ -28,7 +28,6 @@ export default () => {
       // generate files
       require.resolve('./plugins/features/demo'),
       require.resolve('./plugins/features/config'),
-      require.resolve('./plugins/features/api'),
 
       // integrate other umi plugins
       require.resolve('./plugins/features/extras'),

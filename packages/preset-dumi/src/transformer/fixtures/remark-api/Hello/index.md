@@ -1,5 +1,0 @@
----
-componentName: Helloooo
----
-
-<API />

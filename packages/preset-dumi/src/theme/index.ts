@@ -11,7 +11,6 @@ export { default as useMotions } from './hooks/useMotions';
 export { default as useCodeSandbox } from './hooks/useCodeSandbox';
 export { default as useLocaleProps } from './hooks/useLocaleProps';
 export { default as useDemoUrl } from './hooks/useDemoUrl';
-export { default as useApiData } from './hooks/useApiData';
 export { default as useTSPlaygroundUrl } from './hooks/useTSPlaygroundUrl';
 export { default as usePrefersColor } from './hooks/usePrefersColor';
 
@@ -56,21 +55,4 @@ export interface IPreviewerComponentProps {
    */
   debug?: true;
   [key: string]: any;
-}
-
-export interface IApiComponentProps {
-  /**
-   * api data identifier
-   * @note  it is the component identifier by default
-   *        will fallback to the src path on <code> element if component identifier is not available
-   */
-  identifier: string;
-  /**
-   * which export should be displayed
-   */
-  export: string;
-  /**
-   * whether the title is hidden when compiling 
-   */
-  hideTitle: boolean;
 }
