@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`API component Match snapshot 1`] = `
+<DocumentFragment>
+  <table
+    style="margin-top: 24px;"
+  >
+    <thead>
+      <tr>
+        <th>
+          Name
+        </th>
+        <th>
+          Description
+        </th>
+        <th>
+          Type
+        </th>
+        <th>
+          Default
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          className
+        </td>
+        <td>
+          Extra CSS className for this component
+        </td>
+        <td>
+          <code>
+            string
+          </code>
+        </td>
+        <td>
+          <code>
+            --
+          </code>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          type
+        </td>
+        <td>
+          I'm required
+        </td>
+        <td>
+          <code>
+            string
+          </code>
+        </td>
+        <td>
+          <code>
+            (required)
+          </code>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</DocumentFragment>
+`;
