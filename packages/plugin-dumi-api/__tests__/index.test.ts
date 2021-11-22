@@ -125,6 +125,31 @@ describe('@umijs/plugin-dumi-api', () => {
           },
         ],
       },
+      Peach: {
+        default: [
+          {
+            identifier: 'className',
+            type: 'string',
+            required: true,
+          },
+          {
+            identifier: 'age',
+            type: 'number',
+            required: true,
+          },
+        ],
+        Apple: [
+          {
+            identifier: 'className',
+            type: 'string',
+          },
+          {
+            identifier: 'type',
+            type: '"Peach" | "apple"',
+            required: true,
+          },
+        ],
+      },
     });
   });
 });

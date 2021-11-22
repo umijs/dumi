@@ -8,5 +8,4 @@
     "skipLibCheck": true,
     "declaration": true
   },
-  "files": ["./src/theme/index.ts"]
 }

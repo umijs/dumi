@@ -30,7 +30,7 @@ function guessComponentName(fileAbsPath: string) {
   return parsed.name;
 }
 
-function applyApiData(api, identifier: string, definitions: ReturnType<typeof parser>) {
+function applyApiData(api: IApi, identifier: string, definitions: ReturnType<typeof parser>) {
   if (identifier && definitions) {
     api.applyPlugins({
       key: 'dumi.detectApi',
@@ -50,7 +50,7 @@ function applyApiData(api, identifier: string, definitions: ReturnType<typeof pa
  * @param parseOpts     extra parse options
  */
 function watchComponentUpdate(
-  api,
+  api: IApi,
   absPath: string,
   identifier: string,
   parseOpts: ArgsType<typeof parser>[1],
@@ -162,7 +162,7 @@ export default function (api: IApi) {
       const isUpdated = Boolean(apis[identifier]);
 
       apis[identifier] = data;
-
+      
       if (isUpdated) {
         generateApisFile();
       }
