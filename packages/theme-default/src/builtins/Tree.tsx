@@ -1,7 +1,7 @@
 import type { ReactNode, ComponentProps } from 'react';
 import React, { useEffect, useState, createRef } from 'react';
 import type { TreeProps } from 'rc-tree';
-import  Tree from 'rc-tree';
+import Tree from 'rc-tree';
 import type { EventDataNode } from 'rc-tree/lib/interface';
 import type { CSSMotionProps, MotionEventHandler, MotionEndEventHandler } from 'rc-motion';
 import './Tree.less';
