@@ -49,6 +49,7 @@ function applyApiData(api: IApi, identifier: string, definitions: ReturnType<typ
  * @param identifier    api identifier
  * @param parseOpts     extra parse options
  */
+/* istanbul ignore next */
 function watchComponentUpdate(
   api: IApi,
   absPath: string,
@@ -162,7 +163,8 @@ export default function (api: IApi) {
       const isUpdated = Boolean(apis[identifier]);
 
       apis[identifier] = data;
-      
+
+      /* istanbul ignore if */
       if (isUpdated) {
         generateApisFile();
       }
