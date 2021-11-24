@@ -23,7 +23,7 @@
     "@babel/plugin-transform-modules-commonjs": "^7.7.2",
     "@babel/traverse": "^7.7.2",
     "@babel/types": "^7.7.2",
-    "@mapbox/hast-util-to-jsx": "^1.0.0",
+    "@mapbox/hast-util-to-jsx": "1.0.0",
     "@umijs/babel-preset-umi": "3.x",
     "@umijs/plugin-analytics": "^0.2.2",
     "@umijs/runtime": "^3.2.14",
