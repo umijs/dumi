@@ -148,6 +148,7 @@ export default (api: IApi) => {
     }
 
     const demoRenderBody = `
+      const { demos } = React.useContext(context);
       const renderArgs = getDemoRenderArgs(props, demos);
 
       // for listen prefers-color-schema media change in demo single route
@@ -180,8 +181,7 @@ export default (api: IApi) => {
             const { default: Previewer } = await import(/* webpackChunkName: 'dumi_demos' */ '${
               Previewer.source
             }');
-            const { default: demos } = await import(/* webpackChunkName: 'dumi_demos' */ '@@/dumi/demos');
-            const { usePrefersColor } = await import(/* webpackChunkName: 'dumi_demos' */ 'dumi/theme');
+            const { usePrefersColor, context } = await import(/* webpackChunkName: 'dumi_demos' */ 'dumi/theme');
 
             return props => {
               ${demoRenderBody}
@@ -193,15 +193,14 @@ export default (api: IApi) => {
           path.join(__dirname, './getDemoRenderArgs'),
         )}');
         const { default: Previewer } = require('${Previewer.source}');
-        const { default: demos } = require('@@/dumi/demos');
-        const { usePrefersColor } = require('dumi/theme');
+        const { usePrefersColor, context } = require('dumi/theme');
 
         ${demoRenderBody}
         }`;
 
     prependRoutes[0].wrappers = [
-      // builtin outer layout, for initialize context
-      api.utils.winPath(path.join(__dirname, '../../../theme/layout')),
+      // builtin outer layout for initialize context (.umi/dumi/layout.tsx)
+      '../dumi/layout',
       theme.layoutPaths.demo,
     ].filter(Boolean);
     prependRoutes[0].component = `(props) => ${demoRouteComponent}`;

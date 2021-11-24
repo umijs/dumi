@@ -3,8 +3,6 @@ import type { IPreviewerComponentProps } from 'dumi/theme';
 import { context, useDemoUrl } from 'dumi/theme';
 import Layout from 'dumi-theme-default/es/layout';
 import type { IRouteComponentProps } from '@umijs/types';
-// @ts-ignore
-import demos from '@@/dumi/demos';
 import Device from '../components/Device';
 import { ACTIVE_MSG_TYPE } from '../builtins/Previewer';
 import '../style/layout.less';
@@ -12,6 +10,7 @@ import '../style/layout.less';
 const MobileLayout: React.FC<IRouteComponentProps> = ({ children, ...props }) => {
   const {
     config: { mode },
+    demos,
   } = useContext(context);
   const [demo, setDemo] = useState<IPreviewerComponentProps>(null);
   const builtinDemoUrl = useDemoUrl(demo?.identifier);

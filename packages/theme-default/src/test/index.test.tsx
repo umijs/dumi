@@ -78,6 +78,16 @@ describe('default theme', () => {
       },
     ],
     base: '/',
+    apis: {
+      MultipleExports: {
+        Other: [
+          {
+            identifier: 'other',
+            type: 'string',
+          },
+        ],
+      },
+    }
   };
   const baseProps = {
     history,

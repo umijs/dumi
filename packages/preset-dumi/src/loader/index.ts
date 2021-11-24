@@ -25,17 +25,18 @@ export default async function loader(raw: string) {
   return `
     import React from 'react';
     import { dynamic } from 'dumi';
-    import { Link, AnchorLink } from 'dumi/theme';
+    import { Link, AnchorLink, context } from 'dumi/theme';
     ${theme.builtins
       .concat(theme.fallbacks)
       .concat(theme.customs)
       .map(component => `import ${component.identifier} from '${component.source}';`)
       .join('\n')}
-    import DUMI_ALL_DEMOS from '@@/dumi/demos';
-
-    ${(result.meta.demos || []).join('\n')}
 
     export default (props) => {
+      const { demos: DUMI_ALL_DEMOS } = React.useContext(context);
+
+      ${(result.meta.demos || []).join('\n')}
+
       // scroll to anchor after page component loaded
       React.useEffect(() => {
         if (props?.location?.hash) {

@@ -62,4 +62,19 @@ export default (api: IApi) => {
 
   // add head script to initialize prefers-color-schema for HTML tag
   api.addHTMLHeadScripts(async () => [{ content: (await minify(COLOR_HEAD_SCP, { ecma: 5 })).code }]);
+
+  // write outer layout to tmp dir
+  api.onGenerateFiles(() => {
+    api.writeTmpFile({
+      path: 'dumi/layout.jsx',
+      content: `import React from 'react';
+import config from '@@/dumi/config';
+import demos from '@@/dumi/demos';
+import apis from '@@/dumi/apis';
+import Layout from '${api.utils.winPath(path.join(__dirname, '../../theme/layout'))}';
+
+export default (props) => <Layout {...props} config={config} demos={demos} apis={apis} />;
+`,
+    });
+  });
 };
