@@ -1,3 +1,4 @@
+import fs from 'fs';
 import path from 'path';
 import type { Node } from 'unist';
 import deepmerge from 'deepmerge';
@@ -39,7 +40,7 @@ function serializeAPINodes(
   const parsedAttrs = parseElmAttrToProps(node.properties);
   const expts: string[] = parsedAttrs.exports || Object.keys(definitions);
   const showTitle = !parsedAttrs.hideTitle
-  
+
   return expts.reduce<(IDumiElmNode | Node)[]>((list, expt, i) => {
     // render large API title if it is default export
     // or it is the first export and the exports attribute was not custom
@@ -134,7 +135,10 @@ function watchComponentUpdate(
     applyApiData(identifier, definitions);
 
     // watch next turn
-    watchComponentUpdate(absPath, identifier, parseOpts);
+    // FIXME: workaround for resolve no such file error
+    setTimeout(() => {
+      watchComponentUpdate(absPath, identifier, parseOpts);
+    }, fs.existsSync(absPath) ? 0 : 50);
   });
 }
 
