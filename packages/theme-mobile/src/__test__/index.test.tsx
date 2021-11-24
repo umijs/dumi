@@ -81,6 +81,14 @@ describe('mobile theme', () => {
       },
     ],
     base: '/',
+    demos: {
+      a: {
+        component: () => "I'm a!",
+        previewerProps: {
+          title: 'a',
+        },
+      },
+    },
   };
   const baseProps = {
     history,
@@ -283,8 +291,8 @@ describe('mobile theme', () => {
   it('should render without simulator', async () => {
     render(
       <Router history={history}>
-        <Layout {...baseProps}>
-          <Context.Provider value={baseCtx}>
+        <Context.Provider value={baseCtx}>
+          <Layout {...baseProps}>
             <Previewer
               title="a"
               identifier="a"
@@ -296,8 +304,8 @@ describe('mobile theme', () => {
               simulator={false}
               dependencies={{}}
             />
-          </Context.Provider>
-        </Layout>
+          </Layout>
+        </Context.Provider>
       </Router>,
     );
 

@@ -8,10 +8,49 @@ describe('theme API: useApiData', () => {
   const wrapper = ({ children }) => (
     <Context.Provider
       value={
-        ({
+        {
           locale: 'zh-CN',
           config: { locales: [{ name: 'zh-CN', label: '中文' }] },
-        } as unknown) as IThemeContext
+          apis: {
+            Normal: {
+              default: [
+                {
+                  identifier: 'normal',
+                  type: 'string',
+                },
+              ],
+            },
+            LocaleDescription: {
+              default: [
+                {
+                  identifier: 'locale',
+                  type: 'string',
+                  description: 'default description',
+                  'description.en-US': 'english description',
+                },
+              ],
+            },
+            MultipleExports: {
+              default: [],
+              Other: [
+                {
+                  identifier: 'other',
+                  type: 'string',
+                },
+                {
+                  identifier: 'another',
+                  type: 'string',
+                  required: true,
+                },
+                {
+                  identifier: 'anotherAgain',
+                  type: 'string',
+                  default: 'again',
+                },
+              ],
+            },
+          },
+        } as unknown as IThemeContext
       }
     >
       {children}
