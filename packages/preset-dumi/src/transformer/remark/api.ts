@@ -136,6 +136,7 @@ function watchComponentUpdate(
 
     // watch next turn
     // FIXME: workaround for resolve no such file error
+    /* istanbul ignore next */
     setTimeout(() => {
       watchComponentUpdate(absPath, identifier, parseOpts);
     }, fs.existsSync(absPath) ? 0 : 50);
