@@ -1,8 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
-// @ts-ignore
-import apis from '@@/dumi/apis';
 import context from '../context';
-import type { IApiDefinition } from '../../api-parser';
+import type { IThemeContext } from '../context';
 
 /**
  * get API data
@@ -10,8 +8,13 @@ import type { IApiDefinition } from '../../api-parser';
  * @param locale          current locale
  * @param isDefaultLocale default locale flag
  */
-function getApiData(identifier: string, locale: string, isDefaultLocale: boolean) {
-  return Object.entries(apis[identifier] as IApiDefinition).reduce<IApiDefinition>(
+function getApiData(
+  apis: IThemeContext['apis'],
+  identifier: string,
+  locale: string,
+  isDefaultLocale: boolean,
+) {
+  return Object.entries(apis[identifier]).reduce<IThemeContext['apis']['0']>(
     (expts, [expt, rows]) => {
       expts[expt] = rows.map(props => {
         // copy original data
@@ -47,13 +50,14 @@ export default (identifier: string) => {
   const {
     locale,
     config: { locales },
+    apis,
   } = useContext(context);
   const isDefaultLocale = !locales.length || locales[0].name === locale;
-  const [data, setData] = useState<IApiDefinition>(getApiData(identifier, locale, isDefaultLocale));
+  const [data, setData] = useState(getApiData(apis, identifier, locale, isDefaultLocale));
 
   useEffect(() => {
-    setData(getApiData(identifier, locale, isDefaultLocale));
-  }, [identifier, locale, isDefaultLocale]);
+    setData(getApiData(apis, identifier, locale, isDefaultLocale));
+  }, [apis, identifier, locale, isDefaultLocale]);
 
   return data;
 };

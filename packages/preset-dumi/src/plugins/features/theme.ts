@@ -69,9 +69,11 @@ export default (api: IApi) => {
       path: 'dumi/layout.jsx',
       content: `import React from 'react';
 import config from '@@/dumi/config';
+import demos from '@@/dumi/demos';
+import apis from '@@/dumi/apis';
 import Layout from '${api.utils.winPath(path.join(__dirname, '../../theme/layout'))}';
 
-export default (props) => <Layout {...props} />;
+export default (props) => <Layout {...props} config={config} demos={demos} apis={apis} />;
 `,
     });
   });

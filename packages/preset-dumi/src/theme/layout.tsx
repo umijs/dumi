@@ -7,6 +7,8 @@ import type { IMenu } from '../routes/getMenuFromRoutes';
 export interface IOuterLayoutProps {
   routes: IThemeContext['routes'];
   config: IThemeContext['config'];
+  apis: IThemeContext['apis'];
+  demos: IThemeContext['demos'];
 }
 
 /**
@@ -18,10 +20,10 @@ const useCurrentRouteMeta = (routes: IOuterLayoutProps['routes'], pathname: stri
   const handler = (...args: [IOuterLayoutProps['routes'], string]) => {
     const pathWithoutSuffix = args[1].replace(/([^^])\/$/, '$1');
 
-    return ({
+    return {
       ...(args[0].find(({ path }) => path === pathWithoutSuffix)?.meta || {}),
       __pathname: pathname,
-    });
+    };
   };
   const [meta, setMeta] = useState<IThemeContext['meta']>(handler(routes, pathname));
 
@@ -40,7 +42,10 @@ const useCurrentRouteMeta = (routes: IOuterLayoutProps['routes'], pathname: stri
 const useCurrentLocale = (locales: IThemeContext['config']['locales'], pathname: string) => {
   const handler = (...args: [IThemeContext['config']['locales'], string]) => {
     // get locale by route prefix
-    return args[0].find(locale => new RegExp(`/${locale.name}(/|$)`).test(args[1]))?.name || locales[0].name;
+    return (
+      args[0].find(locale => new RegExp(`/${locale.name}(/|$)`).test(args[1]))?.name ||
+      locales[0].name
+    );
   };
   const [locale, setLocale] = useState<string>(handler(locales, pathname));
 
@@ -136,7 +141,7 @@ const findDumiRoot = (routes: any): IThemeContext['routes'] => {
  * outer theme layout
  */
 const OuterLayout: React.FC<IOuterLayoutProps & IRouteComponentProps> = props => {
-  const { location, route, children, config } = props;
+  const { location, route, children, config, apis, demos } = props;
   const pathWithoutPrefix = location.pathname.replace(
     // to avoid stripped the first /
     route.path.replace(/^\/$/, '//'),
@@ -153,12 +158,14 @@ const OuterLayout: React.FC<IOuterLayoutProps & IRouteComponentProps> = props =>
     <Context.Provider
       value={{
         config,
-        meta: meta.__pathname === location.pathname ? meta : {} as any,
+        meta: meta.__pathname === location.pathname ? meta : ({} as any),
         locale,
         nav: config.navs[locale] || [],
         menu,
         base,
         routes,
+        apis,
+        demos,
       }}
     >
       {children}
