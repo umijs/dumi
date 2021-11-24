@@ -1,22 +1,12 @@
 import React, { useLayoutEffect, useState } from 'react';
-import type { IRouteProps, IRouteComponentProps } from '@umijs/types';
-// @ts-ignore
-import config from '@@/dumi/config';
-import type { IThemeContext } from './context';
 import Context from './context';
+import type { IRouteProps, IRouteComponentProps } from '@umijs/types';
+import type { IThemeContext } from './context';
 import type { IMenu } from '../routes/getMenuFromRoutes';
 
 export interface IOuterLayoutProps {
-  mode: IThemeContext['config']['mode'];
-  title: IThemeContext['config']['title'];
-  logo: IThemeContext['config']['logo'];
-  description: IThemeContext['config']['description'];
-  repository: IThemeContext['config']['repository'];
-  navs: IThemeContext['config']['navs'];
-  menus: IThemeContext['config']['menus'];
-  locales: IThemeContext['config']['locales'];
-  algolia: IThemeContext['config']['algolia'];
   routes: IThemeContext['routes'];
+  config: IThemeContext['config'];
 }
 
 /**
@@ -146,7 +136,7 @@ const findDumiRoot = (routes: any): IThemeContext['routes'] => {
  * outer theme layout
  */
 const OuterLayout: React.FC<IOuterLayoutProps & IRouteComponentProps> = props => {
-  const { location, route, children } = props;
+  const { location, route, children, config } = props;
   const pathWithoutPrefix = location.pathname.replace(
     // to avoid stripped the first /
     route.path.replace(/^\/$/, '//'),

@@ -61,8 +61,6 @@ export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
     layout: false,
     path: opts.isIntegrate ? prefix('/') : '/',
     wrappers: [
-      // builtin outer layout
-      slash(path.relative(api.paths.absPagesPath, path.join(__dirname, '../theme/layout'))),
       // theme layout
       slash(path.relative(api.paths.absPagesPath, theme.layoutPaths._)),
     ],

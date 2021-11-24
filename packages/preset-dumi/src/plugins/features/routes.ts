@@ -48,10 +48,13 @@ export default (api: IApi) => {
     },
   });
 
-  // add empty component for root layout
   // TODO: move this logic into getRouteConfig and make sure tests passed
   api.onPatchRoute(({ route }) => {
     if (route[DUMI_ROOT_FLAG]) {
+      // builtin outer layout for initialize context (.umi/dumi/layout.tsx)
+      route.wrappers.unshift('../dumi/layout');
+
+      // add empty component for root layout
       route.component = '(props) => props.children';
     }
   });

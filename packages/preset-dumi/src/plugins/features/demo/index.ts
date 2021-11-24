@@ -200,8 +200,8 @@ export default (api: IApi) => {
         }`;
 
     prependRoutes[0].wrappers = [
-      // builtin outer layout, for initialize context
-      api.utils.winPath(path.join(__dirname, '../../../theme/layout')),
+      // builtin outer layout for initialize context (.umi/dumi/layout.tsx)
+      '../dumi/layout',
       theme.layoutPaths.demo,
     ].filter(Boolean);
     prependRoutes[0].component = `(props) => ${demoRouteComponent}`;
