@@ -1,23 +1,25 @@
 @import (reference) '../style/variables.less';
+@treePrefixCls: ~'rc-tree';
+@treeNodePrefixCls: ~'@{treePrefixCls}-treenode';
 
 .__dumi-site-tree {
   padding: 16px;
+  background-color: @c-light-bg;
   border: 1px solid @c-border;
   border-radius: 2px;
-  background-color: @c-light-bg;
 
-  [data-prefers-color=dark] & {
+  [data-prefers-color='dark'] & {
     color: @c-text-dark;
-    border-color: @c-border-dark;
     background-color: @c-light-bg-dark;
+    border-color: @c-border-dark;
   }
 
   small {
     padding-left: 24px;
-    font-size: 14px;
     color: @c-secondary;
+    font-size: 14px;
 
-    [data-prefers-color=dark] & {
+    [data-prefers-color='dark'] & {
       color: @c-secondary-dark;
     }
 
@@ -26,13 +28,17 @@
     }
   }
 
-  &.rc-tree {
-    transition: all .3s;
-    .rc-tree-treenode {
-      padding-bottom: 4px;
+  &.@{treePrefixCls} {
+    transition: all 0.3s;
+    line-height: 1.5715;
+    list-style: none;
+    font-size: 14px;
+
+    .@{treeNodePrefixCls} {
       position: relative;
       display: flex;
       align-items: flex-start;
+      padding-bottom: 4px;
       &:before {
         position: absolute;
         top: 0;
@@ -45,7 +51,7 @@
       &:hover:before {
         background: #f5f5f5;
 
-        [data-prefers-color=dark] & {
+        [data-prefers-color='dark'] & {
           background: @c-light-bg-dark;
         }
       }
@@ -54,45 +60,55 @@
       }
     }
 
-    .rc-tree-treenode span.rc-tree-switcher {
-      width: 24px;
-      height: 24px;
-      line-height: 24px;
-      background: transparent;
+    .@{treeNodePrefixCls} span.@{treePrefixCls}-switcher {
       display: flex;
       align-items: center;
       justify-content: center;
+      width: 24px;
+      height: 24px;
+      margin-right: 2px;
+      line-height: 24px;
+      background: transparent;
+      cursor: pointer;
     }
 
-    .rc-tree-treenode .rc-tree-node-content-wrapper {
-      margin: 0;
-      padding: 0 4px;
+    .@{treeNodePrefixCls} .@{treePrefixCls}-node-content-wrapper {
       flex: auto;
       min-height: 24px;
+      margin: 0;
+      padding: 0 4px;
       line-height: 24px;
-      .rc-tree-iconEle {
-        vertical-align: 0;
+      cursor: pointer;
+      .@{treePrefixCls}-iconEle {
         margin-right: 6px;
+        vertical-align: 0;
       }
     }
 
-    &.rc-tree-show-line {
-      .rc-tree-indent-unit {
-        width: 24px;
-        height: 24px;
-        position: relative;
+    &.@{treePrefixCls}-show-line {
+      .@{treePrefixCls}-indent {
+        display: inline-block;
+        height: 0;
+        vertical-align: bottom;
 
-        &::before {
-          position: absolute;
-          top: 0;
-          right: 12px;
-          bottom: -4px;
-          border-right: 1px solid #d9d9d9;
-          content: '';
-        }
+        &-unit {
+          position: relative;
+          display: inline-block;
+          width: 24px;
+          height: 24px;
 
-        &-end::before {
-          display: none;
+          &::before {
+            position: absolute;
+            top: 0;
+            right: 12px;
+            bottom: -4px;
+            border-right: 1px solid #d9d9d9;
+            content: '';
+          }
+
+          &-end::before {
+            display: none;
+          }
         }
       }
 
@@ -116,14 +132,14 @@
           position: absolute;
           top: 0;
           bottom: 10px;
+          width: 12px;
           margin-left: -1px;
           border-bottom: 1px solid #d9d9d9;
           content: ' ';
-          width: 12px;
         }
       }
 
-      .rc-tree-treenode-leaf-last {
+      .@{treeNodePrefixCls}-leaf-last {
         .tree-switcher-leaf-line::before {
           height: 14px;
         }
@@ -132,11 +148,11 @@
   }
 
   &-icon {
-    color: @c-text;
     width: 16px;
-    vertical-align: -.225em;
+    color: @c-text;
+    vertical-align: -0.225em;
 
-    [data-prefers-color=dark] & {
+    [data-prefers-color='dark'] & {
       color: @c-text-dark;
     }
   }
