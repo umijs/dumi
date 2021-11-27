@@ -20,6 +20,12 @@ Build documentation,
 $ npm run docs:build
 ```
 
+Run test,
+
+```bash
+$ npm test
+```
+
 Build library via `father-build`,
 
 ```bash

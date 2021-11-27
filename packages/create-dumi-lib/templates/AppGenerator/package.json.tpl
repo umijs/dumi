@@ -30,6 +30,9 @@
     "react": "^16.12.0 || ^17.0.0"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.15.1",
+    "@testing-library/react": "^12.1.2",
+    "@types/jest": "^27.0.3",
     "@umijs/fabric": "^2.8.1",
     "@umijs/test": "^3.0.5",
     "dumi": "^{{{ version }}}",
