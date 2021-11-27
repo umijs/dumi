@@ -8,10 +8,10 @@
     "docs:deploy": "gh-pages -d docs-dist",
     "build": "father-build",
     "deploy": "npm run docs:build && npm run docs:deploy",
-    "release": "npm run build && npm publish",
     "prettier": "prettier --write \"**/*.{js,jsx,tsx,ts,less,md,json}\"",
     "test": "umi-test",
-    "test:coverage": "umi-test --coverage"
+    "test:coverage": "umi-test --coverage",
+    "prepublishOnly": "npm run build"
   },
   "module": "es/index.js",
   "typings": "es/index.d.ts",
