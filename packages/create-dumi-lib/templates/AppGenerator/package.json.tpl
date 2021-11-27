@@ -30,6 +30,7 @@
     "react": "^16.12.0 || ^17.0.0"
   },
   "devDependencies": {
+    "@umijs/fabric": "^2.8.1",
     "@umijs/test": "^3.0.5",
     "dumi": "^{{{ version }}}",
     "father-build": "^1.17.2",
