@@ -35,7 +35,8 @@ export default (props: IPreviewerProps) => {
 
     const isFirstDemo = document.querySelector('.__dumi-default-mobile-previewer') === ref.current;
     const handler = debounce(() => {
-      const scrollTop = document.documentElement.scrollTop + 128;
+      // for active by previous title anchor
+      const scrollTop = document.documentElement.scrollTop + 128 + 64;
 
       // post message if scroll into current demo
       if (
