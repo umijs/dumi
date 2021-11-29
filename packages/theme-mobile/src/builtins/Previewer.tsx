@@ -12,6 +12,7 @@ export default (props: IPreviewerProps) => {
   const { meta } = useContext(context);
   const [previewerProps, setPreviewerProps] = useState<null | IPreviewerProps>(null);
   const [isActive, setIsActive] = useState(false);
+  const isInactive = meta.mobile !== false && !isActive;
   const activeSelf = useCallback(() => {
     window.postMessage(
       {
@@ -101,11 +102,11 @@ export default (props: IPreviewerProps) => {
     <div
       className={meta.mobile !== false ? '__dumi-default-mobile-previewer' : null}
       onClick={() => {
-        if (!isActive) {
+        if (isInactive) {
           activeSelf();
         }
       }}
-      data-inactive={!isActive || undefined}
+      data-inactive={isInactive || undefined}
       ref={ref}
     >
       {previewerProps && (
