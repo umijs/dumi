@@ -66,7 +66,7 @@ export default (api: IApi) => {
   // write outer layout to tmp dir
   api.onGenerateFiles(() => {
     api.writeTmpFile({
-      path: 'dumi/layout.jsx',
+      path: 'dumi/layout.tsx',
       content: `import React from 'react';
 import config from '@@/dumi/config';
 import demos from '@@/dumi/demos';
