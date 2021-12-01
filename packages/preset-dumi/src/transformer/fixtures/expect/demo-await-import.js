@@ -13,5 +13,6 @@ dynamic({
     };
 
     return _default;
-  }
+  },
+  loading: () => null
 })

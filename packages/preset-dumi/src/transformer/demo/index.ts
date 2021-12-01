@@ -149,6 +149,10 @@ export default (raw: string, opts: IDemoOpts): IDemoTransformResult => {
           types.identifier('loader'),
           types.functionExpression(null, [], types.blockStatement(body), false, true),
         ),
+        types.objectProperty(
+          types.identifier('loading'),
+          types.arrowFunctionExpression([], types.nullLiteral()),
+        ),
       ]),
     ]);
   } else {

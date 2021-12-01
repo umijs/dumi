@@ -62,6 +62,7 @@ export default function embed(): IDumiUnifiedTransformer {
                       isDynamicEnable()
                         ? `dynamic({
                           loader: async () => import(/* webpackChunkName: "embedded_md" */ '${moduleReqPath}'),
+                          loading: () => null,
                         })`
                         : `require('${moduleReqPath}').default`
                     })`,

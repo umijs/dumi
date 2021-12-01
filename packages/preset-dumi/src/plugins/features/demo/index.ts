@@ -186,7 +186,8 @@ export default (api: IApi) => {
             return props => {
               ${demoRenderBody}
             }
-          }
+          },
+          loading: () => null,
         }), props)`
       : `{
         const { default: getDemoRenderArgs } = require('${api.utils.winPath(

@@ -79,5 +79,6 @@ export const decodeImportRequireWithAutoDynamic = (str: string, chunkName: strin
   isEncodeImport(str)
     ? `dynamic({
       loader: async () => ${decodeImportRequire(str, chunkName)},
+      loading: () => null,
     })`
     : decodeImportRequire(str, chunkName);
