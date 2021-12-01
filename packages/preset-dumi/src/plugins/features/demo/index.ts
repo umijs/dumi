@@ -172,9 +172,9 @@ export default (api: IApi) => {
       }
     `;
     const demoRouteComponent = isDynamicEnable()
-      ? `React.createElement(
-        dynamic({
+      ? `dynamic({
           loader: async () => {
+            const React = await import('react');
             const { default: getDemoRenderArgs } = await import(/* webpackChunkName: 'dumi_demos' */ '${api.utils.winPath(
               path.join(__dirname, './getDemoRenderArgs'),
             )}');
@@ -188,8 +188,9 @@ export default (api: IApi) => {
             }
           },
           loading: () => null,
-        }), props)`
+        }))(` // hack to execute and return dynamic, to avoid use React.createElement and can works with umi routeToJSON
       : `{
+        const React = require('react');
         const { default: getDemoRenderArgs } = require('${api.utils.winPath(
           path.join(__dirname, './getDemoRenderArgs'),
         )}');
@@ -204,7 +205,7 @@ export default (api: IApi) => {
       '../dumi/layout',
       theme.layoutPaths.demo,
     ].filter(Boolean);
-    prependRoutes[0].component = `(props) => ${demoRouteComponent}`;
+    prependRoutes[0].component = `((props) => ${demoRouteComponent})`;
 
     routes.unshift(...prependRoutes);
 
