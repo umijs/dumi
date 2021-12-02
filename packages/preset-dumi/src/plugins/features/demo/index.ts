@@ -149,7 +149,12 @@ export default (api: IApi) => {
 
     const demoRenderBody = `
       const { demos } = React.useContext(context);
-      const renderArgs = getDemoRenderArgs(props, demos);
+      const [renderArgs, setRenderArgs] = React.useState([]);
+
+      // update render args when props changed
+      React.useLayoutEffect(() => {
+        setRenderArgs(getDemoRenderArgs(props, demos));
+      }, [props.uuid, props.wrapper, props.capture]);
 
       // for listen prefers-color-schema media change in demo single route
       usePrefersColor();

@@ -422,18 +422,17 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
         : // render other demo from the common demo module: @@/dumi/demos
           `React.memo(DUMI_ALL_DEMOS['${previewerProps.identifier}'].component)`;
 
-      this.vFile.data.demos = (this.vFile.data.demos || []).concat(
-        `const ${DEMO_COMPONENT_NAME}${
-          (this.vFile.data.demos?.length || 0) + 1
-        } = ${demoComponentCode};`,
-      );
+      this.vFile.data.demos = (this.vFile.data.demos || []).concat({
+        identifier: `${DEMO_COMPONENT_NAME}${(this.vFile.data.demos?.length || 0) + 1}`,
+        code: demoComponentCode,
+      });
 
       if (previewerProps.inline) {
         // append demo component directly for inline demo and other transformer result
         parent.children[i] = {
           previewer: true,
           type: 'element',
-          tagName: `${DEMO_COMPONENT_NAME}${this.vFile.data.demos.length}`,
+          tagName: `demos.${DEMO_COMPONENT_NAME}${this.vFile.data.demos.length}`,
         };
       } else {
         parent.children[i] = {
@@ -447,7 +446,7 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
           children: [
             {
               type: 'element',
-              tagName: `${DEMO_COMPONENT_NAME}${this.vFile.data.demos.length}`,
+              tagName: `demos.${DEMO_COMPONENT_NAME}${this.vFile.data.demos.length}`,
               properties: {},
             },
           ],

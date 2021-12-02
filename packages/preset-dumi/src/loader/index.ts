@@ -32,10 +32,14 @@ export default async function loader(raw: string) {
       .map(component => `import ${component.identifier} from '${component.source}';`)
       .join('\n')}
 
+    const demos = {};
+
     export default (props) => {
       const { demos: DUMI_ALL_DEMOS } = React.useContext(context);
 
-      ${(result.meta.demos || []).join('\n')}
+      ${(result.meta.demos || [])
+        .map(item => `demos.${item.identifier} ||= ${item.code};`)
+        .join('\n')}
 
       // scroll to anchor after page component loaded
       React.useEffect(() => {
