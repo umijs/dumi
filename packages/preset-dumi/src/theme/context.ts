@@ -3,9 +3,11 @@ import type { IConfig, IRoute } from '@umijs/types';
 import type { INav } from '../routes/getNavFromRoutes';
 import type { IMenu } from '../routes/getMenuFromRoutes';
 import type { ILocale } from '../routes/getLocaleFromRoutes';
-import type { IApiDefinition } from '@umijs/plugin-dumi-api/lib/parser';
 import type { IDumiOpts } from '..';
 import type { IPreviewerComponentProps } from '.';
+import type { AtomPropsDefinition } from 'dumi-assets-types';
+
+export type IApiDefinition = AtomPropsDefinition;
 
 export interface IThemeContext {
   /**

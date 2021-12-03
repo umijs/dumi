@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import context from '@umijs/preset-dumi/lib/theme/context';
+import { context } from 'dumi/theme';
 import type { AtomPropsDefinition } from 'dumi-assets-types';
 import type { IApiDefinition } from './parser';
 /**
