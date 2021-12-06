@@ -415,16 +415,14 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
         transformCode(node, this.data('fileAbsPath'), previewerTransformer, props);
       const code = codeTransformer(rendererProps);
 
-      // declare demo on the top page component for memo
-      const demoComponentCode = previewerProps.inline
-        ? // insert directly for inline demo
-          `React.memo(${decodeImportRequireWithAutoDynamic(code, 'demos_md_inline')})`
-        : // render other demo from the common demo module: @@/dumi/demos
-          `React.memo(DUMI_ALL_DEMOS['${previewerProps.identifier}'].component)`;
-
+      // use to declare demos in the page component
       this.vFile.data.demos = (this.vFile.data.demos || []).concat({
-        identifier: `${DEMO_COMPONENT_NAME}${(this.vFile.data.demos?.length || 0) + 1}`,
-        code: demoComponentCode,
+        name: `${DEMO_COMPONENT_NAME}${(this.vFile.data.demos?.length || 0) + 1}`,
+        code: previewerProps.inline
+          ? // insert directly for inline demo
+            `${decodeImportRequireWithAutoDynamic(code, 'demos_md_inline')}`
+          : // render other demo by id from demos context
+            `DUMI_ALL_DEMOS['${previewerProps.identifier}'].component`,
       });
 
       if (previewerProps.inline) {
@@ -432,7 +430,7 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
         parent.children[i] = {
           previewer: true,
           type: 'element',
-          tagName: `demos.${DEMO_COMPONENT_NAME}${this.vFile.data.demos.length}`,
+          tagName: `${DEMO_COMPONENT_NAME}${this.vFile.data.demos.length}`,
         };
       } else {
         parent.children[i] = {
@@ -446,7 +444,7 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
           children: [
             {
               type: 'element',
-              tagName: `demos.${DEMO_COMPONENT_NAME}${this.vFile.data.demos.length}`,
+              tagName: `${DEMO_COMPONENT_NAME}${this.vFile.data.demos.length}`,
               properties: {},
             },
           ],

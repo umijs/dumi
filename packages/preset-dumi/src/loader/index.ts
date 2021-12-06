@@ -32,21 +32,11 @@ export default async function loader(raw: string) {
       .map(component => `import ${component.identifier} from '${component.source}';`)
       .join('\n')}
 
-    const demos = {};
-
-    export default (props) => {
-      const { demos: DUMI_ALL_DEMOS } = React.useContext(context);
-
+    // memo for page content, to avoid useless re-render since other context fields changed
+    const PageContent = React.memo(({ demos: DUMI_ALL_DEMOS }) => {
       ${(result.meta.demos || [])
-        .map(item => `demos.${item.identifier} ||= ${item.code};`)
+        .map(item => `const ${item.name} = ${item.code}`)
         .join('\n')}
-
-      // scroll to anchor after page component loaded
-      React.useEffect(() => {
-        if (props?.location?.hash) {
-          AnchorLink.scrollToAnchor(decodeURIComponent(props.location.hash.slice(1)));
-        }
-      }, []);
 
       return (
         <>
@@ -59,5 +49,18 @@ export default async function loader(raw: string) {
           ${result.content}
         </>
       );
+    })
+
+    export default (props) => {
+      const { demos } = React.useContext(context);
+
+      // scroll to anchor after page component loaded
+      React.useEffect(() => {
+        if (props?.location?.hash) {
+          AnchorLink.scrollToAnchor(decodeURIComponent(props.location.hash.slice(1)));
+        }
+      }, []);
+
+      return <PageContent demos={demos} />;
   }`;
 }

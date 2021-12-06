@@ -27,7 +27,7 @@ describe('loader', () => {
     );
 
     // expect prepend demos
-    expect(result).toContain('.DumiDemo1 ||= React.memo(DUMI_ALL_DEMOS');
+    expect(result).toContain('const DumiDemo1 = DUMI_ALL_DEMOS');
 
     // expect import components from theme package
     expect(result).toContain("from 'dumi-theme-default");
@@ -58,11 +58,11 @@ describe('loader', () => {
       fs.readFileSync(filePath, 'utf8').toString(),
     );
 
-    expect(result).toContain('.DumiDemo1 ||= React.memo(DUMI_ALL_DEMOS');
-    expect(result).toContain('.DumiDemo2 ||= React.memo(DUMI_ALL_DEMOS');
-    expect(result).not.toContain('.DumiDemo3 ||= React.memo(DUMI_ALL_DEMOS');
-    expect(result).not.toContain('.DumiDemo4 ||= React.memo(DUMI_ALL_DEMOS');
-    expect(result).not.toContain('.DumiDemo5 ||= React.memo(DUMI_ALL_DEMOS');
+    expect(result).toContain('const DumiDemo1 = DUMI_ALL_DEMOS');
+    expect(result).toContain('const DumiDemo2 = DUMI_ALL_DEMOS');
+    expect(result).not.toContain('const DumiDemo3 = DUMI_ALL_DEMOS');
+    expect(result).not.toContain('const DumiDemo4 = DUMI_ALL_DEMOS');
+    expect(result).not.toContain('const DumiDemo5 = DUMI_ALL_DEMOS');
 
     // expect import components from theme package
     expect(result).toContain("from 'dumi-theme-default");
