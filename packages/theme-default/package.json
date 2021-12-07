@@ -27,7 +27,6 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.3",
     "@testing-library/react": "^10.4.8",
-    "dumi": "1.1.34",
     "react-test-renderer": "^16.13.1"
   },
   "peerDependencies": {

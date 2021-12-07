@@ -27,9 +27,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "devDependencies": {
-    "dumi": "1.1.34"
-  },
   "dependencies": {
     "dumi-theme-default": "1.1.17",
     "f2-touchemulator": "^0.0.1",
