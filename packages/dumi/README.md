@@ -85,13 +85,6 @@ $ yarn dev
       </a>
     </td>
     <td width="160" align="center">
-      <a target="_blank" href="https://juejin-cn.github.io/open-source/">
-        <img src="https://avatars3.githubusercontent.com/u/69633008?s=200&v=4" width="42" />
-        <br />
-        <strong>juejin-cn</strong>
-      </a>
-    </td>
-    <td width="160" align="center">
       <a target="_blank" href="https://lightproxy.org">
         <img src="https://user-images.githubusercontent.com/5436704/81533849-83e00f00-9399-11ea-943d-ac5fd4653906.png" width="42" />
         <br />
@@ -105,8 +98,6 @@ $ yarn dev
         <strong>Pro Components</strong>
       </a>
     </td>
-  </tr>
-  <tr>
     <td width="160" align="center">
       <a target="_blank" href="https://qiankun.umijs.org/">
         <img src="https://gw.alipayobjects.com/zos/bmw-prod/8a74c1d3-16f3-4719-be63-15e467a68a24/km0cv8vn_w500_h500.png" width="42" />
@@ -114,18 +105,13 @@ $ yarn dev
         <strong>qiankun</strong>
       </a>
     </td>
+  </tr>
+  <tr>
     <td width="160" align="center">
       <a target="_blank" href="https://github.com/react-component">
         <img src="https://avatars3.githubusercontent.com/u/9441414?s=200&v=4" width="42" />
         <br />
         <strong>react-component</strong>
-      </a>
-    </td>
-    <td width="160" align="center">
-      <a target="_blank" href="https://artdong.github.io/react-org-tree/">
-        <img src="https://raw.githubusercontent.com/artdong/react-org-tree/156fc0975511f20923788e10d011bc8e55ace37b/img/logo.svg" width="42" />
-        <br />
-        <strong>react-org-tree</strong>
       </a>
     </td>
     <td width="160" align="center">
@@ -141,6 +127,10 @@ $ yarn dev
         <br />
         <strong>UmiJS</strong>
       </a>
+    </td>
+    <td width="160" align="center">
+    </td>
+    <td width="160" align="center">
     </td>
   </tr>
 </table>

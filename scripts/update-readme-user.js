@@ -41,11 +41,6 @@ const users = [
       'https://user-images.githubusercontent.com/5436704/81533849-83e00f00-9399-11ea-943d-ac5fd4653906.png',
   },
   {
-    name: 'juejin-cn',
-    url: 'https://juejin-cn.github.io/open-source/',
-    logo: 'https://avatars3.githubusercontent.com/u/69633008?s=200&v=4',
-  },
-  {
     name: 'issues-helper',
     url: 'https://actions-cool.github.io/issues-helper/',
     logo: 'https://avatars1.githubusercontent.com/u/73879334?s=200&v=4',
@@ -69,11 +64,6 @@ const users = [
     name: 'Formily',
     url: 'https://v2.formilyjs.org/',
     logo: 'https://img.alicdn.com/imgextra/i2/O1CN01Kq3OHU1fph6LGqjIz_!!6000000004056-55-tps-1141-150.svg',
-  },
-  {
-    name: 'react-org-tree',
-    url: 'https://artdong.github.io/react-org-tree/',
-    logo: 'https://raw.githubusercontent.com/artdong/react-org-tree/156fc0975511f20923788e10d011bc8e55ace37b/img/logo.svg',
   },
   {
     name: 'antd-cpi',
