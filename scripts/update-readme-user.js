@@ -70,11 +70,22 @@ const users = [
     url: 'https://boyuai.github.io/antd-country-phone-input/',
     logo: 'https://staticcdn.boyuai.com/user-assets/6074/vF5on4266Geu54q8dM7mEU/Lark20200122-235918.svg',
   },
+  {
+    name: 'Dooringx',
+    url: 'https://github.com/H5-Dooring/dooringx',
+    logo: 'https://img-blog.csdnimg.cn/img_convert/520863a38a93d960862f92c805bc97cc.png',
+  },
+  {
+    name: 'pīnyīn',
+    url: 'https://pinyin.js.org/',
+    logo: 'https://gw.alipayobjects.com/mdn/rms_f6322a/afts/img/A*bGz9QbNudekAAAAAAAAAAAAAARQnAQ',
+  },
 ];
 
 const LongLogos = [
   'ahooks',
   'Formily',
+  'Dooringx',
 ];
 
 users.sort((a, b) => a.name.localeCompare(b.name));
