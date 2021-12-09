@@ -40,6 +40,8 @@ const FILE_LIST = [
       { type: 'replace', value: [/🍙 插件化的企业级前端应用框架。/g, '📖 为组件开发场景而生的文档工具'] },
       // replace same page url
       { type: 'replace', value: [/https:\/\/umijs\.org\/zh-CN\/config/g, ''] },
+      // replace @primary-color to @c-primary (dumi theme variables)
+      { type: 'replace', value: ["'@primary-color': '#1DA57A',", "// 修改 dumi 默认主题的主色，更多变量详见：https://github.com/umijs/dumi/blob/master/packages/theme-default/src/style/variables.less\n    '@c-primary': '#1DA57A',"] },
     ],
   },
 ];
