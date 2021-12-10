@@ -11,6 +11,7 @@ const MobileLayout: React.FC<IRouteComponentProps> = ({ children, ...props }) =>
   const {
     config: { mode },
     demos,
+    meta,
   } = useContext(context);
   const [demo, setDemo] = useState<IPreviewerComponentProps>(null);
   const builtinDemoUrl = useDemoUrl(demo?.identifier);
@@ -31,6 +32,11 @@ const MobileLayout: React.FC<IRouteComponentProps> = ({ children, ...props }) =>
   useEffect(() => {
     setDemo(null);
   }, [props.location.pathname]);
+
+  // force render toc to side menu
+  if (meta.toc !== false) {
+    meta.toc = 'menu';
+  }
 
   return (
     <Layout {...props}>
