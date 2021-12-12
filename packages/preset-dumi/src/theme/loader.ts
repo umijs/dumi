@@ -69,6 +69,7 @@ const REQUIRED_THEME_BUILTINS = [
   'Previewer',
   'SourceCode',
   'Tree',
+  'Table',
 ];
 let cache: IThemeLoadResult | null;
 

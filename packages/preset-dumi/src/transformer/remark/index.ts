@@ -20,6 +20,7 @@ import api from './api';
 import mdComponent from './mdComponent';
 import link from './link';
 import img from './img';
+import table from './table';
 import previewer from './previewer';
 import raw from './raw';
 import jsxify from './jsxify';
@@ -80,7 +81,7 @@ function debug(name: string) {
 
 // reserve unknown property for Node, to avoid custom plugin throw type error after @types/unist@2.0.4
 declare module 'unist' {
-  // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
+  // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style, @typescript-eslint/no-shadow
   export interface Node {
     [key: string]: unknown;
   }
@@ -151,6 +152,8 @@ export default (source: string, fileAbsPath: string, type: 'jsx' | 'html', maste
     .use(debug('link'))
     .use(img)
     .use(debug('img'))
+    .use(table)
+    .use(debug('table'))
     .use(previewer)
     .use(debug('previewer'))
     .use(isolation)

@@ -18,6 +18,7 @@
   "bugs": "http://github.com/umijs/dumi/issues",
   "authors": [],
   "dependencies": {
+    "lodash.throttle": "^4.1.1",
     "prism-react-renderer": "^1.1.1",
     "prismjs": "^1.21.0",
     "rc-motion": "^2.4.1",
