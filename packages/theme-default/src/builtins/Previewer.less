@@ -67,6 +67,10 @@
   &-target {
     border-color: fade(@c-primary, 50%);
     box-shadow: 0 0 0 5px fade(@c-primary, 5%);
+
+    [data-prefers-color=dark] & {
+      box-shadow: 0 0 0 5px fade(@c-primary, 30%);
+    }
   }
 
   &-desc {

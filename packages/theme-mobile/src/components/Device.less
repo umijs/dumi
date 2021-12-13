@@ -59,6 +59,7 @@
 
     [data-prefers-color=dark] & {
       color: rgba(255, 255, 255, 0.85);
+      background-color: #141414;
     }
 
     span {
@@ -80,6 +81,10 @@
       border-radius: 1px;
       background: #50d664;
       box-shadow: 0 0 0 1px #fff, 0 0 0 2px #999;
+
+      [data-prefers-color=dark] & {
+        box-shadow: 0 0 0 1px #141414, 0 0 0 2px rgba(255, 255, 255, 0.7);
+      }
     }
   }
 
@@ -87,6 +92,11 @@
     height: 40px;
     background: #f3f3f3;
     border-top: 1px solid #e3e3e3;
+
+    [data-prefers-color=dark] & {
+      border-top: 1px solid #6b6c6d;
+      background: #262626;
+    }
 
     > a,
     > button {
@@ -98,6 +108,10 @@
       transition: opacity 0.2s, background 0.2s;
       outline: none;
       cursor: pointer;
+
+      [data-prefers-color=dark] & {
+        mix-blend-mode: screen;
+      }
 
       &:hover {
         opacity: 0.8;
