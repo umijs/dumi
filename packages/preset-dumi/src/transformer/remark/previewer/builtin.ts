@@ -100,10 +100,14 @@ const builtinPreviewerTransformer: IPreviewerTransformer['fn'] = ({ mdAbsPath, n
   // collect third-party dependencies and locale file dependencies for demo
   // FIXME: handle frontmatter in the head of external demo code
   if (!node.properties.meta?.inline) {
-    ({ files, dependencies } = getDepsForDemo(node.properties.source, {
-      isTSX: /^tsx?$/.test(node.properties.lang),
-      fileAbsPath,
-    }));
+    try {
+      ({ files, dependencies } = getDepsForDemo(node.properties.source, {
+        isTSX: /^tsx?$/.test(node.properties.lang),
+        fileAbsPath,
+      }));
+    } catch {
+      /* nothing */
+    }
   }
 
   return {
