@@ -334,13 +334,23 @@ describe('preset-dumi', () => {
     // add UMI_DIR to avoid alias error
     process.env.UMI_DIR = path.dirname(require.resolve('umi/package'));
 
+    // disable babel cache to make sure useLayoutEffect plugin always be coveraged
+    process.env.BABEL_CACHE = 'none';
+
     // execute build
     await service.run({ name: 'build' });
+    delete process.env.BABEL_CACHE;
 
     // expect css not be tree shaked
     expect(fs.readFileSync(path.join(service.paths.absOutputPath, 'umi.css')).toString()).toContain(
       'data-side-effects-test',
     );
+
+    // expect replace useLayoutEffect for ssr
+    const ssrDist = fs.readFileSync(path.join(service.paths.absOutputPath, 'umi.server.js')).toString();
+
+    expect(/"data-test-layout-effect-member",[\w\.]+\useEffect/.test(ssrDist)).toBeTruthy();
+    expect(/"data-test-layout-effect-import",[\w\.]+\["useEffect"\]/.test(ssrDist)).toBeTruthy();
   });
 
   it('should generate sitemap.xml', async () => {
