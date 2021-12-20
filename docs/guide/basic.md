@@ -450,7 +450,7 @@ Set `debug` to true, the demo will only be displayed in the development environm
  * inline: true
  */
 import React from 'react';
-import Previewer from 'dumi-theme-default/src/builtins/Previewer';
+import Previewer from 'dumi-theme-default/es/builtins/Previewer';
 
 export default () => (
   <Previewer
