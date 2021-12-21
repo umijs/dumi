@@ -33,8 +33,8 @@ const MobileLayout: React.FC<IRouteComponentProps> = ({ children, ...props }) =>
     setDemo(null);
   }, [props.location.pathname]);
 
-  // force render toc to side menu
-  if (meta.toc !== false) {
+  // render toc to side menu by default
+  if (demo && meta.mobile !== false && meta.toc === undefined) {
     meta.toc = 'menu';
   }
 
