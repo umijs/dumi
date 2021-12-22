@@ -37,25 +37,13 @@ const useInternalNet = () => {
  * @param opts  previewer props
  */
 function getRiddleAppCode(opts: IPreviewerComponentProps) {
-  const { dependencies } = opts;
   let result = opts.sources._.tsx || (opts.sources._ as any).jsx;
 
   // convert export default to ReactDOM.render for riddle
   result = result
-    .replace(/^/, `import ReactDOM from 'react-dom@${dependencies.react?.version || 'latest'}';\n`)
+    .replace(/^/, `import ReactDOM from 'react-dom';\n`)
     .replace('export default', 'const DumiDemo =')
     .concat('\nReactDOM.render(<DumiDemo />, mountNode);');
-
-  // add version for dependencies
-  result = result.replace(/(from ')((?:@[^/'"]+)?[^/'"]+)/g, (_, $1, $2) => {
-    let dep = `${$1}${$2}`;
-
-    if (dependencies[$2]) {
-      dep += `@${dependencies[$2].version}`;
-    }
-
-    return dep;
-  });
 
   return result;
 }
@@ -94,7 +82,19 @@ export default (opts: IPreviewerComponentProps | null) => {
               // generate to @import '~pkg@version/path/to/css' format
               `@import '~${css.replace(new RegExp(`^(${name})`), `$1@${version}`)}';`,
           )
+          .concat(opts.background ? `body {\n  background: ${opts.background};\n}` : '')
           .join('\n'),
+        json: JSON.stringify(
+          {
+            description: opts.description,
+            dependencies: Object.entries(opts.dependencies).reduce<Record<string, string>>(
+              (r, [name, { version }]) => ({ ...r, [name]: version }),
+              { 'react-dom': opts.dependencies.react?.version || 'latest' },
+            ),
+          },
+          null,
+          2,
+        ),
       });
 
       document.body.appendChild(form);
