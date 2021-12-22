@@ -35,16 +35,23 @@ export default (props: IPreviewerProps) => {
 
     const isFirstDemo = document.querySelector('.__dumi-default-mobile-previewer') === ref.current;
     const handler = debounce(() => {
+      const navHeight = 64;
       // for active by previous title anchor
-      const scrollTop = document.documentElement.scrollTop + 128 + 64;
+      const scrollTop = document.documentElement.scrollTop;
+      const refElmTop = ref.current?.getBoundingClientRect().top + scrollTop;
+      // do not offset front if the previous element is same the previewer
+      const edgeOffset =
+        ref.current?.previousElementSibling?.className === ref.current?.className
+          ? navHeight
+          : navHeight + 128;
 
       // post message if scroll into current demo
       if (
         // fallback to first demo
-        (isFirstDemo && scrollTop < ref?.current?.offsetTop) ||
+        (isFirstDemo && scrollTop < refElmTop) ||
         // detect scroll position
-        (scrollTop > ref?.current?.offsetTop &&
-          scrollTop < ref?.current?.offsetTop + ref?.current?.offsetHeight)
+        (scrollTop + edgeOffset > refElmTop &&
+          scrollTop + navHeight < refElmTop + ref?.current?.offsetHeight)
       ) {
         activeSelf();
       } else {

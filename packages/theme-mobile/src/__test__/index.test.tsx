@@ -109,10 +109,13 @@ describe('mobile theme', () => {
     Object.defineProperties(window.HTMLElement.prototype, {
       // mock offsetTop because jest not implement it
       // refer: https://github.com/jsdom/jsdom/issues/135
-      offsetTop: {
+      getBoundingClientRect: {
         get() {
-          return document.querySelector('.__dumi-default-mobile-previewer') === this ? 130 : 200;
-        },
+          const top =
+            document.querySelector('.__dumi-default-mobile-previewer') === this ? 130 : 200;
+
+          return () => ({ top: top - document.documentElement.scrollTop });
+        }
       },
       // mock second demo height
       offsetHeight: {
@@ -204,7 +207,7 @@ describe('mobile theme', () => {
       ) as HTMLDivElement;
 
       window.dispatchEvent(new Event('scroll'));
-      document.documentElement.scrollTop = secondDemo.offsetTop + 1;
+      document.documentElement.scrollTop += secondDemo.getBoundingClientRect().top + 1;
 
       // wait for debounce
       await new Promise(resolve => setTimeout(resolve, 100));
