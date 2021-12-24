@@ -96,27 +96,23 @@ describe('mobile theme', () => {
     match: { params: {}, isExact: true, path: '/', url: '/' },
     route: { routes: baseCtx.routes },
   };
-  const originalOffsetTop = Object.getOwnPropertyDescriptor(
-    window.HTMLElement.prototype,
-    'offsetTop',
-  );
+  const originalGetBoundingClientRect = window.HTMLElement.prototype.getBoundingClientRect;
   const originalOffsetHeight = Object.getOwnPropertyDescriptor(
     window.HTMLElement.prototype,
     'offsetHeight',
   );
 
   beforeAll(() => {
-    Object.defineProperties(window.HTMLElement.prototype, {
-      // mock offsetTop because jest not implement it
-      // refer: https://github.com/jsdom/jsdom/issues/135
-      getBoundingClientRect: {
-        get() {
-          const top =
-            document.querySelector('.__dumi-default-mobile-previewer') === this ? 130 : 200;
+    // mock because jest not implement theme
+    // refer: https://github.com/jsdom/jsdom/issues/135
+    window.HTMLElement.prototype.getBoundingClientRect = () => {
+      const top =
+        document.querySelector('.__dumi-default-mobile-previewer') === this ? 130 : 200;
 
-          return () => ({ top: top - document.documentElement.scrollTop });
-        }
-      },
+      return { top: top - document.documentElement.scrollTop } as any;
+    }
+
+    Object.defineProperties(window.HTMLElement.prototype, {
       // mock second demo height
       offsetHeight: {
         get: () => 300,
@@ -125,8 +121,8 @@ describe('mobile theme', () => {
   });
 
   afterAll(() => {
+    window.HTMLElement.prototype.getBoundingClientRect = originalGetBoundingClientRect;
     Object.defineProperties(window.HTMLElement.prototype, {
-      offsetTop: originalOffsetTop,
       offsetHeight: originalOffsetHeight,
     });
   });
