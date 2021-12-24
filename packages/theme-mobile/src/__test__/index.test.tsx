@@ -51,7 +51,7 @@ describe('mobile theme', () => {
       mode: 'site' as 'doc' | 'site',
       repository: { branch: 'mater' },
     },
-    meta: { title: 'demo' },
+    meta: { title: 'demo', hasPreviewer: true },
     menu: [
       {
         title: '分组',
@@ -134,8 +134,8 @@ describe('mobile theme', () => {
   it('should render builtin components correctly', async () => {
     const { getByText, getByTitle } = render(
       <Router history={history}>
-        <Layout {...baseProps}>
-          <Context.Provider value={baseCtx}>
+        <Context.Provider value={baseCtx}>
+          <Layout {...baseProps}>
             <Previewer
               title="demo-1"
               identifier="demo-1"
@@ -163,8 +163,8 @@ describe('mobile theme', () => {
               }}
               dependencies={{}}
             />
-          </Context.Provider>
-        </Layout>
+          </Layout>
+        </Context.Provider>
       </Router>,
     );
 

@@ -28,5 +28,9 @@ export default (fileAbsPath: string): Record<string, any> => {
   // remove useless demo frontmatters
   const { demos, ...result } = meta;
 
+  if (demos?.find(item => !item.inline)) {
+    result.hasPreviewer = true;
+  }
+
   return result;
 };

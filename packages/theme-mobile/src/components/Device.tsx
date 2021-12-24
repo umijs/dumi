@@ -29,7 +29,7 @@ const Device: FC<IDeviceProps> = ({ url, className }) => {
   useEffect(() => {
     const { origin } = window.location;
 
-    if (!iframeSrc || !url.startsWith(origin)) {
+    if (!iframeSrc || !url?.startsWith(origin)) {
       // set iframe src directly if it is the first render or custom url
       setIframeSrc(url);
     } else {

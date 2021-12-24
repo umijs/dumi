@@ -423,6 +423,7 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
             `${decodeImportRequireWithAutoDynamic(code, 'demos_md_inline')}`
           : // render other demo by id from demos context
             `DUMI_ALL_DEMOS['${previewerProps.identifier}'].component`,
+        inline: previewerProps.inline,
       });
 
       if (previewerProps.inline) {
