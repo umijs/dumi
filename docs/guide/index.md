@@ -77,4 +77,4 @@ Execute `npm run dev` or `npx dumi dev` to start debugging components or writing
 
 ### Build and deploy
 
-Execute `npm run build` or `npx dumi build` to build our documentation site. The build product will be output to the `dist` directory by default. We can deploy the `dist` directory to now.sh, GitHub Pages, etc. On a static site hosting platform or a certain server.
+Execute `npm run docs:build` or `npx dumi build` to build our documentation site. The build product will be output to the `dist` directory by default. We can deploy the `dist` directory to now.sh, GitHub Pages, etc. On a static site hosting platform or a certain server.
