@@ -1,4 +1,3 @@
-import transformer from '../..';
 import { getDepsForDemo } from '../../demo';
 import type { IDumiElmNode } from '..';
 import type { IPreviewerComponentProps } from '../../../theme';
@@ -117,7 +116,7 @@ const builtinPreviewerTransformer: IPreviewerTransformer['fn'] = ({ mdAbsPath, n
         _: {
           [node.properties.lang]: isExternalDemo
             ? encodeHoistImport(node.properties.filePath)
-            : transformer.code(node.properties.source).content,
+            : node.properties.source,
         } as any,
         ...Object.keys(files).reduce(
           (result, file) => ({
