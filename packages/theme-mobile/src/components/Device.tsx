@@ -47,7 +47,8 @@ const Device: FC<IDeviceProps> = ({ url, className }) => {
   return (
     <div
       className={['__dumi-default-device'].concat(className).join(' ')}
-      data-device-type="iOS"
+      // avoid device flicker when using custom compiletime to render simulator
+      data-device-type={iframeSrc ? 'iOS' : 'none'}
       data-mode={mode}
     >
       <div className="__dumi-default-device-status">

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import type { IPreviewerComponentProps } from 'dumi/theme';
-import { context, useDemoUrl } from 'dumi/theme';
+import { context, getDemoUrl } from 'dumi/theme';
 import Layout from 'dumi-theme-default/es/layout';
 import type { IRouteComponentProps } from '@umijs/types';
 import Device from '../components/Device';
@@ -9,18 +9,24 @@ import '../style/layout.less';
 
 const MobileLayout: React.FC<IRouteComponentProps> = ({ children, ...props }) => {
   const {
-    config: { mode },
+    config: { mode, exportStatic },
     demos,
     meta,
   } = useContext(context);
   const [demo, setDemo] = useState<IPreviewerComponentProps>(null);
-  const builtinDemoUrl = useDemoUrl(demo?.identifier);
   const hasMobilePreviewer = meta.hasPreviewer && meta.mobile !== false;
 
   useEffect(() => {
     const handler = (ev: any) => {
       if (ev.data.type === ACTIVE_MSG_TYPE) {
-        setDemo(JSON.parse(ev.data.value));
+        const data = JSON.parse(ev.data.value);
+
+        // get auto-generated demo url if there is no custom url
+        if (!data.demoUrl) {
+          data.demoUrl = getDemoUrl(data.identifier, exportStatic && exportStatic.htmlSuffix);
+        }
+
+        setDemo(data);
       }
     };
 
@@ -45,10 +51,7 @@ const MobileLayout: React.FC<IRouteComponentProps> = ({ children, ...props }) =>
         <article>{children}</article>
         {hasMobilePreviewer && demo?.simulator !== false && (
           // render via builtin device simulator
-          <Device
-            className="__dumi-default-mobile-content-device"
-            url={demo?.demoUrl || builtinDemoUrl}
-          />
+          <Device className="__dumi-default-mobile-content-device" url={demo?.demoUrl} />
         )}
         {demo?.simulator === false && (
           // render demo directly (for custom compiletime)
