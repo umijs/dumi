@@ -24,6 +24,7 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location, darkPrefix 
     nav: navItems,
     base,
     meta,
+    routes
   } = useContext(context);
   const isHiddenMenus =
     Boolean((meta.hero || meta.features || meta.gapless) && mode === 'site') ||
@@ -97,12 +98,13 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location, darkPrefix 
               const hasChildren = item.children && Boolean(item.children.length);
               const show1LevelSlugs =
                 meta.toc === 'menu' && !hasChildren && hasSlugs && item.path === location.pathname.replace(/([^^])\/$/, '$1');
+              const isRedirectPath = routes.find(route => route.path === item.path).redirect === location.pathname;
               const menuPaths = hasChildren
                 ? item.children.map(i => i.path)
                 : [
                     item.path,
                     // handle menu group which has no index route and no valid children
-                    location.pathname.startsWith(`${item.path}/`) && meta.title === item.title
+                    location.pathname.startsWith(`${item.path}/`) && meta.title === item.title && isRedirectPath
                       ? location.pathname
                       : null,
                   ];
