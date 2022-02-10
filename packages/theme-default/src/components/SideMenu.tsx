@@ -98,7 +98,7 @@ const SideMenu: FC<INavbarProps> = ({ mobileMenuCollapsed, location, darkPrefix 
               const hasChildren = item.children && Boolean(item.children.length);
               const show1LevelSlugs =
                 meta.toc === 'menu' && !hasChildren && hasSlugs && item.path === location.pathname.replace(/([^^])\/$/, '$1');
-              const isRedirectPath = routes.find(route => route.path === item.path).redirect === location.pathname;
+              const isRedirectPath = routes.find(route => route.path === item.path)?.redirect === location.pathname;
               const menuPaths = hasChildren
                 ? item.children.map(i => i.path)
                 : [
