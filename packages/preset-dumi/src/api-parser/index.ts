@@ -31,8 +31,8 @@ export type IApiDefinition = AtomPropsDefinition;
  */
 function extraFilter(prop: IPropItem, opts: IStaticPropFilter) {
   // check within node_modules
-  if (opts.skipNodeModules && prop.declarations.find(d => d.fileName.includes('node_modules'))) {
-    return false;
+  if (opts.skipNodeModules) {
+    return prop.declarations.some(d => !d.fileName.includes('node_modules'));
   }
 
   return true;
