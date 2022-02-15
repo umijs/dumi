@@ -23,6 +23,7 @@ export const getBabelOptions = ({ isTSX, fileAbsPath, transformRuntime }: IDemoO
   plugins: [
     ...(ctx.umi?.config?.extraBabelPlugins || []),
     [require.resolve('@babel/plugin-transform-modules-commonjs'), { strict: true }],
+    [require.resolve('@babel/plugin-transform-react-jsx'), { runtime: 'automatic' }],
   ],
   ast: true,
   babelrc: false,
