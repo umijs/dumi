@@ -333,7 +333,7 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node, i, parent) {
       // read debug flag from frontmatter(inline demo) or attributes(external demo)
       (node.properties.meta.debug ||
         // read debug flag from external demo frontmatter
-        (node.properties.filePath &&
+        (fs.existsSync(node.properties.filePath || '') &&
           transformer.code(fs.readFileSync(node.properties.filePath, 'utf8').toString()).meta
             .debug))
     ) {
