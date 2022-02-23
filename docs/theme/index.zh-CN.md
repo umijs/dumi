@@ -36,7 +36,7 @@ export default {
     carrier: 'dumi', // 设备状态栏左侧的文本内容
     hd: {
       // umi-hd 的 750 高清方案（默认值）
-      [{ mode: 'vw', options: [100, 750] }],
+      rules: [{ mode: 'vw', options: [100, 750] }],
       // 禁用高清方案
       rules: [],
       // 根据不同的设备屏幕宽度断点切换高清方案
