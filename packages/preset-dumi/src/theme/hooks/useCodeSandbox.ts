@@ -65,7 +65,7 @@ function getCSBData(opts: IPreviewerComponentProps) {
         main: entryFileName,
         dependencies: deps,
         // add TypeScript dependency if required, must in devDeps to avoid csb compile error
-        devDependencies: isTSX ? { typescript: '^3' } : {},
+        devDependencies: isTSX ? { typescript: '^4' } : {},
       },
       null,
       2,

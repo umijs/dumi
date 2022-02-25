@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import * as babel from '@babel/core';
 import * as types from '@babel/types';
 import traverse from '@babel/traverse';
+import ctx from '../../context';
 import {
   getModuleResolvePkg,
   getModuleResolvePath,
@@ -12,6 +13,7 @@ import {
 import FileCache from '../../utils/cache';
 import type { IDemoOpts } from './options';
 import { getBabelOptions } from './options';
+import { glob } from '@umijs/utils';
 
 const cachers = {
   file: new FileCache(),
@@ -39,10 +41,13 @@ interface IAnalyzeCache {
 }
 
 export interface IDepAnalyzeResult {
-  dependencies: Record<string, {
-    version: string;
-    css?: string;
-  }>;
+  dependencies: Record<
+    string,
+    {
+      version: string;
+      css?: string;
+    }
+  >;
   files: Record<string, { import: string; fileAbsPath: string }>;
 }
 
@@ -52,6 +57,37 @@ export const LOCAL_MODULE_EXT = [...LOCAL_DEP_EXT, '.json'];
 
 // local dependency extensions which will be collected
 export const PLAIN_TEXT_EXT = [...LOCAL_MODULE_EXT, '.less', '.css', '.scss', '.sass', '.styl'];
+
+const USER_PACKAGES = {};
+
+const requireUserPackages = () => {
+  const rootPath = ctx.umi.cwd;
+
+  const matcher = glob.sync(`**/package.json`, {
+    root: rootPath,
+    ignore: '**/node_modules/**',
+  });
+
+  matcher.forEach(item => {
+    const pkgPath = path.join(rootPath, item);
+    const pkg = require(pkgPath);
+
+    if (!pkg.name || !pkg.version) return;
+
+    USER_PACKAGES[pkg.name] = {
+      name: pkg.name,
+      version: pkg.version,
+      peerDependencies: pkg.peerDependencies,
+      path: path.dirname(pkgPath),
+      css: getCSSForDep(pkg.name),
+      pkg: pkg,
+    };
+  });
+};
+
+requireUserPackages();
+
+const USER_PACKAGES_RE = new RegExp(`^(${Object.keys(USER_PACKAGES).join('|')})(?:\/.*)?$`);
 
 function analyzeDeps(
   raw: string,
@@ -85,7 +121,7 @@ function analyzeDeps(
       CallExpression(callPath) {
         const callPathNode = callPath.node;
 
-        // tranverse all require statement
+        // traverse all require statement
         if (
           types.isIdentifier(callPathNode.callee) &&
           callPathNode.callee.name === 'require' &&
@@ -97,15 +133,18 @@ function analyzeDeps(
             sourcePath: requireStr,
             extensions: LOCAL_MODULE_EXT,
           });
+
           const resolvePathParsed = path.parse(resolvePath);
 
           if (resolvePath.includes('node_modules')) {
-            // save external deps
             const pkg = getModuleResolvePkg({
               basePath: fileAbsPath,
               sourcePath: resolvePath,
               extensions: LOCAL_MODULE_EXT,
             });
+
+            // save external deps
+
             const css = getCSSForDep(pkg.name);
             const peerDeps: IAnalyzeCache['dependencies'][0]['peerDeps'] = [];
 
@@ -146,6 +185,28 @@ function analyzeDeps(
               resolvePath,
               requireStr,
               filename,
+            });
+          } else if (USER_PACKAGES_RE.test(requireStr)) {
+            const pkgName = USER_PACKAGES_RE.exec(requireStr)?.[1];
+            if (!pkgName) return;
+            const pkg = USER_PACKAGES[pkgName];
+
+            const peerDeps = [];
+
+            Object.entries(pkg.peerDependencies).forEach(([name, version]) => {
+              peerDeps.push({
+                name,
+                version,
+                css: getCSSForDep(name),
+              });
+            });
+
+            cache.dependencies.push({
+              resolvePath,
+              name: pkg.name,
+              version: pkg.version,
+              css: pkg.css,
+              peerDeps,
             });
           }
         }
@@ -213,6 +274,7 @@ function analyzeDeps(
     cachers.file.add(fileAbsPath, cache, cacheKey);
   }
 
+  console.log('dependencies: ', dependencies);
   return { files, dependencies };
 }
 
@@ -222,7 +284,9 @@ export function getCSSForDep(dep: string) {
     // @group/pkg-suffic => pkg-suffix
     `${pkgWithoutGroup}`,
     // @group/pkg-suffix => pkgsuffix @ant-design/pro-card => card
-    ...(pkgWithoutGroup.includes('-') ? [pkgWithoutGroup.replace(/-/g, ''), pkgWithoutGroup.split('-')[1]] : []),
+    ...(pkgWithoutGroup.includes('-')
+      ? [pkgWithoutGroup.replace(/-/g, ''), pkgWithoutGroup.split('-')[1]]
+      : []),
     // guess normal css files
     'main',
     'index',

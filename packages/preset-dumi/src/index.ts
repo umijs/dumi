@@ -6,7 +6,6 @@ export default () => {
       // prepare plugin
       require.resolve('./plugins/features/init'),
       require.resolve('./plugins/features/theme'), // must before symlink to ensure correct alias order
-      require.resolve('./plugins/features/symlink'),
 
       // config keys
       require.resolve('./plugins/features/logo'),
