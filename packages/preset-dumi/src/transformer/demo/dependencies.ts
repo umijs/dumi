@@ -274,7 +274,6 @@ function analyzeDeps(
     cachers.file.add(fileAbsPath, cache, cacheKey);
   }
 
-  console.log('dependencies: ', dependencies);
   return { files, dependencies };
 }
 
