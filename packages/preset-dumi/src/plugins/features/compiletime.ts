@@ -1,5 +1,5 @@
 import { registerPreviewerTransformer } from '../../transformer/remark/previewer';
-import type { IApi } from '@umijs/types';
+import type { IApi } from 'umi';
 import type { IPreviewerTransformer } from '../../transformer/remark/previewer/builtin';
 
 export interface ICompiletimeOpts {
@@ -19,7 +19,7 @@ export interface ICompiletimeOpts {
 
 export default (api: IApi) => {
   // wait for compiletime be registered
-  api.onPluginReady(async () => {
+  api.onStart(async () => {
     // get registered compiletime
     const compiletimes: ICompiletimeOpts[] = await api.applyPlugins({
       type: api.ApplyPluginsType.add,

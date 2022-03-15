@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import slash from 'slash2';
-import type { IRoute } from '@umijs/types';
+import type { IRoute } from 'umi';
 import ignore from 'ignore';
 
 import type { IDumiOpts } from '../index';

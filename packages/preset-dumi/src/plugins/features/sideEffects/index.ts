@@ -1,4 +1,4 @@
-import type { IApi } from '@umijs/types';
+import type { IApi } from 'umi';
 import path from 'path';
 import docSideEffectsWebpackPlugin from './docSideEffectsWebpackPlugin';
 
@@ -7,6 +7,11 @@ import docSideEffectsWebpackPlugin from './docSideEffectsWebpackPlugin';
  * because dumi may care some umi runtime plugins, such as .umi/plugin-qiankun
  */
 export default (api: IApi) => {
+  // TODO: UMI4 默认会以文件名为 key，解法是改文件名或者用 api.describe 声明一下
+  api.describe({
+    key: 'sideEffects',
+  });
+
   api.chainWebpack(memo => {
     memo
       .plugin('docSideEffects')

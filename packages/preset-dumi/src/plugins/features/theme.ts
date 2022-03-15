@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { minify } from 'terser';
-import type { IApi } from '@umijs/types';
+import type { IApi } from 'umi';
 import getTheme from '../../theme/loader';
 import { setOptions } from '../../context';
 

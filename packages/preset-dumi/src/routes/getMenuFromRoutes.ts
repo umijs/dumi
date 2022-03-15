@@ -2,7 +2,7 @@ import path from 'path';
 import slash from 'slash2';
 import ctx from '../context';
 import { addLocalePrefix, isPrefixLocalePath } from './decorator/locale';
-import type { IRoute, IApi } from '@umijs/types';
+import type { IRoute, IApi } from 'umi';
 import type { IDumiOpts } from '..';
 
 export interface IMenuItem {

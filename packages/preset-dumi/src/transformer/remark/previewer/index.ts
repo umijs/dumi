@@ -3,7 +3,7 @@ import path from 'path';
 import type { Node } from 'unist';
 import type { Visitor } from 'unist-util-visit';
 import visit from 'unist-util-visit';
-import { createDebug } from '@umijs/utils';
+import { debug as createDebug } from '@umijs/utils';
 import slash from 'slash2';
 import ctx from '../../../context';
 import demoTransformer, { DEMO_COMPONENT_NAME } from '../../demo';

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { IConfig, IRoute } from '@umijs/types';
+import type { IConfig, IRoute } from 'umi';
 import type { INav } from '../routes/getNavFromRoutes';
 import type { IMenu } from '../routes/getMenuFromRoutes';
 import type { ILocale } from '../routes/getLocaleFromRoutes';

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
-import type { IApi } from '@umijs/types';
+import type { IApi } from 'umi';
 
 function getPkgAliasForPath(absPath: string) {
   const result: [string, string] = ['', absPath];
@@ -16,6 +16,8 @@ function getPkgAliasForPath(absPath: string) {
 }
 
 export default (paths: IApi['paths']) => {
+  // TODO: UMI4 api.paths is empty object
+  paths.cwd = paths?.cwd || process.cwd();
   const isLerna = fs.existsSync(path.join(paths.cwd, 'lerna.json'));
   const pkgs: [string, string][] = [];
 

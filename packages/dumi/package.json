@@ -1,31 +1,31 @@
 {
-  "name": "dumi",
-  "version": "1.1.39",
-  "description": "dumi",
-  "main": "index.js",
-  "module": "index.module.js",
-  "types": "index.d.ts",
-  "bin": "bin/dumi.js",
-  "files": [
-    "lib",
-    "bin",
-    "theme.d.ts",
-    "index.d.ts"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "http://github.com/umijs/dumi",
-    "directory": "dumi"
-  },
-  "homepage": "http://github.com/umijs/dumi",
-  "bugs": "http://github.com/umijs/dumi/issues",
-  "authors": [
-    "ycjcl868 <chaolinjin@gmail.com> (https://github.com/ycjcl868)",
-    "PeachScript <scdzwyxst@gmail.com> (https://github.com/PeachScript)"
-  ],
-  "dependencies": {
-    "@umijs/preset-dumi": "1.1.39",
-    "umi": "^3.0.0"
-  },
-  "license": "MIT"
+    "name": "dumi",
+    "version": "1.1.39",
+    "description": "dumi",
+    "main": "index.js",
+    "module": "index.module.js",
+    "types": "index.d.ts",
+    "bin": "bin/dumi.js",
+    "files": [
+        "lib",
+        "bin",
+        "theme.d.ts",
+        "index.d.ts"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "http://github.com/umijs/dumi",
+        "directory": "dumi"
+    },
+    "homepage": "http://github.com/umijs/dumi",
+    "bugs": "http://github.com/umijs/dumi/issues",
+    "authors": [
+        "ycjcl868 <chaolinjin@gmail.com> (https://github.com/ycjcl868)",
+        "PeachScript <scdzwyxst@gmail.com> (https://github.com/PeachScript)"
+    ],
+    "dependencies": {
+        "@umijs/preset-dumi": "1.1.39",
+        "umi": "4.0.0-rc.6"
+    },
+    "license": "MIT"
 }

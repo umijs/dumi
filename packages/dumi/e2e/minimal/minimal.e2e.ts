@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { utils } from 'umi';
+import utils from 'umi/plugin-utils';
 import { fork } from 'child_process';
 import puppeteer from 'puppeteer';
 import symlink from '../../../preset-dumi/src/utils/symlink';

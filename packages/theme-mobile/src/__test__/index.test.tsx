@@ -3,8 +3,8 @@ import React from 'react';
 import { render, act, waitFor } from '@testing-library/react';
 import { history as mockHistory } from 'dumi';
 import { context as Context } from 'dumi/theme';
-import type { MemoryHistory } from '@umijs/runtime';
-import { createMemoryHistory, Router } from '@umijs/runtime';
+import type { MemoryHistory } from '@umijs/renderer-react';
+import { createMemoryHistory, Router } from '@umijs/renderer-react';
 
 import Previewer from '../builtins/Previewer';
 import Layout from '../layouts';

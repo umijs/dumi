@@ -1,4 +1,4 @@
-import type { IApi } from '@umijs/types';
+import type { IApi } from 'umi';
 import type { IApiDefinition } from '../../api-parser';
 import { setOptions } from '../../context';
 

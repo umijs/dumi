@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import React from 'react';
-import { Router } from '@umijs/runtime';
+import { Router } from '@umijs/renderer-react';
 import { render, screen } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
 import Link from './Link';

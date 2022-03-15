@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { NavLink } from '@umijs/runtime';
+import { NavLink } from '@umijs/renderer-react';
 import throttle from 'lodash.throttle';
 import type { NavLinkProps } from 'react-router-dom';
 

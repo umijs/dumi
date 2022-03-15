@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import type { IRouteComponentProps } from '@umijs/types';
+import type { IRouteComponentProps } from 'umi';
 import { render } from '@testing-library/react';
 import getDemoRenderArgs from '../demo/getDemoRenderArgs';
 

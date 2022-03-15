@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import type { IApi } from '@umijs/types';
+import type { IApi } from 'umi';
 import { rimraf } from '@umijs/utils';
 import { Service } from '@umijs/core';
 import { render } from '@testing-library/react';
@@ -35,7 +35,7 @@ describe('preset-dumi', () => {
   it('init', async () => {
     const service = new Service({
       cwd: fixtures,
-      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+      presets: [require.resolve('@umijs/preset-umi'), require.resolve('./index.ts')],
     });
 
     await expect(service.init()).resolves.not.toThrowError();
@@ -45,7 +45,7 @@ describe('preset-dumi', () => {
     const cwd = path.join(fixtures, 'basic');
     const service = new Service({
       cwd,
-      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+      presets: [require.resolve('@umijs/preset-umi'), require.resolve('./index.ts')],
     });
 
     // alias dumi-theme-default
@@ -133,7 +133,7 @@ describe('preset-dumi', () => {
     const cwd = path.join(fixtures, 'assets');
     const service = new Service({
       cwd,
-      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+      presets: [require.resolve('@umijs/preset-umi'), require.resolve('./index.ts')],
     });
 
     await service.run({
@@ -183,7 +183,7 @@ describe('preset-dumi', () => {
     const cwd = path.join(fixtures, 'progressive-theme');
     const service = new Service({
       cwd,
-      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+      presets: [require.resolve('@umijs/preset-umi'), require.resolve('./index.ts')],
     });
 
     // alias dumi-theme-default
@@ -217,7 +217,7 @@ describe('preset-dumi', () => {
 
     const service = new Service({
       cwd: fixtures,
-      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+      presets: [require.resolve('@umijs/preset-umi'), require.resolve('./index.ts')],
     });
     const defines = (await service.run({
       name: 'webpack',
@@ -239,7 +239,7 @@ describe('preset-dumi', () => {
     const service = new Service({
       cwd,
       env: 'development',
-      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+      presets: [require.resolve('@umijs/preset-umi'), require.resolve('./index.ts')],
     });
 
     // alias dumi-theme-default
@@ -302,7 +302,7 @@ describe('preset-dumi', () => {
     const service = new Service({
       cwd,
       env: 'production',
-      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+      presets: [require.resolve('@umijs/preset-umi'), require.resolve('./index.ts')],
     });
 
     // remove @umijs/preset-dumi from package.json to use the source code from ./index.ts
@@ -328,7 +328,7 @@ describe('preset-dumi', () => {
     const service = new Service({
       cwd,
       env: 'production',
-      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+      presets: [require.resolve('@umijs/preset-umi'), require.resolve('./index.ts')],
     });
 
     // add UMI_DIR to avoid alias error
@@ -358,7 +358,7 @@ describe('preset-dumi', () => {
     const service = new Service({
       cwd,
       env: 'production',
-      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+      presets: [require.resolve('@umijs/preset-umi'), require.resolve('./index.ts')],
     });
 
     await service.init();
@@ -391,7 +391,7 @@ describe('preset-dumi', () => {
     const service = new Service({
       cwd,
       env: 'production',
-      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+      presets: [require.resolve('@umijs/preset-umi'), require.resolve('./index.ts')],
     });
 
     // add UMI_DIR to avoid alias error
@@ -409,7 +409,7 @@ describe('preset-dumi', () => {
     const cwd = path.join(fixtures, 'compiletime');
     const service = new Service({
       cwd,
-      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+      presets: [require.resolve('@umijs/preset-umi'), require.resolve('./index.ts')],
     });
 
     await service.run({
@@ -438,7 +438,7 @@ describe('preset-dumi', () => {
     const service = new Service({
       cwd,
       env: 'production',
-      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+      presets: [require.resolve('@umijs/preset-umi'), require.resolve('./index.ts')],
     });
 
     // add UMI_DIR to avoid alias error
@@ -460,7 +460,7 @@ describe('preset-dumi', () => {
     const service = new Service({
       cwd,
       env: 'production',
-      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+      presets: [require.resolve('@umijs/preset-umi'), require.resolve('./index.ts')],
     });
 
     // add UMI_DIR to avoid alias error

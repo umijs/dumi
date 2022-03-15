@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { winPath, createDebug } from '@umijs/utils';
+import { winPath, debug as createDebug } from '@umijs/utils';
 import { getModuleResolvePath } from '../utils/moduleResolver';
 import ctx from '../context';
 import type { IMarkdwonComponent } from '../transformer/remark/mdComponent';

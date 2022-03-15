@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import type { IApi, IRoute } from '@umijs/types';
-import { createDebug } from '@umijs/utils';
+import type { IApi, IRoute } from 'umi';
+import { debug as createDebug, lodash } from '@umijs/utils';
 import getTheme from '../../../theme/loader';
 import { getDemoRouteName } from '../../../theme/hooks/useDemoUrl';
 import {
@@ -22,8 +22,12 @@ type ISingleRoutetDemos = Record<
 >;
 
 export default (api: IApi) => {
+  // TODO: UMI4 默认会以文件名为 key，解法是改文件名或者用 api.describe 声明一下
+  api.describe({
+    key: 'umiDemo',
+  });
   const demos: ISingleRoutetDemos = {};
-  const generateDemosFile = api.utils.lodash.debounce(async () => {
+  const generateDemosFile = lodash.debounce(async () => {
     // must start with 1 instead of 0 (falsy value), otherwise, rawCode0 could be override by rawCode1 when rawCode0 and rawCode1 is the same importation.
     let hoistImportCount = 1;
     const hoistImports: Record<string, number> = {};
@@ -127,9 +131,8 @@ export default (api: IApi) => {
     const theme = await getTheme();
     const prependRoutes: IRoute[] = [
       {
-        path: `/${getDemoRouteName()}/:uuid${
-          api.config.exportStatic && api.config.exportStatic.htmlSuffix ? '.html' : ''
-        }`,
+        path: `/${getDemoRouteName()}/:uuid${api.config.exportStatic && api.config.exportStatic.htmlSuffix ? '.html' : ''
+          }`,
         // use to disable pro-layout in integrated mode
         layout: false,
       },
@@ -181,11 +184,10 @@ export default (api: IApi) => {
           loader: async () => {
             const React = await import('react');
             const { default: getDemoRenderArgs } = await import(/* webpackChunkName: 'dumi_demos' */ '${api.utils.winPath(
-              path.join(__dirname, './getDemoRenderArgs'),
-            )}');
-            const { default: Previewer } = await import(/* webpackChunkName: 'dumi_demos' */ '${
-              Previewer.source
-            }');
+        path.join(__dirname, './getDemoRenderArgs'),
+      )}');
+            const { default: Previewer } = await import(/* webpackChunkName: 'dumi_demos' */ '${Previewer.source
+      }');
             const { usePrefersColor, context } = await import(/* webpackChunkName: 'dumi_demos' */ 'dumi/theme');
 
             return props => {
@@ -197,8 +199,8 @@ export default (api: IApi) => {
       : `{
         const React = require('react');
         const { default: getDemoRenderArgs } = require('${api.utils.winPath(
-          path.join(__dirname, './getDemoRenderArgs'),
-        )}');
+        path.join(__dirname, './getDemoRenderArgs'),
+      )}');
         const { default: Previewer } = require('${Previewer.source}');
         const { usePrefersColor, context } = require('dumi/theme');
 
@@ -218,25 +220,26 @@ export default (api: IApi) => {
   });
 
   // export static for dynamic demos
-  api.modifyExportRouteMap(memo => {
-    const exportStatic = api.config.exportStatic;
-    if (exportStatic) {
-      memo.push(
-        ...Object.keys(demos).map(uuid => {
-          const demoRoutePath = `/${getDemoRouteName()}/${uuid}`;
-          return {
-            route: { path: demoRoutePath },
-            file: `${demoRoutePath}${exportStatic.htmlSuffix ? '' : '/index'}.html`,
-          };
-        }),
-      );
+  // TODO: UMI4 api.modifyExportRouteMap is no support in umi@4
+  // api.modifyExportRouteMap(memo => {
+  //   const exportStatic = api.config.exportStatic;
+  //   if (exportStatic) {
+  //     memo.push(
+  //       ...Object.keys(demos).map(uuid => {
+  //         const demoRoutePath = `/${getDemoRouteName()}/${uuid}`;
+  //         return {
+  //           route: { path: demoRoutePath },
+  //           file: `${demoRoutePath}${exportStatic.htmlSuffix ? '' : '/index'}.html`,
+  //         };
+  //       }),
+  //     );
 
-      /* istanbul ignore if */
-      if (api.utils.isWindows) {
-        // do not generate dynamic route file for Windows, to avoid throw error
-        memo = memo.filter(item => !item.route.path.includes('/:'));
-      }
-    }
-    return memo;
-  });
+  //     /* istanbul ignore if */
+  //     if (api.utils.isWindows) {
+  //       // do not generate dynamic route file for Windows, to avoid throw error
+  //       memo = memo.filter(item => !item.route.path.includes('/:'));
+  //     }
+  //   }
+  //   return memo;
+  // });
 };

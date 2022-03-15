@@ -1,5 +1,5 @@
 import fs from 'fs';
-import type { IApi } from '@umijs/types';
+import type { IApi } from 'umi';
 import { init, setOptions } from '../../context';
 
 const UMI_LIKE_PKGS = ['umi', '@alipay/bigfish'];

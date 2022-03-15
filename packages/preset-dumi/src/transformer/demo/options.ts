@@ -11,8 +11,15 @@ export const getBabelOptions = ({ isTSX, fileAbsPath, transformRuntime }: IDemoO
   filename: fileAbsPath.replace(/\.md$/, isTSX ? '.tsx' : '.jsx'),
   presets: [
     [
-      require.resolve('@umijs/babel-preset-umi/app'),
+      require.resolve('@umijs/babel-preset-umi'),
       {
+        env: {
+          useBuiltIns: 'entry',
+          corejs: 3,
+          modules: false,
+        },
+        transformRuntime: {},
+        lockCoreJS3: {},
         reactRequire: false,
         typescript: isTSX,
         ...(transformRuntime === undefined ? {} : { transformRuntime }),

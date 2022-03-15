@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import type { IApi } from '@umijs/types';
+import type { IApi } from 'umi';
 import { SitemapStream } from 'sitemap';
 import ctx from '../../context';
 

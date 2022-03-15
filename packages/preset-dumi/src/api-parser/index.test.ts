@@ -1,8 +1,20 @@
 import fs from 'fs';
 import path from 'path';
-import { winEOL } from '@umijs/utils';
+// import { winEOL } from '@umijs/utils';
 import ctx from '../context';
 import parser from '.';
+
+
+// TODO: UMI4 utils not winEOL
+const isWindows =
+  typeof process !== 'undefined' && process.platform === 'win32';
+
+const winEOL = (content: string | undefined) => {
+  if (typeof content !== 'string') {
+    return content;
+  }
+  return isWindows ? content.replace(/\r/g, '') : content;
+};
 
 const rawPath = path.join(__dirname, 'fixtures', 'raw');
 const expectPath = path.join(__dirname, 'fixtures', 'expect');

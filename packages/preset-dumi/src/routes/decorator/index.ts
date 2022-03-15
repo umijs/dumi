@@ -1,5 +1,5 @@
-import type { IApi, IRoute } from '@umijs/types';
-import { createDebug } from '@umijs/utils';
+import type { IApi, IRoute } from 'umi';
+import { debug as createDebug } from '@umijs/utils';
 import type { IDumiOpts } from '../..';
 import flat from './flat';
 import frontMatter from './frontMatter';

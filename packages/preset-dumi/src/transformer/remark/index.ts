@@ -1,4 +1,4 @@
-import { createDebug } from '@umijs/utils';
+import { debug as createDebug } from '@umijs/utils';
 import type { Transformer } from 'unified';
 import unified from 'unified';
 import type { Node } from 'unist';

@@ -1,6 +1,6 @@
 import path from 'path';
 import * as types from '@babel/types';
-import type { IApi } from '@umijs/types';
+import type { IApi } from 'umi';
 import type { PluginObj } from '@babel/core';
 import ctx from '../../context';
 
@@ -60,12 +60,13 @@ export default (api: IApi) => {
   }));
 
   // disable babel config file, to avoid library bundle config affecting docs config
-  api.modifyBabelOpts(memo => {
-    // @ts-ignore
-    memo.configFile = false;
+  // TODO: UMI4 TypeError: api.modifyBabelOpts is not a function,use addExtraBabelPresets or addExtraBabelPlugins
+  // api.modifyBabelOpts(memo => {
+  //   // @ts-ignore
+  //   memo.configFile = false;
 
-    return memo;
-  });
+  //   return memo;
+  // });
 
   // configure loader for .md file
   api.chainWebpack(config => {
@@ -138,12 +139,12 @@ export default (api: IApi) => {
 
     return memo;
   });
+  // TODO: UMI4 TypeError: api.modifyBabelOpts is not a function,use addExtraBabelPresets or addExtraBabelPlugins
+  // api.modifyBabelOpts((memo, { type }) => {
+  //   if (type === 'ssr') {
+  //     memo.plugins.unshift(dumiIsomorphicReactEffectPlugin);
+  //   }
 
-  api.modifyBabelOpts((memo, { type }) => {
-    if (type === 'ssr') {
-      memo.plugins.unshift(dumiIsomorphicReactEffectPlugin);
-    }
-
-    return memo;
-  });
+  //   return memo;
+  // });
 };

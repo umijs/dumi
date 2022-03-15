@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import slash from 'slash2';
-import type { IApi, IRoute } from '@umijs/types';
-import { createDebug } from '@umijs/utils';
+import type { IApi, IRoute } from 'umi';
+import { debug as createDebug } from '@umijs/utils';
 import getRouteConfigFromDir from './getRouteConfigFromDir';
 import getTheme from '../theme/loader';
 import decorateRoutes from './decorator';

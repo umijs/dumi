@@ -1,4 +1,4 @@
-import type { IRoute } from '@umijs/types';
+import type { IRoute } from 'umi';
 import type { IDumiOpts } from '..';
 
 export interface ILocale {

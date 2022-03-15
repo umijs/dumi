@@ -1,77 +1,76 @@
 {
-  "workspaces": [
-    "packages/*"
-  ],
-  "private": true,
-  "scripts": {
-    "dev": "npm run doc:sync && cross-env BROWSER=none node ./packages/dumi/bin/dumi.js dev",
-    "dev:mobile": "npm run doc:sync && cross-env BROWSER=none DUMI_THEME=./packages/theme-mobile node ./packages/dumi/bin/dumi.js dev",
-    "doc:build": "npm run doc:sync && cross-env BROWSER=none node ./packages/dumi/bin/dumi.js build",
-    "doc:sync": "node scripts/sync-from-umi.js",
-    "watch": "npm run build -- --watch",
-    "build": "father-build",
-    "changelog": "lerna-changelog",
-    "clean": "lerna clean -y",
-    "test": "npm run test:e2e && npm run test:unit",
-    "test:unit": "umi-test \"test.(j|t)s\" --coverage",
-    "test:e2e": "umi-test \"e2e.(j|t)s\"",
-    "debug": "umi-test",
-    "lint": "eslint --cache --ext .js,.jsx,.ts,.tsx --format=pretty \"./packages\"",
-    "prettier": "prettier -c --write \"**/*\"",
-    "publish": "npm run build && umi-test && lerna publish -m \"chore: publish\"",
-    "now-build": "echo \"hello\""
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/umijs/dumi.git"
-  },
-  "devDependencies": {
-    "@babel/plugin-proposal-optional-chaining": "^7.6.0",
-    "@commitlint/cli": "^8.3.5",
-    "@commitlint/config-conventional": "^8.3.4",
-    "@types/jest": "^24.0.13",
-    "@umijs/fabric": "^2.2.2",
-    "@umijs/plugin-analytics": "^0.2.2",
-    "@umijs/test": "^3.0.3",
-    "antd": "^4.8.2",
-    "babel-plugin-import": "^1.13.0",
-    "cross-env": "^6.0.3",
-    "eslint": "^7.0.0",
-    "father-build": "^1.14.2",
-    "husky": "^4.2.5",
-    "jest-matchmedia-mock": "^1.1.0",
-    "lerna": "^3.6.0",
-    "lerna-changelog": "^0.8.2",
-    "prettier": "^2.2.1",
-    "puppeteer": "^2.1.1"
-  },
-  "resolutions": {
-    "@types/react": "^16.14.2"
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
-  },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
+    "workspaces": [
+        "packages/*"
     ],
-    "rules": {
-      "scope-enum": [
-        2,
-        "always",
-        [
-          "scaffold",
-          "assets",
-          "theme",
-          "bin",
-          "preset",
-          "routes",
-          "transformer",
-          "parser"
-        ]
-      ]
+    "private": true,
+    "scripts": {
+        "dev": "cross-env BROWSER=none node ./packages/dumi/bin/dumi.js dev",
+        "dev:mobile": "npm run doc:sync && cross-env BROWSER=none DUMI_THEME=./packages/theme-mobile node ./packages/dumi/bin/dumi.js dev",
+        "doc:build": "npm run doc:sync && cross-env BROWSER=none node ./packages/dumi/bin/dumi.js build",
+        "doc:sync": "node scripts/sync-from-umi.js",
+        "watch": "npm run build -- --watch",
+        "build": "father-build",
+        "changelog": "lerna-changelog",
+        "clean": "lerna clean -y",
+        "test": "npm run test:e2e && npm run test:unit",
+        "test:unit": "umi-test \"test.(j|t)s\" --coverage",
+        "test:e2e": "umi-test \"e2e.(j|t)s\"",
+        "debug": "umi-test",
+        "lint": "eslint --cache --ext .js,.jsx,.ts,.tsx --format=pretty \"./packages\"",
+        "prettier": "prettier -c --write \"**/*\"",
+        "publish": "npm run build && umi-test && lerna publish -m \"chore: publish\"",
+        "now-build": "echo \"hello\""
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/umijs/dumi.git"
+    },
+    "devDependencies": {
+        "@babel/plugin-proposal-optional-chaining": "^7.6.0",
+        "@commitlint/cli": "^8.3.5",
+        "@commitlint/config-conventional": "^8.3.4",
+        "@types/jest": "^24.0.13",
+        "@umijs/fabric": "^2.2.2",
+        "@umijs/plugin-analytics": "^0.2.2",
+        "@umijs/test": "^3.0.3",
+        "antd": "^4.8.2",
+        "babel-plugin-import": "^1.13.0",
+        "cross-env": "^6.0.3",
+        "eslint": "^7.0.0",
+        "father-build": "^1.14.2",
+        "husky": "^4.2.5",
+        "jest-matchmedia-mock": "^1.1.0",
+        "lerna": "^3.6.0",
+        "lerna-changelog": "^0.8.2",
+        "prettier": "^2.2.1",
+        "puppeteer": "^2.1.1"
+    },
+    "resolutions": {
+        "@types/react": "^16.14.2"
+    },
+    "husky": {
+        "hooks": {
+            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+        }
+    },
+    "commitlint": {
+        "extends": [
+            "@commitlint/config-conventional"
+        ],
+        "rules": {
+            "scope-enum": [
+                2,
+                "always", [
+                    "scaffold",
+                    "assets",
+                    "theme",
+                    "bin",
+                    "preset",
+                    "routes",
+                    "transformer",
+                    "parser"
+                ]
+            ]
+        }
     }
-  }
 }

@@ -1,9 +1,20 @@
 import visit from 'unist-util-visit';
-import { winEOL } from '@umijs/utils';
+// import { winEOL } from '@umijs/utils';
 import type { Code } from 'mdast';
 import type { IDumiUnifiedTransformer } from '.';
 import transformer from '..';
 import ctx from '../../context';
+
+// TODO: UMI4 utils not winEOL
+const isWindows =
+  typeof process !== 'undefined' && process.platform === 'win32';
+
+const winEOL = (content: string | undefined) => {
+  if (typeof content !== 'string') {
+    return content;
+  }
+  return isWindows ? content.replace(/\r/g, '') : content;
+};
 
 /**
  * parser for parse modifier of code block

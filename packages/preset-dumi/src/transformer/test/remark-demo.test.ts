@@ -1,11 +1,22 @@
 import fs from 'fs';
 import path from 'path';
 import { Service } from '@umijs/core';
-import { winEOL } from '@umijs/utils';
+// import { winEOL } from '@umijs/utils';
 import type { IDumiOpts} from '../../context';
 import { init } from '../../context';
 import transformer from '..';
 
+// TODO: UMI4 utils not winEOL
+const isWindows =
+  typeof process !== 'undefined' && process.platform === 'win32';
+
+const winEOL = (content: string | undefined) => {
+  if (typeof content !== 'string') {
+    return content;
+  }
+  return isWindows ? content.replace(/\r/g, '') : content;
+};
+ 
 function clearVersion(source: string) {
   return source.replace(/version":"[^"]+"/g, 'version":"*"');
 }

@@ -1,4 +1,4 @@
-import type { IApi } from '@umijs/types';
+import type { IApi } from 'umi';
 
 /**
  * plugin for simulate @umijs/plugin-layout to wrap all routes

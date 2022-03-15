@@ -1,4 +1,4 @@
-import type { webpack } from '@umijs/types';
+import type { webpack } from 'umi';
 import path from 'path';
 
 interface IOpts {

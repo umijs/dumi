@@ -1,4 +1,4 @@
-import type { IApi } from '@umijs/types';
+import type { IApi } from 'umi';
 import type { IDumiOpts } from '../../context';
 import ctx, { setOptions } from '../../context';
 import { prefix } from '../../routes/decorator/integrate';

@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useState } from 'react';
 import Context from './context';
-import type { IRouteProps, IRouteComponentProps } from '@umijs/types';
+import type { IRouteProps, IRouteComponentProps } from 'umi';
 import type { IThemeContext } from './context';
 import type { IMenu } from '../routes/getMenuFromRoutes';
 

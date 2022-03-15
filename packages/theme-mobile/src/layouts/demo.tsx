@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useRef } from 'react';
-import type { IRouteComponentProps } from '@umijs/types';
+import type { IRouteComponentProps } from 'umi';
 import { history } from 'dumi';
 import { context } from 'dumi/theme';
 import TouchEmulator from 'f2-touchemulator';

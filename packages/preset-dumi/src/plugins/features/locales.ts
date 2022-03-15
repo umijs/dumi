@@ -1,4 +1,4 @@
-import type { IApi } from '@umijs/types';
+import type { IApi } from 'umi';
 import { setOptions } from '../../context';
 
 export default (api: IApi) => {

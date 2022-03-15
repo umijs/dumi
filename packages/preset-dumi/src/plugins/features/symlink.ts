@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import type { IApi } from '@umijs/types';
+import type { IApi } from 'umi';
 import ctx from '../../context';
 import getHostPkgAlias from '../../utils/getHostPkgAlias';
 import symlink from '../../utils/symlink';
@@ -17,7 +17,7 @@ export default (api: IApi) => {
   });
 
   // only apply symlinks for non-integrated mode
-  if (ctx.opts.isIntegrate) return;
+  if (ctx?.opts?.isIntegrate) return;
 
   const hostPkgAlias = getHostPkgAlias(api.paths).filter(([pkgName]) => pkgName);
 

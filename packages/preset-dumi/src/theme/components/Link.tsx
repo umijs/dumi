@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from '@umijs/runtime';
+import { Link } from '@umijs/renderer-react';
 import type { LinkProps, NavLinkProps } from 'react-router-dom';
 
 /**

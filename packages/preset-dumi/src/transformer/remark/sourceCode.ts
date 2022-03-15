@@ -2,8 +2,19 @@ import type { Node } from 'unist';
 import visit from 'unist-util-visit';
 import toString from 'hast-util-to-string';
 import raw from 'hast-util-raw';
-import { winEOL } from '@umijs/utils';
+// import { winEOL } from '@umijs/utils';
 import type { IDumiUnifiedTransformer, IDumiElmNode } from '.';
+
+// TODO: UMI4 utils not winEOL
+const isWindows =
+  typeof process !== 'undefined' && process.platform === 'win32';
+
+const winEOL = (content: string | undefined) => {
+  if (typeof content !== 'string') {
+    return content;
+  }
+  return isWindows ? content.replace(/\r/g, '') : content;
+};
 
 function createSourceCode(lang: string, code: string, position: any) {
   return {

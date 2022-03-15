@@ -1,9 +1,10 @@
 import path from 'path';
-import type { IApi } from '@umijs/types';
+import type { IApi } from 'umi';
 import { setOptions } from '../../context';
 import getHostPkgAlias from '../../utils/getHostPkgAlias';
 
 export default (api: IApi) => {
+  // TODO: UMI4 api.paths is empty object
   const hostPkgAlias = getHostPkgAlias(api.paths);
 
   api.describe({

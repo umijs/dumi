@@ -1,4 +1,4 @@
-import type { IRoute } from '@umijs/types';
+import type { IRoute } from 'umi';
 import type { RouteProcessor } from '.';
 import type { IMenuItem } from '../getMenuFromRoutes';
 import { menuSorter } from '../getMenuFromRoutes';

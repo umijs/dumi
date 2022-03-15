@@ -5,6 +5,7 @@ export default () => {
     plugins: [
       // prepare plugin
       require.resolve('./plugins/features/init'),
+      // TODO: UMI4  TypeError: Cannot set properties of undefined (setting 'theme')
       require.resolve('./plugins/features/theme'), // must before symlink to ensure correct alias order
       require.resolve('./plugins/features/symlink'),
 
@@ -19,7 +20,8 @@ export default () => {
       require.resolve('./plugins/features/algolia'),
 
       // site generate
-      require.resolve('./plugins/features/routes'),
+      // TODO: UMI4 is no support onPatchRoutesBefore
+      // require.resolve('./plugins/features/routes'),
       require.resolve('./plugins/features/compile'),
       require.resolve('./plugins/features/sideEffects'),
       require.resolve('./plugins/features/404'),
@@ -28,7 +30,7 @@ export default () => {
       // generate files
       require.resolve('./plugins/features/demo'),
       require.resolve('./plugins/features/config'),
-      require.resolve('./plugins/features/api'),
+      // require.resolve('./plugins/features/api'),
 
       // integrate other umi plugins
       require.resolve('./plugins/features/extras'),

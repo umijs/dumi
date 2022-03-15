@@ -1,5 +1,5 @@
 import path from 'path';
-import type { IApi } from '@umijs/types';
+import type { IApi } from 'umi';
 import getRoutes from '../getRouteConfig';
 import type { IDumiOpts } from '../../context';
 import { init } from '../../context';

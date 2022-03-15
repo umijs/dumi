@@ -1,4 +1,4 @@
-import type { IApi } from '@umijs/types';
+import type { IApi } from 'umi';
 import ctx from '../../context';
 
 /**
@@ -6,7 +6,7 @@ import ctx from '../../context';
  */
 export default (api: IApi) => {
   // disable dumi in interate mode and non-development mode
-  const isDisableDumi = ctx.opts.isIntegrate && api.env !== 'development';
+  const isDisableDumi = ctx.opts?.isIntegrate && api.env !== 'development';
 
   if (isDisableDumi) {
     const dumiPlugins = Object.values(api.service.plugins)

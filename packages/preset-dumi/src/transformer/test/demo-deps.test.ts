@@ -64,7 +64,7 @@ describe('demo transformer: dependencies', () => {
   it('should collect local pkg as third-party dependencies', async () => {
     const service = new Service({
       cwd: path.join(__dirname, '../fixtures/demo-deps/local-pkgs'),
-      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('../../index.ts')],
+      presets: [require.resolve('@umijs/preset-umi'), require.resolve('../../index.ts')],
     });
 
     // for package symlink

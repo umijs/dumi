@@ -1,8 +1,21 @@
 import fs from 'fs';
 import path from 'path';
-import { winPath, winEOL } from '@umijs/utils';
+import { winPath } from '@umijs/utils';
+// import { winPath, winEOL } from '@umijs/utils';
 import demo from '../demo';
 import ctx, { init } from '../../context';
+
+
+// TODO: UMI4 utils not winEOL
+const isWindows =
+  typeof process !== 'undefined' && process.platform === 'win32';
+
+const winEOL = (content: string | undefined) => {
+  if (typeof content !== 'string') {
+    return content;
+  }
+  return isWindows ? content.replace(/\r/g, '') : content;
+};
 
 describe('demo: await import', () => {
   let originalCtx: any;

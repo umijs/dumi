@@ -1,9 +1,20 @@
 import fs from 'fs';
 import path from 'path';
-import { winEOL } from '@umijs/utils';
+// import { winEOL } from '@umijs/utils';
 import ctx from '../../context';
 import transformer from '..';
 
+// TODO: UMI4 utils not winEOL
+const isWindows =
+  typeof process !== 'undefined' && process.platform === 'win32';
+
+const winEOL = (content: string | undefined) => {
+  if (typeof content !== 'string') {
+    return content;
+  }
+  return isWindows ? content.replace(/\r/g, '') : content;
+};
+ 
 describe('embed md example', () => {
   const FILE_PATH = path.join(__dirname, '../fixtures/raw/remark-embed.md');
 

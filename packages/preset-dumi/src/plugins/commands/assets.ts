@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import type { IApi } from '@umijs/types';
+import type { IApi } from 'umi';
 import ctx from '../../context';
 import getRouteConfig from '../../routes/getRouteConfig';
 import type { AtomAsset } from '../../../../assets-types/typings';

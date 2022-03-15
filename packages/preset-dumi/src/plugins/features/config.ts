@@ -1,4 +1,4 @@
-import type { IApi } from '@umijs/types';
+import type { IApi } from 'umi';
 import getLocaleFromRoutes from '../../routes/getLocaleFromRoutes';
 import getMenuFromRoutes from '../../routes/getMenuFromRoutes';
 import getNavFromRoutes from '../../routes/getNavFromRoutes';
@@ -10,6 +10,10 @@ import ctx from '../../context';
  * plugin for generate dumi config into .umi temp directory
  */
 export default (api: IApi) => {
+  // TODO: UMI4 默认会以文件名为 key，解法是改文件名或者用 api.describe 声明一下
+  api.describe({
+    key: 'umiConfig',
+  });
   // write config.json when generating temp files
   api.onGenerateFiles(async () => {
     const { routes } = await api.applyPlugins({
