@@ -57,6 +57,42 @@ describe('theme API: useApiData', () => {
     </Context.Provider>
   );
 
+  // Test different locale status
+  const localeWrapper = ({ children }) => (
+    <Context.Provider
+      value={
+        {
+          locale: 'en-US',
+          config: {
+            locales: [
+              { name: 'zh-CN', label: '中文' },
+              { name: 'en-US', label: 'English' },
+            ],
+          },
+          apis: {
+            MissLocaleDescription: {
+              default: [
+                {
+                  identifier: 'other',
+                  type: 'string',
+                  description: 'default description',
+                  'description.en-US': 'english description',
+                },
+                {
+                  identifier: 'another',
+                  type: 'string',
+                  description: 'default description',
+                },
+              ],
+            },
+          },
+        } as unknown as IThemeContext
+      }
+    >
+      {children}
+    </Context.Provider>
+  );
+
   it('should get normal api data', async () => {
     const { result } = renderHook(() => useApiData('Normal'), { wrapper });
 
@@ -70,6 +106,28 @@ describe('theme API: useApiData', () => {
       default: [
         {
           identifier: 'locale',
+          type: 'string',
+          description: 'default description',
+        },
+      ],
+    });
+  });
+
+  it('should get api data with defalt description cover miss locale', async () => {
+    const { result } = renderHook(() => useApiData('MissLocaleDescription'), {
+      wrapper: localeWrapper,
+    });
+
+    expect(result.current).toEqual({
+      default: [
+        {
+          identifier: 'other',
+          type: 'string',
+          description: 'english description',
+          'description.en-US': 'english description',
+        },
+        {
+          identifier: 'another',
           type: 'string',
           description: 'default description',
         },

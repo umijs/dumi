@@ -31,7 +31,9 @@ function getApiData(
               result.description = result[prop];
             }
             // use default description cover when miss locale
-            if (!result.description && props['description']) result.description = props['description']
+            if (!result.description && props.description) {
+              result.description = props.description
+            }
           }
         });
 
