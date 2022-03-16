@@ -207,7 +207,7 @@ export default {
 
 `resolve` is an `Object` type, used to configure dumi's resolution behavior, including the following configuration:
 
-#### includes
+#### resolve.includes
 
 - Type: `Array<String>`
 - Default: `['docs', 'src']` or `['docs', 'packages/pkg/src']`
@@ -215,7 +215,7 @@ export default {
 
 Configure the document directory for dumi sniffing. Dumi will try to recursively find markdown files in the configured directory. The default values are the `docs` directory and the `src` directory (common projects). If the environment is the lerna project, the `src` directory will change It is the `packages/pkg/src` directory, and usually does not need to be configured, unless the automatic sniffing appears 『injuryed』.
 
-#### excludes
+#### resolve.excludes
 
 - Type：`Array<String>`
 - Default：`[]`
@@ -223,7 +223,7 @@ Configure the document directory for dumi sniffing. Dumi will try to recursively
 
 The directories or files that need to be excluded. The rules are the same as the configuration of `gitignore`.
 
-#### previewLangs
+#### resolve.previewLangs
 
 - Type: `Array<String>`
 - Default: `['jsx', 'tsx']`
@@ -231,7 +231,7 @@ The directories or files that need to be excluded. The rules are the same as the
 
 The configuration dumi will be converted to the code block rendered by the ReactComponent component by default. If you don't want to do any conversion, such as a pure site like Umi's official website, then set this item to an empty array.
 
-#### passivePreview
+#### resolve.passivePreview
 
 - Type：`Boolean`
 - Default：`false`
