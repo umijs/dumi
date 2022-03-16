@@ -208,7 +208,7 @@ export default {
 
 `resolve` 是一个 `Object` 类型，用于配置 dumi 的解析行为，包含如下配置：
 
-#### includes
+#### resolve.includes
 
 - 类型：`Array<String>`
 - 默认值：`['docs', 'src']` or `['docs', 'packages/pkg/src']`
@@ -216,7 +216,7 @@ export default {
 
 配置 dumi 嗅探的文档目录，dumi 会尝试在配置的目录中递归寻找 markdown 文件，默认值为 `docs` 目录、`src` 目录（普通项目），如果环境为 lerna 项目，则 `src` 目录变为 `packages/pkg/src` 目录，通常不需要配置，除非自动嗅探出现了『误伤』。
 
-#### excludes
+#### resolve.excludes
 
 - 类型：`Array<String>`
 - 默认值：`[]`
@@ -224,7 +224,7 @@ export default {
 
 需要排除的目录，会对 `dumi` 嗅探到的目录或文件进行过滤，规则同 `gitignore` 配置。
 
-#### previewLangs
+#### resolve.previewLangs
 
 - 类型：`Array<String>`
 - 默认值：`['jsx', 'tsx']`
@@ -232,7 +232,7 @@ export default {
 
 配置 dumi 默认会转换为 ReactComponent 组件渲染的代码块，如果不希望做任何转换，例如类似 Umi 官网的纯站点，那么将该项设置为空数组即可。
 
-#### passivePreview
+#### resolve.passivePreview
 
 - 类型：`Boolean`
 - 默认值：`false`
