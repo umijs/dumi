@@ -6,13 +6,11 @@ import type { IThemeContext } from '../context';
  * get API data
  * @param identifier      component name
  * @param locale          current locale
- * @param isDefaultLocale default locale flag
  */
 function getApiData(
   apis: IThemeContext['apis'],
   identifier: string,
   locale: string,
-  isDefaultLocale: boolean,
 ) {
   return Object.entries(apis[identifier]).reduce<IThemeContext['apis']['0']>(
     (expts, [expt, rows]) => {
@@ -24,7 +22,7 @@ function getApiData(
           // get locale description data
           if (/^description(\.|$)/.test(prop)) {
             const [, propLocale] = prop.match(/^description\.?(.*)$/);
-            if ((isDefaultLocale && !propLocale) || (propLocale && propLocale === locale)) {
+            if (propLocale && propLocale === locale) {
               result.description = props[prop]
             }
           } else {
@@ -49,15 +47,13 @@ function getApiData(
 export default (identifier: string) => {
   const {
     locale,
-    config: { locales },
     apis,
   } = useContext(context);
-  const isDefaultLocale = !locales.length || locales[0].name === locale;
-  const [data, setData] = useState(getApiData(apis, identifier, locale, isDefaultLocale));
+  const [data, setData] = useState(getApiData(apis, identifier, locale));
 
   useEffect(() => {
-    setData(getApiData(apis, identifier, locale, isDefaultLocale));
-  }, [apis, identifier, locale, isDefaultLocale]);
+    setData(getApiData(apis, identifier, locale));
+  }, [apis, identifier, locale]);
 
   return data;
 };
