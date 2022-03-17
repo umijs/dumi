@@ -20,7 +20,7 @@ function getApiData(
 
         Object.keys(props).forEach(prop => {
           // get locale description data
-          if (/^description(\.|$)/.test(prop)) {
+          if (prop.startsWith('description.')) {
             const [, propLocale] = prop.match(/^description\.?(.*)$/);
             if (propLocale && propLocale === locale) {
               result.description = props[prop]
