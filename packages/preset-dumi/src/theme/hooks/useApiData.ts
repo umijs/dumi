@@ -17,23 +17,19 @@ function getApiData(
   return Object.entries(apis[identifier]).reduce<IThemeContext['apis']['0']>(
     (expts, [expt, rows]) => {
       expts[expt] = rows.map(props => {
-        // copy original data
-        const result = Object.assign({}, props);
+        // default description cover miss locale
+        const result = { description: props.description } as typeof props;
 
         Object.keys(props).forEach(prop => {
-          // discard useless locale property
+          // get locale description data
           if (/^description(\.|$)/.test(prop)) {
             const [, propLocale] = prop.match(/^description\.?(.*)$/);
-
-            if ((propLocale && propLocale !== locale) || (!propLocale && !isDefaultLocale)) {
-              delete result[prop];
-            } else {
-              result.description = result[prop];
+            if ((isDefaultLocale && !propLocale) || (propLocale && propLocale === locale)) {
+              result.description = props[prop]
             }
-            // use default description cover when miss locale
-            if (!result.description && props.description) {
-              result.description = props.description
-            }
+          } else {
+            // copy original property
+            result[prop] = props[prop]
           }
         });
 
