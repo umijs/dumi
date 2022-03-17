@@ -207,7 +207,7 @@ export interface IHelloProps {
   /**
    * You can write the attribute description like this
    * @description        You can also explicitly add a description name
-   * @description.zh-CN  Also supports different locale suffixes to achieve multi-language description
+   * @description.zh-CN  Also supports different locale suffixes to achieve multi-language description, use description as default
    * @default            Support for defining default values
    */
   className?: string; // Support for identifying TypeScript optional types as optional attributes
