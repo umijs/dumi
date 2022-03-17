@@ -124,7 +124,6 @@ describe('theme API: useApiData', () => {
           identifier: 'other',
           type: 'string',
           description: 'english description',
-          'description.en-US': 'english description',
         },
         {
           identifier: 'another',
