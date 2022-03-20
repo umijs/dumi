@@ -125,16 +125,19 @@ const useCurrentBase = (
   return base;
 };
 
-const findDumiRoot = (routes: any): IThemeContext['routes'] => {
-  return routes.find(item => {
+const findDumiRoot = (routes: any) => {
+  let rootRoutes: IThemeContext['routes'];
+
+  for (const item of routes) {
     if (item.__dumiRoot) {
-      return true;
+      rootRoutes = item.routes;
+      break;
+    } else if (item.routes && (rootRoutes = findDumiRoot(item.routes))) {
+      break;
     }
-    if (item.routes) {
-      return findDumiRoot(item.routes);
-    }
-    return false;
-  })?.routes;
+  }
+
+  return rootRoutes;
 };
 
 /**
