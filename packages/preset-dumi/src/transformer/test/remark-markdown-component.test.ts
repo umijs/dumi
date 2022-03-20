@@ -14,7 +14,7 @@ describe('markdown component examples', () => {
     ).content;
 
     // compare transform content
-    expect(result).toEqual(`<div className="markdown"><Test /></div>`);
+    expect(result).toEqual(`<Test />`);
   });
 
   it('Should transform recognized markdown component', () => {
@@ -47,7 +47,7 @@ describe('markdown component examples', () => {
 
     // compare transform content
     expect(result).toEqual(
-      `<div className=\"markdown\"><h3 id=\"markdown-components\"><AnchorLink to=\"#markdown-components\" aria-hidden=\"true\" tabIndex={-1}><span className=\"icon icon-link\" /></AnchorLink></h3><Test /></div>`,
+      `<React.Fragment><div className=\"markdown\"><h3 id=\"markdown-components\"><AnchorLink to=\"#markdown-components\" aria-hidden=\"true\" tabIndex={-1}><span className=\"icon icon-link\" /></AnchorLink></h3></div><Test /></React.Fragment>`,
     );
   });
 
@@ -81,7 +81,7 @@ describe('markdown component examples', () => {
 
     // compare transform content
     expect(result).toEqual(
-      `<div className=\"markdown\"><h3 id=\"another-markdown-components\"><AnchorLink to=\"#another-markdown-components\" aria-hidden=\"true\" tabIndex={-1}><span className=\"icon icon-link\" /></AnchorLink></h3><Test /></div>`,
+      `<React.Fragment><div className=\"markdown\"><h3 id=\"another-markdown-components\"><AnchorLink to=\"#another-markdown-components\" aria-hidden=\"true\" tabIndex={-1}><span className=\"icon icon-link\" /></AnchorLink></h3></div><Test /></React.Fragment>`,
     );
   });
 });

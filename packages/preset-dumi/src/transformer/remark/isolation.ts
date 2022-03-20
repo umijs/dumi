@@ -1,6 +1,7 @@
 import type { Node } from 'unist';
 import type { Visitor } from 'unist-util-visit';
 import visit from 'unist-util-visit';
+import { REQUIRED_THEME_BUILTINS } from '../../theme/loader';
 import type { IDumiElmNode, IDumiUnifiedTransformer } from '.';
 
 /**
@@ -29,6 +30,19 @@ function isWrapperNode(node: IDumiElmNode, className: string) {
   return node.properties?.className === className;
 }
 
+/**
+ * detect node whether user global React component
+ * @param node
+ */
+function isReactComponent(node: IDumiElmNode) {
+  return (
+    /^[A-Z].+/.test(node.tagName) &&
+    !REQUIRED_THEME_BUILTINS.includes(node.tagName) &&
+    // FIXME
+    !['AnchorLink', 'NavLink', 'Link'].includes(node.tagName)
+  );
+}
+
 const visitor: Visitor<IDumiElmNode> = function visitor(node) {
   // wrap all noddes except previewer nodes into markdown elements for isolate styles
   node.children = node.children.reduce((result, item) => {
@@ -39,6 +53,13 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node) {
     ) {
       // push item directly if it is solo node or is not break line node before content
       result.push(item);
+    } else if (
+      // <p><Test></Test></p> or <Test></Test>
+      (item.tagName === 'p' && item.children?.length === 1 && isReactComponent(item.children[0])) ||
+      isReactComponent(item)
+    ) {
+      // solo for user custom component
+      result.push(item.tagName === 'p' ? item.children?.[0] : item);
     } else {
       // push wrapper element when first loop or the prev node is solo node
       if (!prevSibling || isSoloNode(prevSibling) || isLineBreakNode(prevSibling)) {
@@ -59,6 +80,7 @@ const visitor: Visitor<IDumiElmNode> = function visitor(node) {
   }, []);
 };
 
-export default (options: Record<string, any> = {}): IDumiUnifiedTransformer => (ast: Node) => {
-  visit(ast, 'root', visitor.bind({ className: options.className || 'markdown' }));
-};
+export default (options: Record<string, any> = {}): IDumiUnifiedTransformer =>
+  (ast: Node) => {
+    visit(ast, 'root', visitor.bind({ className: options.className || 'markdown' }));
+  };
