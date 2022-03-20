@@ -8,7 +8,7 @@ export default (url: any, platform?: 'gitlab') => {
   if (!repoUrl) {
     const isHttpProtocol = url.includes('http://');
 
-    if (platform === 'gitlab') {
+    if (['gitlab', 'bitbucket'].includes(platform)) {
       if (isHttpProtocol) url = url.replace('http', 'https');
 
       let originalHost: string;
