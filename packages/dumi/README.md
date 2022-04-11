@@ -144,11 +144,11 @@ $ yarn dev
     </td>
   </tr>
   <tr>
-  <td width="160" align="center">
-      <a target="_blank" href="https://umijs.org">
-        <img src="https://gw.alipayobjects.com/zos/bmw-prod/598d14af-4f1c-497d-b579-5ac42cd4dd1f/k7bjua9c_w132_h130.png" width="42" />
+    <td width="160" align="center">
+      <a target="_blank" href="https://x-render.gitee.io">
+        <img src="https://img.alicdn.com/tfs/TB17UtINiLaK1RjSZFxXXamPFXa-606-643.png" width="42" />
         <br />
-        <strong>UmiJS</strong>
+        <strong>XRender</strong>
       </a>
     </td>
   </tr>
