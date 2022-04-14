@@ -80,6 +80,11 @@ const users = [
     url: 'https://pinyin.js.org/',
     logo: 'https://gw.alipayobjects.com/mdn/rms_f6322a/afts/img/A*bGz9QbNudekAAAAAAAAAAAAAARQnAQ',
   },
+  {
+    name: 'XRender',
+    url: 'https://x-render.gitee.io/',
+    logo: 'https://img.alicdn.com/tfs/TB17UtINiLaK1RjSZFxXXamPFXa-606-643.png',
+  },
 ];
 
 const LongLogos = [
