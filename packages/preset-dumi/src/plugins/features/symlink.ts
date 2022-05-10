@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import type { IApi } from '@umijs/types';
 import ctx from '../../context';
+import { getModuleResolvePath } from '../../utils/moduleResolver';
 import getHostPkgAlias from '../../utils/getHostPkgAlias';
 import symlink from '../../utils/symlink';
 
@@ -52,12 +53,8 @@ export default (api: IApi) => {
       const srcPath = path.join(pkgPath, 'src');
 
       try {
-        srcModule = require(srcPath);
-      } catch (err) {
-        if (err.code !== 'MODULE_NOT_FOUND') {
-          srcModule = true;
-        }
-      }
+        srcModule = getModuleResolvePath({ basePath: pkgPath, sourcePath: './src/index', silent: true });
+      } catch (err) { /* nothing */ }
 
       // use src path instead of main field in package.json if exists
       if (srcModule) {
