@@ -40,11 +40,8 @@ export default (api: IApi) => {
   api.modifyConfig(memo => {
     setOptions('theme', memo.themeConfig);
 
-    memo.alias = Object.assign(
-      // set alias for builtin default theme
-      { 'dumi-theme-default': path.dirname(require.resolve('dumi-theme-default/package.json')) },
-      memo.alias,
-    );
+    // set alias for builtin default theme
+    memo.alias['dumi-theme-default'] = path.dirname(require.resolve('dumi-theme-default/package.json'));
 
     return memo;
   });
