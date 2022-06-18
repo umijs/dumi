@@ -8,6 +8,9 @@ import {
   getModuleResolvePkg,
   getModuleResolvePath,
   getModuleResolveContent,
+  getPackageInfo,
+  getHostPkgPath,
+  getHostModuleResolvePkg,
 } from '../../utils/moduleResolver';
 import FileCache from '../../utils/cache';
 import type { IDemoOpts } from './options';
@@ -52,6 +55,8 @@ export const LOCAL_MODULE_EXT = [...LOCAL_DEP_EXT, '.json'];
 
 // local dependency extensions which will be collected
 export const PLAIN_TEXT_EXT = [...LOCAL_MODULE_EXT, '.less', '.css', '.scss', '.sass', '.styl'];
+
+export const isHostPackage = (packageName: string) => getHostPkgPath(packageName);
 
 function analyzeDeps(
   raw: string,
@@ -99,9 +104,10 @@ function analyzeDeps(
           });
           const resolvePathParsed = path.parse(resolvePath);
 
-          if (resolvePath.includes('node_modules')) {
+          const isHostPkg = isHostPackage(requireStr);
+          if (resolvePath.includes('node_modules') || isHostPkg) {
             // save external deps
-            const pkg = getModuleResolvePkg({
+            const pkg = isHostPkg ? getHostModuleResolvePkg(requireStr) : getModuleResolvePkg({
               basePath: fileAbsPath,
               sourcePath: resolvePath,
               extensions: LOCAL_MODULE_EXT,
