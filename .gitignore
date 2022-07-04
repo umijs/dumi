@@ -20,5 +20,4 @@ dist
 .umi-production
 .umi-test
 .now
-/docs/.upstream
 .DS_Store
