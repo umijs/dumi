@@ -1,5 +1,6 @@
 import React, { useState, useContext, useRef, useEffect } from 'react';
 import Tabs, { TabPane } from 'rc-tabs';
+import { ErrorBoundary } from 'react-error-boundary';
 // @ts-ignore
 import { history } from 'dumi';
 import type { IPreviewerComponentProps } from 'dumi/theme';
@@ -18,6 +19,7 @@ import {
 } from 'dumi/theme';
 import type { ICodeBlockProps } from './SourceCode';
 import SourceCode from './SourceCode';
+import Alert from './Alert';
 import './Previewer.less';
 
 export interface IPreviewerProps extends IPreviewerComponentProps {
@@ -144,7 +146,21 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
             ref={iframeRef}
           />
         ) : (
-          props.children
+          <ErrorBoundary
+            fallbackRender={({ error }) => (
+              <Alert type="error">
+                <h4>{error.message || 'This demo has been crashed.'}</h4>
+                {error.stack && (
+                  <details>
+                    <summary>Error stack</summary>
+                    <pre>{error.stack}</pre>
+                  </details>
+                )}
+              </Alert>
+            )}
+          >
+            {props.children}
+          </ErrorBoundary>
         )}
       </div>
       <div className="__dumi-default-previewer-desc" data-title={props.title}>

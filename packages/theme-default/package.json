@@ -23,7 +23,8 @@
     "prismjs": "^1.21.0",
     "rc-motion": "^2.4.1",
     "rc-tabs": "^11.7.1",
-    "rc-tree": "^5.2.0"
+    "rc-tree": "^5.2.0",
+    "react-error-boundary": "^3.1.4"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.3",
