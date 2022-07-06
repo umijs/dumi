@@ -71,7 +71,15 @@ $ yarn create @umijs/dumi-app
 
 ### 开始开发
 
-执行 `npm run dev` 或 `npx dumi dev` 即可开始调试组件或编写文档：
+```bash
+$ npm i
+$ npm run start
+# or
+$ yarn
+$ yarn start
+```
+
+或者也可以执行 `npx dumi dev` 即可开始调试组件或编写文档：
 
 ![](https://gw.alipayobjects.com/zos/bmw-prod/a74b9643-b1db-48b0-83b1-67d15e13b6fc/k7a3sl0s_w1988_h1310.png)
 
