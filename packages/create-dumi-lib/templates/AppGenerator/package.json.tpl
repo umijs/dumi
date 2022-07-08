@@ -38,7 +38,7 @@
     "@types/jest": "^27.0.3",
     "@umijs/fabric": "^2.8.1",
     "@umijs/test": "^3.0.5",
-    "dumi": "^{{{ version }}}",
+    "dumi": "^1.1.0",
     "father": "^4.0.0-rc.2",
     "gh-pages": "^3.0.0",
     "lint-staged": "^10.0.7",
