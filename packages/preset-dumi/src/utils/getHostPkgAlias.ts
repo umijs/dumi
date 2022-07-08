@@ -17,6 +17,7 @@ function getPkgAliasForPath(absPath: string) {
 
 export default (paths: IApi['paths']) => {
   const isLerna = fs.existsSync(path.join(paths.cwd, 'lerna.json'));
+  const isPnpmWorkspace = fs.existsSync(path.join(paths.cwd, 'pnpm-workspace.yaml'))
   const pkgs: [string, string][] = [];
 
   if (isLerna) {
@@ -45,6 +46,16 @@ export default (paths: IApi['paths']) => {
         pkgs.push([pkg._package.name, pkg._location]);
       });
     }
+  } else if (isPnpmWorkspace) {
+    JSON.parse(execSync('pnpm list -r --json', {
+          stdio: 'pipe',
+        })
+          .toString()
+          .replace(/([\r\n]\])[^]*$/, '$1')
+    ).filter(pkg => pkg.path !== paths.cwd) // filter root pkg
+    .forEach(pkg => {
+        pkgs.push([pkg.name, pkg.path]);
+      });
   } else {
     // for standard repo
     pkgs.push(getPkgAliasForPath(paths.cwd));
