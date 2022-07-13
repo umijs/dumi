@@ -30,6 +30,10 @@ export default interface AssetsPackage {
    */
   homepage?: string;
   /**
+   * The snapshot URL of assets package
+   */
+   previews?: string[];
+  /**
    * The repository URL of assets package
    */
   repoUrl?: string;
