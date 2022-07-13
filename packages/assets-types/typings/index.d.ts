@@ -32,7 +32,7 @@ export default interface AssetsPackage {
   /**
    * The snapshot URL of assets package
    */
-   previews?: string[];
+  previews?: string[];
   /**
    * The repository URL of assets package
    */
