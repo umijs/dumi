@@ -16,60 +16,46 @@ const genReactRenderCode = (
 ): string => {
   if (clientRender === 'react-dom') {
     return `/**
-    * This is an auto-generated demo by dumi
-    * if you think it is not working as expected,
-    * please report the issue at
-    * https://github.com/umijs/dumi/issues
-    **/
+* This is an auto-generated demo by dumi
+* if you think it is not working as expected,
+* please report the issue at
+* https://github.com/umijs/dumi/issues
+**/
     
-    import React from 'react';
-    import ReactDOM from 'react-dom';
-    ${extraCode}
-    import App from './App';
+import React from 'react';
+import ReactDOM from 'react-dom';
+${extraCode}
+import App from './App';
     
-    ReactDOM.render(
-      <App />,
-      document.getElementById('root'),
-    );`;
+ReactDOM.render(
+  <App />,
+  document.getElementById('root'),
+);`;
   }
   if (clientRender === 'react-dom/client') {
     return `/**
-    * This is an auto-generated demo by dumi
-    * if you think it is not working as expected,
-    * please report the issue at
-    * https://github.com/umijs/dumi/issues
-    **/
-    import React from 'react';
-    import { createRoot } from "react-dom/client";
-    ${extraCode}
-    import App from "./App";
+* This is an auto-generated demo by dumi
+* if you think it is not working as expected,
+* please report the issue at
+* https://github.com/umijs/dumi/issues
+**/
+import React from 'react';
+import { createRoot } from "react-dom/client";
+${extraCode}
+import App from "./App";
 
-    const rootElement = document.getElementById("root");
-    const root = createRoot(rootElement);
+const rootElement = document.getElementById("root");
+const root = createRoot(rootElement);
 
-    root.render(<App />);`;
+root.render(<App />);`;
   }
-};
-
-/**
- * pro component 内置 less，导致要注入一下，不然样式不对
- * @see chenshuai2144 下个版本 css in js 了就不需要这个代买了
- * @param content 
- * @returns 
- */
-const injectProComponentsCss = (content: string) => {
-  if (content.includes("@ant-design/pro-components")) {
-    return `import '@ant-design/pro-components/dist/components.min.css';
-    ${content}`;
-  }
-  return content;
 };
 
 /**
  * 如果是 react 17 以上可以不用写import React from 'react';
  * 但是我们用的模板还有问题，所以这里加一下，以后一定修
- * @param content 
- * @returns 
+ * @param content
+ * @returns
  */
 const injectReact = (content: string) => {
   if (content.includes("import React from 'react';")) {
@@ -166,7 +152,7 @@ function getCSBData(opts: IPreviewerComponentProps) {
   Object.entries(opts.sources).forEach(([filename, { tsx, jsx, content }]) => {
     // handle primary content
     files[filename === '_' ? appFileName : filename] = {
-      content: injectProComponentsCss(injectReact(tsx || jsx || content)),
+      content: injectReact(tsx || jsx || content),
       isBinary: false,
     };
   });
