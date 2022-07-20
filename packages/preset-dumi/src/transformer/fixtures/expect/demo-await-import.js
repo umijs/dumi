@@ -1,6 +1,6 @@
 dynamic({
   loader: async function () {
-    var _interopRequireDefault = require("$CWD/node_modules/@umijs/babel-preset-umi/node_modules/@babel/runtime/helpers/interopRequireDefault");
+    var _interopRequireDefault = require("$CWD/node_modules/@umijs/babel-preset-umi/node_modules/@babel/runtime/helpers/interopRequireDefault.js")["default"];
 
     var _react = _interopRequireDefault(await import("react"));
 
