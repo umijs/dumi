@@ -30,6 +30,7 @@
     "@umijs/runtime": "^3.0.0",
     "@umijs/types": "^3.0.0",
     "@umijs/utils": "^3.0.0",
+    "codesandbox": "^2.2.3",
     "copy-text-to-clipboard": "^2.2.0",
     "deepmerge": "^4.2.2",
     "dumi-assets-types": "1.0.0",

@@ -8,7 +8,6 @@ import {
   getModuleResolvePkg,
   getModuleResolvePath,
   getModuleResolveContent,
-  getPackageInfo,
   getHostPkgPath,
   getHostModuleResolvePkg,
 } from '../../utils/moduleResolver';
@@ -241,15 +240,11 @@ export function getCSSForDep(dep: string) {
     try {
       // try to resolve CSS file
       const guessFilePath = `${dep}/dist/${file}`;
-
-      getModuleResolvePath({
-        basePath: process.cwd(),
-        sourcePath: guessFilePath,
-        silent: true,
-      });
-
+      // 判断一下文件是不是存在，不存在 throw 错误没必要加入
+      require.resolve(guessFilePath);
       return guessFilePath;
     } catch (err) {
+      
       /* nothing */
     }
   }
