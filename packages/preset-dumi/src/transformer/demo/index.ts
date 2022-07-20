@@ -101,7 +101,7 @@ export default (raw: string, opts: IDemoOpts): IDemoTransformResult => {
       ) {
         const isRelativeModule = callPathNode.arguments[0].value.startsWith('.');
         // about header helpers: https://github.com/babel/babel/blob/master/packages/babel-plugin-transform-runtime/src/index.js#L177
-        const isHeaderHelpers = /@babel\/runtime\/helpers\/(interopRequireWildcard|interopRequireDefault)$/.test(
+        const isHeaderHelpers = /@babel\/runtime\/helpers\/(interopRequireWildcard|interopRequireDefault)(\.js)?$/.test(
           callPathNode.arguments[0].value,
         );
 
