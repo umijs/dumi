@@ -62,7 +62,7 @@ const injectReact = (content: string) => {
     return content;
   }
   return `import React from 'react';
-  ${content}`;
+${content}`;
 };
 
 function getTextContent(raw: string) {
