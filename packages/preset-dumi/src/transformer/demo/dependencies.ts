@@ -41,10 +41,13 @@ interface IAnalyzeCache {
 }
 
 export interface IDepAnalyzeResult {
-  dependencies: Record<string, {
-    version: string;
-    css?: string;
-  }>;
+  dependencies: Record<
+    string,
+    {
+      version: string;
+      css?: string;
+    }
+  >;
   files: Record<string, { import: string; fileAbsPath: string }>;
 }
 
@@ -106,11 +109,13 @@ function analyzeDeps(
           const isHostPkg = isHostPackage(requireStr);
           if (resolvePath.includes('node_modules') || isHostPkg) {
             // save external deps
-            const pkg = isHostPkg ? getHostModuleResolvePkg(requireStr) : getModuleResolvePkg({
-              basePath: fileAbsPath,
-              sourcePath: resolvePath,
-              extensions: LOCAL_MODULE_EXT,
-            });
+            const pkg = isHostPkg
+              ? getHostModuleResolvePkg(requireStr)
+              : getModuleResolvePkg({
+                  basePath: fileAbsPath,
+                  sourcePath: resolvePath,
+                  extensions: LOCAL_MODULE_EXT,
+                });
             const css = getCSSForDep(pkg.name);
             const peerDeps: IAnalyzeCache['dependencies'][0]['peerDeps'] = [];
 
@@ -227,7 +232,9 @@ export function getCSSForDep(dep: string) {
     // @group/pkg-suffic => pkg-suffix
     `${pkgWithoutGroup}`,
     // @group/pkg-suffix => pkgsuffix @ant-design/pro-card => card
-    ...(pkgWithoutGroup.includes('-') ? [pkgWithoutGroup.replace(/-/g, ''), pkgWithoutGroup.split('-')[1]] : []),
+    ...(pkgWithoutGroup.includes('-')
+      ? [pkgWithoutGroup.replace(/-/g, ''), pkgWithoutGroup.split('-')[1]]
+      : []),
     // guess normal css files
     'main',
     'index',
@@ -244,7 +251,6 @@ export function getCSSForDep(dep: string) {
       require.resolve(guessFilePath);
       return guessFilePath;
     } catch (err) {
-      
       /* nothing */
     }
   }
