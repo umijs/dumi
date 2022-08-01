@@ -1,3 +1,0 @@
-/**
- * title: testing example frontmatter
- */

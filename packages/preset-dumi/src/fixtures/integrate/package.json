@@ -1,6 +1,0 @@
-{
-  "devDependencies": {
-    "@umijs/preset-dumi": "*",
-    "umi": "*"
-  }
-}
