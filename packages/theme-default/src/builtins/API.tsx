@@ -1,8 +1,7 @@
 import React, { useContext } from 'react';
 import type { IApiComponentProps} from 'dumi/theme';
 import { context, useApiData } from 'dumi/theme';
-
-import Table from './Table'
+import Table from './Table';
 
 const LOCALE_TEXTS = {
   'zh-CN': {
