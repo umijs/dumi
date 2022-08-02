@@ -1,18 +1,25 @@
 import '@testing-library/jest-dom';
 import React from 'react';
 import { render, act, waitFor } from '@testing-library/react';
-import type { MemoryHistory} from '@umijs/runtime';
+import { history as mockHistory } from 'dumi';
+import { context as Context } from 'dumi/theme';
+import type { MemoryHistory } from '@umijs/runtime';
 import { createMemoryHistory, Router } from '@umijs/runtime';
 
 import Previewer from '../builtins/Previewer';
 import Layout from '../layouts';
-import DemoLayout from '../layouts/demo';
+import DemoLayout, { ROUTE_MSG_TYPE } from '../layouts/demo';
 
 let history: MemoryHistory;
 
 // mock history location which import from 'dumi'
 jest.mock('dumi', () => ({
-  history: { location: { pathname: '/' } },
+  history: {
+    location: { pathname: '/' },
+    push(val: string) {
+      this.location.pathname = val;
+    },
+  },
 }));
 
 describe('mobile theme', () => {
@@ -44,7 +51,7 @@ describe('mobile theme', () => {
       mode: 'site' as 'doc' | 'site',
       repository: { branch: 'mater' },
     },
-    meta: {},
+    meta: { title: 'demo', hasPreviewer: true },
     menu: [
       {
         title: '分组',
@@ -74,6 +81,14 @@ describe('mobile theme', () => {
       },
     ],
     base: '/',
+    demos: {
+      a: {
+        component: () => "I'm a!",
+        previewerProps: {
+          title: 'a',
+        },
+      },
+    },
   };
   const baseProps = {
     history,
@@ -81,24 +96,23 @@ describe('mobile theme', () => {
     match: { params: {}, isExact: true, path: '/', url: '/' },
     route: { routes: baseCtx.routes },
   };
-  const originalOffsetTop = Object.getOwnPropertyDescriptor(
-    window.HTMLElement.prototype,
-    'offsetTop',
-  );
+  const originalGetBoundingClientRect = window.HTMLElement.prototype.getBoundingClientRect;
   const originalOffsetHeight = Object.getOwnPropertyDescriptor(
     window.HTMLElement.prototype,
     'offsetHeight',
   );
 
   beforeAll(() => {
+    // mock because jest not implement theme
+    // refer: https://github.com/jsdom/jsdom/issues/135
+    window.HTMLElement.prototype.getBoundingClientRect = () => {
+      const top =
+        document.querySelector('.__dumi-default-mobile-previewer') === this ? 130 : 200;
+
+      return { top: top - document.documentElement.scrollTop } as any;
+    }
+
     Object.defineProperties(window.HTMLElement.prototype, {
-      // mock offsetTop because jest not implement it
-      // refer: https://github.com/jsdom/jsdom/issues/135
-      offsetTop: {
-        get() {
-          return document.querySelector('.__dumi-default-mobile-previewer') === this ? 130 : 200;
-        },
-      },
       // mock second demo height
       offsetHeight: {
         get: () => 300,
@@ -107,8 +121,8 @@ describe('mobile theme', () => {
   });
 
   afterAll(() => {
+    window.HTMLElement.prototype.getBoundingClientRect = originalGetBoundingClientRect;
     Object.defineProperties(window.HTMLElement.prototype, {
-      offsetTop: originalOffsetTop,
       offsetHeight: originalOffsetHeight,
     });
   });
@@ -116,8 +130,8 @@ describe('mobile theme', () => {
   it('should render builtin components correctly', async () => {
     const { getByText, getByTitle } = render(
       <Router history={history}>
-        <Layout {...baseProps}>
-          <>
+        <Context.Provider value={baseCtx}>
+          <Layout {...baseProps}>
             <Previewer
               title="demo-1"
               identifier="demo-1"
@@ -145,8 +159,8 @@ describe('mobile theme', () => {
               }}
               dependencies={{}}
             />
-          </>
-        </Layout>
+          </Layout>
+        </Context.Provider>
       </Router>,
     );
 
@@ -171,6 +185,17 @@ describe('mobile theme', () => {
     // trigger demo refresh (only for coverage)
     (document.querySelector('[role=refresh]') as HTMLButtonElement).click();
 
+    // expect iframe page route be updated
+    const routeUpdateDefer = new Promise<void>(resolve => {
+      (getByTitle('dumi-previewer') as HTMLIFrameElement).contentWindow.addEventListener(
+        'message',
+        ev => {
+          expect(ev.data.type).toEqual(ROUTE_MSG_TYPE);
+          resolve();
+        },
+      );
+    });
+
     // trigger scroll
     await act(async () => {
       const secondDemo = document.querySelector(
@@ -178,21 +203,33 @@ describe('mobile theme', () => {
       ) as HTMLDivElement;
 
       window.dispatchEvent(new Event('scroll'));
-      document.documentElement.scrollTop = secondDemo.offsetTop + 1;
+      document.documentElement.scrollTop += secondDemo.getBoundingClientRect().top + 1;
 
       // wait for debounce
       await new Promise(resolve => setTimeout(resolve, 100));
     });
 
-    // expect initialize to render the second demo
+    // expect iframe page route be updated
+    await waitFor(() => routeUpdateDefer);
+
+    // trigger click
+    act(() => {
+      const first = document.querySelector(
+        '.__dumi-default-mobile-previewer:nth-child(1)',
+      ) as HTMLDivElement;
+
+      first.click();
+    });
+
+    // expect initialize to render the first demo
     await waitFor(() =>
       expect((getByTitle('dumi-previewer') as HTMLIFrameElement).src).toEqual(
-        'http://localhost/~demos/demo-2-custom',
+        'http://localhost/~demos/demo-1',
       ),
     );
   });
 
-  it('should render demos layout', () => {
+  it('should render demos layout', async () => {
     const { getByTitle } = render(
       <Router history={history}>
         <DemoLayout {...baseProps}>
@@ -202,5 +239,80 @@ describe('mobile theme', () => {
     );
 
     expect(getByTitle('content')).not.toBeNull();
+
+    const testPath = '/demo-layout-test';
+    window.postMessage({ type: ROUTE_MSG_TYPE, value: testPath }, '*');
+
+    // expect pathname be updated
+    await waitFor(() => expect(mockHistory.location.pathname).toEqual(testPath));
+  });
+
+  it('should render device with carrier', async () => {
+
+    render(
+      <Router history={history}>
+        <Context.Provider value={{
+          ...baseCtx,
+          config: {
+            ...baseCtx.config,
+            theme: {
+              carrier: 'test carrier'
+            },
+          },
+        }}>
+            <Layout {...baseProps}>
+              <Previewer
+                title="demo-1"
+                identifier="demo-1"
+                demoUrl="http://localhost/~demos/demo-1-custom"
+                sources={{
+                  _: {
+                    tsx: "export default () => 'TypeScript'",
+                  },
+                }}
+                dependencies={{}}
+              >
+                <>demo-1</>
+              </Previewer>
+            </Layout>
+          </Context.Provider>
+      </Router>,
+    );
+
+    // wait for debounce
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    });
+
+    expect(document.querySelector('.__dumi-default-device-status-carrier').innerHTML).toEqual('test carrier')
+  });
+
+  it('should render without simulator', async () => {
+    render(
+      <Router history={history}>
+        <Context.Provider value={baseCtx}>
+          <Layout {...baseProps}>
+            <Previewer
+              title="a"
+              identifier="a"
+              sources={{
+                _: {
+                  tsx: "export default () => 'TypeScript'",
+                },
+              }}
+              simulator={false}
+              dependencies={{}}
+            />
+          </Layout>
+        </Context.Provider>
+      </Router>,
+    );
+
+    // wait for debounce
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    });
+
+    expect(document.querySelector('.__dumi-default-device').textContent).toContain("I'm a!");
   });
 });

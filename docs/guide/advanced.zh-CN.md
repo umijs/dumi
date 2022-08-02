@@ -187,7 +187,7 @@ export interface IHelloProps {
   /**
    * 可以这样写属性描述
    * @description       也可以显式加上描述名
-   * @description.zh-CN 还支持不同的 locale 后缀来实现多语言描述
+   * @description.zh-CN 还支持不同的 locale 后缀来实现多语言描述，使用 description 兜底
    * @default           支持定义默认值
    */
   className?: string; // 支持识别 TypeScript 可选类型为非必选属性
@@ -213,15 +213,27 @@ dumi 背后的类型解析工具是 `react-docgen-typescript`，更多类型和�
 
 <API src="/path/to/your/component.tsx"></API>
 
+<!-- src 可使用 alias -->
+
+<API src="@/your/component.tsx"></API>
+
 <!-- 传递 exports 将显式指明渲染哪些导出，请确保值为合法的 JSON 字符串 -->
 
 <API exports='["default", "Other"]'></API>
+
+<!-- 如果不需要 API 相关标题 ，可以使用hideTitle -->
+
+<API hideTitle></API>
+
 ```
 
 效果大致如下：
 
 <API src="../.demos/Hello/index.tsx"></API>
 
+> `src` 使用 `alias` 时，内置 `@` 与 `@@` 不生效，还需要在配置文件中手动指定 `alias`。
+
 ### 自定义 API 表格渲染
 
 和其他内置组件一样，`API` 组件也支持通过 theme API 进行复写，只需要创建 `.dumi/theme/builtins/API.tsx`（本地主题）或者创建一个包含 `API.tsx` 的主题包，结合 `dumi/theme` 暴露的 `useApiData` hook，即可自行控制 API 表格的渲染，可参考 dumi 默认主题的 [API 组件实现](https://github.com/umijs/dumi/blob/master/packages/theme-default/src/builtins/API.tsx)。
+

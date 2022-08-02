@@ -38,6 +38,12 @@ export default () => {
 
       // for disable dumi
       require.resolve('./plugins/features/disable'),
+
+      // register markdown components
+      require.resolve('./plugins/features/mdComponent'),
+
+      // compiletime
+      require.resolve('./plugins/features/compiletime'),
     ],
   };
 };

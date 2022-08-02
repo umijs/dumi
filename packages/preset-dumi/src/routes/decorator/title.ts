@@ -15,12 +15,17 @@ export default (function title(routes) {
         clearFilename = clearFilename.replace(`.${route.meta.locale}`, '');
       }
 
-      // index => Index
+      // button => Button
       route.meta.title = clearFilename.replace(/^[a-z]/, s => s.toUpperCase());
+
+      // use nav or group name for index route
+      if (clearFilename === 'index' && (route.meta.group?.title || route.meta.nav?.title)) {
+        route.meta.title = route.meta.group?.title || route.meta.nav?.title;
+      }
     }
 
     // apply meta title for umi routes
-    route.title = route.meta.title;
+    route.title = this.options.title ? `${route.meta.title} - ${this.options.title}` : route.meta.title;
 
     return route;
   });

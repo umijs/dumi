@@ -1,5 +1,7 @@
 import path from 'path';
 import slash from 'slash2';
+import { isPrefixLocalePath, discardLocalePrefix, addLocalePrefix } from './locale';
+import { getRouteComponentDirs } from './nav';
 import type { RouteProcessor } from '.';
 
 /**
@@ -21,27 +23,32 @@ export default (function group(routes) {
 
     if (route.meta.locale) {
       // discard locale prefix
-      clearPath = clearPath.replace(`/${route.meta.locale}`, '');
+      clearPath = discardLocalePrefix(clearPath, route.meta.locale);
     }
 
     // generate group if user did not customized group via frontmatter
     if (!groupPath) {
-      const parsed = path.parse(route.component as string);
+      const parsed = path.parse(path.relative(this.umi.paths.cwd, route.component) as string);
+      const isEntryMd = new RegExp(
+        `^(index|readme)(\\.(${this.options.locales.map(([name]) => name).join('|')}))?$`,
+        'i',
+      ).test(parsed.name);
 
       // only process nested route
       if (
         // at least 2-level path
         (clearPath && clearPath.lastIndexOf('/') !== 0) ||
         // or component filename is the default entry
-        (parsed &&
-          clearPath.length > 1 &&
-          new RegExp(
-            `^(index|readme)(\\.(${this.options.locales.map(([name]) => name).join('|')}))?$`,
-            'i',
-          ).test(parsed.name))
+        (parsed && clearPath.length > 1 && isEntryMd)
       ) {
         groupPath = clearPath.match(/^([^]+?)(\/[^/]+)?$/)[1];
         clearPath = clearPath.replace(groupPath, '');
+      }
+
+      // add fallback flag for menu generator
+      // for support group different 1-level md by group.title, without group.path
+      if ((!clearPath || (!clearPath.lastIndexOf('/') && !isEntryMd)) && groupTitle) {
+        route.meta.group.__fallback = true;
       }
     }
 
@@ -55,9 +62,9 @@ export default (function group(routes) {
       } else if (
         route.meta.locale &&
         route.meta.locale !== defaultLocale &&
-        !groupPath.startsWith(`/${route.meta.locale}`)
+        !isPrefixLocalePath(groupPath, route.meta.locale)
       ) {
-        groupPath = `/${route.meta.locale}${groupPath}`;
+        groupPath = addLocalePrefix(groupPath, route.meta.locale);
       }
 
       // save user cusomize group title, then will use for other route
@@ -82,17 +89,28 @@ export default (function group(routes) {
   // fallback groups title
   routes.forEach(route => {
     if (route.meta.group?.path && !route.meta.group.title) {
-      route.meta.group.title =
-        // use other same group path title first
-        userCustomGroupTitles[route.meta.group.path] ||
-        // fallback group title if there only has group path
-        route.meta.group.path
-          // discard nav prefix path or locale prefix path
-          .replace(route.meta.nav?.path || `/${route.meta.locale || ''}`, '')
-          // discard start slash
-          .replace(/^\//g, '')
-          // upper case the first english letter
-          .replace(/^[a-z]/, s => s.toUpperCase());
+      // use other same group path title first
+      route.meta.group.title = userCustomGroupTitles[route.meta.group.path];
+
+      // fallback use directory name
+      if (!route.meta.group.title) {
+        // discard first level dir if there has nav title
+        const dirs = getRouteComponentDirs(route.component, this).slice(route.meta.nav ? 1 : 0);
+
+        route.meta.group.title =
+          // use second dir as group title
+          dirs.shift()?.replace(/^[a-z]/, s => s.toUpperCase()) ||
+          // then use nav title
+          route.meta.nav?.title ||
+          // fallback group title if there only has group path
+          route.meta.group.path
+            // discard nav prefix path or locale prefix path
+            .replace(route.meta.nav?.path || `/${route.meta.locale || ''}`, '')
+            // discard start slash
+            .replace(/^\//g, '')
+            // upper case the first english letter
+            .replace(/^[a-z]/, s => s.toUpperCase());
+      }
     }
   });
 

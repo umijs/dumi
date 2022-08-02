@@ -3,6 +3,7 @@ import path from 'path';
 import { winPath, createDebug } from '@umijs/utils';
 import { getModuleResolvePath } from '../utils/moduleResolver';
 import ctx from '../context';
+import type { IMarkdwonComponent } from '../transformer/remark/mdComponent';
 
 const debug = createDebug('dumi:theme');
 
@@ -51,12 +52,25 @@ export interface IThemeLoadResult {
    * fallback components
    */
   fallbacks: ThemeComponent[];
+  /**
+   * customize markdown components
+   */
+  customs: ThemeComponent[];
 }
 
 const THEME_PREFIX = 'dumi-theme-';
 const LOCAL_THEME_PATH = '.dumi/theme';
 const FALLBACK_THEME = `${THEME_PREFIX}default`;
-const REQUIRED_THEME_BUILTINS = ['Previewer', 'SourceCode', 'Alert', 'Badge', 'Example', 'API'];
+export const REQUIRED_THEME_BUILTINS = [
+  'Alert',
+  'API',
+  'Badge',
+  'Example',
+  'Previewer',
+  'SourceCode',
+  'Tree',
+  'Table',
+];
 let cache: IThemeLoadResult | null;
 
 /**
@@ -89,16 +103,30 @@ function detectTheme() {
 }
 
 /**
- * get resolved path for theme module
+ * get resolved paths for theme module
  * @param sourcePath
  */
-function getThemeResolvePath(sourcePath: string) {
-  return getModuleResolvePath({
-    // start search theme from @umijs/preset-dumi package, but use cwd if use relative theme folder
-    basePath: sourcePath.startsWith('.') ? ctx.umi.cwd : __dirname,
-    sourcePath,
-    silent: true,
-  });
+function getThemeResolvePaths(sourcePath: string) {
+  // start search theme from @umijs/preset-dumi package, but use cwd if use relative theme folder
+  const basePath = sourcePath.startsWith('.') ? ctx.umi.cwd : __dirname;
+  const srcRegExp = /\/src\/(layout|builtins)/;
+  let compiledModulePaths: { resolved: string; source: string };
+
+  // search compiled module in es/lib instead of src firstly, for compatible with mfsu
+  if (srcRegExp.test(sourcePath)) {
+    try {
+      compiledModulePaths = getThemeResolvePaths(sourcePath.replace(srcRegExp, '/es/$1')) || /* istanbul ignore next */ getThemeResolvePaths(sourcePath.replace(srcRegExp, '/lib/$1'));
+    } catch (err) { /* nothing */ }
+  }
+
+  return compiledModulePaths || {
+    resolved: getModuleResolvePath({
+      basePath,
+      sourcePath,
+      silent: true,
+    }),
+    source: sourcePath,
+  };
 }
 
 /**
@@ -109,24 +137,44 @@ function pathJoin(...args: string[]) {
   return winPath(`${args[0].match(/^\.[\/\\]/)?.[0] || ''}${path.join(...args)}`);
 }
 
+/**
+ * get entry directory for theme package
+ * @param modulePath  theme package path
+ */
+function getThemeEntryDir(modulePath: string) {
+  const dirs = [pathJoin(modulePath, 'es'), pathJoin(modulePath, 'lib'), pathJoin(modulePath, 'src')];
+
+  return dirs.find(dir => fs.existsSync(dir));
+}
+
 export default async () => {
   if (!cache || process.env.NODE_ENV === 'test') {
     const [theme, fb = FALLBACK_THEME] = detectTheme();
-    const fallback = fb.startsWith('.') ? winPath(path.dirname(getThemeResolvePath(fb))) : fb;
+    const fallback = fb.startsWith('.') ? winPath(path.dirname(getThemeResolvePaths(fb).resolved)) : fb;
     const modulePath = path.isAbsolute(theme)
       ? theme
       : // resolve real absolute path for theme package
-        winPath(path.dirname(getThemeResolvePath(theme)));
+        winPath(path.dirname(getThemeResolvePaths(theme).resolved));
     // local theme has no src directory but theme package has
-    const srcPath = path.isAbsolute(theme) ? theme : `${modulePath}/src`;
-    const builtinPath = pathJoin(srcPath, 'builtins');
+    const entryDir = path.isAbsolute(theme) ? theme : getThemeEntryDir(modulePath);
+    const builtinPath = pathJoin(entryDir, 'builtins');
 
     debug('theme:', theme, `fallback:`, fallback);
 
     const components = fs.existsSync(builtinPath)
       ? fs
           .readdirSync(builtinPath)
-          .filter(file => /\.(j|t)sx?$/.test(file))
+          .filter(file => {
+            const absPath = path.join(builtinPath, file);
+            // filter .js/.ts/.jsx/.tsx, and exclude .d.ts
+            const isFileComponent = /((?<!\.d)\.ts|\.(jsx?|tsx))$/.test(file);
+            // filter Foo/index.(tsx|jsx|js|ts)
+            const isDirComponent =
+              fs.lstatSync(absPath).isDirectory() &&
+              fs.readdirSync(absPath).some(item => /^index.(t|j)sx?$/.test(item));
+
+            return isFileComponent || isDirComponent;
+          })
           .map(file => ({
             identifier: path.parse(file).name,
             source: theme.startsWith('.')
@@ -144,12 +192,12 @@ export default async () => {
 
         try {
           cSource = pathJoin(fallback, 'src', 'builtins', `${bName}`);
-          cModulePath = getThemeResolvePath(cSource);
+          ({ resolved: cModulePath, source: cSource } = getThemeResolvePaths(cSource));
         } catch (err) {
           debug('fallback to default theme for:', cSource);
           // fallback to default theme if detected fallback theme missed some components
           cSource = pathJoin(FALLBACK_THEME, 'src', 'builtins', `${bName}`);
-          cModulePath = getThemeResolvePath(cSource);
+          ({ resolved: cModulePath, source: cSource } = getThemeResolvePaths(cSource));
         }
 
         result.push({
@@ -165,28 +213,28 @@ export default async () => {
 
     // outer layout: layout.tsx or layouts/index.tsx
     [
-      pathJoin(srcPath, 'layout'),
-      pathJoin(srcPath, 'layouts'),
+      pathJoin(entryDir, 'layout'),
+      pathJoin(entryDir, 'layouts'),
       pathJoin(fallback, 'src', 'layout'),
       pathJoin(fallback, 'src', 'layouts'),
     ].some((layoutPath, i, outerLayoutPaths) => {
       try {
-        layoutPaths._ = getThemeResolvePath(layoutPath);
+        layoutPaths._ = getThemeResolvePaths(layoutPath).resolved;
 
         return true;
       } catch (err) {
         // fallback to default theme layout if cannot find any valid layout
         if (i === outerLayoutPaths.length - 1) {
-          layoutPaths._ = getThemeResolvePath(pathJoin(FALLBACK_THEME, 'src', 'layout'));
+          layoutPaths._ = getThemeResolvePaths(pathJoin(FALLBACK_THEME, 'src', 'layout')).resolved;
         }
       }
     });
 
     // demo layout
-    [pathJoin(srcPath, 'layouts', 'demo'), pathJoin(fallback, 'src', 'layouts', 'demo')].some(
+    [pathJoin(entryDir, 'layouts', 'demo'), pathJoin(fallback, 'src', 'layouts', 'demo')].some(
       layoutPath => {
         try {
-          layoutPaths.demo = getThemeResolvePath(layoutPath);
+          layoutPaths.demo = getThemeResolvePaths(layoutPath).resolved;
 
           return true;
         } catch (err) {
@@ -194,6 +242,19 @@ export default async () => {
         }
       },
     );
+
+    // get markdown components
+    const mdComponents: IMarkdwonComponent[] = await ctx.umi.applyPlugins({
+      type: ctx.umi.ApplyPluginsType.add,
+      key: 'dumi.registerMdComponent',
+      initialValue: [],
+    });
+
+    const customs = mdComponents.map(component => ({
+      identifier: component.name,
+      source: pathJoin(component.component),
+      cModulePath: pathJoin(component.component),
+    }));
 
     cache = await ctx.umi.applyPlugins({
       key: 'dumi.modifyThemeResolved',
@@ -204,6 +265,7 @@ export default async () => {
         builtins: components,
         fallbacks,
         layoutPaths,
+        customs,
       },
     });
 

@@ -1,7 +1,14 @@
-import type { IApi } from '@umijs/types';
+import type { IApi, IConfig } from '@umijs/types';
+import type { StaticPropFilter, PropFilter } from 'react-docgen-typescript-dumi-tmp/lib/parser';
 import type { IMenuItem } from './routes/getMenuFromRoutes';
 import type { INav, INavItem } from './routes/getNavFromRoutes';
 
+export interface IStaticPropFilter extends StaticPropFilter {
+  /**
+   * skip props which parsed from node_modules
+   */
+  skipNodeModules?: boolean;
+}
 export interface IDumiOpts {
   /**
    * site title
@@ -44,9 +51,18 @@ export interface IDumiOpts {
      */
     includes: string[];
     /**
+     * configure the markdown directory for dumi exclude
+     * @note  like gitignore spec, http://git-scm.com/docs/gitignore
+     */
+    excludes: string[];
+    /**
      * TBD
      */
     examples: string[];
+    /**
+     * Should we treat previewLangs codeblock as demo component
+     */
+    passivePreview: boolean;
   };
   /**
    * customize the side menu
@@ -62,6 +78,7 @@ export interface IDumiOpts {
    * enable algolia searching
    */
   algolia?: {
+    appId?: string;
     apiKey: string;
     indexName: string;
     debug?: boolean;
@@ -75,6 +92,16 @@ export interface IDumiOpts {
    * theme config
    */
   theme: Record<string, any>;
+  /**
+   * apiParser config
+   */
+  apiParser: {
+    propFilter?: IStaticPropFilter | PropFilter;
+  };
+  /**
+   * configure how html is output
+   */
+  exportStatic?: IConfig['exportStatic'];
 }
 
 const context: { umi?: IApi; opts?: IDumiOpts } = {};

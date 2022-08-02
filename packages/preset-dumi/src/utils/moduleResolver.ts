@@ -33,7 +33,7 @@ const getPkgPathsFromPath = (identifier: string) => {
  * get package root path if it is a local package
  * @param pkg   package name
  */
-const getHostPkgPath = (() => {
+export const getHostPkgPath = (() => {
   let cache: ReturnType<typeof getHostPkgAlias>;
 
   return (pkg: string) => {
@@ -78,20 +78,12 @@ export const getModuleResolvePath = ({
 };
 
 /**
- * resolve module version
+ * get package info by modulePath
  */
-export const getModuleResolvePkg = ({
-  basePath,
-  sourcePath,
-  extensions = DEFAULT_EXT,
-}: IModuleResolverOpts) => {
+export const getPackageInfo = (modulePath: string) => {
   let version: string | null;
   let name: string | null;
   let peerDependencies: any | null;
-  const resolvePath = getModuleResolvePath({ basePath, sourcePath, extensions });
-  const { pkgName, absPkgModulePath } = getPkgPathsFromPath(resolvePath);
-  // use project path as module path for local packages
-  const modulePath = getHostPkgPath(pkgName) || absPkgModulePath;
   const pkgPath = path.join(modulePath, 'package.json');
 
   if (modulePath && fs.existsSync(pkgPath)) {
@@ -108,6 +100,22 @@ export const getModuleResolvePkg = ({
 };
 
 /**
+ * resolve module version
+ */
+export const getModuleResolvePkg = ({
+  basePath,
+  sourcePath,
+  extensions = DEFAULT_EXT,
+}: IModuleResolverOpts) => {
+  const resolvePath = getModuleResolvePath({ basePath, sourcePath, extensions });
+  const { pkgName, absPkgModulePath } = getPkgPathsFromPath(resolvePath);
+  // use project path as module path for local packages
+  const  modulePath = getHostPkgPath(pkgName) || absPkgModulePath;
+
+  return getPackageInfo(modulePath);
+};
+
+/**
  * resolve module content
  */
 export const getModuleResolveContent = ({
@@ -118,4 +126,11 @@ export const getModuleResolveContent = ({
   const resolvePath = getModuleResolvePath({ basePath, sourcePath, extensions });
 
   return resolvePath ? fs.readFileSync(resolvePath, 'utf8').toString() : '';
+};
+
+/**
+ * resolve host module version
+ */
+ export const getHostModuleResolvePkg = (requireStr: string) => {
+  return getPackageInfo(getHostPkgPath(requireStr));
 };

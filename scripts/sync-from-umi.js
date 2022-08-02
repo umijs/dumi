@@ -10,7 +10,7 @@ const FILE_LIST = [
     upstream: 'https://cdn.jsdelivr.net/gh/umijs/umi@3/docs/config/README.md',
     actions: [
       // remove head content
-      { type: 'slice', value: [13] },
+      { type: 'slice', value: [12] },
       // remove unnecessary option
       ...['title', 'singular', 'routes', 'mpa', 'mountElementId'].map(option => ({
         type: 'replace',
@@ -26,6 +26,22 @@ const FILE_LIST = [
       { type: 'replace', value: [/]\(\//g, '](https://umijs.org/'] },
       // prepend anchor link prefix
       { type: 'replace', value: [/]\(#/g, '](https://umijs.org/zh-CN/config#'] },
+      // remove umi builtin alias
+      { type: 'replace', value: [/Umi 内置了以下别名：[^]+?\n###/, '###']},
+      // replace umi dev/build
+      { type: 'replace', value: [/( |`)umi (dev|build)/g, '$1dumi $2'] },
+      // replace umi import
+      { type: 'replace', value: [/from 'umi'/g, "from 'dumi'"] },
+      // replace umi statement
+      { type: 'replace', value: [/(额外的|通过|用于|删除) umi/g, '$1 dumi'] },
+      { type: 'replace', value: ['Umi SSR', 'dumi SSR'] },
+      // replace metas
+      { type: 'replace', value: [/umi, umijs/g, 'dumi, base on umi'] },
+      { type: 'replace', value: [/🍙 插件化的企业级前端应用框架。/g, '📖 为组件开发场景而生的文档工具'] },
+      // replace same page url
+      { type: 'replace', value: [/https:\/\/umijs\.org\/zh-CN\/config/g, ''] },
+      // replace @primary-color to @c-primary (dumi theme variables)
+      { type: 'replace', value: ["'@primary-color': '#1DA57A',", "// 修改 dumi 默认主题的主色，更多变量详见：https://github.com/umijs/dumi/blob/master/packages/theme-default/src/style/variables.less\n    '@c-primary': '#1DA57A',"] },
     ],
   },
 ];

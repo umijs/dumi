@@ -12,26 +12,33 @@
 .@{prefix}-device {
   position: sticky;
   top: @s-device-gap-top;
-  display: flex;
-  flex-direction: column;
   margin-left: @s-content-margin;
-  width: @s-device-width;
-  min-width: @s-device-width;
-  height: @s-device-width * @s-device-ratio;
-  border-radius: 32px;
-  overflow: hidden;
-  .gen-device-style(1);
 
-  @media only screen and (max-width: 1440px) {
-    .gen-device-style(0.9);
+  &[data-device-type="none"] {
+    visibility: hidden;
   }
 
-  @media only screen and (max-width: 1360px) {
-    .gen-device-style(0.8);
-  }
+  &[data-device-type="iOS"] {
+    display: flex;
+    flex-direction: column;
+    width: @s-device-width;
+    min-width: @s-device-width;
+    height: @s-device-width * @s-device-ratio;
+    border-radius: 32px;
+    overflow: hidden;
+    .gen-device-style(1);
 
-  @media only screen and (max-width: 960px) {
-    display: none;
+    @media only screen and (max-width: 1440px) {
+      .gen-device-style(0.9);
+    }
+
+    @media only screen and (max-width: 1360px) {
+      .gen-device-style(0.8);
+    }
+
+    @media only screen and (max-width: 960px) {
+      display: none;
+    }
   }
 
   &[data-mode='site'] {
@@ -52,6 +59,12 @@
     font-size: 12px;
     font-weight: 500;
     user-select: none;
+    background-color: #fff;
+
+    [data-prefers-color=dark] & {
+      color: rgba(255, 255, 255, 0.85);
+      background-color: #141414;
+    }
 
     span {
       display: inline-block;
@@ -72,6 +85,10 @@
       border-radius: 1px;
       background: #50d664;
       box-shadow: 0 0 0 1px #fff, 0 0 0 2px #999;
+
+      [data-prefers-color=dark] & {
+        box-shadow: 0 0 0 1px #141414, 0 0 0 2px rgba(255, 255, 255, 0.7);
+      }
     }
   }
 
@@ -79,6 +96,11 @@
     height: 40px;
     background: #f3f3f3;
     border-top: 1px solid #e3e3e3;
+
+    [data-prefers-color=dark] & {
+      border-top: 1px solid #6b6c6d;
+      background: #262626;
+    }
 
     > a,
     > button {
@@ -90,6 +112,10 @@
       transition: opacity 0.2s, background 0.2s;
       outline: none;
       cursor: pointer;
+
+      [data-prefers-color=dark] & {
+        mix-blend-mode: screen;
+      }
 
       &:hover {
         opacity: 0.8;

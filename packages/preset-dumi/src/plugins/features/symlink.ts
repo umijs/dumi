@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import type { IApi } from '@umijs/types';
+import ctx from '../../context';
+import { getModuleResolvePath } from '../../utils/moduleResolver';
 import getHostPkgAlias from '../../utils/getHostPkgAlias';
 import symlink from '../../utils/symlink';
 
@@ -8,7 +10,24 @@ import symlink from '../../utils/symlink';
  * plugin for create node_modules symlink & webpack alias for local packages
  */
 export default (api: IApi) => {
+  // set to umi to be able to use @umijs/preset-dumi alone
+  api.chainWebpack(config => {
+    config.resolve.alias.set('dumi', process.env.UMI_DIR);
+
+    return config;
+  });
+
+  // only apply symlinks for non-integrated mode
+  if (ctx.opts.isIntegrate) return;
+
   const hostPkgAlias = getHostPkgAlias(api.paths).filter(([pkgName]) => pkgName);
+
+  /* istanbul ignore if */
+  if (hostPkgAlias.length === 1 && hostPkgAlias[0][0] === 'dumi') {
+    // exit if this project called dumi, will cause import x from 'dumi' not work
+    api.logger.error('[dumi]: cannot start, detected this project is named \'dumi\', please rename it in package.json file.');
+    process.exit(1);
+  }
 
   // create symlink for packages
   hostPkgAlias.forEach(([pkgName, pkgPath]) => {
@@ -17,7 +36,10 @@ export default (api: IApi) => {
     // link current pkgs into node_modules, for module resolve in editor
     if (
       !fs.existsSync(linkPath) ||
-      (fs.lstatSync(linkPath).isSymbolicLink() && fs.readlinkSync(linkPath) !== pkgPath)
+      (
+        fs.lstatSync(linkPath).isSymbolicLink() &&
+        path.resolve(path.dirname(linkPath), fs.readlinkSync(linkPath)) !== pkgPath
+      )
     ) {
       api.utils.rimraf.sync(linkPath);
       symlink(pkgPath, linkPath);
@@ -31,12 +53,8 @@ export default (api: IApi) => {
       const srcPath = path.join(pkgPath, 'src');
 
       try {
-        srcModule = require(srcPath);
-      } catch (err) {
-        if (err.code !== 'MODULE_NOT_FOUND') {
-          srcModule = true;
-        }
-      }
+        srcModule = getModuleResolvePath({ basePath: pkgPath, sourcePath: './src/index', silent: true });
+      } catch (err) { /* nothing */ }
 
       // use src path instead of main field in package.json if exists
       if (srcModule) {
@@ -57,9 +75,6 @@ export default (api: IApi) => {
         config.resolve.alias.set(pkgName, pkgPath);
       }
     });
-
-    // set to umi to be able to use @umijs/preset-dumi alone
-    config.resolve.alias.set('dumi', process.env.UMI_DIR);
 
     return config;
   });

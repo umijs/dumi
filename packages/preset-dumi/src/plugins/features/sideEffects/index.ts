@@ -15,6 +15,8 @@ export default (api: IApi) => {
           sideEffects: [
             // such as src/.umi-production/**
             api.utils.winPath(path.relative(api.cwd, path.join(api.paths.absTmpPath, '**'))),
+            // .dumi local theme
+            '.dumi/theme/**',
           ],
           pkgPath: path.join(api.cwd, 'package.json'),
         },

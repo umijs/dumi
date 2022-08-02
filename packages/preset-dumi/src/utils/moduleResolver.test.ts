@@ -5,6 +5,7 @@ import {
   getModuleResolvePath,
   getModuleResolvePkg,
   getModuleResolveContent,
+  getHostModuleResolvePkg,
 } from './moduleResolver';
 import ctx from '../context';
 
@@ -53,5 +54,12 @@ describe('moduleResolver', () => {
       .toString();
 
     expect(content).toEqual(expectedContent);
+  });
+
+  it('get expected host module version', () => {
+    const { version } = getHostModuleResolvePkg('@umijs/preset-dumi');
+    const { version: expectedVersion } = require(path.join(__dirname, '../../package.json'));
+
+    expect(version).toEqual(expectedVersion);
   });
 });

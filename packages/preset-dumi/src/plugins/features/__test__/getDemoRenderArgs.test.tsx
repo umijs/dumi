@@ -1,8 +1,16 @@
 import '@testing-library/jest-dom';
 import type { IRouteComponentProps } from '@umijs/types';
 import { render } from '@testing-library/react';
-import demos from './__mocks__/@@/dumi/demos';
 import getDemoRenderArgs from '../demo/getDemoRenderArgs';
+
+const demos = {
+  a: {
+    component: () => "I'm a!",
+    previewerProps: {
+      title: 'a',
+    },
+  },
+};
 
 describe('feature: getDemoRenderArgs', () => {
   const baseProps = {

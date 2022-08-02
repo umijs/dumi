@@ -16,6 +16,7 @@ describe('preset-dumi', () => {
       'basic',
       'algolia',
       'demos',
+      'demos-htmlsuffix',
       'assets',
       'integrate',
       'local-theme',
@@ -23,6 +24,9 @@ describe('preset-dumi', () => {
       'side-effects',
       'sitemap',
       'dynamic-import',
+      'compiletime',
+      'custom-components',
+      'md-components'
     ].forEach(dir => {
       rimraf.sync(path.join(fixtures, dir, 'node_modules'));
     });
@@ -106,6 +110,23 @@ describe('preset-dumi', () => {
     expect(
       demos.includes('"componentName":"ForceComponent","identifier":"component-demo"'),
     ).toBeTruthy();
+  });
+
+  it('demos-htmlsuffix', async () => {
+    const cwd = path.join(fixtures, 'demos-htmlsuffix');
+    const service = new Service({
+      cwd,
+      env: 'production',
+      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+    });
+
+    // add UMI_DIR to avoid alias error
+    process.env.UMI_DIR = path.dirname(require.resolve('umi/package'));
+
+    await service.run({ name: 'build' });
+
+    // expect generate demo url with html suffix
+    expect(fs.existsSync(path.join(service.paths.absOutputPath, '~demos/test.html'))).toBeTruthy();
   });
 
   it('assets command', async () => {
@@ -245,6 +266,7 @@ describe('preset-dumi', () => {
       '/_demos/:uuid',
       '/~docs',
       '/A',
+      '/index.html',
       '/',
     ]);
 
@@ -296,6 +318,7 @@ describe('preset-dumi', () => {
     // expect dumi disabled in integrate with production
     expect((await (api as any).getRoutes())[0].routes.map(route => route.path)).toEqual([
       '/A',
+      '/index.html',
       '/',
     ]);
   });
@@ -311,13 +334,23 @@ describe('preset-dumi', () => {
     // add UMI_DIR to avoid alias error
     process.env.UMI_DIR = path.dirname(require.resolve('umi/package'));
 
+    // disable babel cache to make sure useLayoutEffect plugin always be coveraged
+    process.env.BABEL_CACHE = 'none';
+
     // execute build
     await service.run({ name: 'build' });
+    delete process.env.BABEL_CACHE;
 
     // expect css not be tree shaked
     expect(fs.readFileSync(path.join(service.paths.absOutputPath, 'umi.css')).toString()).toContain(
       'data-side-effects-test',
     );
+
+    // expect replace useLayoutEffect for ssr
+    const ssrDist = fs.readFileSync(path.join(service.paths.absOutputPath, 'umi.server.js')).toString();
+
+    expect(/"data-test-layout-effect-member",[\w\.]+\useEffect/.test(ssrDist)).toBeTruthy();
+    expect(/"data-test-layout-effect-import",[\w\.]+\["useEffect"\]/.test(ssrDist)).toBeTruthy();
   });
 
   it('should generate sitemap.xml', async () => {
@@ -370,5 +403,77 @@ describe('preset-dumi', () => {
 
     // expect split chunk by component name
     expect(fs.existsSync(path.join(service.paths.absOutputPath, 'demos_olleH.js'))).toBeTruthy();
+  });
+
+  it('custom compiletime', async () => {
+    const cwd = path.join(fixtures, 'compiletime');
+    const service = new Service({
+      cwd,
+      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+    });
+
+    await service.run({
+      name: 'g',
+      args: {
+        _: ['g', 'tmp'],
+      },
+    });
+
+    // wait for debounce
+    await new Promise(resolve => setTimeout(resolve));
+
+    // expect demos generate
+    const demos = fs
+      .readFileSync(path.join(service.paths.absTmpPath, 'dumi', 'demos', 'index.ts'))
+      .toString();
+
+    expect(demos.includes('/src/fixtures/compiletime/previewer.js')).toBeTruthy();
+    expect(
+      demos.includes('{"text":"World!"}'),
+    ).toBeTruthy();
+  });
+
+  it('custom md components', async () => {
+    const cwd = path.join(fixtures, 'custom-components');
+    const service = new Service({
+      cwd,
+      env: 'production',
+      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+    });
+
+    // add UMI_DIR to avoid alias error
+    process.env.UMI_DIR = path.dirname(require.resolve('umi/package'));
+
+    await service.run({
+      name: 'build',
+    });
+
+    // expect compile custom component
+    const distContent = fs.readFileSync(path.join(service.paths.absOutputPath, 'umi.js')).toString();
+
+    expect(distContent).toContain('custom-single-component');
+    expect(distContent).toContain('custom-directory-component');
+  });
+
+  it('custom md components in compile time', async () => {
+    const cwd = path.join(fixtures, 'md-components');
+    const service = new Service({
+      cwd,
+      env: 'production',
+      presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
+    });
+
+    // add UMI_DIR to avoid alias error
+    process.env.UMI_DIR = path.dirname(require.resolve('umi/package'));
+
+    await service.run({
+      name: 'build',
+    });
+
+    const distContent = fs
+      .readFileSync(path.join(service.paths.absOutputPath, 'umi.js'))
+      .toString();
+
+    expect(distContent).toContain('for testing markdown component');
   });
 });

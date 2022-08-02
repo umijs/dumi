@@ -10,7 +10,7 @@ export { default as useRiddle } from './hooks/useRiddle';
 export { default as useMotions } from './hooks/useMotions';
 export { default as useCodeSandbox } from './hooks/useCodeSandbox';
 export { default as useLocaleProps } from './hooks/useLocaleProps';
-export { default as useDemoUrl } from './hooks/useDemoUrl';
+export { default as useDemoUrl, getDemoUrl } from './hooks/useDemoUrl';
 export { default as useApiData } from './hooks/useApiData';
 export { default as useTSPlaygroundUrl } from './hooks/useTSPlaygroundUrl';
 export { default as usePrefersColor } from './hooks/usePrefersColor';
@@ -26,12 +26,15 @@ export interface IPreviewerComponentProps {
          */
         _: { jsx: string; tsx?: string };
       }
-    | Record<string, {
+    | Record<
+        string,
+        {
           import: string;
           content: string;
-          // reserved for transform JSX for other TypeScript file
+          path?: string;
           tsx?: string;
-        }>;
+        }
+      >;
   /**
    * third-party dependencies of demo
    */
@@ -66,4 +69,8 @@ export interface IApiComponentProps {
    * which export should be displayed
    */
   export: string;
+  /**
+   * whether the title is hidden when compiling
+   */
+  hideTitle: boolean;
 }

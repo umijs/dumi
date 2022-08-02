@@ -4,7 +4,7 @@ import unified from 'unified';
 import type { Node } from 'unist';
 import frontmatter from 'remark-frontmatter';
 import math from 'remark-math';
-import katex from 'rehype-katex';
+import mathjax from 'rehype-mathjax';
 import headings from 'rehype-autolink-headings';
 import comments from 'rehype-remove-comments';
 import stringify from 'rehype-stringify';
@@ -17,8 +17,10 @@ import codeBlock from './codeBlock';
 import code from './code';
 import embed from './embed';
 import api from './api';
+import mdComponent from './mdComponent';
 import link from './link';
 import img from './img';
+import table from './table';
 import previewer from './previewer';
 import raw from './raw';
 import jsxify from './jsxify';
@@ -46,6 +48,14 @@ interface IDumiVFileData {
    */
   title?: string;
   /**
+   * component keywords
+   */
+  keywords?: string[];
+  /**
+   * mark component deprecated
+   */
+  deprecated?: true;
+  /**
    * component uuid (for HiTu)
    */
   uuid?: string;
@@ -69,6 +79,14 @@ function debug(name: string) {
   };
 }
 
+// reserve unknown property for Node, to avoid custom plugin throw type error after @types/unist@2.0.4
+declare module 'unist' {
+  // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style, @typescript-eslint/no-shadow
+  export interface Node {
+    [key: string]: unknown;
+  }
+}
+
 export interface IDumiElmNode extends Node {
   properties: {
     id?: string;
@@ -85,7 +103,7 @@ export type IDumiUnifiedTransformer = (
   next?: Parameters<Transformer>[2],
 ) => ReturnType<Transformer>;
 
-export default (source: string, fileAbsPath: string, type: 'jsx' | 'html') => {
+export default (source: string, fileAbsPath: string, type: 'jsx' | 'html', masterKey?: string) => {
   const rehypeCompiler: any = {
     jsx: [jsxify],
     html: [stringify, { allowDangerousHtml: true, closeSelfClosing: true }],
@@ -109,8 +127,8 @@ export default (source: string, fileAbsPath: string, type: 'jsx' | 'html') => {
     .use(rehype)
     .use(debug('rehype'))
     // rehype plugins
-    .use(katex, { strict: false })
-    .use(debug('katex'))
+    .use(mathjax)
+    .use(debug('mathjax'))
     .use(sourceCode)
     .use(debug('sourceCode'))
     .use(raw)
@@ -119,24 +137,28 @@ export default (source: string, fileAbsPath: string, type: 'jsx' | 'html') => {
     .use(debug('domWarn'))
     .use(comments, { removeConditional: true })
     .use(debug('comments'))
-    .use(img)
-    .use(debug('img'))
     .use(code)
     .use(debug('code'))
-    .use(embed)
-    .use(debug('embed'))
     .use(api)
     .use(debug('api'))
+    .use(mdComponent)
     .use(slug)
     .use(debug('slug'))
+    .use(embed)
+    .use(debug('embed'))
     .use(headings)
     .use(debug('headings'))
     .use(link)
     .use(debug('link'))
+    .use(img)
+    .use(debug('img'))
+    .use(table)
+    .use(debug('table'))
     .use(previewer)
     .use(debug('previewer'))
     .use(isolation)
     .use(debug('isolation'))
+    .data('masterKey', masterKey)
     .data('fileAbsPath', fileAbsPath)
     .data('outputType', type);
 

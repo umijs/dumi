@@ -5,52 +5,44 @@
  * desc.zh-CN: 这是 antd Modal 组件的基础示例
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Modal } from 'antd';
 import ModalContent from './content';
 import './modal.less';
 
-class App extends React.Component {
-  state = { visible: false };
+const App = () => {
+  const [visible, setVisible] = useState(false);
 
-  showModal = () => {
-    this.setState({
-      visible: true,
-    });
+  const showModal = () => {
+    setVisible(true);
   };
 
-  handleOk = e => {
+  const handleOk = e => {
     console.log(e);
-    this.setState({
-      visible: false,
-    });
+    setVisible(false);
   };
 
-  handleCancel = e => {
+  const handleCancel = e => {
     console.log(e);
-    this.setState({
-      visible: false,
-    });
+    setVisible(false);
   };
 
-  render() {
-    return (
-      <div>
-        <Button type="primary" onClick={this.showModal}>
-          Open Modal
-        </Button>
-        <Modal
-          title="Basic Modal"
-          visible={this.state.visible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-          className="example-modal-content"
-        >
-          <ModalContent />
-        </Modal>
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <Button type="primary" onClick={showModal}>
+        Open Modal
+      </Button>
+      <Modal
+        title="Basic Modal"
+        visible={visible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        className="example-modal-content"
+      >
+        <ModalContent />
+      </Modal>
+    </div>
+  );
+};
 
 export default () => <App />;

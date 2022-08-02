@@ -2,6 +2,10 @@
 
 @media @v-device-show {
   .@{prefix}-mobile-previewer {
+    &[data-inactive] {
+      cursor: pointer;
+    }
+
     .@{prefix}-previewer-demo {
       display: none;
     }
@@ -11,12 +15,16 @@
       border-top: none;
     }
 
-    button[role='source'] {
+    .@{prefix}-previewer-actions button[role='source'] {
       margin-right: -8px;
       width: 0;
       opacity: 0;
       overflow: hidden;
       pointer-events: none;
+    }
+
+    + & {
+      margin-top: 32px;
     }
   }
 }

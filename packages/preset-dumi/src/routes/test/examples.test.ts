@@ -15,11 +15,15 @@ describe('routes: examples', () => {
         cwd,
         paths: { cwd, absNodeModulesPath: cwd },
         ApplyPluginsType: {},
-        applyPlugins: (() => ({
-          layoutPaths: { _: '' },
-          builtins: [{ identifier: 'Example', modulePath: '' }],
-          fallbacks: [],
-        })) as any,
+        applyPlugins: (({ key }) =>
+          key === 'dumi.registerMdComponent'
+            ? []
+            : {
+                layoutPaths: { _: '' },
+                builtins: [{ identifier: 'Example', modulePath: '' }],
+                fallbacks: [],
+                customs: [],
+              }) as any,
       } as IApi,
       {} as IDumiOpts,
     );
@@ -38,6 +42,8 @@ describe('routes: examples', () => {
           absPagesPath: path.join(cwd, 'pages'),
           absNodeModulesPath: path.join(cwd, 'node_modules'),
         },
+        ApplyPluginsType: {},
+        applyPlugins: ({ initialValue }) => initialValue,
         userConfig: {},
       } as IApi,
       {

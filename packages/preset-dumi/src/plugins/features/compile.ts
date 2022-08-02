@@ -1,6 +1,53 @@
 import path from 'path';
+import * as types from '@babel/types';
 import type { IApi } from '@umijs/types';
+import type { PluginObj } from '@babel/core';
 import ctx from '../../context';
+
+/**
+ * babel plugin for replace all layout effect to effect
+ */
+function dumiIsomorphicReactEffectPlugin(): PluginObj {
+  return {
+    visitor: {
+      // import { useLayoutEffect } from 'react'
+      // to
+      // import { useEffect as useLayoutEffect } from 'react';
+      ImportSpecifier(callPath) {
+        const callPathNode = callPath.node;
+
+        if (
+          types.isImportDeclaration(callPath.parent) &&
+          callPath.parent.source.value === 'react' &&
+          callPathNode.local.name === 'useLayoutEffect' &&
+          types.isIdentifier(callPathNode.imported) &&
+          callPathNode.imported.name === 'useLayoutEffect'
+        ) {
+          callPath.replaceWith(
+            types.importSpecifier(callPathNode.local, types.identifier('useEffect')),
+          );
+        }
+      },
+      // React.useLayoutEffect
+      // to
+      // React.useEffect
+      MemberExpression(callPath) {
+        const callPathNode = callPath.node;
+
+        if (
+          types.isIdentifier(callPathNode.object) &&
+          /react/i.test(callPathNode.object.name) &&
+          types.isIdentifier(callPathNode.property) &&
+          callPathNode.property.name === 'useLayoutEffect'
+        ) {
+          callPath.replaceWith(
+            types.memberExpression(callPathNode.object, types.identifier('useEffect')),
+          );
+        }
+      },
+    },
+  };
+}
 
 /**
  * plugin for compile markdown files
@@ -11,6 +58,14 @@ export default (api: IApi) => {
     ...config,
     urlLoaderExcludes: [/\.md$/],
   }));
+
+  // disable babel config file, to avoid library bundle config affecting docs config
+  api.modifyBabelOpts(memo => {
+    // @ts-ignore
+    memo.configFile = false;
+
+    return memo;
+  });
 
   // configure loader for .md file
   api.chainWebpack(config => {
@@ -40,7 +95,10 @@ export default (api: IApi) => {
       .end()
       .use('dumi-loader')
       .loader(require.resolve('../../loader'))
-      .options({ previewLangs: ctx.opts.resolve.previewLangs });
+      .options({
+        previewLangs: ctx.opts.resolve.previewLangs,
+        passivePreview: ctx.opts.resolve.passivePreview
+      });
 
     // set asset type to javascript/auto to skip webpack internal json loader
     // refer: https://webpack.js.org/guides/asset-modules/
@@ -63,4 +121,29 @@ export default (api: IApi) => {
     ...ctx.opts.resolve.includes.map(key => path.join(api.paths.cwd, key, '**/*.md')),
     ...ctx.opts.resolve.examples.map(key => path.join(api.paths.cwd, key, '*.{tsx,jsx}')),
   ]);
+
+  // replace all useLayoutEffect to useEffect for ssr
+  api.chainWebpack((memo, { type }) => {
+    if (type === 'ssr') {
+      memo.module
+        .rule('js-in-node_modules')
+        .use('babel-loader')
+        .tap(opts => {
+          opts.plugins ??= [];
+          opts.plugins.unshift(dumiIsomorphicReactEffectPlugin);
+
+          return opts;
+        });
+    }
+
+    return memo;
+  });
+
+  api.modifyBabelOpts((memo, { type }) => {
+    if (type === 'ssr') {
+      memo.plugins.unshift(dumiIsomorphicReactEffectPlugin);
+    }
+
+    return memo;
+  });
 };

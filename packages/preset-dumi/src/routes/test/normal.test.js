@@ -52,7 +52,12 @@ describe('routes & menu: normal', () => {
   it('route decorator', () => {
     routes = decorateRoute(
       routes,
-      { locales: [['en-US', 'EN']] },
+      {
+        locales: [['en-US', 'EN']],
+        resolve: {
+          includes: ['./packages/preset-dumi/src/routes/fixtures/normal'],
+        },
+      },
       {
         paths: {
           cwd: process.cwd(),
@@ -108,7 +113,7 @@ describe('routes & menu: normal', () => {
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/normal/sub/HelloComponent.md',
           updatedTime: 1582794297000,
-          group: { title: 'Rename Sub', order: 10, path: '/sub' },
+          group: { __fallback: true, title: 'Rename Sub', order: 10, path: '/sub' },
           slugs: [],
           title: 'HelloComponent',
         },
@@ -121,7 +126,7 @@ describe('routes & menu: normal', () => {
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/normal/sub/README.md',
           updatedTime: 1582794297000,
-          group: { title: 'Rename Sub', order: 10, path: '/sub' },
+          group: { __fallback: true, title: 'Rename Sub', order: 10, path: '/sub' },
           slugs: [],
           title: 'README',
         },
@@ -135,7 +140,7 @@ describe('routes & menu: normal', () => {
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/normal/sub/subsub/stillHello.md',
           updatedTime: 1582794297000,
-          group: { path: '/rename-sub-sub', title: 'Rename-sub-sub' },
+          group: { path: '/rename-sub-sub', title: 'Sub' },
           slugs: [],
           title: 'StillHello',
         },
@@ -149,7 +154,7 @@ describe('routes & menu: normal', () => {
           filePath: 'packages/preset-dumi/src/routes/fixtures/normal/sub/subsub/yEnd.md',
           updatedTime: 1582794297000,
           order: 1,
-          group: { path: '/rename-sub-sub', title: 'Rename-sub-sub' },
+          group: { path: '/rename-sub-sub', title: 'Sub' },
           slugs: [],
           title: 'YEnd',
         },
@@ -167,15 +172,14 @@ describe('routes & menu: normal', () => {
   });
 
   it('getMenuFromRoutes', () => {
-    const menu = getMenu(routes, { locales: [['en-US', 'EN']] });
+    const menu = getMenu(routes, { locales: [['en-US', 'EN']], mode: 'site' });
 
     expect(menu).toEqual({
       'en-US': {
         '*': [
           {
             title: 'Rename Sub',
-            path: '/sub',
-            meta: { order: 10 },
+            meta: { __fallback: true, order: 10 },
             children: [
               { path: '/sub', title: 'README', meta: {} },
               {
@@ -193,7 +197,7 @@ describe('routes & menu: normal', () => {
             children: [{ path: '/index', title: 'Readme', meta: {} }],
           },
           {
-            title: 'Rename-sub-sub',
+            title: 'Sub',
             path: '/rename-sub-sub',
             meta: {},
             children: [

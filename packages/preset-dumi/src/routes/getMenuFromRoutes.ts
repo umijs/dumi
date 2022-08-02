@@ -1,7 +1,8 @@
 import path from 'path';
 import slash from 'slash2';
-import type { IRoute, IApi } from '@umijs/types';
 import ctx from '../context';
+import { addLocalePrefix, isPrefixLocalePath } from './decorator/locale';
+import type { IRoute, IApi } from '@umijs/types';
 import type { IDumiOpts } from '..';
 
 export interface IMenuItem {
@@ -48,8 +49,8 @@ function convertUserMenuChilds(
     // copy menu config to avoid modify user config
     const menuItem = Object.assign({}, menu);
 
-    if (menuItem.path && locale && !isDefaultLocale && !menuItem.path.startsWith(`/${locale}`)) {
-      menuItem.path = `/${locale}${menu.path}`;
+    if (menuItem.path && locale && !isDefaultLocale && !isPrefixLocalePath(menuItem.path, locale)) {
+      menuItem.path = addLocalePrefix(menu.path, locale);
     }
 
     if (menuItem.children) {
@@ -75,7 +76,7 @@ function convertUserMenuChilds(
 
           childItem = {
             path: route.path,
-            title: route.title,
+            title: route.meta.title,
           };
 
           route.meta = route.meta || {};
@@ -132,7 +133,7 @@ export default function getMenuFromRoutes(
       const locale = route.meta.locale || opts.locales[0][0];
       const menuItem: IMenuItem = {
         path: route.path,
-        title: route.title,
+        title: route.meta.title,
         meta: {},
       };
 
@@ -142,7 +143,8 @@ export default function getMenuFromRoutes(
 
       if (group?.path) {
         const { title, path: groupPath, ...meta } = group;
-        const groupKey = addHtmlSuffix(groupPath) || title;
+        const groupKey = (!group.__fallback && addHtmlSuffix(groupPath)) || title;
+        const isGroupPathValid = !(group.__fallback && opts.mode === 'site');
 
         // group route items by group path & locale
         localeMenusMapping[locale] = {
@@ -151,7 +153,11 @@ export default function getMenuFromRoutes(
             ...(localeMenusMapping[locale]?.[nav] || {}),
             [groupKey]: {
               title,
-              path: groupPath,
+              ...(isGroupPathValid
+                ? {
+                    path: localeMenusMapping[locale]?.[nav]?.[groupKey]?.path || groupPath,
+                  }
+                : {}),
               meta: {
                 // merge group meta
                 ...(localeMenusMapping[locale]?.[nav]?.[groupKey]?.meta || {}),
@@ -185,6 +191,8 @@ export default function getMenuFromRoutes(
           if (typeof menu.children[0].meta?.order === 'number') {
             menu.meta.order = menu.children[0].meta.order;
           }
+          // fallback to child path if menu has not path
+          menu.path = menu.path || menu.children[0].path;
           menu.children = [];
         }
 
@@ -211,7 +219,7 @@ export default function getMenuFromRoutes(
       const isDefaultLocale = locale[0] === opts.locales[0][0];
       const localePrefix = isDefaultLocale ? '/' : `/${locale[0]}`;
 
-      if (navPath.startsWith(localePrefix)) {
+      if (localePrefix === '/' || isPrefixLocalePath(navPath, locale[0])) {
         const convertedMenus = convertUserMenuChilds(
           userMenus[navPath],
           routes,

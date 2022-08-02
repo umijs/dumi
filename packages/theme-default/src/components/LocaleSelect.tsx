@@ -1,4 +1,4 @@
-import type { FC} from 'react';
+import type { FC } from 'react';
 import React, { useContext } from 'react';
 // @ts-ignore
 import { history } from 'dumi';
@@ -15,7 +15,7 @@ const LocaleSelect: FC<{ location: any }> = ({ location }) => {
 
   function getLocaleTogglePath(target: string) {
     const baseWithoutLocale = base.replace(`/${locale}`, '');
-    const pathnameWithoutLocale = location.pathname.replace(base, baseWithoutLocale) || '/';
+    const pathnameWithoutLocale = location.pathname.replace(new RegExp(`^${base}(/|$)`), `${baseWithoutLocale}$1`) || '/';
 
     // append locale prefix to path if it is not the default locale
     if (target !== locales[0].name) {

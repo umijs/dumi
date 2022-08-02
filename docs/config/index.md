@@ -41,6 +41,41 @@ Example：
 }
 ```
 
+If your site doesn't meet DocSearch [free condition](https://docsearch.algolia.com/docs/who-can-apply), you can sign up your own Algolia account then [deploy the crawler](https://docsearch.algolia.com/docs/run-your-own). `appId` is requried in this way.
+
+```js
+{
+  algolia: {
+    appId: 'yourappid',
+    apiKey: 'yourapikey',
+    indexName: 'dumi',
+  }
+}
+```
+
+### apiParser
+
+- Type: `Object`
+- Default: `{}`
+- Details:
+
+Configure API parser, support the following options:
+
+```js
+{
+  apiParser: {
+    // configure property filter, also can be a function, see: https://github.com/styleguidist/react-docgen-typescript/#propfilter
+    propFilter: {
+      // skip props which was parsed from node_modules, default to false
+      skipNodeModules: false,
+      // skip specific properties, default to []
+      skipPropsWithName: ['title'],
+      // skip props which was not be explained via JSDoc, default to false
+      skipPropsWithoutDoc: false,
+    },
+  }
+}
+```
 ### description
 
 - Type: `String`
@@ -172,7 +207,7 @@ export default {
 
 `resolve` is an `Object` type, used to configure dumi's resolution behavior, including the following configuration:
 
-#### includes
+#### resolve.includes
 
 - Type: `Array<String>`
 - Default: `['docs', 'src']` or `['docs', 'packages/pkg/src']`
@@ -180,13 +215,29 @@ export default {
 
 Configure the document directory for dumi sniffing. Dumi will try to recursively find markdown files in the configured directory. The default values are the `docs` directory and the `src` directory (common projects). If the environment is the lerna project, the `src` directory will change It is the `packages/pkg/src` directory, and usually does not need to be configured, unless the automatic sniffing appears 『injuryed』.
 
-#### previewLangs
+#### resolve.excludes
+
+- Type：`Array<String>`
+- Default：`[]`
+- Details：
+
+The directories or files that need to be excluded. The rules are the same as the configuration of `gitignore`.
+
+#### resolve.previewLangs
 
 - Type: `Array<String>`
 - Default: `['jsx', 'tsx']`
 - Details:
 
 The configuration dumi will be converted to the code block rendered by the ReactComponent component by default. If you don't want to do any conversion, such as a pure site like Umi's official website, then set this item to an empty array.
+
+#### resolve.passivePreview
+
+- Type：`Boolean`
+- Default：`false`
+- Details：
+
+Passive preview mode. Only codeblocks belonging to `resolve.previewLangs` and having the `preview` modifier are rendered as ReactComponent. Generally used to render only a few code blocks in `resolve.previewLangs`, but not all of them.
 
 ### sitemap
 

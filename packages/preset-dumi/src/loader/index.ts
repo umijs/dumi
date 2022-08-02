@@ -2,8 +2,6 @@ import transformer from '../transformer';
 import getTheme from '../theme/loader';
 import { getFileRangeLines, getFileContentByRegExp } from '../utils/getFileContent';
 
-let useKatexFilePath = '';
-
 export default async function loader(raw: string) {
   let content = raw;
   const params = new URLSearchParams(this.resourceQuery);
@@ -17,44 +15,52 @@ export default async function loader(raw: string) {
     content = getFileContentByRegExp(content, regexp, this.resourcePath);
   }
 
-  const result = transformer.markdown(content, this.resourcePath, { noCache: content !== raw });
+  const result = transformer.markdown(content, this.resourcePath, {
+    cacheKey: this.resource,
+    throwError: true,
+    masterKey: params.get('master'),
+  });
   const theme = await getTheme();
-
-  // mark current file if it contains Katex and there has not another file used Katex
-  if (result.content.includes('className="katex"') && !useKatexFilePath) {
-    useKatexFilePath = this.resource;
-  }
 
   return `
     import React from 'react';
     import { dynamic } from 'dumi';
-    import { Link, AnchorLink } from 'dumi/theme';
-    ${
-      // add Katex css import statement if required or not in production mode, to reduce dist size
-      useKatexFilePath === this.resource || process.env.NODE_ENV !== 'production'
-        ? "import 'katex/dist/katex.min.css';"
-        : ''
-    }
+    import { Link, AnchorLink, context } from 'dumi/theme';
     ${theme.builtins
       .concat(theme.fallbacks)
+      .concat(theme.customs)
       .map(component => `import ${component.identifier} from '${component.source}';`)
       .join('\n')}
-    import DUMI_ALL_DEMOS from '@@/dumi/demos';
 
-    ${(result.meta.demos || []).join('\n')}
+    // memo for page content, to avoid useless re-render since other context fields changed
+    const PageContent = React.memo(({ demos: DUMI_ALL_DEMOS }) => {
+      ${(result.meta.demos || [])
+        .map(item => `const ${item.name} = ${item.code}`)
+        .join('\n')}
 
-    export default function () {
       return (
         <>
-          ${
-            result.meta.translateHelp
-              ? result.meta.translateHelp === true
-                ? `<Alert>This article has not been translated yet. Want to help us out? Click the Edit this doc on GitHub at the end of the page.</Alert>`
-                : `<Alert>${result.meta.translateHelp}</Alert>`
-              : ''
-          }
+          ${(result.meta.translateHelp || '') &&
+            `<Alert>${
+              typeof result.meta.translateHelp === 'string'
+                ? result.meta.translateHelp
+                : 'This article has not been translated yet. Want to help us out? Click the Edit this doc on GitHub at the end of the page.'
+            }</Alert>`}
           ${result.content}
         </>
       );
+    })
+
+    export default (props) => {
+      const { demos } = React.useContext(context);
+
+      // scroll to anchor after page component loaded
+      React.useEffect(() => {
+        if (props?.location?.hash) {
+          AnchorLink.scrollToAnchor(decodeURIComponent(props.location.hash.slice(1)));
+        }
+      }, []);
+
+      return <PageContent demos={demos} />;
   }`;
 }

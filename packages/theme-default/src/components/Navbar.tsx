@@ -7,10 +7,11 @@ import './Navbar.less';
 interface INavbarProps {
   location: any;
   navPrefix?: React.ReactNode;
+  darkPrefix?: React.ReactNode;
   onMobileMenuClick: (ev: MouseEvent<HTMLButtonElement>) => void;
 }
 
-const Navbar: FC<INavbarProps> = ({ onMobileMenuClick, navPrefix, location }) => {
+const Navbar: FC<INavbarProps> = ({ onMobileMenuClick, navPrefix, location, darkPrefix }) => {
   const {
     base,
     config: { mode, title, logo },
@@ -59,7 +60,10 @@ const Navbar: FC<INavbarProps> = ({ onMobileMenuClick, navPrefix, location }) =>
             </span>
           );
         })}
-        <LocaleSelect location={location} />
+        <div className="__dumi-default-navbar-tool">
+          <LocaleSelect location={location} />
+          {darkPrefix}
+        </div>
       </nav>
     </div>
   );

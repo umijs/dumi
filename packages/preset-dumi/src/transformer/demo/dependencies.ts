@@ -1,5 +1,5 @@
 import path from 'path';
-import slash from 'slash';
+import slash from 'slash2';
 import crypto from 'crypto';
 import * as babel from '@babel/core';
 import * as types from '@babel/types';
@@ -8,10 +8,10 @@ import {
   getModuleResolvePkg,
   getModuleResolvePath,
   getModuleResolveContent,
+  getHostPkgPath,
+  getHostModuleResolvePkg,
 } from '../../utils/moduleResolver';
 import FileCache from '../../utils/cache';
-import type { IWatcherItem} from '../../utils/watcher';
-import { listenFileOnceChange } from '../../utils/watcher';
 import type { IDemoOpts } from './options';
 import { getBabelOptions } from './options';
 
@@ -41,10 +41,13 @@ interface IAnalyzeCache {
 }
 
 export interface IDepAnalyzeResult {
-  dependencies: Record<string, {
+  dependencies: Record<
+    string,
+    {
       version: string;
       css?: string;
-    }>;
+    }
+  >;
   files: Record<string, { import: string; fileAbsPath: string }>;
 }
 
@@ -55,17 +58,17 @@ export const LOCAL_MODULE_EXT = [...LOCAL_DEP_EXT, '.json'];
 // local dependency extensions which will be collected
 export const PLAIN_TEXT_EXT = [...LOCAL_MODULE_EXT, '.less', '.css', '.scss', '.sass', '.styl'];
 
+export const isHostPackage = (packageName: string) => getHostPkgPath(packageName);
+
 function analyzeDeps(
   raw: string,
   {
     isTSX,
     fileAbsPath,
     entryAbsPath,
-    depChangeListener,
     files = {},
   }: IDemoOpts & {
     entryAbsPath?: string;
-    depChangeListener?: IWatcherItem['listeners'][0];
     files?: IDepAnalyzeResult['files'];
   },
 ): IDepAnalyzeResult {
@@ -103,13 +106,16 @@ function analyzeDeps(
           });
           const resolvePathParsed = path.parse(resolvePath);
 
-          if (resolvePath.includes('node_modules')) {
+          const isHostPkg = isHostPackage(requireStr);
+          if (resolvePath.includes('node_modules') || isHostPkg) {
             // save external deps
-            const pkg = getModuleResolvePkg({
-              basePath: fileAbsPath,
-              sourcePath: resolvePath,
-              extensions: LOCAL_MODULE_EXT,
-            });
+            const pkg = isHostPkg
+              ? getHostModuleResolvePkg(requireStr)
+              : getModuleResolvePkg({
+                  basePath: fileAbsPath,
+                  sourcePath: resolvePath,
+                  extensions: LOCAL_MODULE_EXT,
+                });
             const css = getCSSForDep(pkg.name);
             const peerDeps: IAnalyzeCache['dependencies'][0]['peerDeps'] = [];
 
@@ -141,7 +147,7 @@ function analyzeDeps(
             requireStr.startsWith('.')
           ) {
             // save local deps
-            const filename = slash(path.relative(fileAbsPath, resolvePath)).replace(
+            const filename = slash(path.relative(entryAbsPath || fileAbsPath, resolvePath)).replace(
               /(\.\/|\..\/)/g,
               '',
             );
@@ -204,28 +210,17 @@ function analyzeDeps(
           isTSX: /\.tsx?/.test(ext),
           fileAbsPath: item.resolvePath,
           entryAbsPath: entryAbsPath || fileAbsPath,
-          depChangeListener,
           files,
         });
 
         Object.assign(files, result.files);
         Object.assign(dependencies, result.dependencies);
       }
-
-      // trigger listener to update previewer props when dep file change
-      if (depChangeListener) {
-        listenFileOnceChange(item.resolvePath, depChangeListener);
-      }
     });
 
   // cache analyze result for single demo code
   if (fileAbsPath) {
     cachers.file.add(fileAbsPath, cache, cacheKey);
-  }
-
-  // trigger listener to update previewer props when dep file change
-  if (depChangeListener) {
-    listenFileOnceChange(fileAbsPath, depChangeListener);
   }
 
   return { files, dependencies };
@@ -236,8 +231,10 @@ export function getCSSForDep(dep: string) {
   const guessFiles = [
     // @group/pkg-suffic => pkg-suffix
     `${pkgWithoutGroup}`,
-    // @group/pkg-suffix => pkgsuffix
-    ...(pkgWithoutGroup.includes('-') ? [pkgWithoutGroup.replace(/-/g, '')] : []),
+    // @group/pkg-suffix => pkgsuffix @ant-design/pro-card => card
+    ...(pkgWithoutGroup.includes('-')
+      ? [pkgWithoutGroup.replace(/-/g, ''), pkgWithoutGroup.split('-')[1]]
+      : []),
     // guess normal css files
     'main',
     'index',
@@ -250,13 +247,8 @@ export function getCSSForDep(dep: string) {
     try {
       // try to resolve CSS file
       const guessFilePath = `${dep}/dist/${file}`;
-
-      getModuleResolvePath({
-        basePath: process.cwd(),
-        sourcePath: guessFilePath,
-        silent: true,
-      });
-
+      // 判断一下文件是不是存在，不存在 throw 错误没必要加入
+      require.resolve(guessFilePath);
       return guessFilePath;
     } catch (err) {
       /* nothing */

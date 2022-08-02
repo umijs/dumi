@@ -19,15 +19,16 @@ export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
   const childRoutes: IRoute[] = [];
   const exampleRoutePrefix = opts.mode === 'site' ? '/_' : '/_examples/';
   const theme = await getTheme();
-  const userRoutes = opts.isIntegrate
-    ? (
-        await api.applyPlugins({
-          key: 'dumi.getRootRoute',
-          type: api.ApplyPluginsType.modify,
-          initialValue: api.userConfig.routes,
-        })
-      )?.routes
-    : api.userConfig.routes;
+  const userRoutes =
+    opts.isIntegrate || api.args?.dumi !== undefined
+      ? (
+          await api.applyPlugins({
+            key: 'dumi.getRootRoute',
+            type: api.ApplyPluginsType.modify,
+            initialValue: api.userConfig.routes,
+          })
+        )?.routes
+      : api.userConfig.routes;
 
   if (userRoutes) {
     // only apply user's routes if there has routes config
@@ -60,13 +61,19 @@ export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
     layout: false,
     path: opts.isIntegrate ? prefix('/') : '/',
     wrappers: [
-      // builtin outer layout
-      slash(path.relative(api.paths.absPagesPath, path.join(__dirname, '../theme/layout'))),
       // theme layout
       slash(path.relative(api.paths.absPagesPath, theme.layoutPaths._)),
     ],
     // decorate standard umi routes
-    routes: decorateRoutes(childRoutes, opts, api),
+    routes: decorateRoutes(
+      await api.applyPlugins({
+        key: 'dumi.beforeDecorateRoutes',
+        type: api.ApplyPluginsType.modify,
+        initialValue: childRoutes,
+      }),
+      opts,
+      api,
+    ),
     title: opts.title,
   });
   debug('decorateRoutes');
@@ -80,7 +87,7 @@ export default async (api: IApi, opts: IDumiOpts): Promise<IRoute[]> => {
       config.unshift({
         path: examplePath,
         component: route.component,
-        title: route.title,
+        title: opts.title ? `${route.meta.title} - ${opts.title}` : route.meta.title,
       });
 
       // use example component as original example component

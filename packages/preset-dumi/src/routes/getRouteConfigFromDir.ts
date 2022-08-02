@@ -2,6 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import slash from 'slash2';
 import type { IRoute } from '@umijs/types';
+import ignore from 'ignore';
+
 import type { IDumiOpts } from '../index';
 import ctx from '../context';
 
@@ -71,10 +73,17 @@ function findChildRoutes(
   opts: IDumiOpts,
   parentRoutePath: string = '/',
 ): IRoute[] {
-  const isExampleDir = opts.resolve?.examples?.some(
-    dir => path.join(ctx.umi?.cwd || process.cwd(), dir) === absPath,
-  );
-  const mixture = fs.readdirSync(absPath).filter(isValidPath);
+  const cwd = ctx.umi?.cwd || process.cwd();
+  const isExampleDir = opts.resolve?.examples?.some(dir => path.join(cwd, dir) === absPath);
+  let mixture = fs.readdirSync(absPath).filter(isValidPath);
+  if (opts.resolve?.excludes?.length) {
+    const ig = ignore().add(opts.resolve.excludes);
+    mixture = mixture.filter(filename => {
+      const absoluteFilepath = path.join(absPath, filename);
+      const filepath = slash(path.relative(cwd, absoluteFilepath));
+      return !ig.ignores(filepath);
+    });
+  }
   const routes: IRoute[] = [];
   // separate files & child directories
   const [files, dirs] = mixture.reduce(
@@ -112,7 +121,7 @@ function findChildRoutes(
     ) {
       const route: IRoute = {
         path: normalizePath(routePath, localePath, opts.locales),
-        component: `./${slash(path.relative(ctx.umi?.cwd || process.cwd(), filePath))}`,
+        component: `./${slash(path.relative(cwd, filePath))}`,
         exact: true,
       };
 

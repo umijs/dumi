@@ -5,7 +5,7 @@ import is from 'hast-util-is-element';
 import type { IDumiElmNode, IDumiUnifiedTransformer } from '.';
 
 function isRelativeUrl(url) {
-  return typeof url === 'string' && !/^(?:\w+:)?\/\//.test(url) && !path.isAbsolute(url);
+  return typeof url === 'string' && !/^(?:(?:blob:)?\w+:)?\/\//.test(url) && !path.isAbsolute(url);
 }
 
 /**
@@ -21,7 +21,7 @@ export default function img(): IDumiUnifiedTransformer {
           // use wrapper element to workaround for skip props escape
           // https://github.com/mapbox/jsxtreme-markdown/blob/main/packages/hast-util-to-jsx/index.js#L159
           // eslint-disable-next-line no-new-wrappers
-          node.properties.src = new String(`require('${src}')`);
+          node.properties.src = new String(`require('${decodeURI(src)}')`);
         }
       }
     });

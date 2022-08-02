@@ -33,9 +33,10 @@ nav:
 export default {
   // ...
   themeConfig: {
+    carrier: 'dumi', // 设备状态栏左侧的文本内容
     hd: {
       // umi-hd 的 750 高清方案（默认值）
-      [{ mode: 'vw', options: [100, 750] }],
+      rules: [{ mode: 'vw', options: [100, 750] }],
       // 禁用高清方案
       rules: [],
       // 根据不同的设备屏幕宽度断点切换高清方案
@@ -58,6 +59,13 @@ mobile: false
 
 Markdown 正文
 ```
+
+## `dumi-theme-tuya`
+
+- **仓库地址：** https://github.com/youngjuning/dumi-theme-tuya
+- **文档地址：** https://dumi-theme-tuya.js.org/dumi-theme-tuya/
+- **体验地址：** [Tuya Design](https://panel-docs.tuyacn.com/)
+- **主题简介：** 涂鸦文档平台主题
 
 ## 虚位以待
 

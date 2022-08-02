@@ -16,9 +16,7 @@ import { getModuleResolvePath } from '../../utils/moduleResolver';
 export default function meta(): IDumiUnifiedTransformer {
   return (ast, vFile) => {
     if (this.data('fileAbsPath')) {
-      const filePath = slash(
-        path.relative(ctx.umi?.cwd || process.cwd(), this.data('fileAbsPath')),
-      );
+      const filePath = slash(path.relative(process.cwd(), this.data('fileAbsPath')));
 
       // append file info
       vFile.data.filePath = filePath;
@@ -43,7 +41,7 @@ export default function meta(): IDumiUnifiedTransformer {
       }
 
       // try to find related component of this md
-      if (/(index|readme)?(\.[\w-]+)?\.md/.test(this.data('fileAbsPath'))) {
+      if (/(?<!\/src)\/index(\.[\w-]+)?\.md/i.test(slash(this.data('fileAbsPath')))) {
         try {
           getModuleResolvePath({
             extensions: ['.tsx'],
@@ -96,9 +94,11 @@ export default function meta(): IDumiUnifiedTransformer {
         args: {
           identifier: vFile.data.componentName,
           name: vFile.data.title,
+          keywords: vFile.data.keywords,
           uuid: vFile.data.uuid,
           // use to parse props from component file
           _sourcePath: path.join(path.dirname(this.data('fileAbsPath')), 'index.tsx'),
+          ...(vFile.data.deprecated ? { deprecated: true } : {}),
         },
       });
     }

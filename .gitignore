@@ -13,6 +13,7 @@
 yarn.lock
 package-lock.json
 dist
+/.idea
 /.vscode
 .eslintcache
 .umi
@@ -20,3 +21,4 @@ dist
 .umi-test
 .now
 /docs/.upstream
+.DS_Store

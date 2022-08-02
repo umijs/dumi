@@ -16,7 +16,7 @@ const COLOR_HEAD_SCP = `
     'data-prefers-color',
     cache === enums[2]
       ? (isDark ? enums[1] : enums[0])
-      : (enums.includes(cache) ? cache : enums[0])
+      : (enums.indexOf(cache) > -1 ? cache : enums[0])
   );
 })();
 `;
@@ -40,6 +40,9 @@ export default (api: IApi) => {
   api.modifyConfig(memo => {
     setOptions('theme', memo.themeConfig);
 
+    // set alias for builtin default theme
+    memo.alias['dumi-theme-default'] = path.dirname(require.resolve('dumi-theme-default/package.json'));
+
     return memo;
   });
 
@@ -59,4 +62,19 @@ export default (api: IApi) => {
 
   // add head script to initialize prefers-color-schema for HTML tag
   api.addHTMLHeadScripts(async () => [{ content: (await minify(COLOR_HEAD_SCP, { ecma: 5 })).code }]);
+
+  // write outer layout to tmp dir
+  api.onGenerateFiles(() => {
+    api.writeTmpFile({
+      path: 'dumi/layout.tsx',
+      content: `import React from 'react';
+import config from '@@/dumi/config';
+import demos from '@@/dumi/demos';
+import apis from '@@/dumi/apis';
+import Layout from '${api.utils.winPath(path.join(__dirname, '../../theme/layout'))}';
+
+export default (props) => <Layout {...props} config={config} demos={demos} apis={apis} />;
+`,
+    });
+  });
 };

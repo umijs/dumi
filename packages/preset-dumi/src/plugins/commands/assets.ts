@@ -50,8 +50,14 @@ export default (api: IApi) => {
   api.register({
     key: 'dumi.detectCodeBlock',
     fn(block: ExampleBlockAsset) {
-      if (block.name || block.identifier) {
-        assetsPkg.assets.examples.push(block);
+      if (block.identifier) {
+        const pos = assetsPkg.assets.examples.findIndex(b => b.identifier === block.identifier);
+
+        if (pos > -1) {
+          assetsPkg.assets.examples.splice(pos, 1, block);
+        } else {
+          assetsPkg.assets.examples.push(block);
+        }
       }
     },
   });
@@ -59,7 +65,13 @@ export default (api: IApi) => {
   api.register({
     key: 'dumi.detectAtomAsset',
     fn(atom: AtomAsset) {
-      assetsPkg.assets.atoms.push(atom);
+      const pos = assetsPkg.assets.atoms.findIndex(a => a.identifier === atom.identifier);
+
+      if (pos > -1) {
+        assetsPkg.assets.atoms.splice(pos, 1, atom);
+      } else {
+        assetsPkg.assets.atoms.push(atom);
+      }
     },
   });
 };

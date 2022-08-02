@@ -21,3 +21,7 @@
 [`test`](/test)
 <a href="https://d.umijs.org/some.md">External Link</a>
 [External Link](https://d.umijs.org/some.md)
+<a href="./test"><img src="logo.png" /></a>
+<a href="/a/test.md"><img src="./assets/logo.png" /></a>
+<a href="/a/test.md?a=1&b=2#header"><img src="/public/logo.png" /></a>
+<a href="https://d.umijs.org/some.md"><img src="https://d.umijs.org/public/logo.png" /></a>

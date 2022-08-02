@@ -1,9 +1,11 @@
 import React from 'react';
-import type { IRoute } from '@umijs/types';
+import type { IConfig, IRoute } from '@umijs/types';
 import type { INav } from '../routes/getNavFromRoutes';
 import type { IMenu } from '../routes/getMenuFromRoutes';
 import type { ILocale } from '../routes/getLocaleFromRoutes';
+import type { IApiDefinition } from '../api-parser';
 import type { IDumiOpts } from '..';
+import type { IPreviewerComponentProps } from '.';
 
 export interface IThemeContext {
   /**
@@ -54,6 +56,10 @@ export interface IThemeContext {
      * theme config
      */
     theme: IDumiOpts['theme'];
+    /**
+     * configure how html is output
+     */
+    exportStatic?: IConfig['exportStatic'];
   };
   /**
    * the meta information of current route
@@ -94,6 +100,20 @@ export interface IThemeContext {
    * documentation routes
    */
   routes: (IRoute & { meta: any })[];
+  /**
+   * all demos data
+   */
+  demos: Record<
+    string,
+    {
+      component: React.ComponentType;
+      previewerProps: IPreviewerComponentProps;
+    }
+  >;
+  /**
+   * all parsed api data
+   */
+  apis: Record<string, IApiDefinition>;
 }
 
 export default React.createContext<IThemeContext>({
@@ -111,4 +131,6 @@ export default React.createContext<IThemeContext>({
   nav: [],
   base: '',
   routes: [],
+  apis: {},
+  demos: {},
 });

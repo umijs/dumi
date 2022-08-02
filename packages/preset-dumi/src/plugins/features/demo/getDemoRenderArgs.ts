@@ -1,10 +1,16 @@
 import type { ComponentProps, ReactNode } from 'react';
 import type { IRouteComponentProps } from 'dumi';
-import React from 'react';
+import React, { FC, ReactElement } from 'react';
 // @ts-ignore
 import { useMotions } from 'dumi/theme';
 
 type IGetDemoRenderArgs = [ComponentProps<any>, ReactNode] | [ReactNode] | [];
+
+const InlineRender: FC<{
+  render: () => ReactElement;
+}> = props => {
+  return props.render();
+};
 
 /**
  * return demo preview arguments for single page route
@@ -43,10 +49,15 @@ export default (
     if (inline) {
       // return demo component with motions handler
       result = [
-        React.createElement(() => {
-          useMotions(previewerProps.motions || [], document.documentElement);
+        React.createElement(InlineRender, {
+          render: () => {
+            useMotions(
+              previewerProps.motions || [],
+              typeof window !== 'undefined' ? document.documentElement : null,
+            );
 
-          return React.createElement('div', {}, React.createElement(demo.component));
+            return React.createElement('div', {}, React.createElement(demo.component));
+          },
         }),
       ];
     } else {

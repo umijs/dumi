@@ -2,6 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import slash from 'slash2';
 import deepmerge from 'deepmerge';
+import { isPrefixLocalePath, discardLocalePrefix, addLocalePrefix } from './locale';
+import getFrontMatter from '../getFrontMatter';
 import type { RouteProcessor } from '.';
 
 function replaceLocaleForPath(
@@ -9,9 +11,9 @@ function replaceLocaleForPath(
   prevLocale: string | undefined,
   nextLocale: string,
 ) {
-  const oPath = prevLocale ? pathname.replace(`/${prevLocale}`, '') : pathname;
+  const oPath = prevLocale ? discardLocalePrefix(pathname, prevLocale) : pathname;
 
-  return `/${nextLocale}${oPath}`.replace(/\/$/, '');
+  return addLocalePrefix(oPath, nextLocale).replace(/\/$/, '');
 }
 
 /**
@@ -32,9 +34,7 @@ export default (function fallback(routes) {
 
       if (fs.existsSync(readmePath)) {
         const component = `./README${localeFileAddon}.md`;
-        const readme = fs.readFileSync(readmePath, 'utf8');
-        const reg = /(?:^|[\r\n])#+\s+(.+)/;
-        const title = reg.test(readme) ? reg.exec(readme)[1] : 'README';
+        const frontMatter = getFrontMatter(readmePath);
 
         routes.unshift({
           path: localePrefix,
@@ -42,10 +42,10 @@ export default (function fallback(routes) {
           exact: true,
           meta: {
             locale,
-            title,
             order: -Infinity, // keep readme on the top
+            ...frontMatter, // use custom front matter
           },
-          title,
+          title: frontMatter.title,
         });
       }
     }
@@ -57,7 +57,7 @@ export default (function fallback(routes) {
 
         // deal with every default route (without locale prefix)
         if (
-          !routePath.startsWith(localePrefix) &&
+          !isPrefixLocalePath(routePath, locale) &&
           !routes.some(route => route.path === currentLocalePath)
         ) {
           const fallbackRoute = deepmerge(

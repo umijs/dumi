@@ -45,22 +45,28 @@ export default (api: IApi) => {
       demoComponent = decodeImportRequireWithAutoDynamic(demoComponent, chunkName);
 
       // hoist all raw code import statements
-      Object.entries(demos[uuid].previewerProps.sources).forEach(([file, oContent]: [string, any]) => {
-        const content = file === '_' ? Object.values(oContent)[0] : oContent.content;
+      Object.entries(demos[uuid].previewerProps.sources).forEach(
+        ([file, oContent]: [string, any]) => {
+          const content = file === '_' ? Object.values(oContent)[0] : oContent.content;
 
-        if (isHoistImport(content)) {
-          if (!hoistImports[content]) {
-            hoistImports[content] = hoistImportCount;
-            hoistImportCount += 1;
+          if (isHoistImport(content)) {
+            if (!hoistImports[content]) {
+              hoistImports[content] = hoistImportCount;
+              hoistImportCount += 1;
+            }
+
+            itemHoistImports[content] = hoistImports[content];
           }
-
-          itemHoistImports[content] = hoistImports[content];
-        }
-      });
+        },
+      );
 
       // replace collected import statments to rawCode var
       const previewerPropsStr = Object.entries(itemHoistImports).reduce(
-        (str, [stmt, no]) => str.replace(new RegExp(`"${stmt.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`, 'g'), `rawCode${no}`),
+        (str, [stmt, no]) =>
+          str.replace(
+            new RegExp(`"${stmt.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`, 'g'),
+            `rawCode${no}`,
+          ),
         JSON.stringify(demos[uuid].previewerProps),
       );
 
@@ -121,7 +127,9 @@ export default (api: IApi) => {
     const theme = await getTheme();
     const prependRoutes: IRoute[] = [
       {
-        path: `/${getDemoRouteName()}/:uuid`,
+        path: `/${getDemoRouteName()}/:uuid${
+          api.config.exportStatic && api.config.exportStatic.htmlSuffix ? '.html' : ''
+        }`,
         // use to disable pro-layout in integrated mode
         layout: false,
       },
@@ -140,7 +148,13 @@ export default (api: IApi) => {
     }
 
     const demoRenderBody = `
-      const renderArgs = getDemoRenderArgs(props, demos);
+      const { demos } = React.useContext(context);
+      const [renderArgs, setRenderArgs] = React.useState([]);
+
+      // update render args when props changed
+      React.useLayoutEffect(() => {
+        setRenderArgs(getDemoRenderArgs(props, demos));
+      }, [props.match.params.uuid, props.location.query.wrapper, props.location.query.capture]);
 
       // for listen prefers-color-schema media change in demo single route
       usePrefersColor();
@@ -163,41 +177,66 @@ export default (api: IApi) => {
       }
     `;
     const demoRouteComponent = isDynamicEnable()
-      ? `React.createElement(
-        dynamic({
+      ? `dynamic({
           loader: async () => {
+            const React = await import('react');
             const { default: getDemoRenderArgs } = await import(/* webpackChunkName: 'dumi_demos' */ '${api.utils.winPath(
               path.join(__dirname, './getDemoRenderArgs'),
             )}');
-            const { default: Previewer } = await import(/* webpackChunkName: 'dumi_demos' */ '${Previewer.source}');
-            const { default: demos } = await import(/* webpackChunkName: 'dumi_demos' */ '@@/dumi/demos');
-            const { usePrefersColor } = await import(/* webpackChunkName: 'dumi_demos' */ 'dumi/theme');
+            const { default: Previewer } = await import(/* webpackChunkName: 'dumi_demos' */ '${
+              Previewer.source
+            }');
+            const { usePrefersColor, context } = await import(/* webpackChunkName: 'dumi_demos' */ 'dumi/theme');
 
             return props => {
               ${demoRenderBody}
             }
-          }
-        }), props)`
+          },
+          loading: () => null,
+        }))(` // hack to execute and return dynamic, to avoid use React.createElement and can works with umi routeToJSON
       : `{
+        const React = require('react');
         const { default: getDemoRenderArgs } = require('${api.utils.winPath(
           path.join(__dirname, './getDemoRenderArgs'),
         )}');
         const { default: Previewer } = require('${Previewer.source}');
-        const { default: demos } = require('@@/dumi/demos');
-        const { usePrefersColor } = require('dumi/theme');
+        const { usePrefersColor, context } = require('dumi/theme');
 
         ${demoRenderBody}
         }`;
 
     prependRoutes[0].wrappers = [
-      // builtin outer layout, for initialize context
-      api.utils.winPath(path.join(__dirname, '../../../theme/layout')),
+      // builtin outer layout for initialize context (.umi/dumi/layout.tsx)
+      '../dumi/layout',
       theme.layoutPaths.demo,
     ].filter(Boolean);
-    prependRoutes[0].component = `(props) => ${demoRouteComponent}`;
+    prependRoutes[0].component = `((props) => ${demoRouteComponent})`;
 
     routes.unshift(...prependRoutes);
 
     return routes;
+  });
+
+  // export static for dynamic demos
+  api.modifyExportRouteMap(memo => {
+    const exportStatic = api.config.exportStatic;
+    if (exportStatic) {
+      memo.push(
+        ...Object.keys(demos).map(uuid => {
+          const demoRoutePath = `/${getDemoRouteName()}/${uuid}`;
+          return {
+            route: { path: demoRoutePath },
+            file: `${demoRoutePath}${exportStatic.htmlSuffix ? '' : '/index'}.html`,
+          };
+        }),
+      );
+
+      /* istanbul ignore if */
+      if (api.utils.isWindows) {
+        // do not generate dynamic route file for Windows, to avoid throw error
+        memo = memo.filter(item => !item.route.path.includes('/:'));
+      }
+    }
+    return memo;
   });
 };

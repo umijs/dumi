@@ -1,8 +1,9 @@
 import React, { useState, useContext, useRef, useEffect } from 'react';
 import Tabs, { TabPane } from 'rc-tabs';
+import { ErrorBoundary } from 'react-error-boundary';
 // @ts-ignore
 import { history } from 'dumi';
-import type { IPreviewerComponentProps} from 'dumi/theme';
+import type { IPreviewerComponentProps } from 'dumi/theme';
 import {
   context,
   useCodeSandbox,
@@ -14,10 +15,11 @@ import {
   useTSPlaygroundUrl,
   Link,
   AnchorLink,
-  usePrefersColor
+  usePrefersColor,
 } from 'dumi/theme';
 import type { ICodeBlockProps } from './SourceCode';
 import SourceCode from './SourceCode';
+import Alert from './Alert';
 import './Previewer.less';
 
 export interface IPreviewerProps extends IPreviewerComponentProps {
@@ -49,6 +51,10 @@ export interface IPreviewerProps extends IPreviewerComponentProps {
    * replace builtin demo url
    */
   demoUrl?: string;
+  /**
+   * control action bar render
+   */
+  actionBarRender?: (actionBarNode: React.ReactNode) => React.ReactNode;
 }
 
 /**
@@ -79,7 +85,9 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
   const openRiddle = useRiddle(props.hideActions?.includes('RIDDLE') ? null : props);
   const [execMotions, isMotionRunning] = useMotions(props.motions || [], demoRef.current);
   const [copyCode, copyStatus] = useCopy();
-  const [currentFile, setCurrentFile] = useState('_');
+  const [currentFile, setCurrentFile] = useState(() =>
+    props.sources._ ? '_' : Object.keys(props.sources)[0],
+  );
   const [sourceType, setSourceType] = useState(
     getSourceType(currentFile, props.sources[currentFile]),
   );
@@ -90,6 +98,7 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
   const playgroundUrl = useTSPlaygroundUrl(locale, currentFileCode);
   const iframeRef = useRef<HTMLIFrameElement>();
   const [color] = usePrefersColor();
+  const { actionBarRender = o => o } = props;
 
   // re-render iframe if prefers color changed
   useEffect(() => {
@@ -137,7 +146,21 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
             ref={iframeRef}
           />
         ) : (
-          props.children
+          <ErrorBoundary
+            fallbackRender={({ error }) => (
+              <Alert type="error">
+                <h4>{error.message || 'This demo has been crashed.'}</h4>
+                {error.stack && (
+                  <details>
+                    <summary>Error stack</summary>
+                    <pre>{error.stack}</pre>
+                  </details>
+                )}
+              </Alert>
+            )}
+          >
+            {props.children}
+          </ErrorBoundary>
         )}
       </div>
       <div className="__dumi-default-previewer-desc" data-title={props.title}>
@@ -150,74 +173,78 @@ const Previewer: React.FC<IPreviewerProps> = oProps => {
         )}
       </div>
       <div className="__dumi-default-previewer-actions">
-        {openCSB && (
-          <button
-            title="Open demo on CodeSandbox.io"
-            className="__dumi-default-icon"
-            role="codesandbox"
-            onClick={openCSB}
-          />
-        )}
-        {openRiddle && (
-          <button
-            title="Open demo on Riddle"
-            className="__dumi-default-icon"
-            role="riddle"
-            onClick={openRiddle}
-          />
-        )}
-        {props.motions && (
-          <button
-            title="Execute motions"
-            className="__dumi-default-icon"
-            role="motions"
-            disabled={isMotionRunning}
-            onClick={() => execMotions()}
-          />
-        )}
-        {props.iframe && (
-          <button
-            title="Reload demo iframe page"
-            className="__dumi-default-icon"
-            role="refresh"
-            onClick={() => setIframeKey(Math.random())}
-          />
-        )}
-        {!props.hideActions?.includes('EXTERNAL') && (
-          <Link target="_blank" to={demoUrl}>
+        {actionBarRender(
+          <>
+            {openCSB && (
+              <button
+                title="Open demo on CodeSandbox.io"
+                className="__dumi-default-icon"
+                role="codesandbox"
+                onClick={openCSB}
+              />
+            )}
+            {openRiddle && (
+              <button
+                title="Open demo on Riddle"
+                className="__dumi-default-icon"
+                role="riddle"
+                onClick={openRiddle}
+              />
+            )}
+            {props.motions && (
+              <button
+                title="Execute motions"
+                className="__dumi-default-icon"
+                role="motions"
+                disabled={isMotionRunning}
+                onClick={() => execMotions()}
+              />
+            )}
+            {props.iframe && (
+              <button
+                title="Reload demo iframe page"
+                className="__dumi-default-icon"
+                role="refresh"
+                onClick={() => setIframeKey(Math.random())}
+              />
+            )}
+            {!props.hideActions?.includes('EXTERNAL') && (
+              <Link target="_blank" to={demoUrl}>
+                <button
+                  title="Open demo in new tab"
+                  className="__dumi-default-icon"
+                  role="open-demo"
+                  type="button"
+                />
+              </Link>
+            )}
+            <span />
             <button
-              title="Open demo in new tab"
+              title="Copy source code"
               className="__dumi-default-icon"
-              role="open-demo"
-              type="button"
+              role="copy"
+              data-status={copyStatus}
+              onClick={() => copyCode(currentFileCode)}
             />
-          </Link>
-        )}
-        <span />
-        <button
-          title="Copy source code"
-          className="__dumi-default-icon"
-          role="copy"
-          data-status={copyStatus}
-          onClick={() => copyCode(currentFileCode)}
-        />
-        {sourceType === 'tsx' && showSource && (
-          <Link target="_blank" to={playgroundUrl}>
+            {sourceType === 'tsx' && showSource && (
+              <Link target="_blank" to={playgroundUrl}>
+                <button
+                  title="Get JSX via TypeScript Playground"
+                  className="__dumi-default-icon"
+                  role="change-tsx"
+                  type="button"
+                />
+              </Link>
+            )}
             <button
-              title="Get JSX via TypeScript Playground"
-              className="__dumi-default-icon"
-              role="change-tsx"
+              title="Toggle source code panel"
+              className={`__dumi-default-icon${showSource ? ' __dumi-default-btn-expand' : ''}`}
+              role="source"
               type="button"
+              onClick={() => setShowSource(!showSource)}
             />
-          </Link>
+          </>,
         )}
-        <button
-          title="Toggle source code panel"
-          className={`__dumi-default-icon${showSource ? ' __dumi-default-btn-expand' : ''}`}
-          role="source"
-          type="button"
-          onClick={() => setShowSource(!showSource)}
-        />
       </div>
       {showSource && (
         <div className="__dumi-default-previewer-source-wrapper">

@@ -30,6 +30,16 @@ describe('routes & menu: locales', () => {
         exact: true,
       },
       {
+        path: '/en-usfake/fake',
+        component: './packages/preset-dumi/src/routes/fixtures/locale/en-USfake/fake.md',
+        exact: true,
+      },
+      {
+        path: '/en-US/en-usfake',
+        component: './packages/preset-dumi/src/routes/fixtures/locale/en-USfake/index.en-US.md',
+        exact: true,
+      },
+      {
         path: '/en-US/missing/abc',
         component: './packages/preset-dumi/src/routes/fixtures/locale/missing/abc.en-US.md',
         exact: true,
@@ -54,6 +64,11 @@ describe('routes & menu: locales', () => {
         component: './packages/preset-dumi/src/routes/fixtures/locale/sub/index.zh-CN.md',
         exact: true,
       },
+      {
+        path: '/zh-cnfake',
+        component: './packages/preset-dumi/src/routes/fixtures/locale/zh-CNfake/index.zh-CN.md',
+        exact: true,
+      },
     ]);
   });
 
@@ -71,6 +86,16 @@ describe('routes & menu: locales', () => {
       {
         path: '/zh-CN',
         component: './packages/preset-dumi/src/routes/fixtures/locale/index.zh-CN.md',
+        exact: true,
+      },
+      {
+        path: '/en-usfake/fake',
+        component: './packages/preset-dumi/src/routes/fixtures/locale/en-USfake/fake.md',
+        exact: true,
+      },
+      {
+        path: '/en-usfake',
+        component: './packages/preset-dumi/src/routes/fixtures/locale/en-USfake/index.en-US.md',
         exact: true,
       },
       {
@@ -98,13 +123,23 @@ describe('routes & menu: locales', () => {
         component: './packages/preset-dumi/src/routes/fixtures/locale/sub/index.zh-CN.md',
         exact: true,
       },
+      {
+        path: '/zh-CN/zh-cnfake',
+        component: './packages/preset-dumi/src/routes/fixtures/locale/zh-CNfake/index.zh-CN.md',
+        exact: true,
+      },
     ]);
   });
 
   it('route decorator', () => {
     routes = decorateRoute(
       routes,
-      { locales: DEFAULT_LOCALES },
+      {
+        locales: DEFAULT_LOCALES,
+        resolve: {
+          includes: ['./packages/preset-dumi/src/routes/fixtures/locale'],
+        },
+      },
       {
         paths: {
           cwd: process.cwd(),
@@ -141,6 +176,40 @@ describe('routes & menu: locales', () => {
         title: '中文',
       },
       {
+        path: '/en-usfake/fake',
+        component: '../../../packages/preset-dumi/src/routes/fixtures/locale/en-USfake/fake.md',
+        exact: true,
+        meta: {
+          filePath: 'packages/preset-dumi/src/routes/fixtures/locale/en-USfake/fake.md',
+          group: {
+            path: '/en-usfake',
+            title: 'En-USfake',
+          },
+          slugs: [],
+          title: 'Fake',
+          updatedTime: 1631697998000,
+        },
+        title: 'Fake',
+      },
+      {
+        path: '/en-usfake',
+        component:
+          '../../../packages/preset-dumi/src/routes/fixtures/locale/en-USfake/index.en-US.md',
+        exact: true,
+        meta: {
+          filePath: 'packages/preset-dumi/src/routes/fixtures/locale/en-USfake/index.en-US.md',
+          group: {
+            path: '/en-usfake',
+            title: 'En-USfake',
+          },
+          locale: 'en-US',
+          slugs: [],
+          title: 'En-USfake',
+          updatedTime: 1631697998000,
+        },
+        title: 'En-USfake',
+      },
+      {
         path: '/missing/abc',
         component: '../../../packages/preset-dumi/src/routes/fixtures/locale/missing/abc.en-US.md',
         exact: true,
@@ -161,7 +230,7 @@ describe('routes & menu: locales', () => {
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/locale/sub/abc.en-US.md',
           updatedTime: 1582794297000,
-          group: { path: '/group', title: 'Group' },
+          group: { path: '/group', title: 'Sub' },
           slugs: [],
           locale: 'en-US',
           title: 'Abc',
@@ -175,7 +244,7 @@ describe('routes & menu: locales', () => {
         meta: {
           filePath: 'packages/preset-dumi/src/routes/fixtures/locale/sub/abc.zh-CN.md',
           updatedTime: 1582794297000,
-          group: { path: '/zh-CN/group', title: 'Group' },
+          group: { path: '/zh-CN/group', title: 'Sub' },
           slugs: [],
           locale: 'zh-CN',
           title: 'Abc',
@@ -191,10 +260,10 @@ describe('routes & menu: locales', () => {
           updatedTime: 1582794297000,
           slugs: [],
           locale: 'en-US',
-          title: 'Index',
+          title: 'Sub',
           group: { path: '/sub', title: 'Sub' },
         },
-        title: 'Index',
+        title: 'Sub',
       },
       {
         path: '/zh-CN/sub',
@@ -205,10 +274,63 @@ describe('routes & menu: locales', () => {
           updatedTime: 1582794297000,
           slugs: [],
           locale: 'zh-CN',
-          title: 'Index',
+          title: 'Sub',
           group: { path: '/zh-CN/sub', title: 'Sub' },
         },
-        title: 'Index',
+        title: 'Sub',
+      },
+      {
+        path: '/zh-CN/zh-cnfake',
+        component:
+          '../../../packages/preset-dumi/src/routes/fixtures/locale/zh-CNfake/index.zh-CN.md',
+        exact: true,
+        meta: {
+          filePath: 'packages/preset-dumi/src/routes/fixtures/locale/zh-CNfake/index.zh-CN.md',
+          group: {
+            path: '/zh-CN/zh-cnfake',
+            title: 'Zh-CNfake',
+          },
+          locale: 'zh-CN',
+          slugs: [],
+          title: 'Zh-CNfake',
+          updatedTime: 1631697998000,
+        },
+        title: 'Zh-CNfake',
+      },
+      {
+        path: '/zh-CN/en-usfake/fake',
+        component: '../../../packages/preset-dumi/src/routes/fixtures/locale/en-USfake/fake.md',
+        exact: true,
+        meta: {
+          filePath: 'packages/preset-dumi/src/routes/fixtures/locale/en-USfake/fake.md',
+          group: {
+            path: '/zh-CN/en-usfake',
+            title: 'En-USfake',
+          },
+          locale: 'zh-CN',
+          slugs: [],
+          title: 'Fake',
+          updatedTime: 1631697998000,
+        },
+        title: 'Fake',
+      },
+      {
+        path: '/zh-CN/en-usfake',
+        component:
+          '../../../packages/preset-dumi/src/routes/fixtures/locale/en-USfake/index.en-US.md',
+        exact: true,
+        meta: {
+          filePath: 'packages/preset-dumi/src/routes/fixtures/locale/en-USfake/index.en-US.md',
+          group: {
+            path: '/zh-CN/en-usfake',
+            title: 'En-USfake',
+          },
+          locale: 'zh-CN',
+          slugs: [],
+          title: 'En-USfake',
+          updatedTime: 1631697998000,
+        },
+        title: 'En-USfake',
       },
       {
         path: '/zh-CN/missing/abc',
@@ -249,7 +371,24 @@ describe('routes & menu: locales', () => {
         '*': [
           { path: '/', title: 'English', meta: {} },
           {
-            title: 'Group',
+            title: 'En-USfake',
+            path: '/en-usfake',
+            meta: {},
+            children: [
+              {
+                path: '/en-usfake',
+                title: 'En-USfake',
+                meta: {},
+              },
+              {
+                path: '/en-usfake/fake',
+                title: 'Fake',
+                meta: {},
+              },
+            ],
+          },
+          {
+            title: 'Sub',
             path: '/group',
             meta: {},
             children: [{ path: '/group/abc', title: 'Abc', meta: {} }],
@@ -264,7 +403,7 @@ describe('routes & menu: locales', () => {
             title: 'Sub',
             path: '/sub',
             meta: {},
-            children: [{ path: '/sub', title: 'Index', meta: {} }],
+            children: [],
           },
         ],
       },
@@ -272,7 +411,24 @@ describe('routes & menu: locales', () => {
         '*': [
           { path: '/zh-CN', title: '中文', meta: {} },
           {
-            title: 'Group',
+            children: [
+              {
+                path: '/zh-CN/en-usfake',
+                title: 'En-USfake',
+                meta: {},
+              },
+              {
+                path: '/zh-CN/en-usfake/fake',
+                title: 'Fake',
+                meta: {},
+              },
+            ],
+            path: '/zh-CN/en-usfake',
+            title: 'En-USfake',
+            meta: {},
+          },
+          {
+            title: 'Sub',
             path: '/zh-CN/group',
             meta: {},
             children: [{ path: '/zh-CN/group/abc', title: 'Abc', meta: {} }],
@@ -287,7 +443,13 @@ describe('routes & menu: locales', () => {
             title: 'Sub',
             path: '/zh-CN/sub',
             meta: {},
-            children: [{ path: '/zh-CN/sub', title: 'Index', meta: {} }],
+            children: [],
+          },
+          {
+            title: 'Zh-CNfake',
+            path: '/zh-CN/zh-cnfake',
+            meta: {},
+            children: [],
           },
         ],
       },

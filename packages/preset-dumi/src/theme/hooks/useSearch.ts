@@ -26,16 +26,14 @@ const useBuiltinSearch = (keywords: string) => {
         .filter(({ title, meta }) => {
           const isValidLocaleRoute = meta?.locale === locale;
           const isValidDefaultLocaleRoute =
-            // route locale euqal default locale
-            meta?.locale === locales[0].name ||
             // missing locale and there has no locale or global locale equal default locale
-            (!meta?.locale && (!locales.length || locale === locales[0].name));
+            !meta?.locale && (!locales.length || locale === locales[0].name);
 
           return title && (isValidDefaultLocaleRoute || isValidLocaleRoute);
         })
         .reduce((result, route) => {
           const routeMetaItem: ISearchMetaItem = {
-            title: route.title,
+            title: route.meta?.title || route.title,
             path: route.path,
           };
 
@@ -46,7 +44,7 @@ const useBuiltinSearch = (keywords: string) => {
           result.push(routeMetaItem);
           result.push(
             ...(route.meta?.slugs || [])
-              .filter(({ value }) => value !== route.title)
+              .filter(({ value }) => value !== (route.meta?.title || route.title))
               .map(slug => ({
                 title: slug.value,
                 path: `${route.path}#${slug.heading}`,
@@ -65,8 +63,7 @@ const useBuiltinSearch = (keywords: string) => {
     if (val) {
       const result = [];
 
-      // at least find 5 results
-      for (let i = 0; i < metas.length && result.length < 6; i += 1) {
+      for (let i = 0; i < metas.length; i += 1) {
         if (metas[i].title.toUpperCase().indexOf(val) > -1) {
           result.push(metas[i]);
         }
