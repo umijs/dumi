@@ -1,4 +1,4 @@
-import { IApi as IUmiApi } from 'umi';
+import type { IApi as IUmiApi } from 'umi';
 
 type IUmiConfig = IUmiApi['config'];
 

@@ -1,4 +1,4 @@
-import { IApi } from '@/types';
+import type { IApi } from '@/types';
 
 export default (api: IApi) => {
   api.describe({ key: 'dumi-preset' });
@@ -6,6 +6,7 @@ export default (api: IApi) => {
   return {
     plugins: [
       require.resolve('./features/configPlugins'),
+      require.resolve('./features/compile'),
       require.resolve('./features/routes'),
     ],
   };
