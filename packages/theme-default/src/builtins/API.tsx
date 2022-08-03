@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import type { IApiComponentProps} from 'dumi/theme';
-import { context, useApiData, AnchorLink } from 'dumi/theme';
+import { context, useApiData } from 'dumi/theme';
+import Table from './Table';
 
 const LOCALE_TEXTS = {
   'zh-CN': {
@@ -27,7 +28,7 @@ export default ({ identifier, export: expt }: IApiComponentProps) => {
   return (
     <>
       {data && (
-        <table style={{ marginTop: 24 }}>
+        <Table>
           <thead>
             <tr>
               <th>{texts.name}</th>
@@ -50,7 +51,7 @@ export default ({ identifier, export: expt }: IApiComponentProps) => {
               </tr>
             ))}
           </tbody>
-        </table>
+        </Table>
       )}
     </>
   );
