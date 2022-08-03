@@ -71,7 +71,15 @@ We can also use the `dumi-template` repository for initialization, visit https:/
 
 ### Start development
 
-Execute `npm run dev` or `npx dumi dev` to start debugging components or writing documents:
+```bash
+$ npm i
+$ npm start
+# or
+$ yarn
+$ yarn start
+```
+
+or execute `npx dumi dev` to start debugging components or writing documents:
 
 ![](https://gw.alipayobjects.com/zos/bmw-prod/a74b9643-b1db-48b0-83b1-67d15e13b6fc/k7a3sl0s_w1988_h1310.png)
 
