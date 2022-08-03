@@ -73,7 +73,7 @@ We can also use the `dumi-template` repository for initialization, visit https:/
 
 ```bash
 $ npm i
-$ npm run start
+$ npm start
 # or
 $ yarn
 $ yarn start

@@ -73,7 +73,7 @@ $ yarn create @umijs/dumi-app
 
 ```bash
 $ npm i
-$ npm run start
+$ npm start
 # or
 $ yarn
 $ yarn start
