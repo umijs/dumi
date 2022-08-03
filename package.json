@@ -58,6 +58,8 @@
     "trailingComma": "all"
   },
   "dependencies": {
+    "@umijs/core": "^4.0.9",
+    "umi": "^4.0.9",
     "v8-compile-cache": "2.3.0"
   },
   "devDependencies": {
