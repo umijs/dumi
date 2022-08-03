@@ -9,13 +9,13 @@ nav:
 
 ## `dumi-theme-default`
 
-- **Code address:** [dumi/packages/theme-default](https://github.com/umijs/dumi/tree/master/packages/theme-default)
+- **Code address:** [dumi/packages/theme-default](https://github.com/umijs/dumi/tree/1.x/packages/theme-default)
 - **Experience address:** [dumi official website](https://d.umijs.org)
 - **Theme introduction:** Built-in themes of dumi
 
 ## `dumi-theme-mobile`
 
-- **Code address:** [dumi/packages/theme-mobile](https://github.com/umijs/dumi/tree/master/packages/theme-mobile)
+- **Code address:** [dumi/packages/theme-mobile](https://github.com/umijs/dumi/tree/1.x/packages/theme-mobile)
 - **Experience address:** (Missing)
 - **Theme introduction:** The mobile terminal research and development theme based on the dumi default theme extension It will have the following characteristics:
   1. Sticky mobile phone simulation container + iframe preview demo
@@ -46,7 +46,7 @@ export default {
         { maxWidth: 375, mode: 'vw', options: [100, 750] },
         { minWidth: 376, maxWidth: 750, mode: 'vw', options: [100, 1500] },
       ],
-      // More rule: https://github.com/umijs/dumi/blob/master/packages/theme-mobile/src/typings/config.d.ts#L7
+      // More rule: https://github.com/umijs/dumi/blob/1.x/packages/theme-mobile/src/typings/config.d.ts#L7
     }
   }
 }
@@ -67,4 +67,4 @@ Markdown content
 
 If you have created a good dumi theme and want to share it with everyone.
 
-Please send your theme information through Pull Request [to this document](https://github.com/umijs/dumi/edit/master/docs/theme/index.md).
+Please send your theme information through Pull Request [to this document](https://github.com/umijs/dumi/edit/1.x/docs/theme/index.md).

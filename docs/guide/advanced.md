@@ -261,4 +261,4 @@ Like other built-in components, the `API` component also supports override throu
 
 You only need to create a `.dumi/theme/builtins/API.tsx` (local theme) or create a theme package containing `API.tsx`, combining with the `useApiData` hook exposed by `dumi/theme`, you can control the rendering of the API table yourself.
 
-Please refer to the [API component implementation](https://github.com/umijs/dumi/blob/master/packages/theme-default/src/builtins/API.tsx) of the dumi default theme.
+Please refer to the [API component implementation](https://github.com/umijs/dumi/blob/1.x/packages/theme-default/src/builtins/API.tsx) of the dumi default theme.

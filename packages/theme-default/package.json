@@ -11,11 +11,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/umijs/dumi",
-    "directory": "dumi-theme-default"
+    "url": "https://github.com/umijs/dumi",
+    "branch": "1.x",
+    "directory": "packages/theme-default"
   },
-  "homepage": "http://github.com/umijs/dumi",
-  "bugs": "http://github.com/umijs/dumi/issues",
+  "homepage": "https://github.com/umijs/dumi/tree/1.x/packages/theme-default#readme",
+  "bugs": "https://github.com/umijs/dumi/issues",
   "authors": [],
   "dependencies": {
     "lodash.throttle": "^4.1.1",

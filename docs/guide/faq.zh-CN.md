@@ -197,7 +197,7 @@ jobs:
 
 ## 开发阶段，如何配置 md 文件中的样式按需引入？
 
-dumi 会对 pkgName/es、pkgName/lib 做 alias，[详情见](https://github.com/umijs/dumi/blob/master/packages/preset-dumi/src/plugins/features/symlink.ts#L62)
+dumi 会对 pkgName/es、pkgName/lib 做 alias，[详情见](https://github.com/umijs/dumi/blob/1.x/packages/preset-dumi/src/plugins/features/symlink.ts#L62)
 
 配置 `extraBabelPlugins` (注意是 `.umirc.ts` 的配置项，不是 `.fatherrc.ts`)，加入 [`babel-plugin-import`](https://github.com/ant-design/babel-plugin-import)，根据目录结构合理配置
 

@@ -14,11 +14,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/umijs/dumi",
-    "directory": "dumi"
+    "url": "https://github.com/umijs/dumi",
+    "branch": "1.x",
+    "directory": "packages/dumi"
   },
-  "homepage": "http://github.com/umijs/dumi",
-  "bugs": "http://github.com/umijs/dumi/issues",
+  "homepage": "https://github.com/umijs/dumi/tree/1.x/packages/dumi#readme",
+  "bugs": "https://github.com/umijs/dumi/issues",
   "authors": [
     "ycjcl868 <chaolinjin@gmail.com> (https://github.com/ycjcl868)",
     "PeachScript <scdzwyxst@gmail.com> (https://github.com/PeachScript)"

@@ -247,7 +247,7 @@ export default (api) => {
         opts,
       ) => {
         // 从其他技术栈工具中获取 demo 渲染需要的内容，例如 dev server 的产物地址等
-        // 出参类型参考：https://github.com/umijs/dumi/blob/master/packages/preset-dumi/src/transformer/remark/previewer/builtin.ts#L50
+        // 出参类型参考：https://github.com/umijs/dumi/blob/1.x/packages/preset-dumi/src/transformer/remark/previewer/builtin.ts#L50
         return {
           // 传递给主题预览组件 Previewer 的 props
           previewerProps: {

@@ -11,7 +11,7 @@ In order to customize the theme, dumi provides a set of theme API, we can import
 
 You can get the configuration items of dumi, meta information of the current routing, international language options, etc.
 
-The detailed definition of context can be <a target="_blank" href="https://github.com/umijs/dumi/blob/master/packages/preset-dumi/src/theme/context.ts#L8">View source code</a>.
+The detailed definition of context can be <a target="_blank" href="https://github.com/umijs/dumi/blob/1.x/packages/preset-dumi/src/theme/context.ts#L8">View source code</a>.
 
 ## Link
 
@@ -76,7 +76,7 @@ export default props => {
 
 According to the configuration, automatically provide algolia's binding function or return the search results of the built-in search according to the keyword.
 
-For specific usage, please refer to the [SearchBar component](https://github.com/umijs/dumi/blob/master/packages/theme-default/src/components/SearchBar.tsx#L9) of dumi built-in themes.
+For specific usage, please refer to the [SearchBar component](https://github.com/umijs/dumi/blob/1.x/packages/theme-default/src/components/SearchBar.tsx#L9) of dumi built-in themes.
 
 ## useLocaleProps
 
@@ -87,7 +87,7 @@ For specific usage, please refer to the [SearchBar component](https://github.com
 
 Automatically filter and convert props according to locale to facilitate the realization of the internationalization of FrontMatter definitions. For example, `title.zh-CN` will be converted to `title` in Chinese language.
 
-For specific usage, please refer to the [Previewer component](https://github.com/umijs/dumi/blob/master/packages/theme-default/src/builtins/Previewer.tsx#L72) of dumi built-in themes.
+For specific usage, please refer to the [Previewer component](https://github.com/umijs/dumi/blob/1.x/packages/theme-default/src/builtins/Previewer.tsx#L72) of dumi built-in themes.
 
 ## useDemoUrl
 
@@ -101,7 +101,7 @@ Get the URL of the page that opened the demo separately. For example, `useDemoUr
 - **props:** `String`. The `identifier` parameter received by the subject `API` component, the unique identifier of the API
 - **return:** `Array`. Props property list
 
-To get the API metadata of the specified component, please refer to the [API component implementation](https://github.com/umijs/dumi/blob/master/packages/theme-default/src/builtins/API.tsx) of the dumi default theme.
+To get the API metadata of the specified component, please refer to the [API component implementation](https://github.com/umijs/dumi/blob/1.x/packages/theme-default/src/builtins/API.tsx) of the dumi default theme.
 
 ## useTSPlaygroundUrl
 

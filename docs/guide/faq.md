@@ -197,7 +197,7 @@ jobs:
 
 ## During the development, how to configure the styles in the md file in load-on-demand?
 
-Dumi will alias pkgName/es, pkgName/lib, [for details, see](https://github.com/umijs/dumi/blob/master/packages/preset-dumi/src/plugins/features/symlink.ts#L62)
+Dumi will alias pkgName/es, pkgName/lib, [for details, see](https://github.com/umijs/dumi/blob/1.x/packages/preset-dumi/src/plugins/features/symlink.ts#L62)
 
 Configure `extraBabelPlugins` (Attention, it is a configuration of `.umirc.ts`, not `.fatherrc.ts`), add [`babel-plugin-import`](https://github.com/ant-design/babel-plugin-import), and configure reasonably according to the directory structure.
 

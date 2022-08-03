@@ -11,7 +11,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/umijs/dumi"
+    "url": "https://github.com/umijs/dumi",
+    "branch": "1.x",
+    "directory": "packages/theme-mobile"
   },
   "keywords": [
     "dumi",
@@ -22,8 +24,8 @@
     "xiaohuoni <448627663@qq.com> (https://github.com/xiaohuoni)"
   ],
   "license": "MIT",
-  "bugs": "http://github.com/umijs/dumi/issues",
-  "homepage": "https://github.com/umijs/dumi/tree/master/packages/theme-mobile#readme",
+  "bugs": "https://github.com/umijs/dumi/issues",
+  "homepage": "https://github.com/umijs/dumi/tree/1.x/packages/theme-mobile#readme",
   "publishConfig": {
     "access": "public"
   },

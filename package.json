@@ -23,7 +23,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/umijs/dumi.git"
+    "url": "git+https://github.com/umijs/dumi.git",
+    "branch": "1.x"
   },
   "devDependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.6.0",

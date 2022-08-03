@@ -41,7 +41,7 @@ const FILE_LIST = [
       // replace same page url
       { type: 'replace', value: [/https:\/\/umijs\.org\/zh-CN\/config/g, ''] },
       // replace @primary-color to @c-primary (dumi theme variables)
-      { type: 'replace', value: ["'@primary-color': '#1DA57A',", "// 修改 dumi 默认主题的主色，更多变量详见：https://github.com/umijs/dumi/blob/master/packages/theme-default/src/style/variables.less\n    '@c-primary': '#1DA57A',"] },
+      { type: 'replace', value: ["'@primary-color': '#1DA57A',", "// 修改 dumi 默认主题的主色，更多变量详见：https://github.com/umijs/dumi/blob/1.x/packages/theme-default/src/style/variables.less\n    '@c-primary': '#1DA57A',"] },
     ],
   },
 ];

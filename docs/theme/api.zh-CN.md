@@ -9,7 +9,7 @@ toc: menu
 
 ## context
 
-可获取到 dumi 的配置项、当前路由的 meta 信息、国际化语言选择项等等，context 的详细定义可 <a target="_blank" href="https://github.com/umijs/dumi/blob/master/packages/preset-dumi/src/theme/context.ts#L8">查看源代码</a>
+可获取到 dumi 的配置项、当前路由的 meta 信息、国际化语言选择项等等，context 的详细定义可 <a target="_blank" href="https://github.com/umijs/dumi/blob/1.x/packages/preset-dumi/src/theme/context.ts#L8">查看源代码</a>
 
 ## Link
 
@@ -25,7 +25,7 @@ toc: menu
 
 ## useCodeSandbox
 
-- **参数：** 
+- **参数：**
   - opts：`Object`。主题 `Previewer` 组件接收到的 props
   - api：`String`。CodeSandbox创建 demo 时调用的API地址，默认值为`https://codesandbox.io/api/v1/sandboxes/define`
 - **返回：** `Function`。在 CodeSandbox.io 打开 demo 的执行函数
@@ -72,7 +72,7 @@ export default props => {
   - `Function`。如果用户开启 algolia，则返回 algolia 的绑定函数，将输入框的 CSS 选择器传入即可，后续筛选、呈现工作全部交给 algolia
   - `Array`。如果用户未开启 algolia，则返回基于关键字的内置搜索结果，目前只能搜索标题
 
-根据配置自动提供 algolia 的绑定函数或者根据关键字返回内置搜索的检索结果，具体用法可参考 dumi 内置主题的 [SearchBar 组件](https://github.com/umijs/dumi/blob/master/packages/theme-default/src/components/SearchBar.tsx#L9)。
+根据配置自动提供 algolia 的绑定函数或者根据关键字返回内置搜索的检索结果，具体用法可参考 dumi 内置主题的 [SearchBar 组件](https://github.com/umijs/dumi/blob/1.x/packages/theme-default/src/components/SearchBar.tsx#L9)。
 
 ## useLocaleProps
 
@@ -81,7 +81,7 @@ export default props => {
   - props：`Object`。需要过滤、转换的 props
 - **返回：** `Object`。过滤、转换之后的 props
 
-根据 locale 自动过滤、转换 props，便于实现国际化 FrontMatter 的定义，比如 `title.zh-CN` 在中文语言下会被转换为 `title`，具体示例可参考 dumi 内置主题的 [Previewer 组件](https://github.com/umijs/dumi/blob/master/packages/theme-default/src/builtins/Previewer.tsx#L72)。
+根据 locale 自动过滤、转换 props，便于实现国际化 FrontMatter 的定义，比如 `title.zh-CN` 在中文语言下会被转换为 `title`，具体示例可参考 dumi 内置主题的 [Previewer 组件](https://github.com/umijs/dumi/blob/1.x/packages/theme-default/src/builtins/Previewer.tsx#L72)。
 
 ## useDemoUrl
 
@@ -95,7 +95,7 @@ export default props => {
 - **参数：** `String`。主题 `API` 组件接收到的 `identifier` 参数，API 的唯一标识符
 - **返回：** `Array`。Props 属性列表
 
-获取指定组件的 API 元数据，可参考 dumi 默认主题的 [API 组件实现](https://github.com/umijs/dumi/blob/master/packages/theme-default/src/builtins/API.tsx)。
+获取指定组件的 API 元数据，可参考 dumi 默认主题的 [API 组件实现](https://github.com/umijs/dumi/blob/1.x/packages/theme-default/src/builtins/API.tsx)。
 
 ## useTSPlaygroundUrl
 

@@ -11,7 +11,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/umijs/dumi"
+    "url": "https://github.com/umijs/dumi",
+    "branch": "1.x",
+    "directory": "packages/create-dumi-lib"
   },
   "keywords": [
     "dumi",
@@ -22,8 +24,8 @@
     "Peach <scdzwyxst@gmail.com> (https://github.com/PeachScript)"
   ],
   "license": "MIT",
-  "bugs": "http://github.com/umijs/dumi/issues",
-  "homepage": "https://github.com/umijs/dumi/tree/master/packages/create-dumi-lib#readme",
+  "bugs": "https://github.com/umijs/dumi/issues",
+  "homepage": "https://github.com/umijs/dumi/tree/1.x/packages/create-dumi-lib#readme",
   "publishConfig": {
     "access": "public"
   },

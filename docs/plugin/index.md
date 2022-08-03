@@ -258,7 +258,7 @@ export default (api) => {
       ) => {
         // implementation...
 
-        // output type refer: https://github.com/umijs/dumi/blob/master/packages/preset-dumi/src/transformer/remark/previewer/builtin.ts#L50
+        // output type refer: https://github.com/umijs/dumi/blob/1.x/packages/preset-dumi/src/transformer/remark/previewer/builtin.ts#L50
         return {
           // props for Previewer component
           previewerProps: {

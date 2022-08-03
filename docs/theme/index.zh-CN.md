@@ -9,13 +9,13 @@ nav:
 
 ## `dumi-theme-default`
 
-- **仓库地址：** [dumi/packages/theme-default](https://github.com/umijs/dumi/tree/master/packages/theme-default)
+- **仓库地址：** [dumi/packages/theme-default](https://github.com/umijs/dumi/tree/1.x/packages/theme-default)
 - **体验地址：** [dumi 官网](https://d.umijs.org)
 - **主题简介：** dumi 的内置主题
 
 ## `dumi-theme-mobile`
 
-- **仓库地址：** [dumi/packages/theme-mobile](https://github.com/umijs/dumi/tree/master/packages/theme-mobile)
+- **仓库地址：** [dumi/packages/theme-mobile](https://github.com/umijs/dumi/tree/1.x/packages/theme-mobile)
 - **体验地址：**（缺失）
 - **主题简介：** 基于 dumi 默认主题扩展的移动端研发主题，特性如下：
   1. sticky 手机模拟容器 + iframe 预览 demo
@@ -44,7 +44,7 @@ export default {
         { maxWidth: 375, mode: 'vw', options: [100, 750] },
         { minWidth: 376, maxWidth: 750, mode: 'vw', options: [100, 1500] },
       ],
-      // 更多 rule 配置访问 https://github.com/umijs/dumi/blob/master/packages/theme-mobile/src/typings/config.d.ts#L7
+      // 更多 rule 配置访问 https://github.com/umijs/dumi/blob/1.x/packages/theme-mobile/src/typings/config.d.ts#L7
     }
   }
 }
@@ -69,4 +69,4 @@ Markdown 正文
 
 ## 虚位以待
 
-如果你创建了不错的 dumi 主题、想分享给大家使用，请将你的主题信息通过 Pull Request [更新到此文档](https://github.com/umijs/dumi/edit/master/docs/theme/index.zh-CN.md)。
+如果你创建了不错的 dumi 主题、想分享给大家使用，请将你的主题信息通过 Pull Request [更新到此文档](https://github.com/umijs/dumi/edit/1.x/docs/theme/index.zh-CN.md)。
