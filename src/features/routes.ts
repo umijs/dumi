@@ -4,7 +4,7 @@ import path from 'path';
 import type { IRoute } from 'umi';
 
 export default (api: IApi) => {
-  api.describe({ key: 'dumi-routes' });
+  api.describe({ key: 'dumi:routes' });
 
   // disable umi built-in convention routes by a non-existent path
   api.modifyConfig((memo) => {
@@ -17,7 +17,16 @@ export default (api: IApi) => {
 
   // generate dumi routes
   api.modifyRoutes(() => {
-    const routes: Record<string, IRoute> = {};
+    const routes: Record<string, IRoute> = {
+      // add context layout
+      'dumi-context-layout': {
+        id: 'dumi-context-layout',
+        path: '/',
+        file: '@/.umi/dumi/Layout.tsx',
+        absPath: '/',
+        isLayout: true,
+      },
+    };
     const { docDirs } = api.config.resolve;
 
     // generator normal docs routes
@@ -31,6 +40,7 @@ export default (api: IApi) => {
       Object.entries(dirRoutes).forEach(([key, route]) => {
         // prefix id with dir
         route.id = `${dir}/${key}`;
+        route.parentId = 'dumi-context-layout';
 
         // use absolute path to avoid umi prefix with conventionRoutes.base
         route.file = path.resolve(base, route.file);
