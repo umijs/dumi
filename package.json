@@ -58,6 +58,7 @@
     "trailingComma": "all"
   },
   "dependencies": {
+    "@types/hast": "^2.3.4",
     "@umijs/core": "^4.0.9",
     "estree-util-to-js": "^1.1.0",
     "hast-util-to-estree": "^2.1.0",
