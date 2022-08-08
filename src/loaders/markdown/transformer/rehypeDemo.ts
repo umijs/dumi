@@ -3,7 +3,7 @@ import type { Element, Root } from 'hast';
 import path from 'path';
 import { winPath } from 'umi/plugin-utils';
 import type { Transformer } from 'unified';
-import type { IMdTransformerOptions, IMdTransformerResult } from './';
+import type { IMdTransformerOptions, IMdTransformerResult } from '.';
 
 let visit: typeof import('unist-util-visit').visit;
 let SKIP: typeof import('unist-util-visit').SKIP;
@@ -15,7 +15,7 @@ let toString: typeof import('mdast-util-to-string').toString;
   ({ toString } = await import('mdast-util-to-string'));
 })();
 
-type IRemarkDemoOptions = Pick<
+type IRehypeDemoOptions = Pick<
   IMdTransformerOptions,
   'techStacks' | 'cwd' | 'fileAbsPath'
 >;
@@ -57,8 +57,8 @@ function getCodeId(
   return `${prefix}-demo-${codeIndex}`;
 }
 
-export default function remarkDemo(
-  opts: IRemarkDemoOptions,
+export default function rehypeDemo(
+  opts: IRehypeDemoOptions,
 ): Transformer<Root> {
   return (tree, vFile) => {
     let index = 0;
