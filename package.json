@@ -22,7 +22,7 @@
     "lint:css": "stylelint \"{src,test}/**/*.{css,less}\"",
     "lint:es": "eslint \"{src,test}/**/*.{js,jsx,ts,tsx}\"",
     "prepublishOnly": "npm run build",
-    "test": "jest"
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules pnpm jest"
   },
   "commitlint": {
     "extends": [
@@ -82,6 +82,7 @@
     "@types/react": "^18.0.16",
     "@umijs/lint": "^4.0.9",
     "@umijs/test": "^4.0.9",
+    "cross-env": "^7.0.3",
     "eslint": "^8.20.0",
     "father": "^4.0.0-rc.8",
     "husky": "^8.0.1",
