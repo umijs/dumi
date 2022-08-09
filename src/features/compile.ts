@@ -37,6 +37,11 @@ export default (api: IApi) => {
       .loader(loaderPath)
       .options({ techStacks, cwd: api.cwd } as IMdLoaderOptions);
 
+    memo.plugin('fastRefresh').tap(([params]) => [{
+      ...params,
+      include: /\.([cm]js|[jt]sx?|flow|md)$/i
+    }])
+
     return memo;
   });
 };

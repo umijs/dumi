@@ -34,7 +34,12 @@ export default {
         null,
         `import { DumiDemo } from 'dumi/theme';
 
-export default () => ${ret.content}`,
+// 这里必须是函数导出 否则热更新不生效
+function DumiMarkdownContent() {
+  return ${ret.content};
+}
+
+export default DumiMarkdownContent;`,
       );
     }
   }, cb);
