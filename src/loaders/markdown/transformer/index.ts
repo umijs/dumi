@@ -36,6 +36,6 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
 
   return {
     content: String(result.value),
-    data: result.data as IMdTransformerResult['meta'],
+    meta: result.data as IMdTransformerResult['meta'],
   };
 };

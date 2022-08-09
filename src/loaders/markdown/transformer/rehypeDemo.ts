@@ -54,7 +54,7 @@ function getCodeId(
     entityName ||
     getRoutePathFromFsPath(path.relative(cwd, fileAbsPath)).replace(/\//g, '-');
 
-  return `${prefix}-demo-${codeIndex}`;
+  return [prefix, 'demo', String(codeIndex)].filter(Boolean).join('-');
 }
 
 export default function rehypeDemo(

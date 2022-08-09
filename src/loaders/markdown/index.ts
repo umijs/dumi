@@ -26,7 +26,7 @@ export default {
   '{{{id}}}': {{{component}}},
   {{/demos}}
 }`,
-          { demos: ret.data.demos },
+          { demos: ret.meta.demos },
         ),
       );
     } else {
