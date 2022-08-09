@@ -1,5 +1,6 @@
 import type { IDumiTechStack } from '@/types';
 import rehypeDemo from './rehypeDemo';
+import rehypeIsolation from './rehypeIsolation';
 import rehypeJsxify from './rehypeJsxify';
 import rehypeStrip from './rehypeStrip';
 
@@ -33,6 +34,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
       cwd: opts.cwd,
       fileAbsPath: opts.fileAbsPath,
     })
+    .use(rehypeIsolation)
     .use(rehypeJsxify)
     .process(raw);
 
