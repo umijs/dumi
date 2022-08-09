@@ -59,8 +59,8 @@ jobs:
       - name: Install dependencies
         run: pnpm i
 
-      - name: Type check
-        run: pnpm tsc --noEmit
+      - name: Lint code
+        run: pnpm lint:es
 
       - name: Run build
         run: pnpm build
