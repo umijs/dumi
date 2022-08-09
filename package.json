@@ -22,7 +22,7 @@
     "lint:css": "stylelint \"{src,test}/**/*.{css,less}\"",
     "lint:es": "eslint \"{src,test}/**/*.{js,jsx,ts,tsx}\"",
     "prepublishOnly": "npm run build",
-    "test": "jest"
+    "test": "NODE_OPTIONS=--experimental-vm-modules pnpm jest"
   },
   "commitlint": {
     "extends": [
