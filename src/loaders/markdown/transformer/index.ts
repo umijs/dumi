@@ -1,6 +1,7 @@
 import type { IDumiTechStack } from '@/types';
 import rehypeDemo from './rehypeDemo';
 import rehypeJsxify from './rehypeJsxify';
+import rehypeStrip from './rehypeStrip';
 
 export interface IMdTransformerOptions {
   cwd: string;
@@ -26,6 +27,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     .use(remarkGfm)
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeRaw)
+    .use(rehypeStrip)
     .use(rehypeDemo, {
       techStacks: opts.techStacks,
       cwd: opts.cwd,
