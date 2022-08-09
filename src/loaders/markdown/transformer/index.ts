@@ -1,6 +1,7 @@
 import type { IDumiTechStack } from '@/types';
 import rehypeDemo from './rehypeDemo';
 import rehypeJsxify from './rehypeJsxify';
+import rehypeImg from './rehypeImg';
 
 export interface IMdTransformerOptions {
   cwd: string;
@@ -32,6 +33,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
       fileAbsPath: opts.fileAbsPath,
     })
     .use(rehypeJsxify)
+    .use(rehypeImg)
     .process(raw);
 
   return {

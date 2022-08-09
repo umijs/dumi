@@ -62,6 +62,8 @@
     "@types/hast": "^2.3.4",
     "@umijs/core": "^4.0.9",
     "estree-util-to-js": "^1.1.0",
+    "hast-util-has-property": "^2.0.0",
+    "hast-util-is-element": "^2.1.2",
     "hast-util-to-estree": "^2.1.0",
     "mdast-util-to-string": "^3.1.0",
     "rehype-raw": "^6.1.1",
