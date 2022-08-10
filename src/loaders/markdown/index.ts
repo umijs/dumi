@@ -34,7 +34,8 @@ export default {
         null,
         `import { DumiDemo } from 'dumi/theme';
 
-// 这里必须是函数导出 否则热更新不生效
+// export named function for fastRefresh
+// ref: https://github.com/pmmmwh/react-refresh-webpack-plugin/blob/main/docs/TROUBLESHOOTING.md#edits-always-lead-to-full-reload
 function DumiMarkdownContent() {
   return ${ret.content};
 }
