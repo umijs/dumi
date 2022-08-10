@@ -34,7 +34,13 @@ export default {
         null,
         `import { DumiDemo } from 'dumi/theme';
 
-export default () => ${ret.content}`,
+// export named function for fastRefresh
+// ref: https://github.com/pmmmwh/react-refresh-webpack-plugin/blob/main/docs/TROUBLESHOOTING.md#edits-always-lead-to-full-reload
+function DumiMarkdownContent() {
+  return ${ret.content};
+}
+
+export default DumiMarkdownContent;`,
       );
     }
   }, cb);
