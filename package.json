@@ -46,17 +46,6 @@
       "prettier --parser=typescript --write"
     ]
   },
-  "prettier": {
-    "pluginSearchDirs": false,
-    "plugins": [
-      "prettier-plugin-organize-imports",
-      "prettier-plugin-packagejson"
-    ],
-    "printWidth": 80,
-    "proseWrap": "never",
-    "singleQuote": true,
-    "trailingComma": "all"
-  },
   "dependencies": {
     "@swc/core": "^1.2.224",
     "@types/hast": "^2.3.4",
