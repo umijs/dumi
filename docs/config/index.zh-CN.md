@@ -217,7 +217,7 @@ export default {
 配置 dumi 嗅探的文档目录，dumi 会尝试在配置的目录中递归寻找 markdown 文件，默认值为 `docs` 目录、`src` 目录（普通项目），如果环境为 lerna 项目，则 `src` 目录变为 `packages/pkg/src` 目录，通常不需要配置，除非自动嗅探出现了『误伤』。
 
 注意：
-  - 默认的`src`和`docs`目录会自动排除`node_modules`和`fixtures`目录。
+  - 默认的 `src` 和 `docs` 目录会自动排除 `node_modules` 和 `fixtures` 目录。
 
 #### resolve.excludes
 
