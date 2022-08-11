@@ -51,20 +51,6 @@ root.render(<App />);`;
   }
 };
 
-/**
- * 如果是 react 17 以上可以不用写import React from 'react';
- * 但是我们用的模板还有问题，所以这里加一下，以后一定修
- * @param content
- * @returns
- */
-const injectReact = (content: string) => {
-  if (content.includes("import React from 'react';")) {
-    return content;
-  }
-  return `import React from 'react';
-${content}`;
-};
-
 function getTextContent(raw: string) {
   const elm = document.createElement('span');
 
@@ -108,7 +94,8 @@ function getCSBData(opts: IPreviewerComponentProps) {
   files['sandbox.config.json'] = {
     content: JSON.stringify(
       {
-        template: isTSX ? 'create-react-app-typescript' : 'create-react-app',
+        // 79e fix: codesandbox template create-react-app
+        template: 'create-react-app',
       },
       null,
       2,
@@ -121,7 +108,7 @@ function getCSBData(opts: IPreviewerComponentProps) {
     content: JSON.stringify(
       {
         name: opts.title,
-        description: getTextContent(opts.description) || 'An auto-generated demo by dumi',
+        description: getTextContent(opts.description ||  'An auto-generated demo by dumi'),
         main: entryFileName,
         dependencies: deps,
         // add TypeScript dependency if required, must in devDeps to avoid csb compile error
@@ -152,7 +139,7 @@ function getCSBData(opts: IPreviewerComponentProps) {
   Object.entries(opts.sources).forEach(([filename, { tsx, jsx, content }]) => {
     // handle primary content
     files[filename === '_' ? appFileName : filename] = {
-      content: injectReact(tsx || jsx || content),
+      content: tsx || jsx || content,
       isBinary: false,
     };
   });
