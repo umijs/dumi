@@ -92,7 +92,9 @@ export default function rehypeDemo(
 
             demos.push({
               id: codeId,
-              component: `React.lazy(() => import('${winPath(codeAbsPath)}'))`,
+              component: `React.lazy(() => import('${winPath(
+                codeAbsPath,
+              )}?techStack=${techStack.name}'))`,
             });
           } else {
             // code block demo

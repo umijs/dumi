@@ -1,3 +1,4 @@
+import type { IDemoLoaderOptions } from '@/loaders/demo';
 import type { IMdLoaderOptions } from '@/loaders/markdown';
 import ReactTechStack from '@/techStacks/react';
 import type { IApi, IDumiTechStack } from '@/types';
@@ -16,7 +17,7 @@ export default (api: IApi) => {
     });
 
     memo.module
-      .rule('dumi')
+      .rule('dumi-md')
       .type('javascript/auto')
       .test(/\.md$/)
       // get demo index for each markdown file
@@ -27,7 +28,7 @@ export default (api: IApi) => {
       .options({ techStacks, cwd: api.cwd, mode: 'demos' } as IMdLoaderOptions)
       .end()
       .end()
-      // get demo component for each markdown file
+      // get page component for each markdown file
       .oneOf('md')
       .use('babel-loader')
       .loader(babelInUmi.loader)
@@ -37,7 +38,18 @@ export default (api: IApi) => {
       .loader(loaderPath)
       .options({ techStacks, cwd: api.cwd } as IMdLoaderOptions);
 
-    // only development handing
+    // get pre-transform result for each external demo component
+    memo.module
+      .rule('dumi-demo')
+      .type('javascript/auto')
+      .test(/\..+$/)
+      .enforce('pre')
+      .resourceQuery(/techStack/)
+      .use('demo-loader')
+      .loader(require.resolve('../loaders/demo'))
+      .options({ techStacks, cwd: api.cwd } as IDemoLoaderOptions);
+
+    // enable fast-refresh for md component in development mode
     if (api.env === 'development') {
       memo.plugin('fastRefresh').tap(([params]) => [
         {
