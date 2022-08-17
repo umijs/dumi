@@ -3,7 +3,10 @@ import { getSchemas } from './schema';
 
 export default (api: IApi) => {
   const configDefaults: Record<string, any> = {
-    resolve: { docDirs: ['docs'] },
+    resolve: {
+      docDirs: ['docs'],
+      entityDirs: [{ type: 'component', dir: 'src' }],
+    },
   };
 
   const schemas = getSchemas();

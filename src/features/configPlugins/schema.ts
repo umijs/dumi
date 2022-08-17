@@ -9,6 +9,9 @@ export function getSchemas(): Record<string, (Joi: JoiRoot) => any> {
     resolve: (Joi) =>
       Joi.object({
         docDirs: Joi.array().items(Joi.string()).optional(),
-      }),
+        entityDirs: Joi.array()
+          .items(Joi.object({ type: Joi.string(), dir: Joi.string() }))
+          .optional(),
+      }).optional(),
   };
 }

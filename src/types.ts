@@ -6,6 +6,7 @@ type IUmiConfig = IUmiApi['config'];
 export interface IDumiConfig extends IUmiConfig {
   resolve: {
     docDirs: string[];
+    entityDirs: { type: string; dir: string }[];
   };
 }
 
