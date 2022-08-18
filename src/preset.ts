@@ -11,7 +11,6 @@ export default (api: IApi) => {
       require.resolve('./features/compile'),
       require.resolve('./features/routes'),
       require.resolve('./features/theme'),
-      require.resolve('./features/tmpFiles'),
     ],
   };
 };

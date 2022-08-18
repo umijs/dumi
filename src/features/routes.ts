@@ -83,6 +83,6 @@ export default (api: IApi) => {
   // add context layout
   api.addLayouts(() => ({
     id: CTX_LAYOUT_ID,
-    file: '@/.umi/dumi/Layout.tsx',
+    file: '@/.umi/dumi/theme/ContextWrapper.tsx',
   }));
 };
