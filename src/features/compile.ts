@@ -36,7 +36,11 @@ export default (api: IApi) => {
       .end()
       .use('md-loader')
       .loader(loaderPath)
-      .options({ techStacks, cwd: api.cwd } as IMdLoaderOptions);
+      .options({
+        techStacks,
+        cwd: api.cwd,
+        builtins: api.service.themeData.builtins,
+      } as IMdLoaderOptions);
 
     // get pre-transform result for each external demo component
     memo.module

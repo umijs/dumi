@@ -1,3 +1,5 @@
+import type { IThemeLoadResult } from '@/features/theme/loader';
+import type { IModify } from '@umijs/core';
 import type { Element } from 'hast';
 import type { IApi as IUmiApi } from 'umi';
 
@@ -40,8 +42,13 @@ export abstract class IDumiTechStack {
 export type IApi = IUmiApi & {
   config: IDumiConfig;
   userConfig: IDumiConfig;
+  service: IUmiApi['service'] & { themeData: IThemeLoadResult };
   /**
    * register a new tech stack
    */
   registerTechStack: (fn: () => IDumiTechStack) => void;
+  /**
+   * modify original theme data
+   */
+  modifyTheme: IModify<IThemeLoadResult, null>;
 };

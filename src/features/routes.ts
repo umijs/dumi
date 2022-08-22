@@ -32,7 +32,26 @@ export default (api: IApi) => {
       },
       {},
     );
+    const { DocLayout } = api.service.themeData.layouts;
     const { docDirs, entityDirs } = api.config.resolve;
+    const layoutRouteValues = Object.values(routes);
+    const lastLayoutId = layoutRouteValues.find(({ id }) =>
+      layoutRouteValues.every(({ parentId }) => id !== parentId),
+    )!.id;
+    let docLayoutId = lastLayoutId;
+
+    // handle DocLayout from theme package
+    if (DocLayout) {
+      docLayoutId = DocLayout.specifier;
+      routes[DocLayout.specifier] = {
+        id: DocLayout.specifier,
+        path: '/',
+        file: DocLayout.source,
+        parentId: lastLayoutId,
+        absPath: '/',
+        isLayout: true,
+      };
+    }
 
     // generator normal docs routes
     docDirs.forEach((dir: string) => {
@@ -45,7 +64,7 @@ export default (api: IApi) => {
       Object.entries(dirRoutes).forEach(([key, route]) => {
         // prefix id with dir
         route.id = `${dir}/${key}`;
-        route.parentId = CTX_LAYOUT_ID;
+        route.parentId = docLayoutId;
 
         // use absolute path to avoid umi prefix with conventionRoutes.base
         route.file = path.resolve(base, route.file);
@@ -71,7 +90,7 @@ export default (api: IApi) => {
           id: routeId,
           path: routePath,
           absPath: routePath,
-          parentId: CTX_LAYOUT_ID,
+          parentId: docLayoutId,
           file: path.resolve(base, file),
         };
       });
@@ -80,9 +99,23 @@ export default (api: IApi) => {
     return routes;
   });
 
-  // add context layout
-  api.addLayouts(() => ({
-    id: CTX_LAYOUT_ID,
-    file: '@/.umi/dumi/theme/ContextWrapper.tsx',
-  }));
+  // add outer layout
+  api.addLayouts(() => {
+    const layouts = [
+      {
+        id: CTX_LAYOUT_ID,
+        file: '@/.umi/dumi/theme/ContextWrapper.tsx',
+      },
+    ];
+    const { GlobalLayout } = api.service.themeData.layouts;
+
+    if (GlobalLayout) {
+      layouts.unshift({
+        id: GlobalLayout.specifier,
+        file: GlobalLayout.source,
+      });
+    }
+
+    return layouts;
+  });
 };
