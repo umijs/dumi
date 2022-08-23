@@ -14,3 +14,6 @@ export default () => <>Hello first code block demo!</>;
 modules
 
 <code src="./demo.tsx"></code>
+
+
+<embed src="./hello/index.md"></embed>

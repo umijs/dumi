@@ -1,6 +1,7 @@
 import type { IDumiTechStack } from '@/types';
 import type { DataMap } from 'vfile';
 import rehypeDemo from './rehypeDemo';
+import rehypeEmbed from './rehypeEmbed';
 import rehypeIsolation from './rehypeIsolation';
 import rehypeJsxify from './rehypeJsxify';
 import rehypeRaw from './rehypeRaw';
@@ -46,6 +47,9 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     .use(remarkFrontmatter)
     .use(remarkBreaks)
     .use(remarkGfm)
+    .use(rehypeEmbed, {
+      fileAbsPath: opts.fileAbsPath,
+    })
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeRaw)
     .use(rehypeStrip)
