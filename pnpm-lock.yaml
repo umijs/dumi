@@ -17,6 +17,7 @@ specifiers:
   eslint: ^8.20.0
   estree-util-to-js: ^1.1.0
   father: ^4.0.0-rc.8
+  hast-util-raw: ^7.2.2
   hast-util-to-estree: ^2.1.0
   husky: ^8.0.1
   jest: ^27.0.0
@@ -27,7 +28,6 @@ specifiers:
   prettier-plugin-organize-imports: ^3.0.0
   prettier-plugin-packagejson: ^2.2.18
   react: ^18.2.0
-  rehype-raw: ^6.1.1
   remark-gfm: ^3.0.1
   remark-parse: ^10.0.1
   remark-rehype: ^10.1.0
@@ -43,10 +43,10 @@ dependencies:
   '@types/hast': 2.3.4
   '@umijs/core': 4.0.9
   estree-util-to-js: 1.1.0
+  hast-util-raw: 7.2.2
   hast-util-to-estree: 2.1.0
   mdast-util-to-string: 3.1.0
   pluralize: 8.0.0
-  rehype-raw: 6.1.1
   remark-gfm: 3.0.1
   remark-parse: 10.0.1
   remark-rehype: 10.1.0
@@ -8582,14 +8582,6 @@ packages:
   /regexpp/3.2.0:
     resolution: {integrity: sha512-pq2bWo9mVD43nbts2wGv17XLiNLya+GklZ8kaDLV2Z08gDCsGpnKn9BFMepvWuHCbyVvY7J5o5+BVvoQbmlJLg==}
     engines: {node: '>=8'}
-
-  /rehype-raw/6.1.1:
-    resolution: {integrity: sha512-d6AKtisSRtDRX4aSPsJGTfnzrX2ZkHQLE5kiUuGOeEoLpbEulFF4hj0mLPbsa+7vmguDKOVVEQdHKDSwoaIDsQ==}
-    dependencies:
-      '@types/hast': 2.3.4
-      hast-util-raw: 7.2.2
-      unified: 10.1.2
-    dev: false
 
   /remark-gfm/3.0.1:
     resolution: {integrity: sha512-lEFDoi2PICJyNrACFOfDD3JlLkuSbOa5Wd8EPt06HUdptv8Gn0bxYTdbU/XXQ3swAPkEaGxxPN9cbnMHvVu1Ig==}

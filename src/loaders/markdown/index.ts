@@ -43,6 +43,7 @@ export default {
     } else {
       cb(
         null,
+        // import all builtin components, may be used by markdown content
         `${Object.values(opts.builtins)
           .map((item) => `import ${item.specifier} from '${item.source}';`)
           .join('\n')}

@@ -2,6 +2,7 @@ import type { IDumiTechStack } from '@/types';
 import rehypeDemo from './rehypeDemo';
 import rehypeIsolation from './rehypeIsolation';
 import rehypeJsxify from './rehypeJsxify';
+import rehypeRaw from './rehypeRaw';
 import rehypeStrip from './rehypeStrip';
 
 export interface IMdTransformerOptions {
@@ -22,7 +23,6 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
   const { default: remarkParse } = await import('remark-parse');
   const { default: remarkGfm } = await import('remark-gfm');
   const { default: remarkRehype } = await import('remark-rehype');
-  const { default: rehypeRaw } = await import('rehype-raw');
   const result = await unified()
     .use(remarkParse)
     .use(remarkGfm)
