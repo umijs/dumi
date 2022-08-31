@@ -5,6 +5,17 @@ import rehypeJsxify from './rehypeJsxify';
 import rehypeRaw from './rehypeRaw';
 import rehypeStrip from './rehypeStrip';
 
+declare module 'hast' {
+  interface Element {
+    // support pass props for custom react component
+    // use simple string value on node, then rehypeJsxify will convert it to ast
+    JSXAttributes?: Array<
+      | { type: 'JSXAttribute'; name: string; value: string }
+      | { type: 'JSXSpreadAttribute'; argument: string }
+    >;
+  }
+}
+
 export interface IMdTransformerOptions {
   cwd: string;
   fileAbsPath: string;

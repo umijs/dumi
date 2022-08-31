@@ -49,8 +49,10 @@
   "dependencies": {
     "@swc/core": "^1.2.224",
     "@types/hast": "^2.3.4",
+    "@umijs/bundler-utils": "^4.0.9",
     "@umijs/core": "^4.0.9",
     "estree-util-to-js": "^1.1.0",
+    "estree-util-visit": "^1.2.0",
     "hast-util-raw": "^7.2.2",
     "hast-util-to-estree": "^2.1.0",
     "mdast-util-to-string": "^3.1.0",
