@@ -85,4 +85,4 @@ $ yarn start
 
 ### 构建及部署
 
-执行 `npm run docs:build` (组件开发脚手架) / `npm run build`（静态站点脚手架), 或 `npx dumi build` 即可对我们的文档站点做构建，构建产物默认会输出到 `dist` 目录下，我们可以将 `dist` 目录部署在 now.sh、GitHub Pages 等静态站点托管平台或者某台服务器上。
+执行 `npm run docs:build` (组件开发脚手架) / `npm run build`（静态站点脚手架), 或 `npx dumi build` 即可对我们的文档站点做构建，构建产物默认会输出到 `dist` 目录下，我们可以将 `dist` 目录部署在 Vercel、GitHub Pages 等静态站点托管平台或者某台服务器上。
