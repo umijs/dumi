@@ -57,6 +57,7 @@
     "hast-util-to-estree": "^2.1.0",
     "mdast-util-to-string": "^3.1.0",
     "pluralize": "^8.0.0",
+    "remark-breaks": "^3.0.2",
     "remark-frontmatter": "^4.0.1",
     "remark-gfm": "^3.0.1",
     "remark-parse": "^10.0.1",

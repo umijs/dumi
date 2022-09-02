@@ -30,6 +30,7 @@ specifiers:
   prettier-plugin-organize-imports: ^3.0.0
   prettier-plugin-packagejson: ^2.2.18
   react: ^18.2.0
+  remark-breaks: ^3.0.2
   remark-frontmatter: ^4.0.1
   remark-gfm: ^3.0.1
   remark-parse: ^10.0.1
@@ -53,6 +54,7 @@ dependencies:
   hast-util-to-estree: 2.1.0
   mdast-util-to-string: 3.1.0
   pluralize: 8.0.0
+  remark-breaks: 3.0.2
   remark-frontmatter: 4.0.1
   remark-gfm: 3.0.1
   remark-parse: 10.0.1
@@ -8622,6 +8624,14 @@ packages:
   /regexpp/3.2.0:
     resolution: {integrity: sha512-pq2bWo9mVD43nbts2wGv17XLiNLya+GklZ8kaDLV2Z08gDCsGpnKn9BFMepvWuHCbyVvY7J5o5+BVvoQbmlJLg==}
     engines: {node: '>=8'}
+
+  /remark-breaks/3.0.2:
+    resolution: {integrity: sha512-x96YDJ9X+Ry0/JNZFKfr1hpcAKvGYWfUTszxY9RbxKEqq6uzPPoLCuHdZsLPZZUdAv3nCROyc7FPrQLWr2rxyw==}
+    dependencies:
+      '@types/mdast': 3.0.10
+      unified: 10.1.2
+      unist-util-visit: 4.1.0
+    dev: false
 
   /remark-frontmatter/4.0.1:
     resolution: {integrity: sha512-38fJrB0KnmD3E33a5jZC/5+gGAC2WKNiPw1/fdXJvijBlhA7RCsvJklrYJakS0HedninvaCYW8lQGf9C918GfA==}

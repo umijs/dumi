@@ -38,11 +38,13 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
   const { unified } = await import('unified');
   const { default: remarkParse } = await import('remark-parse');
   const { default: remarkFrontmatter } = await import('remark-frontmatter');
+  const { default: remarkBreaks } = await import('remark-breaks');
   const { default: remarkGfm } = await import('remark-gfm');
   const { default: remarkRehype } = await import('remark-rehype');
   const result = await unified()
     .use(remarkParse)
     .use(remarkFrontmatter)
+    .use(remarkBreaks)
     .use(remarkGfm)
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeRaw)
