@@ -3,7 +3,7 @@ import type { Element, Root } from 'hast';
 import path from 'path';
 import { winPath } from 'umi/plugin-utils';
 import type { Transformer } from 'unified';
-import type { IMdTransformerOptions, IMdTransformerResult } from '.';
+import type { IMdTransformerOptions } from '.';
 
 let visit: typeof import('unist-util-visit').visit;
 let SKIP: typeof import('unist-util-visit').SKIP;
@@ -62,8 +62,8 @@ export default function rehypeDemo(
 ): Transformer<Root> {
   return (tree, vFile) => {
     let index = 0;
-    const demos: IMdTransformerResult['meta']['demos'] = [];
 
+    vFile.data.demos = [];
     visit<Root, 'element'>(tree, 'element', (node) => {
       if (
         // BREAKING CHANGE: code tag must occupy a single line
@@ -90,7 +90,7 @@ export default function rehypeDemo(
               codeNode.properties!.src! as string,
             );
 
-            demos.push({
+            vFile.data.demos!.push({
               id: codeId,
               component: `React.lazy(() => import('${winPath(
                 codeAbsPath,
@@ -98,7 +98,7 @@ export default function rehypeDemo(
             });
           } else {
             // code block demo
-            demos.push({
+            vFile.data.demos!.push({
               id: codeId,
               component: techStack.transformCode(codeValue, {
                 type: 'code-block',
@@ -116,7 +116,5 @@ export default function rehypeDemo(
         }
       }
     });
-
-    vFile.data.demos = demos;
   };
 }

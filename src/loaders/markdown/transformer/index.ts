@@ -1,4 +1,5 @@
 import type { IDumiTechStack } from '@/types';
+import type { DataMap } from 'vfile';
 import rehypeDemo from './rehypeDemo';
 import rehypeIsolation from './rehypeIsolation';
 import rehypeJsxify from './rehypeJsxify';
@@ -16,6 +17,12 @@ declare module 'hast' {
   }
 }
 
+declare module 'vfile' {
+  interface DataMap {
+    demos: { id: string; component: string }[];
+  }
+}
+
 export interface IMdTransformerOptions {
   cwd: string;
   fileAbsPath: string;
@@ -24,18 +31,18 @@ export interface IMdTransformerOptions {
 
 export interface IMdTransformerResult {
   content: string;
-  meta: {
-    demos: { id: string; component: string }[];
-  };
+  meta: DataMap;
 }
 
 export default async (raw: string, opts: IMdTransformerOptions) => {
   const { unified } = await import('unified');
   const { default: remarkParse } = await import('remark-parse');
+  const { default: remarkFrontmatter } = await import('remark-frontmatter');
   const { default: remarkGfm } = await import('remark-gfm');
   const { default: remarkRehype } = await import('remark-rehype');
   const result = await unified()
     .use(remarkParse)
+    .use(remarkFrontmatter)
     .use(remarkGfm)
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeRaw)
@@ -51,6 +58,6 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
 
   return {
     content: String(result.value),
-    meta: result.data as IMdTransformerResult['meta'],
+    meta: result.data,
   };
 };

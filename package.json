@@ -57,13 +57,15 @@
     "hast-util-to-estree": "^2.1.0",
     "mdast-util-to-string": "^3.1.0",
     "pluralize": "^8.0.0",
+    "remark-frontmatter": "^4.0.1",
     "remark-gfm": "^3.0.1",
     "remark-parse": "^10.0.1",
     "remark-rehype": "^10.1.0",
     "umi": "^4.0.9",
     "unified": "^10.1.2",
     "unist-util-visit": "^4.1.0",
-    "v8-compile-cache": "2.3.0"
+    "v8-compile-cache": "2.3.0",
+    "vfile": "^5.3.4"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.0.3",
