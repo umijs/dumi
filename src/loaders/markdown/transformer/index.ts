@@ -47,12 +47,12 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     .use(remarkFrontmatter)
     .use(remarkBreaks)
     .use(remarkGfm)
-    .use(rehypeEmbed, {
-      fileAbsPath: opts.fileAbsPath,
-    })
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeRaw)
     .use(rehypeStrip)
+    .use(rehypeEmbed, {
+      fileAbsPath: opts.fileAbsPath,
+    })
     .use(rehypeDemo, {
       techStacks: opts.techStacks,
       cwd: opts.cwd,

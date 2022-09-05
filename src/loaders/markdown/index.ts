@@ -47,6 +47,7 @@ export default {
         `${Object.values(opts.builtins)
           .map((item) => `import ${item.specifier} from '${item.source}';`)
           .join('\n')}
+import React from 'react';
 
 // export named function for fastRefresh
 // ref: https://github.com/pmmmwh/react-refresh-webpack-plugin/blob/main/docs/TROUBLESHOOTING.md#edits-always-lead-to-full-reload
