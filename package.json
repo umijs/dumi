@@ -51,6 +51,7 @@
     "@types/hast": "^2.3.4",
     "@umijs/bundler-utils": "^4.0.9",
     "@umijs/core": "^4.0.9",
+    "dumi-assets-types": "2.0.0-alpha.0",
     "estree-util-to-js": "^1.1.0",
     "estree-util-visit": "^1.2.0",
     "hast-util-raw": "^7.2.2",
@@ -89,7 +90,8 @@
     "prettier-plugin-packagejson": "^2.2.18",
     "react": "^18.2.0",
     "stylelint": "^14.9.1",
-    "ts-node": "^10.0.0"
+    "ts-node": "^10.0.0",
+    "typescript": "~4.7.4"
   },
   "packageManager": "pnpm@7.3.0",
   "publishConfig": {
