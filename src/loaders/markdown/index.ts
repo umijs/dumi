@@ -1,4 +1,5 @@
 import type { IThemeLoadResult } from '@/features/theme/loader';
+import { getFileContentByRegExp, getFileRangeLines } from '@/utils';
 import { Mustache } from 'umi/plugin-utils';
 import transform, { type IMdTransformerOptions } from './transformer';
 
@@ -21,7 +22,18 @@ export default function mdLoader(this: any, raw: string) {
   const opts: IMdLoaderOptions = this.getOptions();
   const cb = this.async();
 
-  transform(raw, {
+  let content = raw;
+  const params = new URLSearchParams(this.resourceQuery);
+  const range = params.get('range');
+  const regexp = params.get('regexp');
+  // extract content of markdown file
+  if (range) {
+    content = getFileRangeLines(content, range);
+  } else if (regexp) {
+    content = getFileContentByRegExp(content, regexp, this.resourcePath);
+  }
+
+  transform(content, {
     techStacks: opts.techStacks,
     cwd: opts.cwd,
     fileAbsPath: this.resourcePath,
