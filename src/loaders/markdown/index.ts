@@ -34,10 +34,28 @@ export default function mdLoader(this: any, raw: string) {
 
 export default {
   {{#demos}}
-  '{{{id}}}': {{{component}}},
+  '{{{id}}}': {
+    component: {{{component}}},
+    asset: {{{renderAsset}}}
+  },
   {{/demos}}
 }`,
-          { demos: ret.meta.demos },
+          {
+            demos: ret.meta.demos,
+            renderAsset: function renderAsset() {
+              // use raw-loader to load all source files
+              Object.keys(this.sources).forEach((file: string) => {
+                this.asset.dependencies[
+                  file
+                ].value = `{{{require('!!raw-loader!${this.sources[file]}?raw').default}}}`;
+              });
+
+              return JSON.stringify(this.asset, null, 2).replace(
+                /"{{{|}}}"/g,
+                '',
+              );
+            },
+          },
         ),
       );
     } else {

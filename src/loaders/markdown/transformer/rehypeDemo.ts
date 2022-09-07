@@ -1,5 +1,7 @@
+import parseBlockAsset from '@/assetParsers/block';
 import { getRoutePathFromFsPath } from '@/utils';
 import type { Element, Root } from 'hast';
+import type { DataMap } from 'vfile';
 import path from 'path';
 import { winPath } from 'umi/plugin-utils';
 import type { Transformer } from 'unified';
@@ -60,10 +62,10 @@ function getCodeId(
 export default function rehypeDemo(
   opts: IRehypeDemoOptions,
 ): Transformer<Root> {
-  return (tree, vFile) => {
+  return async (tree, vFile) => {
+    const deferrers: Promise<DataMap['demos'][0]>[] = [];
     let index = 0;
 
-    vFile.data.demos = [];
     visit<Root, 'element'>(tree, 'element', (node) => {
       if (
         // BREAKING CHANGE: code tag must occupy a single line
@@ -81,31 +83,61 @@ export default function rehypeDemo(
         const codeValue = toString(codeNode.children).trim();
 
         if (techStack && (hasSrc || codeValue)) {
+          // TODO: use external demo filename as id
           const codeId = getCodeId(opts.cwd, opts.fileAbsPath, index++);
-
-          if (hasSrc) {
-            // external demo
-            const codeAbsPath = path.resolve(
+          const codeAbsPath =
+            hasSrc &&
+            path.resolve(
               path.dirname(opts.fileAbsPath),
               codeNode.properties!.src! as string,
             );
+          const parseOpts = {
+            id: codeId,
+            // TODO: parse atom id
+            refAtomIds: [],
+            fileAbsPath: codeAbsPath
+              ? codeAbsPath
+              : // pass a fake entry point for code block demo
+                // and pass the real code via `entryPointCode` option below
+                opts.fileAbsPath.replace('.md', '.tsx'),
+            entryPointCode: codeAbsPath ? undefined : codeValue,
+          };
 
-            vFile.data.demos!.push({
-              id: codeId,
-              component: `React.lazy(() => import('${winPath(
-                codeAbsPath,
-              )}?techStack=${techStack.name}'))`,
-            });
-          } else {
-            // code block demo
-            vFile.data.demos!.push({
-              id: codeId,
-              component: techStack.transformCode(codeValue, {
-                type: 'code-block',
-                fileAbsPath: opts.fileAbsPath,
-              }),
-            });
-          }
+          // generate asset data for demo
+          deferrers.push(
+            parseBlockAsset(parseOpts).then(async ({ asset, sources }) => {
+              const component = codeAbsPath
+                ? // external demo
+                  `React.lazy(() => import('${winPath(codeAbsPath)}?techStack=${
+                    techStack.name
+                  }'))`
+                : // code block demo
+                  techStack.transformCode(codeValue, {
+                    type: 'code-block',
+                    fileAbsPath: opts.fileAbsPath,
+                  });
+
+              // allow override description by `code` attr
+              // TODO: locale support for title & description
+              if (codeNode.properties?.description) {
+                asset.description = String(codeNode.properties.description);
+              }
+
+              // allow override title by `code` innerText
+              if (hasSrc && codeValue) {
+                asset.title = codeValue;
+              }
+
+              return {
+                id: asset.id,
+                component,
+                asset: techStack.generateMetadata
+                  ? await techStack.generateMetadata(asset)
+                  : asset,
+                sources,
+              };
+            }),
+          );
 
           // replace node
           node.tagName = 'DumiDemo';
@@ -115,6 +147,12 @@ export default function rehypeDemo(
           return SKIP;
         }
       }
+    });
+
+    // wait for asset data be generated
+    await Promise.all(deferrers).then((demos) => {
+      // to make sure the order of demos is correct
+      vFile.data.demos = demos;
     });
   };
 }

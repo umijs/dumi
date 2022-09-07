@@ -3,7 +3,7 @@ import { Context } from './context';
 
 export const DumiDemo: FC<{ id: string }> = (props) => {
   const { demos } = useContext(Context);
-  const component = demos[props.id];
+  const { component } = demos[props.id];
 
   return createElement(component);
 };
