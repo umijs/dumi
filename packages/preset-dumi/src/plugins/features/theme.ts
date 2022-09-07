@@ -8,7 +8,7 @@ import { setOptions } from '../../context';
 // initialize data-prefers-color attr for HTML tag
 const COLOR_HEAD_SCP = `
 (function () {
-  var cache = localStorage.getItem('dumi:prefers-color');
+  var cache = navigator.cookieEnabled && typeof window.localStorage !== 'undefined' ? localStorage.getItem('dumi:prefers-color') : 'auto';
   var isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   var enums = ['light', 'dark', 'auto'];
 
