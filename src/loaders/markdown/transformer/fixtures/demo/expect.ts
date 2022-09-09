@@ -2,9 +2,14 @@ import type { IMdTransformerResult } from '../..';
 
 export default (ret: IMdTransformerResult) => {
   // replace to global DumiDemo component
-  expect(ret.content).toEqual(
-    '<><DumiDemo id="demo-0" /><DumiDemo id="demo-1" /></>;\n',
-  );
+  expect(ret.content).toEqual(`<><DumiDemo demo={{
+  "id": "demo-0",
+  "previewerProps": {}
+}} /><DumiDemo demo={{
+  "id": "demo-1",
+  "previewerProps": {}
+}} /></>;
+`);
 
   // code block demo to inline component
   expect(ret.meta.demos[0].id).toEqual('demo-0');

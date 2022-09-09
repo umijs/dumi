@@ -12,7 +12,7 @@ let visit: typeof import('unist-util-visit').visit;
  * Checks if `node` is a demo node
  */
 function isDemoNode(node: Element) {
-  return node.tagName === 'DumiDemo';
+  return ['DumiDemo', 'DumiDemoGrid'].includes(node.tagName);
 }
 
 export default function rehypeIsolation(): Transformer<Root> {

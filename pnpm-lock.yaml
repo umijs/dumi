@@ -24,6 +24,7 @@ importers:
       estree-util-to-js: ^1.1.0
       estree-util-visit: ^1.2.0
       father: ^4.0.0-rc.8
+      hast-util-is-element: ^2.1.2
       hast-util-raw: ^7.2.2
       hast-util-to-estree: ^2.1.0
       husky: ^8.0.1
@@ -58,6 +59,7 @@ importers:
       dumi-assets-types: link:assets-types
       estree-util-to-js: 1.1.0
       estree-util-visit: 1.2.0
+      hast-util-is-element: 2.1.2
       hast-util-raw: 7.2.2
       hast-util-to-estree: 2.1.0
       js-yaml: 4.1.0
@@ -5141,6 +5143,13 @@ packages:
       vfile: 5.3.4
       vfile-location: 4.0.1
       web-namespaces: 2.0.1
+    dev: false
+
+  /hast-util-is-element/2.1.2:
+    resolution: {integrity: sha512-thjnlGAnwP8ef/GSO1Q8BfVk2gundnc2peGQqEg2kUt/IqesiGg/5mSwN2fE7nLzy61pg88NG6xV+UrGOrx9EA==}
+    dependencies:
+      '@types/hast': 2.3.4
+      '@types/unist': 2.0.6
     dev: false
 
   /hast-util-parse-selector/3.1.0:

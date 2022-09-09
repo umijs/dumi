@@ -1,20 +1,25 @@
 import parseBlockAsset from '@/assetParsers/block';
+import type { IDumiDemoProps } from '@/types';
 import { getRoutePathFromFsPath } from '@/utils';
 import type { Element, Root } from 'hast';
-import type { DataMap } from 'vfile';
 import path from 'path';
 import { winPath } from 'umi/plugin-utils';
 import type { Transformer } from 'unified';
+import type { DataMap } from 'vfile';
 import type { IMdTransformerOptions } from '.';
 
 let visit: typeof import('unist-util-visit').visit;
 let SKIP: typeof import('unist-util-visit').SKIP;
 let toString: typeof import('mdast-util-to-string').toString;
+let isElement: typeof import('hast-util-is-element').isElement;
+const DEMO_NODE_CONTAINER = '$demo-container';
+const DEMO_PROP_VALUE_KEY = '$demo-prop-value-key';
 
 // workaround to import pure esm module
 (async () => {
   ({ visit, SKIP } = await import('unist-util-visit'));
   ({ toString } = await import('mdast-util-to-string'));
+  ({ isElement } = await import('hast-util-is-element'));
 })();
 
 type IRehypeDemoOptions = Pick<
@@ -59,93 +64,217 @@ function getCodeId(
   return [prefix, 'demo', String(codeIndex)].filter(Boolean).join('-');
 }
 
+/**
+ * try to mark tech stack data for node, if it is a demo node
+ */
+function tryMarkDemoNode(node: Element, opts: IRehypeDemoOptions) {
+  let isDemoNode = Boolean(node.data?.techStack);
+
+  // to prevent duplicate mark
+  if (!isDemoNode) {
+    const lang = getCodeLang(node);
+    const techStack =
+      lang && opts.techStacks.find((ts) => ts.isSupported(node, lang));
+
+    // mark tech stack data for reuse
+    if (techStack) {
+      isDemoNode = true;
+      node.data ??= {};
+      node.data.techStack = techStack;
+      node.data.lang = lang;
+      node.data.type =
+        typeof node.properties?.src === 'string' ? 'external' : 'code-block';
+    }
+  }
+
+  return isDemoNode;
+}
+
 export default function rehypeDemo(
   opts: IRehypeDemoOptions,
 ): Transformer<Root> {
   return async (tree, vFile) => {
     const deferrers: Promise<DataMap['demos'][0]>[] = [];
+    const replaceNodes: Element[] = [];
     let index = 0;
 
+    // mark code block demo node to standard demo node
+    // TODO: code block demo also support demo grid?
     visit<Root, 'element'>(tree, 'element', (node) => {
       if (
-        // BREAKING CHANGE: code tag must occupy a single line
-        // code block will be wrapped in <pre> & code tag should be wrapped in <p>
-        ['pre', 'p'].includes(node.tagName) &&
+        isElement(node, 'pre') &&
         node.children.length === 1 &&
-        node.children[0].type === 'element' &&
-        node.children[0].tagName === 'code'
+        isElement(node.children[0], 'code') &&
+        tryMarkDemoNode(node.children[0], opts)
       ) {
-        const codeNode = node.children[0];
-        const techStack = opts.techStacks.find((ts) =>
-          ts.isSupported(codeNode, getCodeLang(codeNode)),
-        );
-        const hasSrc = typeof codeNode.properties?.src === 'string';
-        const codeValue = toString(codeNode.children).trim();
+        node.tagName = 'p';
+        node!.data ??= {};
+        node!.data[DEMO_NODE_CONTAINER] = true;
+      }
+    });
 
-        if (techStack && (hasSrc || codeValue)) {
-          // TODO: use external demo filename as id
-          const codeId = getCodeId(opts.cwd, opts.fileAbsPath, index++);
-          const codeAbsPath =
-            hasSrc &&
-            path.resolve(
-              path.dirname(opts.fileAbsPath),
-              codeNode.properties!.src! as string,
-            );
-          const parseOpts = {
-            id: codeId,
-            // TODO: parse atom id
-            refAtomIds: [],
-            fileAbsPath: codeAbsPath
-              ? codeAbsPath
-              : // pass a fake entry point for code block demo
-                // and pass the real code via `entryPointCode` option below
-                opts.fileAbsPath.replace('.md', '.tsx'),
-            entryPointCode: codeAbsPath ? undefined : codeValue,
-          };
+    // split demo node to a separate paragraph from a mixed paragraph
+    visit<Root, 'element'>(tree, 'element', (node, nodeIndex, parent) => {
+      if (isElement(node, 'p')) {
+        for (
+          let childIndex = 0;
+          childIndex < node.children.length;
+          childIndex += 1
+        ) {
+          let child = node.children[childIndex];
 
-          // generate asset data for demo
-          deferrers.push(
-            parseBlockAsset(parseOpts).then(async ({ asset, sources }) => {
-              const component = codeAbsPath
-                ? // external demo
-                  `React.lazy(() => import('${winPath(codeAbsPath)}?techStack=${
-                    techStack.name
-                  }'))`
-                : // code block demo
-                  techStack.transformCode(codeValue, {
-                    type: 'code-block',
-                    fileAbsPath: opts.fileAbsPath,
-                  });
+          // find code node
+          if (isElement(child, 'code') && tryMarkDemoNode(child, opts)) {
+            const isFirstChild = childIndex === 0;
+            let nextChildIndex = childIndex + 1;
+            let nextChild = node.children[nextChildIndex];
+            let splitFrom = childIndex;
 
-              // allow override description by `code` attr
-              // TODO: locale support for title & description
-              if (codeNode.properties?.description) {
-                asset.description = String(codeNode.properties.description);
+            if (isFirstChild) {
+              // mark parent as demo container if the first child is demo node
+              node!.data ??= {};
+              node!.data[DEMO_NODE_CONTAINER] = true;
+
+              // try to find the next demo node or br node
+              while (
+                nextChild &&
+                ((isElement(nextChild, 'code') &&
+                  tryMarkDemoNode(nextChild, opts)) ||
+                  isElement(nextChild, 'br'))
+              ) {
+                // move to the next child index
+                splitFrom += 1;
+
+                // update next child for the next check
+                nextChildIndex = splitFrom + 1;
+                nextChild = node.children[nextChildIndex];
               }
 
-              // allow override title by `code` innerText
-              if (hasSrc && codeValue) {
-                asset.title = codeValue;
-              }
+              // if there has no next node, it means need not to split, SKIP directly
+              if (!nextChild) return SKIP;
+            }
 
-              return {
-                id: asset.id,
-                component,
-                asset: techStack.generateMetadata
-                  ? await techStack.generateMetadata(asset)
-                  : asset,
-                sources,
-              };
-            }),
-          );
+            // split paragraph
+            const splitChildren = node.children.splice(splitFrom);
 
-          // replace node
-          node.tagName = 'DumiDemo';
-          node.properties = { id: codeId };
-          node.children = [];
+            parent!.children.splice(nodeIndex! + 1, 0, {
+              type: 'element',
+              tagName: 'p',
+              children: splitChildren,
+            });
 
-          return SKIP;
+            return SKIP;
+          }
         }
+      }
+    });
+
+    visit<Root, 'element'>(tree, 'element', (node) => {
+      if (isElement(node, 'p') && node.data?.[DEMO_NODE_CONTAINER]) {
+        const demosPropData: IDumiDemoProps['demo'][] = [];
+
+        node.children.forEach((codeNode) => {
+          // strip invalid br elements
+          if (isElement(codeNode, 'code')) {
+            const codeType = codeNode.data!.type;
+            const techStack = codeNode.data!
+              .techStack as IRehypeDemoOptions['techStacks'][0];
+            // TODO: use external demo filename as id
+            const codeId = getCodeId(opts.cwd, opts.fileAbsPath, index++);
+            const codeValue = toString(codeNode.children).trim();
+            const parseOpts = {
+              id: codeId,
+              // TODO: parse atom id
+              refAtomIds: [],
+              fileAbsPath: '',
+              entryPointCode: codeType === 'external' ? undefined : codeValue,
+            };
+            const previewerProps: typeof demosPropData[0]['previewerProps'] =
+              {};
+            let component = '';
+
+            if (codeNode.data!.type === 'external') {
+              // external demo options
+              parseOpts.fileAbsPath = path.resolve(
+                path.dirname(opts.fileAbsPath),
+                codeNode.properties!.src! as string,
+              );
+              component = `React.lazy(() => import('${winPath(
+                parseOpts.fileAbsPath,
+              )}?techStack=${techStack.name}'))`;
+            } else {
+              // pass a fake entry point for code block demo
+              // and pass the real code via `entryPointCode` option
+              parseOpts.fileAbsPath = opts.fileAbsPath.replace('.md', '.tsx');
+              component = techStack.transformCode(codeValue, {
+                type: 'code-block',
+                fileAbsPath: opts.fileAbsPath,
+              });
+            }
+
+            // generate asset data for demo
+            deferrers.push(
+              parseBlockAsset(parseOpts).then(
+                async ({ asset, sources, frontmatter }) => {
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                  const { src, className, title, description, ...restAttrs } =
+                    codeNode.properties || {};
+
+                  // allow override description by `code` attr
+                  // TODO: locale support for title & description
+                  if (description) {
+                    asset.description = String(description);
+                  }
+
+                  // allow override title by `code` innerText
+                  if (codeType === 'external' && codeValue) {
+                    asset.title = codeValue;
+                  }
+
+                  // update previewer props after parse
+                  Object.assign(previewerProps, frontmatter, restAttrs);
+
+                  // return demo data
+                  return {
+                    id: asset.id,
+                    component,
+                    asset: techStack.generateMetadata
+                      ? await techStack.generateMetadata(asset)
+                      : asset,
+                    sources,
+                  };
+                },
+              ),
+            );
+
+            // save into demos property
+            demosPropData.push({
+              id: codeId,
+              previewerProps,
+            });
+          }
+        });
+
+        // replace original node, and save it for parse the final real jsx attributes after all deferrers resolved
+        // because the final `previewerProps` depends on the async parse result from `parseBlockAsset`
+        // but visitor always sync
+        const isSingle = demosPropData.length === 1;
+
+        replaceNodes.push(node);
+        node.children = [];
+        node.tagName = isSingle ? 'DumiDemo' : 'DumiDemoGrid';
+        node.data[DEMO_PROP_VALUE_KEY] = isSingle
+          ? demosPropData[0]
+          : demosPropData;
+        node.JSXAttributes = [
+          {
+            type: 'JSXAttribute',
+            name: isSingle ? 'demo' : 'demos',
+            value: '',
+          },
+        ];
+
+        return SKIP;
       }
     });
 
@@ -153,6 +282,14 @@ export default function rehypeDemo(
     await Promise.all(deferrers).then((demos) => {
       // to make sure the order of demos is correct
       vFile.data.demos = demos;
+
+      // parse final value for jsx attributes
+      replaceNodes.forEach((node) => {
+        (node.JSXAttributes![0] as any).value = JSON.stringify(
+          node.data![DEMO_PROP_VALUE_KEY],
+        );
+        delete node.data![DEMO_PROP_VALUE_KEY];
+      });
     });
   };
 }
