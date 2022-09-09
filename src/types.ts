@@ -54,3 +54,14 @@ export type IApi = IUmiApi & {
    */
   modifyTheme: IModify<IThemeLoadResult, null>;
 };
+
+export interface IDumiDemoProps {
+  demo: {
+    id: string;
+    previewerProps: Record<string, any>;
+  };
+}
+
+export interface IDumiDemoGridProps {
+  demos: IDumiDemoProps['demo'][];
+}

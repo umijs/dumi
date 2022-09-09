@@ -80,6 +80,10 @@ export default (api: IApi) => {
           specifier: '{ DumiDemo }',
           source: 'dumi/theme',
         },
+        DumiDemoGrid: {
+          specifier: '{ DumiDemoGrid }',
+          source: 'dumi/theme',
+        },
       });
 
       return memo;
