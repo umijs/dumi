@@ -92,7 +92,7 @@ export default (api: IApi) => {
 
   api.modifyConfig((memo) => {
     // alias theme api
-    memo.alias['dumi/theme$'] = require.resolve('../../client/theme');
+    memo.alias['dumi/theme$'] = require.resolve('../../client/theme-api');
     // alias each component from local theme, as a part of final theme
     if (localThemeData) {
       themeMapKeys.forEach((key) => {
@@ -113,7 +113,9 @@ export default (api: IApi) => {
 
     // FIXME: for replace deps by MFSU in local
     memo.extraBabelIncludes ??= [];
-    memo.extraBabelIncludes.push(path.resolve(__dirname, '../../client/theme'));
+    memo.extraBabelIncludes.push(
+      path.resolve(__dirname, '../../client/theme-api'),
+    );
 
     return memo;
   });

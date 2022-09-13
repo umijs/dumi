@@ -12,7 +12,8 @@
   "files": [
     "bin",
     "dist",
-    "compiled"
+    "compiled",
+    "theme.d.ts"
   ],
   "scripts": {
     "build": "father build",
