@@ -1,5 +1,5 @@
 import parseBlockAsset from '@/assetParsers/block';
-import type { IDumiDemoProps } from '@/types';
+import type { IDumiDemoProps } from '@/client/theme-api';
 import { getRoutePathFromFsPath } from '@/utils';
 import type { Element, Root } from 'hast';
 import path from 'path';
@@ -171,7 +171,7 @@ export default function rehypeDemo(
 
     visit<Root, 'element'>(tree, 'element', (node) => {
       if (isElement(node, 'p') && node.data?.[DEMO_NODE_CONTAINER]) {
-        const demosPropData: IDumiDemoProps['demo'][] = [];
+        const demosPropData: IDumiDemoProps[] = [];
 
         node.children.forEach((codeNode) => {
           // strip invalid br elements
@@ -189,8 +189,7 @@ export default function rehypeDemo(
               fileAbsPath: '',
               entryPointCode: codeType === 'external' ? undefined : codeValue,
             };
-            const previewerProps: typeof demosPropData[0]['previewerProps'] =
-              {};
+            const previewerProps: IDumiDemoProps['previewerProps'] = {};
             let component = '';
 
             if (codeNode.data!.type === 'external') {
@@ -249,7 +248,7 @@ export default function rehypeDemo(
 
             // save into demos property
             demosPropData.push({
-              id: codeId,
+              demo: { id: codeId },
               previewerProps,
             });
           }
@@ -258,21 +257,22 @@ export default function rehypeDemo(
         // replace original node, and save it for parse the final real jsx attributes after all deferrers resolved
         // because the final `previewerProps` depends on the async parse result from `parseBlockAsset`
         // but visitor always sync
-        const isSingle = demosPropData.length === 1;
-
         replaceNodes.push(node);
         node.children = [];
-        node.tagName = isSingle ? 'DumiDemo' : 'DumiDemoGrid';
-        node.data[DEMO_PROP_VALUE_KEY] = isSingle
-          ? demosPropData[0]
-          : demosPropData;
-        node.JSXAttributes = [
-          {
-            type: 'JSXAttribute',
-            name: isSingle ? 'demo' : 'demos',
-            value: '',
-          },
-        ];
+
+        if (demosPropData.length === 1) {
+          // single demo
+          node.tagName = 'DumiDemo';
+          node.data[DEMO_PROP_VALUE_KEY] = demosPropData[0];
+          node.JSXAttributes = [{ type: 'JSXSpreadAttribute', argument: '' }];
+        } else {
+          // grid demo
+          node.tagName = 'DumiDemoGrid';
+          node.data[DEMO_PROP_VALUE_KEY] = demosPropData;
+          node.JSXAttributes = [
+            { type: 'JSXAttribute', name: 'items', value: '' },
+          ];
+        }
 
         return SKIP;
       }
@@ -285,9 +285,14 @@ export default function rehypeDemo(
 
       // parse final value for jsx attributes
       replaceNodes.forEach((node) => {
-        (node.JSXAttributes![0] as any).value = JSON.stringify(
-          node.data![DEMO_PROP_VALUE_KEY],
-        );
+        const value = JSON.stringify(node.data![DEMO_PROP_VALUE_KEY]);
+
+        if (node.JSXAttributes![0].type === 'JSXAttribute') {
+          node.JSXAttributes![0].value = value;
+        } else {
+          node.JSXAttributes![0].argument = value;
+        }
+
         delete node.data![DEMO_PROP_VALUE_KEY];
       });
     });

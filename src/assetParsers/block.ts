@@ -126,7 +126,8 @@ async function parseBlockAsset(opts: {
                   // TODO: locale for title & description
                   ['description', 'title', 'snapshot', 'keywords'].forEach(
                     (key) => {
-                      asset.dependencies[key] = frontmatter?.[key];
+                      asset[key as keyof IParsedBlockAsset['asset']] =
+                        frontmatter?.[key];
                     },
                   );
                 }

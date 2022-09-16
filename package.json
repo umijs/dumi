@@ -13,6 +13,7 @@
     "bin",
     "dist",
     "compiled",
+    "theme-default",
     "theme.d.ts"
   ],
   "scripts": {
@@ -86,7 +87,7 @@
     "@umijs/test": "^4.0.9",
     "cross-env": "^7.0.3",
     "eslint": "^8.20.0",
-    "father": "^4.0.0-rc.8",
+    "father": "^4.0.3",
     "husky": "^8.0.1",
     "jest": "^27.0.0",
     "lint-staged": "^13.0.3",
@@ -97,6 +98,10 @@
     "stylelint": "^14.9.1",
     "ts-node": "^10.0.0",
     "typescript": "~4.7.4"
+  },
+  "peerDependencies": {
+    "react": ">=16.8",
+    "react-dom": ">=16.8"
   },
   "packageManager": "pnpm@7.3.0",
   "publishConfig": {
