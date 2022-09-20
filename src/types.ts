@@ -11,6 +11,7 @@ export interface IDumiConfig extends IUmiConfig {
     docDirs: string[];
     entityDirs: { type: string; dir: string }[];
   };
+  locales: { id: string; name: string; base?: string }[];
 }
 
 export abstract class IDumiTechStack {

@@ -6,6 +6,7 @@ export interface IThemeContext {
     string,
     { component: ComponentType; asset: IPreviewerProps['asset'] }
   >;
+  locales: { id: string; name: string; base: string }[];
 }
 
-export const Context = createContext<IThemeContext>({ demos: {} });
+export const Context = createContext<IThemeContext>({ demos: {}, locales: [] });

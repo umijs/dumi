@@ -77,7 +77,7 @@ function getLocaleMapFromDir(globExp: string, dir: string) {
   return glob
     .sync(globExp, { cwd: dir })
     .reduce<IThemeLoadResult['locales']>((ret, file) => {
-      const locale = file.replace(/\.json$/, '');
+      const locale = path.basename(file.replace(/\.json$/, ''));
 
       ret[locale] = require(path.join(dir, file));
 

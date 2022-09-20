@@ -168,12 +168,13 @@ export default {
       content: `import { Context } from 'dumi/theme';
 import { useOutlet } from 'umi';
 import demos from '../demos';
+import { locales } from '../locales/config';
 
 export default function DumiContextWrapper() {
   const outlet = useOutlet();
 
   return (
-    <Context.Provider value={{ demos }}>{outlet}</Context.Provider>
+    <Context.Provider value={{ demos, locales }}>{outlet}</Context.Provider>
   );
 }`,
     });
