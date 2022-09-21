@@ -62,7 +62,7 @@ toc: menu
 
 使用方式很简单：在已有 Umi 项目中安装 `@umijs/preset-dumi` 到 `devDependencies` 中，再根据需要配置 `resolve.includes` 即可（比如约定 `src/components` 目录下为业务组件库和组件库对应的文档）。
 
-> Umi4版本暂不支持集成dumi，请耐心等待[dumi2](https://github.com/umijs/dumi/issues/1151)版本发布~
+> dumi 1.x 暂不支持与 Umi 4 项目集成，请耐心等待 [dumi 2.0](https://github.com/umijs/dumi/issues/1151) 发布
 
 ## UI 资产数据化
 
