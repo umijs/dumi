@@ -62,6 +62,8 @@ toc: menu
 
 使用方式很简单：在已有 Umi 项目中安装 `@umijs/preset-dumi` 到 `devDependencies` 中，再根据需要配置 `resolve.includes` 即可（比如约定 `src/components` 目录下为业务组件库和组件库对应的文档）。
 
+> Umi4版本暂不支持集成dumi，请耐心等待[dumi2](https://github.com/umijs/dumi/issues/1151)版本发布~
+
 ## UI 资产数据化
 
 如何理解资产？从开发者视角狭义的理解，只要是生产出来可以帮助下游提效的实体，都可以称之为资产，比如组件、文档、组件 API、组件 demo 等等。
