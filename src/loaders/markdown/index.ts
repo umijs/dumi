@@ -1,4 +1,5 @@
 import type { IThemeLoadResult } from '@/features/theme/loader';
+import { getFileContentByRegExp, getFileRangeLines } from '@/utils';
 import { Mustache } from 'umi/plugin-utils';
 import transform, { type IMdTransformerOptions } from './transformer';
 
@@ -21,7 +22,18 @@ export default function mdLoader(this: any, raw: string) {
   const opts: IMdLoaderOptions = this.getOptions();
   const cb = this.async();
 
-  transform(raw, {
+  let content = raw;
+  const params = new URLSearchParams(this.resourceQuery);
+  const range = params.get('range');
+  const regexp = params.get('regexp');
+  // extract content of markdown file
+  if (range) {
+    content = getFileRangeLines(content, range);
+  } else if (regexp) {
+    content = getFileContentByRegExp(content, regexp, this.resourcePath);
+  }
+
+  transform(content, {
     techStacks: opts.techStacks,
     cwd: opts.cwd,
     fileAbsPath: this.resourcePath,
@@ -65,6 +77,7 @@ export default {
         `${Object.values(opts.builtins)
           .map((item) => `import ${item.specifier} from '${item.source}';`)
           .join('\n')}
+import React from 'react';
 
 // export named function for fastRefresh
 // ref: https://github.com/pmmmwh/react-refresh-webpack-plugin/blob/main/docs/TROUBLESHOOTING.md#edits-always-lead-to-full-reload
