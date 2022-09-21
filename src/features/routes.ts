@@ -19,14 +19,15 @@ function localizeUmiRoute(route: IRoute, locales: IApi['config']['locales']) {
   );
 
   if (locale) {
-    // strip single `/` locale base
-    const base = locale.base === '/' ? '' : locale.base;
+    // strip single `/` locale base or move `/` to the end of locale base for join
+    const base =
+      locale.base === '/' ? '' : locale.base!.replace(/^(\/)(.+)$/, '$2$1');
     // /foo/zh-CN => /{prefix}/foo
     // /bar/index/zh-CN => /{prefix}/bar
     route.path = `${base}${route.path
       .replace(new RegExp(`/${locale.id}$`), '')
-      .replace(/(index|README)$/, '')}`;
-    route.path = route.path !== '/' ? `/${route.path}` : route.path;
+      .replace(/(\/index|\/README)$/, '')}`;
+    route.absPath = route.path !== '/' ? `/${route.path}` : route.path;
   }
 }
 
