@@ -41,7 +41,7 @@ export const getFileContentByRegExp = (
     // eslint-disable-next-line no-eval
     return content.match(eval(regexp))![0];
   } catch (err) {
-    logger.error(`[dumi]: extract content failed, use the full content.
+    logger.error(`Extract markdown content failed, use the full content.
 RegExp: ${regexp}
 File: ${filePath}
 Error: ${err}`);

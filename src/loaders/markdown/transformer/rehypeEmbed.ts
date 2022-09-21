@@ -39,7 +39,8 @@ export default function rehypeEmbed(
           // process node via file type
           switch (path.extname(parsed.pathname!)) {
             case '.md':
-            default: {
+            default:
+              // TODO: merge slugs
               parent?.children.splice(idx!, 1, {
                 type: 'element',
                 tagName: 'React.Fragment',
@@ -54,7 +55,6 @@ export default function rehypeEmbed(
                   },
                 ],
               });
-            }
           }
         }
       }
