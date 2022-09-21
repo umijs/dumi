@@ -60,7 +60,7 @@ function getCodeLang(node: Element, opts: IRehypeDemoOptions) {
 function getCodeId(
   cwd: string,
   fileAbsPath: string,
-  codeIndex: number,
+  localId: string,
   entityName?: string,
 ) {
   // Foo, or docs-guide, or docs-guide-faq
@@ -68,7 +68,7 @@ function getCodeId(
     entityName ||
     getRoutePathFromFsPath(path.relative(cwd, fileAbsPath)).replace(/\//g, '-');
 
-  return [prefix, 'demo', String(codeIndex)].filter(Boolean).join('-');
+  return [prefix, 'demo', localId].filter(Boolean).join('-');
 }
 
 /**
@@ -186,11 +186,9 @@ export default function rehypeDemo(
             const codeType = codeNode.data!.type;
             const techStack = codeNode.data!
               .techStack as IRehypeDemoOptions['techStacks'][0];
-            // TODO: use external demo filename as id
-            const codeId = getCodeId(opts.cwd, opts.fileAbsPath, index++);
             const codeValue = toString(codeNode.children).trim();
             const parseOpts = {
-              id: codeId,
+              id: '',
               // TODO: parse atom id
               refAtomIds: [],
               fileAbsPath: '',
@@ -205,6 +203,11 @@ export default function rehypeDemo(
                 path.dirname(opts.fileAbsPath),
                 codeNode.properties!.src! as string,
               );
+              parseOpts.id = getCodeId(
+                opts.cwd,
+                opts.fileAbsPath,
+                path.parse(parseOpts.fileAbsPath).name,
+              );
               component = `React.lazy(() => import('${winPath(
                 parseOpts.fileAbsPath,
               )}?techStack=${techStack.name}'))`;
@@ -215,6 +218,11 @@ export default function rehypeDemo(
               // pass a fake entry point for code block demo
               // and pass the real code via `entryPointCode` option
               parseOpts.fileAbsPath = opts.fileAbsPath.replace('.md', '.tsx');
+              parseOpts.id = getCodeId(
+                opts.cwd,
+                opts.fileAbsPath,
+                String(index++),
+              );
               component = techStack.transformCode(codeValue, {
                 type: 'code-block',
                 fileAbsPath: opts.fileAbsPath,
@@ -258,7 +266,7 @@ export default function rehypeDemo(
 
             // save into demos property
             demosPropData.push({
-              demo: { id: codeId },
+              demo: { id: parseOpts.id },
               previewerProps,
             });
           }

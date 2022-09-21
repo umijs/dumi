@@ -9,7 +9,7 @@ export default (ret: IMdTransformerResult) => {
   "previewerProps": {}
 }} /><DumiDemo {...{
   "demo": {
-    "id": "demo-1"
+    "id": "demo-demo"
   },
   "previewerProps": {}
 }} /></>;
@@ -20,6 +20,6 @@ export default (ret: IMdTransformerResult) => {
   expect(ret.meta.demos[0].component).toContain('Fake');
 
   // external demo to lazy import component
-  expect(ret.meta.demos[1].id).toEqual('demo-1');
+  expect(ret.meta.demos[1].id).toEqual('demo-demo');
   expect(ret.meta.demos[1].component).toContain('React.lazy');
 };
