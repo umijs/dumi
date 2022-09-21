@@ -7,6 +7,29 @@ import { glob, winPath } from 'umi/plugin-utils';
 
 const CTX_LAYOUT_ID = 'dumi-context-layout';
 
+/**
+ * localize standard umi route path by locales config
+ */
+function localizeUmiRoute(route: IRoute, locales: IApi['config']['locales']) {
+  const locale = locales.find(
+    (locale) =>
+      route.path.endsWith(`/${locale.id}`) &&
+      // avoid locale id conflict with folder/file name
+      path.parse(route.file).name.endsWith(`.${locale.id}`),
+  );
+
+  if (locale) {
+    // strip single `/` locale base
+    const base = locale.base === '/' ? '' : locale.base;
+    // /foo/zh-CN => /{prefix}/foo
+    // /bar/index/zh-CN => /{prefix}/bar
+    route.path = `${base}${route.path
+      .replace(new RegExp(`/${locale.id}$`), '')
+      .replace(/(index|README)$/, '')}`;
+    route.path = route.path !== '/' ? `/${route.path}` : route.path;
+  }
+}
+
 export default (api: IApi) => {
   api.describe({ key: 'dumi:routes' });
 
@@ -69,6 +92,9 @@ export default (api: IApi) => {
         // use absolute path to avoid umi prefix with conventionRoutes.base
         route.file = path.resolve(base, route.file);
 
+        // localize route
+        localizeUmiRoute(route, api.config.locales);
+
         // save route
         routes[route.id] = route;
       });
@@ -77,22 +103,29 @@ export default (api: IApi) => {
     // generate entity routes
     entityDirs.forEach(({ type, dir }) => {
       const base = path.join(api.cwd, dir);
-      const entityFiles = glob.sync('{*,*/index,*/README}.md', { cwd: base });
+      const entityFiles = glob.sync(
+        '{*,*/index,*/index.*,*/README,*/README.*}.md',
+        { cwd: base },
+      );
 
       entityFiles.forEach((file) => {
-        const routePath = winPath(path.join(plural(type), file)).replace(
-          /(\/index|\/README)?\.md$/,
-          '',
-        );
+        const routePath = winPath(path.join(plural(type), file))
+          .replace(/(\/index|\/README)?\.md$/, '')
+          // like umi standard route
+          // ref: https://github.com/umijs/umi/blob/cabb186057d801494340f533195b6b330e5ef4e0/packages/core/src/route/routesConvention.ts#L88
+          .replace(/\./g, '/');
         const routeId = `${dir}/${routePath}`;
 
         routes[routeId] = {
           id: routeId,
           path: routePath,
-          absPath: routePath,
+          absPath: `/${routePath}`,
           parentId: docLayoutId,
           file: path.resolve(base, file),
         };
+
+        // localize route
+        localizeUmiRoute(routes[routeId], api.config.locales);
       });
     });
 

@@ -1,5 +1,6 @@
 import type { IThemeLoadResult } from '@/features/theme/loader';
 import type { IModify } from '@umijs/core';
+import type { ExampleBlockAsset } from 'dumi-assets-types';
 import type { Element } from 'hast';
 import type { IApi as IUmiApi } from 'umi';
 
@@ -10,6 +11,7 @@ export interface IDumiConfig extends IUmiConfig {
     docDirs: string[];
     entityDirs: { type: string; dir: string }[];
   };
+  locales: { id: string; name: string; base?: string }[];
 }
 
 export abstract class IDumiTechStack {
@@ -29,10 +31,11 @@ export abstract class IDumiTechStack {
     opts: { type: 'external' | 'code-block'; fileAbsPath: string },
   ): string;
   /**
-   * generator for return assets meta data
-   * TODO: real assets meta data types
+   * generator for return asset metadata
    */
-  abstract generateMetadata?(): any;
+  abstract generateMetadata?(
+    asset: ExampleBlockAsset,
+  ): Promise<ExampleBlockAsset> | ExampleBlockAsset;
   /**
    * generator for return previewer props
    */

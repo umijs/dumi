@@ -77,7 +77,7 @@ function getLocaleMapFromDir(globExp: string, dir: string) {
   return glob
     .sync(globExp, { cwd: dir })
     .reduce<IThemeLoadResult['locales']>((ret, file) => {
-      const locale = file.replace(/\.json$/, '');
+      const locale = path.basename(file.replace(/\.json$/, ''));
 
       ret[locale] = require(path.join(dir, file));
 
@@ -91,10 +91,13 @@ export default (dir: string): IThemeLoadResult => {
     path: dir,
     locales: getLocaleMapFromDir('locales/*.json', dir),
     builtins: getComponentMapFromDir(
-      'builtins/{*,*/index}.{js,jsx,ts,tsx}',
+      'builtins/{!(*.d),*/index}.{js,jsx,ts,tsx}',
       dir,
     ),
-    slots: getComponentMapFromDir('slots/{*,*/index}.{js,jsx,ts,tsx}', dir),
+    slots: getComponentMapFromDir(
+      'slots/{!(*.d),*/index}.{js,jsx,ts,tsx}',
+      dir,
+    ),
     layouts: getComponentMapFromDir(
       'layouts/{GlobalLayout,DocLayout,DemoLayout}{.,/index.}{js,jsx,ts,tsx}',
       dir,

@@ -1,3 +1,4 @@
-dist
-compiled
+/dist
+/compiled
+/theme-default
 *.yaml

@@ -1,0 +1,22 @@
+{
+  "name": "dumi-assets-types",
+  "version": "2.0.0-alpha.0",
+  "description": "Standard assets type definitions for dumi library project",
+  "homepage": "https://github.com/umijs/dumi/tree/master/assets-types#readme",
+  "bugs": "https://github.com/umijs/dumi/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/umijs/dumi"
+  },
+  "license": "MIT",
+  "types": "typings/index.d.ts",
+  "files": [
+    "typings"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "authors": [
+    "PeachScript <scdzwyxst@gmail.com> (https://github.com/PeachScript)"
+  ]
+}

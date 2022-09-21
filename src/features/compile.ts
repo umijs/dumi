@@ -53,6 +53,13 @@ export default (api: IApi) => {
       .loader(require.resolve('../loaders/demo'))
       .options({ techStacks, cwd: api.cwd } as IDemoLoaderOptions);
 
+    // get raw content for demo source file
+    memo.module
+      .rule('dumi-raw')
+      .resourceQuery(/raw/)
+      .use('raw-loader')
+      .loader(require.resolve('raw-loader'));
+
     // enable fast-refresh for md component in development mode
     if (api.env === 'development') {
       memo.plugin('fastRefresh').tap(([params]) => [

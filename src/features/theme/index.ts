@@ -80,6 +80,10 @@ export default (api: IApi) => {
           specifier: '{ DumiDemo }',
           source: 'dumi/theme',
         },
+        DumiDemoGrid: {
+          specifier: '{ DumiDemoGrid }',
+          source: 'dumi/theme',
+        },
       });
 
       return memo;
@@ -88,7 +92,7 @@ export default (api: IApi) => {
 
   api.modifyConfig((memo) => {
     // alias theme api
-    memo.alias['dumi/theme$'] = require.resolve('../../client/theme');
+    memo.alias['dumi/theme$'] = require.resolve('../../client/theme-api');
     // alias each component from local theme, as a part of final theme
     if (localThemeData) {
       themeMapKeys.forEach((key) => {
@@ -109,7 +113,9 @@ export default (api: IApi) => {
 
     // FIXME: for replace deps by MFSU in local
     memo.extraBabelIncludes ??= [];
-    memo.extraBabelIncludes.push(path.resolve(__dirname, '../../client/theme'));
+    memo.extraBabelIncludes.push(
+      path.resolve(__dirname, '../../client/theme-api'),
+    );
 
     return memo;
   });
@@ -162,12 +168,13 @@ export default {
       content: `import { Context } from 'dumi/theme';
 import { useOutlet } from 'umi';
 import demos from '../demos';
+import { locales } from '../locales/config';
 
 export default function DumiContextWrapper() {
   const outlet = useOutlet();
 
   return (
-    <Context.Provider value={{ demos }}>{outlet}</Context.Provider>
+    <Context.Provider value={{ demos, locales }}>{outlet}</Context.Provider>
   );
 }`,
     });

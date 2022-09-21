@@ -57,10 +57,12 @@ export default function rehypeJsxify(this: FrozenProcessor) {
     // stub JSX attributes to object properties
     visitUnist<Root, 'element'>(ast, 'element', (node) => {
       node.JSXAttributes?.forEach((attr, i) => {
+        node.properties ??= {};
+
         if (attr.type === 'JSXAttribute') {
-          node.properties![`${JSX_PROP_PREFIX}${attr.name}`] = attr.value;
+          node.properties[`${JSX_PROP_PREFIX}${attr.name}`] = attr.value;
         } else if (attr.type === 'JSXSpreadAttribute') {
-          node.properties![`${JSX_SPREAD_PROP_PREFIX}${i}`] = attr.argument;
+          node.properties[`${JSX_SPREAD_PROP_PREFIX}${i}`] = attr.argument;
         }
       });
     });

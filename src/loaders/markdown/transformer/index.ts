@@ -1,3 +1,4 @@
+import type { IParsedBlockAsset } from '@/assetParsers/block';
 import type { IDumiTechStack } from '@/types';
 import type { DataMap } from 'vfile';
 import rehypeDemo from './rehypeDemo';
@@ -20,7 +21,12 @@ declare module 'hast' {
 
 declare module 'vfile' {
   interface DataMap {
-    demos: { id: string; component: string }[];
+    demos: {
+      id: string;
+      component: string;
+      asset: IParsedBlockAsset['asset'];
+      sources: IParsedBlockAsset['sources'];
+    }[];
   }
 }
 

@@ -1,6 +1,7 @@
 /node_modules
 /examples/*/node_modules
 /dist
+/theme-default
 .DS_Store
 .umi
 .umi-production
