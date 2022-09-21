@@ -37,6 +37,7 @@ export default function mdLoader(this: any, raw: string) {
     techStacks: opts.techStacks,
     cwd: opts.cwd,
     fileAbsPath: this.resourcePath,
+    codeBlockMode: opts.codeBlockMode,
   }).then((ret) => {
     if (opts.mode === 'demos') {
       cb(

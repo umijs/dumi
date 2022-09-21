@@ -10,6 +10,7 @@ export interface IDumiConfig extends IUmiConfig {
   resolve: {
     docDirs: string[];
     entityDirs: { type: string; dir: string }[];
+    codeBlockMode: 'active' | 'passive';
   };
   locales: { id: string; name: string; base?: string }[];
 }

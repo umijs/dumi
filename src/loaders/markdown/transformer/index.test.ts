@@ -26,6 +26,7 @@ for (let name of cases) {
       techStacks: [new FakeTechStack()],
       cwd: path.dirname(fileAbsPath),
       fileAbsPath: fileAbsPath,
+      codeBlockMode: 'active',
     });
 
     require(`${CASES_DIR}/${name}/expect.ts`).default(ret);

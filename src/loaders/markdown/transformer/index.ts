@@ -1,5 +1,5 @@
 import type { IParsedBlockAsset } from '@/assetParsers/block';
-import type { IDumiTechStack } from '@/types';
+import type { IDumiConfig, IDumiTechStack } from '@/types';
 import type { DataMap } from 'vfile';
 import rehypeDemo from './rehypeDemo';
 import rehypeEmbed from './rehypeEmbed';
@@ -34,6 +34,7 @@ export interface IMdTransformerOptions {
   cwd: string;
   fileAbsPath: string;
   techStacks: IDumiTechStack[];
+  codeBlockMode: IDumiConfig['resolve']['codeBlockMode'];
 }
 
 export interface IMdTransformerResult {
@@ -63,6 +64,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
       techStacks: opts.techStacks,
       cwd: opts.cwd,
       fileAbsPath: opts.fileAbsPath,
+      codeBlockMode: opts.codeBlockMode,
     })
     .use(rehypeIsolation)
     .use(rehypeJsxify)

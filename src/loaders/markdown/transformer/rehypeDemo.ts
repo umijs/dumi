@@ -24,13 +24,13 @@ const DEMO_PROP_VALUE_KEY = '$demo-prop-value-key';
 
 type IRehypeDemoOptions = Pick<
   IMdTransformerOptions,
-  'techStacks' | 'cwd' | 'fileAbsPath'
+  'techStacks' | 'cwd' | 'fileAbsPath' | 'codeBlockMode'
 >;
 
 /**
  * get language for code element
  */
-function getCodeLang(node: Element) {
+function getCodeLang(node: Element, opts: IRehypeDemoOptions) {
   let lang = '';
 
   // TODO: inline demo
@@ -38,7 +38,14 @@ function getCodeLang(node: Element) {
     // external demo
     // TODO: resolve module without extension
     lang = path.extname(node.properties.src).slice(1);
-  } else if (Array.isArray(node.properties?.className)) {
+  } else if (
+    Array.isArray(node.properties?.className) &&
+    (opts.codeBlockMode === 'passive'
+      ? // passive mode
+        / demo/.test(String(node.data?.meta))
+      : // active mode (default)
+        !/ pure/.test(String(node.data?.meta)))
+  ) {
     // code block demo
     // ref: https://github.com/syntax-tree/mdast-util-to-hast/blob/b7623785f270b5225898d15327770327409878f8/lib/handlers/code.js#L23
     lang = String(node.properties!.className[0]).replace('language-', '');
@@ -72,7 +79,7 @@ function tryMarkDemoNode(node: Element, opts: IRehypeDemoOptions) {
 
   // to prevent duplicate mark
   if (!isDemoNode) {
-    const lang = getCodeLang(node);
+    const lang = getCodeLang(node, opts);
     const techStack =
       lang && opts.techStacks.find((ts) => ts.isSupported(node, lang));
 
@@ -201,6 +208,9 @@ export default function rehypeDemo(
               component = `React.lazy(() => import('${winPath(
                 parseOpts.fileAbsPath,
               )}?techStack=${techStack.name}'))`;
+              // use code value as title
+              // TODO: force checking
+              codeNode.properties!.title = codeValue;
             } else {
               // pass a fake entry point for code block demo
               // and pass the real code via `entryPointCode` option

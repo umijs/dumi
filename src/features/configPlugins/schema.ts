@@ -12,6 +12,7 @@ export function getSchemas(): Record<string, (Joi: JoiRoot) => any> {
         entityDirs: Joi.array()
           .items(Joi.object({ type: Joi.string(), dir: Joi.string() }))
           .optional(),
+        codeBlockMode: Joi.string().valid('active', 'passive').optional(),
       }).optional(),
   };
 }

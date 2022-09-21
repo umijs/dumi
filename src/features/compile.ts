@@ -25,7 +25,12 @@ export default (api: IApi) => {
       .resourceQuery(/meta\.demos/)
       .use('demo-index-loader')
       .loader(loaderPath)
-      .options({ techStacks, cwd: api.cwd, mode: 'demos' } as IMdLoaderOptions)
+      .options({
+        techStacks,
+        cwd: api.cwd,
+        mode: 'demos',
+        codeBlockMode: api.config.resolve.codeBlockMode,
+      } as IMdLoaderOptions)
       .end()
       .end()
       // get page component for each markdown file
@@ -40,6 +45,7 @@ export default (api: IApi) => {
         techStacks,
         cwd: api.cwd,
         builtins: api.service.themeData.builtins,
+        codeBlockMode: api.config.resolve.codeBlockMode,
       } as IMdLoaderOptions);
 
     // get pre-transform result for each external demo component

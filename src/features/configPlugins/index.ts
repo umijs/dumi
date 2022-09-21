@@ -6,6 +6,7 @@ export default (api: IApi) => {
     resolve: {
       docDirs: ['docs'],
       entityDirs: [{ type: 'component', dir: 'src' }],
+      codeBlockMode: 'active',
     },
   };
 
