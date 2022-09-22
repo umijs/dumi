@@ -213,7 +213,7 @@ export default function rehypeDemo(
               )}?techStack=${techStack.name}'))`;
               // use code value as title
               // TODO: force checking
-              codeNode.properties!.title = codeValue;
+              codeNode.properties!.title = codeValue || undefined;
             } else {
               // pass a fake entry point for code block demo
               // and pass the real code via `entryPointCode` option
@@ -234,22 +234,46 @@ export default function rehypeDemo(
               parseBlockAsset(parseOpts).then(
                 async ({ asset, sources, frontmatter }) => {
                   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                  const { src, className, title, description, ...restAttrs } =
+                  const { src, className, ...restAttrs } =
                     codeNode.properties || {};
+                  const finalDescription =
+                    restAttrs.description || frontmatter?.description || '';
 
-                  // allow override description by `code` attr
-                  // TODO: locale support for title & description
-                  if (description) {
-                    asset.description = String(description);
-                  }
-
-                  // allow override title by `code` innerText
-                  if (codeType === 'external' && codeValue) {
-                    asset.title = codeValue;
+                  // allow override title by `code` attr
+                  if (codeNode.properties?.title) {
+                    asset.title = String(codeNode.properties.title);
                   }
 
                   // update previewer props after parse
                   Object.assign(previewerProps, frontmatter, restAttrs);
+
+                  // md to string for asset metadata
+                  // md to html for previewer props
+                  if (finalDescription) {
+                    const { unified } = await import('unified');
+                    const { default: remarkParse } = await import(
+                      'remark-parse'
+                    );
+                    const { default: remarkGfm } = await import('remark-gfm');
+                    const { default: remarkRehype } = await import(
+                      'remark-rehype'
+                    );
+                    const { default: rehypeStringify } = await import(
+                      'rehype-stringify'
+                    );
+                    const { convert } = require('html-to-text');
+                    const result = await unified()
+                      .use(remarkParse)
+                      .use(remarkGfm)
+                      .use(remarkRehype, { allowDangerousHtml: true })
+                      .use(rehypeStringify)
+                      .process(finalDescription);
+
+                    previewerProps.description = String(result.value);
+                    asset.description = convert(result.value, {
+                      wordwrap: false,
+                    });
+                  }
 
                   // return demo data
                   return {
