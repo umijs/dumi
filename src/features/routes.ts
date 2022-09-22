@@ -43,6 +43,20 @@ export default (api: IApi) => {
     return memo;
   });
 
+  // support to disable docDirs & entityDirs by empty array
+  // because the empty array will be ignored by config merge logic
+  api.modifyDefaultConfig((memo) => {
+    if (api.userConfig.resolve) {
+      const keys: ['docDirs', 'entityDirs'] = ['docDirs', 'entityDirs'];
+
+      keys.forEach((key) => {
+        if (api.userConfig.resolve[key]?.length === 0) memo.resolve[key] = [];
+      });
+    }
+
+    return memo;
+  });
+
   // generate dumi routes
   api.modifyRoutes((oRoutes) => {
     // retain layout routes, make sure api.addLayouts still works
