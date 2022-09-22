@@ -6,9 +6,7 @@
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "bin": {
-    "dumi": "./bin/dumi"
-  },
+  "bin": "./bin/dumi.js",
   "files": [
     "bin",
     "dist",

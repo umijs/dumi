@@ -1,1 +1,1 @@
-export default 'Hello dumi 2.0!';
+export * from 'umi';

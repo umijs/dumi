@@ -7,6 +7,13 @@ export default (api: IApi) => {
   // register react tech stack by default
   api.registerTechStack(() => new ReactTechStack());
 
+  // allow import from dumi
+  api.modifyDefaultConfig((memo) => {
+    memo.alias.dumi$ = memo.alias.umi;
+
+    return memo;
+  });
+
   // configure loader to compile markdown
   api.chainWebpack(async (memo) => {
     const loaderPath = require.resolve('../loaders/markdown');
