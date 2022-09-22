@@ -29,14 +29,17 @@ function getPkgThemePath(api: IApi) {
 }
 
 export default (api: IApi) => {
-  let localThemeData: IThemeLoadResult;
-  let originalThemeData: IThemeLoadResult;
+  // try to read local theme
+  const localThemePath = path.join(api.cwd, LOCAL_THEME_DIR);
+  const localThemeData =
+    fs.existsSync(localThemePath) && loadTheme(localThemePath);
   const mdRouteFiles: { index: number; file: string }[] = [];
   const themeMapKeys: ('layouts' | 'builtins' | 'slots')[] = [
     'layouts',
     'builtins',
     'slots',
   ];
+  let originalThemeData: IThemeLoadResult;
 
   api.describe({ key: 'dumi:theme' });
 
@@ -63,11 +66,8 @@ export default (api: IApi) => {
       // because layout routes are generated before appData is created
       api.service.themeData = originalThemeData;
 
-      // try to read local theme
-      const localThemePath = path.join(api.cwd, LOCAL_THEME_DIR);
-
-      if (fs.existsSync(localThemePath)) {
-        localThemeData = loadTheme(localThemePath);
+      // merge local theme data
+      if (localThemeData) {
         api.service.themeData = deepmerge(originalThemeData, localThemeData, {
           clone: true,
         });
