@@ -1,5 +1,6 @@
 import type { IApi } from '@/types';
 import { getConventionRoutes } from '@umijs/core';
+import { createRouteId } from '@umijs/core/dist/route/utils';
 import path from 'path';
 import { plural } from 'pluralize';
 import type { IRoute } from 'umi';
@@ -100,7 +101,7 @@ export default (api: IApi) => {
       });
 
       Object.entries(dirRoutes).forEach(([key, route]) => {
-        // prefix id with dir
+        // prefix id with dir, same as umi internal route id
         route.id = `${dir}/${key}`;
         route.parentId = docLayoutId;
 
@@ -129,7 +130,7 @@ export default (api: IApi) => {
           // like umi standard route
           // ref: https://github.com/umijs/umi/blob/cabb186057d801494340f533195b6b330e5ef4e0/packages/core/src/route/routesConvention.ts#L88
           .replace(/\./g, '/');
-        const routeId = `${dir}/${routePath}`;
+        const routeId = createRouteId(file);
 
         routes[routeId] = {
           id: routeId,

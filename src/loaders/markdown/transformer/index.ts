@@ -7,6 +7,7 @@ import rehypeIsolation from './rehypeIsolation';
 import rehypeJsxify from './rehypeJsxify';
 import rehypeRaw from './rehypeRaw';
 import rehypeStrip from './rehypeStrip';
+import remarkMeta from './remarkMeta';
 
 declare module 'hast' {
   interface Element {
@@ -27,6 +28,7 @@ declare module 'vfile' {
       asset: IParsedBlockAsset['asset'];
       sources: IParsedBlockAsset['sources'];
     }[];
+    frontmatter: Record<string, any>;
   }
 }
 
@@ -52,6 +54,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
   const result = await unified()
     .use(remarkParse)
     .use(remarkFrontmatter)
+    .use(remarkMeta)
     .use(remarkBreaks)
     .use(remarkGfm)
     .use(remarkRehype, { allowDangerousHtml: true })

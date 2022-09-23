@@ -10,6 +10,7 @@ export default (api: IApi) => {
       require.resolve('./features/configPlugins'),
       require.resolve('./features/compile'),
       require.resolve('./features/routes'),
+      require.resolve('./features/meta'),
       require.resolve('./features/theme'),
       require.resolve('./features/locales'),
     ],

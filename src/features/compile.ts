@@ -29,13 +29,13 @@ export default (api: IApi) => {
       .test(/\.md$/)
       // get demo index for each markdown file
       .oneOf('demo-index')
-      .resourceQuery(/meta\.demos/)
+      .resourceQuery(/meta$/)
       .use('demo-index-loader')
       .loader(loaderPath)
       .options({
         techStacks,
         cwd: api.cwd,
-        mode: 'demos',
+        mode: 'meta',
         codeBlockMode: api.config.resolve.codeBlockMode,
       } as IMdLoaderOptions)
       .end()

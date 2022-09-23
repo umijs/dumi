@@ -2,7 +2,7 @@ import { LOCAL_THEME_DIR, THEME_PREFIX } from '@/constants';
 import type { IApi } from '@/types';
 import fs from 'fs';
 import path from 'path';
-import { deepmerge, Mustache } from 'umi/plugin-utils';
+import { deepmerge } from 'umi/plugin-utils';
 import loadTheme, { IThemeLoadResult } from './loader';
 
 const DEFAULT_THEME_PATH = path.join(__dirname, '../../../theme-default');
@@ -33,7 +33,6 @@ export default (api: IApi) => {
   const localThemePath = path.join(api.cwd, LOCAL_THEME_DIR);
   const localThemeData =
     fs.existsSync(localThemePath) && loadTheme(localThemePath);
-  const mdRouteFiles: { index: number; file: string }[] = [];
   const themeMapKeys: ('layouts' | 'builtins' | 'slots')[] = [
     'layouts',
     'builtins',
@@ -120,17 +119,6 @@ export default (api: IApi) => {
     return memo;
   });
 
-  api.modifyRoutes((routes) => {
-    // collect all markdown route files for combine demos
-    Object.values(routes).forEach((route) => {
-      if (route.file.endsWith('.md')) {
-        mdRouteFiles.push({ index: mdRouteFiles.length, file: route.file });
-      }
-    });
-
-    return routes;
-  });
-
   api.onGenerateFiles(() => {
     // write shadow theme files to tmp dir
     themeMapKeys.forEach((key) => {
@@ -143,31 +131,13 @@ export default (api: IApi) => {
       });
     });
 
-    // generate demos entry
-    api.writeTmpFile({
-      noPluginDir: true,
-      path: 'dumi/demos.ts',
-      content: Mustache.render(
-        `{{#mdRouteFiles}}
-import demos{{{index}}} from '{{{file}}}?type=meta.demos';
-{{/mdRouteFiles}}
-
-export default {
-  {{#mdRouteFiles}}
-  ...demos{{{index}}},
-  {{/mdRouteFiles}}
-}`,
-        { mdRouteFiles },
-      ),
-    });
-
     // generate context layout
     api.writeTmpFile({
       noPluginDir: true,
       path: 'dumi/theme/ContextWrapper.tsx',
       content: `import { Context } from 'dumi/theme';
 import { useOutlet } from 'umi';
-import demos from '../demos';
+import { demos } from '../meta';
 import { locales } from '../locales/config';
 
 export default function DumiContextWrapper() {

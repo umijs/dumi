@@ -11,7 +11,7 @@ interface IMdLoaderDefaultModeOptions
 
 interface IMdLoaderDemosModeOptions
   extends Omit<IMdLoaderDefaultModeOptions, 'builtins' | 'mode'> {
-  mode: 'demos';
+  mode: 'meta';
 }
 
 export type IMdLoaderOptions =
@@ -39,22 +39,28 @@ export default function mdLoader(this: any, raw: string) {
     fileAbsPath: this.resourcePath,
     codeBlockMode: opts.codeBlockMode,
   }).then((ret) => {
-    if (opts.mode === 'demos') {
+    if (opts.mode === 'meta') {
+      const { demos, frontmatter = {} } = ret.meta;
+
       cb(
         null,
         Mustache.render(
           `import React from 'react';
 
-export default {
+export const demos = {
   {{#demos}}
   '{{{id}}}': {
     component: {{{component}}},
     asset: {{{renderAsset}}}
   },
   {{/demos}}
-}`,
+};
+
+export const frontmatter = {{{frontmatter}}};
+`,
           {
-            demos: ret.meta.demos,
+            demos,
+            frontmatter: JSON.stringify(frontmatter),
             renderAsset: function renderAsset() {
               // use raw-loader to load all source files
               Object.keys(this.sources).forEach((file: string) => {
