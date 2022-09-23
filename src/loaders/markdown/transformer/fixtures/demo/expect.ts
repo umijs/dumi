@@ -11,7 +11,9 @@ export default (ret: IMdTransformerResult) => {
   "demo": {
     "id": "demo-demo"
   },
-  "previewerProps": {}
+  "previewerProps": {
+    "filePath": "demo.jsx"
+  }
 }} /></>;
 `);
 

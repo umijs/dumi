@@ -11,6 +11,10 @@ export interface IPreviewerProps {
    */
   description?: string;
   /**
+   * file path of current demo
+   */
+  filePath?: string;
+  /**
    * asset metadata of current demo
    */
   asset: ExampleBlockAsset;

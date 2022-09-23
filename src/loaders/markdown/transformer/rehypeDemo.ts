@@ -214,6 +214,9 @@ export default function rehypeDemo(
               // use code value as title
               // TODO: force checking
               codeNode.properties!.title = codeValue || undefined;
+              codeNode.properties!.filePath ??= winPath(
+                path.relative(opts.cwd, parseOpts.fileAbsPath),
+              );
             } else {
               // pass a fake entry point for code block demo
               // and pass the real code via `entryPointCode` option
@@ -240,9 +243,14 @@ export default function rehypeDemo(
                     restAttrs.description || frontmatter?.description || '';
 
                   // allow override title by `code` attr
-                  if (codeNode.properties?.title) {
-                    asset.title = String(codeNode.properties.title);
+                  if (restAttrs.title) {
+                    asset.title = String(restAttrs.title);
                   }
+
+                  // transform empty string attr to boolean, such as `debug`, `iframe` & etc.
+                  Object.keys(restAttrs).forEach((key) => {
+                    if (restAttrs[key] === '') restAttrs[key] = true;
+                  });
 
                   // update previewer props after parse
                   Object.assign(previewerProps, frontmatter, restAttrs);
