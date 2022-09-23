@@ -1,4 +1,6 @@
-import React, { type FC } from 'react';
+import React, { useState, type FC } from 'react';
+// @ts-ignore
+import { useRouteData } from 'dumi';
 import { DumiDemo, IDumiDemoProps } from './DumiDemo';
 
 export interface IDumiDemoGridProps {
@@ -6,11 +8,35 @@ export interface IDumiDemoGridProps {
 }
 
 export const DumiDemoGrid: FC<IDumiDemoGridProps> = (props) => {
+  const {
+    route: { meta },
+  } = useRouteData();
+  const [cols] = useState(() => {
+    const cols: IDumiDemoProps[][] = [];
+
+    if (meta?.demo?.cols > 1) {
+      for (let i = 0; i < props.items.length; i += meta.demo.cols) {
+        props.items.slice(i, i + meta.demo.cols).forEach((item, j) => {
+          cols[j] ??= [];
+          cols[j].push(item);
+        });
+      }
+
+      return cols;
+    } else {
+      cols.push(props.items);
+    }
+
+    return cols;
+  });
+
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)' }}>
-      {props.items.map((item) => (
-        <section key={item.demo.id}>
-          <DumiDemo {...item} />
+    <div style={{ display: 'flex', margin: -8 }}>
+      {cols.map((col, i) => (
+        <section style={{ flex: 1, padding: 8 }} key={String(i)}>
+          {col.map((item) => (
+            <DumiDemo key={item.demo.id} {...item} />
+          ))}
         </section>
       ))}
     </div>
