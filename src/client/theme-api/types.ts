@@ -22,4 +22,5 @@ export interface IPreviewerProps {
    * react node of current demo
    */
   children: ReactNode;
+  [key: string]: any;
 }

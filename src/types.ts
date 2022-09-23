@@ -1,3 +1,4 @@
+import type { IDumiDemoProps } from '@/client/theme-api';
 import type { IThemeLoadResult } from '@/features/theme/loader';
 import type { IModify } from '@umijs/core';
 import type { ExampleBlockAsset } from 'dumi-assets-types';
@@ -40,7 +41,17 @@ export abstract class IDumiTechStack {
   /**
    * generator for return previewer props
    */
-  abstract generatePreviewerProps?(): Record<string, any>;
+  abstract generatePreviewerProps?(
+    props: IDumiDemoProps['previewerProps'],
+    opts: {
+      type: Parameters<IDumiTechStack['transformCode']>[1]['type'];
+      mdAbsPath: string;
+      fileAbsPath?: string;
+      entryPointCode?: string;
+    },
+  ):
+    | Promise<IDumiDemoProps['previewerProps']>
+    | IDumiDemoProps['previewerProps'];
 }
 
 export type IApi = IUmiApi & {

@@ -47,7 +47,7 @@ async function parseBlockAsset(opts: {
   const result: IParsedBlockAsset = {
     asset,
     sources: {},
-    frontmatter: {},
+    frontmatter: null,
   };
 
   await build({
@@ -120,6 +120,7 @@ async function parseBlockAsset(opts: {
                 );
 
                 if (frontmatter) {
+                  // replace entry code when frontmatter available
                   asset.dependencies[filename].value = code;
                   result.frontmatter = frontmatter;
 

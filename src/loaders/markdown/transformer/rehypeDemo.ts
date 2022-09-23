@@ -183,7 +183,9 @@ export default function rehypeDemo(
         node.children.forEach((codeNode) => {
           // strip invalid br elements
           if (isElement(codeNode, 'code')) {
-            const codeType = codeNode.data!.type;
+            const codeType = codeNode.data!.type as Parameters<
+              IRehypeDemoOptions['techStacks'][0]['transformCode']
+            >[1]['type'];
             const techStack = codeNode.data!
               .techStack as IRehypeDemoOptions['techStacks'][0];
             const codeValue = toString(codeNode.children).trim();
@@ -197,7 +199,7 @@ export default function rehypeDemo(
             const previewerProps: IDumiDemoProps['previewerProps'] = {};
             let component = '';
 
-            if (codeNode.data!.type === 'external') {
+            if (codeType === 'external') {
               // external demo options
               parseOpts.fileAbsPath = path.resolve(
                 path.dirname(opts.fileAbsPath),
@@ -239,8 +241,6 @@ export default function rehypeDemo(
                   // eslint-disable-next-line @typescript-eslint/no-unused-vars
                   const { src, className, ...restAttrs } =
                     codeNode.properties || {};
-                  const finalDescription =
-                    restAttrs.description || frontmatter?.description || '';
 
                   // allow override title by `code` attr
                   if (restAttrs.title) {
@@ -253,11 +253,28 @@ export default function rehypeDemo(
                   });
 
                   // update previewer props after parse
-                  Object.assign(previewerProps, frontmatter, restAttrs);
+                  const originalProps = Object.assign(
+                    {},
+                    frontmatter,
+                    restAttrs,
+                  );
+                  // HINT: must use `Object.assign` to keep the reference
+                  Object.assign(
+                    previewerProps,
+                    (await techStack.generatePreviewerProps?.(originalProps, {
+                      type: codeType,
+                      mdAbsPath: opts.fileAbsPath,
+                      fileAbsPath:
+                        codeType === 'external'
+                          ? parseOpts.fileAbsPath
+                          : undefined,
+                      entryPointCode: parseOpts.entryPointCode,
+                    })) || originalProps,
+                  );
 
                   // md to string for asset metadata
                   // md to html for previewer props
-                  if (finalDescription) {
+                  if (previewerProps.description) {
                     const { unified } = await import('unified');
                     const { default: remarkParse } = await import(
                       'remark-parse'
@@ -275,7 +292,7 @@ export default function rehypeDemo(
                       .use(remarkGfm)
                       .use(remarkRehype, { allowDangerousHtml: true })
                       .use(rehypeStringify)
-                      .process(finalDescription);
+                      .process(previewerProps.description);
 
                     previewerProps.description = String(result.value);
                     asset.description = convert(result.value, {

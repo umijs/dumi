@@ -5,7 +5,11 @@ import type { IApi, IDumiTechStack } from '@/types';
 
 export default (api: IApi) => {
   // register react tech stack by default
-  api.registerTechStack(() => new ReactTechStack());
+  api.register({
+    key: 'registerTechStack',
+    stage: Infinity,
+    fn: () => new ReactTechStack(),
+  });
 
   // allow import from dumi
   api.modifyDefaultConfig((memo) => {
