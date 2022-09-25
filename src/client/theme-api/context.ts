@@ -1,12 +1,12 @@
 import { createContext, type ComponentType } from 'react';
-import type { IPreviewerProps } from './types';
+import type { ILocalesConfig, IPreviewerProps } from './types';
 
 export interface IThemeContext {
   demos: Record<
     string,
     { component: ComponentType; asset: IPreviewerProps['asset'] }
   >;
-  locales: { id: string; name: string; base: string }[];
+  locales: ILocalesConfig;
 }
 
 export const Context = createContext<IThemeContext>({ demos: {}, locales: [] });

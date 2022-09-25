@@ -39,3 +39,9 @@ export interface IRouteMeta {
   };
   [key: string]: any;
 }
+
+type IBasicLocale = { id: string; name: string };
+export type ILocalesConfig = (
+  | (IBasicLocale & { base?: string })
+  | (IBasicLocale & { suffix: string })
+)[];

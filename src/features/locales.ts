@@ -4,14 +4,26 @@ export default (api: IApi) => {
   api.describe({
     config: {
       default: [{ id: 'zh-CN', name: '中文', base: '/' }],
-      schema: (Joi) =>
-        Joi.array().items(
-          Joi.object({
-            id: Joi.string().regex(/^[a-z]{2}-[A-Z]{2}$/),
-            name: Joi.string(),
-            base: Joi.string().optional(),
-          }),
-        ),
+      schema: (Joi) => {
+        const basicOpts = { id: Joi.string(), name: Joi.string() };
+
+        return Joi.alternatives(
+          // base mode
+          Joi.array().items(
+            Joi.object({
+              ...basicOpts,
+              base: Joi.string().optional(),
+            }),
+          ),
+          // suffix mode
+          Joi.array().items(
+            Joi.object({
+              ...basicOpts,
+              suffix: Joi.string().allow(''),
+            }),
+          ),
+        );
+      },
     },
   });
 
@@ -21,7 +33,10 @@ export default (api: IApi) => {
     fn: (memo: IApi['config']) => {
       // fallback to use id as locale route base
       memo.locales?.forEach((locale, i) => {
-        locale.base ??= i ? `/${locale.id}` : '/';
+        if (!('suffix' in locale)) {
+          // only apply for non-suffix mode
+          locale.base ??= i ? `/${locale.id}` : '/';
+        }
       });
 
       return memo;
@@ -57,7 +72,12 @@ const cache = createIntlCache();
 
 const LocalesContainer: FC<{ children: ReactNode }> = (props) => {
   const [locale] = useState(() => {
-    const matched = locales.find((locale) => history.location.pathname.startsWith(locale.base));
+    const matched = locales.find((locale) => (
+      // base mode
+      history.location.pathname.startsWith(locale.base) ||
+      // suffix mode
+      ('suffix' in locale && history.location.pathname.endsWith(locale.suffix))
+    ));
 
     return matched ? matched.id : locales[0].id;
   });

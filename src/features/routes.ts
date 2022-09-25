@@ -22,12 +22,16 @@ function localizeUmiRoute(route: IRoute, locales: IApi['config']['locales']) {
   if (locale) {
     // strip single `/` locale base or move `/` to the end of locale base for join
     const base =
-      locale.base === '/' ? '' : locale.base!.replace(/^(\/)(.+)$/, '$2$1');
+      !('base' in locale) || locale.base === '/'
+        ? ''
+        : locale.base!.replace(/^(\/)(.+)$/, '$2$1');
+    // prepare suffix for join
+    const suffix = 'suffix' in locale ? locale.suffix : '';
     // /foo/zh-CN => /{prefix}/foo
     // /bar/index/zh-CN => /{prefix}/bar
     route.path = `${base}${route.path
       .replace(new RegExp(`/${locale.id}$`), '')
-      .replace(/(\/index|\/README)$/, '')}`;
+      .replace(/(\/index|\/README)$/, '')}${suffix}`;
     route.absPath = route.path !== '/' ? `/${route.path}` : route.path;
   }
 }
