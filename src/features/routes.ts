@@ -31,7 +31,7 @@ function localizeUmiRoute(route: IRoute, locales: IApi['config']['locales']) {
     // /bar/index/zh-CN => /{prefix}/bar
     route.path = `${base}${route.path
       .replace(new RegExp(`/${locale.id}$`), '')
-      .replace(/(\/index|\/README)$/, '')}${suffix}`;
+      .replace(/((^|\/)(index|README))$/, '')}${suffix}`;
     route.absPath = route.path !== '/' ? `/${route.path}` : route.path;
   }
 }

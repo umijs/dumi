@@ -3,7 +3,17 @@ import type { IApi } from '@/types';
 export default (api: IApi) => {
   api.describe({
     config: {
-      default: [{ id: 'zh-CN', name: '中文', base: '/' }],
+      default: [
+        {
+          id: 'zh-CN',
+          name: '中文',
+          // only apply default base for non-suffix mode
+          ...(api.userConfig.locales?.[0] &&
+          'suffix' in api.userConfig.locales[0]
+            ? {}
+            : { base: '/' }),
+        },
+      ],
       schema: (Joi) => {
         const basicOpts = { id: Joi.string(), name: Joi.string() };
 
@@ -72,7 +82,7 @@ const cache = createIntlCache();
 
 const LocalesContainer: FC<{ children: ReactNode }> = (props) => {
   const [locale] = useState(() => {
-    const matched = locales.find((locale) => (
+    const matched = locales.reverse().find((locale) => (
       // base mode
       history.location.pathname.startsWith(locale.base) ||
       // suffix mode
