@@ -20,12 +20,19 @@ export default (api: IApi) => {
 
   // configure loader to compile markdown
   api.chainWebpack(async (memo) => {
-    const loaderPath = require.resolve('../loaders/markdown');
     const babelInUmi = memo.module.rule('src').use('babel-loader').entries();
     const techStacks: IDumiTechStack[] = await api.applyPlugins({
       key: 'registerTechStack',
       type: api.ApplyPluginsType.add,
     });
+    const loaderPath = require.resolve('../loaders/markdown');
+    const loaderBaseOpts: Partial<IMdLoaderOptions> = {
+      techStacks,
+      cwd: api.cwd,
+      codeBlockMode: api.config.resolve.codeBlockMode,
+      extraRemarkPlugins: api.config.extraRemarkPlugins,
+      extraRehypePlugins: api.config.extraRehypePlugins,
+    };
 
     memo.module
       .rule('dumi-md')
@@ -37,10 +44,8 @@ export default (api: IApi) => {
       .use('demo-index-loader')
       .loader(loaderPath)
       .options({
-        techStacks,
-        cwd: api.cwd,
+        ...loaderBaseOpts,
         mode: 'meta',
-        codeBlockMode: api.config.resolve.codeBlockMode,
       } as IMdLoaderOptions)
       .end()
       .end()
@@ -53,10 +58,8 @@ export default (api: IApi) => {
       .use('md-loader')
       .loader(loaderPath)
       .options({
-        techStacks,
-        cwd: api.cwd,
+        ...loaderBaseOpts,
         builtins: api.service.themeData.builtins,
-        codeBlockMode: api.config.resolve.codeBlockMode,
       } as IMdLoaderOptions);
 
     // get pre-transform result for each external demo component

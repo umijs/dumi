@@ -1,6 +1,6 @@
 import type { IThemeLoadResult } from '@/features/theme/loader';
 import { getFileContentByRegExp, getFileRangeLines } from '@/utils';
-import { Mustache } from 'umi/plugin-utils';
+import { lodash, Mustache } from 'umi/plugin-utils';
 import transform, { type IMdTransformerOptions } from './transformer';
 
 interface IMdLoaderDefaultModeOptions
@@ -34,10 +34,11 @@ export default function mdLoader(this: any, raw: string) {
   }
 
   transform(content, {
-    techStacks: opts.techStacks,
-    cwd: opts.cwd,
+    ...(lodash.omit(opts, ['mode', 'builtins']) as Omit<
+      IMdLoaderOptions,
+      'mode' | 'builtins'
+    >),
     fileAbsPath: this.resourcePath,
-    codeBlockMode: opts.codeBlockMode,
   }).then((ret) => {
     if (opts.mode === 'meta') {
       const { demos, frontmatter = {} } = ret.meta;

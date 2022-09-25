@@ -1,6 +1,7 @@
 import type { IParsedBlockAsset } from '@/assetParsers/block';
 import type { IRouteMeta } from '@/client/theme-api';
 import type { IDumiConfig, IDumiTechStack } from '@/types';
+import type { Plugin, Processor } from 'unified';
 import type { DataMap } from 'vfile';
 import rehypeDemo from './rehypeDemo';
 import rehypeEmbed from './rehypeEmbed';
@@ -38,11 +39,30 @@ export interface IMdTransformerOptions {
   fileAbsPath: string;
   techStacks: IDumiTechStack[];
   codeBlockMode: IDumiConfig['resolve']['codeBlockMode'];
+  extraRemarkPlugins?: IDumiConfig['extraRemarkPlugins'];
+  extraRehypePlugins?: IDumiConfig['extraRehypePlugins'];
 }
 
 export interface IMdTransformerResult {
   content: string;
   meta: DataMap;
+}
+
+function applyUnifiedPlugin(opts: {
+  processor: Processor;
+  plugin: NonNullable<IMdTransformerOptions['extraRemarkPlugins']>[0];
+  cwd: IMdTransformerOptions['cwd'];
+}) {
+  const [plugin, options] = Array.isArray(opts.plugin)
+    ? opts.plugin
+    : [opts.plugin];
+  const mod =
+    typeof plugin === 'function'
+      ? plugin
+      : require(require.resolve(plugin, { paths: [opts.cwd] }));
+  const fn: Plugin = mod.default || mod;
+
+  opts.processor.use(fn, options);
 }
 
 export default async (raw: string, opts: IMdTransformerOptions) => {
@@ -52,12 +72,24 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
   const { default: remarkBreaks } = await import('remark-breaks');
   const { default: remarkGfm } = await import('remark-gfm');
   const { default: remarkRehype } = await import('remark-rehype');
-  const result = await unified()
+  const processor = unified()
     .use(remarkParse)
     .use(remarkFrontmatter)
     .use(remarkMeta)
     .use(remarkBreaks)
-    .use(remarkGfm)
+    .use(remarkGfm);
+
+  // apply extra remark plugins
+  opts.extraRemarkPlugins?.forEach((plugin) =>
+    applyUnifiedPlugin({
+      plugin,
+      processor,
+      cwd: opts.cwd,
+    }),
+  );
+
+  // apply internal rehype plugins
+  processor
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeRaw)
     .use(rehypeStrip)
@@ -70,9 +102,18 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
       fileAbsPath: opts.fileAbsPath,
       codeBlockMode: opts.codeBlockMode,
     })
-    .use(rehypeIsolation)
-    .use(rehypeJsxify)
-    .process(raw);
+    .use(rehypeIsolation);
+
+  // apply extra rehype plugins
+  opts.extraRehypePlugins?.forEach((plugin) =>
+    applyUnifiedPlugin({
+      plugin,
+      processor,
+      cwd: opts.cwd,
+    }),
+  );
+
+  const result = await processor.use(rehypeJsxify).process(raw);
 
   return {
     content: String(result.value),

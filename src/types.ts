@@ -14,6 +14,13 @@ export interface IDumiConfig extends IUmiConfig {
     codeBlockMode: 'active' | 'passive';
   };
   locales: { id: string; name: string; base?: string }[];
+  /**
+   * extra unified plugins
+   */
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  extraRemarkPlugins?: (string | Function | [string | Function, object])[];
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  extraRehypePlugins?: (string | Function | [string | Function, object])[];
 }
 
 export abstract class IDumiTechStack {
