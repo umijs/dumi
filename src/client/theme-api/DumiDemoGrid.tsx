@@ -1,6 +1,5 @@
+import { useMatchedRouteMeta } from 'dumi/theme';
 import React, { useState, type FC } from 'react';
-// @ts-ignore
-import { useRouteData } from 'dumi';
 import { DumiDemo, IDumiDemoProps } from './DumiDemo';
 
 export interface IDumiDemoGridProps {
@@ -8,13 +7,11 @@ export interface IDumiDemoGridProps {
 }
 
 export const DumiDemoGrid: FC<IDumiDemoGridProps> = (props) => {
-  const {
-    route: { meta },
-  } = useRouteData();
+  const meta = useMatchedRouteMeta();
   const [cols] = useState(() => {
     const cols: IDumiDemoProps[][] = [];
 
-    if (meta?.demo?.cols > 1) {
+    if (meta.demo?.cols && meta.demo.cols > 1) {
       for (let i = 0; i < props.items.length; i += meta.demo.cols) {
         props.items.slice(i, i + meta.demo.cols).forEach((item, j) => {
           cols[j] ??= [];

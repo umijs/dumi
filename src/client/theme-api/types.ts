@@ -24,3 +24,18 @@ export interface IPreviewerProps {
   children: ReactNode;
   [key: string]: any;
 }
+
+export interface IRouteMeta {
+  // seo related
+  title?: string;
+  description?: string;
+  keywords?: string[];
+  // render related
+  category?: string;
+  order?: number;
+  toc?: boolean | 'content' | 'menu';
+  demo?: {
+    cols?: number;
+  };
+  [key: string]: any;
+}

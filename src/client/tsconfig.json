@@ -3,6 +3,8 @@
   "compilerOptions": {
     "paths": {
       "@/*": ["src/*"],
+      "@@/*": ["src/.umi/*"],
+      "dumi": ["src"],
       "dumi/theme": ["src/client/theme-api"],
       "dumi/theme/*": ["src/client/theme-default/*"]
     }

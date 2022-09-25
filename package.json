@@ -18,6 +18,7 @@
     "build": "father build",
     "build:deps": "father prebundle",
     "dev": "father dev",
+    "postinstall": "umi setup",
     "lint": "npm run lint:es && npm run lint:css",
     "lint:css": "stylelint \"{src,test}/**/*.{css,less}\"",
     "lint:es": "eslint \"{src,test}/**/*.{js,jsx,ts,tsx}\"",

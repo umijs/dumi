@@ -1,4 +1,5 @@
 import type { IParsedBlockAsset } from '@/assetParsers/block';
+import type { IRouteMeta } from '@/client/theme-api';
 import type { IDumiConfig, IDumiTechStack } from '@/types';
 import type { DataMap } from 'vfile';
 import rehypeDemo from './rehypeDemo';
@@ -28,7 +29,7 @@ declare module 'vfile' {
       asset: IParsedBlockAsset['asset'];
       sources: IParsedBlockAsset['sources'];
     }[];
-    frontmatter: Record<string, any>;
+    frontmatter: IRouteMeta;
   }
 }
 
