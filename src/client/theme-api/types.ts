@@ -27,11 +27,12 @@ export interface IPreviewerProps {
 
 export interface IRouteMeta {
   // seo related
-  title?: string;
+  title: string;
   description?: string;
   keywords?: string[];
   // render related
-  category?: string;
+  nav?: string | { title?: string; order?: number };
+  group?: string | { title?: string; order?: number };
   order?: number;
   toc?: boolean | 'content' | 'menu';
   demo?: {
@@ -42,6 +43,39 @@ export interface IRouteMeta {
 
 type IBasicLocale = { id: string; name: string };
 export type ILocalesConfig = (
-  | (IBasicLocale & { base?: string })
+  | (IBasicLocale & { base: string })
   | (IBasicLocale & { suffix: string })
 )[];
+
+export interface INavItem {
+  title: string;
+  link: string;
+  [key: string]: any;
+}
+interface ISidebarItem {
+  title: string;
+  link: string;
+  [key: string]: any;
+}
+export interface ISidebarGroup {
+  title?: string;
+  children: ISidebarItem[];
+  [key: string]: any;
+}
+export interface IThemeConfig {
+  nav?: (INavItem & { children?: INavItem[] })[];
+  sidebar?: Record<string, ISidebarGroup[]>;
+  [key: string]: any;
+}
+
+export type IRoutesById = Record<
+  string,
+  {
+    path?: string;
+    parentId?: string;
+    meta?: IRouteMeta;
+    id: string;
+    redirect?: string;
+    [key: string]: any;
+  }
+>;

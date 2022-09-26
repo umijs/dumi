@@ -1,4 +1,8 @@
-import type { IDumiDemoProps, ILocalesConfig } from '@/client/theme-api';
+import type {
+  IDumiDemoProps,
+  ILocalesConfig,
+  IThemeConfig,
+} from '@/client/theme-api';
 import type { IThemeLoadResult } from '@/features/theme/loader';
 import type { IModify } from '@umijs/core';
 import type { ExampleBlockAsset } from 'dumi-assets-types';
@@ -14,6 +18,7 @@ export interface IDumiConfig extends IUmiConfig {
     codeBlockMode: 'active' | 'passive';
   };
   locales: ILocalesConfig;
+  themeConfig: IThemeConfig;
   /**
    * extra unified plugins
    */

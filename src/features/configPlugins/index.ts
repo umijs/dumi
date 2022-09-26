@@ -8,6 +8,7 @@ export default (api: IApi) => {
       entityDirs: [{ type: 'component', dir: 'src' }],
       codeBlockMode: 'active',
     },
+    themeConfig: {},
   };
 
   const schemas = getSchemas();

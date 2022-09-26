@@ -144,7 +144,9 @@ export default function DumiContextWrapper() {
   const outlet = useOutlet();
 
   return (
-    <Context.Provider value={{ demos, locales }}>{outlet}</Context.Provider>
+    <Context.Provider value={{ demos, locales, themeConfig: ${JSON.stringify(
+      api.config.themeConfig,
+    )} }}>{outlet}</Context.Provider>
   );
 }`,
     });
