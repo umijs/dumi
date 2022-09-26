@@ -1,5 +1,5 @@
 import { useOutlet } from 'dumi';
-import { useIntl, useMatchedRouteMeta } from 'dumi/theme';
+import { useIntl, useRouteMeta } from 'dumi/theme';
 import Content from 'dumi/theme/slots/Content';
 import Header from 'dumi/theme/slots/Header';
 import Sidebar from 'dumi/theme/slots/Sidebar';
@@ -9,7 +9,7 @@ import Helmet from 'react-helmet';
 const DocLayout: FC = () => {
   const intl = useIntl();
   const outlet = useOutlet();
-  const meta = useMatchedRouteMeta();
+  const meta = useRouteMeta();
 
   return (
     <div>

@@ -3,4 +3,6 @@ export * from './context';
 export * from './DumiDemo';
 export * from './DumiDemoGrid';
 export * from './types';
-export * from './useMatchedRouteMeta';
+export * from './useNavData';
+export * from './useRouteMeta';
+export * from './useSidebarData';

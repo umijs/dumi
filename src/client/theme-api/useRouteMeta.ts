@@ -5,7 +5,7 @@ import type { IRouteMeta } from './types';
 /**
  * hook for get matched route meta
  */
-export const useMatchedRouteMeta = () => {
+export const useRouteMeta = () => {
   const { route } = useRouteData();
   const { pathname } = useLocation();
   const { clientRoutes } = useAppData();

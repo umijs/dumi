@@ -1,4 +1,4 @@
-import { useMatchedRouteMeta } from 'dumi/theme';
+import { useRouteMeta } from 'dumi/theme';
 import React, { useState, type FC } from 'react';
 import { DumiDemo, IDumiDemoProps } from './DumiDemo';
 
@@ -7,7 +7,7 @@ export interface IDumiDemoGridProps {
 }
 
 export const DumiDemoGrid: FC<IDumiDemoGridProps> = (props) => {
-  const meta = useMatchedRouteMeta();
+  const meta = useRouteMeta();
   const [cols] = useState(() => {
     const cols: IDumiDemoProps[][] = [];
 

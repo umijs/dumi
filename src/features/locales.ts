@@ -82,11 +82,12 @@ const cache = createIntlCache();
 
 const LocalesContainer: FC<{ children: ReactNode }> = (props) => {
   const [locale] = useState(() => {
-    const matched = locales.reverse().find((locale) => (
-      // base mode
-      history.location.pathname.startsWith(locale.base) ||
-      // suffix mode
-      ('suffix' in locale && history.location.pathname.endsWith(locale.suffix))
+    const matched = locales.slice().reverse().find((locale) => (
+      'suffix' in locale
+        // suffix mode
+        ? history.location.pathname.endsWith(locale.suffix)
+        // base mode
+        : history.location.pathname.startsWith(locale.base)
     ));
 
     return matched ? matched.id : locales[0].id;
