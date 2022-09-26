@@ -12,7 +12,7 @@ export const useMatchedRouteMeta = () => {
   const getter = useCallback((): IRouteMeta => {
     let ret: IRouteMeta;
 
-    if (route.path === pathname) {
+    if (route.path === pathname && !('isLayout' in route)) {
       // use `useRouteData` result if matched, for performance
       ret = (route as any).meta;
     } else {
