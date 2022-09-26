@@ -55,7 +55,7 @@ export default (api: IApi) => {
       const keys: ['docDirs', 'entityDirs'] = ['docDirs', 'entityDirs'];
 
       keys.forEach((key) => {
-        if (api.userConfig.resolve[key]?.length === 0) memo.resolve[key] = [];
+        if (api.userConfig.resolve![key]?.length === 0) memo.resolve[key] = [];
       });
     }
 

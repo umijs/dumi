@@ -1,4 +1,4 @@
-import type { IDumiConfig } from '@/types';
+import type { IDumiUserConfig } from '@/types';
 
 let unistUtilVisit: typeof import('unist-util-visit');
 
@@ -15,4 +15,4 @@ export type {
   Transformer as UnifiedTransformer,
 } from 'unified';
 export { unistUtilVisit };
-export const defineConfig = (config: IDumiConfig) => config;
+export const defineConfig = (config: IDumiUserConfig) => config;

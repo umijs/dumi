@@ -23,6 +23,15 @@ export interface IDumiConfig extends IUmiConfig {
   extraRehypePlugins?: (string | Function | [string | Function, object])[];
 }
 
+export interface IDumiUserConfig
+  extends Partial<Omit<IDumiConfig, 'resolve' | 'locales'>> {
+  resolve?: Partial<IDumiConfig['resolve']>;
+  locales?: (
+    | IDumiConfig['locales'][0]
+    | Omit<IDumiConfig['locales'][0], 'base'>
+  )[];
+}
+
 export abstract class IDumiTechStack {
   /**
    * tech stack name, such as 'react'
@@ -63,7 +72,7 @@ export abstract class IDumiTechStack {
 
 export type IApi = IUmiApi & {
   config: IDumiConfig;
-  userConfig: IDumiConfig;
+  userConfig: IDumiUserConfig;
   service: IUmiApi['service'] & { themeData: IThemeLoadResult };
   /**
    * register a new tech stack
