@@ -58,9 +58,12 @@ root.render(<App />);`;
  * @returns
  */
 const injectReact = (content: string) => {
-  if (content.includes("import React from 'react';")) {
+  const reg1 = /import React, \{.*\} from ['"]react['"];/i;
+  const reg2 = /import \{.*\}, React from ['"]react['"];/i;
+  if (content.includes("import React from 'react'") || content.includes(`import React from "react"`) || reg1.test(content) || reg2.test(content)) {
     return content;
   }
+
   return `import React from 'react';
 ${content}`;
 };
