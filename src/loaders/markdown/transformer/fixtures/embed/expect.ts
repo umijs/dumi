@@ -4,7 +4,7 @@ import { IMdTransformerResult } from '../..';
 export default (ret: IMdTransformerResult) => {
   const embedMdPath = path.join(__dirname, 'embed.md');
   expect(ret.content).toEqual(
-    '<><div className="markdown"><h3>{"This is index.md"}</h3><p><React.Fragment children={require(\'' +
+    '<><div className="markdown"><h3 id="this-is-indexmd"><a aria-hidden="true" tabIndex="-1" href="#this-is-indexmd"><span className="icon icon-link" /></a>{"This is index.md"}</h3><p><React.Fragment children={require(\'' +
       embedMdPath +
       "?').default()} /></p><p><React.Fragment children={require('" +
       embedMdPath +
