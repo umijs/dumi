@@ -50,6 +50,7 @@
   "dependencies": {
     "@swc/core": "^1.2.224",
     "@types/hast": "^2.3.4",
+    "@types/mdast": "^3.0.10",
     "@umijs/bundler-utils": "^4.0.22",
     "@umijs/core": "^4.0.22",
     "dumi-assets-types": "2.0.0-alpha.0",
@@ -58,6 +59,7 @@
     "hast-util-is-element": "^2.1.2",
     "hast-util-raw": "^7.2.2",
     "hast-util-to-estree": "^2.1.0",
+    "hast-util-to-string": "^2.0.0",
     "html-to-text": "^8.2.1",
     "js-yaml": "^4.1.0",
     "mdast-util-to-string": "^3.1.0",

@@ -11,6 +11,7 @@ importers:
       '@types/hast': ^2.3.4
       '@types/jest': ^27.0.0
       '@types/js-yaml': ^4.0.5
+      '@types/mdast': ^3.0.10
       '@types/node': ^18.6.3
       '@types/pluralize': ^0.0.29
       '@types/react': ^18.0.16
@@ -28,6 +29,7 @@ importers:
       hast-util-is-element: ^2.1.2
       hast-util-raw: ^7.2.2
       hast-util-to-estree: ^2.1.0
+      hast-util-to-string: ^2.0.0
       html-to-text: ^8.2.1
       husky: ^8.0.1
       jest: ^27.0.0
@@ -60,6 +62,7 @@ importers:
     dependencies:
       '@swc/core': 1.2.224
       '@types/hast': 2.3.4
+      '@types/mdast': 3.0.10
       '@umijs/bundler-utils': 4.0.22
       '@umijs/core': 4.0.22
       dumi-assets-types: link:assets-types
@@ -68,6 +71,7 @@ importers:
       hast-util-is-element: 2.1.2
       hast-util-raw: 7.2.2
       hast-util-to-estree: 2.1.0
+      hast-util-to-string: 2.0.0
       html-to-text: 8.2.1
       js-yaml: 4.1.0
       mdast-util-to-string: 3.1.0
@@ -5410,6 +5414,12 @@ packages:
       property-information: 6.1.1
       web-namespaces: 2.0.1
       zwitch: 2.0.2
+    dev: false
+
+  /hast-util-to-string/2.0.0:
+    resolution: {integrity: sha512-02AQ3vLhuH3FisaMM+i/9sm4OXGSq1UhOOCpTLLQtHdL3tZt7qil69r8M8iDkZYyC0HCFylcYoP+8IO7ddta1A==}
+    dependencies:
+      '@types/hast': 2.3.4
     dev: false
 
   /hast-util-whitespace/2.0.0:

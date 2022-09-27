@@ -10,7 +10,7 @@ import type { IMdTransformerOptions } from '.';
 
 let visit: typeof import('unist-util-visit').visit;
 let SKIP: typeof import('unist-util-visit').SKIP;
-let toString: typeof import('mdast-util-to-string').toString;
+let toString: typeof import('hast-util-to-string').toString;
 let isElement: typeof import('hast-util-is-element').isElement;
 const DEMO_NODE_CONTAINER = '$demo-container';
 const DEMO_PROP_VALUE_KEY = '$demo-prop-value-key';
@@ -18,7 +18,7 @@ const DEMO_PROP_VALUE_KEY = '$demo-prop-value-key';
 // workaround to import pure esm module
 (async () => {
   ({ visit, SKIP } = await import('unist-util-visit'));
-  ({ toString } = await import('mdast-util-to-string'));
+  ({ toString } = await import('hast-util-to-string'));
   ({ isElement } = await import('hast-util-is-element'));
 })();
 
@@ -188,7 +188,7 @@ export default function rehypeDemo(
             >[1]['type'];
             const techStack = codeNode.data!
               .techStack as IRehypeDemoOptions['techStacks'][0];
-            const codeValue = toString(codeNode.children).trim();
+            const codeValue = toString(codeNode).trim();
             const parseOpts = {
               id: '',
               // TODO: parse atom id

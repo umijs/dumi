@@ -75,7 +75,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
   const processor = unified()
     .use(remarkParse)
     .use(remarkFrontmatter)
-    .use(remarkMeta)
+    .use(remarkMeta, { fileAbsPath: opts.fileAbsPath })
     .use(remarkBreaks)
     .use(remarkGfm);
 
