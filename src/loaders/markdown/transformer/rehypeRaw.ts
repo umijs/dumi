@@ -14,7 +14,7 @@ const CODE_META_STUB_ATTR = '$code-meta';
 })();
 
 export default function rehypeRaw(): Transformer<Root> {
-  return (tree, file) => {
+  return (tree, vFile) => {
     visit<Root>(tree, (node) => {
       if (node.type === 'raw' && COMPONENT_NAME_REGEX.test(node.value)) {
         // mark tagName for all custom react component
@@ -32,7 +32,7 @@ export default function rehypeRaw(): Transformer<Root> {
       }
     });
 
-    const newTree = raw(tree, file) as Root;
+    const newTree = raw(tree, vFile) as Root;
 
     visit<Root, 'element'>(newTree, 'element', (node) => {
       if (node.properties?.[COMPONENT_STUB_ATTR]) {

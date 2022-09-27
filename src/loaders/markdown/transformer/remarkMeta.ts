@@ -17,14 +17,14 @@ let toString: typeof import('mdast-util-to-string').toString;
 export default function remarkMeta(opts: {
   fileAbsPath: string;
 }): Transformer<Root> {
-  return (tree, file) => {
+  return (tree, vFile) => {
     // initialize frontmatter
-    file.data.frontmatter = { title: '' };
+    vFile.data.frontmatter = { title: '' };
 
     // read frontmatter
     visit<YAMLRoot, 'yaml'>(tree, 'yaml', (node) => {
       try {
-        file.data.frontmatter = yaml.load(node.value) as any;
+        vFile.data.frontmatter = yaml.load(node.value) as any;
       } catch {}
     });
 
@@ -34,7 +34,7 @@ export default function remarkMeta(opts: {
       () => {
         visit<Root, 'heading'>(tree, 'heading', (node) => {
           if (node.depth === 1) {
-            file.data.frontmatter!.title = toString(node.children);
+            vFile.data.frontmatter!.title = toString(node.children);
           }
         });
       },
@@ -45,14 +45,14 @@ export default function remarkMeta(opts: {
           '',
         );
 
-        file.data.frontmatter!.title = lodash.startCase(
+        vFile.data.frontmatter!.title = lodash.startCase(
           path.basename(pathWithoutIndex),
         );
       },
     ];
 
     // set title
-    while (!file.data.frontmatter!.title && titleReaders.length) {
+    while (!vFile.data.frontmatter!.title && titleReaders.length) {
       titleReaders.shift()!();
     }
   };

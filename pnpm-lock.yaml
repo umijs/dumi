@@ -8,6 +8,7 @@ importers:
       '@commitlint/config-conventional': ^17.0.3
       '@jest/types': ^27.0.0
       '@swc/core': ^1.2.224
+      '@types/github-slugger': ^1.3.0
       '@types/hast': ^2.3.4
       '@types/jest': ^27.0.0
       '@types/js-yaml': ^4.0.5
@@ -26,6 +27,7 @@ importers:
       estree-util-to-js: ^1.1.0
       estree-util-visit: ^1.2.0
       father: ^4.0.3
+      github-slugger: ^1.4.0
       hast-util-is-element: ^2.1.2
       hast-util-raw: ^7.2.2
       hast-util-to-estree: ^2.1.0
@@ -44,6 +46,7 @@ importers:
       react: ^18.2.0
       react-helmet: ^6.1.0
       react-intl: ^6.1.1
+      rehype-autolink-headings: ^6.1.1
       rehype-stringify: ^9.0.3
       remark-breaks: ^3.0.2
       remark-frontmatter: ^4.0.1
@@ -68,6 +71,7 @@ importers:
       dumi-assets-types: link:assets-types
       estree-util-to-js: 1.1.0
       estree-util-visit: 1.2.0
+      github-slugger: 1.4.0
       hast-util-is-element: 2.1.2
       hast-util-raw: 7.2.2
       hast-util-to-estree: 2.1.0
@@ -79,6 +83,7 @@ importers:
       raw-loader: 4.0.2
       react-helmet: 6.1.0_react@18.2.0
       react-intl: 6.1.1_qtbnez4q7bzoc4eqybg3efzzxe
+      rehype-autolink-headings: 6.1.1
       rehype-stringify: 9.0.3
       remark-breaks: 3.0.2
       remark-frontmatter: 4.0.1
@@ -95,6 +100,7 @@ importers:
       '@commitlint/cli': 17.0.3_@swc+core@1.2.224
       '@commitlint/config-conventional': 17.0.3
       '@jest/types': 27.5.1
+      '@types/github-slugger': 1.3.0
       '@types/jest': 27.5.2
       '@types/js-yaml': 4.0.5
       '@types/node': 18.6.3
@@ -2025,6 +2031,10 @@ packages:
   /@types/estree/1.0.0:
     resolution: {integrity: sha512-WulqXMDUTYAXCjZnk6JtIHPigp55cVtDgDrO2gHRwhyJto21+1zbVCtOYB2L1F9w4qCQ0rOGWBnBe0FNTiEJIQ==}
     dev: false
+
+  /@types/github-slugger/1.3.0:
+    resolution: {integrity: sha512-J/rMZa7RqiH/rT29TEVZO4nBoDP9XJOjnbbIofg7GQKs4JIduEO3WLpte+6WeUz/TcrXKlY+bM7FYrp8yFB+3g==}
+    dev: true
 
   /@types/glob/7.2.0:
     resolution: {integrity: sha512-ZUxbzKl0IfJILTS6t7ip5fQQM/J3TJYubDm3nMbgubNNYS62eXeUpoLUC8/7fJNiFYHTrGPQn7hspDUzIHX3UA==}
@@ -5175,6 +5185,10 @@ packages:
       through2: 4.0.2
     dev: true
 
+  /github-slugger/1.4.0:
+    resolution: {integrity: sha512-w0dzqw/nt51xMVmlaV1+JRzN+oCa1KfcgGEWhxUG16wbdA+Xnt/yoFO8Z8x/V82ZcZ0wy6ln9QDup5avbhiDhQ==}
+    dev: false
+
   /glob-parent/5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
     engines: {node: '>= 6'}
@@ -5337,6 +5351,16 @@ packages:
       vfile: 5.3.4
       vfile-location: 4.0.1
       web-namespaces: 2.0.1
+    dev: false
+
+  /hast-util-has-property/2.0.0:
+    resolution: {integrity: sha512-4Qf++8o5v14us4Muv3HRj+Er6wTNGA/N9uCaZMty4JWvyFKLdhULrv4KE1b65AthsSO9TXSZnjuxS8ecIyhb0w==}
+    dev: false
+
+  /hast-util-heading-rank/2.1.0:
+    resolution: {integrity: sha512-w+Rw20Q/iWp2Bcnr6uTrYU6/ftZLbHKhvc8nM26VIWpDqDMlku2iXUVTeOlsdoih/UKQhY7PHQ+vZ0Aqq8bxtQ==}
+    dependencies:
+      '@types/hast': 2.3.4
     dev: false
 
   /hast-util-is-element/2.1.2:
@@ -8846,6 +8870,18 @@ packages:
   /regexpp/3.2.0:
     resolution: {integrity: sha512-pq2bWo9mVD43nbts2wGv17XLiNLya+GklZ8kaDLV2Z08gDCsGpnKn9BFMepvWuHCbyVvY7J5o5+BVvoQbmlJLg==}
     engines: {node: '>=8'}
+
+  /rehype-autolink-headings/6.1.1:
+    resolution: {integrity: sha512-NMYzZIsHM3sA14nC5rAFuUPIOfg+DFmf9EY1YMhaNlB7+3kK/ZlE6kqPfuxr1tsJ1XWkTrMtMoyHosU70d35mA==}
+    dependencies:
+      '@types/hast': 2.3.4
+      extend: 3.0.2
+      hast-util-has-property: 2.0.0
+      hast-util-heading-rank: 2.1.0
+      hast-util-is-element: 2.1.2
+      unified: 10.1.2
+      unist-util-visit: 4.1.0
+    dev: false
 
   /rehype-stringify/9.0.3:
     resolution: {integrity: sha512-kWiZ1bgyWlgOxpqD5HnxShKAdXtb2IUljn3hQAhySeak6IOQPPt6DeGnsIh4ixm7yKJWzm8TXFuC/lPfcWHJqw==}

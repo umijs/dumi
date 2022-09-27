@@ -7,13 +7,13 @@ export interface IDumiDemoGridProps {
 }
 
 export const DumiDemoGrid: FC<IDumiDemoGridProps> = (props) => {
-  const meta = useRouteMeta();
+  const { frontmatter: fm } = useRouteMeta();
   const [cols] = useState(() => {
     const cols: IDumiDemoProps[][] = [];
 
-    if (meta.demo?.cols && meta.demo.cols > 1) {
-      for (let i = 0; i < props.items.length; i += meta.demo.cols) {
-        props.items.slice(i, i + meta.demo.cols).forEach((item, j) => {
+    if (fm.demo?.cols && fm.demo.cols > 1) {
+      for (let i = 0; i < props.items.length; i += fm.demo.cols) {
+        props.items.slice(i, i + fm.demo.cols).forEach((item, j) => {
           cols[j] ??= [];
           cols[j].push(item);
         });

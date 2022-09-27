@@ -13,7 +13,10 @@ let SKIP: typeof import('unist-util-visit').SKIP;
 let toString: typeof import('hast-util-to-string').toString;
 let isElement: typeof import('hast-util-is-element').isElement;
 const DEMO_NODE_CONTAINER = '$demo-container';
-const DEMO_PROP_VALUE_KEY = '$demo-prop-value-key';
+
+export const DEMO_PROP_VALUE_KEY = '$demo-prop-value-key';
+export const DUMI_DEMO_TAG = 'DumiDemo';
+export const DUMI_DEMO_GRID_TAG = 'DumiDemoGrid';
 
 // workaround to import pure esm module
 (async () => {
@@ -329,12 +332,12 @@ export default function rehypeDemo(
 
         if (demosPropData.length === 1) {
           // single demo
-          node.tagName = 'DumiDemo';
+          node.tagName = DUMI_DEMO_TAG;
           node.data[DEMO_PROP_VALUE_KEY] = demosPropData[0];
           node.JSXAttributes = [{ type: 'JSXSpreadAttribute', argument: '' }];
         } else {
           // grid demo
-          node.tagName = 'DumiDemoGrid';
+          node.tagName = DUMI_DEMO_GRID_TAG;
           node.data[DEMO_PROP_VALUE_KEY] = demosPropData;
           node.JSXAttributes = [
             { type: 'JSXAttribute', name: 'items', value: '' },
@@ -359,8 +362,6 @@ export default function rehypeDemo(
         } else {
           node.JSXAttributes![0].argument = value;
         }
-
-        delete node.data![DEMO_PROP_VALUE_KEY];
       });
     });
   };

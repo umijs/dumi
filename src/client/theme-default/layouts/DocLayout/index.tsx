@@ -8,25 +8,23 @@ import Helmet from 'react-helmet';
 const DocLayout: FC = () => {
   const intl = useIntl();
   const outlet = useOutlet();
-  const meta = useRouteMeta();
+  const { frontmatter: fm } = useRouteMeta();
 
   return (
     <div>
       <Helmet>
         <html lang={intl.locale.replace(/-.+$/, '')} />
-        {meta.title && <title>{meta.title}</title>}
-        {meta.title && <meta property="og:title" content={meta.title} />}
-        {meta.description && (
-          <meta name="description" content={meta.description} />
+        {fm.title && <title>{fm.title}</title>}
+        {fm.title && <meta property="og:title" content={fm.title} />}
+        {fm.description && <meta name="description" content={fm.description} />}
+        {fm.description && (
+          <meta property="og:description" content={fm.description} />
         )}
-        {meta.description && (
-          <meta property="og:description" content={meta.description} />
+        {fm.keywords && (
+          <meta name="keywords" content={fm.keywords.join(',')} />
         )}
-        {meta.keywords && (
-          <meta name="keywords" content={meta.keywords.join(',')} />
-        )}
-        {meta.keywords && (
-          <meta property="og:keywords" content={meta.keywords.join(',')} />
+        {fm.keywords && (
+          <meta property="og:keywords" content={fm.keywords.join(',')} />
         )}
       </Helmet>
       <Header />

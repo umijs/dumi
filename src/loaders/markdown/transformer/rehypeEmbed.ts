@@ -1,4 +1,4 @@
-import type { Root } from 'hast';
+import type { Node, Root } from 'hast';
 import path from 'path';
 import type { Transformer } from 'unified';
 import url from 'url';
@@ -10,12 +10,23 @@ let visit: typeof import('unist-util-visit').visit;
   ({ visit } = await import('unist-util-visit'));
 })();
 
+export type IEmbedNodeData = Node['data'] & {
+  tagName: string;
+  fileAbsPath: string;
+  query: InstanceType<typeof url.URLSearchParams>;
+};
+
+export const EMBED_TAG = 'embed';
+
 export default function rehypeEmbed(
   opts: Pick<IMdTransformerOptions, 'fileAbsPath'>,
 ): Transformer<Root> {
-  return async (tree) => {
+  return async (tree, vFile) => {
     visit<Root, 'element'>(tree, 'element', (node, idx, parent) => {
-      if (node.tagName === 'embed' && node.properties?.hasOwnProperty('src')) {
+      if (
+        node.tagName === EMBED_TAG &&
+        node.properties?.hasOwnProperty('src')
+      ) {
         const { src } = node.properties;
         const parsed = url.parse(src?.toString() || '');
         const absPath = path.resolve(
@@ -35,17 +46,22 @@ export default function rehypeEmbed(
           }
 
           const moduleReqPath = `${absPath}?${query}`;
+          const nodeData: IEmbedNodeData = {
+            tagName: EMBED_TAG,
+            fileAbsPath: absPath,
+            query,
+          };
 
           // process node via file type
           switch (path.extname(parsed.pathname!)) {
             case '.md':
             default:
-              // TODO: merge slugs
               parent?.children.splice(idx!, 1, {
                 type: 'element',
                 tagName: 'React.Fragment',
                 children: [],
                 properties: {},
+                data: nodeData,
                 position: node.position,
                 JSXAttributes: [
                   {
@@ -56,6 +72,10 @@ export default function rehypeEmbed(
                 ],
               });
           }
+
+          // record embed file path for declare loader dependency
+          vFile.data.embeds ??= [];
+          vFile.data.embeds.push(absPath);
         }
       }
     });

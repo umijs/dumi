@@ -26,18 +26,28 @@ export interface IPreviewerProps {
 }
 
 export interface IRouteMeta {
-  // seo related
-  title: string;
-  description?: string;
-  keywords?: string[];
-  // render related
-  nav?: string | { title?: string; order?: number };
-  group?: string | { title?: string; order?: number };
-  order?: number;
-  toc?: boolean | 'content' | 'menu';
-  demo?: {
-    cols?: number;
+  // route frontmatter
+  frontmatter: {
+    // seo related
+    title: string;
+    description?: string;
+    keywords?: string[];
+    // render related
+    nav?: string | { title?: string; order?: number };
+    group?: string | { title?: string; order?: number };
+    order?: number;
+    toc?: boolean | 'content' | 'menu';
+    demo?: {
+      cols?: number;
+      tocDepth?: number;
+    };
   };
+  // route toc
+  toc: {
+    id: string;
+    depth: number;
+    title: string;
+  }[];
   [key: string]: any;
 }
 

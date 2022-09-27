@@ -26,7 +26,7 @@ export default (api: IApi) => {
       path: 'dumi/meta/index.ts',
       content: Mustache.render(
         `{{#mdRouteFiles}}
-import { demos as d{{{index}}}, frontmatter as fm{{{index}}} } from '{{{file}}}?type=meta';
+import { demos as d{{{index}}}, frontmatter as fm{{{index}}}, toc as toc{{{index}}} } from '{{{file}}}?type=meta';
 {{/mdRouteFiles}}
 
 export const demos = {
@@ -37,7 +37,7 @@ export const demos = {
 
 export const routesMeta = {
   {{#mdRouteFiles}}
-  '{{{id}}}': fm{{{index}}},
+  '{{{id}}}': { frontmatter: fm{{{index}}}, toc: toc{{{index}}} },
   {{/mdRouteFiles}}
 }`,
         { mdRouteFiles },

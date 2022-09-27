@@ -38,10 +38,10 @@ export default (api: IApi) => {
       .rule('dumi-md')
       .type('javascript/auto')
       .test(/\.md$/)
-      // get demo index for each markdown file
-      .oneOf('demo-index')
+      // get meta for each markdown file
+      .oneOf('md-meta')
       .resourceQuery(/meta$/)
-      .use('demo-index-loader')
+      .use('md-meta-loader')
       .loader(loaderPath)
       .options({
         ...loaderBaseOpts,

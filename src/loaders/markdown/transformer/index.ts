@@ -8,6 +8,7 @@ import rehypeEmbed from './rehypeEmbed';
 import rehypeIsolation from './rehypeIsolation';
 import rehypeJsxify from './rehypeJsxify';
 import rehypeRaw from './rehypeRaw';
+import rehypeSlug from './rehypeSlug';
 import rehypeStrip from './rehypeStrip';
 import remarkMeta from './remarkMeta';
 
@@ -30,13 +31,16 @@ declare module 'vfile' {
       asset: IParsedBlockAsset['asset'];
       sources: IParsedBlockAsset['sources'];
     }[];
-    frontmatter: IRouteMeta;
+    frontmatter: IRouteMeta['frontmatter'];
+    toc: IRouteMeta['toc'];
+    embeds?: string[];
   }
 }
 
 export interface IMdTransformerOptions {
   cwd: string;
   fileAbsPath: string;
+  parentAbsPath?: string;
   techStacks: IDumiTechStack[];
   codeBlockMode: IDumiConfig['resolve']['codeBlockMode'];
   extraRemarkPlugins?: IDumiConfig['extraRemarkPlugins'];
@@ -72,6 +76,9 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
   const { default: remarkBreaks } = await import('remark-breaks');
   const { default: remarkGfm } = await import('remark-gfm');
   const { default: remarkRehype } = await import('remark-rehype');
+  const { default: rehypeAutolinkHeadings } = await import(
+    'rehype-autolink-headings'
+  );
   const processor = unified()
     .use(remarkParse)
     .use(remarkFrontmatter)
@@ -102,6 +109,8 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
       fileAbsPath: opts.fileAbsPath,
       codeBlockMode: opts.codeBlockMode,
     })
+    .use(rehypeSlug, opts)
+    .use(rehypeAutolinkHeadings)
     .use(rehypeIsolation);
 
   // apply extra rehype plugins
