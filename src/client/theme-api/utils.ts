@@ -1,11 +1,10 @@
-import { useAppData } from 'dumi';
-import { Context, useIntl } from 'dumi/theme';
-import { useContext, useState } from 'react';
+import { useAppData, useIntl, useSiteData } from 'dumi';
+import { useState } from 'react';
 import type { IRoutesById } from './types';
 
 export const useLocale = () => {
   const intl = useIntl();
-  const { locales } = useContext(Context);
+  const { locales } = useSiteData();
   const [locale] = useState(
     () => locales.find(({ id }) => id === intl.locale)!,
   );
@@ -16,7 +15,7 @@ export const useLocale = () => {
 export const useLocaleDocRoutes = () => {
   const intl = useIntl();
   const { routes } = useAppData();
-  const { locales } = useContext(Context);
+  const { locales } = useSiteData();
   const [localeDocRoutes] = useState(() => {
     const reversedLocales = locales.slice().reverse();
 

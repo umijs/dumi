@@ -1,5 +1,5 @@
 import type { IParsedBlockAsset } from '@/assetParsers/block';
-import type { IRouteMeta } from '@/client/theme-api';
+import type { IRouteMeta } from '@/client/theme-api/types';
 import type { IDumiConfig, IDumiTechStack } from '@/types';
 import type { Plugin, Processor } from 'unified';
 import type { DataMap } from 'vfile';

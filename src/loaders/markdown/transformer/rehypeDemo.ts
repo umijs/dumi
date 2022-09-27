@@ -1,5 +1,5 @@
 import parseBlockAsset from '@/assetParsers/block';
-import type { IDumiDemoProps } from '@/client/theme-api';
+import type { IDumiDemoProps } from '@/client/theme-api/DumiDemo';
 import { getRoutePathFromFsPath } from '@/utils';
 import type { Element, Root } from 'hast';
 import path from 'path';

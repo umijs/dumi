@@ -1,6 +1,5 @@
-import { useLocation } from 'dumi';
-import { Context } from 'dumi/theme';
-import { useContext, useState } from 'react';
+import { useLocation, useSiteData } from 'dumi';
+import { useState } from 'react';
 import type { ILocalesConfig, ISidebarGroup, IThemeConfig } from './types';
 import { useLocale, useLocaleDocRoutes } from './utils';
 
@@ -18,7 +17,7 @@ const getLocaleClearPath = (routePath: string, locale: ILocalesConfig[0]) => {
 export const useFullSidebarData = () => {
   const locale = useLocale();
   const routes = useLocaleDocRoutes();
-  const { themeConfig } = useContext(Context);
+  const { themeConfig } = useSiteData();
   const [sidebar] = useState(() => {
     // auto generate sidebar data from routes
     const data = Object.values(routes).reduce<

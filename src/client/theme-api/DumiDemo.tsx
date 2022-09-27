@@ -1,6 +1,6 @@
+import { useSiteData } from 'dumi';
 import Previewer from 'dumi/theme/builtins/Previewer';
-import React, { createElement, useContext, type FC } from 'react';
-import { Context } from './context';
+import React, { createElement, type FC } from 'react';
 import type { IPreviewerProps } from './types';
 
 export interface IDumiDemoProps {
@@ -12,7 +12,7 @@ export interface IDumiDemoProps {
 }
 
 export const DumiDemo: FC<IDumiDemoProps> = (props) => {
-  const { demos } = useContext(Context);
+  const { demos } = useSiteData();
   const { component, asset } = demos[props.demo.id];
 
   return (

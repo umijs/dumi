@@ -2,7 +2,7 @@ import { LOCAL_THEME_DIR, THEME_PREFIX } from '@/constants';
 import type { IApi } from '@/types';
 import fs from 'fs';
 import path from 'path';
-import { deepmerge } from 'umi/plugin-utils';
+import { deepmerge, winPath } from 'umi/plugin-utils';
 import loadTheme, { IThemeLoadResult } from './loader';
 
 const DEFAULT_THEME_PATH = path.join(__dirname, '../../../theme-default');
@@ -77,11 +77,11 @@ export default (api: IApi) => {
         // TODO: Link...
         DumiDemo: {
           specifier: '{ DumiDemo }',
-          source: 'dumi/theme',
+          source: 'dumi',
         },
         DumiDemoGrid: {
           specifier: '{ DumiDemoGrid }',
-          source: 'dumi/theme',
+          source: 'dumi',
         },
       });
 
@@ -135,8 +135,10 @@ export default (api: IApi) => {
     api.writeTmpFile({
       noPluginDir: true,
       path: 'dumi/theme/ContextWrapper.tsx',
-      content: `import { Context } from 'dumi/theme';
-import { useOutlet } from 'umi';
+      content: `import { useOutlet } from 'dumi';
+import { SiteContext } from '${winPath(
+        require.resolve('../../client/theme-api/context'),
+      )}';
 import { demos } from '../meta';
 import { locales } from '../locales/config';
 
@@ -144,9 +146,9 @@ export default function DumiContextWrapper() {
   const outlet = useOutlet();
 
   return (
-    <Context.Provider value={{ demos, locales, themeConfig: ${JSON.stringify(
+    <SiteContext.Provider value={{ demos, locales, themeConfig: ${JSON.stringify(
       api.config.themeConfig,
-    )} }}>{outlet}</Context.Provider>
+    )} }}>{outlet}</SiteContext.Provider>
   );
 }`,
     });

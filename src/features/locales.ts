@@ -73,7 +73,7 @@ export const messages = ${JSON.stringify(
       noPluginDir: true,
       path: 'dumi/locales/runtime.tsx',
       content: `
-import { history } from 'umi';
+import { history } from 'dumi';
 import React, { useState, type ReactNode } from 'react';
 import { RawIntlProvider, createIntl, createIntlCache } from 'react-intl';
 import { locales, messages } from './config';

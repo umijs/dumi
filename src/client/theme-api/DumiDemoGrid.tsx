@@ -1,6 +1,6 @@
-import { useRouteMeta } from 'dumi/theme';
+import { DumiDemo, useRouteMeta } from 'dumi';
 import React, { useState, type FC } from 'react';
-import { DumiDemo, IDumiDemoProps } from './DumiDemo';
+import type { IDumiDemoProps } from './DumiDemo';
 
 export interface IDumiDemoGridProps {
   items: IDumiDemoProps[];

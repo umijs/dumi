@@ -1,8 +1,5 @@
-import type {
-  IDumiDemoProps,
-  ILocalesConfig,
-  IThemeConfig,
-} from '@/client/theme-api';
+import type { IDumiDemoProps } from '@/client/theme-api/DumiDemo';
+import type { ILocalesConfig, IThemeConfig } from '@/client/theme-api/types';
 import type { IThemeLoadResult } from '@/features/theme/loader';
 import type { IModify } from '@umijs/core';
 import type { ExampleBlockAsset } from 'dumi-assets-types';

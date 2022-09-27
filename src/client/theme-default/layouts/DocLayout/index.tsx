@@ -1,5 +1,4 @@
-import { useOutlet } from 'dumi';
-import { useIntl, useRouteMeta } from 'dumi/theme';
+import { useIntl, useOutlet, useRouteMeta } from 'dumi';
 import Content from 'dumi/theme/slots/Content';
 import Header from 'dumi/theme/slots/Header';
 import Sidebar from 'dumi/theme/slots/Sidebar';

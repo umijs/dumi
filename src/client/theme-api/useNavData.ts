@@ -1,7 +1,6 @@
-import { Context } from 'dumi/theme';
-import { useContext, useState } from 'react';
+import { useFullSidebarData, useSiteData } from 'dumi';
+import { useState } from 'react';
 import type { IThemeConfig } from './types';
-import { useFullSidebarData } from './useSidebarData';
 import { useLocaleDocRoutes } from './utils';
 
 /**
@@ -9,7 +8,7 @@ import { useLocaleDocRoutes } from './utils';
  */
 export const useNavData = () => {
   const routes = useLocaleDocRoutes();
-  const { themeConfig } = useContext(Context);
+  const { themeConfig } = useSiteData();
   const sidebar = useFullSidebarData();
   const [nav] = useState<IThemeConfig['nav']>(() => {
     // use user config first
