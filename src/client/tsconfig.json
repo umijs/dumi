@@ -7,6 +7,7 @@
       "dumi": ["src"],
       "dumi/theme": ["src/client/theme-api"],
       "dumi/theme/*": ["src/client/theme-default/*"]
-    }
+    },
+    "types": ["../../src/.umi/typings"]
   }
 }

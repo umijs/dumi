@@ -1,0 +1,22 @@
+@import (reference) '../../styles/variables.less';
+
+.dumi-default-header {
+  display: flex;
+  align-items: center;
+  height: 86px;
+
+  &-left {
+    width: @s-sidebar-width;
+  }
+
+  &-right {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+
+    &-aside {
+      display: flex;
+      align-items: center;
+    }
+  }
+}

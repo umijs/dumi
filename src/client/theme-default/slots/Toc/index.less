@@ -1,0 +1,31 @@
+@import (reference) '../../styles/variables.less';
+
+.dumi-default-toc {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 4px 0;
+  border-left: 1px solid @c-border;
+
+  &:empty {
+    display: none;
+  }
+
+  > li > a {
+    display: block;
+    margin: 6px 0;
+    padding: 2px 12px;
+    color: @c-text-secondary;
+    font-size: 13px;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &.active {
+      margin-left: -1px;
+      color: @c-text;
+      border-left: 1px solid @c-primary;
+    }
+  }
+}

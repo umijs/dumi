@@ -4,6 +4,7 @@ import Header from 'dumi/theme/slots/Header';
 import Sidebar from 'dumi/theme/slots/Sidebar';
 import React, { type FC } from 'react';
 import Helmet from 'react-helmet';
+import './index.less';
 
 const DocLayout: FC = () => {
   const intl = useIntl();
@@ -11,7 +12,7 @@ const DocLayout: FC = () => {
   const { frontmatter: fm } = useRouteMeta();
 
   return (
-    <div>
+    <div className="dumi-default-doc-layout">
       <Helmet>
         <html lang={intl.locale.replace(/-.+$/, '')} />
         {fm.title && <title>{fm.title}</title>}
@@ -28,7 +29,7 @@ const DocLayout: FC = () => {
         )}
       </Helmet>
       <Header />
-      <main style={{ display: 'flex' }}>
+      <main>
         <Sidebar />
         <Content>{outlet}</Content>
       </main>

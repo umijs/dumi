@@ -1,7 +1,7 @@
-import { useLocation, useSiteData } from 'dumi';
+import { useLocale, useLocation, useSiteData } from 'dumi';
 import { useState } from 'react';
 import type { ILocalesConfig, ISidebarGroup, IThemeConfig } from './types';
-import { useLocale, useLocaleDocRoutes } from './utils';
+import { useLocaleDocRoutes } from './utils';
 
 const DEFAULT_GROUP_STUB_TITLE = '$default-group-title';
 
@@ -34,9 +34,9 @@ export const useFullSidebarData = () => {
         // en-US/a/b => /en-US/a
         const parentPath = `/${route.path!.replace(/\/[^/]+$/, '')}`;
         const { title, order = 0 } =
-          typeof route.meta!.group === 'object'
-            ? route.meta!.group
-            : { title: route.meta!.group };
+          typeof route.meta!.frontmatter.group === 'object'
+            ? route.meta!.frontmatter.group
+            : { title: route.meta!.frontmatter.group };
         const titleKey = title || DEFAULT_GROUP_STUB_TITLE;
 
         // create group data by nav path & group name
@@ -47,9 +47,9 @@ export const useFullSidebarData = () => {
           children: [
             ...(ret[parentPath][titleKey]?.children || []),
             {
-              title: route.meta!.title,
+              title: route.meta!.frontmatter.title,
               link: `/${route.path}`,
-              order: route.meta!.order || 0,
+              order: route.meta!.frontmatter.order || 0,
             },
           ],
         };
@@ -70,7 +70,7 @@ export const useFullSidebarData = () => {
             ? // sort by group title
               a.title?.localeCompare(b.title || '')
             : // put non-title group at the end
-              -1),
+              1),
       );
       // sort group children by order or title
       ret![navPath].forEach((group) =>

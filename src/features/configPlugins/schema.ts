@@ -30,10 +30,6 @@ export function getSchemas(): Record<string, (Joi: JoiRoot) => any> {
       }).optional(),
     extraRemarkPlugins: getUnifiedPluginSchema,
     extraRehypePlugins: getUnifiedPluginSchema,
-    themeConfig: (Joi) =>
-      Joi.object({
-        nav: Joi.array().items(Joi.object()).optional(),
-        sidebar: Joi.object().optional(),
-      }).optional(),
+    themeConfig: (Joi) => Joi.object().optional(),
   };
 }

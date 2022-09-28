@@ -60,6 +60,7 @@ export type ILocalesConfig = (
 export interface INavItem {
   title: string;
   link: string;
+  activePath?: string;
   [key: string]: any;
 }
 interface ISidebarItem {
@@ -73,6 +74,8 @@ export interface ISidebarGroup {
   [key: string]: any;
 }
 export interface IThemeConfig {
+  name?: string;
+  logo?: string;
   nav?: (INavItem & { children?: INavItem[] })[];
   sidebar?: Record<string, ISidebarGroup[]>;
   [key: string]: any;

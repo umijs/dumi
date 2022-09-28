@@ -1,0 +1,33 @@
+@import (reference) '../../styles/variables.less';
+
+.dumi-default-navbar {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+
+  > li {
+    font-size: 18px;
+    line-height: 1;
+
+    > a {
+      color: @c-text-secondary;
+      text-decoration: none;
+      transition: all 0.3s;
+
+      &:hover {
+        color: @c-primary;
+      }
+
+      &.active {
+        color: @c-text;
+        font-weight: 500;
+      }
+    }
+
+    &:not(:last-child) {
+      margin-right: 48px;
+    }
+  }
+}

@@ -10,7 +10,7 @@ export const useNavData = () => {
   const routes = useLocaleDocRoutes();
   const { themeConfig } = useSiteData();
   const sidebar = useFullSidebarData();
-  const [nav] = useState<IThemeConfig['nav']>(() => {
+  const [nav] = useState<NonNullable<IThemeConfig['nav']>>(() => {
     // use user config first
     if (themeConfig.nav) return themeConfig.nav;
 
@@ -24,14 +24,14 @@ export const useNavData = () => {
       }>((ret, route) => {
         // find routes which within the nav path
         if (route.path!.startsWith(link.slice(1))) {
-          switch (typeof route.meta!.nav) {
+          switch (typeof route.meta!.frontmatter.nav) {
             case 'object':
-              ret.title = route.meta!.nav.title || ret.title;
-              ret.order = route.meta!.nav.order ?? ret.order;
+              ret.title = route.meta!.frontmatter.nav.title || ret.title;
+              ret.order = route.meta!.frontmatter.nav.order ?? ret.order;
               break;
 
             case 'string':
-              ret.title = route.meta!.nav || ret.title;
+              ret.title = route.meta!.frontmatter.nav || ret.title;
               break;
 
             default:
@@ -44,6 +44,7 @@ export const useNavData = () => {
         title: meta.title || groups[0].title || groups[0].children[0].title,
         order: meta.order || 0,
         link: groups[0].children[0].link,
+        activePath: link,
       };
     });
 

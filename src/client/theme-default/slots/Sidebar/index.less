@@ -1,0 +1,57 @@
+@import (reference) '../../styles/variables.less';
+
+.dumi-default-sidebar {
+  width: @s-sidebar-width;
+  min-height: 100vh;
+  padding: 20px 32px 24px 8px;
+  box-sizing: border-box;
+
+  > dl {
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+
+    > dt {
+      margin: 8px 0;
+      color: @c-text;
+      font-size: 14px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+    }
+
+    > dd {
+      margin: 0;
+      padding: 10px 0;
+
+      > a {
+        display: block;
+        color: @c-text-secondary;
+        font-size: 16px;
+        text-decoration: none;
+        transition: all 0.3s;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        &:hover {
+          color: @c-primary;
+        }
+
+        &.active {
+          color: @c-primary;
+          font-weight: 500;
+        }
+      }
+    }
+
+    // divider line & gap
+    + dl {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid @c-border;
+    }
+  }
+}

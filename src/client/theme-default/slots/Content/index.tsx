@@ -1,8 +1,15 @@
+import { useSidebarData } from 'dumi';
 import React, { type FC, type ReactNode } from 'react';
+import './index.less';
 
 const Content: FC<{ children: ReactNode }> = (props) => {
+  const sidebar = useSidebarData();
+
   return (
-    <div style={{ flex: 1, overflow: 'hidden', padding: 24 }}>
+    <div
+      className="dumi-default-content"
+      data-no-sidebar={!sidebar || undefined}
+    >
       {props.children}
     </div>
   );

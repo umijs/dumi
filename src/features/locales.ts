@@ -92,7 +92,7 @@ const LocalesContainer: FC<{ children: ReactNode }> = (props) => {
 
     return matched ? matched.id : locales[0].id;
   });
-  const [intl] = useState(() => createIntl({ locale, messages: messages[locale] || {} }, cache))
+  const [intl] = useState(() => createIntl({ locale, messages: messages[locale] || {} }, cache));
 
   return <RawIntlProvider value={intl}>{props.children}</RawIntlProvider>;
 }

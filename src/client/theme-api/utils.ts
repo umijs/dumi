@@ -2,16 +2,6 @@ import { useAppData, useIntl, useSiteData } from 'dumi';
 import { useState } from 'react';
 import type { IRoutesById } from './types';
 
-export const useLocale = () => {
-  const intl = useIntl();
-  const { locales } = useSiteData();
-  const [locale] = useState(
-    () => locales.find(({ id }) => id === intl.locale)!,
-  );
-
-  return locale;
-};
-
 export const useLocaleDocRoutes = () => {
   const intl = useIntl();
   const { routes } = useAppData();
