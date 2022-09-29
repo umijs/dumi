@@ -5,6 +5,7 @@
   "previewer.actions.code.shrink": "Hide Code",
   "previewer.actions.codesandbox": "Open in CodeSandbox (Not implemented)",
   "previewer.actions.codepen": "Open in CodePen (Not implemented)",
+  "previewer.actions.separate": "Open in separate page",
   "404.title": "PAGE NOT FOUND",
   "404.back": "Back to homepage"
 }

@@ -1,3 +1,4 @@
+import { SP_ROUTE_PREFIX } from '@/constants';
 import { useSiteData } from 'dumi';
 import Previewer from 'dumi/theme/builtins/Previewer';
 import React, { createElement, type FC } from 'react';
@@ -16,7 +17,15 @@ export const DumiDemo: FC<IDumiDemoProps> = (props) => {
   const { component, asset } = demos[props.demo.id];
 
   return (
-    <Previewer asset={asset} {...props.previewerProps}>
+    <Previewer
+      asset={asset}
+      demoUrl={
+        // allow user override demoUrl by frontmatter
+        props.previewerProps.demoUrl ||
+        `${SP_ROUTE_PREFIX}demos/${props.demo.id}`
+      }
+      {...props.previewerProps}
+    >
       {createElement(component)}
     </Previewer>
   );

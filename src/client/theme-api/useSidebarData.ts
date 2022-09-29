@@ -26,7 +26,7 @@ export const useFullSidebarData = () => {
       const clearPath = getLocaleClearPath(route.path!, locale);
 
       // skip index routes
-      if (clearPath && !clearPath.includes('*')) {
+      if (clearPath && route.meta) {
         // extract parent path from route path
         // a => /a
         // en-US/a => /en-US/a
@@ -34,9 +34,9 @@ export const useFullSidebarData = () => {
         // en-US/a/b => /en-US/a
         const parentPath = `/${route.path!.replace(/\/[^/]+$/, '')}`;
         const { title, order = 0 } =
-          typeof route.meta!.frontmatter.group === 'object'
-            ? route.meta!.frontmatter.group
-            : { title: route.meta!.frontmatter.group };
+          typeof route.meta.frontmatter.group === 'object'
+            ? route.meta.frontmatter.group
+            : { title: route.meta.frontmatter.group };
         const titleKey = title || DEFAULT_GROUP_STUB_TITLE;
 
         // create group data by nav path & group name
@@ -47,9 +47,9 @@ export const useFullSidebarData = () => {
           children: [
             ...(ret[parentPath][titleKey]?.children || []),
             {
-              title: route.meta!.frontmatter.title,
+              title: route.meta.frontmatter.title,
               link: `/${route.path}`,
-              order: route.meta!.frontmatter.order || 0,
+              order: route.meta.frontmatter.order || 0,
             },
           ],
         };

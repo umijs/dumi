@@ -1,3 +1,4 @@
+import { SP_ROUTE_PREFIX } from '@/constants';
 import type { IApi } from '@/types';
 import { getConventionRoutes } from '@umijs/core';
 import { createRouteId } from '@umijs/core/dist/route/utils';
@@ -75,13 +76,14 @@ export default (api: IApi) => {
       },
       {},
     );
-    const { DocLayout } = api.service.themeData.layouts;
+    const { DocLayout, DemoLayout } = api.service.themeData.layouts;
     const { docDirs, entityDirs } = api.config.resolve;
     const layoutRouteValues = Object.values(routes);
     const lastLayoutId = layoutRouteValues.find(({ id }) =>
       layoutRouteValues.every(({ parentId }) => id !== parentId),
     )!.id;
     let docLayoutId = lastLayoutId;
+    let demoLayoutId = lastLayoutId;
 
     // handle DocLayout from theme package
     if (DocLayout) {
@@ -90,6 +92,19 @@ export default (api: IApi) => {
         id: DocLayout.specifier,
         path: '/',
         file: DocLayout.source,
+        parentId: lastLayoutId,
+        absPath: '/',
+        isLayout: true,
+      };
+    }
+
+    // handle DemoLayout from theme package
+    if (DemoLayout) {
+      demoLayoutId = DemoLayout.specifier;
+      routes[DemoLayout.specifier] = {
+        id: DemoLayout.specifier,
+        path: '/',
+        file: DemoLayout.source,
         parentId: lastLayoutId,
         absPath: '/',
         isLayout: true,
@@ -156,6 +171,15 @@ export default (api: IApi) => {
       absPath: '/*',
       parentId: docLayoutId,
       file: require.resolve('../client/pages/404'),
+    };
+
+    // append demo separate render page
+    routes['demo-render'] = {
+      id: 'demo-render',
+      path: `${SP_ROUTE_PREFIX}demos/:id`,
+      absPath: `/${SP_ROUTE_PREFIX}demos/:id`,
+      parentId: demoLayoutId,
+      file: require.resolve('../client/pages/Demo'),
     };
 
     return routes;
