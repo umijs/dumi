@@ -107,7 +107,7 @@ function getCSBData(opts: IPreviewerComponentProps) {
     content: JSON.stringify(
       {
         name: opts.title,
-        description: getTextContent(opts.description) || 'An auto-generated demo by dumi',
+        description: getTextContent(opts.description || 'An auto-generated demo by dumi') ,
         main: entryFileName,
         dependencies: deps,
         // add TypeScript dependency if required, must in devDeps to avoid csb compile error
