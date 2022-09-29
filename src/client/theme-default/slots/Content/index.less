@@ -1,5 +1,22 @@
 @import (reference) '../../styles/variables.less';
 
+.markdown {
+  color: @c-text;
+
+  // hyperlink
+  a {
+    color: @c-primary;
+  }
+
+  // inline code
+  *:not(pre) code {
+    padding: 2px 5px;
+    color: #d56161;
+    background: darken(@c-site-bg, 2%);
+    border-radius: 2px;
+  }
+}
+
 .@{prefix}-content {
   flex: 1;
   max-width: 100%;

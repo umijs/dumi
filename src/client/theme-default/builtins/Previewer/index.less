@@ -2,9 +2,22 @@
 @import '../../styles/utils.less';
 
 .@{prefix}-previewer {
+  margin: 24px 0 32px;
   border: 1px solid @c-border-light;
   border-radius: 4px;
   background-color: #fff;
+
+  [data-dumi-demo-grid] & {
+    margin: 0 0 16px;
+
+    &:first-child {
+      margin-top: 24px;
+    }
+
+    &:last-child {
+      margin-bottom: 32px;
+    }
+  }
 
   &-demo {
     border-top-left-radius: 2px;

@@ -28,7 +28,7 @@ export const DumiDemoGrid: FC<IDumiDemoGridProps> = (props) => {
   });
 
   return (
-    <div style={{ display: 'flex', margin: -8 }}>
+    <div style={{ display: 'flex', margin: -8 }} data-dumi-demo-grid>
       {cols.map((col, i) => (
         <section style={{ flex: 1, padding: 8 }} key={String(i)}>
           {col.map((item) => (
