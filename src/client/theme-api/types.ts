@@ -15,6 +15,26 @@ export interface IPreviewerProps {
    */
   filePath?: string;
   /**
+   * use iframe to render demo
+   */
+  iframe?: boolean | number;
+  /**
+   * debug mark (will only render in dev by default)
+   */
+  debug?: boolean;
+  /**
+   * disable demo content padding
+   */
+  compact?: boolean;
+  /**
+   * add transform property for handle absolute/fixed position element
+   */
+  transform?: boolean;
+  /**
+   * background color for demo content
+   */
+  background?: string;
+  /**
    * asset metadata of current demo
    */
   asset: ExampleBlockAsset;
