@@ -1,3 +1,5 @@
+import type { TypeMap } from '../atom/props/types';
+
 /**
  * base example asset
  */
@@ -75,8 +77,7 @@ export interface ExampleBlockAsset extends ExampleBaseAsset {
 export interface ExamplePresetAsset extends ExampleBaseAsset {
   type: 'PRESET';
   title: string;
-  // FIXME: real types
-  value: any;
+  value: TypeMap['element']['$$__body'];
 }
 
 type ExampleAsset = ExampleBlockAsset | ExamplePresetAsset;

@@ -1,6 +1,9 @@
+import type AtomAsset from './atom';
+import type { AtomComponentAsset, AtomFunctionAsset } from './atom';
 import type ExampleAsset from './example';
 import type { ExampleBlockAsset, ExamplePresetAsset } from './example';
 
+export type { AtomAsset, AtomComponentAsset, AtomFunctionAsset };
 export type { ExampleAsset, ExampleBlockAsset, ExamplePresetAsset };
 
 export interface AssetsPackage {
@@ -49,8 +52,7 @@ export interface AssetsPackage {
    * ui assets of assets package
    */
   assets: {
-    // FIXME: real types
-    atoms: any;
+    atoms: AtomAsset[];
     examples: ExampleAsset[];
   };
 }
