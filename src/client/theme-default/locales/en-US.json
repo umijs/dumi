@@ -4,5 +4,7 @@
   "previewer.actions.code.expand": "Show Code",
   "previewer.actions.code.shrink": "Hide Code",
   "previewer.actions.codesandbox": "Open in CodeSandbox (Not implemented)",
-  "previewer.actions.codepen": "Open in CodePen (Not implemented)"
+  "previewer.actions.codepen": "Open in CodePen (Not implemented)",
+  "404.title": "PAGE NOT FOUND",
+  "404.back": "Back to homepage"
 }

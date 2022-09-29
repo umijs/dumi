@@ -1,0 +1,26 @@
+@import (reference) '../../styles/variables.less';
+
+.@{prefix}-not-found {
+  display: flex;
+  flex-direction: column;
+  height: 65vh;
+  align-items: center;
+  justify-content: center;
+
+  > h1 {
+    position: relative;
+    margin: 24px 0;
+    color: @c-border-light;
+    font-size: 78px;
+    font-weight: 700;
+    text-shadow: -1px -1px 0 @c-border;
+  }
+
+  > a {
+    color: @c-primary;
+
+    &:not(:hover) {
+      text-decoration: none;
+    }
+  }
+}

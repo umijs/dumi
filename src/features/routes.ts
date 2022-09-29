@@ -149,6 +149,15 @@ export default (api: IApi) => {
       });
     });
 
+    // append 404 page
+    routes['404'] = {
+      id: '404',
+      path: '*',
+      absPath: '/*',
+      parentId: docLayoutId,
+      file: require.resolve('../client/pages/404'),
+    };
+
     return routes;
   });
 

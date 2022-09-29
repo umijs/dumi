@@ -22,7 +22,7 @@ export const useRouteMeta = () => {
       ret = (matched?.route as any)?.meta;
     }
 
-    return ret || {};
+    return ret || { frontmatter: {}, toc: [] };
   }, [clientRoutes.length, pathname]);
   const [meta, setMeta] = useState<IRouteMeta>(getter);
 

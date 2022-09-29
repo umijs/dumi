@@ -26,7 +26,7 @@ export const useFullSidebarData = () => {
       const clearPath = getLocaleClearPath(route.path!, locale);
 
       // skip index routes
-      if (clearPath) {
+      if (clearPath && !clearPath.includes('*')) {
         // extract parent path from route path
         // a => /a
         // en-US/a => /en-US/a
