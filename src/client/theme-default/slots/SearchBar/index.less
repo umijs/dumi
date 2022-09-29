@@ -1,6 +1,6 @@
 @import (reference) '../../styles/variables.less';
 
-.dumi-default-search-bar {
+.@{prefix}-search-bar {
   position: relative;
 
   &:not(:last-child) {
@@ -35,13 +35,13 @@
       background-color: #fff;
       box-shadow: 0 0 0 3px fade(@c-primary, 10%);
 
-      + .dumi-default-search-shortcut {
+      + .@{prefix}-search-shortcut {
         opacity: 0;
       }
     }
   }
 
-  .dumi-default-search-shortcut {
+  .@{prefix}-search-shortcut {
     position: absolute;
     top: 50%;
     right: 11px;
