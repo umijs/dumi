@@ -53,7 +53,7 @@ export default (api: IApi) => {
       const pkgThemePath = getPkgThemePath(api);
       const pkgThemeData = deepmerge(
         defaultThemeData,
-        pkgThemePath ? loadTheme(pkgThemePath) : {},
+        pkgThemePath ? loadTheme(path.join(pkgThemePath, 'dist')) : {},
       );
 
       // allow modify theme data via plugin API
