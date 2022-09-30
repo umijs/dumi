@@ -5,6 +5,7 @@ import type { Plugin, Processor } from 'unified';
 import type { DataMap } from 'vfile';
 import rehypeDemo from './rehypeDemo';
 import rehypeEmbed from './rehypeEmbed';
+import rehypeEnhancedTag from './rehypeEnhancedTag';
 import rehypeIsolation from './rehypeIsolation';
 import rehypeJsxify from './rehypeJsxify';
 import rehypeRaw from './rehypeRaw';
@@ -111,7 +112,8 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     })
     .use(rehypeSlug, opts)
     .use(rehypeAutolinkHeadings)
-    .use(rehypeIsolation);
+    .use(rehypeIsolation)
+    .use(rehypeEnhancedTag);
 
   // apply extra rehype plugins
   opts.extraRehypePlugins?.forEach((plugin) =>

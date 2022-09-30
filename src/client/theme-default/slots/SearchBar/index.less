@@ -2,6 +2,7 @@
 
 .@{prefix}-search-bar {
   position: relative;
+  cursor: not-allowed;
 
   &:not(:last-child) {
     margin-right: 28px;
@@ -29,6 +30,7 @@
     outline: none;
     transition: all 0.3s;
     background-color: transparent;
+    pointer-events: none;
 
     &:focus {
       border-color: fade(@c-primary, 50%);

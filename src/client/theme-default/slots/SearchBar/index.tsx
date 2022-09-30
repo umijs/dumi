@@ -26,11 +26,16 @@ const SearchBar: FC = () => {
   }, []);
 
   return (
-    <div className="dumi-default-search-bar">
+    <div
+      className="dumi-default-search-bar"
+      data-dumi-tooltip="暂不可用"
+      data-dumi-tooltip-bottom
+    >
       <IconSearch />
       <input
         placeholder={intl.formatMessage({ id: 'header.search.placeholder' })}
         ref={input}
+        disabled
       />
       <span className="dumi-default-search-shortcut">{symbol} K</span>
     </div>

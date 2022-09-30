@@ -43,4 +43,22 @@
       opacity: 0;
     }
   }
+
+  &[data-dumi-tooltip-bottom] {
+    &::before,
+    &::after {
+      bottom: auto;
+      top: 100%;
+    }
+
+    &::before {
+      margin-top: 8px;
+      margin-bottom: 0;
+    }
+
+    &::after {
+      border-top-color: transparent;
+      border-bottom-color: #000;
+    }
+  }
 }
