@@ -51,8 +51,10 @@ export default class ReactTechStack implements IDumiTechStack {
         module: {
           // all imports to require
           type: 'commonjs',
-          // no __esModule flag
-          importInterop: 'none',
+          // TODO: find a way to remove the useless __esModule flag
+          // Object.defineProperty(exports, "__esModule", {
+          //   value: true
+          // });
           // no 'use strict'
           strictMode: false,
         },
