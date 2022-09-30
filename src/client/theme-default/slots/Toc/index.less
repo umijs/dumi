@@ -10,22 +10,28 @@
     display: none;
   }
 
-  > li > a {
-    display: block;
-    margin: 6px 0;
-    padding: 2px 12px;
-    color: @c-text-secondary;
-    font-size: 13px;
-    line-height: 1;
-    text-decoration: none;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  > li {
+    > a {
+      display: block;
+      margin: 6px 0;
+      padding: 3px 12px;
+      color: @c-text-secondary;
+      font-size: 13px;
+      line-height: 1;
+      text-decoration: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
 
-    &.active {
-      margin-left: -1px;
-      color: @c-text;
-      border-left: 1px solid @c-primary;
+      &.active {
+        margin-left: -1px;
+        color: @c-text;
+        border-left: 1px solid @c-primary;
+      }
+    }
+
+    &[data-depth='3'] > a {
+      padding-left: 20px;
     }
   }
 }
