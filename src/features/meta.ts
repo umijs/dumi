@@ -5,6 +5,9 @@ export default (api: IApi) => {
   const mdRouteFiles: { index: number; file: string; id: string }[] = [];
 
   api.modifyRoutes((routes) => {
+    // reset for re-generate files
+    mdRouteFiles.length = 0;
+
     // collect all markdown route files for combine demos & page meta
     Object.values(routes).forEach((route) => {
       if (route.file.endsWith('.md')) {

@@ -38,7 +38,15 @@ function localizeUmiRoute(route: IRoute, locales: IApi['config']['locales']) {
 }
 
 export default (api: IApi) => {
+  const extraWatchPaths = [
+    ...(api.userConfig.resolve?.entityDirs?.map(({ dir }) => dir) || ['docs']),
+    ...(api.userConfig.resolve?.docDirs || []),
+  ].map((dir) => path.join(api.cwd, dir, '**/*.md'));
+
   api.describe({ key: 'dumi:routes' });
+
+  // watch docs paths to re-generate routes
+  api.addTmpGenerateWatcherPaths(() => extraWatchPaths);
 
   // disable umi built-in convention routes by a non-existent path
   api.modifyConfig((memo) => {
