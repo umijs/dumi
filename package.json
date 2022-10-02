@@ -21,7 +21,7 @@
     "dev": "father dev",
     "docs:build": "node ./bin/dumi.js build",
     "docs:dev": "node ./bin/dumi.js dev",
-    "postinstall": "npm run build && node ./bin/dumi.js setup",
+    "prepare": "npm run build && node ./bin/dumi.js setup",
     "lint": "npm run lint:es && npm run lint:css",
     "lint:css": "stylelint \"{src,test}/**/*.{css,less}\"",
     "lint:es": "eslint \"{src,test}/**/*.{js,jsx,ts,tsx}\"",
