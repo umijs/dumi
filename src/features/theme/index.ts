@@ -56,7 +56,7 @@ export default (api: IApi) => {
         pkgThemePath ? loadTheme(path.join(pkgThemePath, 'dist')) : {},
       );
 
-      // allow modify theme data via plugin API
+      // allow to modify theme data via plugin API
       originalThemeData = await api.applyPlugins({
         key: 'modifyTheme',
         initialValue: pkgThemeData,
@@ -100,7 +100,7 @@ export default (api: IApi) => {
         });
       });
     }
-    // alias final theme to fallback to original theme
+    // alias final theme to fall back to original theme
     memo.alias['dumi/theme'] = 'dumi/theme-original';
     // alias original theme to temp dir
     memo.alias['dumi/theme-original'] = path.join(
