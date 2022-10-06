@@ -1,9 +1,17 @@
 @import (reference) '../../styles/variables.less';
 
 .@{prefix}-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   display: flex;
+  margin: 0 -24px;
+  padding: 0 24px;
   align-items: center;
-  height: 86px;
+  height: @s-header-height;
+  background-color: fadeout(@c-site-bg, 10%);
+  backdrop-filter: blur(6px);
+  box-sizing: border-box;
 
   &-left {
     width: @s-sidebar-width;

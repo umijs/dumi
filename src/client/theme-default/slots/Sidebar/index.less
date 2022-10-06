@@ -1,10 +1,13 @@
 @import (reference) '../../styles/variables.less';
 
 .@{prefix}-sidebar {
+  position: sticky;
+  top: @s-header-height;
   width: @s-sidebar-width;
-  min-height: 100vh;
+  max-height: calc(100vh - @s-header-height);
   padding: 20px 32px 24px 8px;
   box-sizing: border-box;
+  overflow: auto;
 
   > dl {
     margin: 0;
