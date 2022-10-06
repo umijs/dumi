@@ -89,11 +89,18 @@ export const toc = {{{toc}}}
         `${Object.values(opts.builtins)
           .map((item) => `import ${item.specifier} from '${item.source}';`)
           .join('\n')}
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useSiteData } from 'dumi';
 
 // export named function for fastRefresh
 // ref: https://github.com/pmmmwh/react-refresh-webpack-plugin/blob/main/docs/TROUBLESHOOTING.md#edits-always-lead-to-full-reload
 function DumiMarkdownContent() {
+  const { setLoading } = useSiteData();
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
+
   return ${ret.content};
 }
 

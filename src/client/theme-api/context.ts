@@ -8,12 +8,16 @@ interface ISiteContext {
   >;
   locales: NonNullable<ILocalesConfig>;
   themeConfig: IThemeConfig;
+  loading: boolean;
+  setLoading: (status: boolean) => void;
 }
 
 export const SiteContext = createContext<ISiteContext>({
   demos: {},
   locales: [],
   themeConfig: {},
+  loading: false,
+  setLoading: () => {},
 });
 
 export const useSiteData = () => {

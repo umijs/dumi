@@ -135,7 +135,8 @@ export default (api: IApi) => {
     api.writeTmpFile({
       noPluginDir: true,
       path: 'dumi/theme/ContextWrapper.tsx',
-      content: `import { useOutlet } from 'dumi';
+      content: `import React, { useState, useEffect } from 'react';
+import { useOutlet, history } from 'dumi';
 import { SiteContext } from '${winPath(
         require.resolve('../../client/theme-api/context'),
       )}';
@@ -144,11 +145,23 @@ import { locales } from '../locales/config';
 
 export default function DumiContextWrapper() {
   const outlet = useOutlet();
+  const [loading, setLoading] = useState(true);
+
+  // mark loading when route change, page component will set false when loaded
+  useEffect(() => {
+    return history.listen(() => setLoading(true));
+  }, []);
 
   return (
-    <SiteContext.Provider value={{ demos, locales, themeConfig: ${JSON.stringify(
-      api.config.themeConfig,
-    )} }}>{outlet}</SiteContext.Provider>
+    <SiteContext.Provider value={{
+      demos,
+      locales,
+      loading,
+      setLoading,
+      themeConfig: ${JSON.stringify(api.config.themeConfig)},
+    }}>
+      {outlet}
+    </SiteContext.Provider>
   );
 }`,
     });
