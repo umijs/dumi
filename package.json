@@ -5,14 +5,15 @@
   "keywords": [],
   "license": "MIT",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "index.d.ts",
   "bin": "./bin/dumi.js",
   "files": [
     "bin",
     "dist",
     "compiled",
     "theme-default",
-    "theme.d.ts"
+    "theme.d.ts",
+    "index.d.ts"
   ],
   "scripts": {
     "build": "father build",

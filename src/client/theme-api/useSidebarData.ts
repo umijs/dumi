@@ -18,7 +18,7 @@ export const useFullSidebarData = () => {
   const locale = useLocale();
   const routes = useLocaleDocRoutes();
   const { themeConfig } = useSiteData();
-  const [sidebar] = useState(() => {
+  const [sidebar] = useState<NonNullable<IThemeConfig['sidebar']>>(() => {
     // auto generate sidebar data from routes
     const data = Object.values(routes).reduce<
       Record<string, Record<string, ISidebarGroup>>

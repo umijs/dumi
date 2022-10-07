@@ -4,7 +4,7 @@
     "paths": {
       "@/*": ["src/*"],
       "@@/*": ["src/.umi/*"],
-      "dumi": ["src"],
+      "dumi": ["."],
       "dumi/theme": ["src/client/theme-api"],
       "dumi/theme/*": ["src/client/theme-default/*"]
     },
