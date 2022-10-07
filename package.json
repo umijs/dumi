@@ -1,6 +1,6 @@
 {
   "name": "dumi",
-  "version": "2.0.0-beta.0",
+  "version": "2.0.0-beta.1",
   "description": "Framework for developing UI components",
   "keywords": [],
   "license": "MIT",
@@ -21,10 +21,10 @@
     "dev": "father dev",
     "docs:build": "node ./bin/dumi.js build",
     "docs:dev": "node ./bin/dumi.js dev",
-    "prepare": "npm run build && node ./bin/dumi.js setup",
     "lint": "npm run lint:es && npm run lint:css",
     "lint:css": "stylelint \"{src,test}/**/*.{css,less}\"",
     "lint:es": "eslint \"{src,test}/**/*.{js,jsx,ts,tsx}\"",
+    "prepare": "npm run build && node ./bin/dumi.js setup",
     "prepublishOnly": "npm run build",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules pnpm jest"
   },
