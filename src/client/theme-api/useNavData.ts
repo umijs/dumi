@@ -24,7 +24,7 @@ export const useNavData = () => {
       }>((ret, route) => {
         // find routes which within the nav path
         if (route.path!.startsWith(link.slice(1))) {
-          switch (typeof route.meta!.frontmatter.nav) {
+          switch (typeof route.meta?.frontmatter.nav) {
             case 'object':
               ret.title = route.meta!.frontmatter.nav.title || ret.title;
               ret.order = route.meta!.frontmatter.nav.order ?? ret.order;

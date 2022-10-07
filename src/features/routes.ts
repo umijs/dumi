@@ -42,16 +42,17 @@ export default (api: IApi) => {
     ...(api.userConfig.resolve?.entityDirs?.map(({ dir }) => dir) || ['docs']),
     ...(api.userConfig.resolve?.docDirs || []),
   ].map((dir) => path.join(api.cwd, dir, '**/*.md'));
+  const pagesDir = path.join(api.cwd, '.dumi/pages');
 
   api.describe({ key: 'dumi:routes' });
 
   // watch docs paths to re-generate routes
   api.addTmpGenerateWatcherPaths(() => extraWatchPaths);
 
-  // disable umi built-in convention routes by a non-existent path
+  // read .dumi/pages to generate react component routes
   api.modifyConfig((memo) => {
     memo.conventionRoutes = {
-      base: path.join(__dirname, 'dumi-disable-default-routes'),
+      base: pagesDir,
     };
 
     return memo;
@@ -73,11 +74,15 @@ export default (api: IApi) => {
 
   // generate dumi routes
   api.modifyRoutes((oRoutes) => {
-    // retain layout routes, make sure api.addLayouts still works
+    const pages: typeof oRoutes = {};
     const routes = Object.values(oRoutes).reduce<typeof oRoutes>(
       (ret, route) => {
         if (route.isLayout) {
+          // retain layout routes, make sure api.addLayouts still works
           ret[route.id] = route;
+        } else {
+          // save page routes for later use
+          pages[route.id] = route;
         }
 
         return ret;
@@ -119,7 +124,14 @@ export default (api: IApi) => {
       };
     }
 
-    // generator normal docs routes
+    // prepend page routes from .dumi/pages
+    Object.entries(pages).forEach(([, route]) => {
+      route.parentId = docLayoutId;
+      route.file = path.resolve(pagesDir, route.file);
+      routes[route.id] = route;
+    });
+
+    // generate normal docs routes
     docDirs.forEach((dir: string) => {
       const base = path.join(api.cwd, dir);
       const dirRoutes: Record<string, IRoute> = getConventionRoutes({
@@ -172,14 +184,16 @@ export default (api: IApi) => {
       });
     });
 
-    // append 404 page
-    routes['404'] = {
-      id: '404',
-      path: '*',
-      absPath: '/*',
-      parentId: docLayoutId,
-      file: require.resolve('../client/pages/404'),
-    };
+    // append default 404 page
+    if (Object.values(pages).every((route) => route.path !== '*')) {
+      routes['404'] = {
+        id: '404',
+        path: '*',
+        absPath: '/*',
+        parentId: docLayoutId,
+        file: require.resolve('../client/pages/404'),
+      };
+    }
 
     // append demo separate render page
     routes['demo-render'] = {
