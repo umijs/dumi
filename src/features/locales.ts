@@ -1,4 +1,6 @@
 import type { IApi } from '@/types';
+import path from 'path';
+import { winPath } from 'umi/plugin-utils';
 
 export default (api: IApi) => {
   api.describe({
@@ -75,7 +77,9 @@ export const messages = ${JSON.stringify(
       content: `
 import { history } from 'dumi';
 import React, { useState, type ReactNode } from 'react';
-import { RawIntlProvider, createIntl, createIntlCache } from 'react-intl';
+import { RawIntlProvider, createIntl, createIntlCache } from '${winPath(
+        path.dirname(require.resolve('react-intl/package')),
+      )}';
 import { locales, messages } from './config';
 
 const cache = createIntlCache();
