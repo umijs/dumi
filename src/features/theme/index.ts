@@ -140,7 +140,7 @@ import { useOutlet, history } from 'dumi';
 import { SiteContext } from '${winPath(
         require.resolve('../../client/theme-api/context'),
       )}';
-import { demos } from '../meta';
+import { demos, components } from '../meta';
 import { locales } from '../locales/config';
 
 export default function DumiContextWrapper() {
@@ -155,6 +155,7 @@ export default function DumiContextWrapper() {
   return (
     <SiteContext.Provider value={{
       demos,
+      components,
       locales,
       loading,
       setLoading,

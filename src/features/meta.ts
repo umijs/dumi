@@ -1,6 +1,8 @@
 import type { IApi } from '@/types';
 import { Mustache } from 'umi/plugin-utils';
 
+export const ATOMS_META_PATH = 'dumi/meta/atoms.ts';
+
 export default (api: IApi) => {
   const mdRouteFiles: { index: number; file: string; id: string }[] = [];
 
@@ -23,6 +25,13 @@ export default (api: IApi) => {
   });
 
   api.onGenerateFiles(() => {
+    // generate empty atoms
+    api.writeTmpFile({
+      noPluginDir: true,
+      path: ATOMS_META_PATH,
+      content: 'export const components = null;',
+    });
+
     // generate meta entry
     api.writeTmpFile({
       noPluginDir: true,
@@ -31,6 +40,8 @@ export default (api: IApi) => {
         `{{#mdRouteFiles}}
 import { demos as d{{{index}}}, frontmatter as fm{{{index}}}, toc as toc{{{index}}} } from '{{{file}}}?type=meta';
 {{/mdRouteFiles}}
+
+export { components } from './atoms';
 
 export const demos = {
   {{#mdRouteFiles}}

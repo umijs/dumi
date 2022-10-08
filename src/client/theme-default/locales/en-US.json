@@ -7,5 +7,12 @@
   "previewer.actions.codepen": "Open in CodePen (Not implemented)",
   "previewer.actions.separate": "Open in separate page",
   "404.title": "PAGE NOT FOUND",
-  "404.back": "Back to homepage"
+  "404.back": "Back to homepage",
+  "api.component.name": "Name",
+  "api.component.description": "Description",
+  "api.component.type": "Type",
+  "api.component.default": "Default",
+  "api.component.required": "(required)",
+  "api.component.loading": "Properties definition is resolving, wait a moment...",
+  "api.component.not.found": "Properties definition not found for {id} component"
 }

@@ -27,6 +27,7 @@ export function getSchemas(): Record<string, (Joi: JoiRoot) => any> {
           .items(Joi.object({ type: Joi.string(), dir: Joi.string() }))
           .optional(),
         codeBlockMode: Joi.string().valid('active', 'passive').optional(),
+        entryFile: Joi.string().optional(),
       }).optional(),
     extraRemarkPlugins: getUnifiedPluginSchema,
     extraRehypePlugins: getUnifiedPluginSchema,

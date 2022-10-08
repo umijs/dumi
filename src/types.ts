@@ -1,3 +1,4 @@
+import type AtomAssetsParser from '@/assetParsers/atom';
 import type { IDumiDemoProps } from '@/client/theme-api/DumiDemo';
 import type { ILocalesConfig, IThemeConfig } from '@/client/theme-api/types';
 import type { IThemeLoadResult } from '@/features/theme/loader';
@@ -13,6 +14,7 @@ export interface IDumiConfig extends IUmiConfig {
     docDirs: string[];
     entityDirs: { type: string; dir: string }[];
     codeBlockMode: 'active' | 'passive';
+    entryFile?: string;
   };
   locales: ILocalesConfig;
   themeConfig: IThemeConfig;
@@ -75,7 +77,10 @@ export abstract class IDumiTechStack {
 export type IApi = IUmiApi & {
   config: IDumiConfig;
   userConfig: IDumiUserConfig;
-  service: IUmiApi['service'] & { themeData: IThemeLoadResult };
+  service: IUmiApi['service'] & {
+    themeData: IThemeLoadResult;
+    atomParser: AtomAssetsParser;
+  };
   /**
    * register a new tech stack
    */

@@ -7,5 +7,12 @@
   "previewer.actions.codepen": "在 CodePen 中打开（未实现）",
   "previewer.actions.separate": "在独立页面中打开",
   "404.title": "页面未找到",
-  "404.back": "返回首页"
+  "404.back": "返回首页",
+  "api.component.name": "属性名",
+  "api.component.description": "描述",
+  "api.component.type": "类型",
+  "api.component.default": "默认值",
+  "api.component.required": "(必选)",
+  "api.component.loading": "属性定义正在解析中，稍等片刻...",
+  "api.component.not.found": "未找到 {id} 组件的属性定义"
 }

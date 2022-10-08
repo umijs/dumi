@@ -4,5 +4,8 @@
     "dev": "node ../../bin/dumi.js dev",
     "setup": "node ../../bin/dumi.js setup",
     "start": "npm run dev"
+  },
+  "dependencies": {
+    "react": "^18.2.0"
   }
 }

@@ -1,3 +1,4 @@
+import type { AtomComponentAsset } from 'dumi-assets-types';
 import { createContext, useContext, type ComponentType } from 'react';
 import type { ILocalesConfig, IPreviewerProps, IThemeConfig } from './types';
 
@@ -6,6 +7,7 @@ interface ISiteContext {
     string,
     { component: ComponentType; asset: IPreviewerProps['asset'] }
   >;
+  components: Record<string, AtomComponentAsset>;
   locales: NonNullable<ILocalesConfig>;
   themeConfig: IThemeConfig;
   loading: boolean;
@@ -14,6 +16,7 @@ interface ISiteContext {
 
 export const SiteContext = createContext<ISiteContext>({
   demos: {},
+  components: {},
   locales: [],
   themeConfig: {},
   loading: false,

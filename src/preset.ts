@@ -15,6 +15,7 @@ export default (api: IApi) => {
       require.resolve('./features/meta'),
       require.resolve('./features/theme'),
       require.resolve('./features/locales'),
+      require.resolve('./features/parser'),
     ],
   };
 };
