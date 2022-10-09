@@ -41,6 +41,10 @@ export default (api: IApi) => {
       // get meta for each markdown file
       .oneOf('md-meta')
       .resourceQuery(/meta$/)
+      .use('babel-loader')
+      .loader(babelInUmi.loader)
+      .options(babelInUmi.options)
+      .end()
       .use('md-meta-loader')
       .loader(loaderPath)
       .options({
