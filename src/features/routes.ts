@@ -212,7 +212,7 @@ export default (api: IApi) => {
     const layouts = [
       {
         id: CTX_LAYOUT_ID,
-        file: '@/.umi/dumi/theme/ContextWrapper.tsx',
+        file: `${api.paths.absTmpPath}/dumi/theme/ContextWrapper.tsx`,
       },
     ];
     const { GlobalLayout } = api.service.themeData.layouts;
