@@ -1,4 +1,23 @@
-export { useIntl } from 'react-intl';
+export {
+  createIntlCache,
+  defineMessages,
+  FormattedDate,
+  FormattedDateParts,
+  FormattedDisplayName,
+  FormattedList,
+  FormattedMessage,
+  FormattedNumber,
+  FormattedNumberParts,
+  FormattedPlural,
+  FormattedRelativeTime,
+  FormattedTime,
+  FormattedTimeParts,
+  injectIntl,
+  IntlContext,
+  IntlProvider,
+  RawIntlProvider,
+  useIntl,
+} from 'react-intl';
 export { useSiteData } from './context';
 export { DumiDemo } from './DumiDemo';
 export { DumiDemoGrid } from './DumiDemoGrid';
