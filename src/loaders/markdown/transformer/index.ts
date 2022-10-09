@@ -2,7 +2,7 @@ import type { IParsedBlockAsset } from '@/assetParsers/block';
 import type { IRouteMeta } from '@/client/theme-api/types';
 import type { IDumiConfig, IDumiTechStack } from '@/types';
 import type { Plugin, Processor } from 'unified';
-import type { DataMap } from 'vfile';
+import type { Data } from 'vfile';
 import rehypeDemo from './rehypeDemo';
 import rehypeEmbed from './rehypeEmbed';
 import rehypeEnhancedTag from './rehypeEnhancedTag';
@@ -59,7 +59,7 @@ export interface IMdTransformerOptions {
 
 export interface IMdTransformerResult {
   content: string;
-  meta: DataMap;
+  meta: Data;
 }
 
 function applyUnifiedPlugin(opts: {
