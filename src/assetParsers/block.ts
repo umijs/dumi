@@ -1,7 +1,7 @@
+import { parseCodeFrontmatter } from '@/utils';
 import { build } from '@umijs/bundler-utils/compiled/esbuild';
 import type { ExampleBlockAsset } from 'dumi-assets-types';
 import fs from 'fs';
-import yaml from 'js-yaml';
 import path from 'path';
 import { pkgUp, winPath } from 'umi/plugin-utils';
 
@@ -9,27 +9,6 @@ export interface IParsedBlockAsset {
   asset: ExampleBlockAsset;
   sources: Record<string, string>;
   frontmatter: ReturnType<typeof parseCodeFrontmatter>['frontmatter'];
-}
-
-function parseCodeFrontmatter(raw: string) {
-  const [, comment = '', code = ''] = raw
-    // clear head break lines
-    .replace(/^\n\s*/, '')
-    // split head comments & remaining code
-    .match(/^(\/\*\*[^]*?\n\s*\*\/)?(?:\s|\n)*([^]+)?$/)!;
-
-  const yamlComment = comment
-    // clear / from head & foot for comment
-    .replace(/^\/|\/$/g, '')
-    // remove * from comments
-    .replace(/(^|\n)\s*\*+/g, '$1');
-  let frontmatter: Record<string, any> | null = null;
-
-  try {
-    frontmatter = yaml.load(yamlComment) as any;
-  } catch {}
-
-  return { code: frontmatter ? code : raw, frontmatter };
 }
 
 async function parseBlockAsset(opts: {

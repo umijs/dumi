@@ -62,6 +62,15 @@ export default (api: IApi) => {
         builtins: api.service.themeData.builtins,
       } as IMdLoaderOptions);
 
+    // get meta for each page component
+    memo.module
+      .rule('dumi-page')
+      .type('javascript/auto')
+      .test(/\.(j|t)sx?$/)
+      .resourceQuery(/meta$/)
+      .use('page-meta-loader')
+      .loader(require.resolve('../loaders/page'));
+
     // get pre-transform result for each external demo component
     memo.module
       .rule('dumi-demo')

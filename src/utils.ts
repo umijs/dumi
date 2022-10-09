@@ -1,3 +1,4 @@
+import yaml from 'js-yaml';
 import { lodash, logger, winPath } from 'umi/plugin-utils';
 
 /**
@@ -50,3 +51,27 @@ Error: ${err}`);
     return content;
   }
 };
+
+/**
+ * parse frontmatter from code string
+ */
+export function parseCodeFrontmatter(raw: string) {
+  const [, comment = '', code = ''] = raw
+    // clear head break lines
+    .replace(/^\n\s*/, '')
+    // split head comments & remaining code
+    .match(/^(\/\*\*[^]*?\n\s*\*\/)?(?:\s|\n)*([^]+)?$/)!;
+
+  const yamlComment = comment
+    // clear / from head & foot for comment
+    .replace(/^\/|\/$/g, '')
+    // remove * from comments
+    .replace(/(^|\n)\s*\*+/g, '$1');
+  let frontmatter: Record<string, any> | null = null;
+
+  try {
+    frontmatter = yaml.load(yamlComment) as any;
+  } catch {}
+
+  return { code: frontmatter ? code : raw, frontmatter };
+}

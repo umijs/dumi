@@ -4,17 +4,17 @@ import { Mustache } from 'umi/plugin-utils';
 export const ATOMS_META_PATH = 'dumi/meta/atoms.ts';
 
 export default (api: IApi) => {
-  const mdRouteFiles: { index: number; file: string; id: string }[] = [];
+  const routeFiles: { index: number; file: string; id: string }[] = [];
 
   api.modifyRoutes((routes) => {
     // reset for re-generate files
-    mdRouteFiles.length = 0;
+    routeFiles.length = 0;
 
     // collect all markdown route files for combine demos & page meta
     Object.values(routes).forEach((route) => {
-      if (route.file.endsWith('.md')) {
-        mdRouteFiles.push({
-          index: mdRouteFiles.length,
+      if (!route.isLayout && !/\*|:/.test(route.path)) {
+        routeFiles.push({
+          index: routeFiles.length,
           file: route.file,
           id: route.id,
         });
@@ -37,24 +37,24 @@ export default (api: IApi) => {
       noPluginDir: true,
       path: 'dumi/meta/index.ts',
       content: Mustache.render(
-        `{{#mdRouteFiles}}
+        `{{#routeFiles}}
 import { demos as d{{{index}}}, frontmatter as fm{{{index}}}, toc as toc{{{index}}} } from '{{{file}}}?type=meta';
-{{/mdRouteFiles}}
+{{/routeFiles}}
 
 export { components } from './atoms';
 
 export const demos = {
-  {{#mdRouteFiles}}
+  {{#routeFiles}}
   ...d{{{index}}},
-  {{/mdRouteFiles}}
+  {{/routeFiles}}
 };
 
 export const routesMeta = {
-  {{#mdRouteFiles}}
+  {{#routeFiles}}
   '{{{id}}}': { frontmatter: fm{{{index}}}, toc: toc{{{index}}} },
-  {{/mdRouteFiles}}
+  {{/routeFiles}}
 }`,
-        { mdRouteFiles },
+        { routeFiles },
       ),
     });
 
