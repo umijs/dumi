@@ -1,0 +1,57 @@
+@import (reference) '../../styles/variables.less';
+
+.@{prefix}-content-tabs {
+  list-style-type: none;
+  display: flex;
+  align-items: center;
+  height: 60px;
+  margin: -@s-content-padding -@s-content-padding @s-content-padding -@s-content-padding;
+  padding: 0 @s-content-padding;
+  border-bottom: 1px solid @c-border-light;
+
+  [data-no-sidebar] & {
+    margin: 0 0 @s-content-padding;
+    padding: 0;
+  }
+
+  > li {
+    height: inherit;
+
+    > button {
+      padding: 0;
+      height: inherit;
+      color: @c-text-secondary;
+      font-size: 17px;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &:hover {
+        color: @c-primary;
+      }
+    }
+
+    &:not(last-child) {
+      margin-right: 42px;
+    }
+
+    &[data-active] {
+      position: relative;
+
+      > button {
+        color: @c-text;
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -1px;
+        height: 1px;
+        background-color: @c-primary;
+      }
+    }
+  }
+}

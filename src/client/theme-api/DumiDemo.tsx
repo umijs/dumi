@@ -22,7 +22,7 @@ export const DumiDemo: FC<IDumiDemoProps> = (props) => {
       demoUrl={
         // allow user override demoUrl by frontmatter
         props.previewerProps.demoUrl ||
-        `${SP_ROUTE_PREFIX}demos/${props.demo.id}`
+        `/${SP_ROUTE_PREFIX}demos/${props.demo.id}`
       }
       {...props.previewerProps}
     >

@@ -17,7 +17,13 @@ export default (api: IApi) => {
     });
   };
 
-  api.describe({ key: 'apiParser', enableBy: api.EnableBy.config });
+  api.describe({
+    key: 'apiParser',
+    enableBy: api.EnableBy.config,
+    config: {
+      schema: (Joi) => Joi.object(),
+    },
+  });
 
   // auto-detect default entry file
   api.modifyDefaultConfig((memo) => {

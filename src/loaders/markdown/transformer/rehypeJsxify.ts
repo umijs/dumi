@@ -108,7 +108,7 @@ export default function rehypeJsxify(this: FrozenProcessor) {
       }
     });
 
-    // estree to jsx string
-    return toJs(esTree, { handlers: jsx }).value;
+    // estree to jsx string, and strip the last semicolon
+    return toJs(esTree, { handlers: jsx }).value.trim().slice(0, -1);
   };
 }

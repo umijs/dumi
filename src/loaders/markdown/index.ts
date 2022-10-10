@@ -83,25 +83,25 @@ export const toc = {{{toc}}}
         ),
       );
     } else {
+      // do not wrap DumiPage for fragment content (tab, embed)
+      const isFragment = Boolean(
+        this.resourcePath.includes('$tab-') || this.resourceQuery,
+      );
+
       cb(
         null,
         // import all builtin components, may be used by markdown content
         `${Object.values(opts.builtins)
           .map((item) => `import ${item.specifier} from '${item.source}';`)
           .join('\n')}
-import React, { useEffect } from 'react';
-import { useSiteData } from 'dumi';
+import React from 'react';${
+          isFragment ? '' : `\nimport { DumiPage } from 'dumi'`
+        }
 
 // export named function for fastRefresh
 // ref: https://github.com/pmmmwh/react-refresh-webpack-plugin/blob/main/docs/TROUBLESHOOTING.md#edits-always-lead-to-full-reload
 function DumiMarkdownContent() {
-  const { setLoading } = useSiteData();
-
-  useEffect(() => {
-    setLoading(false);
-  }, []);
-
-  return ${ret.content};
+  return ${isFragment ? ret.content : `<DumiPage>${ret.content}</DumiPage>`};
 }
 
 export default DumiMarkdownContent;`,

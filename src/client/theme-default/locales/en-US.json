@@ -14,5 +14,6 @@
   "api.component.default": "Default",
   "api.component.required": "(required)",
   "api.component.loading": "Properties definition is resolving, wait a moment...",
-  "api.component.not.found": "Properties definition not found for {id} component"
+  "api.component.not.found": "Properties definition not found for {id} component",
+  "content.tabs.default": "Doc"
 }

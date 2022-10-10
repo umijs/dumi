@@ -1,5 +1,5 @@
 import type { ExampleBlockAsset } from 'dumi-assets-types';
-import type { ReactNode } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 
 export interface IPreviewerProps {
   /**
@@ -67,6 +67,21 @@ export interface IRouteMeta {
     id: string;
     depth: number;
     title: string;
+  }[];
+  // tabs
+  tabs?: {
+    key: string;
+    components: {
+      default: ComponentType;
+      Extra: ComponentType;
+      Action: ComponentType;
+    };
+    frontmatter: Omit<
+      IRouteMeta['frontmatter'],
+      'description' | 'keywords' | 'nav' | 'group'
+    >;
+    toc: IRouteMeta['toc'];
+    [key: string]: any;
   }[];
   [key: string]: any;
 }

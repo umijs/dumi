@@ -12,6 +12,6 @@ export default (ret: IMdTransformerResult) => {
       embedMdPath +
       "?range=L1-L3').default()} /><React.Fragment children={require('" +
       embedMdPath +
-      "?regexp=%2F%5E%28first%29%2B%2F').default()} /></>;\n",
+      "?regexp=%2F%5E%28first%29%2B%2F').default()} /></>",
   );
 };

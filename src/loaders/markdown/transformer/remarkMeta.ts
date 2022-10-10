@@ -1,3 +1,4 @@
+import { getTabKeyFromFile, isTabRouteFile } from '@/features/tabs';
 import yaml from 'js-yaml';
 import type { Root } from 'mdast';
 import path from 'path';
@@ -40,14 +41,20 @@ export default function remarkMeta(opts: {
       },
       // use filename as title
       () => {
-        const pathWithoutIndex = opts.fileAbsPath.replace(
-          /(\/index([^/]+)?)?\.md$/,
-          '',
-        );
+        if (isTabRouteFile(opts.fileAbsPath)) {
+          vFile.data.frontmatter!.title = lodash.startCase(
+            getTabKeyFromFile(opts.fileAbsPath),
+          );
+        } else {
+          const pathWithoutIndex = opts.fileAbsPath.replace(
+            /(\/index([^/]+)?)?\.md$/,
+            '',
+          );
 
-        vFile.data.frontmatter!.title = lodash.startCase(
-          path.basename(pathWithoutIndex),
-        );
+          vFile.data.frontmatter!.title = lodash.startCase(
+            path.basename(pathWithoutIndex),
+          );
+        }
       },
     ];
 

@@ -14,8 +14,7 @@ export default (ret: IMdTransformerResult) => {
   "previewerProps": {
     "filePath": "demo.jsx"
   }
-}} /></>;
-`);
+}} /></>`);
 
   // code block demo to inline component
   expect(ret.meta.demos[0].id).toEqual('demo-0');
