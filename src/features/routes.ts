@@ -10,6 +10,13 @@ import { glob, winPath } from 'umi/plugin-utils';
 const CTX_LAYOUT_ID = 'dumi-context-layout';
 
 /**
+ * normalize item of `resolve.docDirs` to object
+ */
+function normalizeDocDir(docDir: IApi['config']['resolve']['docDirs'][0]) {
+  return typeof docDir === 'object' ? docDir : { dir: docDir };
+}
+
+/**
  * localize standard umi route path by locales config
  */
 function localizeUmiRoute(route: IRoute, locales: IApi['config']['locales']) {
@@ -39,9 +46,11 @@ function localizeUmiRoute(route: IRoute, locales: IApi['config']['locales']) {
 
 export default (api: IApi) => {
   const extraWatchPaths = [
-    ...(api.userConfig.resolve?.entityDirs?.map(({ dir }) => dir) || ['docs']),
-    ...(api.userConfig.resolve?.docDirs || []),
-  ].map((dir) => path.join(api.cwd, dir, '**/*.md'));
+    ...(api.userConfig.resolve?.entityDirs || []),
+    ...(api.userConfig.resolve?.docDirs?.map(normalizeDocDir) || [
+      { dir: 'docs' },
+    ]),
+  ].map(({ dir }) => path.join(api.cwd, dir, '**/*.md'));
   const pagesDir = path.join(api.cwd, '.dumi/pages');
 
   api.describe({ key: 'dumi:routes' });
@@ -132,7 +141,7 @@ export default (api: IApi) => {
     });
 
     // generate normal docs routes
-    docDirs.forEach((dir: string) => {
+    docDirs.map(normalizeDocDir).forEach(({ type, dir }) => {
       const base = path.join(api.cwd, dir);
       const dirRoutes: Record<string, IRoute> = getConventionRoutes({
         base,
@@ -143,6 +152,14 @@ export default (api: IApi) => {
         // prefix id with dir, same as umi internal route id
         route.id = `${dir}/${key}`;
         route.parentId = docLayoutId;
+
+        // also allow prefix type for doc routes
+        if (type) {
+          const pluralType = plural(type);
+
+          route.path = `${pluralType}/${route.path}`.replace(/\/+$/, '/');
+          route.absPath = `/${route.path}`;
+        }
 
         // use absolute path to avoid umi prefix with conventionRoutes.base
         route.file = path.resolve(base, route.file);

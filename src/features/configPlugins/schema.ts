@@ -22,7 +22,14 @@ export function getSchemas(): Record<string, (Joi: JoiRoot) => any> {
   return {
     resolve: (Joi) =>
       Joi.object({
-        docDirs: Joi.array().items(Joi.string()).optional(),
+        docDirs: Joi.array()
+          .items(
+            Joi.alternatives(
+              Joi.string(),
+              Joi.object({ dir: Joi.string(), type: Joi.string().optional() }),
+            ),
+          )
+          .optional(),
         entityDirs: Joi.array()
           .items(Joi.object({ type: Joi.string(), dir: Joi.string() }))
           .optional(),

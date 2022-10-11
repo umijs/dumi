@@ -11,7 +11,7 @@ type IUmiConfig = IUmiApi['config'];
 
 export interface IDumiConfig extends IUmiConfig {
   resolve: {
-    docDirs: string[];
+    docDirs: (string | { type?: string; dir: string })[];
     entityDirs: { type: string; dir: string }[];
     codeBlockMode: 'active' | 'passive';
     entryFile?: string;
