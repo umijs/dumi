@@ -50,6 +50,7 @@ export const useFullSidebarData = () => {
               title: route.meta.frontmatter.title,
               link: `/${route.path}`,
               order: route.meta.frontmatter.order || 0,
+              frontmatter: route.meta.frontmatter,
             },
           ],
         };

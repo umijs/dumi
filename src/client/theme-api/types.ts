@@ -101,6 +101,8 @@ export interface INavItem {
 interface ISidebarItem {
   title: string;
   link: string;
+  order: number;
+  frontmatter: IRouteMeta['frontmatter'];
   [key: string]: any;
 }
 export interface ISidebarGroup {
