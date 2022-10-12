@@ -1,6 +1,7 @@
 import type AtomAssetsParser from '@/assetParsers/atom';
 import type { IDumiDemoProps } from '@/client/theme-api/DumiDemo';
 import type { ILocalesConfig, IThemeConfig } from '@/client/theme-api/types';
+import type { IContentTab } from '@/features/tabs';
 import type { IThemeLoadResult } from '@/features/theme/loader';
 import type { IModify } from '@umijs/core';
 import type { ExampleBlockAsset } from 'dumi-assets-types';
@@ -89,4 +90,8 @@ export type IApi = IUmiApi & {
    * modify original theme data
    */
   modifyTheme: IModify<IThemeLoadResult, null>;
+  /**
+   * add content tab
+   */
+  addContentTab: (fn: () => IContentTab) => void;
 };

@@ -4,6 +4,13 @@ import path from 'path';
 import { Mustache, winPath } from 'umi/plugin-utils';
 import { TABS_META_PATH } from './meta';
 
+export interface IContentTab {
+  key: string;
+  id?: string;
+  test?: RegExp;
+  component: string;
+}
+
 export function isTabRouteFile(file: string) {
   return file.includes('$tab-');
 }
@@ -12,16 +19,36 @@ export function getTabKeyFromFile(file: string) {
   return file.match(/\$tab-([^.]+)/)![1];
 }
 
+/**
+ * plugin for add conventional tab and plugin tab into page content
+ */
 export default (api: IApi) => {
+  let tabsFromPlugins: IContentTab[];
+  const routesTabMapping: Record<string, string[]> = {};
   const tabs: {
     index: number;
     key: string;
     id: string;
     file: string;
-    parentFile: string;
   }[] = [];
 
   api.describe({ key: undefined });
+
+  // collect extra content tabs before routes generate
+  // why in `modifyConfig`? It will be called before `modifyRoutes`
+  api.modifyConfig(async (memo) => {
+    // allow add extra tabs
+    tabsFromPlugins = await api.applyPlugins({
+      key: 'addContentTab',
+    });
+
+    // generate id for tabs
+    tabsFromPlugins.forEach((tab) => {
+      tab.id ??= `plugin-tab${tab.test ? `-${tab.test}` : ''}-${tab.key}`;
+    });
+
+    return memo;
+  });
 
   // collect tabs from routes
   api.modifyRoutes((routes) => {
@@ -40,12 +67,31 @@ export default (api: IApi) => {
         tabs.push({
           index: tabs.length,
           key: tabKey,
-          id: `${routeId}`,
+          id: routeId,
           file: route.file,
-          parentFile,
+        });
+        routesTabMapping[parentFile] ??= [];
+        routesTabMapping[parentFile].push(routeId);
+      } else {
+        // apply plugin tabs for normal routes
+        tabsFromPlugins.forEach((tab) => {
+          if (!tab.test || route.absPath.match(tab.test)) {
+            routesTabMapping[route.file] ??= [];
+            routesTabMapping[route.file].push(tab.id!);
+          }
         });
       }
     });
+
+    // append plugin tabs
+    tabs.push(
+      ...tabsFromPlugins.map((tab) => ({
+        index: tabs.length,
+        key: tab.key,
+        id: tab.id!,
+        file: tab.component,
+      })),
+    );
 
     return routes;
   });
@@ -54,20 +100,10 @@ export default (api: IApi) => {
   api.register({
     key: 'dumi.modifyMetaFiles',
     fn: (metaFiles: any) => {
-      const tabsMapping = tabs.reduce<Record<string, typeof tabs>>(
-        (ret, tab) => ({
-          ...ret,
-          [tab.parentFile]: [...(ret[tab.parentFile] || []), tab],
-        }),
-        {},
-      );
-
       // add related tabs to meta files
       Object.values(metaFiles).forEach((metaFile: any) => {
-        if (tabsMapping[metaFile.file]) {
-          metaFile.tabs = JSON.stringify(
-            tabsMapping[metaFile.file].map(({ id }) => id),
-          );
+        if (routesTabMapping[metaFile.file]) {
+          metaFile.tabs = JSON.stringify(routesTabMapping[metaFile.file]);
         }
       });
 
