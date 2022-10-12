@@ -1,7 +1,10 @@
 import type { IThemeLoadResult } from '@/features/theme/loader';
 import { getFileContentByRegExp, getFileRangeLines } from '@/utils';
 import { lodash, Mustache } from 'umi/plugin-utils';
-import transform, { type IMdTransformerOptions } from './transformer';
+import transform, {
+  type IMdTransformerOptions,
+  type IMdTransformerResult,
+} from './transformer';
 
 interface IMdLoaderDefaultModeOptions
   extends Omit<IMdTransformerOptions, 'fileAbsPath'> {
@@ -12,6 +15,7 @@ interface IMdLoaderDefaultModeOptions
 interface IMdLoaderDemosModeOptions
   extends Omit<IMdLoaderDefaultModeOptions, 'builtins' | 'mode'> {
   mode: 'meta';
+  onResolveDemos?: (demos: IMdTransformerResult['meta']['demos']) => void;
 }
 
 export type IMdLoaderOptions =
@@ -46,6 +50,11 @@ export default function mdLoader(this: any, raw: string) {
       // declare embedded files as loader dependency, for clear cache when file changed
       embeds.forEach((file) => this.addDependency(file));
 
+      // apply demos resolve hook
+      if (demos && opts.onResolveDemos) {
+        opts.onResolveDemos(demos);
+      }
+
       cb(
         null,
         Mustache.render(
@@ -67,17 +76,18 @@ export const toc = {{{toc}}}
             frontmatter: JSON.stringify(frontmatter),
             toc: JSON.stringify(toc),
             renderAsset: function renderAsset() {
+              let asset = this.asset;
+
               // use raw-loader to load all source files
               Object.keys(this.sources).forEach((file: string) => {
-                this.asset.dependencies[
+                // to avoid modify original asset object
+                asset = lodash.cloneDeep(this.asset);
+                asset.dependencies[
                   file
                 ].value = `{{{require('!!raw-loader!${this.sources[file]}?raw').default}}}`;
               });
 
-              return JSON.stringify(this.asset, null, 2).replace(
-                /"{{{|}}}"/g,
-                '',
-              );
+              return JSON.stringify(asset, null, 2).replace(/"{{{|}}}"/g, '');
             },
           },
         ),

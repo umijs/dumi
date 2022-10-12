@@ -4,7 +4,7 @@ import type { ILocalesConfig, IThemeConfig } from '@/client/theme-api/types';
 import type { IContentTab } from '@/features/tabs';
 import type { IThemeLoadResult } from '@/features/theme/loader';
 import type { IModify } from '@umijs/core';
-import type { ExampleBlockAsset } from 'dumi-assets-types';
+import type { AssetsPackage, ExampleBlockAsset } from 'dumi-assets-types';
 import type { Element } from 'hast';
 import type { IApi as IUmiApi } from 'umi';
 
@@ -94,4 +94,8 @@ export type IApi = IUmiApi & {
    * add content tab
    */
   addContentTab: (fn: () => IContentTab) => void;
+  /**
+   * modify assets metadata
+   */
+  modifyAssetsMetadata: IModify<AssetsPackage, null>;
 };

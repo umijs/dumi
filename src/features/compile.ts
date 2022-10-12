@@ -2,6 +2,7 @@ import type { IDemoLoaderOptions } from '@/loaders/demo';
 import type { IMdLoaderOptions } from '@/loaders/markdown';
 import ReactTechStack from '@/techStacks/react';
 import type { IApi, IDumiTechStack } from '@/types';
+import { addExampleAssets } from './assets';
 
 export default (api: IApi) => {
   // register react tech stack by default
@@ -50,6 +51,9 @@ export default (api: IApi) => {
       .options({
         ...loaderBaseOpts,
         mode: 'meta',
+        onResolveDemos(demos) {
+          addExampleAssets(demos.map(({ asset }) => asset));
+        },
       } as IMdLoaderOptions)
       .end()
       .end()

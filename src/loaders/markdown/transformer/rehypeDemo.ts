@@ -244,11 +244,11 @@ export default function rehypeDemo(
                   // eslint-disable-next-line @typescript-eslint/no-unused-vars
                   const { src, className, ...restAttrs } =
                     codeNode.properties || {};
-
-                  // allow override title by `code` attr
-                  if (restAttrs.title) {
-                    asset.title = String(restAttrs.title);
-                  }
+                  const validAssetAttrs: ['title', 'snapshot', 'keywords'] = [
+                    'title',
+                    'snapshot',
+                    'keywords',
+                  ];
 
                   // transform empty string attr to boolean, such as `debug`, `iframe` & etc.
                   Object.keys(restAttrs).forEach((key) => {
@@ -261,6 +261,12 @@ export default function rehypeDemo(
                     frontmatter,
                     restAttrs,
                   );
+
+                  // copy valid props for asset
+                  validAssetAttrs.forEach((key) => {
+                    if (originalProps[key]) asset[key] = originalProps[key];
+                  });
+
                   // HINT: must use `Object.assign` to keep the reference
                   Object.assign(
                     previewerProps,
