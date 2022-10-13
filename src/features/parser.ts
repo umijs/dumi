@@ -44,15 +44,24 @@ export default (api: IApi) => {
 
   // share parser with other plugins via service
   api.onStart(async () => {
-    const { default: AtomAssetsParser } = await import('@/assetParsers/atom');
+    const {
+      default: AtomAssetsParser,
+    }: typeof import('@/assetParsers/atom') = require('@/assetParsers/atom');
     api.service.atomParser = new AtomAssetsParser({
       entryFile: api.config.resolve.entryFile!,
       resolveDir: api.cwd,
     });
-    if (api.env === 'production') {
-      api.service.atomParser.parse().then(writeAtomsMetaFile);
-    } else {
+
+    // lazy parse & use watch mode in development
+    if (api.env === 'development') {
       api.service.atomParser.watch(writeAtomsMetaFile);
     }
   });
+
+  // sync parse in production
+  if (api.env === 'production') {
+    api.onGenerateFiles(async () => {
+      writeAtomsMetaFile(await api.service.atomParser.parse());
+    });
+  }
 };
