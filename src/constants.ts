@@ -3,3 +3,13 @@ export const LOCAL_THEME_DIR = '.dumi/theme';
 export const THEME_PREFIX = 'dumi-theme-';
 
 export const SP_ROUTE_PREFIX = '~';
+
+export const PICKED_PKG_FIELDS = {
+  name: '',
+  description: '',
+  version: '',
+  license: '',
+  repository: '',
+  author: '',
+  authors: '',
+};

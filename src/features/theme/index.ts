@@ -1,8 +1,8 @@
-import { LOCAL_THEME_DIR, THEME_PREFIX } from '@/constants';
+import { LOCAL_THEME_DIR, PICKED_PKG_FIELDS, THEME_PREFIX } from '@/constants';
 import type { IApi } from '@/types';
 import fs from 'fs';
 import path from 'path';
-import { deepmerge, winPath } from 'umi/plugin-utils';
+import { deepmerge, lodash, winPath } from 'umi/plugin-utils';
 import loadTheme, { IThemeLoadResult } from './loader';
 
 const DEFAULT_THEME_PATH = path.join(__dirname, '../../../theme-default');
@@ -154,6 +154,9 @@ export default function DumiContextWrapper() {
 
   return (
     <SiteContext.Provider value={{
+      pkg: ${JSON.stringify(
+        lodash.pick(api.pkg, ...Object.keys(PICKED_PKG_FIELDS)),
+      )},
       demos,
       components,
       locales,
