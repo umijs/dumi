@@ -3,7 +3,7 @@
 代码块 demo
 
 ```jsx
-import react from 'React';
+import react from 'react';
 
 export default () => <>Hello first code block demo!</>;
 ```

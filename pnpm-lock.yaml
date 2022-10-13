@@ -149,8 +149,11 @@ importers:
   examples/normal:
     specifiers:
       react: ^18.2.0
+      typescript: ~4.7.4
     dependencies:
       react: 18.2.0
+    devDependencies:
+      typescript: 4.7.4
 
 packages:
 
