@@ -75,16 +75,23 @@ export const toc = {{{toc}}}
             demos,
             frontmatter: JSON.stringify(frontmatter),
             toc: JSON.stringify(toc),
-            renderAsset: function renderAsset() {
-              let asset = this.asset;
+            renderAsset: function renderAsset(
+              this: NonNullable<typeof demos>[0],
+            ) {
+              // do not render asset for inline demo
+              if (!('asset' in this)) return 'null';
+
+              // render asset for normal demo
+              let { asset } = this;
+              const { sources } = this;
 
               // use raw-loader to load all source files
               Object.keys(this.sources).forEach((file: string) => {
                 // to avoid modify original asset object
-                asset = lodash.cloneDeep(this.asset);
+                asset = lodash.cloneDeep(asset);
                 asset.dependencies[
                   file
-                ].value = `{{{require('!!raw-loader!${this.sources[file]}?raw').default}}}`;
+                ].value = `{{{require('!!raw-loader!${sources[file]}?raw').default}}}`;
               });
 
               return JSON.stringify(asset, null, 2).replace(/"{{{|}}}"/g, '');

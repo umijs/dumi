@@ -17,3 +17,11 @@ export default () => <>Hello first code block demo!</>;
 嵌入文档
 
 <embed src="./hello/index.md"></embed>
+
+---
+
+inline demo
+
+```jsx | inline
+export default () => <button>inline</button>;
+```

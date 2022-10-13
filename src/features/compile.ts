@@ -52,7 +52,15 @@ export default (api: IApi) => {
         ...loaderBaseOpts,
         mode: 'meta',
         onResolveDemos(demos) {
-          addExampleAssets(demos.map(({ asset }) => asset));
+          const assets = demos.reduce<Parameters<typeof addExampleAssets>[0]>(
+            (ret, demo) => {
+              if ('asset' in demo) ret.push(demo.asset);
+              return ret;
+            },
+            [],
+          );
+
+          addExampleAssets(assets);
         },
       } as IMdLoaderOptions)
       .end()

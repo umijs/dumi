@@ -36,7 +36,6 @@ type IRehypeDemoOptions = Pick<
 function getCodeLang(node: Element, opts: IRehypeDemoOptions) {
   let lang = '';
 
-  // TODO: inline demo
   if (typeof node.properties?.src === 'string') {
     // external demo
     // TODO: resolve module without extension
@@ -237,6 +236,8 @@ export default function rehypeDemo(
               });
             }
 
+            const propDemo: IDumiDemoProps['demo'] = { id: parseOpts.id };
+
             // generate asset data for demo
             deferrers.push(
               parseBlockAsset(parseOpts).then(
@@ -266,6 +267,21 @@ export default function rehypeDemo(
                   validAssetAttrs.forEach((key) => {
                     if (originalProps[key]) asset[key] = originalProps[key];
                   });
+
+                  // do not generate previewer props & asset for inline demo
+                  if (
+                    / inline/.test(String(codeNode.data?.meta)) ||
+                    originalProps.inline
+                  ) {
+                    // HINT: must keep the reference
+                    propDemo.inline = true;
+
+                    return {
+                      // TODO: special id for inline demo
+                      id: asset.id,
+                      component,
+                    };
+                  }
 
                   // HINT: must use `Object.assign` to keep the reference
                   Object.assign(
@@ -324,7 +340,7 @@ export default function rehypeDemo(
 
             // save into demos property
             demosPropData.push({
-              demo: { id: parseOpts.id },
+              demo: propDemo,
               previewerProps,
             });
           }

@@ -16,6 +16,8 @@ export const DumiDemo: FC<IDumiDemoProps> = (props) => {
   const { demos } = useSiteData();
   const { component, asset } = demos[props.demo.id];
 
+  if (props.demo.inline) return createElement(component);
+
   return (
     <Previewer
       asset={asset}

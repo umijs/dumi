@@ -26,12 +26,18 @@ declare module 'hast' {
 
 declare module 'vfile' {
   interface DataMap {
-    demos: {
-      id: string;
-      component: string;
-      asset: IParsedBlockAsset['asset'];
-      sources: IParsedBlockAsset['sources'];
-    }[];
+    demos: (
+      | {
+          id: string;
+          component: string;
+          asset: IParsedBlockAsset['asset'];
+          sources: IParsedBlockAsset['sources'];
+        }
+      | {
+          id: string;
+          component: string;
+        }
+    )[];
     frontmatter: IRouteMeta['frontmatter'];
     toc: IRouteMeta['toc'];
     embeds?: string[];
