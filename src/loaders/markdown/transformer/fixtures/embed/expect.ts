@@ -1,8 +1,9 @@
 import path from 'path';
+import { winPath } from 'umi/plugin-utils';
 import { IMdTransformerResult } from '../..';
 
 export default (ret: IMdTransformerResult) => {
-  const embedMdPath = path.join(__dirname, 'embed.md');
+  const embedMdPath = winPath(path.join(__dirname, 'embed.md'));
   expect(ret.content).toEqual(
     '<><div className="markdown"><h3 id="this-is-indexmd"><a aria-hidden="true" tabIndex="-1" href="#this-is-indexmd"><span className="icon icon-link" /></a>{"This is index.md"}</h3></div><React.Fragment children={require(\'' +
       embedMdPath +

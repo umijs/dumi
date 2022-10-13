@@ -1,5 +1,6 @@
 import type { Node, Root } from 'hast';
 import path from 'path';
+import { winPath } from 'umi/plugin-utils';
 import type { Transformer } from 'unified';
 import url from 'url';
 import type { IMdTransformerOptions } from '.';
@@ -29,9 +30,8 @@ export default function rehypeEmbed(
       ) {
         const { src } = node.properties;
         const parsed = url.parse(src?.toString() || '');
-        const absPath = path.resolve(
-          path.parse(opts.fileAbsPath).dir,
-          parsed.pathname!,
+        const absPath = winPath(
+          path.resolve(path.parse(opts.fileAbsPath).dir, parsed.pathname!),
         );
 
         if (absPath) {

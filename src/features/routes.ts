@@ -136,7 +136,7 @@ export default (api: IApi) => {
     // prepend page routes from .dumi/pages
     Object.entries(pages).forEach(([, route]) => {
       route.parentId = docLayoutId;
-      route.file = path.resolve(pagesDir, route.file);
+      route.file = winPath(path.resolve(pagesDir, route.file));
       routes[route.id] = route;
     });
 
@@ -162,7 +162,7 @@ export default (api: IApi) => {
         }
 
         // use absolute path to avoid umi prefix with conventionRoutes.base
-        route.file = path.resolve(base, route.file);
+        route.file = winPath(path.resolve(base, route.file));
 
         // localize route
         localizeUmiRoute(route, api.config.locales);
@@ -193,7 +193,7 @@ export default (api: IApi) => {
           path: routePath,
           absPath: `/${routePath}`,
           parentId: docLayoutId,
-          file: path.resolve(base, file),
+          file: winPath(path.resolve(base, file)),
         };
 
         // localize route
