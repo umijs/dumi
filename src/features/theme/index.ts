@@ -3,14 +3,15 @@ import type { IApi } from '@/types';
 import fs from 'fs';
 import path from 'path';
 import { deepmerge, lodash, winPath } from 'umi/plugin-utils';
+import { safeExcludeInMFSU } from '../exports';
 import loadTheme, { IThemeLoadResult } from './loader';
 
 const DEFAULT_THEME_PATH = path.join(__dirname, '../../../theme-default');
 
 /**
- * get theme package path from package.json
+ * get pkg theme name
  */
-function getPkgThemePath(api: IApi) {
+function getPkgThemeName(api: IApi) {
   const validDeps = Object.assign(
     {},
     api.pkg.dependencies,
@@ -19,6 +20,15 @@ function getPkgThemePath(api: IApi) {
   const pkgThemeName = Object.keys(validDeps).find((pkg) =>
     pkg.split('/').pop()!.startsWith(THEME_PREFIX),
   );
+
+  return pkgThemeName;
+}
+
+/**
+ * get theme package path from package.json
+ */
+function getPkgThemePath(api: IApi) {
+  const pkgThemeName = getPkgThemeName(api);
 
   return (
     pkgThemeName &&
@@ -41,6 +51,14 @@ export default (api: IApi) => {
   let originalThemeData: IThemeLoadResult;
 
   api.describe({ key: 'dumi:theme' });
+
+  // skip mfsu for client api, to avoid circular resolve in mfsu mode
+  safeExcludeInMFSU(
+    api,
+    ['dumi/theme-default', '@ant-design/icons-svg', getPkgThemeName(api)]
+      .filter(Boolean)
+      .map((pkg) => new RegExp(pkg!)),
+  );
 
   api.register({
     key: 'modifyAppData',
@@ -90,8 +108,6 @@ export default (api: IApi) => {
   });
 
   api.modifyConfig((memo) => {
-    // alias theme api
-    memo.alias['dumi/theme$'] = require.resolve('../../client/theme-api');
     // alias each component from local theme, as a part of final theme
     if (localThemeData) {
       themeMapKeys.forEach((key) => {
