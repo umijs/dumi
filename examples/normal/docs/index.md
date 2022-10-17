@@ -25,3 +25,9 @@ inline demo
 ```jsx | inline
 export default () => <button>inline</button>;
 ```
+
+---
+
+## img
+引入图片的相对路径
+<img src="../logo.png" />
