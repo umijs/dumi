@@ -1,17 +1,25 @@
 @import (reference) '../../styles/variables.less';
 
 .@{prefix}-header {
-  position: sticky;
-  top: 0;
+  position: relative;
   z-index: 10;
-  display: flex;
-  margin: 0 -24px;
-  padding: 0 24px;
-  align-items: center;
-  height: @s-header-height;
-  background-color: fadeout(@c-site-bg, 10%);
-  backdrop-filter: blur(6px);
-  box-sizing: border-box;
+
+  &:not([data-static]) {
+    top: 0;
+    position: sticky;
+    background-color: fadeout(@c-site-bg, 10%);
+    backdrop-filter: blur(6px);
+  }
+
+  &-content {
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
+    padding: 0 24px;
+    max-width: @s-content-width;
+    height: @s-header-height;
+    box-sizing: border-box;
+  }
 
   &-left {
     width: @s-sidebar-width;

@@ -56,6 +56,19 @@ export interface IRouteMeta {
     nav?: string | { title?: string; order?: number };
     group?: string | { title?: string; order?: number };
     order?: number;
+    hero?: {
+      title?: string;
+      description?: string;
+      background?: string;
+      links?: { title: string; link: string }[];
+      [key: string]: any;
+    };
+    features?: {
+      emoji?: string;
+      title?: string;
+      description?: string;
+      [key: string]: any;
+    }[];
     toc?: boolean | 'content' | 'menu';
     demo?: {
       cols?: number;
@@ -78,7 +91,7 @@ export interface IRouteMeta {
     };
     frontmatter: Omit<
       IRouteMeta['frontmatter'],
-      'description' | 'keywords' | 'nav' | 'group'
+      'description' | 'keywords' | 'nav' | 'group' | 'hero' | 'features'
     >;
     toc: IRouteMeta['toc'];
     [key: string]: any;

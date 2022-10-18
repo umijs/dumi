@@ -1,0 +1,65 @@
+@import (reference) '../../styles/variables.less';
+
+.@{prefix}-hero {
+  position: relative;
+  margin: -@s-header-height - 20 auto -160px auto;
+  max-width: @s-content-width;
+  height: 932px;
+  padding-top: 220px;
+  text-align: center;
+  box-sizing: border-box;
+
+  &::before {
+    content: '';
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.8;
+    pointer-events: none;
+    background: no-repeat center/cover;
+    background-image: url('https://gw.alipayobjects.com/zos/bmw-prod/a6c3488a-994c-4dd3-8e92-2324d9a1ca48/l9dmd9wl_w2858_h1864.png');
+  }
+
+  > p {
+    margin: 32px;
+    color: #4e6789;
+    font-size: 24px;
+    line-height: 1.6;
+  }
+
+  &-links {
+    margin-top: 48px;
+    display: flex;
+    justify-content: center;
+
+    > a {
+      display: inline-block;
+      height: 56px;
+      font-size: 20px;
+      line-height: 56px;
+      text-decoration: none;
+      min-width: 168px;
+      border-radius: 28px;
+      box-sizing: border-box;
+      transition: opacity 0.2s;
+
+      &:hover {
+        opacity: 0.8;
+      }
+
+      &:not(:first-child) {
+        margin-left: 48px;
+        color: @c-primary;
+        border: 1px solid @c-primary;
+      }
+
+      &:first-child {
+        color: #fff;
+        background-color: @c-primary;
+      }
+    }
+  }
+}

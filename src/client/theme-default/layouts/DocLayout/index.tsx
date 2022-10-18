@@ -1,6 +1,8 @@
 import { useIntl, useOutlet, useRouteMeta } from 'dumi';
 import Content from 'dumi/theme/slots/Content';
+import Features from 'dumi/theme/slots/Features';
 import Header from 'dumi/theme/slots/Header';
+import Hero from 'dumi/theme/slots/Hero';
 import Sidebar from 'dumi/theme/slots/Sidebar';
 import React, { type FC } from 'react';
 import Helmet from 'react-helmet';
@@ -29,6 +31,8 @@ const DocLayout: FC = () => {
         )}
       </Helmet>
       <Header />
+      <Hero />
+      <Features />
       <main>
         <Sidebar />
         <Content>{outlet}</Content>

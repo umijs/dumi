@@ -1,0 +1,49 @@
+@import (reference) '../../styles/variables.less';
+
+.@{prefix}-features {
+  margin: 0 auto 48px;
+  width: @s-content-width;
+  padding: 0 24px;
+  overflow: hidden;
+  box-sizing: border-box;
+
+  &[data-cols='2'] > &-item {
+    width: 46%;
+
+    &:nth-child(odd) {
+      margin-right: 8%;
+    }
+  }
+
+  &[data-cols='3'] > &-item {
+    width: 31.4%;
+
+    &:not(:nth-child(3n)) {
+      margin-right: 2.9%;
+    }
+  }
+
+  &-item {
+    margin: 12px 0;
+    float: left;
+
+    > i {
+      font-size: 64px;
+      font-style: normal;
+    }
+
+    > h3 {
+      margin: 4px 0;
+      color: #2c4262;
+      font-weight: normal;
+      font-size: 22px;
+    }
+
+    > p {
+      margin: 12px 0;
+      color: #61728a;
+      font-size: 16px;
+      line-height: 1.475;
+    }
+  }
+}
