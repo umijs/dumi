@@ -6,7 +6,7 @@ type IContentTabs = ReturnType<typeof useRouteMeta>['tabs'];
 
 export interface IContentTabsProps {
   tabs: IContentTabs;
-  tabKey?: string;
+  tabKey: string | null;
   onChange: (tab?: NonNullable<IContentTabs>[0]) => void;
 }
 
@@ -32,7 +32,7 @@ const ContentTabs: FC<IContentTabsProps> = ({
           onClick={() => onChange(tab)}
           data-active={key === tab.key || undefined}
         >
-          <button type="button">{tab.frontmatter.title}</button>
+          <button type="button">{tab.meta.frontmatter.title}</button>
         </li>
       ))}
     </ul>

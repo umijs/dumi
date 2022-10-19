@@ -28,3 +28,4 @@ export { useLocale } from './useLocale';
 export { useNavData } from './useNavData';
 export { useRouteMeta } from './useRouteMeta';
 export { useFullSidebarData, useSidebarData } from './useSidebarData';
+export { useTabMeta } from './useTabMeta';

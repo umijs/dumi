@@ -89,12 +89,14 @@ export interface IRouteMeta {
       Extra: ComponentType;
       Action: ComponentType;
     };
-    frontmatter: Omit<
-      IRouteMeta['frontmatter'],
-      'description' | 'keywords' | 'nav' | 'group' | 'hero' | 'features'
-    >;
-    toc: IRouteMeta['toc'];
-    [key: string]: any;
+    meta: {
+      frontmatter: Omit<
+        IRouteMeta['frontmatter'],
+        'description' | 'keywords' | 'nav' | 'group' | 'hero' | 'features'
+      >;
+      toc: IRouteMeta['toc'];
+      [key: string]: any;
+    };
   }[];
   [key: string]: any;
 }
