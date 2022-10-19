@@ -92,6 +92,7 @@
     "umi": "^4.0.22",
     "unified": "^10.1.2",
     "unist-util-visit": "^4.1.0",
+    "unist-util-visit-parents": "^5.1.1",
     "url": "^0.11.0",
     "v8-compile-cache": "2.3.0",
     "vfile": "^5.3.4"

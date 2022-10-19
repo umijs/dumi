@@ -81,6 +81,19 @@ export interface IRouteMeta {
     depth: number;
     title: string;
   }[];
+  // route texts
+  texts: {
+    type?: 'content';
+    value: string;
+    /**
+     * paragraph index
+     */
+    paraId: number;
+    /**
+     * title index in toc
+     */
+    tocIndex?: number;
+  }[];
   // tabs
   tabs?: {
     key: string;
@@ -95,6 +108,7 @@ export interface IRouteMeta {
         'description' | 'keywords' | 'nav' | 'group' | 'hero' | 'features'
       >;
       toc: IRouteMeta['toc'];
+      texts: IRouteMeta['texts'];
       [key: string]: any;
     };
   }[];

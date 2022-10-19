@@ -15,5 +15,6 @@ export default function pageMetaLoader(this: any, raw: string) {
 
   return `export const frontmatter = ${JSON.stringify(frontmatter)};
 export const toc = [];
+export const texts = [];
 export const demos = {};`;
 }

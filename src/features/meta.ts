@@ -45,7 +45,7 @@ export default (api: IApi) => {
       path: 'dumi/meta/index.ts',
       content: Mustache.render(
         `{{#metaFiles}}
-import { demos as d{{{index}}}, frontmatter as fm{{{index}}}, toc as toc{{{index}}} } from '{{{file}}}?type=meta';
+import { demos as d{{{index}}}, frontmatter as fm{{{index}}}, toc as toc{{{index}}}, texts as txt{{{index}}} } from '{{{file}}}?type=meta';
 {{/metaFiles}}
 
 export { components } from './atoms';
@@ -62,6 +62,7 @@ export const filesMeta = {
   '{{{id}}}': {
     frontmatter: fm{{{index}}},
     toc: toc{{{index}}},
+    texts: txt{{{index}}},
     {{#tabs}}
     tabs: {{{tabs}}},
     {{/tabs}}

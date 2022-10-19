@@ -1,5 +1,5 @@
 import { matchRoutes, useAppData, useLocation, useRouteData } from 'dumi';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useLayoutEffect, useState } from 'react';
 import type { IRouteMeta } from './types';
 
 /**
@@ -22,11 +22,11 @@ export const useRouteMeta = () => {
       ret = (matched?.route as any)?.meta;
     }
 
-    return ret || { frontmatter: {}, toc: [] };
+    return ret || { frontmatter: {}, toc: [], texts: [] };
   }, [clientRoutes.length, pathname]);
   const [meta, setMeta] = useState<IRouteMeta>(getter);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setMeta(getter);
   }, [clientRoutes.length, pathname]);
 

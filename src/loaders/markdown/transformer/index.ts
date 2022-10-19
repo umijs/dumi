@@ -12,6 +12,7 @@ import rehypeRaw from './rehypeRaw';
 import rehypeSlug from './rehypeSlug';
 import rehypeStrip from './rehypeStrip';
 import rehypeImg from './rehypeImg';
+import rehypeText from './rehypeText';
 import remarkMeta from './remarkMeta';
 
 declare module 'hast' {
@@ -39,6 +40,7 @@ declare module 'vfile' {
           component: string;
         }
     )[];
+    texts: IRouteMeta['texts'];
     frontmatter: IRouteMeta['frontmatter'];
     toc: IRouteMeta['toc'];
     embeds?: string[];
@@ -121,7 +123,9 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     .use(rehypeSlug, opts)
     .use(rehypeAutolinkHeadings)
     .use(rehypeIsolation)
-    .use(rehypeEnhancedTag);
+    .use(rehypeEnhancedTag)
+    // collect all texts for content search, must be the last rehype plugin
+    .use(rehypeText);
 
   // apply extra rehype plugins
   opts.extraRehypePlugins?.forEach((plugin) =>

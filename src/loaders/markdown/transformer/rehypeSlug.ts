@@ -37,7 +37,7 @@ function getFileSlugger(fileAbsPath: string, parentAbsPath?: string) {
   ({ toString } = await import('hast-util-to-string'));
 })();
 
-const HEADING_TAGS = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+export const HEADING_TAGS = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
 
 export default function rehypeSlug(
   opts: IMdTransformerOptions,

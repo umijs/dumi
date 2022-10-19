@@ -45,7 +45,7 @@ export default function mdLoader(this: any, raw: string) {
     fileAbsPath: this.resourcePath,
   }).then((ret) => {
     if (opts.mode === 'meta') {
-      const { demos, frontmatter, toc, embeds = [] } = ret.meta;
+      const { demos, frontmatter, toc, texts, embeds = [] } = ret.meta;
 
       // declare embedded files as loader dependency, for clear cache when file changed
       embeds.forEach((file) => this.addDependency(file));
@@ -69,12 +69,14 @@ export const demos = {
   {{/demos}}
 };
 export const frontmatter = {{{frontmatter}}};
-export const toc = {{{toc}}}
+export const toc = {{{toc}}};
+export const texts = {{{texts}}};
 `,
           {
             demos,
             frontmatter: JSON.stringify(frontmatter),
             toc: JSON.stringify(toc),
+            texts: JSON.stringify(texts),
             renderAsset: function renderAsset(
               this: NonNullable<typeof demos>[0],
             ) {
