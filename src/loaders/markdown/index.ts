@@ -98,11 +98,13 @@ export default DumiMarkdownContent;`,
 export default async function mdLoader(this: any, raw: string) {
   const opts: IMdLoaderOptions = this.getOptions();
   const cb = this.async();
+  const params = new URLSearchParams(this.resourceQuery);
 
   const cache = getCache('markdown-loader');
   const cacheKey = [
     this.resourcePath,
     fs.statSync(this.resourcePath).mtimeMs,
+    JSON.stringify(params),
     JSON.stringify(opts),
   ].join(':');
   const cacheRet = await cache.get(cacheKey, '');
@@ -114,7 +116,6 @@ export default async function mdLoader(this: any, raw: string) {
   }
 
   let content = raw;
-  const params = new URLSearchParams(this.resourceQuery);
   const range = params.get('range');
   const regexp = params.get('regexp');
   // extract content of markdown file
