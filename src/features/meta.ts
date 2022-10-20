@@ -82,10 +82,11 @@ export const filesMeta = {
       noPluginDir: true,
       path: 'dumi/meta/runtime.ts',
       content: `import { filesMeta, tabs } from '.';
+import { deepmerge } from 'umi/plugin-utils';
 export const patchRoutes = ({ routes }) => {
   Object.values(routes).forEach((route) => {
     if (filesMeta[route.id]) {
-      route.meta = { ...route.meta, ...filesMeta[route.id] };
+      route.meta = deepmerge(route.meta, filesMeta[route.id]);
 
       // apply real tab data from id
       route.meta.tabs = route.meta.tabs?.map(id => ({
