@@ -7,7 +7,11 @@ interface ISiteContext {
   pkg: Partial<Record<keyof typeof PICKED_PKG_FIELDS, any>>;
   demos: Record<
     string,
-    { component: ComponentType; asset: IPreviewerProps['asset'] }
+    {
+      component: ComponentType;
+      asset: IPreviewerProps['asset'];
+      routeId: string;
+    }
   >;
   components: Record<string, AtomComponentAsset>;
   locales: NonNullable<ILocalesConfig>;

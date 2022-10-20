@@ -29,4 +29,5 @@ export { useLocale } from './useLocale';
 export { useNavData } from './useNavData';
 export { useRouteMeta } from './useRouteMeta';
 export { useFullSidebarData, useSidebarData } from './useSidebarData';
+export { useSiteSearch } from './useSiteSearch';
 export { useTabMeta } from './useTabMeta';
