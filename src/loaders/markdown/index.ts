@@ -41,7 +41,6 @@ export default async function mdLoader(this: any, raw: string) {
 
   // file cache
   if (cacheRet) {
-    console.log('cacheRet', cacheKey);
     cb(null, cacheRet);
     return;
   } else if (deferrer[cacheKey]) {
@@ -61,7 +60,6 @@ export default async function mdLoader(this: any, raw: string) {
     content = getFileContentByRegExp(content, regexp, this.resourcePath);
   }
 
-  console.log('transform start ====');
   deferrer[cacheKey] = new Promise<string>((resolve) => {
     transform(content, {
       ...(lodash.omit(opts, ['mode', 'builtins']) as Omit<
@@ -70,7 +68,6 @@ export default async function mdLoader(this: any, raw: string) {
       >),
       fileAbsPath: this.resourcePath,
     }).then((ret) => {
-      console.log('transform end ====');
       let result;
       if (opts.mode === 'meta') {
         const { demos, frontmatter, toc, embeds = [] } = ret.meta;
