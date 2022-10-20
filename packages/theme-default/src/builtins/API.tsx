@@ -38,7 +38,7 @@ export default ({ identifier, export: expt }: IApiComponentProps) => {
             </tr>
           </thead>
           <tbody>
-            {data[expt].map(row => (
+            {data[expt]?.map(row => (
               <tr key={row.identifier}>
                 <td>{row.identifier}</td>
                 <td>{row.description || '--'}</td>
