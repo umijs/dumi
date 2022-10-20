@@ -1,5 +1,6 @@
 import type { IApi } from '@/types';
-import { Mustache } from 'umi/plugin-utils';
+import path from 'path';
+import { Mustache, winPath } from 'umi/plugin-utils';
 import { isTabRouteFile } from './tabs';
 
 export const TABS_META_PATH = 'dumi/meta/tabs.ts';
@@ -82,7 +83,9 @@ export const filesMeta = {
       noPluginDir: true,
       path: 'dumi/meta/runtime.ts',
       content: `import { filesMeta, tabs } from '.';
-import { deepmerge } from 'umi/plugin-utils';
+import deepmerge from '${winPath(
+        path.dirname(require.resolve('deepmerge/package')),
+      )}';
 export const patchRoutes = ({ routes }) => {
   Object.values(routes).forEach((route) => {
     if (filesMeta[route.id]) {
