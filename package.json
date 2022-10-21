@@ -59,6 +59,7 @@
     "@types/mdast": "^3.0.10",
     "@umijs/bundler-utils": "^4.0.22",
     "@umijs/core": "^4.0.22",
+    "deepmerge": "^4.2.2",
     "dumi-afx-deps": "^1.0.0-alpha.1",
     "dumi-assets-types": "2.0.0-alpha.0",
     "estree-util-to-js": "^1.1.0",
