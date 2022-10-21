@@ -25,15 +25,19 @@ export type IMdLoaderOptions =
 
 function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
   if (opts.mode === 'meta') {
-    const { demos, frontmatter, toc, embeds = [] } = ret.meta;
+    const { demos, frontmatter, toc, texts, embeds = [] } = ret.meta;
+
     // declare embedded files as loader dependency, for clear cache when file changed
     embeds.forEach((file) => this.addDependency(file));
+
     // apply demos resolve hook
     if (demos && opts.onResolveDemos) {
       opts.onResolveDemos(demos);
     }
+
     return Mustache.render(
       `import React from 'react';
+
 export const demos = {
   {{#demos}}
   '{{{id}}}': {
@@ -44,17 +48,21 @@ export const demos = {
 };
 export const frontmatter = {{{frontmatter}}};
 export const toc = {{{toc}}}
+export const texts = {{{texts}}};
 `,
       {
         demos,
         frontmatter: JSON.stringify(frontmatter),
         toc: JSON.stringify(toc),
+        texts: JSON.stringify(texts),
         renderAsset: function renderAsset(this: NonNullable<typeof demos>[0]) {
           // do not render asset for inline demo
           if (!('asset' in this)) return 'null';
+
           // render asset for normal demo
           let { asset } = this;
           const { sources } = this;
+
           // use raw-loader to load all source files
           Object.keys(this.sources).forEach((file: string) => {
             // to avoid modify original asset object
@@ -63,6 +71,7 @@ export const toc = {{{toc}}}
               file
             ].value = `{{{require('!!raw-loader!${sources[file]}?raw').default}}}`;
           });
+
           return JSON.stringify(asset, null, 2).replace(/"{{{|}}}"/g, '');
         },
       },
@@ -85,6 +94,7 @@ import React from 'react';${
 function DumiMarkdownContent() {
   return ${isFragment ? ret.content : `<DumiPage>${ret.content}</DumiPage>`};
 }
+
 export default DumiMarkdownContent;`;
   }
 }
