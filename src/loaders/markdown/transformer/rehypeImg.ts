@@ -19,13 +19,10 @@ function isRelativeUrl(url: string) {
 export default function rehypeImg(): Transformer<Root> {
   return (tree) => {
     visit<Root, 'element'>(tree, 'element', (node: Element) => {
-      if (node.tagName === 'img' && typeof node.properties?.src) {
+      if (node.tagName === 'img' && typeof node.properties?.src === 'string') {
         const src = node.properties!.src as string;
 
         if (isRelativeUrl(src)) {
-          // use wrapper element to workaround for skip props escape
-          // https://github.com/mapbox/jsxtreme-markdown/blob/main/packages/hast-util-to-jsx/index.js#L159
-          // eslint-disable-next-line no-new-wrappers
           node.JSXAttributes = [
             {
               type: 'JSXAttribute',
