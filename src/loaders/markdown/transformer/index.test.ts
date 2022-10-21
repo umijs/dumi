@@ -29,6 +29,6 @@ for (let name of cases) {
       codeBlockMode: 'active',
     });
 
-    require(`${CASES_DIR}/${name}/expect.ts`).default(ret);
+    (await import(`${CASES_DIR}/${name}/expect.ts`)).default(ret);
   });
 }
