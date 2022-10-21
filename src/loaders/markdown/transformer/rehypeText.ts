@@ -2,6 +2,8 @@ import type { Element, Root } from 'hast';
 import type { Transformer } from 'unified';
 import { HEADING_TAGS } from './rehypeSlug';
 
+export const CONTENT_TEXTS_OBJ_NAME = '$$contentTexts';
+
 let visit: typeof import('unist-util-visit-parents').visitParents;
 let toString: typeof import('hast-util-to-string').toString;
 
@@ -53,7 +55,6 @@ export default function rehypeText(): Transformer<Root> {
 
       // skip text in heading, because heading is already collected in toc data
       if (parent.type !== 'element' || !HEADING_TAGS.includes(parent.tagName)) {
-        const index = parent.children.indexOf(node);
         const paraNode = findParagraphAncestor(ancestors)!;
         const titleNode =
           paraNode.type === 'element' && findClosestTitle(ancestors, paraNode);
@@ -69,15 +70,30 @@ export default function rehypeText(): Transformer<Root> {
         paraNode.data ??= {};
         paraNode.data!.id ??= paraId++;
 
-        // replace original node to DumiText internal component
-        parent.children.splice(index, 1, {
-          type: 'element',
-          tagName: 'DumiText',
-          JSXAttributes: [
-            { type: 'JSXAttribute', name: 'id', value: String(textId++) },
-          ],
-          children: [],
-        });
+        // set member expression to text node
+        node.data = {
+          expression: {
+            type: 'MemberExpression',
+            start: node.position?.start,
+            end: node.position?.end,
+            object: {
+              type: 'MemberExpression',
+              computed: true,
+              object: {
+                type: 'Identifier',
+                name: CONTENT_TEXTS_OBJ_NAME,
+              },
+              property: {
+                type: 'Literal',
+                value: textId++,
+              },
+            },
+            property: {
+              type: 'Identifier',
+              name: 'value',
+            },
+          },
+        };
 
         // save text object in vFile
         vFile.data.texts!.push({

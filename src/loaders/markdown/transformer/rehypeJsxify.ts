@@ -1,6 +1,7 @@
 import type { JSXElement } from '@umijs/bundler-utils/compiled/@babel/types';
 import * as parser from '@umijs/bundler-utils/compiled/babel/parser';
-import type { Element, Root } from 'hast';
+import type { JSXExpressionContainer } from 'estree-util-to-js/lib/jsx';
+import type { Element, Root, Text } from 'hast';
 import type {
   EstreeJsxAttribute,
   EstreeJsxSpreadAttribute,
@@ -68,7 +69,23 @@ export default function rehypeJsxify(this: FrozenProcessor) {
     });
 
     // hast to estree, will strip original `JSXAttributes` property
-    const esTree = toEstree(ast);
+    const esTree = toEstree(ast, {
+      handlers: {
+        text: function text(node: Text): JSXExpressionContainer | null {
+          const value = String(node.value || '');
+
+          if (!value) return null;
+
+          return {
+            type: 'JSXExpressionContainer',
+            expression: (node.data?.expression as any) || {
+              type: 'Literal',
+              value,
+            },
+          };
+        },
+      },
+    });
 
     // transform stub JSX attributes to ast JSX attributes
     visitEstree(esTree, (node) => {

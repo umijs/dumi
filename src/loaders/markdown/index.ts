@@ -5,6 +5,7 @@ import transform, {
   type IMdTransformerOptions,
   type IMdTransformerResult,
 } from './transformer';
+import { CONTENT_TEXTS_OBJ_NAME } from './transformer/rehypeText';
 
 interface IMdLoaderDefaultModeOptions
   extends Omit<IMdTransformerOptions, 'fileAbsPath'> {
@@ -113,13 +114,18 @@ export const texts = {{{texts}}};
         `${Object.values(opts.builtins)
           .map((item) => `import ${item.specifier} from '${item.source}';`)
           .join('\n')}
-import React from 'react';${
+import React from 'react';
+import { useRouteMeta, useTabMeta } from 'dumi';${
           isFragment ? '' : `\nimport { DumiPage } from 'dumi'`
         }
 
 // export named function for fastRefresh
 // ref: https://github.com/pmmmwh/react-refresh-webpack-plugin/blob/main/docs/TROUBLESHOOTING.md#edits-always-lead-to-full-reload
 function DumiMarkdownContent() {
+  const routeMeta = useRouteMeta();
+  const tabMeta = useTabMeta();
+  const { texts: ${CONTENT_TEXTS_OBJ_NAME} } = tabMeta || routeMeta;
+
   return ${isFragment ? ret.content : `<DumiPage>${ret.content}</DumiPage>`};
 }
 
