@@ -39,6 +39,7 @@ const Previewer: FC<IPreviewerProps> = (props) => {
 
   return (
     <div
+      id={props.asset.id}
       className="dumi-default-previewer"
       data-debug={props.debug}
       data-active={hash === link || undefined}

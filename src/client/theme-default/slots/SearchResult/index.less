@@ -1,0 +1,111 @@
+@import (reference) '../../styles/variables.less';
+
+.@{prefix}-search-result {
+  > dl {
+    margin: 2px 0;
+
+    > dt {
+      height: 30px;
+      padding: 0 16px;
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 30px;
+      color: @c-text-secondary;
+      background-color: @c-border-light;
+
+      &:first-child {
+        margin-top: -2px;
+      }
+    }
+
+    > dd {
+      margin: 0 4px;
+      padding: 2px 0;
+
+      + dd {
+        border-top: 1px dashed @c-border-light;
+      }
+
+      > a {
+        position: relative;
+        display: flex;
+        height: 60px;
+        flex-direction: column;
+        justify-content: center;
+        padding: 6px 12px 8px 54px;
+        text-decoration: none;
+        box-sizing: border-box;
+        border-radius: 4px;
+
+        &[data-active],
+        &:hover {
+          background-color: @c-primary;
+
+          > h4,
+          > p {
+            color: #fff;
+          }
+
+          > svg {
+            fill: #fff;
+          }
+        }
+
+        > svg {
+          position: absolute;
+          top: 16px;
+          left: 14px;
+          width: 32px;
+          height: 32px;
+          fill: darken(@c-border, 5%);
+        }
+
+        > h4,
+        > p {
+          margin: 0;
+          line-height: 1.4;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
+
+        > h4 {
+          color: @c-text-secondary;
+          font-size: 16px;
+        }
+
+        > p {
+          margin-top: 2px;
+          font-size: 14px;
+          color: @c-text-note;
+
+          &:empty {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+
+  mark {
+    color: rgb(72 70 7);
+    padding: 0 2px;
+    border-radius: 2px;
+    background-color: rgb(252 249 168);
+  }
+
+  .@{prefix}-search-empty {
+    display: flex;
+    height: 140px;
+    align-items: center;
+    justify-content: center;
+    color: @c-text-secondary;
+    font-size: 16px;
+
+    > svg {
+      margin-right: 8px;
+      width: 48px;
+      fill: @c-border;
+    }
+  }
+}

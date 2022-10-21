@@ -1,21 +1,22 @@
 import { ReactComponent as IconSearch } from '@ant-design/icons-svg/inline-svg/outlined/search.svg';
-import { useIntl } from 'dumi';
+import { useIntl, useSiteSearch } from 'dumi';
 import React, { useEffect, useRef, type FC } from 'react';
+import { SearchResult } from '../SearchResult';
 import './index.less';
 
 const isAppleDevice = /(mac|iphone|ipod|ipad)/i.test(navigator.platform);
 
 const SearchBar: FC = () => {
   const intl = useIntl();
+  const imeWaiting = useRef(false);
+  const focusStatus = useRef(false);
   const input = useRef<HTMLInputElement>(null);
   const symbol = isAppleDevice ? '⌘' : 'Ctrl';
+  const { keywords, setKeywords, result, loading } = useSiteSearch();
 
   useEffect(() => {
     const handler = (ev: KeyboardEvent) => {
-      if (
-        (isAppleDevice ? ev.metaKey : ev.ctrlKey) &&
-        (ev.keyCode === 75 || ev.code === 'KeyK')
-      ) {
+      if ((isAppleDevice ? ev.metaKey : ev.ctrlKey) && ev.key === 'k') {
         input.current?.focus();
       }
     };
@@ -26,18 +27,45 @@ const SearchBar: FC = () => {
   }, []);
 
   return (
-    <div
-      className="dumi-default-search-bar"
-      data-dumi-tooltip="暂不可用"
-      data-dumi-tooltip-bottom
-    >
+    <div className="dumi-default-search-bar">
       <IconSearch />
       <input
+        onCompositionStart={() => {
+          imeWaiting.current = true;
+          console.log(1);
+        }}
+        onCompositionEnd={(ev) => {
+          imeWaiting.current = false;
+          // special case: press Enter open IME panel will not trigger onChange
+          setKeywords(ev.currentTarget.value);
+        }}
+        onFocus={() => (focusStatus.current = true)}
+        onBlur={() => (focusStatus.current = false)}
+        onKeyDown={(ev) => {
+          if (['ArrowDown', 'ArrowUp'].includes(ev.key)) ev.preventDefault();
+          // esc to blur input
+          if (ev.key === 'Escape' && !imeWaiting.current)
+            ev.currentTarget.blur();
+        }}
+        onChange={(ev) => {
+          // wait for onCompositionEnd event be triggered
+          setTimeout(() => {
+            if (!imeWaiting.current) {
+              setKeywords(ev.target.value);
+            }
+          }, 1);
+        }}
         placeholder={intl.formatMessage({ id: 'header.search.placeholder' })}
         ref={input}
-        disabled
       />
       <span className="dumi-default-search-shortcut">{symbol} K</span>
+      {keywords.trim() && focusStatus.current && (
+        <div className="dumi-default-search-popover">
+          <section>
+            <SearchResult data={result} loading={loading} />
+          </section>
+        </div>
+      )}
     </div>
   );
 };

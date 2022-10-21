@@ -2,7 +2,6 @@
 
 .@{prefix}-search-bar {
   position: relative;
-  cursor: not-allowed;
 
   &:not(:last-child) {
     margin-right: 28px;
@@ -18,7 +17,7 @@
     transform: translateY(-50%);
   }
 
-  input {
+  > input {
     width: 280px;
     height: 40px;
     padding: 0 12px 0 40px;
@@ -30,14 +29,13 @@
     outline: none;
     transition: all 0.3s;
     background-color: transparent;
-    pointer-events: none;
 
     &:focus {
       border-color: fade(@c-primary, 50%);
       background-color: #fff;
       box-shadow: 0 0 0 3px fade(@c-primary, 10%);
 
-      + .@{prefix}-search-shortcut {
+      ~ .@{prefix}-search-shortcut {
         opacity: 0;
       }
     }
@@ -59,5 +57,38 @@
     transform: translateY(-50%);
     transition: all 0.3s;
     pointer-events: none;
+  }
+
+  .@{prefix}-search-popover {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    width: 600px;
+    max-height: 460px;
+    margin-top: 18px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 30px rgb(0 0 0 / 20%);
+
+    &::before {
+      content: '';
+      position: absolute;
+      bottom: 100%;
+      right: 100px;
+      display: inline-block;
+      width: 0;
+      height: 0;
+      border: 8px solid transparent;
+      border-bottom-color: #fff;
+    }
+
+    > section {
+      flex: 1;
+      min-height: 60px;
+      overflow: auto;
+      border-radius: inherit;
+    }
   }
 }

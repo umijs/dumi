@@ -15,5 +15,6 @@
   "api.component.required": "(必选)",
   "api.component.loading": "属性定义正在解析中，稍等片刻...",
   "api.component.not.found": "未找到 {id} 组件的属性定义",
-  "content.tabs.default": "文档"
+  "content.tabs.default": "文档",
+  "search.not.found": "未找到相关内容"
 }
