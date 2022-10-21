@@ -11,6 +11,7 @@ import rehypeJsxify from './rehypeJsxify';
 import rehypeRaw from './rehypeRaw';
 import rehypeSlug from './rehypeSlug';
 import rehypeStrip from './rehypeStrip';
+import rehypeImg from './rehypeImg';
 import remarkMeta from './remarkMeta';
 
 declare module 'hast' {
@@ -107,6 +108,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeRaw)
     .use(rehypeStrip)
+    .use(rehypeImg)
     .use(rehypeEmbed, {
       fileAbsPath: opts.fileAbsPath,
     })
