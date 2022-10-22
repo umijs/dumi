@@ -1,18 +1,7 @@
-import path from 'path';
-import { winPath } from 'umi/plugin-utils';
 import { IMdTransformerResult } from '../..';
 
 export default (ret: IMdTransformerResult) => {
-  const embedMdPath = winPath(path.join(__dirname, 'embed.md'));
   expect(ret.content).toEqual(
-    '<><div className="markdown"><h3 id="this-is-indexmd"><a aria-hidden="true" tabIndex="-1" href="#this-is-indexmd"><span className="icon icon-link" /></a>{"This is index.md"}</h3></div><React.Fragment children={require(\'' +
-      embedMdPath +
-      "?').default()} /><React.Fragment children={require('" +
-      embedMdPath +
-      "?range=L1').default()} /><React.Fragment children={require('" +
-      embedMdPath +
-      "?range=L1-L3').default()} /><React.Fragment children={require('" +
-      embedMdPath +
-      "?regexp=%2F%5E%28first%29%2B%2F').default()} /></>",
+    '<><div className="markdown"><h3 id="this-is-indexmd"><a aria-hidden="true" tabIndex="-1" href="#this-is-indexmd"><span className="icon icon-link" /></a>{"This is index.md"}</h3><p /><h3 id="this-is-embedmd"><a aria-hidden="true" tabIndex="-1" href="#this-is-embedmd"><span className="icon icon-link" /></a>{"This is embed.md"}</h3><p>{$$contentTexts[0].value}</p><p>{$$contentTexts[1].value}</p><p /><p /><h3 id="this-is-embedmd-1"><a aria-hidden="true" tabIndex="-1" href="#this-is-embedmd-1"><span className="icon icon-link" /></a>{"This is embed.md"}</h3><p /><p /><h3 id="this-is-embedmd-2"><a aria-hidden="true" tabIndex="-1" href="#this-is-embedmd-2"><span className="icon icon-link" /></a>{"This is embed.md"}</h3><p>{$$contentTexts[2].value}</p><p /><p /><h3 id="this-is-embedmd-3"><a aria-hidden="true" tabIndex="-1" href="#this-is-embedmd-3"><span className="icon icon-link" /></a>{"This is embed.md"}</h3><p>{$$contentTexts[3].value}</p><p>{$$contentTexts[4].value}</p><p /></div></>',
   );
 };

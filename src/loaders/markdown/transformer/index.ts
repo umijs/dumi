@@ -4,15 +4,15 @@ import type { IDumiConfig, IDumiTechStack } from '@/types';
 import type { Plugin, Processor } from 'unified';
 import type { Data } from 'vfile';
 import rehypeDemo from './rehypeDemo';
-import rehypeEmbed from './rehypeEmbed';
 import rehypeEnhancedTag from './rehypeEnhancedTag';
+import rehypeImg from './rehypeImg';
 import rehypeIsolation from './rehypeIsolation';
 import rehypeJsxify from './rehypeJsxify';
 import rehypeRaw from './rehypeRaw';
 import rehypeSlug from './rehypeSlug';
 import rehypeStrip from './rehypeStrip';
-import rehypeImg from './rehypeImg';
 import rehypeText from './rehypeText';
+import remarkEmbed from './remarkEmbed';
 import remarkMeta from './remarkMeta';
 
 declare module 'hast' {
@@ -91,6 +91,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
   );
   const processor = unified()
     .use(remarkParse)
+    .use(remarkEmbed, { fileAbsPath: opts.fileAbsPath })
     .use(remarkFrontmatter)
     .use(remarkMeta, { fileAbsPath: opts.fileAbsPath })
     .use(remarkBreaks)
@@ -111,16 +112,13 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     .use(rehypeRaw)
     .use(rehypeStrip)
     .use(rehypeImg)
-    .use(rehypeEmbed, {
-      fileAbsPath: opts.fileAbsPath,
-    })
     .use(rehypeDemo, {
       techStacks: opts.techStacks,
       cwd: opts.cwd,
       fileAbsPath: opts.fileAbsPath,
       codeBlockMode: opts.codeBlockMode,
     })
-    .use(rehypeSlug, opts)
+    .use(rehypeSlug)
     .use(rehypeAutolinkHeadings)
     .use(rehypeIsolation)
     .use(rehypeEnhancedTag)

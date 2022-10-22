@@ -1,5 +1,6 @@
+import { isTabRouteFile } from '@/features/tabs';
 import type { IThemeLoadResult } from '@/features/theme/loader';
-import { getCache, getFileContentByRegExp, getFileRangeLines } from '@/utils';
+import { getCache } from '@/utils';
 import fs from 'fs';
 import { lodash, Mustache } from 'umi/plugin-utils';
 import transform, {
@@ -48,7 +49,7 @@ export const demos = {
   {{/demos}}
 };
 export const frontmatter = {{{frontmatter}}};
-export const toc = {{{toc}}}
+export const toc = {{{toc}}};
 export const texts = {{{texts}}};
 `,
       {
@@ -78,10 +79,8 @@ export const texts = {{{texts}}};
       },
     );
   } else {
-    // do not wrap DumiPage for fragment content (tab, embed)
-    const isFragment = Boolean(
-      this.resourcePath.includes('$tab-') || this.resourceQuery,
-    );
+    // do not wrap DumiPage for tab content
+    const isFragment = isTabRouteFile(this.resourcePath);
 
     // import all builtin components, may be used by markdown content
     return `${Object.values(opts.builtins)
@@ -91,7 +90,7 @@ import React from 'react';
 import { useRouteMeta, useTabMeta } from 'dumi';${
       isFragment ? '' : `\nimport { DumiPage } from 'dumi'`
     }
-    
+
 // export named function for fastRefresh
 // ref: https://github.com/pmmmwh/react-refresh-webpack-plugin/blob/main/docs/TROUBLESHOOTING.md#edits-always-lead-to-full-reload
 function DumiMarkdownContent() {
@@ -105,50 +104,38 @@ export default DumiMarkdownContent;`;
   }
 }
 
-const deferrer: { [key: string]: Promise<IMdTransformerResult> | undefined } =
-  {};
+const deferrer: Record<string, Promise<IMdTransformerResult>> = {};
 
-export default async function mdLoader(this: any, raw: string) {
+export default function mdLoader(this: any, content: string) {
   const opts: IMdLoaderOptions = this.getOptions();
   const cb = this.async();
-  const params = new URLSearchParams(this.resourceQuery);
 
   const cache = getCache('md-loader');
   const cacheKey = [
     this.resourcePath,
     fs.statSync(this.resourcePath).mtimeMs,
-    JSON.stringify(params),
     JSON.stringify(lodash.omit(opts, ['mode', 'builtins', 'onResolveDemos'])),
   ].join(':');
   const cacheRet = cache.getSync(cacheKey, '');
 
-  // file cache
   if (cacheRet) {
+    // file cache
     cb(null, emit.call(this, opts, cacheRet));
     return;
-  } else if (deferrer[cacheKey]) {
-    // meme cache
-    deferrer[cacheKey]?.then((res) => {
+  } else if (cacheKey in deferrer) {
+    // deferrer cache
+    deferrer[cacheKey].then((res) => {
       cb(null, emit.call(this, opts, res));
     });
     return;
   }
 
-  let content = raw;
-  const range = params.get('range');
-  const regexp = params.get('regexp');
-  // extract content of markdown file
-  if (range) {
-    content = getFileRangeLines(content, range);
-  } else if (regexp) {
-    content = getFileContentByRegExp(content, regexp, this.resourcePath);
-  }
-
+  // share deferrer for same cache key
   deferrer[cacheKey] = new Promise<IMdTransformerResult>((resolve) => {
     transform(content, {
-      ...(lodash.omit(opts, ['mode', 'builtins']) as Omit<
+      ...(lodash.omit(opts, ['mode', 'builtins', 'onResolveDemos']) as Omit<
         IMdLoaderOptions,
-        'mode' | 'builtins'
+        'mode' | 'builtins' | 'onResolveDemos'
       >),
       fileAbsPath: this.resourcePath,
     }).then((ret) => {
