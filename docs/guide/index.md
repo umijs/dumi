@@ -78,4 +78,4 @@ export default () => <>Hello world!</>;
 
 ## 问题反馈
 
-由于 dumi 2.0 尚不问题，如果在试用过程中发现任何问题、或者有改善建议，欢迎在 GitHub 讨论区进行反馈：<br />https://github.com/umijs/dumi/discussions/1216
+由于 dumi 2.0 尚不稳定，如果在试用过程中发现任何问题、或者有改善建议，欢迎在 GitHub 讨论区进行反馈：<br />https://github.com/umijs/dumi/discussions/1216
