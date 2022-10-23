@@ -5,12 +5,10 @@ import { HEADING_TAGS } from './rehypeSlug';
 export const CONTENT_TEXTS_OBJ_NAME = '$$contentTexts';
 
 let visit: typeof import('unist-util-visit-parents').visitParents;
-let toString: typeof import('hast-util-to-string').toString;
 
 // workaround to import pure esm module
 (async () => {
   ({ visitParents: visit } = await import('unist-util-visit-parents'));
-  ({ toString } = await import('hast-util-to-string'));
 })();
 
 function findParagraphAncestor(ancestors: (Root | Element)[]) {
@@ -30,16 +28,15 @@ function findClosestTitle(ancestors: (Root | Element)[], node: Element) {
   for (let i = ancestors.length - 1; i >= 0; i--) {
     const parent = ancestors[i];
     const current: any = ancestors[i + 1] || node;
-    const beforeSiblings = parent.children.slice(
-      0,
-      parent.children.indexOf(current),
-    );
-    const title = beforeSiblings.find(
-      (child) =>
-        child.type === 'element' && HEADING_TAGS.includes(child.tagName),
-    );
 
-    if (title) return title;
+    // find ancestor siblings from ancestor position to start
+    for (let i = parent.children.indexOf(current) - 1; i >= 0; i -= 1) {
+      const child = parent.children[i];
+
+      if (child.type === 'element' && HEADING_TAGS.includes(child.tagName)) {
+        return child;
+      }
+    }
   }
 }
 
@@ -62,8 +59,9 @@ export default function rehypeText(): Transformer<Root> {
 
         // find title index in toc
         if (titleNode) {
-          const title = toString(titleNode);
-          tocIndex = vFile.data.toc!.findIndex((item) => item.title === title);
+          tocIndex = vFile.data.toc!.findIndex(
+            ({ id }) => id === titleNode.properties?.id,
+          );
         }
 
         // generate paragraph id

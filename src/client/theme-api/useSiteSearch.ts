@@ -133,7 +133,7 @@ function generateSearchMetadata(
       );
       const tocSections = routeMeta.toc
         // exclude demo id, to avoid duplicate
-        .filter(({ id }) => !demoIds.includes(id))
+        .filter(({ id, depth }) => !demoIds.includes(id) && depth > 1)
         .map((toc, i) =>
           createMetadataSection(
             toc.title,
@@ -215,8 +215,13 @@ function generateHighlightTexts(
       };
 
       // omit long str before the first highlighted text
-      if (i === 0 && !highlight && highlightText.text.length > 10) {
-        highlightText.text = `...${highlightText.text.slice(-10)}`;
+      if (
+        i === 0 &&
+        !highlight &&
+        chunks.length > 1 &&
+        highlightText.text.length > 20
+      ) {
+        highlightText.text = `...${highlightText.text.slice(-20)}`;
       }
 
       // mark highlight

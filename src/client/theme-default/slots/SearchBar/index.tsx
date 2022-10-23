@@ -1,6 +1,6 @@
 import { ReactComponent as IconSearch } from '@ant-design/icons-svg/inline-svg/outlined/search.svg';
 import { useIntl, useSiteSearch } from 'dumi';
-import React, { useEffect, useRef, type FC } from 'react';
+import React, { useEffect, useRef, useState, type FC } from 'react';
 import { SearchResult } from '../SearchResult';
 import './index.less';
 
@@ -9,7 +9,7 @@ const isAppleDevice = /(mac|iphone|ipod|ipad)/i.test(navigator.platform);
 const SearchBar: FC = () => {
   const intl = useIntl();
   const imeWaiting = useRef(false);
-  const focusStatus = useRef(false);
+  const [focusing, setFocusing] = useState(false);
   const input = useRef<HTMLInputElement>(null);
   const symbol = isAppleDevice ? '⌘' : 'Ctrl';
   const { keywords, setKeywords, result, loading } = useSiteSearch();
@@ -18,6 +18,7 @@ const SearchBar: FC = () => {
     const handler = (ev: KeyboardEvent) => {
       if ((isAppleDevice ? ev.metaKey : ev.ctrlKey) && ev.key === 'k') {
         input.current?.focus();
+        ev.preventDefault();
       }
     };
 
@@ -30,17 +31,19 @@ const SearchBar: FC = () => {
     <div className="dumi-default-search-bar">
       <IconSearch />
       <input
-        onCompositionStart={() => {
-          imeWaiting.current = true;
-          console.log(1);
-        }}
+        onCompositionStart={() => (imeWaiting.current = true)}
         onCompositionEnd={(ev) => {
           imeWaiting.current = false;
           // special case: press Enter open IME panel will not trigger onChange
           setKeywords(ev.currentTarget.value);
         }}
-        onFocus={() => (focusStatus.current = true)}
-        onBlur={() => (focusStatus.current = false)}
+        onFocus={() => setFocusing(true)}
+        onBlur={() => {
+          // wait for item click
+          setTimeout(() => {
+            setFocusing(false);
+          }, 100);
+        }}
         onKeyDown={(ev) => {
           if (['ArrowDown', 'ArrowUp'].includes(ev.key)) ev.preventDefault();
           // esc to blur input
@@ -59,7 +62,7 @@ const SearchBar: FC = () => {
         ref={input}
       />
       <span className="dumi-default-search-shortcut">{symbol} K</span>
-      {keywords.trim() && focusStatus.current && (
+      {keywords.trim() && focusing && (
         <div className="dumi-default-search-popover">
           <section>
             <SearchResult data={result} loading={loading} />

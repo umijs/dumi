@@ -80,24 +80,26 @@ export const texts = {{{texts}}};
     );
   } else {
     // do not wrap DumiPage for tab content
-    const isFragment = isTabRouteFile(this.resourcePath);
+    const isTabContent = isTabRouteFile(this.resourcePath);
 
     // import all builtin components, may be used by markdown content
     return `${Object.values(opts.builtins)
       .map((item) => `import ${item.specifier} from '${item.source}';`)
       .join('\n')}
 import React from 'react';
-import { useRouteMeta, useTabMeta } from 'dumi';${
-      isFragment ? '' : `\nimport { DumiPage } from 'dumi'`
-    }
+${
+  isTabContent
+    ? `import { useTabMeta } from 'dumi';`
+    : `import { DumiPage, useRouteMeta } from 'dumi';`
+}
 
 // export named function for fastRefresh
 // ref: https://github.com/pmmmwh/react-refresh-webpack-plugin/blob/main/docs/TROUBLESHOOTING.md#edits-always-lead-to-full-reload
 function DumiMarkdownContent() {
-  const routeMeta = useRouteMeta();
-  const tabMeta = useTabMeta();
-  const { texts: ${CONTENT_TEXTS_OBJ_NAME} } = tabMeta || routeMeta;
-  return ${isFragment ? ret.content : `<DumiPage>${ret.content}</DumiPage>`};
+  const { texts: ${CONTENT_TEXTS_OBJ_NAME} } = use${
+      isTabContent ? 'TabMeta' : 'RouteMeta'
+    }();
+  return ${isTabContent ? ret.content : `<DumiPage>${ret.content}</DumiPage>`};
 }
 
 export default DumiMarkdownContent;`;
