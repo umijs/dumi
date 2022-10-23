@@ -1,5 +1,6 @@
 import type { IApi } from '@/types';
 import path from 'path';
+import type { IRoute } from 'umi';
 import { Mustache, winPath } from 'umi/plugin-utils';
 import { isTabRouteFile } from './tabs';
 
@@ -9,26 +10,31 @@ export const ATOMS_META_PATH = 'dumi/meta/atoms.ts';
 export default (api: IApi) => {
   const metaFiles: { index: number; file: string; id: string }[] = [];
 
-  api.modifyRoutes((routes) => {
-    // reset for re-generate files
-    metaFiles.length = 0;
+  api.register({
+    key: 'modifyRoutes',
+    // make sure it is called last
+    stage: Infinity,
+    fn: (routes: Record<string, IRoute>) => {
+      // reset for re-generate files
+      metaFiles.length = 0;
 
-    // collect all markdown route files for combine demos & page meta
-    Object.values(routes).forEach((route) => {
-      if (
-        !route.isLayout &&
-        !/\*|:/.test(route.path) &&
-        !isTabRouteFile(route.file)
-      ) {
-        metaFiles.push({
-          index: metaFiles.length,
-          file: route.file,
-          id: route.id,
-        });
-      }
-    });
+      // collect all markdown route files for combine demos & page meta
+      Object.values(routes).forEach((route) => {
+        if (
+          !route.isLayout &&
+          !/\*|:/.test(route.path) &&
+          !isTabRouteFile(route.file)
+        ) {
+          metaFiles.push({
+            index: metaFiles.length,
+            file: route.file,
+            id: route.id,
+          });
+        }
+      });
 
-    return routes;
+      return routes;
+    },
   });
 
   api.onGenerateFiles(async () => {
