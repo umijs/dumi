@@ -63,11 +63,11 @@ function getCodeId(
   cwd: string,
   fileAbsPath: string,
   localId: string,
-  entityName?: string,
+  atomId?: string,
 ) {
   // Foo, or docs-guide, or docs-guide-faq
   const prefix =
-    entityName ||
+    atomId ||
     getRoutePathFromFsPath(path.relative(cwd, fileAbsPath)).replace(/\//g, '-');
 
   return [prefix, 'demo', localId].filter(Boolean).join('-');

@@ -46,7 +46,7 @@ function localizeUmiRoute(route: IRoute, locales: IApi['config']['locales']) {
 
 export default (api: IApi) => {
   const extraWatchPaths = [
-    ...(api.userConfig.resolve?.entityDirs || []),
+    ...(api.userConfig.resolve?.atomDirs || []),
     ...(api.userConfig.resolve?.docDirs?.map(normalizeDocDir) || [
       { dir: 'docs' },
     ]),
@@ -67,11 +67,11 @@ export default (api: IApi) => {
     return memo;
   });
 
-  // support to disable docDirs & entityDirs by empty array
+  // support to disable docDirs & atomDirs by empty array
   // because the empty array will be ignored by config merge logic
   api.modifyDefaultConfig((memo) => {
     if (api.userConfig.resolve) {
-      const keys: ['docDirs', 'entityDirs'] = ['docDirs', 'entityDirs'];
+      const keys: ['docDirs', 'atomDirs'] = ['docDirs', 'atomDirs'];
 
       keys.forEach((key) => {
         if (api.userConfig.resolve![key]?.length === 0) memo.resolve[key] = [];
@@ -99,7 +99,7 @@ export default (api: IApi) => {
       {},
     );
     const { DocLayout, DemoLayout } = api.service.themeData.layouts;
-    const { docDirs, entityDirs } = api.config.resolve;
+    const { docDirs, atomDirs } = api.config.resolve;
     const layoutRouteValues = Object.values(routes);
     const lastLayoutId = layoutRouteValues.find(({ id }) =>
       layoutRouteValues.every(({ parentId }) => id !== parentId),
@@ -172,15 +172,15 @@ export default (api: IApi) => {
       });
     });
 
-    // generate entity routes
-    entityDirs.forEach(({ type, dir }) => {
+    // generate atom routes
+    atomDirs.forEach(({ type, dir }) => {
       const base = path.join(api.cwd, dir);
-      const entityFiles = glob.sync(
+      const atomFiles = glob.sync(
         '{*,*/index,*/index.*,*/README,*/README.*}.md',
         { cwd: base },
       );
 
-      entityFiles.forEach((file) => {
+      atomFiles.forEach((file) => {
         const routePath = winPath(path.join(plural(type), file))
           .replace(/(\/index|\/README)?\.md$/, '')
           // like umi standard route

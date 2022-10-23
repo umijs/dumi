@@ -28,14 +28,14 @@ export default defineConfig({
 
 配置 Markdown 文档的解析目录，路径下的 Markdown 文档会根据目录结构解析为路由。
 
-#### entityDirs
+#### atomDirs
 
 - 类型：`{ type: string; dir: string }[]`
-- 默认值：`[{ type: 'components', dir: 'src' }]`
+- 默认值：`[{ type: 'component', dir: 'src' }]`
 
-配置 Markdown 实体（例如组件、函数、工具等）的解析目录，该目录下 **第一层级** 的 Markdown 文档会被解析为该实体分类下的路由，嵌套层级将不会识别。比如在默认配置下，`src/Foo/index.md` 将被解析为 `components/foo` 的路由。
+配置原子资产（例如组件、函数、工具等）Markdown 的解析目录，该目录下 **第一层级** 的 Markdown 文档会被解析为该实体分类下的路由，嵌套层级将不会识别。比如在默认配置下，`src/Foo/index.md` 将被解析为 `components/foo` 的路由。
 
-设计实体的概念是为了解决 dumi 1 中普通文档与源码目录下的组件文档混淆不清、分组困难的问题。
+单独将资产的解析逻辑拆分是为了解决 dumi 1 中普通文档与源码目录下的组件文档混淆不清、分组困难的问题。
 
 #### codeBlockMode
 

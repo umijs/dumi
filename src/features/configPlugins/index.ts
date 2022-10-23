@@ -5,7 +5,7 @@ export default (api: IApi) => {
   const configDefaults: Record<string, any> = {
     resolve: {
       docDirs: ['docs'],
-      entityDirs: [{ type: 'component', dir: 'src' }],
+      atomDirs: [{ type: 'component', dir: 'src' }],
       codeBlockMode: 'active',
     },
     themeConfig: {},

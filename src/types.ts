@@ -13,7 +13,11 @@ type IUmiConfig = IUmiApi['config'];
 export interface IDumiConfig extends IUmiConfig {
   resolve: {
     docDirs: (string | { type?: string; dir: string })[];
-    entityDirs: { type: string; dir: string }[];
+    /**
+     * @deprecated use `resolve.atomDirs` instead
+     */
+    entityDirs?: { type: string; dir: string }[];
+    atomDirs: { type: string; dir: string }[];
     codeBlockMode: 'active' | 'passive';
     entryFile?: string;
   };
