@@ -41,7 +41,7 @@ export default function remarkMeta(opts: {
       },
       // use filename as title
       () => {
-        if (opts.fileAbsPath && isTabRouteFile(opts.fileAbsPath)) {
+        if (isTabRouteFile(opts.fileAbsPath)) {
           vFile.data.frontmatter!.title = lodash.startCase(
             getTabKeyFromFile(opts.fileAbsPath),
           );

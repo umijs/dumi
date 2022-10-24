@@ -80,7 +80,7 @@ export const texts = {{{texts}}};
     );
   } else {
     // do not wrap DumiPage for tab content
-    const isTabContent = this.resourcePath && isTabRouteFile(this.resourcePath);
+    const isTabContent = isTabRouteFile(this.resourcePath);
 
     // import all builtin components, may be used by markdown content
     return `${Object.values(opts.builtins)
