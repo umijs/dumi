@@ -11,8 +11,8 @@ export interface IContentTab {
   component: string;
 }
 
-export function isTabRouteFile(file: string) {
-  return file.includes('$tab-');
+export function isTabRouteFile(file?: string) {
+  return file?.includes('$tab-');
 }
 
 export function getTabKeyFromFile(file: string) {
@@ -58,7 +58,7 @@ export default (api: IApi) => {
       // remove $tab route from routes
       if (isTabRouteFile(route.file)) {
         delete routes[route.id];
-
+        
         const rtlFile = winPath(path.relative(api.cwd, route.file));
         const routeId = createRouteId(rtlFile);
         const tabKey = getTabKeyFromFile(rtlFile);
