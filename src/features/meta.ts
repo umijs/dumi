@@ -23,7 +23,7 @@ export default (api: IApi) => {
         if (
           !route.isLayout &&
           !/\*|:/.test(route.path) &&
-          !isTabRouteFile(route.file)
+          !(route.file && isTabRouteFile(route.file))
         ) {
           metaFiles.push({
             index: metaFiles.length,
