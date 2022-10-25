@@ -137,7 +137,8 @@ export default (api: IApi) => {
     Object.entries(pages).forEach(([, route]) => {
       route.parentId = docLayoutId;
       route.file = winPath(path.resolve(pagesDir, route.file));
-      routes[route.id] = route;
+      // flat route
+      route.path = route.absPath.slice(1);
     });
 
     // generate normal docs routes
@@ -152,6 +153,9 @@ export default (api: IApi) => {
         // prefix id with dir, same as umi internal route id
         route.id = `${dir}/${key}`;
         route.parentId = docLayoutId;
+
+        // flat route
+        route.path = route.absPath.slice(1);
 
         // also allow prefix type for doc routes
         if (type) {

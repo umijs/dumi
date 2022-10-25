@@ -116,7 +116,7 @@ function generateSearchMetadata(
     // only process content route
     if ('meta' in route && !('isLayout' in route)) {
       const routeMeta: IRouteMeta = (route as any).meta;
-      const routeAbsPath = route.path!.replace(/^([^/])/, '/$1');
+      const routeAbsPath = route.path!.replace(/^([^/])/, '/$1') || '/';
       const routeNav = nav.find(
         (item) =>
           routeAbsPath === item.link ||
@@ -131,18 +131,25 @@ function generateSearchMetadata(
         routeAbsPath,
         routeMeta.texts,
       );
-      const tocSections = routeMeta.toc
-        // exclude demo id, to avoid duplicate
-        .filter(({ id, depth }) => !demoIds.includes(id) && depth > 1)
-        .map((toc, i) =>
-          createMetadataSection(
-            toc.title,
-            `${routeMeta.frontmatter.title} - ${toc.title}`,
-            `${routeAbsPath}#${toc.id}`,
-            routeMeta.texts,
-            i,
-          ),
-        );
+      const tocSections = routeMeta.toc.reduce<ISearchMetadata[0]['sections']>(
+        (acc, toc, i) => {
+          // exclude demo id, to avoid duplicate
+          if (!demoIds.includes(toc.id) && toc.depth > 1) {
+            acc.push(
+              createMetadataSection(
+                toc.title,
+                `${routeMeta.frontmatter.title} - ${toc.title}`,
+                `${routeAbsPath}#${toc.id}`,
+                routeMeta.texts,
+                i,
+              ),
+            );
+          }
+
+          return acc;
+        },
+        [],
+      );
       const tabSections = (routeMeta.tabs || []).reduce<typeof tocSections>(
         (acc, { key, meta }) => {
           // collect orphan section that not in toc
@@ -201,12 +208,14 @@ function generateSearchMetadata(
 function generateHighlightTexts(
   str = '',
   keywords: string[],
-): [IHighlightText[], number] {
+): [IHighlightText[], Record<string, boolean>] {
   const chunks = findAll({
     textToHighlight: str,
     searchWords: keywords,
     autoEscape: true,
   });
+  // save matched keywords
+  const matchedMapping: Record<string, boolean> = {};
 
   return [
     chunks.map(({ start, end, highlight }, i) => {
@@ -227,11 +236,13 @@ function generateHighlightTexts(
       // mark highlight
       if (highlight) {
         highlightText.highlighted = true;
+        matchedMapping[keywords.find((k) => highlightText.text.includes(k))!] =
+          true;
       }
 
       return highlightText;
     }),
-    chunks.length,
+    matchedMapping,
   ];
 }
 
@@ -252,11 +263,9 @@ function generateSearchResult(metadata: ISearchMetadata, keywordsStr: string) {
       // find matched keywords in paragraph
       for (let p of sec.paragraphs) {
         if (matchReg.test(p)) {
-          const [highlightTitleTexts, titleMatchCount] = generateHighlightTexts(
-            sec.title,
-            keywords,
-          );
-          const [highlightTexts, matchCount] = generateHighlightTexts(
+          const [highlightTitleTexts, titleMatchMapping] =
+            generateHighlightTexts(sec.title, keywords);
+          const [highlightTexts, matchMapping] = generateHighlightTexts(
             p,
             keywords,
           );
@@ -264,7 +273,8 @@ function generateSearchResult(metadata: ISearchMetadata, keywordsStr: string) {
           hints.push({
             type: 'content',
             link: sec.link,
-            priority: titleMatchCount + matchCount,
+            priority: Object.keys({ ...titleMatchMapping, ...matchMapping })
+              .length,
             highlightTitleTexts,
             highlightTexts,
           });
@@ -276,7 +286,7 @@ function generateSearchResult(metadata: ISearchMetadata, keywordsStr: string) {
 
       // find matched keywords in section title
       if (matchReg.test(sec.rawTitle)) {
-        const [highlightTitleTexts, titleMatchCount] = generateHighlightTexts(
+        const [highlightTitleTexts, titleMatchMapping] = generateHighlightTexts(
           sec.title,
           keywords,
         );
@@ -284,7 +294,7 @@ function generateSearchResult(metadata: ISearchMetadata, keywordsStr: string) {
         hints.push({
           type: 'title',
           link: sec.link,
-          priority: titleMatchCount,
+          priority: Object.keys(titleMatchMapping).length,
           highlightTitleTexts,
           highlightTexts: generateHighlightTexts(
             sec.paragraphs[0] || '',
@@ -297,11 +307,11 @@ function generateSearchResult(metadata: ISearchMetadata, keywordsStr: string) {
     // find demo hints
     data.demos.forEach((demo) => {
       if (matchReg.test(demo.rawTitle) || matchReg.test(demo.description)) {
-        const [highlightTitleTexts, titleMatchCount] = generateHighlightTexts(
+        const [highlightTitleTexts, titleMatchMapping] = generateHighlightTexts(
           demo.title,
           keywords,
         );
-        const [highlightTexts, matchCount] = generateHighlightTexts(
+        const [highlightTexts, matchMapping] = generateHighlightTexts(
           demo.description,
           keywords,
         );
@@ -309,7 +319,8 @@ function generateSearchResult(metadata: ISearchMetadata, keywordsStr: string) {
         hints.push({
           type: 'demo',
           link: demo.link,
-          priority: titleMatchCount + matchCount,
+          priority: Object.keys({ ...titleMatchMapping, ...matchMapping })
+            .length,
           highlightTitleTexts,
           highlightTexts,
         });
@@ -318,7 +329,7 @@ function generateSearchResult(metadata: ISearchMetadata, keywordsStr: string) {
 
     // find page hints
     if (matchReg.test(data.title)) {
-      const [highlightTitleTexts, titleMatchCount] = generateHighlightTexts(
+      const [highlightTitleTexts, titleMatchMapping] = generateHighlightTexts(
         data.title,
         keywords,
       );
@@ -326,7 +337,7 @@ function generateSearchResult(metadata: ISearchMetadata, keywordsStr: string) {
       hints.push({
         type: 'page',
         link: data.link,
-        priority: titleMatchCount,
+        priority: Object.keys(titleMatchMapping).length,
         highlightTitleTexts,
         highlightTexts: generateHighlightTexts(
           data.sections[0]?.paragraphs[0] || '',
@@ -344,10 +355,13 @@ function generateSearchResult(metadata: ISearchMetadata, keywordsStr: string) {
         priority: data.navOrder,
         hints: [],
       };
-      resultMapping[key].hints.push(
-        ...hints.sort((prev, next) => next.priority - prev.priority),
-      );
+      resultMapping[key].hints.push(...hints);
     }
+  });
+
+  // sort hints
+  Object.values(resultMapping).forEach(({ hints }) => {
+    hints.sort((prev, next) => next.priority - prev.priority);
   });
 
   return Object.values(resultMapping).sort(

@@ -30,7 +30,7 @@ function findClosestTitle(ancestors: (Root | Element)[], node: Element) {
     const current: any = ancestors[i + 1] || node;
 
     // find ancestor siblings from ancestor position to start
-    for (let i = parent.children.indexOf(current) - 1; i >= 0; i -= 1) {
+    for (let i = parent.children.indexOf(current) - 1; i >= 0; i--) {
       const child = parent.children[i];
 
       if (child.type === 'element' && HEADING_TAGS.includes(child.tagName)) {
