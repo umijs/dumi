@@ -22,13 +22,17 @@ export default (api: IApi) => {
 
   // 处理 paths
   api.modifyPaths((memo) => {
-    const tmp =
-      api.env === Env.development
-        ? `.${FRAMEWORK_NAME}`
-        : `.${FRAMEWORK_NAME}-${api.env}`;
+    const tmp = api.env === Env.development ? `tmp` : `tmp-${api.env}`;
 
     memo.absSrcPath = memo.cwd;
-    memo.absTmpPath = winJoin(api.cwd, tmp);
+    memo.absTmpPath = winJoin(api.cwd, `.${FRAMEWORK_NAME}`, tmp);
+    return memo;
+  });
+
+  api.modifyConfig((memo) => {
+    const tmp = api.env === Env.development ? `tmp` : `tmp-${api.env}`;
+    memo.alias['@'] = api.cwd;
+    memo.alias['@@'] = winJoin(api.cwd, `.${FRAMEWORK_NAME}`, tmp);
     return memo;
   });
 };
