@@ -1,6 +1,6 @@
 import { useIntl, useSiteData } from 'dumi';
 import { useState } from 'react';
-import { ILocale } from './types';
+import type { ILocale } from './types';
 
 export const useLocale = (): ILocale => {
   const intl = useIntl();
