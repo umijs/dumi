@@ -8,5 +8,5 @@ export const useLocale = (): ILocale => {
   const [locale] = useState(
     () => locales.find(({ id }) => id === intl.locale)!,
   );
-  return locale ;
+  return locale;
 };
