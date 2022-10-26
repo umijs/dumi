@@ -116,10 +116,11 @@ export interface IRouteMeta {
 }
 
 type IBasicLocale = { id: string; name: string };
-export type ILocalesConfig = (
+export type ILocale = (
   | (IBasicLocale & { base: string })
   | (IBasicLocale & { suffix: string })
-)[];
+)
+export type ILocalesConfig = ILocale[];
 
 export interface INavItem {
   title: string;
