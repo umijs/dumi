@@ -1,8 +1,8 @@
 import { getFileContentByRegExp, getFileRangeLines } from '@/utils';
+import enhancedResolve from 'enhanced-resolve';
 import fs from 'fs';
 import type { Root } from 'mdast';
 import path from 'path';
-import { winPath } from 'umi/plugin-utils';
 import type { FrozenProcessor, Transformer } from 'unified';
 import url from 'url';
 import type { IMdTransformerOptions } from '.';
@@ -32,8 +32,18 @@ function remarkRawAST(this: FrozenProcessor) {
   };
 }
 
+export function createResolver(opts: { alias: any }) {
+  const resolver = enhancedResolve.create.sync({
+    mainFields: ['module', 'browser', 'main'], // es module first
+    extensions: ['.js', '.jsx', '.json', '.mjs', '.ts', '.tsx'],
+    exportsFields: [],
+    alias: opts.alias,
+  });
+  return { resolve: resolver };
+}
+
 export default function remarkEmbed(
-  opts: Pick<IMdTransformerOptions, 'fileAbsPath'>,
+  opts: Pick<IMdTransformerOptions, 'fileAbsPath' | 'alias'>,
 ): Transformer<Root> {
   return (tree, vFile) => {
     visit<Root, 'html'>(tree, 'html', (node, i, parent) => {
@@ -44,9 +54,11 @@ export default function remarkEmbed(
         if (src) {
           const parsed = url.parse(src);
           const hash = decodeURIComponent(parsed.hash || '').replace('#', '');
-          const absPath = winPath(
-            path.resolve(path.parse(opts.fileAbsPath).dir, parsed.pathname!),
-          );
+          const absPath = createResolver(opts).resolve(
+            path.parse(opts.fileAbsPath).dir,
+            parsed.pathname!,
+          ) as string;
+
           let content = fs.readFileSync(absPath, 'utf-8');
 
           // extract content by hash (line range or regexp)
