@@ -7,6 +7,6 @@
 .umi
 .umi-production
 .vscode
-.dumi
-.dumi-production
+.dumi/tmp
+.dumi/tmp-production
 /examples/*/dist
