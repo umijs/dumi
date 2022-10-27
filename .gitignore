@@ -10,3 +10,5 @@
 .dumi/tmp
 .dumi/tmp-production
 /examples/*/dist
+/examples/*/.dumi/tmp
+/examples/*/.dumi/tmp-production
