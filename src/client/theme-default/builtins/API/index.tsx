@@ -1,5 +1,6 @@
 import { useAtomAssets, useIntl } from 'dumi';
 import React, { type FC } from 'react';
+import Table from '../Table';
 
 const API: FC<{ id: string }> = ({ id }) => {
   const { components } = useAtomAssets();
@@ -8,7 +9,7 @@ const API: FC<{ id: string }> = ({ id }) => {
 
   return (
     <div className="markdown">
-      <table>
+      <Table>
         <thead>
           <tr>
             <th>{intl.formatMessage({ id: 'api.component.name' })}</th>
@@ -50,7 +51,7 @@ const API: FC<{ id: string }> = ({ id }) => {
             </tr>
           )}
         </tbody>
-      </table>
+      </Table>
     </div>
   );
 };
