@@ -45,8 +45,8 @@ const Toc: FC = () => {
                 const link = `#${encodeURIComponent(item.id)}`;
                 const activeIndex =
                   currentElementIndexInViewport > -1
-                    ? currentElementIndexInViewport
-                    : prevIndexRef.current;
+                    ? prevIndexRef.current
+                    : currentElementIndexInViewport;
 
                 return (
                   <li key={item.id} data-depth={item.depth}>
