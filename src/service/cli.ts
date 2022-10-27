@@ -1,7 +1,10 @@
 import { logger, setNoDeprecation, yParser } from '@umijs/utils';
-import { DEV_COMMAND } from './constants';
+import {
+  checkVersion as checkNodeVersion,
+  setNodeTitle,
+} from 'umi/dist/cli/node';
+import { DEV_COMMAND, FRAMEWORK_NAME } from './constants';
 import { dev } from './dev';
-import { checkVersion as checkNodeVersion, setNodeTitle } from './node';
 import { printHelp } from './printHelp';
 import { DumiService } from './service';
 
@@ -11,7 +14,7 @@ interface IOpts {
 
 export async function run(opts?: IOpts) {
   checkNodeVersion();
-  setNodeTitle();
+  setNodeTitle(FRAMEWORK_NAME);
   setNoDeprecation();
 
   const args = yParser(process.argv.slice(2), {

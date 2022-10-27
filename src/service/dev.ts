@@ -1,4 +1,4 @@
-import fork from './fork';
+import fork from 'umi/dist/cli/fork';
 
 export function dev() {
   const child = fork({
