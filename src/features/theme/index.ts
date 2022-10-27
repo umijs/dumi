@@ -178,7 +178,12 @@ export default function DumiContextWrapper() {
       locales,
       loading,
       setLoading,
-      themeConfig: ${JSON.stringify(api.config.themeConfig)},
+      themeConfig: ${JSON.stringify(
+        Object.assign(
+          lodash.pick(api.config, 'logo', 'description', 'title'),
+          api.config.themeConfig,
+        ),
+      )},
     }}>
       {outlet}
     </SiteContext.Provider>

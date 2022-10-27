@@ -11,3 +11,26 @@
     color: @c-primary;
   }
 }
+
+.@{prefix}-lang-select {
+  display: inline-flex;
+  align-items: center;
+
+  > select {
+    appearance: none;
+    padding: 6px 18px 6px 10px;
+    color: @c-text-secondary;
+    text-align: right;
+    font-size: 14px;
+    line-height: 1;
+    border: 0;
+    background-color: transparent;
+  }
+
+  > svg {
+    margin-left: -16px;
+    width: 12px;
+    fill: darken(@c-border, 10%);
+    pointer-events: none;
+  }
+}

@@ -35,6 +35,10 @@ export default function rehypeEnhancedTag(): Transformer<Root> {
           ],
         });
       }
+
+      if (node.tagName === 'table') {
+        node.tagName = 'Table';
+      }
     });
   };
 }

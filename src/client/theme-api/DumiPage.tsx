@@ -19,7 +19,8 @@ export const DumiPage: FC<{ children: ReactNode }> = (props) => {
 
   // handle hash change
   useEffect(() => {
-    const elm = document.getElementById(hash.replace('#', ''));
+    const id = hash.replace('#', '');
+    const elm = id && document.getElementById(id);
 
     if (elm) elm.scrollIntoView();
   }, [hash]);

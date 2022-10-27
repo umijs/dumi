@@ -56,7 +56,7 @@ export default (api: IApi) => {
 
     Object.values(routes).forEach((route) => {
       // remove $tab route from routes
-      if (isTabRouteFile(route.file)) {
+      if (route.file && isTabRouteFile(route.file)) {
         delete routes[route.id];
 
         const rtlFile = winPath(path.relative(api.cwd, route.file));

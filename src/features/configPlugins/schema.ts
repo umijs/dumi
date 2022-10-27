@@ -44,5 +44,6 @@ export function getSchemas(): Record<string, (Joi: JoiRoot) => any> {
     extraRemarkPlugins: getUnifiedPluginSchema,
     extraRehypePlugins: getUnifiedPluginSchema,
     themeConfig: (Joi) => Joi.object().optional(),
+    logo: (Joi) => Joi.string(),
   };
 }
