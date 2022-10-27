@@ -58,6 +58,7 @@
     "@types/hast": "^2.3.4",
     "@types/mdast": "^3.0.10",
     "@umijs/bundler-utils": "^4.0.26",
+    "enhanced-resolve": "^5.10.0",
     "@umijs/core": "^4.0.26",
     "deepmerge": "^4.2.2",
     "dumi-afx-deps": "^1.0.0-alpha.1",

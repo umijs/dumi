@@ -27,6 +27,9 @@ for (let name of cases) {
       cwd: path.dirname(fileAbsPath),
       fileAbsPath: fileAbsPath,
       codeBlockMode: 'active',
+      alias: {
+        '@': __dirname,
+      },
     });
 
     (await import(`${CASES_DIR}/${name}/expect.ts`)).default(ret);

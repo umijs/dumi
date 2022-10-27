@@ -50,6 +50,7 @@ declare module 'vfile' {
 export interface IMdTransformerOptions {
   cwd: string;
   fileAbsPath: string;
+  alias: object;
   parentAbsPath?: string;
   techStacks: IDumiTechStack[];
   codeBlockMode: IDumiConfig['resolve']['codeBlockMode'];
@@ -89,9 +90,10 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
   const { default: rehypeAutolinkHeadings } = await import(
     'rehype-autolink-headings'
   );
+
   const processor = unified()
     .use(remarkParse)
-    .use(remarkEmbed, { fileAbsPath: opts.fileAbsPath })
+    .use(remarkEmbed, { fileAbsPath: opts.fileAbsPath, alias: opts.alias })
     .use(remarkFrontmatter)
     .use(remarkMeta, { fileAbsPath: opts.fileAbsPath })
     .use(remarkBreaks)
