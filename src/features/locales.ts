@@ -76,7 +76,7 @@ export const messages = ${JSON.stringify(
       path: 'dumi/locales/runtime.tsx',
       content: `
 import { history } from 'dumi';
-import React, { useState, type ReactNode } from 'react';
+import React, { useState, useLayoutEffect, useCallback, type ReactNode } from 'react';
 import { RawIntlProvider, createIntl, createIntlCache } from '${winPath(
         path.dirname(require.resolve('react-intl/package')),
       )}';
@@ -85,7 +85,7 @@ import { locales, messages } from './config';
 const cache = createIntlCache();
 
 const LocalesContainer: FC<{ children: ReactNode }> = (props) => {
-  const [locale] = useState(() => {
+  const getIntl = useCallback(() => {
     const matched = locales.slice().reverse().find((locale) => (
       'suffix' in locale
         // suffix mode
@@ -93,12 +93,19 @@ const LocalesContainer: FC<{ children: ReactNode }> = (props) => {
         // base mode
         : history.location.pathname.startsWith(locale.base)
     ));
+    const locale = matched ? matched.id : locales[0].id;
 
-    return matched ? matched.id : locales[0].id;
-  });
-  const [intl] = useState(() => createIntl({ locale, messages: messages[locale] || {} }, cache));
+    return createIntl({ locale, messages: messages[locale] || {} }, cache);
+  }, []);
+  const [intl, setIntl] = useState(() => getIntl());
 
-  return <RawIntlProvider value={intl}>{props.children}</RawIntlProvider>;
+  useLayoutEffect(() => {
+    return history.listen(() => {
+      setIntl(getIntl());
+    });
+  }, []);
+
+  return <RawIntlProvider value={intl} key={intl.locale}>{props.children}</RawIntlProvider>;
 }
 
 export function i18nProvider(container: Element) {

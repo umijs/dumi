@@ -1,4 +1,12 @@
-import { useIntl, useLocale, useLocation, useSiteData } from 'dumi';
+import { ReactComponent as IconDown } from '@ant-design/icons-svg/inline-svg/outlined/down.svg';
+import {
+  history,
+  Link,
+  useIntl,
+  useLocale,
+  useLocation,
+  useSiteData,
+} from 'dumi';
 import React, { useEffect, useState, type FC } from 'react';
 import './index.less';
 
@@ -23,9 +31,11 @@ function getTargetLocalePath({
     : `${clearPath}${target.suffix}`;
 }
 
-const SingleSwitch: FC<{ locale: ILocaleItem }> = ({ locale }) => {
+const SingleSwitch: FC<{ locale: ILocaleItem; current: ILocaleItem }> = ({
+  locale,
+  current,
+}) => {
   const { pathname } = useLocation();
-  const current = useLocale();
   const [path, setPath] = useState(() =>
     getTargetLocalePath({ pathname, current, target: locale }),
   );
@@ -34,27 +44,49 @@ const SingleSwitch: FC<{ locale: ILocaleItem }> = ({ locale }) => {
     setPath(getTargetLocalePath({ pathname, current, target: locale }));
   }, [pathname, current.id, locale.id]);
 
-  // TODO: use Link (without page refresh)
   return (
-    <a className="dumi-default-lang-switch" href={path}>
+    <Link className="dumi-default-lang-switch" to={path}>
       {locale.name}
-    </a>
+    </Link>
   );
 };
 
 const LangSwitch: FC = () => {
   const { locales } = useSiteData();
   const { locale } = useIntl();
+  const current = useLocale();
 
   // do not render in single language
   if (locales.length <= 1) return null;
 
   return locales.length > 2 ? (
-    // TODO: multiple languages select
-    <>WIP</>
+    <div className="dumi-default-lang-select">
+      <select
+        defaultValue={locale}
+        onChange={(ev) => {
+          history.push(
+            getTargetLocalePath({
+              pathname: history.location.pathname,
+              current,
+              target: locales.find(({ id }) => id === ev.target.value)!,
+            }),
+          );
+        }}
+      >
+        {locales.map((item) => (
+          <option key={item.id} value={item.id}>
+            {item.name}
+          </option>
+        ))}
+      </select>
+      <IconDown />
+    </div>
   ) : (
     // single language switch
-    <SingleSwitch locale={locales.find(({ id }) => id !== locale)!} />
+    <SingleSwitch
+      locale={locales.find(({ id }) => id !== locale)!}
+      current={current}
+    />
   );
 };
 
