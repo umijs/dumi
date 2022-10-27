@@ -1,8 +1,9 @@
-import { logger, printHelp, setNoDeprecation, yParser } from '@umijs/utils';
-import { Service } from 'umi';
-import { DEFAULT_CONFIG_FILES, DEV_COMMAND, FRAMEWORK_NAME } from './constants';
+import { logger, setNoDeprecation, yParser } from '@umijs/utils';
+import { DEV_COMMAND } from './constants';
 import { dev } from './dev';
 import { checkVersion as checkNodeVersion, setNodeTitle } from './node';
+import { printHelp } from './printHelp';
+import { DumiService } from './service';
 
 interface IOpts {
   presets?: string[];
@@ -33,17 +34,13 @@ export async function run(opts?: IOpts) {
     dev();
   } else {
     try {
-      await new Service({
-        defaultConfigFiles: DEFAULT_CONFIG_FILES,
-        frameworkName: FRAMEWORK_NAME,
-      }).run2({
+      await new DumiService().run2({
         name: args._[0],
         args,
       });
     } catch (e: any) {
       logger.fatal(e);
-      // TODO 这里需要输出 dumi 自己的错误
-      printHelp.exit();
+      printHelp();
       process.exit(1);
     }
   }

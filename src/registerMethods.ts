@@ -1,12 +1,4 @@
-import { FRAMEWORK_NAME } from '@/service/constants';
-import { Env } from '@umijs/core';
-import { winPath } from '@umijs/utils';
-import { join } from 'path';
 import type { IApi } from './types';
-
-function winJoin(...args: string[]) {
-  return winPath(join(...args));
-}
 
 export default (api: IApi) => {
   api.describe({ key: 'dumi:registerMethods' });
@@ -18,21 +10,5 @@ export default (api: IApi) => {
     'modifyTheme',
   ].forEach((name) => {
     api.registerMethod({ name });
-  });
-
-  // 处理 paths
-  api.modifyPaths((memo) => {
-    const tmp = api.env === Env.development ? `tmp` : `tmp-${api.env}`;
-
-    memo.absSrcPath = memo.cwd;
-    memo.absTmpPath = winJoin(api.cwd, `.${FRAMEWORK_NAME}`, tmp);
-    return memo;
-  });
-
-  api.modifyConfig((memo) => {
-    const tmp = api.env === Env.development ? `tmp` : `tmp-${api.env}`;
-    memo.alias['@'] = api.cwd;
-    memo.alias['@@'] = winJoin(api.cwd, `.${FRAMEWORK_NAME}`, tmp);
-    return memo;
   });
 };

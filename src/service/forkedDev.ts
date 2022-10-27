@@ -1,17 +1,15 @@
 import { logger, printHelp, setNoDeprecation, yParser } from '@umijs/utils';
-import { Service } from 'umi';
-import { DEFAULT_CONFIG_FILES, DEV_COMMAND, FRAMEWORK_NAME } from './constants';
+import { DEV_COMMAND, FRAMEWORK_NAME } from './constants';
 import { setNodeTitle } from './node';
+import { DumiService } from './service';
+
 setNodeTitle(`${FRAMEWORK_NAME}-dev`);
 setNoDeprecation();
 
 (async () => {
   try {
     const args = yParser(process.argv.slice(2));
-    const service = new Service({
-      defaultConfigFiles: DEFAULT_CONFIG_FILES,
-      frameworkName: FRAMEWORK_NAME,
-    });
+    const service = new DumiService();
     await service.run2({
       name: DEV_COMMAND,
       args,
