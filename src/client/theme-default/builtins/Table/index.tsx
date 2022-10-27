@@ -34,9 +34,9 @@ const Table: FC<{ children: ReactNode }> = ({ children }) => {
   }, []);
 
   return (
-    <div className="__dumi-default-table">
+    <div className="dumi-default-table">
       <div
-        className="__dumi-default-table-content"
+        className="dumi-default-table-content"
         ref={container}
         data-left-folded={leftFolded || undefined}
         data-right-folded={rightFolded || undefined}

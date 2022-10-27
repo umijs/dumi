@@ -14,7 +14,6 @@ import rehypeStrip from './rehypeStrip';
 import rehypeText from './rehypeText';
 import remarkEmbed from './remarkEmbed';
 import remarkMeta from './remarkMeta';
-import rehypeTable from './rehypeTable';
 
 declare module 'hast' {
   interface Element {
@@ -113,7 +112,6 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     .use(rehypeRaw)
     .use(rehypeStrip)
     .use(rehypeImg)
-    .use(rehypeTable)
     .use(rehypeDemo, {
       techStacks: opts.techStacks,
       cwd: opts.cwd,
