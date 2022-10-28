@@ -1,5 +1,7 @@
 /node_modules
 /examples/*/node_modules
+/suites/**/node_modules
+/suites/**/dist
 /dist
 /docs-dist
 /theme-default

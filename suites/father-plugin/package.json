@@ -1,0 +1,33 @@
+{
+  "name": "father-plugin-dumi-theme",
+  "version": "1.0.0-beta.0",
+  "description": "The father plugin for develop dumi theme package",
+  "keywords": [
+    "father",
+    "father-plugin",
+    "dumi",
+    "theme"
+  ],
+  "license": "MIT",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "father build",
+    "dev": "father dev",
+    "prepublishOnly": "father doctor && npm run build"
+  },
+  "devDependencies": {
+    "father": "^4.1.0"
+  },
+  "peerDependencies": {
+    "father": "^4.1.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "authors": [
+    "PeachScript <scdzwyxst@gmail.com>"
+  ]
+}
