@@ -32,19 +32,14 @@ function remarkRawAST(this: FrozenProcessor) {
   };
 }
 
-export function createResolver(opts: { alias: any }) {
-  const resolver = enhancedResolve.create.sync({
-    mainFields: ['module', 'browser', 'main'], // es module first
-    extensions: ['.js', '.jsx', '.json', '.mjs', '.ts', '.tsx'],
-    exportsFields: [],
-    alias: opts.alias,
-  });
-  return { resolve: resolver };
-}
-
 export default function remarkEmbed(
   opts: Pick<IMdTransformerOptions, 'fileAbsPath' | 'alias'>,
 ): Transformer<Root> {
+  const resolver = enhancedResolve.create.sync({
+    extensions: ['.md'],
+    alias: opts.alias,
+  });
+
   return (tree, vFile) => {
     visit<Root, 'html'>(tree, 'html', (node, i, parent) => {
       if (node.value.startsWith(EMBED_OPEN_TAG)) {
@@ -54,8 +49,8 @@ export default function remarkEmbed(
         if (src) {
           const parsed = url.parse(src);
           const hash = decodeURIComponent(parsed.hash || '').replace('#', '');
-          const absPath = createResolver(opts).resolve(
-            path.parse(opts.fileAbsPath).dir,
+          const absPath = resolver(
+            path.dirname(opts.fileAbsPath),
             parsed.pathname!,
           ) as string;
 

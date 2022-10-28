@@ -18,7 +18,9 @@ interface IMdLoaderDefaultModeOptions
 interface IMdLoaderDemosModeOptions
   extends Omit<IMdLoaderDefaultModeOptions, 'builtins' | 'mode'> {
   mode: 'meta';
-  onResolveDemos?: (demos: IMdTransformerResult['meta']['demos']) => void;
+  onResolveDemos?: (
+    demos: NonNullable<IMdTransformerResult['meta']['demos']>,
+  ) => void;
 }
 
 export type IMdLoaderOptions =

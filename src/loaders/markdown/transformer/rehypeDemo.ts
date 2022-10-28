@@ -1,6 +1,7 @@
 import parseBlockAsset from '@/assetParsers/block';
 import type { IDumiDemoProps } from '@/client/theme-api/DumiDemo';
 import { getRoutePathFromFsPath } from '@/utils';
+import type { sync } from 'enhanced-resolve';
 import type { Element, Root } from 'hast';
 import path from 'path';
 import { winPath } from 'umi/plugin-utils';
@@ -28,7 +29,7 @@ export const DUMI_DEMO_GRID_TAG = 'DumiDemoGrid';
 type IRehypeDemoOptions = Pick<
   IMdTransformerOptions,
   'techStacks' | 'cwd' | 'fileAbsPath' | 'codeBlockMode'
->;
+> & { resolver: typeof sync };
 
 /**
  * get language for code element
@@ -38,7 +39,10 @@ function getCodeLang(node: Element, opts: IRehypeDemoOptions) {
 
   if (typeof node.properties?.src === 'string') {
     // external demo
-    // TODO: resolve module without extension
+    node.properties.src = opts.resolver(
+      path.dirname(opts.fileAbsPath),
+      node.properties.src,
+    ) as string;
     lang = path.extname(node.properties.src).slice(1);
   } else if (
     Array.isArray(node.properties?.className) &&
@@ -203,10 +207,7 @@ export default function rehypeDemo(
 
             if (codeType === 'external') {
               // external demo options
-              parseOpts.fileAbsPath = path.resolve(
-                path.dirname(opts.fileAbsPath),
-                codeNode.properties!.src! as string,
-              );
+              parseOpts.fileAbsPath = codeNode.properties!.src as string;
               parseOpts.id = getCodeId(
                 opts.cwd,
                 opts.fileAbsPath,

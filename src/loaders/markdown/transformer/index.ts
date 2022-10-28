@@ -1,6 +1,7 @@
 import type { IParsedBlockAsset } from '@/assetParsers/block';
 import type { IRouteMeta } from '@/client/theme-api/types';
 import type { IDumiConfig, IDumiTechStack } from '@/types';
+import enhancedResolve from 'enhanced-resolve';
 import type { Plugin, Processor } from 'unified';
 import type { Data } from 'vfile';
 import rehypeDemo from './rehypeDemo';
@@ -90,6 +91,10 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
   const { default: rehypeAutolinkHeadings } = await import(
     'rehype-autolink-headings'
   );
+  const resolver = enhancedResolve.create.sync({
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    alias: opts.alias,
+  });
 
   const processor = unified()
     .use(remarkParse)
@@ -119,6 +124,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
       cwd: opts.cwd,
       fileAbsPath: opts.fileAbsPath,
       codeBlockMode: opts.codeBlockMode,
+      resolver,
     })
     .use(rehypeSlug)
     .use(rehypeAutolinkHeadings)

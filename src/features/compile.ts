@@ -30,6 +30,7 @@ export default (api: IApi) => {
     const loaderBaseOpts: Partial<IMdLoaderOptions> = {
       techStacks,
       cwd: api.cwd,
+      alias: api.config.alias,
       codeBlockMode: api.config.resolve.codeBlockMode,
       extraRemarkPlugins: api.config.extraRemarkPlugins,
       extraRehypePlugins: api.config.extraRehypePlugins,
@@ -76,7 +77,6 @@ export default (api: IApi) => {
       .options({
         ...loaderBaseOpts,
         builtins: api.service.themeData.builtins,
-        alias: api.config.alias,
       } as IMdLoaderOptions);
 
     // get meta for each page component
