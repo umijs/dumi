@@ -61,6 +61,7 @@
     "@umijs/core": "^4.0.27",
     "@umijs/utils": "^4.0.27",
     "deepmerge": "^4.2.2",
+    "enhanced-resolve": "^5.10.0",
     "dumi-afx-deps": "^1.0.0-alpha.1",
     "dumi-assets-types": "2.0.0-alpha.0",
     "estree-util-to-js": "^1.1.0",

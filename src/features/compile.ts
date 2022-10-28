@@ -76,6 +76,7 @@ export default (api: IApi) => {
       .options({
         ...loaderBaseOpts,
         builtins: api.service.themeData.builtins,
+        alias: api.config.alias,
       } as IMdLoaderOptions);
 
     // get meta for each page component
