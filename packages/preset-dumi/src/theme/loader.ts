@@ -64,6 +64,7 @@ const FALLBACK_THEME = `${THEME_PREFIX}default`;
 export const REQUIRED_THEME_BUILTINS = [
   'Alert',
   'API',
+  'Entity',
   'Badge',
   'Example',
   'Previewer',

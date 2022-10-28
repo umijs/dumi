@@ -48,6 +48,11 @@ export default (): IDumiUnifiedTransformer => ast => {
     if (typeof node.value === 'string' && /<dumi-raw-a-p-i/.test(node.value)) {
       node.value = node.value.replace(/ ?\/?>/g, '></dumi-raw-a-p-i>');
     }
+
+    // special process <Entity /> for same reason in above
+    if (typeof node.value === 'string' && /<dumi-raw-entity/.test(node.value)) {
+      node.value = node.value.replace(/ ?\/?>/g, '></dumi-raw-entity>');
+    }
   });
 
   // raw to hast tree

@@ -6,6 +6,7 @@ const NO_PARAGRAPH_RULES: { type: string; tagName: string; [key: string]: any }[
   { type: 'element', tagName: 'code', properties: { src: Boolean } },
   { type: 'element', tagName: 'embed', properties: { src: Boolean } },
   { type: 'element', tagName: 'API' },
+  { type: 'element', tagName: 'Entity' },
 ];
 
 /**

@@ -2,7 +2,7 @@ import * as parser from 'react-docgen-typescript-dumi-tmp';
 import { buildFilter as getBuiltinFilter } from 'react-docgen-typescript-dumi-tmp/lib/buildFilter';
 import FileCache from '../utils/cache';
 import ctx from '../context';
-import type { AtomPropsDefinition } from 'dumi-assets-types';
+import type { AtomLink, AtomPropsDefinition } from 'dumi-assets-types';
 import type {
   PropFilter as IPropFilter,
   PropItem as IPropItem,

@@ -30,7 +30,13 @@ export type AtomPropsDefinition = Record<string, {
      * property whether required
      */
     required?: true;
+    links?: AtomLink[];
   }[]>;
+
+export interface AtomLink {
+  url: string;
+  title: string;
+}
 
 export default interface AtomAsset {
   /**

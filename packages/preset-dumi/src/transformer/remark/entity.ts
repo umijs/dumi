@@ -13,7 +13,12 @@ import ctx from '../../context';
 import type { ArgsType } from '@umijs/utils';
 import type { IDumiUnifiedTransformer, IDumiElmNode } from '.';
 
-function applyApiData(identifier: string, definitions: ReturnType<typeof parser>) {
+import { TypescriptParser, ClassLikeDeclaration } from 'typescript-parser';
+import { AtomPropsDefinition } from 'dumi-assets-types';
+
+const tparser = new TypescriptParser();
+
+function applyEntityData(identifier: string, definitions: ReturnType<typeof parser>) {
   if (identifier && definitions) {
     ctx.umi?.applyPlugins({
       key: 'dumi.detectApi',
@@ -32,22 +37,23 @@ function applyApiData(identifier: string, definitions: ReturnType<typeof parser>
  * @param identifier  api parse identifier, mapping in .umi/dumi/apis.json
  * @param definitions api definitions
  */
-function serializeAPINodes(
+function serializeEntityNodes(
   node: IDumiElmNode,
   identifier: string,
   definitions: ReturnType<typeof parser>,
 ) {
   const parsedAttrs = parseElmAttrToProps(node.properties);
   const expts: string[] = parsedAttrs.exports || Object.keys(definitions);
-  const showTitle = !parsedAttrs.hideTitle
+  const showTitle = !parsedAttrs.hideTitle;
 
   return expts.reduce<(IDumiElmNode | Node)[]>((list, expt, i) => {
     // render large API title if it is default export
     // or it is the first export and the exports attribute was not custom
+
     const isInsertAPITitle = expt === 'default' || (!i && !parsedAttrs.exports);
     // render sub title for non-default export
     const isInsertSubTitle = expt !== 'default';
-    const apiNode = deepmerge({}, node);
+    const entityNode = deepmerge({}, node);
 
     // insert API title
     if (showTitle && isInsertAPITitle) {
@@ -56,7 +62,7 @@ function serializeAPINodes(
           type: 'element',
           tagName: 'h2',
           properties: {},
-          children: [{ type: 'text', value: 'API' }],
+          children: [{ type: 'text', value: '其他实体类型定义' }],
         },
         {
           type: 'text',
@@ -71,7 +77,7 @@ function serializeAPINodes(
         {
           type: 'element',
           tagName: 'h3',
-          properties: { id: `api-${expt.toLowerCase()}` },
+          properties: { id: `entity-${expt.toLowerCase()}` },
           children: [{ type: 'text', value: expt }],
         },
         {
@@ -82,11 +88,12 @@ function serializeAPINodes(
     }
 
     // insert API Node
-    delete apiNode.properties.exports;
-    apiNode.properties.identifier = identifier;
-    apiNode.properties.export = expt;
-    apiNode._dumi_parsed = true;
-    list.push(apiNode);
+    delete entityNode.properties.exports;
+    entityNode.properties.identifier = identifier;
+    entityNode.properties.export = expt;
+
+    entityNode._dumi_parsed = true;
+    list.push(entityNode);
 
     return list;
   }, []);
@@ -126,33 +133,37 @@ function watchComponentUpdate(
     let definitions: ReturnType<typeof parser>;
 
     try {
-      definitions = parser(absPath, parseOpts);
+      definitions = parseDefinitions(absPath);
     } catch (err) {
       /* noting */
     }
 
     // update api data
-    applyApiData(identifier, definitions);
+    applyEntityData(identifier, definitions);
 
     // watch next turn
     // FIXME: workaround for resolve no such file error
     /* istanbul ignore next */
-    setTimeout(() => {
-      watchComponentUpdate(absPath, identifier, parseOpts);
-    }, fs.existsSync(absPath) ? 0 : 50);
+    setTimeout(
+      () => {
+        watchComponentUpdate(absPath, identifier, parseOpts);
+      },
+      fs.existsSync(absPath) ? 0 : 50,
+    );
   });
 }
 
 /**
  * remark plugin for parse embed tag to external module
  */
-export default function api(): IDumiUnifiedTransformer {
+export default function entity(): IDumiUnifiedTransformer {
   return (ast, vFile) => {
     visit<IDumiElmNode>(ast, 'element', (node, i, parent) => {
-      if (is(node, 'API') && !node._dumi_parsed) {
+      if (is(node, 'Entity') && !node._dumi_parsed) {
         let identifier: string;
         let definitions: ReturnType<typeof parser>;
         const parseOpts = parseElmAttrToProps(node.properties);
+        // console.log('parseOpts', parseOpts)
 
         if (has(node, 'src')) {
           const src = node.properties.src || '';
@@ -170,8 +181,8 @@ export default function api(): IDumiUnifiedTransformer {
           const componentName = node.properties.identifier || guessComponentName(absPath);
 
           parseOpts.componentName = componentName;
-          definitions = parser(absPath, parseOpts);
-          identifier = componentName || src;
+          identifier = 'entity-' + componentName || src;
+          definitions = parseDefinitions(absPath)
 
           // trigger listener to update previewer props after this file changed
           watchComponentUpdate(absPath, identifier, parseOpts);
@@ -182,10 +193,11 @@ export default function api(): IDumiUnifiedTransformer {
               sourcePath: path.dirname(this.data('fileAbsPath')),
               silent: true,
             });
-            
+
             parseOpts.componentName = vFile.data.componentName;
-            definitions = parser(sourcePath, parseOpts);
-            identifier = vFile.data.componentName;
+
+            definitions = parseDefinitions(sourcePath);
+            identifier = 'entity-' + vFile.data.componentName;
 
             // trigger listener to update previewer props after this file changed
             watchComponentUpdate(sourcePath, identifier, parseOpts);
@@ -196,12 +208,31 @@ export default function api(): IDumiUnifiedTransformer {
 
         if (identifier && definitions) {
           // replace original node
-          parent.children.splice(i, 1, ...serializeAPINodes(node, identifier, definitions));
+          parent.children.splice(i, 1, ...serializeEntityNodes(node, identifier, definitions));
 
           // apply api data
-          applyApiData(identifier, definitions);
+          applyEntityData(identifier, definitions);
         }
       }
     });
   };
+}
+function parseDefinitions(sourcePath: string): AtomPropsDefinition {
+  const parsed = tparser.parseFileSync(sourcePath, '');
+  const declarations = parsed.declarations;
+  const definitions: AtomPropsDefinition = {};
+  declarations.forEach(declaration => {
+    if (Object.hasOwn(declaration, 'properties')) {
+      const d = declaration as ClassLikeDeclaration;
+      definitions[declaration.name] = d.properties.map(property => {
+        return {
+          identifier: property.name,
+          type: property.type,
+          description: '',
+          required: !property.isOptional ? true : undefined,
+        };
+      });
+    }
+  });
+  return definitions;
 }
