@@ -12,7 +12,7 @@ const HeroTitle: typeof DumiHeroTitle = (props) => {
   return (
     <>
       <DumiHeroTitle {...props} />
-      <sup style={{ color: 'red' }}>{themeConfig.hello}</sup>
+      <sup>{themeConfig.hello}</sup>
     </>
   );
 };

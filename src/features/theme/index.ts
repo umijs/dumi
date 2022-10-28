@@ -32,7 +32,7 @@ function getPkgThemePath(api: IApi) {
 
   return (
     pkgThemeName &&
-    path.basename(
+    path.dirname(
       require.resolve(`${pkgThemeName}/package.json`, { paths: [api.cwd] }),
     )
   );
@@ -198,4 +198,22 @@ export default function DumiContextWrapper() {
 }`,
     });
   });
+
+  // workaround for avoid oom, when developing theme package example in tnpm node_modules
+  if (
+    /*isTnpm*/ require('@umijs/core/package').__npminstall_done &&
+    fs.existsSync(localThemePath) &&
+    fs.lstatSync(localThemePath).isSymbolicLink()
+  ) {
+    api.chainWebpack((memo) => {
+      const devThemeNodeModules = path.join(api.cwd, '../node_modules');
+
+      memo.snapshot(deepmerge(memo.get('snapshot'), {
+        immutablePaths: [devThemeNodeModules],
+        managedPaths: [devThemeNodeModules],
+      }));
+
+      return memo;
+    });
+  }
 };

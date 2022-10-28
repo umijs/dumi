@@ -37,12 +37,11 @@ TODO
 $ {{ npmClient }} install
 ```
 
-```bash
-# build theme in dev
-$ npm run dev
+After the dependencies are installed, a symlink from `example/.dumi/theme` to `../../src` will be created automatically, the symlink makes dumi load our theme package as a local theme, so we can start the example directly, HMR is also available:
 
-# link local deps
-$ cd example && npm i
+```bash
+# switch to example directory
+$ cd example
 
 # start dev server to preview
 npm run dev

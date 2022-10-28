@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "father dev",
     "build": "father build",
+    "prepare": "father link-dev-theme",
     "lint": "npm run lint:es && npm run lint:css",
     "lint:css": "stylelint \"{src,test}/**/*.{css,less}\"",
     "lint:es": "eslint \"{src,test}/**/*.{js,jsx,ts,tsx}\"",
