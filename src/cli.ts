@@ -1,5 +1,5 @@
-import { run } from 'umi';
 import { chalk, logger } from 'umi/plugin-utils';
+import { run } from './service/cli';
 
 (async () => {
   try {

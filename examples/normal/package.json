@@ -3,6 +3,7 @@
   "scripts": {
     "build": "node ../../bin/dumi.js build",
     "dev": "node ../../bin/dumi.js dev",
+    "preview": "node ../../bin/dumi.js preview",
     "setup": "node ../../bin/dumi.js setup",
     "start": "npm run dev"
   },

@@ -7,7 +7,8 @@
     "jsx": "react",
     "baseUrl": "./",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@@/*": ["./.dumi/tmp"]
     },
     "types": ["vitest/globals"]
   },
