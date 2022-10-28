@@ -4,8 +4,6 @@
 /docs-dist
 /theme-default
 .DS_Store
-.umi
-.umi-production
 .vscode
 .dumi/tmp
 .dumi/tmp-production

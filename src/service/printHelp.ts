@@ -1,4 +1,4 @@
-import { logger } from '@umijs/utils';
+import { logger } from 'umi/plugin-utils';
 
 export function printHelp() {
   const loggerPath = logger.getLatestLogFilePath();

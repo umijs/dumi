@@ -39,10 +39,19 @@ function getPkgThemePath(api: IApi) {
 }
 
 export default (api: IApi) => {
+  // load default theme
+  const defaultThemeData = loadTheme(DEFAULT_THEME_PATH);
+  // try to load theme package
+  const pkgThemePath = getPkgThemePath(api);
+  const pkgThemeData = deepmerge(
+    defaultThemeData,
+    pkgThemePath ? loadTheme(path.join(pkgThemePath, 'dist')) : {},
+  );
   // try to read local theme
   const localThemePath = path.join(api.cwd, LOCAL_THEME_DIR);
-  const localThemeData =
-    fs.existsSync(localThemePath) && loadTheme(localThemePath);
+  const localThemeData = fs.existsSync(localThemePath)
+    ? loadTheme(localThemePath)
+    : undefined;
   const themeMapKeys: ('layouts' | 'builtins' | 'slots')[] = [
     'layouts',
     'builtins',
@@ -51,6 +60,13 @@ export default (api: IApi) => {
   let originalThemeData: IThemeLoadResult;
 
   api.describe({ key: 'dumi:theme' });
+
+  // register theme's plugin if exists
+  [pkgThemeData.plugin, localThemeData?.plugin].forEach((plugin) => {
+    if (plugin) {
+      api.registerPlugins([plugin]);
+    }
+  });
 
   // skip mfsu for client api, to avoid circular resolve in mfsu mode
   safeExcludeInMFSU(
@@ -65,15 +81,6 @@ export default (api: IApi) => {
     // prepare themeData before umi appData, for generate layout routes
     before: 'appData',
     async fn(memo: any) {
-      // load default theme
-      const defaultThemeData = loadTheme(DEFAULT_THEME_PATH);
-      // try to load theme package
-      const pkgThemePath = getPkgThemePath(api);
-      const pkgThemeData = deepmerge(
-        defaultThemeData,
-        pkgThemePath ? loadTheme(path.join(pkgThemePath, 'dist')) : {},
-      );
-
       // allow to modify theme data via plugin API
       originalThemeData = await api.applyPlugins({
         key: 'modifyTheme',

@@ -1,8 +1,8 @@
-import { logger, setNoDeprecation, yParser } from '@umijs/utils';
 import {
   checkVersion as checkNodeVersion,
   setNodeTitle,
 } from 'umi/dist/cli/node';
+import { logger, setNoDeprecation, yParser } from 'umi/plugin-utils';
 import { DEV_COMMAND, FRAMEWORK_NAME } from './constants';
 import { dev } from './dev';
 import { printHelp } from './printHelp';

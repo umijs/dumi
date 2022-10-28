@@ -1,7 +1,7 @@
 import { Env } from '@umijs/core';
-import { winPath } from '@umijs/utils';
 import { join } from 'path';
 import { Service } from 'umi';
+import { winPath } from 'umi/plugin-utils';
 import { DEFAULT_CONFIG_FILES, FRAMEWORK_NAME } from './constants';
 
 function winJoin(...args: string[]) {

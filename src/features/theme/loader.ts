@@ -50,6 +50,10 @@ export interface IThemeLoadResult {
      */
     DemoLayout?: IThemeComponent;
   } & Record<string, IThemeComponent>;
+  /**
+   * theme plugin path
+   */
+  plugin?: string;
 }
 
 /**
@@ -86,6 +90,10 @@ function getLocaleMapFromDir(globExp: string, dir: string) {
 }
 
 export default (dir: string): IThemeLoadResult => {
+  const plugin = glob.sync('{plugin/index.{js,ts},plugin.{js,ts}}', {
+    cwd: dir,
+  })[0];
+
   return {
     name: path.basename(dir),
     path: dir,
@@ -102,5 +110,6 @@ export default (dir: string): IThemeLoadResult => {
       'layouts/{GlobalLayout,DocLayout,DemoLayout}{.,/index.}{js,jsx,ts,tsx}',
       dir,
     ) as IThemeLoadResult['layouts'],
+    ...(plugin ? { plugin: path.join(dir, plugin) } : {}),
   };
 };

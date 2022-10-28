@@ -1,6 +1,6 @@
-import { logger, printHelp, setNoDeprecation, yParser } from '@umijs/utils';
+import { setNodeTitle } from 'umi/dist/cli/node';
+import { logger, printHelp, setNoDeprecation, yParser } from 'umi/plugin-utils';
 import { DEV_COMMAND, FRAMEWORK_NAME } from './constants';
-import { setNodeTitle } from './node';
 import { DumiService } from './service';
 
 setNodeTitle(`${FRAMEWORK_NAME}-dev`);
