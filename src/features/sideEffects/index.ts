@@ -14,7 +14,7 @@ export default (api: IApi) => {
     memo.plugin('docSideEffects').use(docSideEffectsWebpackPlugin, [
       {
         sideEffects: [
-          // such as src/.umi-production/**
+          // such as .dumi/tmp-production/**
           winPath(
             path.relative(api.cwd, path.join(api.paths.absTmpPath, '**')),
           ),

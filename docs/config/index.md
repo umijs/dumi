@@ -4,10 +4,10 @@ nav: 配置项
 
 # 框架配置
 
-dumi 2 基于 Umi 4，除了自身特有的配置项以外，也支持 Umi 4 的配置项，两者均在 `.umirc.ts` 或 `config/config.ts` 中配置。
+dumi 2 基于 Umi 4，除了自身特有的配置项以外，也支持 Umi 4 的配置项，两者均在 `.dumirc.ts` 中配置。
 
 ```ts
-// .umirc.ts or config/config.ts
+// .dumirc.ts
 import { defineConfig } from 'dumi';
 
 export default defineConfig({

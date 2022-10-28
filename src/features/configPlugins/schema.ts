@@ -35,7 +35,7 @@ export function getSchemas(): Record<string, (Joi: JoiRoot) => any> {
           .optional(),
         entityDirs: Joi.forbidden().error(
           new Error(
-            '`entityDirs` is already deprecated, please rename it to `atomDirs` in `.umirc.ts` or `config/config.ts`',
+            '`entityDirs` is already deprecated, please rename it to `atomDirs` in `.dumirc.ts`',
           ),
         ),
         codeBlockMode: Joi.string().valid('active', 'passive').optional(),
