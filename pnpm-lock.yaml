@@ -165,6 +165,12 @@ importers:
     devDependencies:
       typescript: 4.7.4
 
+  suites/boilerplate:
+    specifiers:
+      '@umijs/utils': ^4.0.0
+    dependencies:
+      '@umijs/utils': 4.0.28
+
   suites/father-plugin:
     specifiers:
       father: ^4.1.0
