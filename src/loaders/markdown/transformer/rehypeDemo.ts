@@ -39,10 +39,12 @@ function getCodeLang(node: Element, opts: IRehypeDemoOptions) {
 
   if (typeof node.properties?.src === 'string') {
     // external demo
-    node.properties.src = opts.resolver(
-      path.dirname(opts.fileAbsPath),
-      node.properties.src,
-    ) as string;
+    node.properties.src = winPath(
+      opts.resolver(
+        path.dirname(opts.fileAbsPath),
+        node.properties.src,
+      ) as string,
+    );
     lang = path.extname(node.properties.src).slice(1);
   } else if (
     Array.isArray(node.properties?.className) &&
