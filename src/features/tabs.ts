@@ -45,6 +45,7 @@ export default (api: IApi) => {
     // generate id for tabs
     tabsFromPlugins.forEach((tab) => {
       tab.id ??= `plugin-tab${tab.test ? `-${tab.test}` : ''}-${tab.key}`;
+      tab.component = winPath(tab.component);
     });
 
     return memo;
