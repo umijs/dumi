@@ -1,6 +1,6 @@
 import { ReactComponent as IconCodeSandbox } from '@ant-design/icons-svg/inline-svg/outlined/code-sandbox.svg';
 import { ReactComponent as IconCodePen } from '@ant-design/icons-svg/inline-svg/outlined/codepen.svg';
-import { IPreviewerProps, useIntl, useLocation } from 'dumi';
+import { IPreviewerProps, useCodeSandbox, useIntl, useLocation } from 'dumi';
 import SourceCode from 'dumi/theme/builtins/SourceCode';
 import Tabs from 'rc-tabs';
 import React, { useState, type FC } from 'react';
@@ -36,6 +36,7 @@ const Previewer: FC<IPreviewerProps> = (props) => {
   const isSingleFile = files.length === 1;
   const lang = (files[activeKey][0].match(/\.([^.]+)$/)?.[1] || 'text') as any;
   const link = `#${props.asset.id}`;
+  const openCSB = useCodeSandbox(props);
 
   return (
     <div
@@ -88,6 +89,7 @@ const Previewer: FC<IPreviewerProps> = (props) => {
             data-dumi-tooltip={intl.formatMessage({
               id: 'previewer.actions.codesandbox',
             })}
+            onClick={openCSB}
           >
             <IconCodeSandbox />
           </button>

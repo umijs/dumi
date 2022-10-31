@@ -30,3 +30,4 @@ export { useRouteMeta } from './useRouteMeta';
 export { useFullSidebarData, useSidebarData } from './useSidebarData';
 export { useSiteSearch } from './useSiteSearch';
 export { useTabMeta } from './useTabMeta';
+export { useCodeSandbox } from './useCodeSandbox';

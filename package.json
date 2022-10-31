@@ -60,6 +60,7 @@
     "@umijs/bundler-utils": "^4.0.27",
     "@umijs/core": "^4.0.27",
     "@umijs/utils": "^4.0.27",
+    "codesandbox": "^2.2.3",
     "deepmerge": "^4.2.2",
     "dumi-afx-deps": "^1.0.0-alpha.1",
     "dumi-assets-types": "2.0.0-alpha.0",
