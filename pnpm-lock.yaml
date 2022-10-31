@@ -59,6 +59,7 @@ importers:
       react-helmet: ^6.1.0
       react-intl: ^6.1.1
       rehype-autolink-headings: ^6.1.1
+      rehype-remove-comments: ^5.0.0
       rehype-stringify: ^9.0.3
       remark-breaks: ^3.0.2
       remark-frontmatter: ^4.0.1
@@ -113,6 +114,7 @@ importers:
       react-helmet: 6.1.0_react@18.2.0
       react-intl: 6.2.1_qtbnez4q7bzoc4eqybg3efzzxe
       rehype-autolink-headings: 6.1.1
+      rehype-remove-comments: 5.0.0
       rehype-stringify: 9.0.3
       remark-breaks: 3.0.2
       remark-frontmatter: 4.0.1
@@ -5078,6 +5080,12 @@ packages:
       '@types/hast': 2.3.4
     dev: false
 
+  /hast-util-is-conditional-comment/2.0.0:
+    resolution: {integrity: sha512-U66gW8ZWQdxP4ZjTEZ3xZT72y6rIKJqV4At5QmC1ItBbQyZyVkuTp8QkQwhxsbkHdzpifiZdQWrDipc9ByqhRg==}
+    dependencies:
+      '@types/hast': 2.3.4
+    dev: false
+
   /hast-util-is-element/2.1.2:
     resolution: {integrity: sha512-thjnlGAnwP8ef/GSO1Q8BfVk2gundnc2peGQqEg2kUt/IqesiGg/5mSwN2fE7nLzy61pg88NG6xV+UrGOrx9EA==}
     dependencies:
@@ -8180,6 +8188,15 @@ packages:
       unist-util-visit: 4.1.1
     dev: false
 
+  /rehype-remove-comments/5.0.0:
+    resolution: {integrity: sha512-sfiVT+u1in19sxo9vv/SDQVbHE2mADScNrpeVsUxBFl14zOMZnfPb6l4hR+lXqe10G13UFVqv5pt8zDbCR4JYQ==}
+    dependencies:
+      '@types/hast': 2.3.4
+      hast-util-is-conditional-comment: 2.0.0
+      unified: 10.1.2
+      unist-util-filter: 4.0.0
+    dev: false
+
   /rehype-stringify/9.0.3:
     resolution: {integrity: sha512-kWiZ1bgyWlgOxpqD5HnxShKAdXtb2IUljn3hQAhySeak6IOQPPt6DeGnsIh4ixm7yKJWzm8TXFuC/lPfcWHJqw==}
     dependencies:
@@ -9213,6 +9230,14 @@ packages:
     resolution: {integrity: sha512-GFxmfEAa0vi9i5sd0R2kcrI9ks0r82NasRq5QHh2ysGngrc6GiqD5CDf1FjPenY4vApmFASBIIlk/jj5J5YbmQ==}
     dependencies:
       '@types/unist': 2.0.6
+    dev: false
+
+  /unist-util-filter/4.0.0:
+    resolution: {integrity: sha512-H4iTOv2p+n83xjhx7eGFA3zSx7Xcv3Iv9lNQRpXiR8dmm9LtslhyjVlQrZLbkk4jwUrJgc8PPGkOOrfhb76s4Q==}
+    dependencies:
+      '@types/unist': 2.0.6
+      unist-util-is: 5.1.1
+      unist-util-visit-parents: 5.1.1
     dev: false
 
   /unist-util-generated/2.0.0:

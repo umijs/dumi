@@ -91,6 +91,9 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
   const { default: rehypeAutolinkHeadings } = await import(
     'rehype-autolink-headings'
   );
+  const { default: rehypeRemoveComments } = await import(
+    'rehype-remove-comments'
+  );
   const resolver = enhancedResolve.create.sync({
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
     alias: opts.alias,
@@ -117,6 +120,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
   processor
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeRaw)
+    .use(rehypeRemoveComments, { removeConditional: true })
     .use(rehypeStrip)
     .use(rehypeImg)
     .use(rehypeDemo, {

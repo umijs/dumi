@@ -87,6 +87,7 @@
     "react-helmet": "^6.1.0",
     "react-intl": "^6.1.1",
     "rehype-autolink-headings": "^6.1.1",
+    "rehype-remove-comments": "^5.0.0",
     "rehype-stringify": "^9.0.3",
     "remark-breaks": "^3.0.2",
     "remark-frontmatter": "^4.0.1",
