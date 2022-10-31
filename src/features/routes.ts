@@ -44,6 +44,21 @@ function localizeUmiRoute(route: IRoute, locales: IApi['config']['locales']) {
   }
 }
 
+/**
+ * make nested route be flat
+ */
+function flatRoute(route: IRoute) {
+  if (route.parentId !== 'DocLayout') {
+    route.parentId = 'DocLayout';
+    route.path =
+      route.path === '*'
+        ? // FIXME: compatible with wrong conventional 404 absPath, wait for umi fix
+          // from: https://github.com/umijs/umi/blob/9e8f143229d6f5d8547e951c23cbb2c66cbfd190/packages/preset-umi/src/features/404/404.ts#L8
+          route.path
+        : route.absPath.slice(1);
+  }
+}
+
 export default (api: IApi) => {
   const extraWatchPaths = [
     ...(api.userConfig.resolve?.atomDirs || []),
@@ -135,10 +150,10 @@ export default (api: IApi) => {
 
     // prepend page routes from .dumi/pages
     Object.entries(pages).forEach(([, route]) => {
-      route.parentId = docLayoutId;
       route.file = winPath(path.resolve(pagesDir, route.file));
       // flat route
-      route.path = route.absPath.slice(1);
+      flatRoute(route);
+      routes[route.id] = route;
     });
 
     // generate normal docs routes
@@ -152,10 +167,9 @@ export default (api: IApi) => {
       Object.entries(dirRoutes).forEach(([key, route]) => {
         // prefix id with dir, same as umi internal route id
         route.id = `${dir}/${key}`;
-        route.parentId = docLayoutId;
 
         // flat route
-        route.path = route.absPath.slice(1);
+        flatRoute(route);
 
         // also allow prefix type for doc routes
         if (type) {
