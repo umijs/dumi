@@ -1,6 +1,8 @@
 import { parseCodeFrontmatter } from '@/utils';
 import { build } from '@umijs/bundler-utils/compiled/esbuild';
+import assert from 'assert';
 import type { ExampleBlockAsset } from 'dumi-assets-types';
+import type { sync } from 'enhanced-resolve';
 import fs from 'fs';
 import path from 'path';
 import { pkgUp, winPath } from 'umi/plugin-utils';
@@ -16,6 +18,7 @@ async function parseBlockAsset(opts: {
   id: string;
   refAtomIds: string[];
   entryPointCode?: string;
+  resolver: typeof sync;
 }) {
   const asset: IParsedBlockAsset['asset'] = {
     type: 'BLOCK',
@@ -46,8 +49,13 @@ async function parseBlockAsset(opts: {
         setup: (builder) => {
           builder.onResolve({ filter: /.*/ }, (args) => {
             if (args.kind !== 'entry-point' && !args.path.startsWith('.')) {
+              const resolved = opts.resolver(args.resolveDir, args.path);
+              assert(
+                resolved,
+                `Can't resolve ${args.path} from ${args.resolveDir}`,
+              );
               const pkgJsonPath = pkgUp.pkgUpSync({
-                cwd: require.resolve(args.path, { paths: [args.resolveDir] }),
+                cwd: resolved,
               });
 
               if (pkgJsonPath) {

@@ -3,7 +3,7 @@ import type { IApi } from '@/types';
 import fs from 'fs';
 import path from 'path';
 import { deepmerge, lodash, winPath } from 'umi/plugin-utils';
-import { safeExcludeInMFSU } from '../exports';
+import { safeExcludeInMFSU } from '../derivative';
 import loadTheme, { IThemeLoadResult } from './loader';
 
 const DEFAULT_THEME_PATH = path.join(__dirname, '../../../theme-default');
@@ -208,10 +208,12 @@ export default function DumiContextWrapper() {
     api.chainWebpack((memo) => {
       const devThemeNodeModules = path.join(api.cwd, '../node_modules');
 
-      memo.snapshot(deepmerge(memo.get('snapshot'), {
-        immutablePaths: [devThemeNodeModules],
-        managedPaths: [devThemeNodeModules],
-      }));
+      memo.snapshot(
+        deepmerge(memo.get('snapshot'), {
+          immutablePaths: [devThemeNodeModules],
+          managedPaths: [devThemeNodeModules],
+        }),
+      );
 
       return memo;
     });

@@ -8,10 +8,10 @@ hero:
     <small style="opacity: 0.7">
       注：Beta 版尚不稳定，功能也可能会有调整，请谨慎用于正式项目
     </small>
-  links:
-    - title: 抢先体验
+  actions:
+    - text: 抢先体验
       link: /guide
-    - title: GitHub
+    - text: GitHub
       link: https://github.com/umijs/dumi
 ---
 
