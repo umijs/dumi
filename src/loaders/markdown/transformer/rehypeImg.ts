@@ -22,7 +22,7 @@ export default function rehypeImg(): Transformer<Root> {
       if (node.tagName === 'img' && typeof node.properties?.src === 'string') {
         const src = node.properties.src.trim();
 
-        if (isRelativeUrl(src)) {
+        if (src && isRelativeUrl(src)) {
           delete node.properties.src;
           node.JSXAttributes = [
             {
