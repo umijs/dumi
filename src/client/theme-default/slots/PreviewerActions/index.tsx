@@ -1,6 +1,6 @@
 import { ReactComponent as IconCodeSandbox } from '@ant-design/icons-svg/inline-svg/outlined/code-sandbox.svg';
 import { ReactComponent as IconCodePen } from '@ant-design/icons-svg/inline-svg/outlined/codepen.svg';
-import { IPreviewerProps, useIntl } from 'dumi';
+import { useIntl, type IPreviewerProps } from 'dumi';
 import SourceCode from 'dumi/theme/builtins/SourceCode';
 import PreviewerActionsExtra from 'dumi/theme/slots/PreviewerActionsExtra';
 import Tabs from 'rc-tabs';
@@ -11,7 +11,7 @@ export interface IPreviewerActionsProps extends IPreviewerProps {
   /**
    * disabled actions
    */
-  disabledActions?: ('CSB' | 'CODEPEN' | 'SEPARATE')[];
+  disabledActions?: ('CSB' | 'CODEPEN' | 'EXTERNAL')[];
 }
 
 const IconCode: FC = () => (
@@ -68,7 +68,7 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
             <IconCodePen />
           </button>
         )}
-        {!props.disabledActions?.includes('SEPARATE') && (
+        {!props.disabledActions?.includes('EXTERNAL') && (
           <a
             target="_blank"
             rel="noreferrer"
