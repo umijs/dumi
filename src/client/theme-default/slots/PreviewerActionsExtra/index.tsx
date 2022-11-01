@@ -1,7 +1,3 @@
-import React, { type FC } from 'react';
+import React from 'react';
 
-const PreviewerActionsExtra: FC = () => {
-  return <></>;
-};
-
-export default PreviewerActionsExtra;
+export default () => <></>;
