@@ -135,17 +135,18 @@ export default function mdLoader(this: any, content: string) {
   }
 
   // share deferrer for same cache key
-  deferrer[cacheKey] = new Promise<IMdTransformerResult>((resolve) => {
-    transform(content, {
-      ...(lodash.omit(opts, ['mode', 'builtins', 'onResolveDemos']) as Omit<
-        IMdLoaderOptions,
-        'mode' | 'builtins' | 'onResolveDemos'
-      >),
-      fileAbsPath: this.resourcePath,
-    }).then((ret) => {
-      cache.setSync(cacheKey, ret);
-      resolve(ret);
-      cb(null, emit.call(this, opts, ret));
-    }, cb);
+  deferrer[cacheKey] = transform(content, {
+    ...(lodash.omit(opts, ['mode', 'builtins', 'onResolveDemos']) as Omit<
+      IMdLoaderOptions,
+      'mode' | 'builtins' | 'onResolveDemos'
+    >),
+    fileAbsPath: this.resourcePath,
   });
+
+  deferrer[cacheKey]
+    .then((ret) => {
+      cache.setSync(cacheKey, ret);
+      cb(null, emit.call(this, opts, ret));
+    })
+    .catch(cb);
 }
