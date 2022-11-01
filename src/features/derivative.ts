@@ -1,8 +1,30 @@
 import { LOCAL_DUMI_DIR } from '@/constants';
 import type { IApi } from '@/types';
 import path from 'path';
-import { glob, winPath } from 'umi/plugin-utils';
+import { deepmerge, glob, winPath } from 'umi/plugin-utils';
 
+/**
+ * exclude pre-compiling modules in mfsu mode
+ * and make sure there has no multiple instances problem (such as react)
+ */
+export function safeExcludeInMFSU(api: IApi, excludes: RegExp[]) {
+  if (api.userConfig.mfsu !== false) {
+    api.modifyDefaultConfig((memo) => {
+      memo.mfsu ??= {};
+      memo.mfsu.exclude = deepmerge(memo.mfsu.exclude || [], excludes);
+
+      // to avoid multiple instance of react in mfsu mode
+      memo.extraBabelIncludes ??= [];
+      memo.extraBabelIncludes.push(...excludes);
+
+      return memo;
+    });
+  }
+}
+
+/**
+ * get files by glob pattern
+ */
 function getFilesByGlob(globExp: string, dir: string) {
   return glob
     .sync(globExp, { cwd: dir })
@@ -32,6 +54,18 @@ export default (api: IApi) => {
   };
 
   api.describe({ key: 'dumi:derivative' });
+
+  // skip mfsu for client api, to avoid circular resolve in mfsu mode
+  safeExcludeInMFSU(api, [new RegExp('dumi/dist/client')]);
+
+  // only normal mode is supported, because src is not fixed in dumi project, eager mode may scan wrong dir
+  api.modifyDefaultConfig((memo) => {
+    if (api.userConfig.mfsu !== false) {
+      memo.mfsu.strategy = 'normal';
+    }
+
+    return memo;
+  });
 
   // move all conventional files to .dumi dir
   api.modifyAppData((memo) => {
