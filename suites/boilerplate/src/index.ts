@@ -25,6 +25,7 @@ export default async ({
         message: 'Pick template type',
         choices: [
           { title: 'Static Site', value: 'site' },
+          { title: 'React Library', value: 'react' },
           { title: 'Theme Package', value: 'theme' },
         ],
         initial: 0,
@@ -86,6 +87,12 @@ export default async ({
       name: 'name',
       type: 'text',
       message: `Input project name`,
+    });
+  } else if (type === 'react') {
+    questions.unshift({
+      name: 'name',
+      type: 'text',
+      message: 'Input NPM package name',
     });
   }
 
