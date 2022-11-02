@@ -90,3 +90,39 @@ export function getCache(ns: string): typeof caches['0'] {
   }
   return (caches[ns] ??= Cache({ basePath: path.join(CACHE_PATH, ns) }));
 }
+
+/**
+ * try to get father config
+ */
+export async function tryFatherBuildConfigs(cwd: string) {
+  let configs: any[] = [];
+  const APP_ROOT = process.env.APP_ROOT;
+
+  process.env.APP_ROOT = cwd;
+
+  try {
+    // use father service to resolve config
+    const { Service: FatherSvc } = await import(
+      'father/dist/service/service.js'
+    );
+    const { normalizeUserConfig: getBuildConfig } = await import(
+      'father/dist/builder/config.js'
+    );
+    const svc = new FatherSvc();
+
+    svc.commands.empty = {
+      name: 'empty',
+      fn() {},
+      configResolveMode: 'loose',
+      plugin: { id: 'empty' } as any,
+    };
+    await svc.run({ name: 'empty' });
+    configs = getBuildConfig(svc.config, svc.pkg);
+  } catch {
+    /* nothing */
+  }
+
+  process.env.APP_ROOT = APP_ROOT;
+
+  return configs;
+}

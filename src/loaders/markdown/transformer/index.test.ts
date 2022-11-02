@@ -26,7 +26,7 @@ for (let name of cases) {
       techStacks: [new FakeTechStack()],
       cwd: path.dirname(fileAbsPath),
       fileAbsPath: fileAbsPath,
-      codeBlockMode: 'active',
+      resolve: { codeBlockMode: 'active', atomDirs: [], docDirs: [] },
       alias: {
         '@': __dirname,
       },

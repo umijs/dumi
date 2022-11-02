@@ -1,5 +1,5 @@
 export default {
-  mfsu: false,
+  autoAlias: false,
   outputPath: 'docs-dist',
   themeConfig: {
     name: 'dumi',

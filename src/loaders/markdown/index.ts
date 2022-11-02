@@ -21,6 +21,10 @@ interface IMdLoaderDemosModeOptions
   onResolveDemos?: (
     demos: NonNullable<IMdTransformerResult['meta']['demos']>,
   ) => void;
+  onResolveAtomMeta?: (
+    atomId: string,
+    meta: IMdTransformerResult['meta']['frontmatter'],
+  ) => void;
 }
 
 export type IMdLoaderOptions =
@@ -37,6 +41,11 @@ function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
     // apply demos resolve hook
     if (demos && opts.onResolveDemos) {
       opts.onResolveDemos(demos);
+    }
+
+    // apply atom meta resolve hook
+    if (frontmatter!.atomId && opts.onResolveAtomMeta) {
+      opts.onResolveAtomMeta(frontmatter!.atomId, frontmatter);
     }
 
     return Mustache.render(

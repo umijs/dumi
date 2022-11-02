@@ -74,6 +74,8 @@ export interface IRouteMeta {
       cols?: number;
       tocDepth?: number;
     };
+    atomId?: string;
+    [key: string]: any;
   };
   // route toc
   toc: {
@@ -112,7 +114,6 @@ export interface IRouteMeta {
       [key: string]: any;
     };
   }[];
-  [key: string]: any;
 }
 
 type IBasicLocale = { id: string; name: string };

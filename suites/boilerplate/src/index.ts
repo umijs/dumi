@@ -17,13 +17,17 @@ export default async ({
   const [name] = args._;
   const target = name ? join(cwd, name) : cwd;
   const registry = 'https://registry.npmjs.org/';
-  const { npmClient } = await prompts(
+  const { type, npmClient } = await prompts(
     [
       {
         type: 'select',
         name: 'type',
         message: 'Pick template type',
-        choices: [{ title: 'Theme Package', value: 'theme' }],
+        choices: [
+          { title: 'Static Site', value: 'site' },
+          { title: 'React Library', value: 'react' },
+          { title: 'Theme Package', value: 'theme' },
+        ],
         initial: 0,
       },
       {
@@ -47,43 +51,60 @@ export default async ({
     },
   );
   let hasPlugin = false;
+  const questions: prompts.PromptObject[] = [
+    {
+      name: 'description',
+      type: 'text',
+      message: `Input project description`,
+    },
+    {
+      name: 'author',
+      type: 'text',
+      message: `Input project author (Name <email@example.com>)`,
+    },
+  ];
+
+  if (type === 'theme') {
+    questions.unshift({
+      name: 'name',
+      type: 'text',
+      message: `Input NPM package name (dumi-theme-xxx or @org/dumi-theme-xxx)`,
+      validate: (value: string) => {
+        if (/^dumi-theme-.+|\/dumi-theme-.+/.test(value)) return true;
+        return 'Invalid NPM package name, should be dumi-theme-xxx or @org/dumi-theme-xxx';
+      },
+    });
+    questions.push({
+      name: 'hasPlugin',
+      type: 'confirm',
+      message: `Does this theme need to register an additional dumi plugin?`,
+      onState: ({ value }) => {
+        hasPlugin = value;
+      },
+    });
+  } else if (type === 'site') {
+    questions.unshift({
+      name: 'name',
+      type: 'text',
+      message: `Input project name`,
+    });
+  } else if (type === 'react') {
+    questions.unshift({
+      name: 'name',
+      type: 'text',
+      message: 'Input NPM package name',
+    });
+  }
+
   const generator = new BaseGenerator({
-    path: join(__dirname, '../templates/theme'),
+    path: join(__dirname, `../templates/${type}`),
     target,
     data: {
       version: '^2.0.0-beta.10',
       npmClient,
       registry,
     },
-    questions: [
-      {
-        name: 'name',
-        type: 'text',
-        message: `Input NPM package name (dumi-theme-xxx or @org/dumi-theme-xxx)`,
-        validate: (value: string) => {
-          if (/^dumi-theme-.+|\/dumi-theme-.+/.test(value)) return true;
-          return 'Invalid NPM package name, should be dumi-theme-xxx or @org/dumi-theme-xxx';
-        },
-      },
-      {
-        name: 'description',
-        type: 'text',
-        message: `Input NPM package description`,
-      },
-      {
-        name: 'author',
-        type: 'text',
-        message: `Input NPM package author (Name <email@example.com>)`,
-      },
-      {
-        name: 'hasPlugin',
-        type: 'confirm',
-        message: `Does this theme need to register an additional dumi plugin?`,
-        onState: ({ value }) => {
-          hasPlugin = value;
-        },
-      },
-    ],
+    questions,
   });
   await generator.run();
   // remove plugin dir if not need

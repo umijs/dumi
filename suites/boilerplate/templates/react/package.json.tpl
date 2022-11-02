@@ -2,17 +2,21 @@
   "name": "{{{ name }}}",
   "version": "0.0.1",
   "description": "{{{ description }}}",
+  "module": "dist/index.js",
   "types": "dist/types.d.ts",
   "scripts": {
-    "dev": "father dev",
+    "start": "npm run dev",
+    "dev": "dumi dev",
     "build": "father build",
-    "prepare": "husky install && father link-dev-theme",
+    "build:watch": "father dev",
+    "docs:build": "dumi build",
+    "prepare": "husky install",
+    "doctor": "father doctor",
     "lint": "npm run lint:es && npm run lint:css",
     "lint:css": "stylelint \"{src,test}/**/*.{css,less}\"",
     "lint:es": "eslint \"{src,test}/**/*.{js,jsx,ts,tsx}\"",
     "prepublishOnly": "father doctor && npm run build"
   },
-  "keywords": ["dumi", "dumi-theme"],
   "authors": [{{#author}}
     "{{{ author }}}"
   {{/author}}],
@@ -46,7 +50,6 @@
     "access": "public"
   },
   "peerDependencies": {
-    "dumi": "{{{ version }}}",
     "react": ">=16.9.0",
     "react-dom": ">=16.9.0"
   },
@@ -57,7 +60,6 @@
     "dumi": "{{{ version }}}",
     "eslint": "^8.23.0",
     "father": "^4.1.0",
-    "father-plugin-dumi-theme": "^1.0.0-beta.0",
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",

@@ -2,7 +2,7 @@ import type { IDemoLoaderOptions } from '@/loaders/demo';
 import type { IMdLoaderOptions } from '@/loaders/markdown';
 import ReactTechStack from '@/techStacks/react';
 import type { IApi, IDumiTechStack } from '@/types';
-import { addExampleAssets } from './assets';
+import { addAtomMeta, addExampleAssets } from './assets';
 
 export default (api: IApi) => {
   // register react tech stack by default
@@ -24,7 +24,7 @@ export default (api: IApi) => {
       techStacks,
       cwd: api.cwd,
       alias: api.config.alias,
-      codeBlockMode: api.config.resolve.codeBlockMode,
+      resolve: api.config.resolve,
       extraRemarkPlugins: api.config.extraRemarkPlugins,
       extraRehypePlugins: api.config.extraRehypePlugins,
     };
@@ -56,6 +56,7 @@ export default (api: IApi) => {
 
           addExampleAssets(assets);
         },
+        onResolveAtomMeta: addAtomMeta,
       } as IMdLoaderOptions)
       .end()
       .end()
