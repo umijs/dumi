@@ -3,7 +3,7 @@
 [![NPM version](https://img.shields.io/npm/v/{{{ name }}}.svg?style=flat)](https://npmjs.org/package/{{{ name }}})
 [![NPM downloads](http://img.shields.io/npm/dm/{{{ name }}}.svg?style=flat)](https://npmjs.org/package/{{{ name }}})
 
-A theme package for the [dumi](https://next.d.umijs.org) framework.
+A theme package for the [dumi](https://d.umijs.org) framework.
 
 ## Usage
 
@@ -47,7 +47,9 @@ $ cd example
 npm run dev
 ```
 
-dumi theme development documentation: https://next.d.umijs.org/theme
+> Note: all Node.js-runtime files should be put into `src/plugin` directory, `father-plugin-dumi-theme` will transform them to CommonJS dist automatically.
+
+dumi theme development documentation: https://d.umijs.org/theme
 
 ## LICENSE
 

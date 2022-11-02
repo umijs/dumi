@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "father dev",
     "build": "father build",
-    "prepare": "father link-dev-theme",
+    "prepare": "husky install && father link-dev-theme",
     "lint": "npm run lint:es && npm run lint:css",
     "lint:css": "stylelint \"{src,test}/**/*.{css,less}\"",
     "lint:es": "eslint \"{src,test}/**/*.{js,jsx,ts,tsx}\"",
@@ -46,7 +46,7 @@
     "access": "public"
   },
   "peerDependencies": {
-    "dumi": "^2.0.0-beta.10",
+    "dumi": "{{{ version }}}",
     "react": ">=16.9.0",
     "react-dom": ">=16.9.0"
   },
@@ -54,7 +54,7 @@
     "@commitlint/cli": "^17.1.2",
     "@commitlint/config-conventional": "^17.1.0",
     "@umijs/lint": "^4.0.0",
-    "dumi": "^2.0.0-beta.10",
+    "dumi": "{{{ version }}}",
     "eslint": "^8.23.0",
     "father": "^4.1.0",
     "father-plugin-dumi-theme": "^1.0.0-beta.0",
