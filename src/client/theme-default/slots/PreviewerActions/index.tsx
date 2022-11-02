@@ -81,7 +81,7 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
             <IconExternalLink />
           </a>
         )}
-        <PreviewerActionsExtra />
+        <PreviewerActionsExtra {...props} />
         <button
           className="dumi-default-previewer-action-btn"
           type="button"
