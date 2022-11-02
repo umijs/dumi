@@ -15,3 +15,17 @@ export const PICKED_PKG_FIELDS = {
   author: '',
   authors: '',
 };
+
+export const CLIENT_DEPS = [
+  '@ant-design/icons-svg',
+  '@makotot/ghostui',
+  'deepmerge',
+  'highlight-words-core',
+  'lodash.throttle',
+  'prism-react-renderer',
+  'prismjs',
+  'rc-tabs',
+  'react-copy-to-clipboard',
+  'react-helmet',
+  'react-intl',
+];
