@@ -1,6 +1,5 @@
-import { type IPreviewerProps } from 'dumi';
+import type { IPreviewerProps } from 'dumi';
 import React, { type FC } from 'react';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const PreviewerActionsExtra: FC<IPreviewerProps> = (props) => <></>;
+const PreviewerActionsExtra: FC<IPreviewerProps> = () => <></>;
 export default PreviewerActionsExtra;
