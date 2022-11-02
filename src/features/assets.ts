@@ -1,16 +1,24 @@
 import type { IApi } from '@/types';
-import type { AssetsPackage, ExampleAsset } from 'dumi-assets-types';
+import type { AssetsPackage, AtomAsset, ExampleAsset } from 'dumi-assets-types';
 import fs from 'fs';
 import path from 'path';
 import { lodash } from 'umi/plugin-utils';
 
 const examples: ExampleAsset[] = [];
+const atomsMeta: Record<string, Partial<AtomAsset>> = {};
 
 /**
  * internal function to add example assets
  */
 export function addExampleAssets(data: typeof examples) {
   examples.push(...data);
+}
+
+/**
+ * internal function to add meta for atom
+ */
+export function addAtomMeta(atomId: string, data: Partial<AtomAsset>) {
+  atomsMeta[atomId] = lodash.pick(data, ['title', 'keywords', 'deprecated']);
 }
 
 /**
@@ -25,7 +33,6 @@ export default (api: IApi) => {
   });
 
   api.onBuildComplete(async () => {
-    // TODO: extra meta data from frontmatter
     const { components } = await api.service.atomParser.parse();
     const assets = await api.applyPlugins({
       key: 'modifyAssetsMetadata',
@@ -38,7 +45,10 @@ export default (api: IApi) => {
         homepage: api.pkg.homepage,
         repository: api.pkg.repository,
         assets: {
-          atoms: Object.values(components),
+          atoms: Object.values(components).map((atom) =>
+            // assign extra meta data from md frontmatter
+            Object.assign(atom, atomsMeta[atom.id] || {}),
+          ),
           examples: lodash.uniqBy(examples, 'id'),
         },
       } as AssetsPackage,
