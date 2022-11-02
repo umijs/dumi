@@ -60,7 +60,7 @@ export interface IRouteMeta {
       title?: string;
       description?: string;
       background?: string;
-      links?: { title: string; link: string }[];
+      actions?: { text: string; link: string }[];
       [key: string]: any;
     };
     features?: {
@@ -116,10 +116,9 @@ export interface IRouteMeta {
 }
 
 type IBasicLocale = { id: string; name: string };
-export type ILocale = (
+export type ILocale =
   | (IBasicLocale & { base: string })
-  | (IBasicLocale & { suffix: string })
-);
+  | (IBasicLocale & { suffix: string });
 export type ILocalesConfig = ILocale[];
 
 export interface INavItem {

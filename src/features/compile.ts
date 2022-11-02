@@ -12,13 +12,6 @@ export default (api: IApi) => {
     fn: () => new ReactTechStack(),
   });
 
-  // allow import from dumi
-  api.modifyDefaultConfig((memo) => {
-    memo.alias.dumi$ = memo.alias.umi;
-
-    return memo;
-  });
-
   // configure loader to compile markdown
   api.chainWebpack(async (memo) => {
     const babelInUmi = memo.module.rule('src').use('babel-loader').entries();

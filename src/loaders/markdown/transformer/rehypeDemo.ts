@@ -201,6 +201,7 @@ export default function rehypeDemo(
               refAtomIds: [],
               fileAbsPath: '',
               entryPointCode: codeType === 'external' ? undefined : codeValue,
+              resolver: opts.resolver,
             };
             const previewerProps: IDumiDemoProps['previewerProps'] = {};
             let component = '';

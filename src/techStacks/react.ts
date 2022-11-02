@@ -41,6 +41,7 @@ export default class ReactTechStack implements IDumiTechStack {
     if (opts.type === 'code-block') {
       const isTSX = opts.fileAbsPath.endsWith('.tsx');
       const { code } = transformSync(raw, {
+        filename: opts.fileAbsPath,
         jsc: {
           parser: {
             syntax: isTSX ? 'typescript' : 'ecmascript',

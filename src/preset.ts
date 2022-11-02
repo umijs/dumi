@@ -27,6 +27,7 @@ export default (api: IApi) => {
       require.resolve('./registerMethods'),
 
       require.resolve('./features/configPlugins'),
+      require.resolve('./features/derivative'),
       require.resolve('./features/sideEffects'),
       require.resolve('./features/exports'),
       require.resolve('./features/compile'),

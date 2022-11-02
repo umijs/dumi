@@ -2,10 +2,10 @@
 hero:
   title: Umi
   description: 企业级前端开发框架
-  links:
-    - title: 快速上手
+  actions:
+    - text: 快速上手
       link: /hello
-    - title: GitHub
+    - text: GitHub
       link: /hello
 features:
   - title: 非常快
@@ -56,5 +56,6 @@ export default () => <button>inline</button>;
 ---
 
 ## img
+
 引入图片的相对路径
 <img src="../logo.png" />
