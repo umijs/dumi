@@ -1,5 +1,4 @@
 import { getParameters } from 'codesandbox/lib/api/define';
-import { useEffect, useState } from 'react';
 
 import type { IPreviewerProps } from 'dumi';
 
@@ -45,16 +44,6 @@ const root = createRoot(rootElement);
 
 root.render(<App />);`;
 };
-
-function getTextContent(raw: string) {
-  const elm = document.createElement('span');
-
-  elm.innerHTML = raw;
-  const text = elm.textContent;
-  elm.remove();
-
-  return text;
-}
 
 /**
  * get serialized data that use to submit to codesandbox.io
@@ -107,9 +96,7 @@ function getCSBData(opts: IPreviewerProps) {
     content: JSON.stringify(
       {
         name: opts.title,
-        description: getTextContent(
-          opts.description || 'An auto-generated demo by dumi',
-        ),
+        description: opts.description || 'An auto-generated demo by dumi',
         main: entryFileName,
         dependencies: deps,
         // add TypeScript dependency if required, must in devDeps to avoid csb compile error
@@ -150,31 +137,26 @@ export const useCodeSandbox = (
   opts: IPreviewerProps,
   api: string = CSB_API_ENDPOINT,
 ) => {
-  const [handler, setHandler] = useState<(...args: any) => void | undefined>();
+  const handler = () => {
+    const form = document.createElement('form');
+    const input = document.createElement('input');
+    const data = getCSBData(opts);
 
-  useEffect(() => {
-    if (opts) {
-      const form = document.createElement('form');
-      const input = document.createElement('input');
-      const data = getCSBData(opts);
+    form.method = 'POST';
+    form.target = '_blank';
+    form.style.display = 'none';
+    form.action = api;
+    form.appendChild(input);
+    form.setAttribute('data-demo', opts.title || '');
 
-      form.method = 'POST';
-      form.target = '_blank';
-      form.style.display = 'none';
-      form.action = api;
-      form.appendChild(input);
-      form.setAttribute('data-demo', opts.title || '');
+    input.name = 'parameters';
+    input.value = data;
 
-      input.name = 'parameters';
-      input.value = data;
+    document.body.appendChild(form);
 
-      document.body.appendChild(form);
-
-      setHandler(() => () => form.submit());
-
-      return () => form.remove();
-    }
-  }, [opts]);
+    form.submit();
+    form.remove();
+  };
 
   return handler;
 };
