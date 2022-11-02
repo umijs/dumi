@@ -23,6 +23,7 @@ export interface IDumiConfig extends IUmiConfig {
   };
   locales: ILocalesConfig;
   themeConfig: IThemeConfig;
+  autoAlias?: boolean;
   /**
    * extra unified plugins
    */
