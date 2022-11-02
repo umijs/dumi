@@ -46,12 +46,17 @@
 .@{prefix}-content {
   flex: 1;
   max-width: 100%;
+  box-sizing: border-box;
 
   &:not([data-no-sidebar]) {
-    padding: @s-content-padding;
+    padding: @s-content-padding @s-content-padding 0;
     background-color: #fff;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     box-shadow: 0 8px 24px 0 rgb(0 0 0 / 5%);
+  }
+
+  .@{prefix}-header + main > & {
+    min-height: calc(100vh - @s-header-height);
   }
 }

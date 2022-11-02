@@ -9,6 +9,10 @@
   text-align: center;
   box-sizing: border-box;
 
+  + * {
+    position: relative;
+  }
+
   &::before {
     content: '';
     position: absolute;
@@ -26,7 +30,7 @@
   > p {
     margin: 32px;
     color: #4e6789;
-    font-size: 24px;
+    font-size: 20px;
     line-height: 1.6;
   }
 
@@ -37,12 +41,12 @@
 
     > a {
       display: inline-block;
-      height: 56px;
-      font-size: 20px;
-      line-height: 56px;
+      height: 52px;
+      font-size: 18px;
+      line-height: 52px;
       text-decoration: none;
       min-width: 168px;
-      border-radius: 28px;
+      border-radius: 26px;
       box-sizing: border-box;
       transition: opacity 0.2s;
 

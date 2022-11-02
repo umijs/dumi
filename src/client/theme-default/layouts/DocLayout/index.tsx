@@ -1,6 +1,7 @@
 import { useIntl, useOutlet, useRouteMeta } from 'dumi';
 import Content from 'dumi/theme/slots/Content';
 import Features from 'dumi/theme/slots/Features';
+import Footer from 'dumi/theme/slots/Footer';
 import Header from 'dumi/theme/slots/Header';
 import Hero from 'dumi/theme/slots/Hero';
 import Sidebar from 'dumi/theme/slots/Sidebar';
@@ -35,7 +36,10 @@ const DocLayout: FC = () => {
       <Features />
       <main>
         <Sidebar />
-        <Content>{outlet}</Content>
+        <Content>
+          {outlet}
+          <Footer />
+        </Content>
       </main>
     </div>
   );

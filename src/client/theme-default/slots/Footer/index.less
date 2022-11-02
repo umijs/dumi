@@ -1,0 +1,19 @@
+@import (reference) '../../styles/variables.less';
+
+.@{prefix}-footer {
+  margin-top: @s-content-padding;
+  border-top: 1px solid @c-border-light;
+  color: @c-text-note;
+  font-size: 15px;
+  line-height: 26px;
+  text-align: center;
+  padding: @s-content-padding * 0.6 0;
+
+  a {
+    color: @c-primary;
+
+    &:not(:hover) {
+      text-decoration: none;
+    }
+  }
+}

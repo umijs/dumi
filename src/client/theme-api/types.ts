@@ -145,6 +145,7 @@ export interface IThemeConfig {
   logo?: string;
   nav?: (INavItem & { children?: INavItem[] })[];
   sidebar?: Record<string, ISidebarGroup[]>;
+  footer?: string;
   [key: string]: any;
 }
 
