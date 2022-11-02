@@ -54,7 +54,7 @@ export interface IMdTransformerOptions {
   alias: object;
   parentAbsPath?: string;
   techStacks: IDumiTechStack[];
-  codeBlockMode: IDumiConfig['resolve']['codeBlockMode'];
+  resolve: IDumiConfig['resolve'];
   extraRemarkPlugins?: IDumiConfig['extraRemarkPlugins'];
   extraRehypePlugins?: IDumiConfig['extraRehypePlugins'];
 }
@@ -103,7 +103,11 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     .use(remarkParse)
     .use(remarkEmbed, { fileAbsPath: opts.fileAbsPath, alias: opts.alias })
     .use(remarkFrontmatter)
-    .use(remarkMeta, { fileAbsPath: opts.fileAbsPath })
+    .use(remarkMeta, {
+      cwd: opts.cwd,
+      fileAbsPath: opts.fileAbsPath,
+      resolve: opts.resolve,
+    })
     .use(remarkBreaks)
     .use(remarkGfm);
 
@@ -127,7 +131,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
       techStacks: opts.techStacks,
       cwd: opts.cwd,
       fileAbsPath: opts.fileAbsPath,
-      codeBlockMode: opts.codeBlockMode,
+      resolve: opts.resolve,
       resolver,
     })
     .use(rehypeSlug)

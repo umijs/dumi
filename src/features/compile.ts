@@ -24,7 +24,7 @@ export default (api: IApi) => {
       techStacks,
       cwd: api.cwd,
       alias: api.config.alias,
-      codeBlockMode: api.config.resolve.codeBlockMode,
+      resolve: api.config.resolve,
       extraRemarkPlugins: api.config.extraRemarkPlugins,
       extraRehypePlugins: api.config.extraRehypePlugins,
     };

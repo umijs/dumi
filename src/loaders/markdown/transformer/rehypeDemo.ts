@@ -28,7 +28,7 @@ export const DUMI_DEMO_GRID_TAG = 'DumiDemoGrid';
 
 type IRehypeDemoOptions = Pick<
   IMdTransformerOptions,
-  'techStacks' | 'cwd' | 'fileAbsPath' | 'codeBlockMode'
+  'techStacks' | 'cwd' | 'fileAbsPath' | 'resolve'
 > & { resolver: typeof sync };
 
 /**
@@ -46,7 +46,7 @@ function getCodeLang(node: Element, opts: IRehypeDemoOptions) {
     lang = path.extname(node.properties.src).slice(1);
   } else if (
     Array.isArray(node.properties?.className) &&
-    (opts.codeBlockMode === 'passive'
+    (opts.resolve.codeBlockMode === 'passive'
       ? // passive mode
         / demo/.test(String(node.data?.meta))
       : // active mode (default)
@@ -197,8 +197,9 @@ export default function rehypeDemo(
             const codeValue = toString(codeNode).trim();
             const parseOpts = {
               id: '',
-              // TODO: parse atom id
-              refAtomIds: [],
+              refAtomIds: vFile.data.frontmatter!.atomId
+                ? [vFile.data.frontmatter!.atomId]
+                : [],
               fileAbsPath: '',
               entryPointCode: codeType === 'external' ? undefined : codeValue,
               resolver: opts.resolver,
