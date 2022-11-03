@@ -5,7 +5,6 @@
       "@/*": ["src/*"],
       "@@/*": [".dumi/tmp/*"],
       "dumi": ["."],
-      "dumi/theme": ["src/client/theme-api"],
       "dumi/theme/*": ["src/client/theme-default/*"]
     },
     "types": ["../../.dumi/tmp/typings"]

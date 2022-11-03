@@ -11,9 +11,9 @@ export interface IPreviewerProps {
    */
   description?: string;
   /**
-   * file path of current demo
+   * filename of current demo
    */
-  filePath?: string;
+  filename?: string;
   /**
    * use iframe to render demo
    */
@@ -75,6 +75,7 @@ export interface IRouteMeta {
       tocDepth?: number;
     };
     atomId?: string;
+    filename?: string;
     [key: string]: any;
   };
   // route toc

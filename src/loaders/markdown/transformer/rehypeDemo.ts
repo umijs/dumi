@@ -74,7 +74,9 @@ function getCodeId(
     atomId ||
     getRoutePathFromFsPath(path.relative(cwd, fileAbsPath)).replace(/\//g, '-');
 
-  return [prefix, 'demo', localId].filter(Boolean).join('-');
+  return [prefix.toLowerCase(), 'demo', localId.toLowerCase()]
+    .filter(Boolean)
+    .join('-');
 }
 
 /**
@@ -214,6 +216,7 @@ export default function rehypeDemo(
                 opts.cwd,
                 opts.fileAbsPath,
                 path.parse(parseOpts.fileAbsPath).name,
+                vFile.data.frontmatter!.atomId,
               );
               component = `React.lazy(() => import('${winPath(
                 parseOpts.fileAbsPath,
@@ -221,7 +224,7 @@ export default function rehypeDemo(
               // use code value as title
               // TODO: force checking
               codeNode.properties!.title = codeValue || undefined;
-              codeNode.properties!.filePath ??= winPath(
+              codeNode.properties!.filename ??= winPath(
                 path.relative(opts.cwd, parseOpts.fileAbsPath),
               );
             } else {
@@ -232,6 +235,7 @@ export default function rehypeDemo(
                 opts.cwd,
                 opts.fileAbsPath,
                 String(index++),
+                vFile.data.frontmatter!.atomId,
               );
               component = techStack.transformCode(codeValue, {
                 type: 'code-block',
