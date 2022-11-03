@@ -19,5 +19,23 @@ body {
       flex: 1;
       max-width: 100%;
     }
+
+    > .@{prefix}-doc-layout-toc-wrapper {
+      position: sticky;
+      top: @s-header-height + 30px;
+      width: @s-sidebar-width;
+      margin-left: 24px;
+      max-height: 80vh;
+      overflow: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+
+      > h4 {
+        margin: 0 0 8px;
+        color: @c-text-note;
+        font-size: 13px;
+        line-height: 1;
+      }
+    }
   }
 }
