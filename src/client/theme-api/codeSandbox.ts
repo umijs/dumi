@@ -133,30 +133,23 @@ function getCSBData(opts: IPreviewerProps) {
  * @param opts  previewer opts
  * @note  return a open function for open demo on codesandbox.io
  */
-export const useCodeSandbox = (
-  opts: IPreviewerProps,
-  api: string = CSB_API_ENDPOINT,
-) => {
-  const handler = () => {
-    const form = document.createElement('form');
-    const input = document.createElement('input');
-    const data = getCSBData(opts);
+export const codeSandbox = (opts: IPreviewerProps) => {
+  const form = document.createElement('form');
+  const input = document.createElement('input');
+  const data = getCSBData(opts);
 
-    form.method = 'POST';
-    form.target = '_blank';
-    form.style.display = 'none';
-    form.action = api;
-    form.appendChild(input);
-    form.setAttribute('data-demo', opts.title || '');
+  form.method = 'POST';
+  form.target = '_blank';
+  form.style.display = 'none';
+  form.action = CSB_API_ENDPOINT;
+  form.appendChild(input);
+  form.setAttribute('data-demo', opts.title || '');
 
-    input.name = 'parameters';
-    input.value = data;
+  input.name = 'parameters';
+  input.value = data;
 
-    document.body.appendChild(form);
+  document.body.appendChild(form);
 
-    form.submit();
-    form.remove();
-  };
-
-  return handler;
+  form.submit();
+  form.remove();
 };
