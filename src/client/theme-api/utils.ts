@@ -35,13 +35,16 @@ export const useLocaleDocRoutes = () => {
  * @returns code string
  */
 export const genReactRenderCode = (version: string): string => {
-  if (version.startsWith('18.') || version === 'latest') {
-    return `/**
+  const annotation = `/**
  * This is an auto-generated demo by dumi
  * if you think it is not working as expected,
  * please report the issue at
  * https://github.com/umijs/dumi/issues
- */
+ */`;
+ 
+  if (version.startsWith('18.') || version === 'latest') {
+    return `${annotation}
+
 import React from 'react';
 import { createRoot } from "react-dom/client";
 import App from "./App";
@@ -51,12 +54,7 @@ const root = createRoot(rootElement);
 
 root.render(<App />);`;
   }
-  return `/**
- * This is an auto-generated demo by dumi
- * if you think it is not working as expected,
- * please report the issue at
- * https://github.com/umijs/dumi/issues
- */
+  return `${annotation}
     
 import React from 'react';
 import ReactDOM from 'react-dom';
