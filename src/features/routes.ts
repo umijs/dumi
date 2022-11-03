@@ -66,21 +66,11 @@ export default (api: IApi) => {
       { dir: 'docs' },
     ]),
   ].map(({ dir }) => path.join(api.cwd, dir, '**/*.md'));
-  const pagesDir = path.join(api.cwd, '.dumi/pages');
 
   api.describe({ key: 'dumi:routes' });
 
   // watch docs paths to re-generate routes
   api.addTmpGenerateWatcherPaths(() => extraWatchPaths);
-
-  // read .dumi/pages to generate react component routes
-  api.modifyConfig((memo) => {
-    memo.conventionRoutes = {
-      base: pagesDir,
-    };
-
-    return memo;
-  });
 
   // support to disable docDirs & atomDirs by empty array
   // because the empty array will be ignored by config merge logic
@@ -150,7 +140,9 @@ export default (api: IApi) => {
 
     // prepend page routes from .dumi/pages
     Object.entries(pages).forEach(([, route]) => {
-      route.file = winPath(path.resolve(pagesDir, route.file));
+      route.file = winPath(
+        path.resolve(api.config.conventionRoutes.base, route.file),
+      );
       // flat route
       flatRoute(route);
       routes[route.id] = route;
@@ -161,7 +153,7 @@ export default (api: IApi) => {
       const base = path.join(api.cwd, dir);
       const dirRoutes: Record<string, IRoute> = getConventionRoutes({
         base,
-        exclude: [/.*(?<!md)$/],
+        exclude: [/.*(?<!md)$/, /(\/|^)(\.|_\/)/],
       });
 
       Object.entries(dirRoutes).forEach(([key, route]) => {

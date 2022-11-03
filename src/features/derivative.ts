@@ -1,4 +1,4 @@
-import { CLIENT_DEPS, LOCAL_DUMI_DIR } from '@/constants';
+import { CLIENT_DEPS, LOCAL_DUMI_DIR, LOCAL_PAGES_DIR } from '@/constants';
 import type { IApi } from '@/types';
 import fs from 'fs';
 import path from 'path';
@@ -80,6 +80,14 @@ export default (api: IApi) => {
           );
         });
       }
+    }
+
+    // enable conventional routes
+    if (api.userConfig.conventionRoutes !== false) {
+      memo.conventionRoutes = {
+        base: path.join(api.cwd, LOCAL_PAGES_DIR),
+        exclude: [/(\/|^)(\.|_\/)/],
+      };
     }
 
     // enable hash by default
