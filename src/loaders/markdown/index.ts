@@ -117,17 +117,30 @@ export default DumiMarkdownContent;`;
   }
 }
 
+function getEmbedsCacheKey(embeds: typeof embedsMapping['0'] = []) {
+  return JSON.stringify(
+    embeds.map((file) => `${file}:${fs.statSync(file).mtimeMs}`),
+  );
+}
+
 const deferrer: Record<string, Promise<IMdTransformerResult>> = {};
+const embedsMapping: Record<string, string[]> = {};
 
 export default function mdLoader(this: any, content: string) {
   const opts: IMdLoaderOptions = this.getOptions();
   const cb = this.async();
 
   const cache = getCache('md-loader');
-  const cacheKey = [
+  // format: {path:mtime:loaderOpts}
+  const baseCacheKey = [
     this.resourcePath,
     fs.statSync(this.resourcePath).mtimeMs,
     JSON.stringify(lodash.omit(opts, ['mode', 'builtins', 'onResolveDemos'])),
+  ].join(':');
+  // format: {baseCacheKey:{embeds:mtime}[]}
+  const cacheKey = [
+    baseCacheKey,
+    getEmbedsCacheKey(embedsMapping[this.resourcePath]),
   ].join(':');
   const cacheRet = cache.getSync(cacheKey, '');
 
@@ -154,7 +167,17 @@ export default function mdLoader(this: any, content: string) {
 
   deferrer[cacheKey]
     .then((ret) => {
-      cache.setSync(cacheKey, ret);
+      // re-generate cache key with latest embeds data
+      const finalCacheKey = [
+        baseCacheKey,
+        getEmbedsCacheKey(ret.meta.embeds),
+      ].join(':');
+
+      // update embeds mapping
+      embedsMapping[this.resourcePath] = ret.meta.embeds || [];
+
+      // save cache with final cache key
+      cache.setSync(finalCacheKey, ret);
       cb(null, emit.call(this, opts, ret));
     })
     .catch(cb);
