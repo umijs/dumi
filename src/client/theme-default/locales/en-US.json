@@ -3,7 +3,7 @@
   "header.search.placeholder": "Type keywords...",
   "previewer.actions.code.expand": "Show Code",
   "previewer.actions.code.shrink": "Hide Code",
-  "previewer.actions.codesandbox": "Open in CodeSandbox (Not implemented)",
+  "previewer.actions.codesandbox": "Open in CodeSandbox",
   "previewer.actions.codepen": "Open in CodePen (Not implemented)",
   "previewer.actions.separate": "Open in separate page",
   "404.title": "PAGE NOT FOUND",
