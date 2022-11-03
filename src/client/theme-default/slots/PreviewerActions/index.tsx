@@ -1,6 +1,6 @@
 import { ReactComponent as IconCodeSandbox } from '@ant-design/icons-svg/inline-svg/outlined/code-sandbox.svg';
 import { ReactComponent as IconCodePen } from '@ant-design/icons-svg/inline-svg/outlined/codepen.svg';
-import { codeSandbox, useIntl, type IPreviewerProps } from 'dumi';
+import { openCodeSandbox, useIntl, type IPreviewerProps } from 'dumi';
 import SourceCode from 'dumi/theme/builtins/SourceCode';
 import PreviewerActionsExtra from 'dumi/theme/slots/PreviewerActionsExtra';
 import Tabs from 'rc-tabs';
@@ -53,7 +53,7 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
             data-dumi-tooltip={intl.formatMessage({
               id: 'previewer.actions.codesandbox',
             })}
-            onClick={() => codeSandbox(props)}
+            onClick={() => openCodeSandbox(props)}
           >
             <IconCodeSandbox />
           </button>

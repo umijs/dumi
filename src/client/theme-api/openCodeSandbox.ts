@@ -133,7 +133,7 @@ function getCSBData(opts: IPreviewerProps) {
  * @param opts  previewer opts
  * @note  return a open function for open demo on codesandbox.io
  */
-export const codeSandbox = (opts: IPreviewerProps) => {
+export const openCodeSandbox = (opts: IPreviewerProps) => {
   const form = document.createElement('form');
   const input = document.createElement('input');
   const data = getCSBData(opts);
