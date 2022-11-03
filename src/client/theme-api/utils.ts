@@ -28,3 +28,42 @@ export const useLocaleDocRoutes = () => {
 
   return localeDocRoutes;
 };
+
+/**
+ * 在 react 18 中需要新的 render 方式，这个函数用来处理不同的 jsx 模式。
+ * @param version react version
+ * @returns code string
+ */
+export const genReactRenderCode = (version: string): string => {
+  if (version.startsWith('18.') || version === 'latest') {
+    return `/**
+ * This is an auto-generated demo by dumi
+ * if you think it is not working as expected,
+ * please report the issue at
+ * https://github.com/umijs/dumi/issues
+ */
+import React from 'react';
+import { createRoot } from "react-dom/client";
+import App from "./App";
+
+const rootElement = document.getElementById("root");
+const root = createRoot(rootElement);
+
+root.render(<App />);`;
+  }
+  return `/**
+ * This is an auto-generated demo by dumi
+ * if you think it is not working as expected,
+ * please report the issue at
+ * https://github.com/umijs/dumi/issues
+ */
+    
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+    
+ReactDOM.render(
+  <App />,
+  document.getElementById('root'),
+);`;
+};

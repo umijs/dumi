@@ -1,49 +1,8 @@
 import { getParameters } from 'codesandbox/lib/api/define';
-
 import type { IPreviewerProps } from 'dumi';
+import { genReactRenderCode } from './utils';
 
 const CSB_API_ENDPOINT = 'https://codesandbox.io/api/v1/sandboxes/define';
-
-/**
- * 在 react 18 中需要新的 render 方式，这个函数用来处理不同的 jsx 模式。
- * @param  { 'react-dom' | 'react-dom/client'} clientRender
- * @returns code string
- */
-const genReactRenderCode = (
-  clientRender: 'react-dom' | 'react-dom/client',
-): string => {
-  if (clientRender === 'react-dom') {
-    return `/**
-* This is an auto-generated demo by dumi
-* if you think it is not working as expected,
-* please report the issue at
-* https://github.com/umijs/dumi/issues
-**/
-    
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
-    
-ReactDOM.render(
-  <App />,
-  document.getElementById('root'),
-);`;
-  }
-  return `/**
-* This is an auto-generated demo by dumi
-* if you think it is not working as expected,
-* please report the issue at
-* https://github.com/umijs/dumi/issues
-**/
-import React from 'react';
-import { createRoot } from "react-dom/client";
-import App from "./App";
-
-const rootElement = document.getElementById("root");
-const root = createRoot(rootElement);
-
-root.render(<App />);`;
-};
 
 /**
  * get serialized data that use to submit to codesandbox.io
@@ -116,12 +75,7 @@ function getCSBData(opts: IPreviewerProps) {
 
   // append entry file
   files[entryFileName] = {
-    content: genReactRenderCode(
-      // react 18 需要使用新的 render 方式
-      deps?.['react-dom']?.startsWith('18.') || deps.react === 'latest'
-        ? 'react-dom/client'
-        : 'react-dom',
-    ),
+    content: genReactRenderCode(deps.react),
     isBinary: false,
   };
 
@@ -130,23 +84,27 @@ function getCSBData(opts: IPreviewerProps) {
 
 /**
  * use CodeSandbox.io
- * @param opts  previewer opts
+ * @param data  previewer opts
+ * @param opts  the api that CodeSandbox calls when creating the demo
  * @note  return a open function for open demo on codesandbox.io
  */
-export const openCodeSandbox = (opts: IPreviewerProps) => {
+export const openCodeSandbox = (
+  data: IPreviewerProps,
+  opts?: { api?: string },
+) => {
   const form = document.createElement('form');
   const input = document.createElement('input');
-  const data = getCSBData(opts);
+  const CSBData = getCSBData(data);
 
   form.method = 'POST';
   form.target = '_blank';
   form.style.display = 'none';
-  form.action = CSB_API_ENDPOINT;
+  form.action = opts?.api || CSB_API_ENDPOINT;
   form.appendChild(input);
-  form.setAttribute('data-demo', opts.title || '');
+  form.setAttribute('data-demo', data.assets?.id || '');
 
   input.name = 'parameters';
-  input.value = data;
+  input.value = CSBData;
 
   document.body.appendChild(form);
 
