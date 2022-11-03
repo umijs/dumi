@@ -1,20 +1,23 @@
 ---
+nav: 指南
 group: 基础
+order: 3
 ---
 
 # 约定式路由
 
+默认情况下，docs 目录下的 Markdown 文档会根据目录结构解析为路由。src 目录下第一层级的 Markdown 文档会被解析为 components 下的路由，我们可以通过配置项 `resolve.atomDirs` 对分组进行更改
+
 举几个例子方便理解：
 
-| 磁盘路径/模式 | doc 模式 | site 模式 |
-| --- | --- | --- |
-| /path/to/src/index.md | - 分组：无<br >- 页面路由：/ | - 导航：无<br >- 分组：无<br>- 页面路由：/ |
-| /path/to/src/hello.md | - 分组：无<br >- 页面路由：/hello | - 导航：/hello<br >- 分组：/hello<br>- 页面路由：/hello |
-| /path/to/src/hello/index.md | - 分组：/hello<br >- 页面路由：/hello | - 导航：/hello<br >- 分组：/hello<br>- 页面路由：/hello |
-| /path/to/src/hello/world.md | - 分组：/hello<br >- 页面路由：/hello/world | - 导航：/hello<br >- 分组：/hello<br>- 页面路由：/hello/world |
-| /path/to/src/hello/world/dumi.md | - 分组：/hello/world<br >- 页面路由：/hello/world/dumi | - 导航：/hello<br >- 分组：/hello/world<br>- 页面路由：/hello/world/dumi |
-
-需要注意的是，**多个基础路径下相同磁盘路径的文件生成的路由会相互冲突**，这意味着在默认配置下 `docs/index.md` 和 `src/index.md` 只有其中 1 个会被识别。
+| 磁盘路径 | 解析结果 |
+| --- | --- |
+| /path/to/docs/hello.md | - 分组：无<br>- 页面路由：/hello |
+| /path/to/docs/hello/index.md |  - 分组：无<br>- 页面路由：/hello |
+| /path/to/docs/hello/world/dumi.md | - 分组：/hello/world<br>- 页面路由：/hello/world/dumi |
+| /path/to/src/hello.md | - 分组：/components<br>- 页面路由：/components/hello |
+| /path/to/src/hello/index.md | - 分组：/components<br>- 页面路由：/components/hello |
+| /path/to/src/hello/world.md | 不识别 |
 
 ### 自定义导航、分组和标题
 

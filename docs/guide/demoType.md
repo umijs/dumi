@@ -1,5 +1,7 @@
 ---
+nav: 指南
 group: 基础
+order: 5
 ---
 
 # 写组件 demo
