@@ -1,9 +1,11 @@
 import { useIntl, useOutlet, useRouteMeta } from 'dumi';
 import Content from 'dumi/theme/slots/Content';
 import Features from 'dumi/theme/slots/Features';
+import Footer from 'dumi/theme/slots/Footer';
 import Header from 'dumi/theme/slots/Header';
 import Hero from 'dumi/theme/slots/Hero';
 import Sidebar from 'dumi/theme/slots/Sidebar';
+import Toc from 'dumi/theme/slots/Toc';
 import React, { type FC } from 'react';
 import Helmet from 'react-helmet';
 import './index.less';
@@ -35,7 +37,16 @@ const DocLayout: FC = () => {
       <Features />
       <main>
         <Sidebar />
-        <Content>{outlet}</Content>
+        <Content>
+          {outlet}
+          <Footer />
+        </Content>
+        {fm.toc === 'content' && (
+          <div className="dumi-default-doc-layout-toc-wrapper">
+            <h4>TABLE OF CONTENTS</h4>
+            <Toc />
+          </div>
+        )}
       </main>
     </div>
   );

@@ -83,9 +83,9 @@ export default defineConfig({
 ```ts
 {
   themeConfig: {
-    name: '站点名称（可选）';
-    logo: '站点 LOGO 地址';
-    nav: [{ title: '导航标题', link: '导航路由' }]; // 可选，未配置时走约定式导航
+    name: '站点名称（可选）',
+    logo: '站点 LOGO 地址',
+    nav: [{ title: '导航标题', link: '导航路由' }], // 可选，未配置时走约定式导航
     sidebar: { // 可选，未配置时走约定式菜单
       '/guide': [
         {
@@ -95,7 +95,8 @@ export default defineConfig({
           ]
         }
       ]
-    };
+    },
+    footer: '页脚 HTML', // 有 `Powered by dumi` 的默认值，可自定义，配置为 false 时不展示
   }
 }
 ```

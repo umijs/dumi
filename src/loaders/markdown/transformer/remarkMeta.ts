@@ -4,7 +4,7 @@ import yaml from 'js-yaml';
 import type { Root } from 'mdast';
 import path from 'path';
 import type { Root as YAMLRoot } from 'remark-frontmatter';
-import { lodash } from 'umi/plugin-utils';
+import { lodash, winPath } from 'umi/plugin-utils';
 import type { Transformer } from 'unified';
 import type { IMdTransformerOptions } from '.';
 
@@ -60,6 +60,8 @@ export default function remarkMeta(opts: IRemarkMetaOpts): Transformer<Root> {
     // initialize frontmatter
     vFile.data.frontmatter = {
       title: '',
+      toc: 'menu',
+      filename: winPath(path.relative(opts.cwd, opts.fileAbsPath)),
       ...(guessAtomId && { atomId: guessAtomId }),
     };
 

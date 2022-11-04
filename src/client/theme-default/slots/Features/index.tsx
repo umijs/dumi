@@ -10,14 +10,16 @@ const Features: FC = () => {
       className="dumi-default-features"
       // auto render 2 or 3 cols by feature count
       data-cols={
-        [2, 3].find((n) => frontmatter.features!.length % n === 0) || 3
+        [3, 2].find((n) => frontmatter.features!.length % n === 0) || 3
       }
     >
       {frontmatter.features!.map(({ title, description, emoji }) => (
         <div key={title} className="dumi-default-features-item">
           {emoji && <i>{emoji}</i>}
           {title && <h3>{title}</h3>}
-          {description && <p>{description}</p>}
+          {description && (
+            <p dangerouslySetInnerHTML={{ __html: description }} />
+          )}
         </div>
       ))}
     </div>

@@ -8,7 +8,9 @@ export default (api: IApi) => {
       atomDirs: [{ type: 'component', dir: 'src' }],
       codeBlockMode: 'active',
     },
-    themeConfig: {},
+    themeConfig: {
+      footer: `Copyright © ${new Date().getFullYear()} | Powered by <a href="https://d.umijs.org" target="_blank" rel="noreferrer">dumi</a>`,
+    },
   };
 
   const schemas = getSchemas();

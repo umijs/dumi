@@ -36,7 +36,7 @@
       margin: 4px 0;
       color: #2c4262;
       font-weight: normal;
-      font-size: 22px;
+      font-size: 20px;
     }
 
     > p {
@@ -44,6 +44,14 @@
       color: #61728a;
       font-size: 16px;
       line-height: 1.475;
+
+      a {
+        color: @c-primary;
+
+        &:not(:hover) {
+          text-decoration: none;
+        }
+      }
     }
   }
 }
