@@ -39,6 +39,15 @@ const WhoAreUsing: FC = () => {
       <li>
         <a href="https://umijs.org" target="_blank" rel="noreferrer">
           <img
+            src="https://gw.alipayobjects.com/zos/bmw-prod/598d14af-4f1c-497d-b579-5ac42cd4dd1f/k7bjua9c_w132_h130.png"
+            alt="UmiJS"
+          />
+          UmiJS
+        </a>
+      </li>
+      <li>
+        <a href="https://alitajs.com" target="_blank" rel="noreferrer">
+          <img
             src="https://user-images.githubusercontent.com/11746742/104428726-c2c90300-55bf-11eb-9b84-d52a86050b9a.png"
             alt="alitajs"
           />

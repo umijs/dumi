@@ -6,7 +6,7 @@ hero:
     为组件研发而生的静态站点框架
     <br />
     <small style="opacity: 0.7">
-      注：Beta 版尚不稳定，功能也可能会有调整，请谨慎用于正式项目
+      注：RC 版已非常接近正式版，但仍然可能存在缺陷，如果碰到问题欢迎在 <a href="https://github.com/umijs/dumi/discussions/1216" target="_blank" rel="noreferrer" style="color: #06f">讨论区</a> 反馈
     </small>
   actions:
     - text: 抢先体验
