@@ -1,5 +1,5 @@
 import { ReactComponent as IconCodeSandbox } from '@ant-design/icons-svg/inline-svg/outlined/code-sandbox.svg';
-import { ReactComponent as IconCodePen } from '@ant-design/icons-svg/inline-svg/outlined/codepen.svg';
+// import { ReactComponent as IconCodePen } from '@ant-design/icons-svg/inline-svg/outlined/codepen.svg';
 import { openCodeSandbox, useIntl, type IPreviewerProps } from 'dumi';
 import SourceCode from 'dumi/theme/builtins/SourceCode';
 import PreviewerActionsExtra from 'dumi/theme/slots/PreviewerActionsExtra';
@@ -58,7 +58,7 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
             <IconCodeSandbox />
           </button>
         )}
-        {!props.disabledActions?.includes('CODEPEN') && (
+        {/* {!props.disabledActions?.includes('CODEPEN') && (
           <button
             className="dumi-default-previewer-action-btn"
             type="button"
@@ -68,7 +68,7 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
           >
             <IconCodePen />
           </button>
-        )}
+        )} */}
         {!props.disabledActions?.includes('EXTERNAL') && (
           <a
             target="_blank"
