@@ -1,5 +1,6 @@
 import { CLIENT_DEPS, LOCAL_DUMI_DIR, LOCAL_PAGES_DIR } from '@/constants';
 import type { IApi } from '@/types';
+import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
 import { deepmerge, glob, winPath } from 'umi/plugin-utils';
@@ -58,6 +59,20 @@ export default (api: IApi) => {
 
   api.describe({ key: 'dumi:derivative' });
 
+  // pre-check config
+  api.onCheck(() => {
+    assert(!api.config.mpa, 'MPA mode is not supported in dumi!');
+    assert(!api.config.vite, 'Vite mode is not supported yet!');
+    assert(
+      api.config.mfsu?.strategy !== 'eager',
+      'MFSU eager mode is not supported yet!',
+    );
+    assert(
+      !api.config.ssr || api.config.ssr.builder === 'webpack',
+      'Only `webpack` builder is supported in SSR mode!',
+    );
+  });
+
   // skip mfsu for client api, to avoid circular resolve in mfsu mode
   safeExcludeInMFSU(api, [new RegExp('dumi/dist/client')]);
 
@@ -90,8 +105,16 @@ export default (api: IApi) => {
       };
     }
 
+    // use webpack builder by default in ssr mode
+    if (api.userConfig.ssr) {
+      memo.ssr = Object.assign(memo.ssr || {}, { builder: 'webpack' });
+    }
+
     // enable hash by default
     memo.hash = true;
+
+    // enable exportStatic by default
+    memo.exportStatic ||= {};
 
     return memo;
   });

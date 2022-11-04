@@ -1,3 +1,3 @@
 export default (api) => {
-  api.describe({ key: 'test' });
+  api.describe({ key: 'example:normal:test' });
 };
