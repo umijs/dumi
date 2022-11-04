@@ -1,81 +1,34 @@
 ---
 nav:
+  title: 指南
   order: -1
-demo:
-  cols: 2
+group:
+  title: 介绍
+  order: -1
 ---
 
-# 指南
+# 什么是 dumi
 
-## 开始之前
+dumi，中文发音**嘟米**，是一款为组件开发场景而生的静态站点框架，与 [father](https://github.com/umijs/father) 一起为开发者提供一站式的组件开发体验，**father 负责组件源码构建，而 dumi 负责组件开发及组件文档生成**。
 
-dumi 目前尚处于 beta 阶段，预计近 1 个月后会推进到 RC 阶段。beta 意味着提供的功能尚处于测试阶段，可能（大概率）存在 Bug，且新功能也会持续增加，所以 dumi 的 beta 版本可能适用于如下场景：
+## 特性
 
-1. 有正准备研发的组件库文档、静态站点，且 1 个月内不计划发布生产版本
-2. 对 dumi 2 有兴趣，单纯地希望体验一下新版
-3. 对 dumi 2 的实现有兴趣，希望体验并参与到 dumi 2 的研发或功能验证中
-4. 对 dumi 2 的主题系统有兴趣，希望抢先创建 dumi 2 的主题包（近期会提供主题包研发脚手架）
+全新的 dumi 2.0 主要具备以下特性：
 
-关于目前 beta 版提供的功能及尚未支持的功能，可以在 [首页](/) 查看。
-
-## 快速上手
-
-由于使用方式尚未稳定，暂不提供脚手架，可以参考以下步骤手动初始化：
-
-```bash
-# 初始化 NPM 项目
-$ mkdir dumi-2-example
-$ cd dumi-2-example
-$ npm init -y
-
-# 安装 dumi
-$ npm i dumi@beta -D
-
-# 创建普通文档
-$ mkdir docs && touch docs/index.md
-
-# 创建组件文档
-$ mkdir -p src/Foo && touch src/Foo/index.md
-
-# 启动 dumi
-$ npx dumi dev
-```
-
-然后编辑 `docs/index.md` 和 `src/Foo/index.md` 文件，即可看到预览效果。
-
-Demo 的编写方式与 dumi 1 一致，通过代码块或 `code` 标签即可在 Markdown 中渲染 React demo，比如：
-
-<pre><code className="language-md">
-代码块 demo：
-
-```jsx
-import React from 'react';
-
-export default () =&gt; &lt;&gt;Hello world!&lt;/&gt;;
-```
-
-code 标签引入外部 demo：
-
-&lt;code src="./demos/hello.tsx"&gt;&lt;/code&gt;
-</code></pre>
-
-将会被渲染为：
-
-```jsx
-import React from 'react';
-
-export default () => <>Hello world!</>;
-```
-
-多个 demo 也可以通过 [Markdown 的 `demo.cols` 配置项](/config/markdown#cols) 进行分栏：
-
-<code src="./demos/cols.tsx" description="编写 demo 描述">分栏 1</code>
-<code src="./demos/cols.tsx">分栏 2</code>
-<code src="./demos/cols.tsx">分栏 3</code>
-<code src="./demos/cols.tsx">分栏 4</code>
-
-更多框架配置及 Demo 渲染的选项，请访问配置项文档：[配置项](/config)。
+- 🚀 **更好的编译性能**：通过结合使用 <a href="https://umijs.org/blog/mfsu-faster-than-vite" target="_blank" rel="noreferrer">Umi 4 MFSU</a>、esbuild、SWC、持久缓存等方案，带来比 dumi 1.x 更快的编译速度
+- 🔍 **内置全文搜索**：不需要接入任何三方服务，标题、正文、demo 等内容均可被搜索，支持多关键词搜索，且不会带来产物体积的增加
+- 🎨 **全新主题系统**：为主题包增加插件、国际化等能力的支持，且参考 <a href="https://docusaurus.io/docs/swizzling" target="_blank" rel="noreferrer">Docusaurus</a> 为主题用户提供局部覆盖能力，更强更易用
+- 🚥 **约定式路由增强**：通过拆分路由概念、简化路由配置等方式，让路由生成一改 dumi 1.x 的怪异、繁琐，更加符合直觉
+- 💡 **资产元数据 2.0**：在 1.x 及 JSON Schema 的基础上对资产属性定义结构进行全新设计，为资产的流通提供更多可能
+- 💎 **继续为组件研发而生**：提供与全新的 NPM 包研发工具 <a href="https://github.com/umijs/father" target="_blank" rel="noreferrer">father 4</a> 集成的脚手架，为开发者提供一站式的研发体验
 
 ## 问题反馈
 
-由于 dumi 2.0 尚不稳定，如果在试用过程中发现任何问题、或者有改善建议，欢迎在 GitHub 讨论区进行反馈：<br />https://github.com/umijs/dumi/discussions/1216
+由于 dumi 2.0 尚处于 RC 阶段，如果在试用过程中发现任何问题、或者有改善建议，欢迎在 GitHub 讨论区进行反馈：<br />https://github.com/umijs/dumi/discussions/1216
+
+或加入讨论群：
+
+<div>
+  <img data-type="dingtalk" src="https://gw.alipayobjects.com/zos/bmw-prod/ce3439e7-3bf9-4031-b823-6473439ec9e6/kxkiis4c_w1004_h1346.jpeg" width="300" />
+  <img data-type="wechat" src="https://gw.alipayobjects.com/zos/bmw-prod/c18bc2a5-719a-48ca-b225-c79ef88bfb43/k7m10ymd_w1004_h1346.jpeg" width="300" />
+</div>
