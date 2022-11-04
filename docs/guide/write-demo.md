@@ -180,7 +180,7 @@ import React from 'react';
 export default () => '我会被直接嵌入';
 ```
 
-### 调试型 demo
+<!-- ### 调试型 demo
 
 设置 `debug` 为 true，则该 demo 仅在开发环境下展示、且会有一个特殊标记：
 
@@ -207,7 +207,7 @@ export default () => (
     我仅在开发环境下展示
   </Previewer>
 );
-```
+``` -->
 
 ### iframe 模式
 
