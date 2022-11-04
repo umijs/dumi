@@ -100,7 +100,7 @@ export default async ({
     path: join(__dirname, `../templates/${type}`),
     target,
     data: {
-      version: '^2.0.0-beta.10',
+      version: '^2.0.0-rc.0',
       npmClient,
       registry,
     },
