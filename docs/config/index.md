@@ -38,6 +38,8 @@ export default defineConfig({
 
 单独将资产的解析逻辑拆分是为了解决 dumi 1 中普通文档与源码目录下的组件文档混淆不清、分组困难的问题。
 
+是否自动 alias 项目包名到 src 目录，如果是 father 4 项目，还会根据配置自动 alias 产物目录到源码目录，默认开启。
+
 #### codeBlockMode
 
 - 类型：`'active' | 'passive'`
@@ -68,6 +70,11 @@ export default () => '我不会被编译，仍然展示为源代码';
 export default () => '我会被编译，展示为组件';
 ```
 </code></pre>
+
+### autoAlias
+
+- 类型：`boolean`
+- 默认值：`true`
 
 ### locales
 
