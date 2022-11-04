@@ -17,9 +17,9 @@ dumi 提供了一系列 FrontMatter 属性，以满足不同的页面渲染需�
 
 ```md
 ---
-title: 标题  # 配置页面标题,同时生成 <title> 标签
-description: 描述  # 配置页面简介，同时用于生成 <meta> 标签
-keywords: [关键词]  # 配置页面关键词，同时用于生成 <meta> 标签
+title: 标题 # 配置页面标题,同时生成 <title> 标签
+description: 描述 # 配置页面简介，同时用于生成 <meta> 标签
+keywords: [关键词] # 配置页面关键词，同时用于生成 <meta> 标签
 ---
 
 <!-- 其他 Markdown 内容 -->
@@ -48,8 +48,6 @@ features:
 <!-- 其他 Markdown 内容 -->
 ```
 
-
-
 ## 锚点目录配置
 
 锚点目录默认显示在左侧菜单中，我们可以通过配置其值为 `content`,将其显示在内容区域右侧，也可设置为 boolean 值，使其不进行展示
@@ -61,7 +59,6 @@ toc: content
 
 <!-- 其他 Markdown 内容 -->
 ```
-
 
 ## demo 分栏配置
 
@@ -84,6 +81,7 @@ demo:
 <code src="./demos/cols.tsx">分栏 3</code>
 <code src="./demos/cols.tsx">分栏 4</code>
 ```
+
 <code src="./demos/cols.tsx">分栏 1</code>
 <code src="./demos/cols.tsx">分栏 2</code>
 <code src="./demos/cols.tsx">分栏 3</code>

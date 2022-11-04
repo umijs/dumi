@@ -8,7 +8,7 @@ order: 0
 
 ## 环境准备
 
-首先得有 [node](https://nodejs.org/en/)，并确保 node 版本是 14 或以上。（推荐用 [nvm](https://github.com/nvm-sh/nvm) 来管理 node 版本，windows 下推荐用 [nvm-windows](https://github.com/coreybutler/nvm-windows)）
+确保正确安装 [Node.js](https://nodejs.org/en/) 且版本为 14+ 即可。
 
 ```bash
 $ node -v
@@ -21,12 +21,9 @@ v14.19.1
 # 先找个地方建个空目录。
 $ mkdir myapp && cd myapp
 
-# 通过官方工具创建项目
-$ npx create-dumi@beta
+# 通过官方工具创建项目，选择你需要的模板
+$ npx create-dumi
 
-# 安装依赖
-$ yarn
-
-# 启动 dumi
-$ yarn start
+# 安装依赖后启动项目
+$ npm start
 ```
