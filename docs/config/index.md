@@ -1,10 +1,11 @@
 ---
 nav: 配置项
+toc: content
 ---
 
 # 框架配置
 
-dumi 2 基于 Umi 4，除了自身特有的配置项以外，也支持 Umi 4 的配置项，两者均在 `.dumirc.ts` 中配置。
+dumi 2 基于 Umi 4，除了自身特有的配置项以外，同样也支持 Umi 4 提供的基础配置项，两者均在 `.dumirc.ts` 中配置。
 
 ```ts
 // .dumirc.ts
@@ -15,7 +16,7 @@ export default defineConfig({
 });
 ```
 
-## dumi 配置项
+## 重点配置项
 
 ### resolve
 
@@ -37,10 +38,43 @@ export default defineConfig({
 
 单独将资产的解析逻辑拆分是为了解决 dumi 1 中普通文档与源码目录下的组件文档混淆不清、分组困难的问题。
 
+是否自动 alias 项目包名到 src 目录，如果是 father 4 项目，还会根据配置自动 alias 产物目录到源码目录，默认开启。
+
 #### codeBlockMode
 
 - 类型：`'active' | 'passive'`
 - 默认值：`'active'`
+
+配置代码块的解析模式。dumi 默认会编译有关联技术栈的代码块（比如内置的 React 技术栈会编译 jsx、tsx 代码块）、将其处理为组件，不需要编译的代码块需要添加 `| pure` 修饰符才能跳过编译；倘若你希望将这个行为反过来，可以将其配置为 `passive`。
+
+两者在使用上的区别如下：
+
+<pre><code class="language-markdown">
+active 模式：
+
+```jsx
+export default () => '我会被编译，展示为组件';
+```
+
+```jsx | pure
+export default () => '我不会被编译，仍然展示为源代码';
+```
+
+passive 模式：
+
+```jsx
+export default () => '我不会被编译，仍然展示为源代码';
+```
+
+```jsx | demo
+export default () => '我会被编译，展示为组件';
+```
+</code></pre>
+
+### autoAlias
+
+- 类型：`boolean`
+- 默认值：`true`
 
 ### locales
 
@@ -101,6 +135,6 @@ export default defineConfig({
 }
 ```
 
-## Umi 配置项
+## 基础配置项
 
-参考 Umi 4 的文档：https://umijs.org/docs/api/config
+<embed src="../.upstream/config.md"></embed>
