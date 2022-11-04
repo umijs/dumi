@@ -6,7 +6,7 @@ order: 3
 
 # 约定式路由
 
-默认情况下，docs 目录下的 Markdown 文档会根据目录结构解析为路由。src 目录下第一层级的 Markdown 文档会被解析为 components 下的路由，我们可以通过配置项 `resolve.atomDirs` 对分组进行更改
+dumi 对 Markdown 文档的目录解析做了以下拆分：默认情况下，docs 目录下的 Markdown 文档会根据目录结构解析为路由。src 目录下第一层级的 Markdown 文档会被解析为 components 下的路由，我们可以通过配置项 `resolve.atomDirs` 对分组进行更改
 
 举几个例子方便理解：
 
@@ -23,7 +23,7 @@ order: 3
 
 如果希望控制导航/分组/页面标题的生成，可以通过**在 Markdown 文件顶部**编写 FrontMatter 实现：
 
-```markdown
+```md
 ---
 title: 自定义页面名称
 nav:

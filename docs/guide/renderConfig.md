@@ -2,157 +2,89 @@
 nav: 指南
 group: 基础
 order: 4
+demo:
+  cols: 2
+  tocDepth: 4
 ---
 
 # 页面渲染配置
 
-dumi 提供了一些 FrontMatter 属性，以满足不同的 demo 渲染需求，在**源代码顶部**配置即可：
+dumi 提供了一系列 FrontMatter 属性，以满足不同的页面渲染需求
 
-<pre lang="markdown">
-```jsx
-/**
- * [配置项名称]: [值]
- */
-```
-</pre>
+## tdk 配置
 
-对于外部 demo，这些 FrontMatter 属性除了写在源代码里，也可以写在 `code` 标签的属性上：
+如果希望配置页面级 tdk ,只需如下编写 FrontMatter , dumi 会在 `<head>` 标签内插入对应的 `<title>` 和 `<meta>` 标签
 
-```html
-<code src="/path/to/demo" 配置项="值"></code>
-```
+```md
+---
+title: 标题  # 配置页面标题,同时生成 <title> 标签
+description: 描述  # 配置页面简介，同时用于生成 <meta> 标签
+keywords: [关键词]  # 配置页面关键词，同时用于生成 <meta> 标签
+---
 
-dumi 目前支持如下 demo 控制能力。
-
-## 捕获 `fixed` 元素
-
-设置 `transform` 为 `true`，可使得内部 `position: fixed;` 元素相对于 Demo 包裹器定位：
-
-```jsx
-/**
- * transform: true
- */
-
-import React from 'react';
-
-export default () => (
-  <h1 style={{ position: 'fixed', top: 0, left: 0 }}>我不会飞出去</h1>
-);
+<!-- 其他 Markdown 内容 -->
 ```
 
-## 修改背景色
+## 首页配置
 
-通过 `background` 配置项，可以修改它的背景颜色、渐变甚至加上背景图片，dumi 会将其当做 CSS 属性值处理，比如配置 `background` 为 `'#f6f7f9'`：
+dumi 为我们提供了 `hero` 和 `features` 的 FrontMatter 属性，让我们能够快速搭建一个组件库首页。主要为首页首屏和组件库特性两部分。
 
-```jsx
-/**
- * background: '#f6f7f9'
- */
+```md
+---
+hero:
+  title: dumi
+  description: 企业级前端开发框架
+  actions:
+    - text: 快速上手
+      link: /hello
+    - text: GitHub
+      link: /hello
+features:
+  - title: 非常快
+    emoji: 🚀
+    description: 考究的默认配置和约定式的目录结构，帮助开发者零成本上手，让所有注意力都能放在文档编写和组件开发上
+---
 
-import React from 'react';
-
-export default () => null;
+<!-- 其他 Markdown 内容 -->
 ```
 
-## 不需要内边距
 
-配置 `compact` 为 `true`，则会移除所有内边距：
 
-```jsx
-/**
- * compact: true
- */
+## 锚点目录配置
 
-import React from 'react';
+锚点目录默认显示在左侧菜单中，我们可以通过配置其值为 `content`,将其显示在内容区域右侧，也可设置为 boolean 值，使其不进行展示
 
-export default () => '我会贴边站';
+```md
+---
+toc: content
+---
+
+<!-- 其他 Markdown 内容 -->
 ```
 
-## 标题与简介
 
-通过 `title` 和 `description` 配置 demo 的标题和简介：
+## demo 分栏配置
 
-```jsx
-/**
- * title: 我是标题
- * description: 我是简介，我可以用 `Markdown` 来编写
- */
+dumi 支持对不同页面，灵活定制 demo 的分栏布局
 
-import React from 'react';
+```md
+---
+demo:
+  cols: 2
+---
 
-export default () => null;
+<!-- 其他 Markdown 内容 -->
 ```
 
-## 直接嵌入文档
+配置 `demo.cols` 后,以下多个 demo 完将会被渲染为双栏布局：
 
-配置 `inline` 为 `true` 则不会展示包裹器、直接在文档里嵌入 demo：
-
-<pre lang="markdown">
-```jsx
-/**
- * inline: true
- */
-
-import React from 'react';
-
-export default () => '我会被直接嵌入';
+```md
+<code src="./demos/cols.tsx">分栏 1</code>
+<code src="./demos/cols.tsx">分栏 2</code>
+<code src="./demos/cols.tsx">分栏 3</code>
+<code src="./demos/cols.tsx">分栏 4</code>
 ```
-</pre>
-
-就像这样：
-
-```jsx
-/**
- * inline: true
- */
-
-import React from 'react';
-
-export default () => '我会被直接嵌入';
-```
-
-## 调试型 demo
-
-设置 `debug` 为 true，则该 demo 仅在开发环境下展示、且会有一个特殊标记：
-
-```jsx
-/**
- * inline: true
- */
-import React from 'react';
-import Previewer from 'dumi/theme/builtins/Previewer';
-
-export default () => (
-  <Previewer
-    asset={{
-      dependencies: {
-        'index.tsx': {
-          type: 'FILE',
-          value:
-            "/**\n * debug: true\n */\n\nimport React from 'react';\n\nexport default () => '我仅在开发环境下展示';",
-        },
-      },
-    }}
-    debug
-  >
-    我仅在开发环境下展示
-  </Previewer>
-);
-```
-
-## iframe 模式
-
-设置 `iframe` 为 `true`，将会使用 `iframe` 渲染 demo，可实现和文档的完全隔离，通常用于布局型组件，此时 [`compact`](/config/demo#compact) 配置默认为 `true`：
-
-```jsx
-/**
- * iframe: true // 设置为数值可控制 iframe 高度
- */
-import React from 'react';
-
-export default () => (
-  <h2 style={{ boxShadow: '0 2px 15px rgba(0,0,0,0.1)', padding: '5px 20px' }}>
-    iframe 模式
-  </h2>
-);
-```
+<code src="./demos/cols.tsx">分栏 1</code>
+<code src="./demos/cols.tsx">分栏 2</code>
+<code src="./demos/cols.tsx">分栏 3</code>
+<code src="./demos/cols.tsx">分栏 4</code>
