@@ -66,6 +66,8 @@ export default function remarkEmbed(
           // parse partial content to mdast
           const mdast = unified()
             .use(remarkParse)
+            // for nested embed
+            .use(remarkEmbed, { ...opts, fileAbsPath: absPath })
             // for strip frontmatter
             .use(remarkFrontmatter)
             // for return raw ast
