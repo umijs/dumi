@@ -5,6 +5,7 @@ import enhancedResolve from 'enhanced-resolve';
 import type { Plugin, Processor } from 'unified';
 import type { Data } from 'vfile';
 import rehypeDemo from './rehypeDemo';
+import rehypeDesc from './rehypeDesc';
 import rehypeEnhancedTag from './rehypeEnhancedTag';
 import rehypeImg from './rehypeImg';
 import rehypeIsolation from './rehypeIsolation';
@@ -138,6 +139,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     .use(rehypeAutolinkHeadings)
     .use(rehypeIsolation)
     .use(rehypeEnhancedTag)
+    .use(rehypeDesc)
     // collect all texts for content search, must be the last rehype plugin
     .use(rehypeText);
 
