@@ -1,5 +1,5 @@
 import { useAppData, useIntl, useSiteData } from 'dumi';
-import { useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import type { IRoutesById } from './types';
 
 export const useLocaleDocRoutes = () => {
@@ -41,7 +41,7 @@ export const genReactRenderCode = (version: string): string => {
  * please report the issue at
  * https://github.com/umijs/dumi/issues
  */`;
- 
+
   if (version.startsWith('18.') || version === 'latest') {
     return `${annotation}
 
@@ -55,13 +55,16 @@ const root = createRoot(rootElement);
 root.render(<App />);`;
   }
   return `${annotation}
-    
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-    
+
 ReactDOM.render(
   <App />,
   document.getElementById('root'),
 );`;
 };
+
+export const useIsomorphicLayoutEffect =
+  typeof window !== 'undefined' ? useLayoutEffect : useEffect;

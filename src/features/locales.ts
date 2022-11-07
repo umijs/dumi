@@ -80,6 +80,9 @@ import React, { useState, useLayoutEffect, useCallback, type ReactNode } from 'r
 import { RawIntlProvider, createIntl, createIntlCache } from '${winPath(
         path.dirname(require.resolve('react-intl/package')),
       )}';
+import { useIsomorphicLayoutEffect } from '${winPath(
+        require.resolve('../client/theme-api/utils'),
+      )}'
 import { locales, messages } from './config';
 
 const cache = createIntlCache();
@@ -99,7 +102,7 @@ const LocalesContainer: FC<{ children: ReactNode }> = (props) => {
   }, []);
   const [intl, setIntl] = useState(() => getIntl());
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     return history.listen(() => {
       setIntl(getIntl());
     });

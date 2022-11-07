@@ -1,6 +1,7 @@
 import { matchRoutes, useAppData, useLocation, useRouteData } from 'dumi';
-import { useCallback, useLayoutEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import type { IRouteMeta } from './types';
+import { useIsomorphicLayoutEffect } from './utils';
 
 /**
  * hook for get matched route meta
@@ -26,7 +27,7 @@ export const useRouteMeta = () => {
   }, [clientRoutes.length, pathname]);
   const [meta, setMeta] = useState<IRouteMeta>(getter);
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     setMeta(getter);
   }, [clientRoutes.length, pathname]);
 

@@ -4,17 +4,25 @@ import React, { useEffect, useRef, useState, type FC } from 'react';
 import { SearchResult } from '../SearchResult';
 import './index.less';
 
-const isAppleDevice = /(mac|iphone|ipod|ipad)/i.test(navigator.platform);
+const isAppleDevice = /(mac|iphone|ipod|ipad)/i.test(
+  typeof navigator !== 'undefined' ? navigator?.platform : '',
+);
 
 const SearchBar: FC = () => {
   const intl = useIntl();
   const imeWaiting = useRef(false);
   const [focusing, setFocusing] = useState(false);
   const input = useRef<HTMLInputElement>(null);
-  const symbol = isAppleDevice ? '⌘' : 'Ctrl';
+  const [symbol, setSymbol] = useState('⌘');
   const { keywords, setKeywords, result, loading } = useSiteSearch();
 
   useEffect(() => {
+    // why put useEffect?
+    // to avoid Text content mismatch between server & client in ssr
+    if (!isAppleDevice) {
+      setSymbol('Ctrl');
+    }
+
     const handler = (ev: KeyboardEvent) => {
       if ((isAppleDevice ? ev.metaKey : ev.ctrlKey) && ev.key === 'k') {
         input.current?.focus();

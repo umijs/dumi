@@ -28,7 +28,7 @@ export const DumiDemo: FC<IDumiDemoProps> = (props) => {
       }
       {...props.previewerProps}
     >
-      {createElement(component)}
+      {props.previewerProps.iframe ? null : createElement(component)}
     </Previewer>
   );
 };

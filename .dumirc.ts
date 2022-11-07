@@ -7,4 +7,5 @@ export default {
 <br />
 Powered by self`,
   },
+  ssr: {},
 };

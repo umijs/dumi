@@ -1,6 +1,7 @@
 import { useFullSidebarData, useSiteData } from 'dumi';
 import { useState } from 'react';
 import type { IThemeConfig } from './types';
+import { useSidebarDataCompare } from './useSidebarData';
 import { useLocaleDocRoutes } from './utils';
 
 /**
@@ -10,6 +11,7 @@ export const useNavData = () => {
   const routes = useLocaleDocRoutes();
   const { themeConfig } = useSiteData();
   const sidebar = useFullSidebarData();
+  const sidebarDataCompare = useSidebarDataCompare();
   const [nav] = useState<NonNullable<IThemeConfig['nav']>>(() => {
     // use user config first
     if (themeConfig.nav) return themeConfig.nav;
@@ -50,9 +52,7 @@ export const useNavData = () => {
 
     // TODO: 2-level nav data
 
-    return data.sort(
-      (a, b) => a.order - b.order || a.title?.localeCompare(b.title),
-    );
+    return data.sort(sidebarDataCompare);
   });
 
   return nav;

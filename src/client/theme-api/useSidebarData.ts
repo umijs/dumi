@@ -1,5 +1,5 @@
 import { useLocale, useLocation, useSiteData } from 'dumi';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import type { ILocalesConfig, ISidebarGroup, IThemeConfig } from './types';
 import { useLocaleDocRoutes } from './utils';
 
@@ -11,6 +11,27 @@ const getLocaleClearPath = (routePath: string, locale: ILocalesConfig[0]) => {
     : routePath;
 };
 
+export const useSidebarDataCompare = () => {
+  const locale = useLocale();
+
+  return useCallback(
+    (
+      a: ISidebarGroup | ISidebarGroup['children'][0],
+      b: ISidebarGroup | ISidebarGroup['children'][0],
+    ) => {
+      return (
+        // small before large
+        a.order - b.order ||
+        // shallower before deeper for sidebar item
+        (a.link ? a.link.split('/').length - b.link.split('/').length : 0) ||
+        // fallback to compare title (put non-title group at the end)
+        (a.title ? a.title.localeCompare(b.title || '', locale.id) : -1)
+      );
+    },
+    [],
+  );
+};
+
 /**
  * hook for get sidebar data for all nav
  */
@@ -18,6 +39,7 @@ export const useFullSidebarData = () => {
   const locale = useLocale();
   const routes = useLocaleDocRoutes();
   const { themeConfig } = useSiteData();
+  const sidebarDataCompare = useSidebarDataCompare();
   const [sidebar] = useState<NonNullable<IThemeConfig['sidebar']>>(() => {
     // auto generate sidebar data from routes
     const data = Object.values(routes).reduce<
@@ -63,22 +85,9 @@ export const useFullSidebarData = () => {
     const sidebarConfig = Object.entries(data).reduce<
       NonNullable<IThemeConfig['sidebar']>
     >((ret, [navPath, groups]) => {
-      ret![navPath] = Object.values(groups).sort(
-        (a, b) =>
-          // sort by group order
-          a.order - b.order ||
-          (a.title
-            ? // sort by group title
-              a.title?.localeCompare(b.title || '')
-            : // put non-title group at the end
-              1),
-      );
+      ret![navPath] = Object.values(groups).sort(sidebarDataCompare);
       // sort group children by order or title
-      ret![navPath].forEach((group) =>
-        group.children.sort(
-          (a, b) => a.order - b.order || a.title.localeCompare(b.title),
-        ),
-      );
+      ret![navPath].forEach((group) => group.children.sort(sidebarDataCompare));
 
       return ret;
     }, {});

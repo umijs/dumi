@@ -101,7 +101,7 @@ export default (api: IApi) => {
       .loader(require.resolve('raw-loader'));
 
     // enable fast-refresh for md component in development mode
-    if (api.env === 'development') {
+    if (api.env === 'development' && memo.plugins.has('fastRefresh')) {
       memo.plugin('fastRefresh').tap(([params]) => [
         {
           ...params,
