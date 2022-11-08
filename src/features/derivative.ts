@@ -138,4 +138,7 @@ export default (api: IApi) => {
   api.addRuntimePlugin(() => {
     return strategies.appJS().slice(0, 1);
   });
+
+  // built-in other plugins
+  api.registerPlugins([require.resolve('@umijs/plugins/dist/analytics')]);
 };

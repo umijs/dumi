@@ -135,6 +135,29 @@ export default () => '我会被编译，展示为组件';
 }
 ```
 
+### analytics
+
+- 类型：`{ ga_v2?: string; baidu?: string; ga?: string }`
+- 默认值：`undefined`
+
+dumi 内置了站点统计的功能，目前支持 [Google Analytics](https://analytics.google.com/analytics/web/) 和[百度统计](https://tongji.baidu.com/web/welcome/login)。
+
+示例：
+
+```ts
+{
+  analytics: {
+    // google analytics 的 key (GA 4)
+    ga_v2: 'G-abcdefg',
+    // 若你在使用 GA v1 旧版本，请使用 `ga` 来配置
+    ga: 'ga_old_key'
+
+    // 百度统计的 key
+    baidu: 'baidu_tongji_key',
+  }
+}
+```
+
 ## 基础配置项
 
 <embed src="../.upstream/config.md"></embed>
