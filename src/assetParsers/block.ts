@@ -70,7 +70,10 @@ async function parseBlockAsset(opts: {
             }
 
             return {
-              path: path.join(args.resolveDir, args.path),
+              path:
+                args.kind !== 'entry-point'
+                  ? (opts.resolver(args.resolveDir, args.path) as string)
+                  : path.join(args.resolveDir, args.path),
               pluginData: { kind: args.kind, resolveDir: args.resolveDir },
             };
           });
