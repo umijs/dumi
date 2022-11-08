@@ -31,12 +31,25 @@ export type IMdLoaderOptions =
   | IMdLoaderDefaultModeOptions
   | IMdLoaderDemosModeOptions;
 
+function getDemoSourceFiles(demos: IMdTransformerResult['meta']['demos'] = []) {
+  return demos.reduce<string[]>((ret, demo) => {
+    if ('sources' in demo) {
+      ret.push(...Object.values(demo.sources));
+    }
+
+    return ret;
+  }, []);
+}
+
 function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
   if (opts.mode === 'meta') {
     const { demos, frontmatter, toc, texts, embeds = [] } = ret.meta;
 
     // declare embedded files as loader dependency, for clear cache when file changed
     embeds.forEach((file) => this.addDependency(file));
+
+    // declare demo source files as loader dependency, for clear cache when file changed
+    getDemoSourceFiles(demos).forEach((file) => this.addDependency(file));
 
     // apply demos resolve hook
     if (demos && opts.onResolveDemos) {
@@ -117,14 +130,14 @@ export default DumiMarkdownContent;`;
   }
 }
 
-function getEmbedsCacheKey(embeds: typeof embedsMapping['0'] = []) {
+function getDepsCacheKey(deps: typeof depsMapping['0'] = []) {
   return JSON.stringify(
-    embeds.map((file) => `${file}:${fs.statSync(file).mtimeMs}`),
+    deps.map((file) => `${file}:${fs.statSync(file).mtimeMs}`),
   );
 }
 
 const deferrer: Record<string, Promise<IMdTransformerResult>> = {};
-const embedsMapping: Record<string, string[]> = {};
+const depsMapping: Record<string, string[]> = {};
 
 export default function mdLoader(this: any, content: string) {
   const opts: IMdLoaderOptions = this.getOptions();
@@ -137,10 +150,10 @@ export default function mdLoader(this: any, content: string) {
     fs.statSync(this.resourcePath).mtimeMs,
     JSON.stringify(lodash.omit(opts, ['mode', 'builtins', 'onResolveDemos'])),
   ].join(':');
-  // format: {baseCacheKey:{embeds:mtime}[]}
+  // format: {baseCacheKey:{deps:mtime}[]}
   const cacheKey = [
     baseCacheKey,
-    getEmbedsCacheKey(embedsMapping[this.resourcePath]),
+    getDepsCacheKey(depsMapping[this.resourcePath]),
   ].join(':');
   const cacheRet = cache.getSync(cacheKey, '');
 
@@ -167,14 +180,16 @@ export default function mdLoader(this: any, content: string) {
 
   deferrer[cacheKey]
     .then((ret) => {
-      // re-generate cache key with latest embeds data
+      // update deps mapping
+      depsMapping[this.resourcePath] = (ret.meta.embeds || []).concat(
+        getDemoSourceFiles(ret.meta.demos),
+      );
+
+      // re-generate cache key with latest embeds & sources data
       const finalCacheKey = [
         baseCacheKey,
-        getEmbedsCacheKey(ret.meta.embeds),
+        getDepsCacheKey(depsMapping[this.resourcePath]),
       ].join(':');
-
-      // update embeds mapping
-      embedsMapping[this.resourcePath] = ret.meta.embeds || [];
 
       // save cache with final cache key
       cache.setSync(finalCacheKey, ret);
