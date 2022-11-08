@@ -1,7 +1,16 @@
 import { useLocale, useLocation, useSiteData } from 'dumi';
-import { useCallback, useState } from 'react';
-import type { ILocalesConfig, ISidebarGroup, IThemeConfig } from './types';
-import { useLocaleDocRoutes } from './utils';
+import { useState } from 'react';
+import type {
+  ILocalesConfig,
+  ISidebarGroup,
+  ISidebarItem,
+  IThemeConfig,
+} from './types';
+import {
+  pickRouteSortMeta,
+  useLocaleDocRoutes,
+  useRouteDataComparer,
+} from './utils';
 
 const DEFAULT_GROUP_STUB_TITLE = '$default-group-title';
 
@@ -11,27 +20,6 @@ const getLocaleClearPath = (routePath: string, locale: ILocalesConfig[0]) => {
     : routePath;
 };
 
-export const useSidebarDataCompare = () => {
-  const locale = useLocale();
-
-  return useCallback(
-    (
-      a: ISidebarGroup | ISidebarGroup['children'][0],
-      b: ISidebarGroup | ISidebarGroup['children'][0],
-    ) => {
-      return (
-        // small before large
-        a.order - b.order ||
-        // shallower before deeper for sidebar item
-        (a.link ? a.link.split('/').length - b.link.split('/').length : 0) ||
-        // fallback to compare title (put non-title group at the end)
-        (a.title ? a.title.localeCompare(b.title || '', locale.id) : -1)
-      );
-    },
-    [],
-  );
-};
-
 /**
  * hook for get sidebar data for all nav
  */
@@ -39,7 +27,9 @@ export const useFullSidebarData = () => {
   const locale = useLocale();
   const routes = useLocaleDocRoutes();
   const { themeConfig } = useSiteData();
-  const sidebarDataCompare = useSidebarDataCompare();
+  const sidebarDataComparer = useRouteDataComparer<
+    ISidebarGroup | ISidebarItem
+  >();
   const [sidebar] = useState<NonNullable<IThemeConfig['sidebar']>>(() => {
     // auto generate sidebar data from routes
     const data = Object.values(routes).reduce<
@@ -55,10 +45,11 @@ export const useFullSidebarData = () => {
         // a/b => /a
         // en-US/a/b => /en-US/a
         const parentPath = `/${route.path!.replace(/\/[^/]+$/, '')}`;
-        const { title, order = 0 } =
-          typeof route.meta.frontmatter.group === 'object'
-            ? route.meta.frontmatter.group
-            : { title: route.meta.frontmatter.group };
+        const { title, order } = pickRouteSortMeta(
+          { order: 0 },
+          'group',
+          route.meta.frontmatter,
+        );
         const titleKey = title || DEFAULT_GROUP_STUB_TITLE;
 
         // create group data by nav path & group name
@@ -85,15 +76,92 @@ export const useFullSidebarData = () => {
     const sidebarConfig = Object.entries(data).reduce<
       NonNullable<IThemeConfig['sidebar']>
     >((ret, [navPath, groups]) => {
-      ret![navPath] = Object.values(groups).sort(sidebarDataCompare);
+      ret![navPath] = Object.values(groups).sort(sidebarDataComparer);
       // sort group children by order or title
-      ret![navPath].forEach((group) => group.children.sort(sidebarDataCompare));
+      ret![navPath].forEach((group) =>
+        group.children.sort(sidebarDataComparer),
+      );
 
       return ret;
     }, {});
 
     // allow user partial override
     return Object.assign(sidebarConfig, themeConfig.sidebar);
+  });
+
+  return sidebar;
+};
+
+interface ITreeSidebarLeaf {
+  path: string;
+  title: string;
+  order: number;
+  children: (ITreeSidebarLeaf | ISidebarGroup)[];
+}
+
+function getLeafMeta(data: (ISidebarGroup | ITreeSidebarLeaf)[]) {
+  const leafMeta = { order: 0, title: '' };
+
+  for (let group of data) {
+    for (let item of group.children) {
+      if ('frontmatter' in item) {
+        pickRouteSortMeta(leafMeta, 'nav', item.frontmatter);
+      }
+    }
+  }
+
+  return leafMeta;
+}
+
+/**
+ * hook for get full sidebar data in tree structure
+ */
+export const useTreeSidebarData = () => {
+  const original = useFullSidebarData();
+  const sidebarDataComparer = useRouteDataComparer<
+    ITreeSidebarLeaf | ISidebarGroup
+  >();
+  const [sidebar] = useState(() => {
+    const data = Object.entries(original)
+      // match from the deepest level
+      .sort((a, b) => b[0].split('/').length - a[0].split('/').length)
+      .reduce<Record<string, ITreeSidebarLeaf>>((ret, [path, data]) => {
+        const parent = path.replace(/\/[^/]+$/, '');
+
+        if (parent) {
+          // handle nested sidebar data
+          // init parent first
+          ret[parent] ??= {
+            path: parent,
+            children: original[parent] || [],
+            ...getLeafMeta(original[parent] || []),
+          };
+
+          if (ret[path]) {
+            // sort children first
+            ret[path].children.sort(sidebarDataComparer);
+            // put n-level sidebar data as parent children
+            ret[parent].children.push(ret[path]);
+            delete ret[path];
+          } else {
+            // put last-level sidebar data as parent children
+            ret[parent].children.push(...data);
+          }
+        } else {
+          // sort children first
+          data.sort(sidebarDataComparer);
+          // put top-level sidebar data
+          ret[path] = {
+            path,
+            children: data,
+            ...getLeafMeta(data),
+          };
+        }
+
+        return ret;
+      }, {});
+
+    return Object.values(data);
   });
 
   return sidebar;

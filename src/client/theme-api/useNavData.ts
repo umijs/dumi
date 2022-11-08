@@ -1,8 +1,11 @@
 import { useFullSidebarData, useSiteData } from 'dumi';
 import { useState } from 'react';
 import type { IThemeConfig } from './types';
-import { useSidebarDataCompare } from './useSidebarData';
-import { useLocaleDocRoutes } from './utils';
+import {
+  pickRouteSortMeta,
+  useLocaleDocRoutes,
+  useRouteDataComparer,
+} from './utils';
 
 /**
  * hook for get nav data
@@ -11,7 +14,8 @@ export const useNavData = () => {
   const routes = useLocaleDocRoutes();
   const { themeConfig } = useSiteData();
   const sidebar = useFullSidebarData();
-  const sidebarDataCompare = useSidebarDataCompare();
+  const sidebarDataComparer =
+    useRouteDataComparer<NonNullable<IThemeConfig['nav']>[0]>();
   const [nav] = useState<NonNullable<IThemeConfig['nav']>>(() => {
     // use user config first
     if (themeConfig.nav) return themeConfig.nav;
@@ -26,18 +30,7 @@ export const useNavData = () => {
       }>((ret, route) => {
         // find routes which within the nav path
         if (route.path!.startsWith(link.slice(1))) {
-          switch (typeof route.meta?.frontmatter.nav) {
-            case 'object':
-              ret.title = route.meta!.frontmatter.nav.title || ret.title;
-              ret.order = route.meta!.frontmatter.nav.order ?? ret.order;
-              break;
-
-            case 'string':
-              ret.title = route.meta!.frontmatter.nav || ret.title;
-              break;
-
-            default:
-          }
+          pickRouteSortMeta(ret, 'nav', route.meta!.frontmatter);
         }
         return ret;
       }, {});
@@ -52,7 +45,7 @@ export const useNavData = () => {
 
     // TODO: 2-level nav data
 
-    return data.sort(sidebarDataCompare);
+    return data.sort(sidebarDataComparer);
   });
 
   return nav;

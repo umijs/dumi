@@ -1,6 +1,7 @@
 import { useAppData, useIntl, useSiteData } from 'dumi';
-import { useEffect, useLayoutEffect, useState } from 'react';
-import type { IRoutesById } from './types';
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import type { INavItem, IRouteMeta, IRoutesById } from './types';
+import { useLocale } from './useLocale';
 
 export const useLocaleDocRoutes = () => {
   const intl = useIntl();
@@ -68,3 +69,55 @@ ReactDOM.render(
 
 export const useIsomorphicLayoutEffect =
   typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+
+/**
+ * common comparer for sidebar/nav items
+ */
+export const useRouteDataComparer = <
+  T extends { order?: number; link?: string; path?: string; title?: string },
+>() => {
+  const locale = useLocale();
+
+  return useCallback((a: T, b: T) => {
+    return (
+      // smaller before larger for all
+      ('order' in a && 'order' in b ? a.order! - b.order! : 0) ||
+      // shallower before deeper for sidebar item
+      ('link' in a && 'link' in b
+        ? a.link!.split('/').length - b.link!.split('/').length
+        : 0) ||
+      // shallower before deeper for sidebar leaf
+      ('path' in a && 'path' in b
+        ? a.path!.split('/').length - b.path!.split('/').length
+        : 0) ||
+      // fallback to compare title (put non-title item at the end)
+      (a.title ? a.title.localeCompare(b.title || '', locale.id) : -1)
+    );
+  }, []);
+};
+
+/**
+ * common util for pick meta to sort sidebar/nav items
+ */
+export const pickRouteSortMeta = (
+  original: Partial<Pick<INavItem, 'order' | 'title'>>,
+  field: 'nav' | 'group',
+  fm: IRouteMeta['frontmatter'],
+) => {
+  const sub = fm[field];
+
+  switch (typeof sub) {
+    case 'object':
+      original.title = sub.title || original.title;
+      original.order = sub.order ?? original.order;
+      break;
+
+    case 'string':
+      original.title = sub || original.title;
+      break;
+
+    default:
+  }
+
+  return original;
+};

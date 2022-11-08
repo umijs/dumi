@@ -126,10 +126,11 @@ export type ILocalesConfig = ILocale[];
 export interface INavItem {
   title: string;
   link: string;
+  order: number;
   activePath?: string;
   [key: string]: any;
 }
-interface ISidebarItem {
+export interface ISidebarItem {
   title: string;
   link: string;
   order: number;
