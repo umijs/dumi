@@ -2,6 +2,7 @@ import type { IParsedBlockAsset } from '@/assetParsers/block';
 import type { IRouteMeta } from '@/client/theme-api/types';
 import type { IDumiConfig, IDumiTechStack } from '@/types';
 import enhancedResolve from 'enhanced-resolve';
+import type { IRoute } from 'umi';
 import type { Plugin, Processor } from 'unified';
 import type { Data } from 'vfile';
 import rehypeDemo from './rehypeDemo';
@@ -10,6 +11,7 @@ import rehypeEnhancedTag from './rehypeEnhancedTag';
 import rehypeImg from './rehypeImg';
 import rehypeIsolation from './rehypeIsolation';
 import rehypeJsxify from './rehypeJsxify';
+import rehypeLink from './rehypeLink';
 import rehypeRaw from './rehypeRaw';
 import rehypeSlug from './rehypeSlug';
 import rehypeStrip from './rehypeStrip';
@@ -58,6 +60,7 @@ export interface IMdTransformerOptions {
   resolve: IDumiConfig['resolve'];
   extraRemarkPlugins?: IDumiConfig['extraRemarkPlugins'];
   extraRehypePlugins?: IDumiConfig['extraRehypePlugins'];
+  routers: Record<string, IRoute>;
 }
 
 export interface IMdTransformerResult {
@@ -136,6 +139,10 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
       resolver,
     })
     .use(rehypeSlug)
+    .use(rehypeLink, {
+      fileAbsPath: opts.fileAbsPath,
+      routers: opts.routers,
+    })
     .use(rehypeAutolinkHeadings)
     .use(rehypeIsolation)
     .use(rehypeEnhancedTag)

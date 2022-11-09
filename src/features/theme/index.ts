@@ -99,13 +99,16 @@ export default (api: IApi) => {
 
       // append internal components, not allow override
       Object.assign(api.service.themeData.builtins, {
-        // TODO: Link...
         DumiDemo: {
           specifier: '{ DumiDemo }',
           source: 'dumi',
         },
         DumiDemoGrid: {
           specifier: '{ DumiDemoGrid }',
+          source: 'dumi',
+        },
+        Link: {
+          specifier: '{ Link }',
           source: 'dumi',
         },
       });
