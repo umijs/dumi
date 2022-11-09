@@ -1,10 +1,13 @@
 .dumi-site-beta-hero-title {
+  position: relative;
   display: inline-flex;
   align-items: flex-start;
-  padding-left: 90px;
 
   > small {
+    position: absolute;
     display: inline-block;
+    top: 0;
+    left: 100%;
     margin-left: 16px;
     padding: 0 8px 0 12px;
     color: #fff;
@@ -14,5 +17,6 @@
     background-color: rgb(255 107 48);
     box-shadow: 0 2px 10px rgb(255 107 48 / 19.6%);
     border-radius: 3px;
+    white-space: nowrap;
   }
 }

@@ -16,5 +16,6 @@
   "api.component.loading": "Properties definition is resolving, wait a moment...",
   "api.component.not.found": "Properties definition not found for {id} component",
   "content.tabs.default": "Doc",
-  "search.not.found": "No content was found"
+  "search.not.found": "No content was found",
+  "layout.sidebar.btn": "Sidebar"
 }

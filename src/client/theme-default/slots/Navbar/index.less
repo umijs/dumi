@@ -7,9 +7,19 @@
   display: flex;
   align-items: center;
 
+  @media @mobile {
+    display: block;
+    padding-top: 24px;
+  }
+
   > li {
     font-size: 18px;
     line-height: 1;
+    text-align: center;
+
+    @media @mobile {
+      padding: 12px 0;
+    }
 
     > a {
       color: @c-text-secondary;
@@ -28,6 +38,10 @@
 
     &:not(:last-child) {
       margin-right: 48px;
+
+      @media @mobile {
+        margin-right: 0;
+      }
     }
   }
 }

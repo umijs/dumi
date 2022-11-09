@@ -3,6 +3,11 @@
 .@{prefix}-search-bar {
   position: relative;
 
+  @media @mobile {
+    // TODO: support search for mobile devices
+    display: none;
+  }
+
   &:not(:last-child) {
     margin-right: 28px;
   }
@@ -57,6 +62,10 @@
     transform: translateY(-50%);
     transition: all 0.3s;
     pointer-events: none;
+
+    @media @mobile {
+      display: none;
+    }
   }
 
   .@{prefix}-search-popover {

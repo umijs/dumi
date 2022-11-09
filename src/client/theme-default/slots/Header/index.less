@@ -9,6 +9,12 @@
     position: sticky;
     background-color: fadeout(@c-site-bg, 10%);
     backdrop-filter: blur(6px);
+
+    // to avoid backdrop filter conflict with navbar overlay
+    &[data-mobile-active] {
+      background-color: @c-site-bg;
+      backdrop-filter: none;
+    }
   }
 
   &-content {
@@ -19,6 +25,10 @@
     max-width: @s-content-width;
     height: @s-header-height;
     box-sizing: border-box;
+
+    @media @mobile {
+      height: @s-header-height-m;
+    }
   }
 
   &-left {
@@ -33,6 +43,46 @@
     &-aside {
       display: flex;
       align-items: center;
+    }
+
+    @media @mobile {
+      position: fixed;
+      top: @s-header-height-m;
+      left: 0;
+      right: 0;
+      height: calc(100vh - @s-header-height-m);
+      display: block;
+      background-color: fadeout(@c-site-bg, 40%);
+      border-top: 1px solid @c-border-light;
+      backdrop-filter: blur(30px);
+      box-sizing: border-box;
+      transition: all 0.2s;
+
+      .@{prefix}-header:not([data-mobile-active]) & {
+        opacity: 0;
+        visibility: hidden;
+        padding-top: 20px;
+      }
+    }
+  }
+
+  &-menu-btn {
+    position: absolute;
+    top: 50%;
+    right: 24px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    transform: translateY(-50%);
+    display: none;
+
+    @media @mobile {
+      display: block;
+    }
+
+    > svg {
+      width: 20px;
+      fill: @c-text-secondary;
     }
   }
 }

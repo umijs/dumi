@@ -9,8 +9,20 @@
   font-weight: 500;
   text-decoration: none;
 
+  @media @mobile {
+    font-size: 18px;
+
+    img {
+      height: 32px;
+    }
+  }
+
   img {
     margin-right: 10px;
     height: 40px;
+
+    @media @mobile {
+      height: 32px;
+    }
   }
 }

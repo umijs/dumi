@@ -7,6 +7,60 @@ body {
 }
 
 .@{prefix}-doc-layout {
+  @media @mobile {
+    &::before {
+      content: '';
+      position: fixed;
+      z-index: 11; // 1 more than header
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: 0;
+      background-color: rgb(0 0 0 / 50%);
+      transition: all 0.1s;
+    }
+
+    &:not([data-mobile-sidebar-active])::before {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+
+  &-mobile-bar {
+    @height: 36px;
+
+    position: sticky;
+    z-index: 9; // 1 less than header
+    top: @s-header-height-m;
+    left: 0;
+    right: 0;
+    display: none;
+    align-items: center;
+    padding: 0 24px;
+    height: @height;
+    border-top: 1px solid @c-border-light;
+    background-color: fadeout(@c-site-bg, 10%);
+    backdrop-filter: blur(6px);
+
+    @media @mobile {
+      display: flex;
+    }
+
+    .@{prefix}-sidebar-btn {
+      padding: 0;
+      color: @c-text-secondary;
+      border: 0;
+      background-color: transparent;
+
+      > svg {
+        width: 16px;
+        margin-right: 6px;
+        fill: @c-text-secondary;
+        vertical-align: middle;
+      }
+    }
+  }
+
   > main {
     display: flex;
     align-items: flex-start;
@@ -29,6 +83,10 @@ body {
       overflow: auto;
       overscroll-behavior: contain;
       -webkit-overflow-scrolling: touch;
+
+      @media @mobile {
+        display: none;
+      }
 
       > h4 {
         margin: 0 0 8px;
