@@ -169,6 +169,21 @@ export default {
 }
 ```
 
+Monorepo 模式下
+
+```diff
+export default {
+  resolve: {
+    atomDirs: [
+      { type: 'component', dir: 'src' }, // 默认值
+      # 做顶级路由的区分，被解析到的 md 均有对应 `type` 复数形式的路由前缀，例如 `/basic-components/foo`
++     { type: 'basic-component', dir: 'packages/basic/src' },
++     { type: 'complex-component', dir: 'packages/complex/src' },
+    ]
+  }
+}
+```
+
 ## FrontMatter 升级
 
 Markdown 头部支持的 frontmatter 有如下变化：
