@@ -27,6 +27,7 @@ export default (api: IApi) => {
       resolve: api.config.resolve,
       extraRemarkPlugins: api.config.extraRemarkPlugins,
       extraRehypePlugins: api.config.extraRehypePlugins,
+      routers: api.appData.routes,
     };
 
     memo.module
