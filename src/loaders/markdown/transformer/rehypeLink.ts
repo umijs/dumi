@@ -1,6 +1,6 @@
 import type { Root } from 'hast';
 import path from 'path';
-import { lodash } from 'umi/plugin-utils';
+import { lodash, winPath } from 'umi/plugin-utils';
 import type { Transformer } from 'unified';
 import url from 'url';
 import type { IMdTransformerOptions } from '.';
@@ -33,10 +33,8 @@ export default function rehypeLink(
         // handle markdown link
         if (/\.md$/i.test(parsedUrl.pathname!)) {
           const { routers } = opts;
-          const absPath = path.resolve(
-            opts.fileAbsPath,
-            '..',
-            parsedUrl.pathname!,
+          const absPath = winPath(
+            path.resolve(opts.fileAbsPath, '..', parsedUrl.pathname!),
           );
 
           Object.keys(routers).forEach((key) => {

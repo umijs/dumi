@@ -112,7 +112,8 @@ export default (api: IApi) => {
     // get raw content for demo source file
     memo.module
       .rule('dumi-raw')
-      .resourceQuery(/raw/)
+      .post()
+      .resourceQuery(/dumi-raw/)
       .use('raw-loader')
       .loader(require.resolve('raw-loader'));
 
