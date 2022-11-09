@@ -15,6 +15,13 @@ export function addExampleAssets(data: typeof examples) {
 }
 
 /**
+ * internal function to get atom assets
+ */
+export function getExampleAssets() {
+  return examples;
+}
+
+/**
  * internal function to add meta for atom
  */
 export function addAtomMeta(atomId: string, data: Partial<AtomAsset>) {
