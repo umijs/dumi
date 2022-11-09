@@ -176,9 +176,9 @@ export default {
   resolve: {
     atomDirs: [
       { type: 'component', dir: 'src' }, // 默认值
-      # 做顶级路由的区分
-+     { type: 'component-package1', dir: 'packages/package1/src' },
-+     { type: 'component-package2', dir: 'packages/package2/src' },
+      # 做顶级路由的区分，被解析到的 md 均有对应 `type` 复数形式的路由前缀，例如 `/basic-components/foo`
++     { type: 'basic-component', dir: 'packages/basic/src' },
++     { type: 'complex-component', dir: 'packages/complex/src' },
     ]
   }
 }
