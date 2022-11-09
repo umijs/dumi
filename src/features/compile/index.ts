@@ -2,14 +2,29 @@ import type { IDemoLoaderOptions } from '@/loaders/demo';
 import type { IMdLoaderOptions } from '@/loaders/markdown';
 import ReactTechStack from '@/techStacks/react';
 import type { IApi, IDumiTechStack } from '@/types';
-import { addAtomMeta, addExampleAssets } from './assets';
+import { addAtomMeta, addExampleAssets } from '../assets';
 
 export default (api: IApi) => {
+  api.describe({ key: 'dumi:compile' });
+
   // register react tech stack by default
   api.register({
     key: 'registerTechStack',
     stage: Infinity,
     fn: () => new ReactTechStack(),
+  });
+
+  // add customize option for babel-loader, to avoid collect wrong deps result in MFSU
+  api.modifyConfig((memo) => {
+    if (memo.babelLoaderCustomize) {
+      api.logger.warn(
+        'Config `babelLoaderCustomize` will be override by dumi, please report issue if you need it.',
+      );
+    }
+
+    memo.babelLoaderCustomize = require.resolve('./babelLoaderCustomize');
+
+    return memo;
   });
 
   // configure loader to compile markdown
@@ -19,7 +34,7 @@ export default (api: IApi) => {
       key: 'registerTechStack',
       type: api.ApplyPluginsType.add,
     });
-    const loaderPath = require.resolve('../loaders/markdown');
+    const loaderPath = require.resolve('../../loaders/markdown');
     const loaderBaseOpts: Partial<IMdLoaderOptions> = {
       techStacks,
       cwd: api.cwd,
@@ -81,7 +96,7 @@ export default (api: IApi) => {
       .test(/\.(j|t)sx?$/)
       .resourceQuery(/meta$/)
       .use('page-meta-loader')
-      .loader(require.resolve('../loaders/page'));
+      .loader(require.resolve('../../loaders/page'));
 
     // get pre-transform result for each external demo component
     memo.module
@@ -91,7 +106,7 @@ export default (api: IApi) => {
       .enforce('pre')
       .resourceQuery(/techStack/)
       .use('demo-loader')
-      .loader(require.resolve('../loaders/demo'))
+      .loader(require.resolve('../../loaders/demo'))
       .options({ techStacks, cwd: api.cwd } as IDemoLoaderOptions);
 
     // get raw content for demo source file
