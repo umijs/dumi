@@ -1,6 +1,6 @@
 {
   "name": "father-plugin-dumi-theme",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-rc.0",
   "description": "The father plugin for develop dumi theme package",
   "keywords": [
     "father",
