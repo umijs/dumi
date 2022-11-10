@@ -10,6 +10,7 @@ import {
   pickRouteSortMeta,
   useLocaleDocRoutes,
   useRouteDataComparer,
+  concat,
 } from './utils';
 
 const DEFAULT_GROUP_STUB_TITLE = '$default-group-title';
@@ -84,6 +85,28 @@ export const useFullSidebarData = () => {
 
       return ret;
     }, {});
+
+    Object.keys(themeConfig.sidebar ?? {}).forEach(key => {
+      const group = themeConfig.sidebar?.[key]
+      group?.forEach(item => {
+        item.children = item.children?.map(child => {
+          // 如果 ISidebarItem 输入为string 就去sidebarConfig寻找相同link的配置
+          if (typeof child === 'string') {
+            const groups = concat(...Object.values(sidebarConfig))
+            const items = concat(...groups.map(group => group.children))
+            const isExist = items.find(item => item.link.toUpperCase() === (child as unknown as string).toUpperCase())
+            if (isExist) {
+              return {
+                ...isExist,
+                ...isExist.frontmatter,
+                frontmatter: isExist.frontmatter,
+              }
+            }
+          }
+          return child;
+        })
+      })
+    })
 
     // allow user partial override
     return Object.assign(sidebarConfig, themeConfig.sidebar);

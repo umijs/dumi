@@ -121,3 +121,13 @@ export const pickRouteSortMeta = (
 
   return original;
 };
+
+export function concat<T>(...values: Array<T[]>): T[] {
+  let array: T[] = []
+  for (const value of values) {
+    if (value instanceof Array) {
+      array = array.concat(value)
+    }
+  }
+  return array;
+}
