@@ -143,8 +143,14 @@ async function parseBlockAsset(opts: {
   });
 
   try {
-    await deferrer
-  } catch {}
+    await deferrer;
+  } catch {
+    /**
+     * eat errors, for preserve the dependency relationship of demo & md for md loader
+     * to make sure the parent md can be re-compiling when demo errors be fixed
+     * and don't worry, the real error still be reported by the demo loader
+     */
+  }
 
   return result;
 }
