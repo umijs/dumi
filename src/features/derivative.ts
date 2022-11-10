@@ -1,5 +1,6 @@
 import { CLIENT_DEPS, LOCAL_DUMI_DIR, LOCAL_PAGES_DIR } from '@/constants';
 import type { IApi } from '@/types';
+import { parseModule } from '@umijs/bundler-utils';
 import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
@@ -41,9 +42,25 @@ function getFilesByGlob(globExp: string, dir: string) {
 export default (api: IApi) => {
   const dumiAbsDir = path.join(api.cwd, LOCAL_DUMI_DIR);
   const strategies = {
-    // TODO: umi need read appJS from appData
-    // ref: https://github.com/umijs/umi/blob/9551b4d7832bc30088af75ecea60a0572d8ad767/packages/preset-umi/src/features/tmpFiles/tmpFiles.ts#L375
-    appJS: getFilesByGlob.bind(null, 'app.{js,jsx,ts,tsx}', dumiAbsDir),
+    // make return value same with umi
+    // ref: https://github.com/umijs/umi/blob/9551b4d7832bc30088af75ecea60a0572d8ad767/packages/preset-umi/src/features/appData/appData.ts#L128
+    async appJS() {
+      const [appJS] = getFilesByGlob('app.{js,jsx,ts,tsx}', dumiAbsDir);
+
+      if (appJS) {
+        const [, exports] = await parseModule({
+          path: appJS,
+          content: fs.readFileSync(appJS, 'utf-8'),
+        });
+
+        return {
+          path: appJS,
+          exports,
+        };
+      }
+
+      return null;
+    },
     globalCSS: getFilesByGlob.bind(
       null,
       'global.{css,less,scss,sass}',
@@ -120,10 +137,10 @@ export default (api: IApi) => {
   });
 
   // move all conventional files to .dumi dir
-  api.modifyAppData((memo) => {
-    Object.entries(strategies).forEach(([key, fn]) => {
-      memo[key] = fn();
-    });
+  api.modifyAppData(async (memo) => {
+    for (const [key, strategy] of Object.entries(strategies)) {
+      memo[key] = await strategy();
+    }
 
     return memo;
   });
@@ -132,16 +149,11 @@ export default (api: IApi) => {
     key: 'onGenerateFiles',
     // make sure before umi generate files
     stage: -Infinity,
-    fn() {
-      Object.entries(strategies).forEach(([key, fn]) => {
-        api.appData[key] = fn();
-      });
+    async fn() {
+      for (const [key, strategy] of Object.entries(strategies)) {
+        api.appData[key] = await strategy();
+      }
     },
-  });
-
-  // register .dumi/app as runtime plugin
-  api.addRuntimePlugin(() => {
-    return strategies.appJS().slice(0, 1);
   });
 
   // built-in other plugins
