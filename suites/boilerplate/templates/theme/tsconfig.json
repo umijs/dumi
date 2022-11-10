@@ -6,7 +6,7 @@
     "jsx": "react",
     "skipLibCheck": true,
     "baseUrl": "./",
-    "paths:": {
+    "paths": {
       "dumi/theme/*": ["src/*"]
     }
   }
