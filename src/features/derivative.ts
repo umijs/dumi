@@ -128,10 +128,15 @@ export default (api: IApi) => {
     return memo;
   });
 
-  api.onGenerateFiles(() => {
-    Object.entries(strategies).forEach(([key, fn]) => {
-      api.appData[key] = fn();
-    });
+  api.register({
+    key: 'onGenerateFiles',
+    // make sure before umi generate files
+    stage: -Infinity,
+    fn() {
+      Object.entries(strategies).forEach(([key, fn]) => {
+        api.appData[key] = fn();
+      });
+    },
   });
 
   // register .dumi/app as runtime plugin
