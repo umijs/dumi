@@ -32,7 +32,7 @@ async function parseBlockAsset(opts: {
     frontmatter: null,
   };
 
-  await build({
+  const deferrer = build({
     // do not emit file
     write: false,
     // enable bundle for trigger onResolve hook, but all deps will be externalized
@@ -141,6 +141,10 @@ async function parseBlockAsset(opts: {
       },
     ],
   });
+
+  try {
+    await deferrer
+  } catch {}
 
   return result;
 }
