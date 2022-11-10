@@ -55,9 +55,22 @@
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     box-shadow: 0 8px 24px 0 rgb(0 0 0 / 5%);
+
+    @media @mobile {
+      max-width: initial;
+      margin: 0 -24px;
+      padding: 24px 24px 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
   }
 
-  .@{prefix}-header + main > & {
+  .@{prefix}-header + main > &,
+  .@{prefix}-doc-layout-mobile-bar + main > & {
     min-height: calc(100vh - @s-header-height);
+
+    @media @mobile {
+      min-height: calc(100vh - @s-header-height-m);
+    }
   }
 }

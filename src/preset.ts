@@ -39,6 +39,7 @@ export default (api: IApi) => {
       require.resolve('./features/locales'),
       require.resolve('./features/parser'),
       require.resolve('./features/assets'),
+      require.resolve('./features/exportStatic'),
     ],
   };
 };

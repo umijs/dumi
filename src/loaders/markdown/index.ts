@@ -95,7 +95,7 @@ export const texts = {{{texts}}};
             asset = lodash.cloneDeep(asset);
             asset.dependencies[
               file
-            ].value = `{{{require('!!raw-loader!${sources[file]}?raw').default}}}`;
+            ].value = `{{{require('-!${sources[file]}?dumi-raw').default}}}`;
           });
 
           return JSON.stringify(asset, null, 2).replace(/"{{{|}}}"/g, '');

@@ -9,6 +9,12 @@
   text-align: center;
   box-sizing: border-box;
 
+  @media @mobile {
+    margin-top: -@s-header-height-m - 20;
+    padding-top: 160px;
+    height: 660px;
+  }
+
   + * {
     position: relative;
   }
@@ -32,6 +38,10 @@
     color: #4e6789;
     font-size: 20px;
     line-height: 1.6;
+
+    @media @mobile {
+      font-size: 16px;
+    }
   }
 
   &-actions {
@@ -49,6 +59,13 @@
       border-radius: 26px;
       box-sizing: border-box;
       transition: opacity 0.2s;
+
+      @media @mobile {
+        font-size: 16px;
+        height: 42px;
+        line-height: 40px;
+        min-width: 128px;
+      }
 
       &:hover {
         opacity: 0.8;

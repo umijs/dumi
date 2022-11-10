@@ -9,6 +9,26 @@
   box-sizing: border-box;
   overflow: auto;
 
+  @media @mobile {
+    position: fixed;
+    z-index: 20;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    max-height: initial;
+    padding-left: 32px;
+    background-color: @c-site-bg;
+    border-top: 1px solid @c-border-light;
+    box-shadow: 0 0 20px rgb(0 0 0 / 10%);
+    transition: 0.2s all;
+
+    .@{prefix}-doc-layout:not([data-mobile-sidebar-active]) & {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(-100%);
+    }
+  }
+
   > dl {
     margin: 0;
     padding: 0;

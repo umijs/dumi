@@ -1,4 +1,5 @@
-import { useIntl, useOutlet, useRouteMeta } from 'dumi';
+import { ReactComponent as IconSidebar } from '@ant-design/icons-svg/inline-svg/outlined/align-left.svg';
+import { useIntl, useOutlet, useRouteMeta, useSidebarData } from 'dumi';
 import Content from 'dumi/theme/slots/Content';
 import Features from 'dumi/theme/slots/Features';
 import Footer from 'dumi/theme/slots/Footer';
@@ -6,17 +7,23 @@ import Header from 'dumi/theme/slots/Header';
 import Hero from 'dumi/theme/slots/Hero';
 import Sidebar from 'dumi/theme/slots/Sidebar';
 import Toc from 'dumi/theme/slots/Toc';
-import React, { type FC } from 'react';
+import React, { useState, type FC } from 'react';
 import Helmet from 'react-helmet';
 import './index.less';
 
 const DocLayout: FC = () => {
   const intl = useIntl();
   const outlet = useOutlet();
+  const sidebar = useSidebarData();
+  const [showSidebar, setShowSidebar] = useState(false);
   const { frontmatter: fm } = useRouteMeta();
 
   return (
-    <div className="dumi-default-doc-layout">
+    <div
+      className="dumi-default-doc-layout"
+      data-mobile-sidebar-active={showSidebar || undefined}
+      onClick={() => setShowSidebar(false)}
+    >
       <Helmet>
         <html lang={intl.locale.replace(/-.+$/, '')} />
         {fm.title && <title>{fm.title}</title>}
@@ -35,6 +42,21 @@ const DocLayout: FC = () => {
       <Header />
       <Hero />
       <Features />
+      {sidebar && (
+        <div className="dumi-default-doc-layout-mobile-bar">
+          <button
+            type="button"
+            className="dumi-default-sidebar-btn"
+            onClick={(ev) => {
+              ev.stopPropagation();
+              setShowSidebar((v) => !v);
+            }}
+          >
+            <IconSidebar />
+            {intl.formatMessage({ id: 'layout.sidebar.btn' })}
+          </button>
+        </div>
+      )}
       <main>
         <Sidebar />
         <Content>
