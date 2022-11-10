@@ -74,6 +74,29 @@ const FILE_LIST = [
       },
     ],
   },
+  {
+    localname: 'api.md',
+    upstream: 'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/api/api.md',
+    actions: [
+      // remove head content
+      { type: 'slice', value: [6] },
+      { type: 'replace', value: ['{\n/*\n', ''] },
+      // remove unnecessary option
+      ...['dynamic'].map((option) => ({
+        type: 'replace',
+        value: [new RegExp(`(?:^|[\r\n])### ${option}[^]+?([\r\n]#|$)`), '$1'],
+      })),
+      // replace umi word
+      { type: 'replace', value: [/('|")umi/g, '$1dumi'] },
+      // replace jsx to jsx | pure
+      { type: 'replace', value: [/\n```(jsx|tsx)\s*\n/g, '\n```$1 | pure\n'] },
+      // replace umi statement
+      {
+        type: 'replace',
+        value: [/(在|用)(\s?)umi/gi, '$1$2dumi'],
+      },
+    ],
+  },
 ];
 
 if (!fs.existsSync(UMI_DOC_DIR)) {
