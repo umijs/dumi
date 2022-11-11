@@ -5,7 +5,7 @@ import { createRouteId } from '@umijs/core/dist/route/utils';
 import path from 'path';
 import { plural } from 'pluralize';
 import type { IRoute } from 'umi';
-import { glob, winPath } from 'umi/plugin-utils';
+import { glob, resolve, winPath } from 'umi/plugin-utils';
 
 const CTX_LAYOUT_ID = 'dumi-context-layout';
 
@@ -55,6 +55,25 @@ function flatRoute(route: IRoute) {
           // from: https://github.com/umijs/umi/blob/9e8f143229d6f5d8547e951c23cbb2c66cbfd190/packages/preset-umi/src/features/404/404.ts#L8
           route.path
         : route.absPath.slice(1);
+  }
+}
+
+/**
+ * get page route file
+ */
+function getClientPageFile(file: string, cwd: string) {
+  try {
+    // why use `resolve`?
+    // because `require.resolve` will use the final path of symlink file
+    // and in tnpm project, umi will get a file path includes `@` symbol then
+    // generate a chunk name with `@` symbol, which is not supported by cdn
+    return resolve.sync(`dumi/dist/${file}`, {
+      basedir: cwd,
+      preserveSymlinks: false,
+    });
+  } catch {
+    // fallback to use `require.resolve`, for dumi self docs & examples
+    return require.resolve(`../${file}`);
   }
 }
 
@@ -219,7 +238,7 @@ export default (api: IApi) => {
         path: '*',
         absPath: '/*',
         parentId: docLayoutId,
-        file: require.resolve('../client/pages/404'),
+        file: getClientPageFile('client/pages/404', api.cwd),
       };
     }
 
@@ -229,7 +248,7 @@ export default (api: IApi) => {
       path: `${SP_ROUTE_PREFIX}demos/:id`,
       absPath: `/${SP_ROUTE_PREFIX}demos/:id`,
       parentId: demoLayoutId,
-      file: require.resolve('../client/pages/Demo'),
+      file: getClientPageFile('client/pages/Demo', api.cwd),
     };
 
     return routes;
