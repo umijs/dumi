@@ -3,6 +3,7 @@ import enhancedResolve from 'enhanced-resolve';
 import fs from 'fs';
 import type { Root } from 'mdast';
 import path from 'path';
+import type { Root as YAMLRoot } from 'remark-frontmatter';
 import type { FrozenProcessor, Transformer } from 'unified';
 import url from 'url';
 import type { IMdTransformerOptions } from '.';
@@ -28,6 +29,11 @@ let visit: typeof import('unist-util-visit').visit;
  */
 function remarkRawAST(this: FrozenProcessor) {
   this.Compiler = function Compiler(ast: Root) {
+    // remove yaml node, to avoid override parent file frontmatter
+    visit<YAMLRoot, 'yaml'>(ast, 'yaml', (_node, i, parent) => {
+      parent!.children.splice(i!, 1);
+    });
+
     return ast;
   };
 }
