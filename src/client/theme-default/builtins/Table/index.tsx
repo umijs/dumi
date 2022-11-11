@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import './index.less';
 
-const Table: FC<{ children: ReactNode }> = ({ children }) => {
+const Table: FC<{ children: ReactNode }> = ({ children, ...props }) => {
   const container = useRef<HTMLDivElement>(null);
   const [leftFolded, setLeftFolded] = useState(false);
   const [rightFolded, setRightFolded] = useState(false);
@@ -41,7 +41,7 @@ const Table: FC<{ children: ReactNode }> = ({ children }) => {
         data-left-folded={leftFolded || undefined}
         data-right-folded={rightFolded || undefined}
       >
-        <table>{children}</table>
+        <table {...props}>{children}</table>
       </div>
     </div>
   );
