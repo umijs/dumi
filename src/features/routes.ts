@@ -26,7 +26,7 @@ function localizeUmiRoute(route: IRoute, locales: IApi['config']['locales']) {
       // avoid locale id conflict with folder/file name
       path.parse(route.file).name.endsWith(`.${locale.id}`),
   );
-
+  
   if (locale) {
     // strip single `/` locale base or move `/` to the end of locale base for join
     const base =
@@ -145,6 +145,8 @@ export default (api: IApi) => {
       );
       // flat route
       flatRoute(route);
+      // localize route
+      localizeUmiRoute(route, api.config.locales);
       routes[route.id] = route;
     });
 
