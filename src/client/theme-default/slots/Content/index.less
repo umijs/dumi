@@ -41,6 +41,54 @@
     padding-inline-end: 16px;
     border-color: @c-border-light;
   }
+
+  // blockquote
+  blockquote {
+    font-style: italic;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+    background-color: tint(@c-site-bg, 50%);
+    border-left: 5px solid @c-border-light;
+  }
+
+  // list
+  ul li {
+    line-height: 1.8;
+  }
+
+  // anchor of headings
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    > a[aria-hidden]:first-child {
+      float: left;
+      width: 20px;
+      padding-right: 4px;
+      margin-left: -24px;
+      color: @c-text;
+      // hide phantom blank node
+      font-size: 0;
+      text-align: right;
+      line-height: inherit;
+
+      &:hover {
+        border: 0;
+      }
+
+      > .icon-link::before {
+        content: '#';
+        color: @c-text-secondary;
+        font-size: 20px;
+      }
+    }
+
+    &:not(:hover) > a[aria-hidden]:first-child > .icon-link {
+      visibility: hidden;
+    }
+  }
 }
 
 .@{prefix}-content {

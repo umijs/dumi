@@ -1,5 +1,6 @@
 import { useParams, useSiteData } from 'dumi';
 import { createElement, type FC } from 'react';
+import './index.less';
 
 const DemoRenderPage: FC = () => {
   const { id } = useParams();
