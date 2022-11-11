@@ -1,7 +1,7 @@
 import { ReactComponent as IconSearch } from '@ant-design/icons-svg/inline-svg/outlined/search.svg';
 import { useIntl, useSiteSearch } from 'dumi';
 import React, { useEffect, useRef, useState, type FC } from 'react';
-import { SearchResult } from '../SearchResult';
+import SearchResult from '../SearchResult';
 import './index.less';
 
 const isAppleDevice = /(mac|iphone|ipod|ipad)/i.test(

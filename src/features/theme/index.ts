@@ -1,5 +1,6 @@
 import { LOCAL_THEME_DIR, PICKED_PKG_FIELDS, THEME_PREFIX } from '@/constants';
 import type { IApi } from '@/types';
+import { parseModuleSync } from '@umijs/bundler-utils';
 import fs from 'fs';
 import path from 'path';
 import { deepmerge, lodash, winPath } from 'umi/plugin-utils';
@@ -149,10 +150,27 @@ export default (api: IApi) => {
     // write shadow theme files to tmp dir
     themeMapKeys.forEach((key) => {
       Object.values(originalThemeData[key] || {}).forEach((item) => {
+        let contents = [];
+        // parse exports for theme module
+        const [, exports] = parseModuleSync({
+          path: item.source,
+          content: fs.readFileSync(item.source, 'utf-8'),
+        });
+
+        // export default
+        if (exports.includes('default')) {
+          contents.push(`export { default } from '${item.source}';`);
+        }
+
+        // export members
+        if (exports.some((exp) => exp !== 'default')) {
+          contents.push(`export * from '${item.source}';`);
+        }
+
         api.writeTmpFile({
           noPluginDir: true,
           path: `dumi/theme/${key}/${item.specifier}.ts`,
-          content: `export * from '${item.source}';\nexport { default } from '${item.source}';`,
+          content: contents.join('\n'),
         });
       });
     });

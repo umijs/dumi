@@ -112,9 +112,7 @@ const useFlatSearchData = (data: ISearchResult) => {
   return flatData;
 };
 
-export const SearchResult: FC<{ data: ISearchResult; loading: boolean }> = (
-  props,
-) => {
+const SearchResult: FC<{ data: ISearchResult; loading: boolean }> = (props) => {
   const [data, histsCount] = useFlatSearchData(props.data);
   const [activeIndex, setActiveIndex] = useState(-1);
 
@@ -181,3 +179,5 @@ export const SearchResult: FC<{ data: ISearchResult; loading: boolean }> = (
     </div>
   );
 };
+
+export default SearchResult;
