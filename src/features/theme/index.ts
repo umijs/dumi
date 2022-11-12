@@ -150,7 +150,7 @@ export default (api: IApi) => {
     // write shadow theme files to tmp dir
     themeMapKeys.forEach((key) => {
       Object.values(originalThemeData[key] || {}).forEach((item) => {
-        let contents = [];
+        let contents = ['//EMPTY'];
         // parse exports for theme module
         const [, exports] = parseModuleSync({
           path: item.source,
