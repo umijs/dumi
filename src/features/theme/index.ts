@@ -150,6 +150,9 @@ export default (api: IApi) => {
     // write shadow theme files to tmp dir
     themeMapKeys.forEach((key) => {
       Object.values(originalThemeData[key] || {}).forEach((item) => {
+        // skip write internal components
+        if (item.source === 'dumi') return;
+
         let contents = [];
         // parse exports for theme module
         const [, exports] = parseModuleSync({
