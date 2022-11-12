@@ -16,6 +16,7 @@ import rehypeRaw from './rehypeRaw';
 import rehypeSlug from './rehypeSlug';
 import rehypeStrip from './rehypeStrip';
 import rehypeText from './rehypeText';
+import remarkContainer from './remarkContainer';
 import remarkEmbed from './remarkEmbed';
 import remarkMeta from './remarkMeta';
 
@@ -89,6 +90,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
   const { unified } = await import('unified');
   const { default: remarkParse } = await import('remark-parse');
   const { default: remarkFrontmatter } = await import('remark-frontmatter');
+  const { default: remarkDirective } = await import('remark-directive');
   const { default: remarkBreaks } = await import('remark-breaks');
   const { default: remarkGfm } = await import('remark-gfm');
   const { default: remarkRehype } = await import('remark-rehype');
@@ -112,6 +114,8 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
       fileAbsPath: opts.fileAbsPath,
       resolve: opts.resolve,
     })
+    .use(remarkDirective)
+    .use(remarkContainer)
     .use(remarkBreaks)
     .use(remarkGfm);
 
