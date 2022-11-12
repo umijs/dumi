@@ -1,6 +1,6 @@
 {
   "name": "dumi",
-  "version": "2.0.0-rc.5",
+  "version": "2.0.0-rc.6",
   "description": "Framework for developing UI components",
   "keywords": [],
   "license": "MIT",
@@ -91,6 +91,7 @@
     "rehype-remove-comments": "^5.0.0",
     "rehype-stringify": "^9.0.3",
     "remark-breaks": "^3.0.2",
+    "remark-directive": "^2.0.1",
     "remark-frontmatter": "^4.0.1",
     "remark-gfm": "^3.0.1",
     "remark-parse": "^10.0.1",

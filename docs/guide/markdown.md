@@ -27,3 +27,67 @@ dumi 对 HTML 默认的 `embed` 标签做了扩展，允许在 Markdown 文档�
 
 <embed src="/path/to/some.md#RE-/^[^\r\n]+/"></embed>
 ```
+
+## Badge
+
+dumi 内置了 Badge 组件，可以为 Markdown 内容（例如标题）添加标签，例如：
+
+```md
+### Info Badge <Badge>info</Badge>
+
+### Warning Badge <Badge type="warning">warning</Badge>
+
+### Error Badge <Badge type="error">error</Badge>
+
+### Success Badge <Badge type="success">success</Badge>
+```
+
+会被渲染为：
+
+### Info Badge <Badge>info</Badge>
+
+### Warning Badge <Badge type="warning">warning</Badge>
+
+### Error Badge <Badge type="error">error</Badge>
+
+### Success Badge <Badge type="success">success</Badge>
+
+## Container
+
+需要在正文中以醒目的方式展示额外信息时，可以使用 Container 扩展语法，例如：
+
+```md
+:::info{title=自定义标题}
+这是一条普通信息
+:::
+
+:::success
+这是一条成功信息
+:::
+
+:::warning
+这是一条警告信息
+:::
+
+:::error
+这是一条错误信息
+:::
+```
+
+将会被渲染为：
+
+:::info{title=自定义标题}
+这是一条普通信息
+:::
+
+:::success
+这是一条成功信息
+:::
+
+:::warning
+这是一条警告信息
+:::
+
+:::error
+这是一条错误信息
+:::

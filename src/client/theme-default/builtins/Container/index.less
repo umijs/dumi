@@ -1,0 +1,70 @@
+@import (reference) '../../styles/variables.less';
+
+.@{prefix}-container {
+  margin: 24px 0 32px;
+  padding: 18px 16px 18px 44px;
+  border-radius: 4px;
+
+  > svg {
+    float: left;
+    fill: currentcolor;
+    margin-left: -26px;
+    width: 18px;
+  }
+
+  > h4 {
+    margin: 1px 0 0;
+    font-size: 15px;
+    line-height: 1;
+  }
+
+  > p {
+    margin: 8px 0 0;
+    font-size: 15px;
+    line-height: 1.2;
+  }
+
+  &[data-type='info'] {
+    @color: darken(desaturate(@c-primary, 45%), 10%);
+
+    color: @color;
+    background: lighten(@c-primary, 42%);
+
+    > p {
+      color: desaturate(@color, 20%);
+    }
+  }
+
+  &[data-type='warning'] {
+    @color: darken(desaturate(@c-warning, 20%), 2%);
+
+    color: @color;
+    background: lighten(@c-warning, 51%);
+
+    > p {
+      color: desaturate(@color, 24%);
+    }
+  }
+
+  &[data-type='success'] {
+    @color: darken(desaturate(@c-success, 5%), 1%);
+
+    color: @color;
+    background: lighten(@c-success, 59%);
+
+    > p {
+      color: desaturate(@color, 22%);
+    }
+  }
+
+  &[data-type='error'] {
+    @color: darken(desaturate(@c-error, 20%), 1%);
+
+    color: @color;
+    background: lighten(@c-error, 51%);
+
+    > p {
+      color: desaturate(@color, 25%);
+    }
+  }
+}
