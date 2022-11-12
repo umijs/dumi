@@ -1,0 +1,33 @@
+@import (reference) '../../styles/variables.less';
+
+.@{prefix}-badge {
+  display: inline-block;
+  margin-left: 2px;
+  padding: 1px 8px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 20px;
+  border-radius: 4px;
+  vertical-align: top;
+
+  &:not([type]),
+  &[type='info'] {
+    color: @c-primary;
+    background: lighten(@c-primary, 40%);
+  }
+
+  &[type='warning'] {
+    color: @c-warning;
+    background: lighten(@c-warning, 48%);
+  }
+
+  &[type='success'] {
+    color: @c-success;
+    background: lighten(@c-success, 54%);
+  }
+
+  &[type='error'] {
+    color: @c-error;
+    background: lighten(@c-error, 47%);
+  }
+}

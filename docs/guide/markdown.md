@@ -27,3 +27,27 @@ dumi 对 HTML 默认的 `embed` 标签做了扩展，允许在 Markdown 文档�
 
 <embed src="/path/to/some.md#RE-/^[^\r\n]+/"></embed>
 ```
+
+## Badge
+
+dumi 内置了 Badge 组件，可以为 Markdown 内容（例如标题）添加标签，例如：
+
+```md
+### Info Badge <Badge>info</Badge>
+
+### Warning Badge <Badge type="warning">warning</Badge>
+
+### Error Badge <Badge type="error">error</Badge>
+
+### Success Badge <Badge type="success">success</Badge>
+```
+
+会被渲染为：
+
+### Info Badge <Badge>info</Badge>
+
+### Warning Badge <Badge type="warning">warning</Badge>
+
+### Error Badge <Badge type="error">error</Badge>
+
+### Success Badge <Badge type="success">success</Badge>

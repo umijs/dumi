@@ -27,7 +27,14 @@ export default function rehypeSlug(): Transformer<Root> {
     visit<Root, 'element'>(tree, 'element', (node) => {
       if (HEADING_TAGS.includes(node.tagName)) {
         // handle headings in current doc
-        const title = toString(node);
+        const title = toString({
+          type: 'element',
+          tagName: node.tagName,
+          // discard text within Badge tag
+          children: node.children.filter(
+            (child) => child.type !== 'element' || child.tagName !== 'Badge',
+          ),
+        }).trim();
         const depth = Number(node.tagName.slice(1));
         const id = slugger.slug(title);
 
