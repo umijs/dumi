@@ -53,8 +53,8 @@ function flatRoute(route: IRoute) {
       route.path === '*'
         ? // FIXME: compatible with wrong conventional 404 absPath, wait for umi fix
           // from: https://github.com/umijs/umi/blob/9e8f143229d6f5d8547e951c23cbb2c66cbfd190/packages/preset-umi/src/features/404/404.ts#L8
-          route.path
-        : route.absPath.slice(1);
+          route.path.toLowerCase()
+        : route.absPath.slice(1).toLowerCase();
   }
 }
 
@@ -215,7 +215,8 @@ export default (api: IApi) => {
           .replace(/(\/index|\/README)?\.md$/, '')
           // like umi standard route
           // ref: https://github.com/umijs/umi/blob/cabb186057d801494340f533195b6b330e5ef4e0/packages/core/src/route/routesConvention.ts#L88
-          .replace(/\./g, '/');
+          .replace(/\./g, '/')
+          .toLowerCase();
         const routeId = createRouteId(file);
 
         routes[routeId] = {
@@ -250,6 +251,16 @@ export default (api: IApi) => {
       parentId: demoLayoutId,
       file: getClientPageFile('client/pages/Demo', api.cwd),
     };
+
+    // validate route path
+    Object.values(routes).forEach((route) => {
+      if (route.path !== encodeURI(route.path)) {
+        throw new Error(
+          `Invalid route path: ${route.path}, please rename it with only alphanumeric, dash and slash.
+    at ${route.file}`,
+        );
+      }
+    });
 
     return routes;
   });
