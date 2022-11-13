@@ -8,10 +8,10 @@ export default (api: IApi) => {
     esm: {
       output: 'dist',
       ignores: ['src/plugin/**', 'src/plugin.*'],
+      extraBabelPlugins: [
+        require.resolve('./babelPlugins/transformRelativeSlots'),
+      ],
     },
-    // keep slots imports like `dumi/theme/slots/xxx`
-    // to override auto-alias from tsconfig.json paths
-    alias: { 'dumi/theme': 'dumi/theme' },
   };
 
   if (fs.existsSync(path.join(api.cwd, 'src/plugin'))) {
