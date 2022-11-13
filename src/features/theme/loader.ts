@@ -65,10 +65,13 @@ function getComponentMapFromDir(globExp: string, dir: string) {
     .reduce<IThemeLoadResult['builtins']>((ret, file) => {
       const specifier = path.basename(file.replace(/(\/index)?\.[a-z]+$/, ''));
 
-      ret[specifier] = {
-        specifier,
-        source: winPath(path.join(dir, file)),
-      };
+      // ignore non-component files
+      if (/^[A-Z\d]/.test(specifier)) {
+        ret[specifier] = {
+          specifier,
+          source: winPath(path.join(dir, file)),
+        };
+      }
 
       return ret;
     }, {});
