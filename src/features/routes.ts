@@ -26,6 +26,7 @@ function localizeUmiRoute(route: IRoute, locales: IApi['config']['locales']) {
       // avoid locale id conflict with folder/file name
       path.parse(route.file).name.endsWith(`.${locale.id}`),
   );
+
   if (locale) {
     // strip single `/` locale base or move `/` to the end of locale base for join
     const base =
@@ -44,17 +45,17 @@ function localizeUmiRoute(route: IRoute, locales: IApi['config']['locales']) {
 }
 
 /**
- * make nested route be flat
+ * make nested doc route be flat
  */
-function flatRoute(route: IRoute) {
-  if (route.parentId !== 'DocLayout') {
-    route.parentId = 'DocLayout';
+function flatRoute(route: IRoute, docLayoutId: string) {
+  if (route.parentId !== docLayoutId) {
+    route.parentId = docLayoutId;
     route.path =
       route.path === '*'
         ? // FIXME: compatible with wrong conventional 404 absPath, wait for umi fix
           // from: https://github.com/umijs/umi/blob/9e8f143229d6f5d8547e951c23cbb2c66cbfd190/packages/preset-umi/src/features/404/404.ts#L8
-          route.path.toLowerCase()
-        : route.absPath.slice(1).toLowerCase();
+          route.path
+        : route.absPath.slice(1);
   }
 }
 
@@ -161,10 +162,8 @@ export default (api: IApi) => {
       route.file = winPath(
         path.resolve(api.config.conventionRoutes.base, route.file),
       );
-      // flat route
-      flatRoute(route);
-      // localize route
-      localizeUmiRoute(route, api.config.locales);
+
+      // save route
       routes[route.id] = route;
     });
 
@@ -180,9 +179,6 @@ export default (api: IApi) => {
         // prefix id with dir, same as umi internal route id
         route.id = `${dir}/${key}`;
 
-        // flat route
-        flatRoute(route);
-
         // also allow prefix type for doc routes
         if (type) {
           const pluralType = plural(type);
@@ -193,9 +189,6 @@ export default (api: IApi) => {
 
         // use absolute path to avoid umi prefix with conventionRoutes.base
         route.file = winPath(path.resolve(base, route.file));
-
-        // localize route
-        localizeUmiRoute(route, api.config.locales);
 
         // save route
         routes[route.id] = route;
@@ -215,8 +208,7 @@ export default (api: IApi) => {
           .replace(/(\/index|\/README)?\.md$/, '')
           // like umi standard route
           // ref: https://github.com/umijs/umi/blob/cabb186057d801494340f533195b6b330e5ef4e0/packages/core/src/route/routesConvention.ts#L88
-          .replace(/\./g, '/')
-          .toLowerCase();
+          .replace(/\./g, '/');
         const routeId = createRouteId(file);
 
         routes[routeId] = {
@@ -226,10 +218,28 @@ export default (api: IApi) => {
           parentId: docLayoutId,
           file: winPath(path.resolve(base, file)),
         };
+      });
+    });
+
+    // normalize & validate conventional routes
+    Object.values(routes).forEach((route) => {
+      if (route.path !== encodeURI(route.path)) {
+        // validate route path
+        throw new Error(
+          `Invalid route path: ${route.path}, please rename it with only alphanumeric, dash and slash.
+    at ${route.file}`,
+        );
+      } else if (!route.isLayout) {
+        // flat route
+        flatRoute(route, docLayoutId);
 
         // localize route
-        localizeUmiRoute(routes[routeId], api.config.locales);
-      });
+        localizeUmiRoute(route, api.config.locales);
+
+        // lowercase route path
+        route.path = route.path.toLowerCase();
+        route.absPath = route.absPath.toLowerCase();
+      }
     });
 
     // append default 404 page
@@ -251,16 +261,6 @@ export default (api: IApi) => {
       parentId: demoLayoutId,
       file: getClientPageFile('client/pages/Demo', api.cwd),
     };
-
-    // validate route path
-    Object.values(routes).forEach((route) => {
-      if (route.path !== encodeURI(route.path)) {
-        throw new Error(
-          `Invalid route path: ${route.path}, please rename it with only alphanumeric, dash and slash.
-    at ${route.file}`,
-        );
-      }
-    });
 
     return routes;
   });
