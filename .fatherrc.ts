@@ -15,4 +15,11 @@ export default defineConfig({
       },
     },
   },
+  prebundle: {
+    deps: {
+      // pre-bundle analytics for reduce install size
+      // because @umijs/plugins depends on a lot of 3rd-party deps
+      '@umijs/plugins/dist/analytics': { dts: false },
+    },
+  },
 });

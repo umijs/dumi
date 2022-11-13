@@ -156,6 +156,6 @@ export default (api: IApi) => {
     },
   });
 
-  // built-in other plugins
-  api.registerPlugins([require.resolve('@umijs/plugins/dist/analytics')]);
+  // built-in other umi plugins (such as analytics)
+  api.registerPlugins([require.resolve('../../compiled/@umijs/plugins')]);
 };
