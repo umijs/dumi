@@ -7,5 +7,5 @@ export default {
 <br />
 Powered by self`,
   },
-  ssr: {},
+  ssr: process.env.NODE_ENV === 'development' ? false : {},
 };
