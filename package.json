@@ -97,6 +97,7 @@
     "remark-parse": "^10.0.1",
     "remark-rehype": "^10.1.0",
     "sass": "^1.55.0",
+    "sitemap": "^7.1.1",
     "umi": "^4.0.30",
     "unified": "^10.1.2",
     "unist-util-visit": "^4.1.0",

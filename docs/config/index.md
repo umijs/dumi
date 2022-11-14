@@ -158,6 +158,13 @@ dumi 内置了站点统计的功能，目前支持 [Google Analytics](https://an
 }
 ```
 
+### sitemap
+
+- 类型：`{ hostname: string, exclude?: string[] }`
+- 默认值：`undefined`
+
+启用 `sitemap.xml` 自动生成功能。`hostname` 配置项用来指定 URL 的域名前缀，`exclude` 配置项用来忽略某些不需要包含在 sitemap 中的路由。
+
 ## 基础配置项
 
 <embed src="../.upstream/config.md"></embed>

@@ -119,8 +119,11 @@ dumi 2.0 将使用特有的 `.dumirc.ts` 作为配置文件，请将原有的 `.
      # 废弃，由注册的技术栈决定解析什么语言的 demo
 -    previewLangs: [...],
    },
-   # 暂不支持，后续版本会支持
--  sitemap: {},
+   sitemap: {
+-    excludes: [...],
+     # sitemap.excludes 配置项升级
++    exclude: [...],
+   },
    # apiParser 的子配置项暂不支持，后续版本会支持
    apiParser: {
 -    ...

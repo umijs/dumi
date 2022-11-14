@@ -40,6 +40,7 @@ export default (api: IApi) => {
       require.resolve('./features/parser'),
       require.resolve('./features/assets'),
       require.resolve('./features/exportStatic'),
+      require.resolve('./features/sitemap'),
     ],
   };
 };
