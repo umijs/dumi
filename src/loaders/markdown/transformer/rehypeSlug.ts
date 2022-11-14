@@ -59,6 +59,8 @@ export default function rehypeSlug(): Transformer<Root> {
               id: slugger.slug(demo.id),
               depth: vFile.data.frontmatter?.demo?.tocDepth || 3,
               title: previewerProps.title,
+              // put debug flag to control hide/show in toc
+              ...(previewerProps.debug ? { _debug_demo: true } : {}),
             });
           }
         });

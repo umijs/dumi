@@ -83,6 +83,10 @@ export interface IRouteMeta {
     id: string;
     depth: number;
     title: string;
+    /**
+     * private field, will be removed in the future
+     */
+    _debug_demo?: boolean;
   }[];
   // route texts
   texts: {
