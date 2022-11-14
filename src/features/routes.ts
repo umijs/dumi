@@ -204,12 +204,13 @@ export default (api: IApi) => {
       );
 
       atomFiles.forEach((file) => {
-        const routePath = winPath(path.join(plural(type), file))
+        const routeFile = winPath(path.join(plural(type), file));
+        const routePath = routeFile
           .replace(/(\/index|\/README)?\.md$/, '')
           // like umi standard route
           // ref: https://github.com/umijs/umi/blob/cabb186057d801494340f533195b6b330e5ef4e0/packages/core/src/route/routesConvention.ts#L88
           .replace(/\./g, '/');
-        const routeId = createRouteId(file);
+        const routeId = createRouteId(routeFile);
 
         routes[routeId] = {
           id: routeId,
