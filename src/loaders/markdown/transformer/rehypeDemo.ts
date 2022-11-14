@@ -210,6 +210,10 @@ export default function rehypeDemo(
             let component = '';
 
             if (codeType === 'external') {
+              const chunkName = [vFile.data.frontmatter!.atomId, 'demos']
+                .filter(Boolean)
+                .join('__');
+
               // external demo options
               parseOpts.fileAbsPath = codeNode.properties!.src as string;
               parseOpts.id = getCodeId(
@@ -218,7 +222,7 @@ export default function rehypeDemo(
                 path.parse(parseOpts.fileAbsPath).name,
                 vFile.data.frontmatter!.atomId,
               );
-              component = `React.lazy(() => import('${winPath(
+              component = `React.lazy(() => import( /* webpackChunkName: "${chunkName}" */ '${winPath(
                 parseOpts.fileAbsPath,
               )}?techStack=${techStack.name}'))`;
               // use code value as title
