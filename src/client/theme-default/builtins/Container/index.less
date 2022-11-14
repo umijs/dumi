@@ -1,9 +1,16 @@
 @import (reference) '../../styles/variables.less';
 
-.@{prefix}-container {
-  margin: 24px 0 32px;
+.@{prefix}-container.markdown {
   padding: 18px 16px 18px 44px;
   border-radius: 4px;
+
+  &:not(:first-child) {
+    margin-top: 24px;
+  }
+
+  &:not(:last-child) {
+    margin-top: 32px;
+  }
 
   > svg {
     float: left;

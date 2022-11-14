@@ -57,6 +57,7 @@ importers:
       rc-tabs: 12.1.0-alpha.1
       react: ^18.2.0
       react-copy-to-clipboard: ^5.1.0
+      react-error-boundary: ^3.1.4
       react-helmet: ^6.1.0
       react-intl: ^6.1.1
       rehype-autolink-headings: ^6.1.1
@@ -113,6 +114,7 @@ importers:
       raw-loader: 4.0.2
       rc-tabs: 12.1.0-alpha.1_react@18.2.0
       react-copy-to-clipboard: 5.1.0_react@18.2.0
+      react-error-boundary: 3.1.4_react@18.2.0
       react-helmet: 6.1.0_react@18.2.0
       react-intl: 6.2.1_qtbnez4q7bzoc4eqybg3efzzxe
       rehype-autolink-headings: 6.1.1
@@ -9955,6 +9957,16 @@ packages:
       loose-envify: 1.4.0
       react: 18.1.0
       scheduler: 0.22.0
+    dev: false
+
+  /react-error-boundary/3.1.4_react@18.2.0:
+    resolution: {integrity: sha512-uM9uPzZJTF6wRQORmSrvOIgt4lJ9MC1sNgEOj2XGsDTRE4kmpWxg7ENK9EWNKJRMAOY9z0MuF4yIfl6gp4sotA==}
+    engines: {node: '>=10', npm: '>=6'}
+    peerDependencies:
+      react: '>=16.13.1'
+    dependencies:
+      '@babel/runtime': 7.20.0
+      react: 18.2.0
     dev: false
 
   /react-error-overlay/6.0.9:
