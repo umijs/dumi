@@ -19,10 +19,10 @@ importers:
       '@types/pluralize': ^0.0.29
       '@types/react': ^18.0.16
       '@types/react-copy-to-clipboard': ^5.0.4
-      '@umijs/bundler-utils': 4.0.0-canary.20221114.1
-      '@umijs/core': 4.0.0-canary.20221114.1
-      '@umijs/lint': 4.0.0-canary.20221114.1
-      '@umijs/plugins': 4.0.0-canary.20221114.1
+      '@umijs/bundler-utils': 4.0.0-canary.20221114.2
+      '@umijs/core': 4.0.0-canary.20221114.2
+      '@umijs/lint': 4.0.0-canary.20221114.2
+      '@umijs/plugins': 4.0.0-canary.20221114.2
       codesandbox: ^2.2.3
       deepmerge: ^4.2.2
       dumi-afx-deps: ^1.0.0-alpha.1
@@ -72,7 +72,7 @@ importers:
       stylelint: ^14.9.1
       ts-node: ^10.0.0
       typescript: ~4.7.4
-      umi: 4.0.0-canary.20221114.1
+      umi: 4.0.0-canary.20221114.2
       unified: ^10.1.2
       unist-util-visit: ^4.1.0
       unist-util-visit-parents: ^5.1.1
@@ -86,8 +86,8 @@ importers:
       '@swc/core': 1.3.11
       '@types/hast': 2.3.4
       '@types/mdast': 3.0.10
-      '@umijs/bundler-utils': 4.0.0-canary.20221114.1
-      '@umijs/core': 4.0.0-canary.20221114.1
+      '@umijs/bundler-utils': 4.0.0-canary.20221114.2
+      '@umijs/core': 4.0.0-canary.20221114.2
       codesandbox: 2.2.3
       deepmerge: 4.2.2
       dumi-afx-deps: 1.0.0-alpha.1_typescript@4.7.4
@@ -126,7 +126,7 @@ importers:
       remark-rehype: 10.1.0
       sass: 1.55.0
       sitemap: 7.1.1
-      umi: 4.0.0-canary.20221114.1_u5lshdp7az7qqq64teletwockm
+      umi: 4.0.0-canary.20221114.2_u5lshdp7az7qqq64teletwockm
       unified: 10.1.2
       unist-util-visit: 4.1.1
       unist-util-visit-parents: 5.1.1
@@ -144,8 +144,8 @@ importers:
       '@types/pluralize': 0.0.29
       '@types/react': 18.0.24
       '@types/react-copy-to-clipboard': 5.0.4
-      '@umijs/lint': 4.0.0-canary.20221114.1_vbvdlgs3e46rplttq642uxrlca
-      '@umijs/plugins': 4.0.0-canary.20221114.1_bbvjflvjoibwhtpmedigb26h6y
+      '@umijs/lint': 4.0.0-canary.20221114.2_vbvdlgs3e46rplttq642uxrlca
+      '@umijs/plugins': 4.0.0-canary.20221114.2_bbvjflvjoibwhtpmedigb26h6y
       eslint: 8.26.0
       father: 4.1.0
       husky: 8.0.1
@@ -2590,21 +2590,21 @@ packages:
       '@typescript-eslint/types': 5.41.0
       eslint-visitor-keys: 3.3.0
 
-  /@umijs/ast/4.0.0-canary.20221114.1:
-    resolution: {integrity: sha512-ZCLtHYAJQSDO6f0I9tsYlprMcUc9mkHwri6E6dQWdVEo/c0u6O6s5qdPtzvia5LSFoMSe0KeeHYpNLUXdvA/uA==}
+  /@umijs/ast/4.0.0-canary.20221114.2:
+    resolution: {integrity: sha512-aW1CJpijgDpwMnSVl/kGj3Luf5yA0/qww/dMaVDPPLcl2HOOch0YqJd0T0etvi1CMsxcQQ403pO5apDm2f9MoQ==}
     dependencies:
-      '@umijs/bundler-utils': 4.0.0-canary.20221114.1
+      '@umijs/bundler-utils': 4.0.0-canary.20221114.2
     transitivePeerDependencies:
       - supports-color
     dev: false
 
-  /@umijs/babel-preset-umi/4.0.0-canary.20221114.1:
-    resolution: {integrity: sha512-yDsARUPwJZJ7hLq3IygZg9jwqrKG5vDLIoVN0dw1aptsGsUIDDLH2ZiAitepYYNjHmwIGJHTNVt3rprPyZumqA==}
+  /@umijs/babel-preset-umi/4.0.0-canary.20221114.2:
+    resolution: {integrity: sha512-wyahJvdWM8vUnYddCUcO0h4Mk/SP0+/p2f5327/zMhBS2UK23StTNsMNBZcJg4ap37cF3H1KWH+5+rRzzE2kUg==}
     dependencies:
       '@babel/runtime': 7.18.9
       '@bloomberg/record-tuple-polyfill': 0.0.4
-      '@umijs/bundler-utils': 4.0.0-canary.20221114.1
-      '@umijs/utils': 4.0.0-canary.20221114.1
+      '@umijs/bundler-utils': 4.0.0-canary.20221114.2
+      '@umijs/utils': 4.0.0-canary.20221114.2
       core-js: 3.22.4
     transitivePeerDependencies:
       - supports-color
@@ -2621,12 +2621,12 @@ packages:
       - supports-color
     dev: true
 
-  /@umijs/bundler-esbuild/4.0.0-canary.20221114.1:
-    resolution: {integrity: sha512-2TEmfFZZNNUDxukgCoFIcv4ZZjzv17cMKBq3EhirVzKq4iny8ouQBS9iY4iGPMS4/0hUOT7t7LNeUdEO1KSY0Q==}
+  /@umijs/bundler-esbuild/4.0.0-canary.20221114.2:
+    resolution: {integrity: sha512-Tev+R1WYw8nfvzaeF5G4jOsKf9jRDfbYIAPLS6PM4sgVhzRqX/tjL96IXQaWGsizRXhWUH1A5vbzNCODKvbfKA==}
     hasBin: true
     dependencies:
-      '@umijs/bundler-utils': 4.0.0-canary.20221114.1
-      '@umijs/utils': 4.0.0-canary.20221114.1
+      '@umijs/bundler-utils': 4.0.0-canary.20221114.2
+      '@umijs/utils': 4.0.0-canary.20221114.2
       enhanced-resolve: 5.9.3
       postcss: 8.4.18
       postcss-flexbugs-fixes: 5.0.2_postcss@8.4.18
@@ -2649,10 +2649,10 @@ packages:
       - supports-color
     dev: true
 
-  /@umijs/bundler-utils/4.0.0-canary.20221114.1:
-    resolution: {integrity: sha512-5UUxW77pYcW5YIuKQFoBqvfjMOmCsyUIh/Ijjxbc9YmFhdgdPGj0ZsJyPwyqcR3t9C9Rea8Vct+ah5QqnA2WIA==}
+  /@umijs/bundler-utils/4.0.0-canary.20221114.2:
+    resolution: {integrity: sha512-nxyBH1uwxqx+kFgmZNJDyr5TLDkBIG2+tT/VDiMz5mfyE+CpfugN0Hf4c+F6a/50ZpBTSmeJW73PsLo/gLJJRw==}
     dependencies:
-      '@umijs/utils': 4.0.0-canary.20221114.1
+      '@umijs/utils': 4.0.0-canary.20221114.2
       esbuild: 0.14.49
       regenerate: 1.4.2
       regenerate-unicode-properties: 10.0.1
@@ -2672,13 +2672,13 @@ packages:
       - supports-color
     dev: true
 
-  /@umijs/bundler-vite/4.0.0-canary.20221114.1:
-    resolution: {integrity: sha512-aWUCADh7/qAg8lFTu9L3EDuZmfgZ+vZJBHBR39LkqLhNT3pClyZrXsAtcC2HGTdWMyVP8+elCMwQE7pdCXHHZw==}
+  /@umijs/bundler-vite/4.0.0-canary.20221114.2:
+    resolution: {integrity: sha512-4+fdVEbF0Qi7XHod+Te4mE+4Dwe/vFov2mmt/sz4iKU1tyj07qdP941mIlfiKRUwq5eIPg2GIAbR0IPPirl/7w==}
     hasBin: true
     dependencies:
       '@svgr/core': 6.2.1
-      '@umijs/bundler-utils': 4.0.0-canary.20221114.1
-      '@umijs/utils': 4.0.0-canary.20221114.1
+      '@umijs/bundler-utils': 4.0.0-canary.20221114.2
+      '@umijs/utils': 4.0.0-canary.20221114.2
       '@vitejs/plugin-react': 1.2.0
       postcss-preset-env: 7.5.0
       rollup-plugin-visualizer: 5.6.0
@@ -2688,8 +2688,8 @@ packages:
       - supports-color
     dev: false
 
-  /@umijs/bundler-webpack/4.0.0-canary.20221114.1_typescript@4.7.4:
-    resolution: {integrity: sha512-/2VP5aTfsOpBUnqzHxX9ZLlK9P1Ix4baiPBak2gHTct0XDS5cm30+IP8CovXrU/p1vP6VZvO10+P/Ayr+RwLcA==}
+  /@umijs/bundler-webpack/4.0.0-canary.20221114.2_typescript@4.7.4:
+    resolution: {integrity: sha512-nSGwXM5lLSwhgTwFeMswWUKTdm3LgE4E4peu3t/sStn5MQEKUlQ4KAc1sNn6vrfFCGSTnxg8pPCTQdGjU8M44g==}
     hasBin: true
     dependencies:
       '@parcel/css': 1.9.0
@@ -2698,11 +2698,11 @@ packages:
       '@svgr/plugin-jsx': 6.5.1_@svgr+core@6.2.1
       '@svgr/plugin-svgo': 6.5.1_@svgr+core@6.2.1
       '@types/hapi__joi': 17.1.8
-      '@umijs/babel-preset-umi': 4.0.0-canary.20221114.1
-      '@umijs/bundler-utils': 4.0.0-canary.20221114.1
+      '@umijs/babel-preset-umi': 4.0.0-canary.20221114.2
+      '@umijs/bundler-utils': 4.0.0-canary.20221114.2
       '@umijs/case-sensitive-paths-webpack-plugin': 1.0.1
-      '@umijs/mfsu': 4.0.0-canary.20221114.1
-      '@umijs/utils': 4.0.0-canary.20221114.1
+      '@umijs/mfsu': 4.0.0-canary.20221114.2
+      '@umijs/utils': 4.0.0-canary.20221114.2
       cors: 2.8.5
       css-loader: 6.7.1
       es5-imcompatible-versions: 0.1.77
@@ -2767,11 +2767,11 @@ packages:
   /@umijs/case-sensitive-paths-webpack-plugin/1.0.1:
     resolution: {integrity: sha512-kDKJ8yTarxwxGJDInG33hOpaQRZ//XpNuuznQ/1Mscypw6kappzFmrBr2dOYave++K7JHouoANF354UpbEQw0Q==}
 
-  /@umijs/core/4.0.0-canary.20221114.1:
-    resolution: {integrity: sha512-SX+qtHBZ+e70mW4ohRYoErcIh7oJ6nrEHc9P+Acsw/JmLmthRG9wkbvgMyseffrLAkbp4xmr/1QgfC+HDVgV/Q==}
+  /@umijs/core/4.0.0-canary.20221114.2:
+    resolution: {integrity: sha512-nEqiVedTExxo6OzbPIyOGWpsSyixzdKxSrdPpbt3yFhCC+xPVwQH6tijqXUlj78QUnznkwPCNNkXklOAP9XVRw==}
     dependencies:
-      '@umijs/bundler-utils': 4.0.0-canary.20221114.1
-      '@umijs/utils': 4.0.0-canary.20221114.1
+      '@umijs/bundler-utils': 4.0.0-canary.20221114.2
+      '@umijs/utils': 4.0.0-canary.20221114.2
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -2796,15 +2796,15 @@ packages:
       query-string: 6.14.1
     dev: false
 
-  /@umijs/lint/4.0.0-canary.20221114.1_vbvdlgs3e46rplttq642uxrlca:
-    resolution: {integrity: sha512-Vif804JNVj/fBc9sI+b6olWj32lSAxwbzXYBIKhakxSbqbxhdNjiWUcBl7etzrjcblqHW6dseYd6u8Z4Xb1GYQ==}
+  /@umijs/lint/4.0.0-canary.20221114.2_vbvdlgs3e46rplttq642uxrlca:
+    resolution: {integrity: sha512-99momNjKr6hmT14cWNwVl3HjHd1N2NTbvBHXeTJ7DSZJU8/cQjv+3br3Nu0MLyv9eXGZ4JRKy4jkDpc1DiiKtQ==}
     dependencies:
       '@babel/core': 7.18.9
       '@babel/eslint-parser': 7.18.9_cjip4hokpjhf4bbkea6jsnplgy
       '@stylelint/postcss-css-in-js': 0.38.0_vlaoyimx2imj5gm3vlc667gbzm
       '@typescript-eslint/eslint-plugin': 5.36.1_ei4iy4ey74svthphr6igs5stca
       '@typescript-eslint/parser': 5.36.1_t7ph7dpvh7g5bfovntuojbuu4i
-      '@umijs/babel-preset-umi': 4.0.0-canary.20221114.1
+      '@umijs/babel-preset-umi': 4.0.0-canary.20221114.2
       eslint-plugin-jest: 26.1.5_4ifndkgfjn547sqcesnykk7ooa
       eslint-plugin-react: 7.29.4_eslint@8.26.0
       eslint-plugin-react-hooks: 4.5.0_eslint@8.26.0
@@ -2823,12 +2823,12 @@ packages:
       - supports-color
       - typescript
 
-  /@umijs/mfsu/4.0.0-canary.20221114.1:
-    resolution: {integrity: sha512-6UGG64wfPijzM1qgNmwiYJy82vA+cEyYXsxjSmzyqbS5FcAv4sM04RFGF97+pAnaLzry9epNrQ7M8lmPl+cTJg==}
+  /@umijs/mfsu/4.0.0-canary.20221114.2:
+    resolution: {integrity: sha512-FOAMyUTXQ5/i2E5fI8pl5vHjfvgPpvhfIkD42nLtS21DNkxa/1zXLSQ3JtO01KeEoZ2USjyXaEy5UN2kKQ+/4g==}
     dependencies:
-      '@umijs/bundler-esbuild': 4.0.0-canary.20221114.1
-      '@umijs/bundler-utils': 4.0.0-canary.20221114.1
-      '@umijs/utils': 4.0.0-canary.20221114.1
+      '@umijs/bundler-esbuild': 4.0.0-canary.20221114.2
+      '@umijs/bundler-utils': 4.0.0-canary.20221114.2
+      '@umijs/utils': 4.0.0-canary.20221114.2
       enhanced-resolve: 5.9.3
       is-equal: 1.6.4
     transitivePeerDependencies:
@@ -2847,20 +2847,20 @@ packages:
       - supports-color
     dev: true
 
-  /@umijs/plugin-run/4.0.0-canary.20221114.1:
-    resolution: {integrity: sha512-6vlcdewf2DMCUe7aisMr5rBbRqj+BoWKLujodPoF6mTDuk6wN5MnNAqK+JuBOW/5OerbTiCktYHncn73uotKoQ==}
+  /@umijs/plugin-run/4.0.0-canary.20221114.2:
+    resolution: {integrity: sha512-2PFG9VMdSDWBM+/YY9MHdpjrmbJafytHrxSOSpRtSTxenF9WWUfjrQ0SI6ltttEbdshxrn1weinYKohc32DYcg==}
     dependencies:
       tsx: 3.11.0
     dev: false
 
-  /@umijs/plugins/4.0.0-canary.20221114.1_bbvjflvjoibwhtpmedigb26h6y:
-    resolution: {integrity: sha512-i6cwZumxg/JGa3NZQgrzR1Bo/Kz1TZIP+V/VEJRbvdUrBCWTXAn2t4NWOvDY4Vi8smqY2lpDCqE97vx/C3L77Q==}
+  /@umijs/plugins/4.0.0-canary.20221114.2_bbvjflvjoibwhtpmedigb26h6y:
+    resolution: {integrity: sha512-cfEq0JmXvdqJ0SKDJ81vXYTqUHBR+szuQB8POpIRyQyycAssO8Zvl2YV0eGvqW8YtmqDWZO7EfyICD7+8/e6Eg==}
     dependencies:
       '@ahooksjs/use-request': 2.8.15_react@18.2.0
       '@ant-design/antd-theme-variable': 1.0.0
       '@ant-design/icons': 4.7.0_react@18.2.0
       '@ant-design/pro-components': 2.3.30_react@18.2.0
-      '@umijs/bundler-utils': 4.0.0-canary.20221114.1
+      '@umijs/bundler-utils': 4.0.0-canary.20221114.2
       '@umijs/valtio': 1.0.0_react@18.2.0
       antd-dayjs-webpack-plugin: 1.0.6_dayjs@1.11.6
       axios: 0.27.2
@@ -2898,22 +2898,22 @@ packages:
       - vite
     dev: true
 
-  /@umijs/preset-umi/4.0.0-canary.20221114.1_bjf462zii7ut2in426himlaelu:
-    resolution: {integrity: sha512-7PtWvy5JdNG4VlITcaY47jaGWfiaOKhw7EHjcPGwBM8C51/2qUpI3HO9bLC7IvGAuDeHDOt0B8lGOQ+lGcYFTw==}
+  /@umijs/preset-umi/4.0.0-canary.20221114.2_bjf462zii7ut2in426himlaelu:
+    resolution: {integrity: sha512-6YXn/mnkzskDZz0LdmEiNq0tao8CVtIdZZEeOZg8YDPYUCUd3j+fLocqMYULBfFKAnztChx+j09K4GeJkuYMKw==}
     dependencies:
-      '@umijs/ast': 4.0.0-canary.20221114.1
-      '@umijs/babel-preset-umi': 4.0.0-canary.20221114.1
-      '@umijs/bundler-utils': 4.0.0-canary.20221114.1
-      '@umijs/bundler-vite': 4.0.0-canary.20221114.1
-      '@umijs/bundler-webpack': 4.0.0-canary.20221114.1_typescript@4.7.4
-      '@umijs/core': 4.0.0-canary.20221114.1
+      '@umijs/ast': 4.0.0-canary.20221114.2
+      '@umijs/babel-preset-umi': 4.0.0-canary.20221114.2
+      '@umijs/bundler-utils': 4.0.0-canary.20221114.2
+      '@umijs/bundler-vite': 4.0.0-canary.20221114.2
+      '@umijs/bundler-webpack': 4.0.0-canary.20221114.2_typescript@4.7.4
+      '@umijs/core': 4.0.0-canary.20221114.2
       '@umijs/did-you-know': 1.0.1
       '@umijs/history': 5.3.1
-      '@umijs/mfsu': 4.0.0-canary.20221114.1
-      '@umijs/plugin-run': 4.0.0-canary.20221114.1
-      '@umijs/renderer-react': 4.0.0-canary.20221114.1_ef5jwxihqo6n7gxfmzogljlgcm
-      '@umijs/server': 4.0.0-canary.20221114.1
-      '@umijs/utils': 4.0.0-canary.20221114.1
+      '@umijs/mfsu': 4.0.0-canary.20221114.2
+      '@umijs/plugin-run': 4.0.0-canary.20221114.2
+      '@umijs/renderer-react': 4.0.0-canary.20221114.2_ef5jwxihqo6n7gxfmzogljlgcm
+      '@umijs/server': 4.0.0-canary.20221114.2
+      '@umijs/utils': 4.0.0-canary.20221114.2
       babel-plugin-dynamic-import-node: 2.3.3
       click-to-react-component: 1.0.8_oo3wrtu3iemqyhgz437ilatmle
       core-js: 3.22.4
@@ -2945,8 +2945,8 @@ packages:
       - webpack-plugin-serve
     dev: false
 
-  /@umijs/renderer-react/4.0.0-canary.20221114.1_ef5jwxihqo6n7gxfmzogljlgcm:
-    resolution: {integrity: sha512-hfY6oW3arEyyXBag9RPy0wHKVzPDMppb6x0OtGbNdHt38fO72QTIM7rJPD1PlpC23AwYVRC+cQyeeDZVmgvFXg==}
+  /@umijs/renderer-react/4.0.0-canary.20221114.2_ef5jwxihqo6n7gxfmzogljlgcm:
+    resolution: {integrity: sha512-qAJT/pvZidMiRdlh+hHO84hPNwL5LxzTj5xKs2J/E7pqsB4SiAJb0n3fPl1aGIMQOtDVJ2OkrDQC8g2s8zCfRA==}
     peerDependencies:
       react: '>=16.8'
       react-dom: '>=16.8'
@@ -2960,8 +2960,8 @@ packages:
       react-router-dom: 6.3.0_ef5jwxihqo6n7gxfmzogljlgcm
     dev: false
 
-  /@umijs/renderer-react/4.0.0-canary.20221114.1_react@18.2.0:
-    resolution: {integrity: sha512-hfY6oW3arEyyXBag9RPy0wHKVzPDMppb6x0OtGbNdHt38fO72QTIM7rJPD1PlpC23AwYVRC+cQyeeDZVmgvFXg==}
+  /@umijs/renderer-react/4.0.0-canary.20221114.2_react@18.2.0:
+    resolution: {integrity: sha512-qAJT/pvZidMiRdlh+hHO84hPNwL5LxzTj5xKs2J/E7pqsB4SiAJb0n3fPl1aGIMQOtDVJ2OkrDQC8g2s8zCfRA==}
     peerDependencies:
       react: '>=16.8'
       react-dom: '>=16.8'
@@ -2983,10 +2983,10 @@ packages:
       memoize-one: 5.2.1
     dev: true
 
-  /@umijs/server/4.0.0-canary.20221114.1:
-    resolution: {integrity: sha512-hDCQ31bBUqA47x6LvFwfXltZ+hzTqS7g9kU6aCrzSI6nCQFTM1rUyLSmhSmiBwtMhjGsJImI6Jzz4hbcScdyTA==}
+  /@umijs/server/4.0.0-canary.20221114.2:
+    resolution: {integrity: sha512-IMKXK8/kEbXC/nqnt66w6QNbj5NIuXV79geN8nmgt3cqix8bjnkcR08lJJKv2IY8fWK4uGWQcmI/W9pD8IOgdQ==}
     dependencies:
-      '@umijs/bundler-utils': 4.0.0-canary.20221114.1
+      '@umijs/bundler-utils': 4.0.0-canary.20221114.2
       history: 5.3.0
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
@@ -2999,12 +2999,12 @@ packages:
     resolution: {integrity: sha512-XlcwzSYQ/SRZpHdwIyMDS4FOGX5kP4U/2g2mykyn/iPQTK4xTiQAyBu6UnnDnn7d5P8s7Atzh1C7H0ETNOypJg==}
     dev: true
 
-  /@umijs/test/4.0.0-canary.20221114.1:
-    resolution: {integrity: sha512-jq6Vqf4x0gadHNbCZAYM7lBw4ASU2k8Bdab/anlsr7SaY/JBJ3CqZJPeFw9pxdkcocQ2IVzCrioaMg63UrxyQw==}
+  /@umijs/test/4.0.0-canary.20221114.2:
+    resolution: {integrity: sha512-65fGuuYtmm0/ju+E6eexyNC8L/d4Owv21GikyuAFn9FC5SwtKfWe8rDYmqJLSfhWcIpZvFtVFMrozyduNpdvlg==}
     dependencies:
       '@babel/plugin-transform-modules-commonjs': 7.18.6
       '@jest/types': 27.5.1
-      '@umijs/bundler-utils': 4.0.0-canary.20221114.1
+      '@umijs/bundler-utils': 4.0.0-canary.20221114.2
       babel-jest: 28.1.3
       esbuild: 0.14.51
       identity-obj-proxy: 3.0.0
@@ -3023,8 +3023,8 @@ packages:
       react: 18.2.0
     dev: true
 
-  /@umijs/utils/4.0.0-canary.20221114.1:
-    resolution: {integrity: sha512-cnEtyf+46LM6OKR442vBnXveZ9DdJyDvMINe+f1P/j6z9orpn13kqXtuL9ZwyiLWRlKieMPIih44sCwt9ibLWQ==}
+  /@umijs/utils/4.0.0-canary.20221114.2:
+    resolution: {integrity: sha512-G1yHACx0exKqy6oUk4pSWnEmGrhb+PFvjdjei1wPTWo8yIOVAD33aeURw0fKRKxTwjQ0EtOPYnz57ZZr5Todtw==}
     dependencies:
       chokidar: 3.5.3
       pino: 7.11.0
@@ -9344,6 +9344,9 @@ packages:
     resolution: {integrity: sha512-rdVMIi7Q4B0XbXqNUEI+Z4E+pueiu/CS5E6vRCQommzdQ/sgsS4dK42U7GX8oJR+TJOtT+Qv3GkNo6iijUMp3Q==}
     peerDependencies:
       postcss: '>4 <9'
+    peerDependenciesMeta:
+      postcss:
+        optional: true
     dev: false
 
   /postcss-preset-env/7.5.0:
@@ -9959,6 +9962,9 @@ packages:
     resolution: {integrity: sha512-fU1Txz7Budmvamp7bshe4Zi32d0ll7ect+ccxNu9FlObT605GOEB8BfO4tmRJ39R5Zj831VCpvQ05QPBW5yb+w==}
     peerDependencies:
       react: ^18.1.0
+    peerDependenciesMeta:
+      react:
+        optional: true
     dependencies:
       loose-envify: 1.4.0
       react: 18.1.0
@@ -11550,21 +11556,21 @@ packages:
     engines: {node: '>=4.2.0'}
     hasBin: true
 
-  /umi/4.0.0-canary.20221114.1_u5lshdp7az7qqq64teletwockm:
-    resolution: {integrity: sha512-7pEOOad+5gduXN9JY6aejn53lNzQcZx7YOWtO2CUjwn0yVhzN15OHGEBV3+vrY1bBbhBZBwLMufOYWKClrW9VA==}
+  /umi/4.0.0-canary.20221114.2_u5lshdp7az7qqq64teletwockm:
+    resolution: {integrity: sha512-djc8ijaLXFsVfkxLUK6kTbZNaXQUx65ZO3HcrrbbMwII/ZEg/Y/dU4iYTTD5BLHGAVFnkjBhkcs6vTXDz6AtRQ==}
     engines: {node: '>=14'}
     hasBin: true
     dependencies:
       '@babel/runtime': 7.18.9
-      '@umijs/bundler-utils': 4.0.0-canary.20221114.1
-      '@umijs/bundler-webpack': 4.0.0-canary.20221114.1_typescript@4.7.4
-      '@umijs/core': 4.0.0-canary.20221114.1
-      '@umijs/lint': 4.0.0-canary.20221114.1_vbvdlgs3e46rplttq642uxrlca
-      '@umijs/preset-umi': 4.0.0-canary.20221114.1_bjf462zii7ut2in426himlaelu
-      '@umijs/renderer-react': 4.0.0-canary.20221114.1_react@18.2.0
-      '@umijs/server': 4.0.0-canary.20221114.1
-      '@umijs/test': 4.0.0-canary.20221114.1
-      '@umijs/utils': 4.0.0-canary.20221114.1
+      '@umijs/bundler-utils': 4.0.0-canary.20221114.2
+      '@umijs/bundler-webpack': 4.0.0-canary.20221114.2_typescript@4.7.4
+      '@umijs/core': 4.0.0-canary.20221114.2
+      '@umijs/lint': 4.0.0-canary.20221114.2_vbvdlgs3e46rplttq642uxrlca
+      '@umijs/preset-umi': 4.0.0-canary.20221114.2_bjf462zii7ut2in426himlaelu
+      '@umijs/renderer-react': 4.0.0-canary.20221114.2_react@18.2.0
+      '@umijs/server': 4.0.0-canary.20221114.2
+      '@umijs/test': 4.0.0-canary.20221114.2
+      '@umijs/utils': 4.0.0-canary.20221114.2
       prettier-plugin-organize-imports: 2.3.4_gd3y7r3s3evy6b2vthd7dmacga
       prettier-plugin-packagejson: 2.3.0_prettier@2.7.1
     transitivePeerDependencies:
