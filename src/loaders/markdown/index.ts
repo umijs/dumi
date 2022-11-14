@@ -163,9 +163,11 @@ export default function mdLoader(this: any, content: string) {
     return;
   } else if (cacheKey in deferrer) {
     // deferrer cache
-    deferrer[cacheKey].then((res) => {
-      cb(null, emit.call(this, opts, res));
-    });
+    deferrer[cacheKey]
+      .then((res) => {
+        cb(null, emit.call(this, opts, res));
+      })
+      .catch(cb);
     return;
   }
 
