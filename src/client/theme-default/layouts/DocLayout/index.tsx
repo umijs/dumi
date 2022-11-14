@@ -1,5 +1,5 @@
 import { ReactComponent as IconSidebar } from '@ant-design/icons-svg/inline-svg/outlined/align-left.svg';
-import { useIntl, useOutlet, useRouteMeta, useSidebarData } from 'dumi';
+import { Helmet, useIntl, useOutlet, useRouteMeta, useSidebarData } from 'dumi';
 import Content from 'dumi/theme/slots/Content';
 import Features from 'dumi/theme/slots/Features';
 import Footer from 'dumi/theme/slots/Footer';
@@ -8,7 +8,6 @@ import Hero from 'dumi/theme/slots/Hero';
 import Sidebar from 'dumi/theme/slots/Sidebar';
 import Toc from 'dumi/theme/slots/Toc';
 import React, { useState, type FC } from 'react';
-import Helmet from 'react-helmet';
 import './index.less';
 
 const DocLayout: FC = () => {
