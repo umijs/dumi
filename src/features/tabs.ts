@@ -71,8 +71,10 @@ export default (api: IApi) => {
           id: routeId,
           file: route.file,
         });
-        routesTabMapping[parentFile] ??= [];
-        routesTabMapping[parentFile].push(routeId);
+        if (!routesTabMapping[parentFile]?.includes(routeId)) {
+          routesTabMapping[parentFile] ??= [];
+          routesTabMapping[parentFile].push(routeId);
+        }
       } else {
         // apply plugin tabs for normal routes
         tabsFromPlugins.forEach((tab) => {
