@@ -39,8 +39,14 @@ function localizeUmiRoute(route: IRoute, locales: IApi['config']['locales']) {
     // /bar/index/zh-CN => /{prefix}/bar
     route.path = `${base}${route.path
       .replace(new RegExp(`/${locale.id}$`), '')
-      .replace(/((^|\/)(index|README))$/, '')}${suffix}`;
+      .replace(/((^|\/)(index|README))$/, '')
+      // lowercase for original route path
+      .toLowerCase()}${suffix}`;
     route.absPath = route.path !== '/' ? `/${route.path}` : route.path;
+  } else {
+    // also lowercase for non-locale route
+    route.path = route.path.toLowerCase();
+    route.absPath = route.absPath.toLowerCase();
   }
 }
 
@@ -236,10 +242,6 @@ export default (api: IApi) => {
 
         // localize route
         localizeUmiRoute(route, api.config.locales);
-
-        // lowercase route path
-        route.path = route.path.toLowerCase();
-        route.absPath = route.absPath.toLowerCase();
       }
     });
 
