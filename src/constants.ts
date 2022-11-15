@@ -28,6 +28,5 @@ export const CLIENT_DEPS = [
   'prismjs',
   'rc-tabs',
   'react-copy-to-clipboard',
-  'react-helmet',
   'react-intl',
 ];
