@@ -2,7 +2,7 @@ import { isTabRouteFile } from '@/features/tabs';
 import type { IThemeLoadResult } from '@/features/theme/loader';
 import { getCache } from '@/utils';
 import fs from 'fs';
-import { lodash, Mustache } from 'umi/plugin-utils';
+import { lodash, Mustache, winPath } from 'umi/plugin-utils';
 import transform, {
   type IMdTransformerOptions,
   type IMdTransformerResult,
@@ -179,7 +179,7 @@ export default function mdLoader(this: any, content: string) {
       IMdLoaderOptions,
       'mode' | 'builtins' | 'onResolveDemos'
     >),
-    fileAbsPath: this.resourcePath,
+    fileAbsPath: winPath(this.resourcePath),
   });
 
   deferrer[cacheKey]

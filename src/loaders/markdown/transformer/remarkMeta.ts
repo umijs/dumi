@@ -41,9 +41,10 @@ function getGuessAtomId(opts: IRemarkMetaOpts) {
 
     // only collect atom files within atom resolve dir
     if (atomAbsDir) {
-      return path
-        .relative(atomAbsDir, atomFile)
-        .replace(/((^|\/)index)?\.\w+$/, '');
+      return winPath(path.relative(atomAbsDir, atomFile)).replace(
+        /((^|\/)index)?\.\w+$/,
+        '',
+      );
     }
   }
 }

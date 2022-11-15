@@ -1,9 +1,9 @@
 import { parseCodeFrontmatter } from '@/utils';
 import path from 'path';
-import { lodash } from 'umi/plugin-utils';
+import { lodash, winPath } from 'umi/plugin-utils';
 
 export default function pageMetaLoader(this: any, raw: string) {
-  const pathWithoutIndex = this.resourcePath.replace(
+  const pathWithoutIndex = winPath(this.resourcePath).replace(
     /(\/index([^/]+)?)?\.(j|t)sx?$/,
     '',
   );
