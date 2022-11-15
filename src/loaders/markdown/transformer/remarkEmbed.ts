@@ -1,7 +1,7 @@
 import { getFileContentByRegExp, getFileRangeLines } from '@/utils';
 import enhancedResolve from 'enhanced-resolve';
 import fs from 'fs';
-import type { Root } from 'mdast';
+import type { Paragraph, Root } from 'mdast';
 import path from 'path';
 import type { Root as YAMLRoot } from 'remark-frontmatter';
 import type { FrozenProcessor, Transformer } from 'unified';
@@ -14,11 +14,11 @@ const EMBED_CLOSE_TAG = '</embed>';
 let unified: typeof import('unified').unified;
 let remarkParse: typeof import('remark-parse').default;
 let remarkFrontmatter: typeof import('remark-frontmatter').default;
-let visit: typeof import('unist-util-visit').visit;
+let visit: typeof import('unist-util-visit-parents').visitParents;
 
 // workaround to import pure esm module
 (async () => {
-  ({ visit } = await import('unist-util-visit'));
+  ({ visitParents: visit } = await import('unist-util-visit-parents'));
   ({ unified } = await import('unified'));
   ({ default: remarkParse } = await import('remark-parse'));
   ({ default: remarkFrontmatter } = await import('remark-frontmatter'));
@@ -30,8 +30,13 @@ let visit: typeof import('unist-util-visit').visit;
 function remarkRawAST(this: FrozenProcessor) {
   this.Compiler = function Compiler(ast: Root) {
     // remove yaml node, to avoid override parent file frontmatter
-    visit<YAMLRoot, 'yaml'>(ast, 'yaml', (_node, i, parent) => {
-      parent!.children.splice(i!, 1);
+    visit<YAMLRoot, 'yaml'>(ast, 'yaml', (node, ancestors) => {
+      const parent = ancestors[ancestors.length - 1] as Root;
+
+      ancestors[ancestors.length - 1].children.splice(
+        parent.children.indexOf(node),
+        1,
+      );
     });
 
     return ast;
@@ -47,9 +52,15 @@ export default function remarkEmbed(
   });
 
   return (tree, vFile) => {
-    visit<Root, 'html'>(tree, 'html', (node, i, parent) => {
+    // initialize field
+    vFile.data.embeds = [];
+
+    visit<Root, 'html'>(tree, 'html', (node, ancestors) => {
       if (node.value.startsWith(EMBED_OPEN_TAG)) {
         let relatedNodeCount = 1;
+        const parent = ancestors[ancestors.length - 1] as Paragraph;
+        const grandParent = ancestors[ancestors.length - 2] as Root;
+        const i = parent.children.indexOf(node);
         const src = node.value.match(/src=("|')([^"']+)\1/)?.[2];
 
         if (src) {
@@ -99,15 +110,37 @@ export default function remarkEmbed(
             }
           }
 
-          // replace embed tag with mdast
-          parent!.children.splice(
-            i!,
-            relatedNodeCount,
-            ...(mdast as any).children,
+          // replace embed tag's parent with new nodes
+          const newParentNodes: Root['children'] = [
+            ...(mdast as Root).children,
+          ];
+          const before = parent!.children.slice(0, i!);
+          const after = parent!.children.slice(i! + relatedNodeCount);
+
+          // extract to a before paragraph for all children that before embed tag
+          if (before.length) {
+            newParentNodes.unshift({
+              type: 'paragraph',
+              children: before,
+            });
+          }
+
+          // extract to an after paragraph for all children that before embed tag
+          if (after.length) {
+            newParentNodes.push({
+              type: 'paragraph',
+              children: after,
+            });
+          }
+
+          // replace parent
+          grandParent!.children.splice(
+            grandParent!.children.indexOf(parent),
+            1,
+            ...newParentNodes,
           );
 
           // record embed file path for declare loader dependency
-          vFile.data.embeds ??= [];
           vFile.data.embeds!.push(...[absPath].concat(embeds!));
         }
       }

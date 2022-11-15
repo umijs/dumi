@@ -48,7 +48,7 @@ declare module 'vfile' {
     texts: IRouteMeta['texts'];
     frontmatter: IRouteMeta['frontmatter'];
     toc: IRouteMeta['toc'];
-    embeds?: string[];
+    embeds: string[];
   }
 }
 
