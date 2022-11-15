@@ -42,14 +42,16 @@ function getDemoSourceFiles(demos: IMdTransformerResult['meta']['demos'] = []) {
 }
 
 function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
+  const { demos, embeds = [] } = ret.meta;
+
+  // declare embedded files as loader dependency, for re-compiling when file changed
+  embeds.forEach((file) => this.addDependency(file));
+
+  // declare demo source files as loader dependency, for re-compiling when file changed
+  getDemoSourceFiles(demos).forEach((file) => this.addDependency(file));
+
   if (opts.mode === 'meta') {
-    const { demos, frontmatter, toc, texts, embeds = [] } = ret.meta;
-
-    // declare embedded files as loader dependency, for clear cache when file changed
-    embeds.forEach((file) => this.addDependency(file));
-
-    // declare demo source files as loader dependency, for clear cache when file changed
-    getDemoSourceFiles(demos).forEach((file) => this.addDependency(file));
+    const { frontmatter, toc, texts } = ret.meta;
 
     // apply demos resolve hook
     if (demos && opts.onResolveDemos) {

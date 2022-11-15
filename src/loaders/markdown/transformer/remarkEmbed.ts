@@ -70,7 +70,10 @@ export default function remarkEmbed(
           }
 
           // parse partial content to mdast
-          const mdast = unified()
+          const {
+            result: mdast,
+            data: { embeds },
+          } = unified()
             .use(remarkParse)
             // for nested embed
             .use(remarkEmbed, { ...opts, fileAbsPath: absPath })
@@ -78,7 +81,7 @@ export default function remarkEmbed(
             .use(remarkFrontmatter)
             // for return raw ast
             .use(remarkRawAST)
-            .processSync(content).result as Root;
+            .processSync(content);
 
           // find the closing tag if there has other nodes between embed tags
           if (!node.value.endsWith(EMBED_CLOSE_TAG)) {
@@ -97,11 +100,15 @@ export default function remarkEmbed(
           }
 
           // replace embed tag with mdast
-          parent!.children.splice(i!, relatedNodeCount, ...mdast.children);
+          parent!.children.splice(
+            i!,
+            relatedNodeCount,
+            ...(mdast as any).children,
+          );
 
           // record embed file path for declare loader dependency
           vFile.data.embeds ??= [];
-          vFile.data.embeds.push(absPath);
+          vFile.data.embeds!.push(...[absPath].concat(embeds!));
         }
       }
     });
