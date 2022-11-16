@@ -33,6 +33,10 @@ export async function run(opts?: IOpts) {
   if (opts?.presets) {
     process.env.DUMI_PRESETS = opts.presets.join(',');
   }
+
+  // disable Umi did you know
+  process.env.DID_YOU_KNOW = 'none';
+
   if (command === DEV_COMMAND) {
     dev();
   } else {
