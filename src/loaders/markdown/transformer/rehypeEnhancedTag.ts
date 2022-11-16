@@ -34,10 +34,21 @@ export default function rehypeEnhancedTag(): Transformer<Root> {
             },
           ],
         });
-      }
-
-      if (node.tagName === 'table') {
+      } else if (node.tagName === 'table') {
+        // use enhanced Table component
         node.tagName = 'Table';
+      } else if (node.tagName === 'style') {
+        // use dangerouslySetInnerHTML for style tag, to avoid HTML entities be escaped
+        node.JSXAttributes = [
+          {
+            type: 'JSXAttribute',
+            name: 'dangerouslySetInnerHTML',
+            value: JSON.stringify({
+              __html: toString(node),
+            }),
+          },
+        ];
+        node.children = [];
       }
     });
   };
