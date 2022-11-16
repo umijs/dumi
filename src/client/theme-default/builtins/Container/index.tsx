@@ -21,7 +21,7 @@ const Container: FC<{ type: string; title?: string; children: ReactNode }> = (
     <div className="dumi-default-container markdown" data-type={props.type}>
       <Icon />
       <h4>{props.title || props.type.toUpperCase()}</h4>
-      {props.children}
+      <section>{props.children}</section>
     </div>
   );
 };
