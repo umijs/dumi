@@ -70,7 +70,7 @@ const SearchBar: FC = () => {
         ref={input}
       />
       <span className="dumi-default-search-shortcut">{symbol} K</span>
-      {keywords.trim() && focusing && (
+      {keywords.trim() && focusing && (result.length || !loading) && (
         <div className="dumi-default-search-popover">
           <section>
             <SearchResult data={result} loading={loading} />
