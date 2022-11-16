@@ -1,6 +1,12 @@
 import { ReactComponent as IconCodeSandbox } from '@ant-design/icons-svg/inline-svg/outlined/code-sandbox.svg';
 // import { ReactComponent as IconCodePen } from '@ant-design/icons-svg/inline-svg/outlined/codepen.svg';
-import { openCodeSandbox, useIntl, type IPreviewerProps } from 'dumi';
+import { ReactComponent as IconStackBlitz } from '@ant-design/icons-svg/inline-svg/outlined/thunderbolt.svg';
+import {
+  openCodeSandbox,
+  openStackBlitz,
+  useIntl,
+  type IPreviewerProps,
+} from 'dumi';
 import SourceCode from 'dumi/theme/builtins/SourceCode';
 import PreviewerActionsExtra from 'dumi/theme/slots/PreviewerActionsExtra';
 import Tabs from 'rc-tabs';
@@ -11,7 +17,7 @@ export interface IPreviewerActionsProps extends IPreviewerProps {
   /**
    * disabled actions
    */
-  disabledActions?: ('CSB' | 'CODEPEN' | 'EXTERNAL')[];
+  disabledActions?: ('CSB' | 'CODEPEN' | 'STACKBLITZ' | 'EXTERNAL')[];
 }
 
 const IconCode: FC = () => (
@@ -69,6 +75,19 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
             <IconCodePen />
           </button>
         )} */}
+        {!props.disabledActions?.includes('STACKBLITZ') && (
+          <button
+            className="dumi-default-previewer-action-btn"
+            type="button"
+            data-dumi-tooltip={intl.formatMessage({
+              id: 'previewer.actions.stackblitz',
+            })}
+            onClick={() => openStackBlitz(props)}
+          >
+            <IconStackBlitz />
+          </button>
+        )}
+
         {!props.disabledActions?.includes('EXTERNAL') && (
           <a
             target="_blank"
