@@ -146,6 +146,11 @@ const SearchResult: FC<{ data: ISearchResult; loading: boolean }> = (props) => {
     <div
       className="dumi-default-search-result"
       onMouseEnter={() => setActiveIndex(-1)}
+      // for ux, only hide result when mouse up
+      onMouseDownCapture={(ev) => ev.preventDefault()}
+      onMouseUpCapture={() => {
+        (document.activeElement as HTMLInputElement).blur();
+      }}
     >
       {Boolean(props.data.length || props.loading) ? (
         <dl>

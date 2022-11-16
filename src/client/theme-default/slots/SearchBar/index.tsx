@@ -50,7 +50,7 @@ const SearchBar: FC = () => {
           // wait for item click
           setTimeout(() => {
             setFocusing(false);
-          }, 100);
+          }, 1);
         }}
         onKeyDown={(ev) => {
           if (['ArrowDown', 'ArrowUp'].includes(ev.key)) ev.preventDefault();

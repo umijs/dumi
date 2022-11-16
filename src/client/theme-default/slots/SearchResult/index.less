@@ -61,7 +61,7 @@
 
         > svg {
           position: absolute;
-          top: 16px;
+          top: 14px;
           left: 14px;
           width: 32px;
           height: 32px;
@@ -79,12 +79,12 @@
 
         > h4 {
           color: @c-text-secondary;
-          font-size: 16px;
+          font-size: 14px;
         }
 
         > p {
           margin-top: 2px;
-          font-size: 14px;
+          font-size: 13px;
           color: @c-text-note;
 
           &:empty {
@@ -99,7 +99,7 @@
     color: rgb(72 70 7);
     padding: 0 2px;
     border-radius: 2px;
-    background-color: rgb(252 249 168);
+    background-color: rgb(255 249 197);
   }
 
   .@{prefix}-search-empty {
@@ -107,13 +107,13 @@
     height: 140px;
     align-items: center;
     justify-content: center;
-    color: @c-text-secondary;
+    color: @c-text-note;
     font-size: 16px;
 
     > svg {
       margin-right: 8px;
       width: 48px;
-      fill: @c-border;
+      fill: lighten(@c-text-note, 20%);
     }
   }
 }
