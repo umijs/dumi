@@ -1,4 +1,4 @@
-import sdk, { Project } from '@stackblitz/sdk';
+import sdk, { type Project } from '@stackblitz/sdk';
 import type { IPreviewerProps } from 'dumi';
 import { genReactRenderCode } from './utils';
 
