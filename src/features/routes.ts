@@ -287,4 +287,13 @@ export default (api: IApi) => {
 
     return layouts;
   });
+
+  api.addEntryCodeAhead(
+    () => `
+// always remove trailing slash from location.pathname
+if (typeof history !== 'undefined' && /(?<!^)\\/$/.test(location.pathname)) {
+  history.replaceState({}, '', location.pathname.slice(0, -1));
+}
+`,
+  );
 };
