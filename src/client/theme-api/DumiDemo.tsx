@@ -1,5 +1,5 @@
 import { SP_ROUTE_PREFIX } from '@/constants';
-import { useSiteData } from 'dumi';
+import { useAppData, useSiteData } from 'dumi';
 import Container from 'dumi/theme/builtins/Container';
 import Previewer from 'dumi/theme/builtins/Previewer';
 import React, { createElement, type FC, type ReactNode } from 'react';
@@ -38,6 +38,7 @@ const DemoErrorBoundary: FC<{ children: ReactNode }> = (props) => (
 
 export const DumiDemo: FC<IDumiDemoProps> = (props) => {
   const { demos } = useSiteData();
+  const { basename } = useAppData();
   const { component, asset } = demos[props.demo.id];
 
   if (props.demo.inline) {
@@ -50,7 +51,7 @@ export const DumiDemo: FC<IDumiDemoProps> = (props) => {
       demoUrl={
         // allow user override demoUrl by frontmatter
         props.previewerProps.demoUrl ||
-        `/${SP_ROUTE_PREFIX}demos/${props.demo.id}`
+        `${basename}${SP_ROUTE_PREFIX}demos/${props.demo.id}`
       }
       {...props.previewerProps}
     >
