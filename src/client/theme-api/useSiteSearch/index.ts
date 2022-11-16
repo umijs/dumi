@@ -3,7 +3,12 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocaleDocRoutes } from '../utils';
 import type { ISearchResult } from './worker';
 
-const worker = new Worker(new URL('./worker.js', import.meta.url));
+let worker: Worker;
+
+// for ssr
+if (typeof window !== 'undefined') {
+  worker = new Worker(new URL('./worker', import.meta.url));
+}
 
 export const useSiteSearch = () => {
   const debounceTimer = useRef<number>();
