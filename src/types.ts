@@ -44,6 +44,7 @@ export interface IDumiUserConfig
     | IDumiConfig['locales'][0]
     | Omit<IDumiConfig['locales'][0], 'base'>
   )[];
+  [key: string]: any;
 }
 
 export abstract class IDumiTechStack {
