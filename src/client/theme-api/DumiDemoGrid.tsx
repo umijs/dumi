@@ -1,6 +1,7 @@
 import { DumiDemo, useRouteMeta } from 'dumi';
-import React, { useState, type FC } from 'react';
+import React, { useCallback, useEffect, useState, type FC } from 'react';
 import type { IDumiDemoProps } from './DumiDemo';
+import type { IRouteMeta } from './types';
 
 export interface IDumiDemoGridProps {
   items: IDumiDemoProps[];
@@ -8,24 +9,36 @@ export interface IDumiDemoGridProps {
 
 export const DumiDemoGrid: FC<IDumiDemoGridProps> = (props) => {
   const { frontmatter: fm } = useRouteMeta();
-  const [cols] = useState(() => {
-    const cols: IDumiDemoProps[][] = [];
+  const generator = useCallback(
+    (fm: IRouteMeta['frontmatter'], items: typeof props.items) => {
+      const cols: IDumiDemoProps[][] = [];
 
-    if (fm.demo?.cols && fm.demo.cols > 1) {
-      for (let i = 0; i < props.items.length; i += fm.demo.cols) {
-        props.items.slice(i, i + fm.demo.cols).forEach((item, j) => {
-          cols[j] ??= [];
-          cols[j].push(item);
-        });
+      if (fm.demo?.cols && fm.demo.cols > 1 && window.innerWidth > 1024) {
+        for (let i = 0; i < items.length; i += fm.demo.cols) {
+          items.slice(i, i + fm.demo.cols).forEach((item, j) => {
+            cols[j] ??= [];
+            cols[j].push(item);
+          });
+        }
+
+        return cols;
+      } else {
+        cols.push(items);
       }
 
       return cols;
-    } else {
-      cols.push(props.items);
-    }
+    },
+    [],
+  );
+  const [cols, setCols] = useState(() => generator(fm, props.items));
 
-    return cols;
-  });
+  useEffect(() => {
+    const handler = () => setCols(generator(fm, props.items));
+
+    window.addEventListener('resize', handler);
+
+    return () => window.removeEventListener('resize', handler);
+  }, []);
 
   return (
     <div style={{ display: 'flex', margin: -8 }} data-dumi-demo-grid>

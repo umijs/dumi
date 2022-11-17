@@ -45,7 +45,7 @@ export const useSiteSearch = () => {
     worker.postMessage({
       action: 'generate-metadata',
       args: {
-        routes,
+        routes: JSON.parse(JSON.stringify(routes)),
         nav: navData,
         demos: demoData,
       },
