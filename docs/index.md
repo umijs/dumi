@@ -44,7 +44,6 @@ features:
 
 <div>
   <img data-type="dingtalk" src="https://gw.alipayobjects.com/zos/bmw-prod/ce3439e7-3bf9-4031-b823-6473439ec9e6/kxkiis4c_w1004_h1346.jpeg" width="300" />
-  <img data-type="wechat" src="https://gw.alipayobjects.com/zos/bmw-prod/c18bc2a5-719a-48ca-b225-c79ef88bfb43/k7m10ymd_w1004_h1346.jpeg" width="300" />
 </div>
 
 目前 dumi 2 的各项特性实现情况如下，也欢迎查看 [RoadMap](https://github.com/umijs/dumi/issues/1151) 及 [TODO List](https://github.com/umijs/dumi/issues/1157) 一起参与 dumi 2 的建设：
