@@ -40,7 +40,10 @@
         height: 60px;
         flex-direction: column;
         justify-content: center;
-        padding: 6px 12px 8px 54px;
+        padding-top: 6px;
+        padding-bottom: 8px;
+        padding-inline-start: 54px;
+        padding-inline-end: 12px;
         text-decoration: none;
         box-sizing: border-box;
         border-radius: 4px;
@@ -62,7 +65,7 @@
         > svg {
           position: absolute;
           top: 14px;
-          left: 14px;
+          inset-inline-start: 14px;
           width: 32px;
           height: 32px;
           fill: darken(@c-border, 5%);
@@ -111,7 +114,7 @@
     font-size: 16px;
 
     > svg {
-      margin-right: 8px;
+      margin-inline-end: 8px;
       width: 48px;
       fill: lighten(@c-text-note, 20%);
     }

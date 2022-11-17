@@ -1,7 +1,9 @@
 @import (reference) '../../styles/variables.less';
 
 .@{prefix}-container.markdown {
-  padding: 18px 16px 18px 44px;
+  padding: 18px 0;
+  padding-inline-start: 44px;
+  padding-inline-end: 16px;
   border-radius: 4px;
 
   &:not(:first-child) {
@@ -15,8 +17,12 @@
   > svg {
     float: left;
     fill: currentcolor;
-    margin-left: -26px;
+    margin-inline-start: -26px;
     width: 18px;
+
+    [data-direction='rtl'] & {
+      float: right;
+    }
   }
 
   > h4 {

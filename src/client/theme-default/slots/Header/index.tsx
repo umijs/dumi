@@ -4,6 +4,7 @@ import { useRouteMeta } from 'dumi';
 import LangSwitch from 'dumi/theme/slots/LangSwitch';
 import Logo from 'dumi/theme/slots/Logo';
 import Navbar from 'dumi/theme/slots/Navbar';
+import RtlSwitch from 'dumi/theme/slots/RtlSwitch';
 import SearchBar from 'dumi/theme/slots/SearchBar';
 import React, { useState, type FC } from 'react';
 import './index.less';
@@ -28,6 +29,7 @@ const Header: FC = () => {
           <div className="dumi-default-header-right-aside">
             <SearchBar />
             <LangSwitch />
+            <RtlSwitch />
           </div>
         </section>
         <button

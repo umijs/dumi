@@ -66,13 +66,17 @@
     > a[aria-hidden]:first-child {
       float: left;
       width: 20px;
-      padding-right: 4px;
-      margin-left: -24px;
+      padding-inline-end: 4px;
+      margin-inline-start: -24px;
       color: @c-text;
       // hide phantom blank node
       font-size: 0;
       text-align: right;
       line-height: inherit;
+
+      [data-direction='rtl'] & {
+        float: right;
+      }
 
       &:hover {
         border: 0;
