@@ -291,8 +291,16 @@ export default (api: IApi) => {
   api.addEntryCodeAhead(
     () => `
 // always remove trailing slash from location.pathname
-if (typeof history !== 'undefined' && /(?<!^)\\/$/.test(location.pathname)) {
-  history.replaceState({}, '', location.pathname.slice(0, -1));
+if (
+  typeof history !== 'undefined' &&
+  location.pathname.length > 1 &&
+  location.pathname.endsWith('/')
+) {
+  history.replaceState(
+    {},
+    '',
+    location.pathname.slice(0, -1) + location.search + location.hash,
+  );
 }
 `,
   );
