@@ -70,7 +70,7 @@ export default {
 
 ### 非根目录部署
 
-非根目录部署需要修改 Umi 的 [base 配置项](https://umijs.org/docs/api/config#base) 和 **视实际情况** 修改 [publicPath 配置项](https://umijs.org/docs/api/config#publicpath)。
+非根目录部署需要修改 Umi 的 [base 配置项](/config#base) 和 **视实际情况** 修改 [publicPath 配置项](/config#publicpath)。
 
 ```ts
 export default {

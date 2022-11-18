@@ -17,7 +17,7 @@ dumi 支持组件页面的 Tab 自定义，分为以下两种方式
 │   │   └── index.$tab-api.md  # Tab 内容
 ```
 
-约定式就是不用手写配置，通过判断 md 文件命名是否带有 `$tab-` ，此文件将作为 Tab 的内容部分，如上所示，`index.$tab-api.md` 会作为 `index.md` 的 Tab 呈现。此处 `api` 作为 Tab 的 key 值，如果需要配置 Tab 标题，可以使用 FrontMatter 来定义
+约定式就是不用手写配置，通过判断 md 文件命名是否带有 `$tab-` ，此文件将作为 Tab 的内容部分，如上所示，`index.$tab-api.md` 会作为 `index.md` 的 Tab 呈现。此处 `api` 作为 Tab 的 key 值，如果需要配置 Tab 标题，可以使用 FrontMatter 来定义。
 
 ## 通过插件注册
 
