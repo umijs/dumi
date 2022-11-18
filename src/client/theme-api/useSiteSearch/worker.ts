@@ -94,6 +94,10 @@ function createMetadataSection(
     : null;
 }
 
+function generateRouteTitle(fm: IRouteMeta['frontmatter']) {
+  return [fm.title, fm.subtitle].filter(Boolean).join(' ');
+}
+
 function generateSearchMetadata(
   routes: ReturnType<typeof useAppData>['routes'],
   demos: ReturnType<typeof useSiteData>['demos'],
@@ -126,7 +130,7 @@ function generateSearchMetadata(
       );
       const orphanSection = createMetadataSection(
         '',
-        routeMeta.frontmatter.title,
+        generateRouteTitle(routeMeta.frontmatter),
         routeAbsPath,
         routeMeta.texts,
       );
@@ -137,7 +141,7 @@ function generateSearchMetadata(
             acc.push(
               createMetadataSection(
                 toc.title,
-                `${routeMeta.frontmatter.title} - ${toc.title}`,
+                `${generateRouteTitle(routeMeta.frontmatter)} - ${toc.title}`,
                 `${routeAbsPath}#${toc.id}`,
                 routeMeta.texts,
                 i,
@@ -154,7 +158,9 @@ function generateSearchMetadata(
           // collect orphan section that not in toc
           const tabOrphanSection = createMetadataSection(
             '',
-            `${routeMeta.frontmatter.title} - ${meta.frontmatter.title}`,
+            `${generateRouteTitle(routeMeta.frontmatter)} - ${
+              meta.frontmatter.title
+            }`,
             `${routeAbsPath}?${TAB_QUERY_KEY}=${key}`,
             meta.texts,
           );
@@ -166,7 +172,9 @@ function generateSearchMetadata(
             ...meta.toc.map((toc, i) =>
               createMetadataSection(
                 toc.title,
-                `${routeMeta.frontmatter.title} - ${meta.frontmatter.title} - ${toc.title}`,
+                `${generateRouteTitle(routeMeta.frontmatter)} - ${
+                  meta.frontmatter.title
+                } - ${toc.title}`,
                 `${routeAbsPath}?${TAB_QUERY_KEY}=${key}#${toc.id}`,
                 meta.texts,
                 i,
@@ -182,7 +190,7 @@ function generateSearchMetadata(
       metadata.push({
         navTitle: routeNav?.title,
         navOrder: routeNav ? nav.indexOf(routeNav) : Infinity,
-        title: routeMeta.frontmatter.title,
+        title: generateRouteTitle(routeMeta.frontmatter),
         link: routeAbsPath,
         sections: [
           ...(orphanSection ? [orphanSection] : []),
@@ -193,7 +201,8 @@ function generateSearchMetadata(
           demosMapping[route.id]?.map((demo) => ({
             link: `${routeAbsPath}#${demo.asset.id}`,
             rawTitle: demo.asset.title || '',
-            title: demo.asset.title || routeMeta.frontmatter.title,
+            title:
+              demo.asset.title || generateRouteTitle(routeMeta.frontmatter),
             description: demo.asset.description || '',
             keywords: demo.asset.keywords || [],
           })) || [],
