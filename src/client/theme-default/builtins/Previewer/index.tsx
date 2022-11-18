@@ -28,7 +28,7 @@ const Previewer: FC<IPreviewerProps> = (props) => {
                 ? { height: Number(props.iframe) }
                 : {}
             }
-            src={`/~demos/${props.asset.id}`}
+            src={props.demoUrl}
           ></iframe>
         ) : (
           props.children

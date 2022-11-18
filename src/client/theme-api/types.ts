@@ -23,6 +23,10 @@ export interface IPreviewerProps {
    */
   debug?: boolean;
   /**
+   * url for render current demo in a single page
+   */
+  demoUrl: string;
+  /**
    * disable demo content padding
    */
   compact?: boolean;
