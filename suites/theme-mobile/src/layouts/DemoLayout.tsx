@@ -71,7 +71,7 @@ const MobileDemoLayout: React.FC = ({}) => {
   }, [rules]);
 
   return (
-    <div className="__dumi-default-mobile-demo-layout" ref={target}>
+    <div className="dumi-mobile-demo-layout" ref={target}>
       {outlet}
     </div>
   );
