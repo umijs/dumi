@@ -1,6 +1,8 @@
 ---
 nav: 指南
-group: 基础
+group:
+  title: 基础
+  order: 0
 order: 0
 ---
 

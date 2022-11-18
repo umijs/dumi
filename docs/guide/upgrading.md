@@ -1,5 +1,7 @@
 ---
-group: 其他
+group:
+  title: 其他
+  order: 3
 ---
 
 # 从 dumi 1.x 升级
