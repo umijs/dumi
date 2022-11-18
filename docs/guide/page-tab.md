@@ -24,7 +24,7 @@ export default (api: IApi) => {
 };
 ```
 
-`component` 放入我们自定义的 Tab 内容，`test` 可以写入正则来匹配路由，这样我们就实现了为 `/componets` 下的路由页面添加自定义 Tab
+`component` 放入我们自定义的 Tab 内容，`test` 可以写入正则来匹配路由，这样我们就实现了为 `/componets` 下的路由页面添加自定义 Tab。
 
 ## 约定式
 
@@ -36,4 +36,4 @@ export default (api: IApi) => {
 │   │   └── index.$tab-api.md  # Tab 内容
 ```
 
-约定式就是不用手写配置，通过判断 md 文件命名是否带有 `$tab-` ，将其作为 Tab 的内容部分，如上所示，`index.$tab-api.md` 会作为 `index.md` 的 Tab 呈现。
+约定式就是不用手写配置，通过判断 md 文件命名是否带有 `$tab-` ，此文件将作为 Tab 的内容部分，如上所示，`index.$tab-api.md` 会作为 `index.md` 的 Tab 呈现。
