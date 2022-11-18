@@ -1,0 +1,24 @@
+@import (reference) 'dumi/theme-default/styles/variables.less';
+
+.@{prefix}-device {
+  display: flex;
+  flex-direction: column;
+  width: 375px;
+  height: 100%;
+  overflow: hidden;
+  border-left: dashed 1px #e6e6e6;
+
+  @media only screen and (max-width: 1440px) {
+    width: 340px;
+  }
+  @media only screen and (max-width: 960px) {
+    width: 300px;
+  }
+
+  > iframe {
+    flex: 1;
+    border: 0;
+    border-top-right-radius: 12px;
+    overflow: hidden;
+  }
+}
