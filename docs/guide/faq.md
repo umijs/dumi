@@ -7,31 +7,15 @@ order: 2
 
 ## dumi 和 Umi 的关系是什么？
 
-dumi 本体是一个 Umi 的 preset——@umijs/preset-dumi，也就是说，我们可以在一个 Umi 的项目中同时使用 dumi。
-
-## 配置项只有这些吗？想实现更多的功能怎么办？
-
-dumi 基于 Umi，即除了自己提供的配置项以外，还支持[所有 Umi 的配置项](https://umijs.org/docs/api/config)，并且也支持 [Umi 生态的插件](https://umijs.org/docs/max/introduce)，所以如果需要更多的功能，可以先看一下 Umi 的配置项和插件生态能否满足，如果仍旧不能，欢迎到[讨论群](/#反馈与共建)反馈或者 GitHub 上[提出 Feature Request](https://github.com/umijs/dumi/issues/new?labels=enhancement&template=feature_request.md&title=feat%3A+)
-
-## 为什么 `README.md` 会出现在文档的首页？
-
-无论是文档还是官网，一定会有首页。dumi 会在 docs 文件夹下寻找 `index.md` 或者 `README.md` 作为首页。`README.md` 的优先级高于 `index.md`。
+Umi 是前端开发框架，适用于前端应用研发；dumi 是在 Umi 的基础上打造的静态站点框架，适用于组件研发。
 
 ## 如何完全自定义首页？
 
-目前 dumi 尚未开放主题自定义功能，可以通过引入外部嵌入式 Demo 的形式来实现：
-
-```markdown
-<!-- index.md -->
-
-<code src="path/to/homepage.tsx" inline />
-```
-
-详细使用可参考 Ant Design Landing 的 [use in dumi](https://landing.ant.design/docs/use/dumi-cn)
+创建 `.dumi/pages/index.tsx` 即可用 React 来编写首页，注意不要同时在文档解析的根目录中创建 index.md，会导致路由冲突。
 
 ## dumi 支持使用 `.md` 之外的其他方式编写文档吗？
 
-暂不支持。
+dumi 约定 `.dumi/pages` 为 React 路由的解析目录，较为复杂的交互式页面可以在这个目录下用 React 编写，路由的生成规则及 FrontMatter 能力与 md 一致。
 
 ## 如何在 cra 等非 umi 项目中使用 dumi？
 
@@ -80,7 +64,7 @@ export default {
 
 ## 如何添加统计脚本和全局 CSS 样式？
 
-可使用 Umi 的 [styles](https://umijs.org/docs/api/config#styles) 和 [scripts](https://umijs.org/docs/api/config#scripts) 配置项。
+统计脚本可以使用配置项 [analytics](/config#analytics)，全局样式可以添加到 `.dumi/global.{less,css}` 文件内。
 
 ## 部署文档
 
@@ -171,7 +155,7 @@ dumi 语法高亮使用的 [prism-react-renderer](https://github.com/FormidableL
 我们在 dumi 中可以通过下面的方式，添加对其他语言的支持：
 
 ```tsx | pure
-// src/app.ts
+// .dumi/global.ts
 import Prism from 'prism-react-renderer/prism';
 
 (typeof global !== 'undefined' ? global : window).Prism = Prism;
@@ -179,7 +163,3 @@ import Prism from 'prism-react-renderer/prism';
 require('prismjs/components/prism-kotlin');
 require('prismjs/components/prism-csharp');
 ```
-
-## 非 umi 项目启动 dumi 后提示 Error: register failed, invalid key xx from plugin src/app.ts
-
-由于 `src/app.(t|j)sx?` 是 dumi [运行时配置文件](https://umijs.org/zh-CN/docs/directory-structure#appts)的约定，请避开此路径创建文件；如果无法避开命名，可参考上方[修改 APP_ROOT](#如何在 cra 等非 umi 项目中使用 dumi？) 的方式切换 dumi 的运行目录实现规避。
