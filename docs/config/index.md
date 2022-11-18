@@ -110,31 +110,6 @@ export default () => '我会被编译，展示为组件';
 2. 插件函数
 3. 传递数组时，第一项为插件名称/路径/函数，第二项为插件配置
 
-### themeConfig
-
-配置传递给主题的配置项，具体包含哪些配置取决于主题实现。默认主题目前支持如下配置项：
-
-```ts
-{
-  themeConfig: {
-    name: '站点名称（可选）',
-    logo: '站点 LOGO 地址',
-    nav: [{ title: '导航标题', link: '导航路由' }], // 可选，未配置时走约定式导航
-    sidebar: { // 可选，未配置时走约定式菜单
-      '/guide': [
-        {
-          title: '侧边菜单分组名称（可选）',
-          children: [
-            { title: '菜单项标题', link: '菜单项路由' }
-          ]
-        }
-      ]
-    },
-    footer: '页脚 HTML', // 有 `Powered by dumi` 的默认值，可自定义，配置为 false 时不展示
-  }
-}
-```
-
 ### analytics
 
 - 类型：`{ ga_v2?: string; baidu?: string; ga?: string }`
@@ -164,6 +139,25 @@ dumi 内置了站点统计的功能，目前支持 [Google Analytics](https://an
 - 默认值：`undefined`
 
 启用 `sitemap.xml` 自动生成功能。`hostname` 配置项用来指定 URL 的域名前缀，`exclude` 配置项用来忽略某些不需要包含在 sitemap 中的路由。
+
+## 主题配置项
+
+通过 `themeConfig` 可配置传递给主题的配置项：
+
+```ts
+// .dumirc.ts
+import { defineConfig } from 'dumi';
+
+export default defineConfig({
+  themeConfig: {
+    // 主题配置项均放置在这一层
+  },
+});
+```
+
+具体可用的配置项取决于项目当前使用的主题包，dumi 的默认主题目前支持如下配置项：
+
+<embed src="../theme/default.md#RE-/<!-- site config[^]+ site config end -->/"></embed>
 
 ## 基础配置项
 

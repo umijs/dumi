@@ -24,11 +24,10 @@ dumi，中文发音**嘟米**，是一款为组件开发场景而生的静态站
 
 ## 问题反馈
 
-由于 dumi 2.0 尚处于 RC 阶段，如果在试用过程中发现任何问题、或者有改善建议，欢迎在 GitHub 讨论区进行反馈：<br />https://github.com/umijs/dumi/discussions/1216
+如果在使用过程中发现任何问题、或者有改善建议，欢迎在 GitHub Issues 进行反馈：https://github.com/umijs/dumi/issues
 
 或加入讨论群：
 
 <div>
   <img data-type="dingtalk" src="https://gw.alipayobjects.com/zos/bmw-prod/ce3439e7-3bf9-4031-b823-6473439ec9e6/kxkiis4c_w1004_h1346.jpeg" width="300" />
-  <img data-type="wechat" src="https://gw.alipayobjects.com/zos/bmw-prod/c18bc2a5-719a-48ca-b225-c79ef88bfb43/k7m10ymd_w1004_h1346.jpeg" width="300" />
 </div>

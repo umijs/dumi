@@ -164,7 +164,7 @@ export default () => null;
 
 import React from 'react';
 
-export default () => '我会被直接嵌入';
+export default () => &lt;p&gt;我会被直接嵌入&lt;/p&gt;;
 ```
 </pre>
 
@@ -177,7 +177,7 @@ export default () => '我会被直接嵌入';
 
 import React from 'react';
 
-export default () => '我会被直接嵌入';
+export default () => <p>我会被直接嵌入</p>;
 ```
 
 <!-- ### 调试型 demo
@@ -220,7 +220,13 @@ export default () => (
 import React from 'react';
 
 export default () => (
-  <h2 style={{ boxShadow: '0 2px 15px rgba(0,0,0,0.1)', padding: '5px 20px' }}>
+  <h2
+    style={{
+      boxShadow: '0 2px 15px rgba(0,0,0,0.1)',
+      padding: '5px 20px',
+      margin: 0,
+    }}
+  >
     iframe 模式
   </h2>
 );
