@@ -46,7 +46,7 @@ export default (api: IApi) => {
   const pkgThemePath = getPkgThemePath(api);
   const pkgThemeData = deepmerge(
     defaultThemeData,
-    pkgThemePath ? loadTheme(pkgThemePath) : {},
+    pkgThemePath ? loadTheme(path.join(pkgThemePath, 'dist')) : {},
   );
   // try to read local theme
   const localThemePath = path.join(api.cwd, LOCAL_THEME_DIR);
