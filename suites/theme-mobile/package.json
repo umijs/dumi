@@ -1,0 +1,39 @@
+{
+  "name": "dumi-theme-mobile",
+  "version": "2.0.0-beta.1",
+  "description": "dumi-theme-mobile",
+  "keywords": [
+    "dumi",
+    "dumi-theme",
+    "umi"
+  ],
+  "homepage": "https://github.com/umijs/dumi/tree/master/suites/theme-mobile#readme",
+  "bugs": "https://github.com/umijs/dumi/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/umijs/dumi",
+    "directory": "suites/theme-mobile"
+  },
+  "license": "MIT",
+  "sideEffects": [
+    "./**/*.less"
+  ],
+  "files": [
+    "plugin"
+  ],
+  "scripts": {
+    "build": "father build",
+    "dev": "father dev",
+    "prepublishOnly": "father doctor && npm run build"
+  },
+  "devDependencies": {
+    "dumi": "2.0.2",
+    "father-plugin-dumi-theme": "1.0.0-rc.1"
+  },
+  "peerDependencies": {
+    "dumi": "2.0.2"
+  },
+  "authors": [
+    "xiaohuoni <448627663@qq.com> (https://github.com/xiaohuoni)"
+  ]
+}

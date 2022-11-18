@@ -164,6 +164,17 @@ importers:
   assets-types:
     specifiers: {}
 
+  examples/mobile:
+    specifiers:
+      dumi-theme-mobile: workspace:*
+      react: ^18.2.0
+      typescript: ~4.7.4
+    dependencies:
+      dumi-theme-mobile: link:../../suites/theme-mobile
+      react: 18.2.0
+    devDependencies:
+      typescript: 4.7.4
+
   examples/normal:
     specifiers:
       react: ^18.2.0
@@ -184,6 +195,14 @@ importers:
       father: ^4.1.0
     devDependencies:
       father: 4.1.0
+
+  suites/theme-mobile:
+    specifiers:
+      dumi: 2.0.2
+      father-plugin-dumi-theme: 1.0.0-rc.1
+    devDependencies:
+      dumi: link:../..
+      father-plugin-dumi-theme: link:../father-plugin
 
 packages:
 
@@ -2071,6 +2090,7 @@ packages:
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
     requiresBuild: true
     optional: true
 
@@ -2079,6 +2099,7 @@ packages:
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
     requiresBuild: true
     optional: true
 
@@ -2087,6 +2108,7 @@ packages:
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
     requiresBuild: true
     optional: true
 
@@ -2095,6 +2117,7 @@ packages:
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
     requiresBuild: true
     optional: true
 
@@ -9350,9 +9373,6 @@ packages:
     resolution: {integrity: sha512-rdVMIi7Q4B0XbXqNUEI+Z4E+pueiu/CS5E6vRCQommzdQ/sgsS4dK42U7GX8oJR+TJOtT+Qv3GkNo6iijUMp3Q==}
     peerDependencies:
       postcss: '>4 <9'
-    peerDependenciesMeta:
-      postcss:
-        optional: true
     dev: false
 
   /postcss-preset-env/7.5.0:
@@ -9968,9 +9988,6 @@ packages:
     resolution: {integrity: sha512-fU1Txz7Budmvamp7bshe4Zi32d0ll7ect+ccxNu9FlObT605GOEB8BfO4tmRJ39R5Zj831VCpvQ05QPBW5yb+w==}
     peerDependencies:
       react: ^18.1.0
-    peerDependenciesMeta:
-      react:
-        optional: true
     dependencies:
       loose-envify: 1.4.0
       react: 18.1.0
