@@ -8,12 +8,13 @@ export default (api: IApi) => {
   });
   api.modifyRoutes((routes) => {
     // append gallery render page
-    // routes['gallery'] = {
-    //   id: 'gallery',
-    //   path: `/gallery`,
-    //   absPath: `/gallery`,
-    //   file: require.resolve(`../gallery`),
-    // };
+    routes['gallery'] = {
+      id: 'gallery',
+      path: `/gallery`,
+      absPath: `/gallery`,
+      parentId: 'dumi-context-layout',
+      file: require.resolve(`../gallery/index`),
+    };
 
     return routes;
   });
