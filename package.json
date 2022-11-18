@@ -119,7 +119,6 @@
     "@types/react-copy-to-clipboard": "^5.0.4",
     "@umijs/lint": "4.0.0-canary.20221114.2",
     "@umijs/plugins": "4.0.0-canary.20221114.2",
-    "@umijs/preset-umi": "^4.0.31",
     "eslint": "^8.20.0",
     "father": "^4.1.0",
     "husky": "^8.0.1",
