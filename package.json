@@ -10,6 +10,7 @@
     "doc:sync": "node scripts/sync-from-umi.js",
     "watch": "npm run build -- --watch",
     "build": "father-build",
+    "custom-install": "yarn",
     "changelog": "lerna-changelog",
     "clean": "lerna clean -y",
     "test": "npm run test:e2e && npm run test:unit",
