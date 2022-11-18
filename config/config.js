@@ -1,4 +1,5 @@
 export default {
+  outputPath: 'docs-dist',
   ssr: {},
   hash: true,
   title: 'dumi',
