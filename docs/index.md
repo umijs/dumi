@@ -4,7 +4,7 @@ hero:
   title: dumi
   description: 为组件研发而生的静态站点框架
   actions:
-    - text: 抢先体验
+    - text: 立即上手
       link: /guide
     - text: GitHub
       link: https://github.com/umijs/dumi
