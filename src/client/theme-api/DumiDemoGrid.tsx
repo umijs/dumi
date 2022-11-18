@@ -13,7 +13,12 @@ export const DumiDemoGrid: FC<IDumiDemoGridProps> = (props) => {
     (fm: IRouteMeta['frontmatter'], items: typeof props.items) => {
       const cols: IDumiDemoProps[][] = [];
 
-      if (fm.demo?.cols && fm.demo.cols > 1 && window.innerWidth > 1024) {
+      if (
+        fm.demo?.cols &&
+        fm.demo.cols > 1 &&
+        // compatible for ssr env
+        (typeof window === 'undefined' || window.innerWidth > 1024)
+      ) {
         for (let i = 0; i < items.length; i += fm.demo.cols) {
           items.slice(i, i + fm.demo.cols).forEach((item, j) => {
             cols[j] ??= [];
