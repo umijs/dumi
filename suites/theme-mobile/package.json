@@ -26,6 +26,10 @@
     "dev": "father dev",
     "prepublishOnly": "father doctor && npm run build"
   },
+  "dependencies": {
+    "f2-touchemulator": "^0.0.1",
+    "umi-hd": "^5.0.1"
+  },
   "devDependencies": {
     "dumi": "2.0.2",
     "father-plugin-dumi-theme": "1.0.0-rc.1"
