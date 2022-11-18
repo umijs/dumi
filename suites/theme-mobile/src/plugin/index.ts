@@ -6,4 +6,15 @@ export default (api: IApi) => {
   api.onStart(() => {
     logger.info('Using Dumi mobile theme');
   });
+  api.modifyRoutes((routes) => {
+    // append gallery render page
+    // routes['gallery'] = {
+    //   id: 'gallery',
+    //   path: `/gallery`,
+    //   absPath: `/gallery`,
+    //   file: require.resolve(`../gallery`),
+    // };
+
+    return routes;
+  });
 };
