@@ -2,7 +2,16 @@
   "name": "dumi",
   "version": "2.0.2",
   "description": "Framework for developing UI components",
-  "keywords": [],
+  "keywords": [
+    'generator',
+    'umi',
+    'webpack',
+    'react',
+    'static site generator',
+    'jamstack',
+    'markdown',
+    'documentation'
+  ],
   "license": "MIT",
   "main": "dist/index.js",
   "types": "index.d.ts",
@@ -14,6 +23,14 @@
     "theme-default",
     "index.d.ts"
   ],
+  "homepage": "https://d.umijs.org/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/umijs/dumi"
+  },
+  "bugs": {
+    "url": "https://github.com/umijs/dumi/issues"
+  },
   "scripts": {
     "build": "father build",
     "build:deps": "father prebundle",
