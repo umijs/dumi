@@ -1,8 +1,18 @@
 {
   "name": "dumi",
   "version": "2.0.2",
-  "description": "Framework for developing UI components",
-  "keywords": [],
+  "description": "📖 Documentation Generator of React Component",
+  "keywords": [
+    "generator",
+    "umi",
+    "webpack",
+    "react",
+    "static site generator",
+    "jamstack",
+    "markdown",
+    "components",
+    "documentation"
+  ],
   "license": "MIT",
   "main": "dist/index.js",
   "types": "index.d.ts",
@@ -14,6 +24,14 @@
     "theme-default",
     "index.d.ts"
   ],
+  "homepage": "https://d.umijs.org",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/umijs/dumi"
+  },
+  "bugs": {
+    "url": "https://github.com/umijs/dumi/issues"
+  },
   "scripts": {
     "build": "father build",
     "build:deps": "father prebundle",
