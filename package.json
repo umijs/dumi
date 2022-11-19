@@ -1,7 +1,7 @@
 {
   "name": "dumi",
   "version": "2.0.2",
-  "description": "Framework for developing UI components",
+  "description": "📖 Documentation Generator of React Component",
   "keywords": [
     "generator",
     "umi",
@@ -10,6 +10,7 @@
     "static site generator",
     "jamstack",
     "markdown",
+    "components",
     "documentation"
   ],
   "license": "MIT",
