@@ -7,13 +7,6 @@ group:
   order: -1
 ---
 
-带 a 标签图片<a href="https://baidu.com" target="_blank" rel="noreferrer">
-<img src="https://oss.jairwin.cn/upic/7hkJHG.png">
-</a>
-
-markdown 图片
-![7hkJHG](https://oss.jairwin.cn/upic/7hkJHG.png)
-
 # 什么是 dumi
 
 dumi，中文发音**嘟米**，是一款为组件开发场景而生的静态站点框架，与 [father](https://github.com/umijs/father) 一起为开发者提供一站式的组件开发体验，**father 负责组件源码构建，而 dumi 负责组件开发及组件文档生成**。
