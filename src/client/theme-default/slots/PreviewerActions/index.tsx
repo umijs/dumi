@@ -5,7 +5,6 @@ import {
   openCodeSandbox,
   openStackBlitz,
   useIntl,
-  useSiteData,
   type IPreviewerProps,
 } from 'dumi';
 import SourceCode from 'dumi/theme/builtins/SourceCode';
@@ -45,12 +44,8 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
   const files = Object.entries(props.asset.dependencies).filter(
     ([, { type }]) => type === 'FILE',
   );
-  const {
-    themeConfig: { hd },
-  } = useSiteData();
-  const isH5 = !!hd;
   const [activeKey, setActiveKey] = useState(0);
-  const [showCode, setShowCode] = useState(isH5);
+  const [showCode, setShowCode] = useState(false);
   const isSingleFile = files.length === 1;
   const lang = (files[activeKey][0].match(/\.([^.]+)$/)?.[1] || 'text') as any;
 
@@ -107,18 +102,16 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
           </a>
         )}
         <PreviewerActionsExtra {...props} />
-        {!isH5 && (
-          <button
-            className="dumi-default-previewer-action-btn"
-            type="button"
-            onClick={() => setShowCode((prev) => !prev)}
-            data-dumi-tooltip={intl.formatMessage({
-              id: `previewer.actions.code.${showCode ? 'shrink' : 'expand'}`,
-            })}
-          >
-            {showCode ? <IconCodeExpand /> : <IconCode />}
-          </button>
-        )}
+        <button
+          className="dumi-default-previewer-action-btn"
+          type="button"
+          onClick={() => setShowCode((prev) => !prev)}
+          data-dumi-tooltip={intl.formatMessage({
+            id: `previewer.actions.code.${showCode ? 'shrink' : 'expand'}`,
+          })}
+        >
+          {showCode ? <IconCodeExpand /> : <IconCode />}
+        </button>
       </div>
       {showCode && (
         <>

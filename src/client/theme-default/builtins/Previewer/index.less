@@ -72,10 +72,6 @@
 
   &-meta {
     border-top: 1px solid @c-border-light;
-    // h5 mode
-    &[data-h5] {
-      border-style: none;
-    }
   }
 
   &-desc {
@@ -131,33 +127,6 @@
 
     &[data-active] {
       box-shadow: 0 0 0 4px fade(@c-warning, 10%);
-    }
-  }
-
-  // h5 mode
-  &[data-h5] {
-    border-style: none;
-  }
-
-  &-flex {
-    display: flex;
-    height: 700px;
-    margin-bottom: 24px;
-    width: 100%;
-    justify-content: flex-start;
-    align-items: stretch;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid #e6e6e6;
-    @media only screen and (max-width: 1440px) {
-      height: 600px;
-    }
-    @media only screen and (max-width: 960px) {
-      height: 500px;
-    }
-
-    &-actions {
-      flex: 1;
     }
   }
 }
