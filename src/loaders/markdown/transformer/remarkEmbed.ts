@@ -14,6 +14,8 @@ const EMBED_CLOSE_TAG = '</embed>';
 let unified: typeof import('unified').unified;
 let remarkParse: typeof import('remark-parse').default;
 let remarkFrontmatter: typeof import('remark-frontmatter').default;
+let remarkDirective: typeof import('remark-directive').default;
+let remarkGfm: typeof import('remark-gfm').default;
 let visit: typeof import('unist-util-visit-parents').visitParents;
 
 // workaround to import pure esm module
@@ -22,6 +24,8 @@ let visit: typeof import('unist-util-visit-parents').visitParents;
   ({ unified } = await import('unified'));
   ({ default: remarkParse } = await import('remark-parse'));
   ({ default: remarkFrontmatter } = await import('remark-frontmatter'));
+  ({ default: remarkDirective } = await import('remark-directive'));
+  ({ default: remarkGfm } = await import('remark-gfm'));
 })();
 
 /**
@@ -90,6 +94,12 @@ export default function remarkEmbed(
             .use(remarkEmbed, { ...opts, fileAbsPath: absPath })
             // for strip frontmatter
             .use(remarkFrontmatter)
+            // apply directive & gfm plugin
+            // why not re-use parent processor?
+            // because directive & gfm is affect on micromark core parser rather than ast
+            // and if they are not applied, the embed ast will be wrong
+            .use(remarkDirective)
+            .use(remarkGfm)
             // for return raw ast
             .use(remarkRawAST)
             .processSync(content);
