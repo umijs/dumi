@@ -28,7 +28,7 @@ export default (api: IApi) => {
         ) {
           metaFiles.push({
             index: metaFiles.length,
-            file: route.file,
+            file: winPath(route.file),
             id: route.id,
           });
         }
