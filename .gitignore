@@ -1,5 +1,4 @@
 /node_modules
-/compiled/**/node_modules
 /examples/*/node_modules
 /suites/**/node_modules
 /suites/**/dist
