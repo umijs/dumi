@@ -13,6 +13,14 @@
     "components",
     "documentation"
   ],
+  "homepage": "https://d.umijs.org",
+  "bugs": {
+    "url": "https://github.com/umijs/dumi/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/umijs/dumi"
+  },
   "license": "MIT",
   "main": "dist/index.js",
   "types": "index.d.ts",
@@ -22,16 +30,10 @@
     "dist",
     "compiled",
     "theme-default",
-    "index.d.ts"
+    "index.d.ts",
+    "plugin-utils.js",
+    "plugin-utils.d.ts"
   ],
-  "homepage": "https://d.umijs.org",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/umijs/dumi"
-  },
-  "bugs": {
-    "url": "https://github.com/umijs/dumi/issues"
-  },
   "scripts": {
     "build": "father build",
     "build:deps": "father prebundle",
@@ -136,7 +138,7 @@
     "@types/react": "^18.0.16",
     "@types/react-copy-to-clipboard": "^5.0.4",
     "@umijs/lint": "^4.0.32",
-    "@umijs/plugins": "^4.0.32",
+    "@umijs/plugins": "4.0.32",
     "eslint": "^8.20.0",
     "father": "^4.1.0",
     "husky": "^8.0.1",
