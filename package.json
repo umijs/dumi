@@ -13,6 +13,14 @@
     "components",
     "documentation"
   ],
+  "homepage": "https://d.umijs.org",
+  "bugs": {
+    "url": "https://github.com/umijs/dumi/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/umijs/dumi"
+  },
   "license": "MIT",
   "main": "dist/index.js",
   "types": "index.d.ts",
@@ -24,14 +32,6 @@
     "theme-default",
     "index.d.ts"
   ],
-  "homepage": "https://d.umijs.org",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/umijs/dumi"
-  },
-  "bugs": {
-    "url": "https://github.com/umijs/dumi/issues"
-  },
   "scripts": {
     "build": "father build",
     "build:deps": "father prebundle",
@@ -40,6 +40,7 @@
     "docs:build": "node ./bin/dumi.js build",
     "docs:dev": "node ./bin/dumi.js dev",
     "docs:sync": "node ./scripts/sync-from-umi.js",
+    "format": "prettier --cache --write .",
     "lint": "npm run lint:es && npm run lint:css",
     "lint:css": "stylelint \"{src,test}/**/*.{css,less}\"",
     "lint:es": "eslint \"{src,test}/**/*.{js,jsx,ts,tsx}\"",
@@ -54,19 +55,19 @@
   },
   "lint-staged": {
     "*.{md,json}": [
-      "prettier --write --no-error-on-unmatched-pattern"
+      "prettier --cache --write --no-error-on-unmatched-pattern"
     ],
     "*.{css,less}": [
       "stylelint --fix",
-      "prettier --write"
+      "prettier --cache --write"
     ],
     "*.{js,jsx}": [
       "eslint --fix",
-      "prettier --write"
+      "prettier --cache --write"
     ],
     "*.{ts,tsx}": [
       "eslint --fix",
-      "prettier --parser=typescript --write"
+      "prettier --cache --parser=typescript --write"
     ]
   },
   "dependencies": {
