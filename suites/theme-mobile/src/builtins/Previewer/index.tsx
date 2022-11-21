@@ -1,4 +1,4 @@
-import { IPreviewerProps, useLocation, useSiteData } from 'dumi';
+import { IPreviewerProps, useLocation, useRouteMeta } from 'dumi';
 import Device from 'dumi/theme/slots/Device';
 import PreviewerActions from 'dumi/theme/slots/PreviewerActions';
 import React, { type FC } from 'react';
@@ -8,9 +8,8 @@ const Previewer: FC<IPreviewerProps> = (props) => {
   const { hash } = useLocation();
   const link = `#${props.asset.id}`;
   const {
-    themeConfig: { hd },
-  } = useSiteData();
-  const isH5 = !!hd;
+    frontmatter: { mobile = true },
+  } = useRouteMeta();
 
   return (
     <div
@@ -18,9 +17,9 @@ const Previewer: FC<IPreviewerProps> = (props) => {
       className="dumi-default-previewer"
       data-debug={props.debug}
       data-active={hash === link || undefined}
-      data-h5={isH5}
+      data-h5={mobile}
     >
-      {!isH5 && (
+      {!mobile && (
         <div
           className="dumi-default-previewer-demo"
           style={{ background: props.background }}
@@ -42,7 +41,7 @@ const Previewer: FC<IPreviewerProps> = (props) => {
           )}
         </div>
       )}
-      <div className="dumi-default-previewer-meta" data-h5={isH5}>
+      <div className="dumi-default-previewer-meta" data-h5={mobile}>
         {(props.title || props.debug) && (
           <div className="dumi-default-previewer-desc">
             <h5>
@@ -60,11 +59,11 @@ const Previewer: FC<IPreviewerProps> = (props) => {
           </div>
         )}
 
-        {!isH5 && <PreviewerActions {...props} />}
-        {isH5 && (
+        {!mobile && <PreviewerActions {...props} />}
+        {mobile && (
           <div className="dumi-default-previewer-flex">
             <div className="dumi-default-previewer-flex-actions">
-              <PreviewerActions {...props} hasShowCodeButton />
+              <PreviewerActions {...props} hasShowCodeButton={false} />
             </div>
             <Device url={props.demoUrl} />
           </div>
