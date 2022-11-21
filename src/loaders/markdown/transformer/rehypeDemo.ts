@@ -227,7 +227,7 @@ export default function rehypeDemo(
               )}?techStack=${techStack.name}'))`;
               // use code value as title
               // TODO: force checking
-              codeNode.properties!.title = codeValue || undefined;
+              if (codeValue) codeNode.properties!.title = codeValue;
               codeNode.properties!.filename ??= winPath(
                 path.relative(opts.cwd, parseOpts.fileAbsPath),
               );

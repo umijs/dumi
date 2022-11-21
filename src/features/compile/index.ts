@@ -115,7 +115,10 @@ export default (api: IApi) => {
       .post()
       .resourceQuery(/dumi-raw/)
       .use('raw-loader')
-      .loader(require.resolve('raw-loader'));
+      .loader(require.resolve('raw-loader'))
+      .end()
+      .use('pre-raw-loader')
+      .loader(require.resolve('../../loaders/pre-raw'));
 
     // enable fast-refresh for md component in development mode
     if (api.env === 'development' && memo.plugins.has('fastRefresh')) {
