@@ -1,163 +1,28 @@
 @import (reference) 'dumi/theme-default/styles/variables.less';
 
-.@{prefix}-previewer {
-  margin: 24px 0 32px;
-  border: 1px solid @c-border-light;
-  border-radius: 4px;
-  background-color: #fff;
-
-  [data-dumi-demo-grid] & {
-    margin: 0 0 16px;
-
-    &:first-child {
-      margin-top: 24px;
-    }
-
-    &:last-child {
-      margin-bottom: 32px;
-    }
+.@{prefix}-mobile-previewer {
+  display: flex;
+  margin-bottom: 24px;
+  width: 100%;
+  flex-direction: row-reverse;
+  align-items: stretch;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e6e6e6;
+  @media only screen and (max-width: 1440px) {
+    max-height: 600px;
+  }
+  @media only screen and (max-width: 960px) {
+    max-height: 500px;
   }
 
   &-demo {
-    border-top-left-radius: 2px;
-    border-top-right-radius: 2px;
-    padding: 40px 24px;
-
-    > iframe {
-      display: block;
-      width: 100%;
-      height: 300px;
-      border: 0;
-    }
-
-    // demo render controls
-    &[data-iframe] {
-      position: relative;
-      padding: 0;
-      overflow: hidden;
-
-      &::before {
-        content: '';
-        display: block;
-        height: 24px;
-        background-color: @c-border-light;
-      }
-
-      &::after {
-        @btn-gap: 8px;
-        @btn-width: 12px;
-
-        content: '';
-        position: absolute;
-        top: 5px;
-        left: @btn-gap;
-        display: inline-block;
-        width: @btn-width;
-        height: @btn-width;
-        border-radius: 50%;
-        background-color: #fd6458;
-        box-shadow: (@btn-width + @btn-gap) 0 0 #ffbf2b,
-          (@btn-width + @btn-gap) * 2 0 0 #24cc3d;
-      }
-    }
-
-    &[data-transform] {
-      transform: translate(0, 0);
-    }
-
-    &[data-compact] {
-      padding: 0;
-    }
+    border-left: dashed 1px #e6e6e6;
+    padding: 0;
   }
 
   &-meta {
-    border-top: 1px solid @c-border-light;
-    // h5 mode
-    &[data-h5] {
-      border-style: none;
-    }
-  }
-
-  &-desc {
-    position: relative;
-
-    > .markdown {
-      padding: 14px 24px;
-      border-bottom: 1px dashed @c-border-light;
-    }
-
-    > h5 {
-      position: absolute;
-      top: -7px;
-      left: 20px;
-      margin: 0;
-      padding: 0 4px;
-      display: inline-block;
-      font-size: 14px;
-      line-height: 1;
-      font-weight: 500;
-      background: linear-gradient(
-          to top,
-          rgb(255 255 255 / 100%),
-          rgb(255 255 255 / 100%) 50%,
-          rgb(255 255 255 / 0%)
-        )
-        100%;
-
-      > a {
-        color: @c-text;
-
-        &:not(:hover) {
-          text-decoration: none;
-        }
-
-        > strong {
-          padding-inline-end: 8px;
-          color: @c-warning;
-          font-size: 12px;
-        }
-      }
-    }
-  }
-  // active
-  &[data-active] {
-    box-shadow: 0 0 0 4px fade(@c-primary, 10%);
-    border-color: lighten(@c-primary, 20%);
-  }
-
-  // debug mode
-  &[data-debug] {
-    border-color: lighten(@c-warning, 20%);
-
-    &[data-active] {
-      box-shadow: 0 0 0 4px fade(@c-warning, 10%);
-    }
-  }
-
-  // h5 mode
-  &[data-h5] {
-    border-style: none;
-  }
-
-  &-flex {
-    display: flex;
-    height: 700px;
-    margin-bottom: 24px;
+    flex: 1;
     width: 100%;
-    justify-content: flex-start;
-    align-items: stretch;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid #e6e6e6;
-    @media only screen and (max-width: 1440px) {
-      height: 600px;
-    }
-    @media only screen and (max-width: 960px) {
-      height: 500px;
-    }
-
-    &-actions {
-      flex: 1;
-    }
   }
 }

@@ -8,7 +8,7 @@ interface IDeviceProps {
 
 const Device: FC<IDeviceProps> = ({ url }) => {
   return (
-    <div className="dumi-default-device" data-device-type="iOS">
+    <div className="dumi-default-mobile-device" data-device-type="iOS">
       <iframe title="dumi-previewer" src={url} />
     </div>
   );
