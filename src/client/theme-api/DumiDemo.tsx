@@ -1,10 +1,10 @@
-import { SP_ROUTE_PREFIX } from '@/constants';
-import { useAppData, useSiteData } from 'dumi';
+import { useSiteData } from 'dumi';
 import Container from 'dumi/theme/builtins/Container';
 import Previewer from 'dumi/theme/builtins/Previewer';
 import React, { createElement, type FC, type ReactNode } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import type { IPreviewerProps } from './types';
+import { useDemoUrl } from './useDemoUrl';
 
 export interface IDumiDemoProps {
   demo: {
@@ -38,23 +38,18 @@ const DemoErrorBoundary: FC<{ children: ReactNode }> = (props) => (
 
 export const DumiDemo: FC<IDumiDemoProps> = (props) => {
   const { demos } = useSiteData();
-  const { basename } = useAppData();
+  const builtinDemoUrl = useDemoUrl(props.demo.id);
   const { component, asset } = demos[props.demo.id];
 
   if (props.demo.inline) {
     return <DemoErrorBoundary>{createElement(component)}</DemoErrorBoundary>;
   }
 
+  // allow user override demoUrl by frontmatter
+  const demoUrl = props.previewerProps.demoUrl || builtinDemoUrl;
+
   return (
-    <Previewer
-      asset={asset}
-      demoUrl={
-        // allow user override demoUrl by frontmatter
-        props.previewerProps.demoUrl ||
-        `${basename}${SP_ROUTE_PREFIX}demos/${props.demo.id}`
-      }
-      {...props.previewerProps}
-    >
+    <Previewer asset={asset} demoUrl={demoUrl} {...props.previewerProps}>
       {props.previewerProps.iframe ? null : (
         <DemoErrorBoundary>{createElement(component)}</DemoErrorBoundary>
       )}

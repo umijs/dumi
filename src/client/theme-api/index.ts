@@ -26,6 +26,7 @@ export { openCodeSandbox } from './openCodeSandbox';
 export { openStackBlitz } from './openStackBlitz';
 export type { IPreviewerProps } from './types';
 export { useAtomAssets } from './useAtomAssets';
+export { useDemoUrl } from './useDemoUrl';
 export { useLocale } from './useLocale';
 export { useNavData } from './useNavData';
 export { useRouteMeta } from './useRouteMeta';
