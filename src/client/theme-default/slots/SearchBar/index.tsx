@@ -54,6 +54,11 @@ const SearchBar: FC = () => {
           }
         }
       }
+
+      if (ev.key === 'Escape') {
+        ev.preventDefault();
+        setModalVisible(false);
+      }
     };
 
     document.addEventListener('keydown', handler);
@@ -91,8 +96,8 @@ const SearchBar: FC = () => {
         visible={modalVisible}
         onMaskClick={() => {
           setModalVisible(false);
-          setKeywords('');
         }}
+        onClose={() => setKeywords('')}
       >
         <div style={{ position: 'relative' }}>
           <IconSearch className="dumi-default-search-bar-svg" />
@@ -114,7 +119,6 @@ const SearchBar: FC = () => {
           loading={loading}
           onClick={() => {
             setModalVisible(false);
-            setKeywords('');
           }}
         />
       </Mask>

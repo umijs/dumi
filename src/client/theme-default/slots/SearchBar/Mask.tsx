@@ -4,6 +4,7 @@ type MaskProps = {
   visible: boolean;
   children: ReactNode;
   onMaskClick?: () => void;
+  onClose?: () => void;
 };
 
 export const Mask: FC<MaskProps> = (props) => {
@@ -12,6 +13,7 @@ export const Mask: FC<MaskProps> = (props) => {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
+      props.onClose?.();
     }
   }, [props.visible]);
 
