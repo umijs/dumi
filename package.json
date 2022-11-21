@@ -1,8 +1,26 @@
 {
   "name": "dumi",
-  "version": "2.0.2",
-  "description": "Framework for developing UI components",
-  "keywords": [],
+  "version": "2.0.3",
+  "description": "📖 Documentation Generator of React Component",
+  "keywords": [
+    "generator",
+    "umi",
+    "webpack",
+    "react",
+    "static site generator",
+    "jamstack",
+    "markdown",
+    "components",
+    "documentation"
+  ],
+  "homepage": "https://d.umijs.org",
+  "bugs": {
+    "url": "https://github.com/umijs/dumi/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/umijs/dumi"
+  },
   "license": "MIT",
   "main": "dist/index.js",
   "types": "index.d.ts",
@@ -12,7 +30,9 @@
     "dist",
     "compiled",
     "theme-default",
-    "index.d.ts"
+    "index.d.ts",
+    "plugin-utils.js",
+    "plugin-utils.d.ts"
   ],
   "scripts": {
     "build": "father build",
@@ -22,6 +42,7 @@
     "docs:build": "node ./bin/dumi.js build",
     "docs:dev": "node ./bin/dumi.js dev",
     "docs:sync": "node ./scripts/sync-from-umi.js",
+    "format": "prettier --cache --write .",
     "lint": "npm run lint:es && npm run lint:css",
     "lint:css": "stylelint \"{src,test}/**/*.{css,less}\"",
     "lint:es": "eslint \"{src,test}/**/*.{js,jsx,ts,tsx}\"",
@@ -36,19 +57,19 @@
   },
   "lint-staged": {
     "*.{md,json}": [
-      "prettier --write --no-error-on-unmatched-pattern"
+      "prettier --cache --write --no-error-on-unmatched-pattern"
     ],
     "*.{css,less}": [
       "stylelint --fix",
-      "prettier --write"
+      "prettier --cache --write"
     ],
     "*.{js,jsx}": [
       "eslint --fix",
-      "prettier --write"
+      "prettier --cache --write"
     ],
     "*.{ts,tsx}": [
       "eslint --fix",
-      "prettier --parser=typescript --write"
+      "prettier --cache --parser=typescript --write"
     ]
   },
   "dependencies": {
@@ -118,7 +139,7 @@
     "@types/react": "^18.0.16",
     "@types/react-copy-to-clipboard": "^5.0.4",
     "@umijs/lint": "^4.0.32",
-    "@umijs/plugins": "^4.0.32",
+    "@umijs/plugins": "4.0.32",
     "eslint": "^8.20.0",
     "father": "^4.1.0",
     "husky": "^8.0.1",
