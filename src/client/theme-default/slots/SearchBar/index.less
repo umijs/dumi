@@ -139,6 +139,7 @@
 
     .@{prefix}-search-result {
       min-height: 60px;
+      margin-top: 12px;
 
       > dl > dd {
         margin: 0 auto;
@@ -156,6 +157,7 @@
       padding-top: 12px;
       display: flex;
       align-items: center;
+      user-select: none;
 
       > li {
         margin-inline-end: 10px;
@@ -163,7 +165,7 @@
 
       &-arrow {
         .@{prefix}-search-modal-shortcut {
-          padding: 4px 6px;
+          margin-inline-end: 4px;
         }
       }
 
@@ -180,7 +182,7 @@
       line-height: 1;
       white-space: nowrap;
       background-color: rgb(255 255 255 / 80%);
-      border-radius: 11px;
+      border-radius: 3px;
       border: 1px solid #d0d5d8;
       transition: all 0.3s;
       pointer-events: none;

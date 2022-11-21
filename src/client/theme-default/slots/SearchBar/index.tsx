@@ -129,15 +129,15 @@ const SearchBar: FC = () => {
             <li className="dumi-default-search-modal-commands-arrow">
               <span className="dumi-default-search-modal-shortcut">
                 <IconArrowUp
-                  width="12px"
-                  height="12px"
+                  width="10px"
+                  height="10px"
                   fill="rgba(0, 0, 0, 0.45)"
                 />
               </span>
               <span className="dumi-default-search-modal-shortcut">
                 <IconArrowDown
-                  width="12px"
-                  height="12px"
+                  width="10px"
+                  height="10px"
                   fill="rgba(0, 0, 0, 0.45)"
                 />
               </span>
