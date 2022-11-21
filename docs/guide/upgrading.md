@@ -52,7 +52,7 @@ $ git checkout src docs # 恢复原有的源码及文档
 ```diff
 {
   "compilerOptions": {
-    "paths: {
+    "paths": {
 +     "@@/*": [".dumi/tmp/*"]
     }
   }
