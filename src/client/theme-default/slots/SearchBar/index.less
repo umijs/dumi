@@ -126,7 +126,6 @@
       top: 60px;
       background-color: #fff;
       width: 500px;
-      min-height: 200px;
       padding: 12px;
       box-sizing: border-box;
       box-shadow: inset 1px 1px 0 0 hsl(0deg 0% 100% / 50%), 0 3px 8px 0 #555a64;
@@ -136,6 +135,51 @@
     .@{prefix}-search-bar-input {
       width: 100%;
       border-radius: 6px;
+    }
+
+    .@{prefix}-search-result {
+      min-height: 60px;
+    }
+
+    &-commands {
+      justify-content: flex-start;
+      font-size: 12px;
+      color: rgb(0 0 0 / 45%);
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      border-top: 1px solid rgb(0 0 0 / 6%);
+      padding-top: 12px;
+      display: flex;
+      align-items: center;
+
+      > li {
+        margin-inline-end: 10px;
+      }
+
+      &-arrow {
+        .@{prefix}-search-modal-shortcut {
+          padding: 4px 6px;
+        }
+      }
+
+      &-text {
+        margin-inline-start: 5px;
+      }
+    }
+
+    &-shortcut {
+      display: inline-block;
+      padding: 4px 8px;
+      color: #8a9099;
+      font-size: 12px;
+      line-height: 1;
+      white-space: nowrap;
+      background-color: rgb(255 255 255 / 80%);
+      border-radius: 11px;
+      border: 1px solid #d0d5d8;
+      transition: all 0.3s;
+      pointer-events: none;
     }
   }
 }

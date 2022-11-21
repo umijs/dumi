@@ -1,3 +1,5 @@
+import { ReactComponent as IconArrowDown } from '@ant-design/icons-svg/inline-svg/outlined/arrow-down.svg';
+import { ReactComponent as IconArrowUp } from '@ant-design/icons-svg/inline-svg/outlined/arrow-up.svg';
 import { ReactComponent as IconSearch } from '@ant-design/icons-svg/inline-svg/outlined/search.svg';
 import { useSiteSearch } from 'dumi';
 import React, { useEffect, useRef, useState, type FC } from 'react';
@@ -121,6 +123,36 @@ const SearchBar: FC = () => {
             setModalVisible(false);
           }}
         />
+
+        <footer>
+          <ul className="dumi-default-search-modal-commands">
+            <li className="dumi-default-search-modal-commands-arrow">
+              <span className="dumi-default-search-modal-shortcut">
+                <IconArrowUp
+                  width="12px"
+                  height="12px"
+                  fill="rgba(0, 0, 0, 0.45)"
+                />
+              </span>
+              <span className="dumi-default-search-modal-shortcut">
+                <IconArrowDown
+                  width="12px"
+                  height="12px"
+                  fill="rgba(0, 0, 0, 0.45)"
+                />
+              </span>
+              <span className="dumi-default-search-modal-commands-text">
+                to navigate
+              </span>
+            </li>
+            <li>
+              <span className="dumi-default-search-modal-shortcut">esc</span>
+              <span className="dumi-default-search-modal-commands-text">
+                to close
+              </span>
+            </li>
+          </ul>
+        </footer>
       </Mask>
     </div>
   );
