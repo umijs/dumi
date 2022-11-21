@@ -19,6 +19,7 @@ export const useSiteSearch = () => {
   const navData = useNavData();
   const [result, setResult] = useState<ISearchResult>([]);
   const setter = useCallback((val: string) => {
+    setLoading(true);
     setKeywords(val);
   }, []);
 
@@ -56,7 +57,6 @@ export const useSiteSearch = () => {
 
     if (str) {
       clearTimeout(debounceTimer.current);
-      setLoading(true);
       debounceTimer.current = window.setTimeout(() => {
         worker.postMessage({
           action: 'get-search-result',
