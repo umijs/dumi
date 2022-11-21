@@ -112,7 +112,11 @@ const useFlatSearchData = (data: ISearchResult) => {
   return flatData;
 };
 
-const SearchResult: FC<{ data: ISearchResult; loading: boolean }> = (props) => {
+const SearchResult: FC<{
+  data: ISearchResult;
+  loading: boolean;
+  onClick?: () => void;
+}> = (props) => {
   const [data, histsCount] = useFlatSearchData(props.data);
   const [activeIndex, setActiveIndex] = useState(-1);
 
@@ -162,6 +166,7 @@ const SearchResult: FC<{ data: ISearchResult; loading: boolean }> = (props) => {
                 <Link
                   to={item.value.link}
                   data-active={activeIndex === item.activeIndex || undefined}
+                  onClick={props.onClick}
                 >
                   {React.createElement(ICONS_MAPPING[item.value.type])}
                   <h4>
