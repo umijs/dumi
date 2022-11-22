@@ -22,7 +22,7 @@ export const Mask: FC<MaskProps> = (props) => {
       <div
         className="dumi-default-search-modal-mask"
         onClick={props.onMaskClick}
-      ></div>
+      />
       <div className="dumi-default-search-modal-content">{props.children}</div>
     </div>
   ) : null;

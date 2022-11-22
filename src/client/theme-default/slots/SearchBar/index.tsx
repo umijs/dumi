@@ -5,9 +5,9 @@ import { useSiteSearch } from 'dumi';
 import React, { useEffect, useRef, useState, type FC } from 'react';
 import SearchResult from '../SearchResult';
 import './index.less';
-import { Input, type InputRef } from './Input';
+import { Input } from './Input';
 import { Mask } from './Mask';
-export { Input as SearchInput, type InputRef as SearchInputRef } from './Input';
+export { Input as SearchInput } from './Input';
 export { Mask as SearchMask } from './Mask';
 
 const isAppleDevice = /(mac|iphone|ipod|ipad)/i.test(
@@ -16,8 +16,8 @@ const isAppleDevice = /(mac|iphone|ipod|ipad)/i.test(
 
 const SearchBar: FC = () => {
   const [focusing, setFocusing] = useState(false);
-  const inputRef = useRef<InputRef>(null);
-  const modalInputRef = useRef<InputRef>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const modalInputRef = useRef<HTMLInputElement>(null);
   const [symbol, setSymbol] = useState('⌘');
   const { keywords, setKeywords, result, loading } = useSiteSearch();
   const [modalVisible, setModalVisible] = useState(false);
@@ -38,7 +38,7 @@ const SearchBar: FC = () => {
 
         if (inputRef.current) {
           const { top, bottom, left, right } =
-            inputRef.current?.nativeElement!.getBoundingClientRect();
+            inputRef.current.getBoundingClientRect();
           const isInViewport =
             top >= 0 &&
             left >= 0 &&
@@ -46,7 +46,7 @@ const SearchBar: FC = () => {
             right <= window.innerWidth;
 
           if (isInViewport) {
-            inputRef.current?.focus();
+            inputRef.current.focus();
           } else {
             setKeywords('');
             setModalVisible(true);
@@ -119,7 +119,7 @@ const SearchBar: FC = () => {
         <SearchResult
           data={result}
           loading={loading}
-          onClick={() => {
+          onItemClick={() => {
             setModalVisible(false);
           }}
         />

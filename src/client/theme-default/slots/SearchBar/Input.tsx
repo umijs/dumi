@@ -10,29 +10,13 @@ type InputProps = {
   onChange: (keywords: string) => void;
 } & Pick<NativeInputProps, 'onFocus' | 'onBlur'>;
 
-export type InputRef = {
-  focus: () => void;
-  blur: () => void;
-  nativeElement: HTMLInputElement | null;
-};
-
-export const Input = forwardRef<InputRef, InputProps>((props, ref) => {
+export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const intl = useIntl();
 
   const imeWaiting = useRef(false);
   const nativeInputRef = useRef<HTMLInputElement>(null);
 
-  useImperativeHandle(ref, () => ({
-    focus: () => {
-      nativeInputRef.current?.focus();
-    },
-    blur: () => {
-      nativeInputRef.current?.blur();
-    },
-    get nativeElement() {
-      return nativeInputRef.current;
-    },
-  }));
+  useImperativeHandle(ref, () => nativeInputRef.current!);
 
   return (
     <input
