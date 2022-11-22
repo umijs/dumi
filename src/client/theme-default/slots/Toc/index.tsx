@@ -18,8 +18,23 @@ const scrollTo = (newTop: number) => {
   });
 };
 
+// 替换锚点
+const setAnchorPoint = (hashConfig: string, hashId: string) => {
+  if (hashConfig) {
+    // 有锚点，替换锚点值
+    const oldHashPath = window.location.hash.split('#');
+    const length = oldHashPath.length;
+    oldHashPath[length - 1] = hashId;
+    window.location.hash = oldHashPath.join('#');
+  } else {
+    //无锚点，直接拼接到最后
+    window.location.hash += `#${hashId}`;
+  }
+};
+
 const Toc: FC = () => {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
+
   const meta = useRouteMeta();
   const { loading } = useSiteData();
   const prevIndexRef = useRef(0);
@@ -41,9 +56,9 @@ const Toc: FC = () => {
 
   // 点击toc item，页面滚动平滑到对应为止
   const scrollToByIndex = useCallback(
-    (h2Index: number, ev) => {
-      ev.preventDefault();
+    (h2Index: number, hashId: string) => {
       const clickNode = sectionRefs[h2Index].current;
+      setAnchorPoint(hash, hashId);
 
       if (clickNode) {
         // 点击目标位置
@@ -51,7 +66,7 @@ const Toc: FC = () => {
         scrollTo(newTop);
       }
     },
-    [sectionRefs],
+    [sectionRefs, hash],
   );
 
   return sectionRefs.length ? (
@@ -66,7 +81,7 @@ const Toc: FC = () => {
             {toc
               .filter(({ depth }) => depth > 1 && depth < 4)
               .map((item, i) => {
-                const link = `#${encodeURIComponent(item.id)}`;
+                const link = `${encodeURIComponent(item.id)}`;
                 const activeIndex =
                   currentElementIndexInViewport > -1
                     ? currentElementIndexInViewport
@@ -75,8 +90,7 @@ const Toc: FC = () => {
                 return (
                   <li key={item.id} data-depth={item.depth}>
                     <a
-                      href={link}
-                      onClick={(ev) => scrollToByIndex(i, ev)}
+                      onClick={() => scrollToByIndex(i, link)}
                       title={item.title}
                       {...(activeIndex === i ? { className: 'active' } : {})}
                     >
