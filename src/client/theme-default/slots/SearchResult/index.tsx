@@ -115,7 +115,7 @@ const useFlatSearchData = (data: ISearchResult) => {
 const SearchResult: FC<{
   data: ISearchResult;
   loading: boolean;
-  onItemClick?: React.MouseEventHandler<HTMLAnchorElement>;
+  onItemSelect?: (item: ISearchResult[0]['hints'][0]) => void;
 }> = (props) => {
   const [data, histsCount] = useFlatSearchData(props.data);
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -133,6 +133,7 @@ const SearchResult: FC<{
         )!.value as ISearchResult[0]['hints'][0];
 
         history.push(item.link);
+        props.onItemSelect?.(item);
         (document.activeElement as HTMLInputElement).blur();
       }
 
@@ -166,7 +167,7 @@ const SearchResult: FC<{
                 <Link
                   to={item.value.link}
                   data-active={activeIndex === item.activeIndex || undefined}
-                  onClick={props.onItemClick}
+                  onClick={() => props.onItemSelect?.(item.value)}
                 >
                   {React.createElement(ICONS_MAPPING[item.value.type])}
                   <h4>

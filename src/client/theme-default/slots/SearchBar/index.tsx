@@ -119,7 +119,7 @@ const SearchBar: FC = () => {
         <SearchResult
           data={result}
           loading={loading}
-          onItemClick={() => {
+          onItemSelect={() => {
             setModalVisible(false);
           }}
         />

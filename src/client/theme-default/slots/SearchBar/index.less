@@ -129,12 +129,12 @@
       padding: 12px;
       box-sizing: border-box;
       box-shadow: inset 1px 1px 0 0 hsl(0deg 0% 100% / 50%), 0 3px 8px 0 #555a64;
-      border-radius: 6px;
+      border-radius: 8px;
     }
 
     .@{prefix}-search-bar-input {
       width: 100%;
-      border-radius: 6px;
+      border-radius: 4px;
     }
 
     .@{prefix}-search-result {
@@ -149,11 +149,11 @@
     &-commands {
       justify-content: flex-start;
       font-size: 12px;
-      color: rgb(0 0 0 / 45%);
+      color: @c-text-note;
       list-style: none;
       padding: 0;
       margin: 0;
-      border-top: 1px solid rgb(0 0 0 / 6%);
+      border-top: 1px solid @c-border-light;
       padding-top: 12px;
       display: flex;
       align-items: center;
@@ -177,13 +177,14 @@
     &-shortcut {
       display: inline-block;
       padding: 4px 8px;
-      color: #8a9099;
+      color: @c-text-note;
       font-size: 12px;
       line-height: 1;
       white-space: nowrap;
-      background-color: rgb(255 255 255 / 80%);
+      background-color: @c-site-bg;
       border-radius: 3px;
-      border: 1px solid #d0d5d8;
+      border: 1px solid @c-border;
+      border-bottom-width: 2px;
       transition: all 0.3s;
       pointer-events: none;
     }
