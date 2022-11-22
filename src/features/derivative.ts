@@ -4,7 +4,7 @@ import { parseModule } from '@umijs/bundler-utils';
 import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
-import { deepmerge, glob, winPath } from 'umi/plugin-utils';
+import { deepmerge, glob, logger, winPath } from 'umi/plugin-utils';
 
 /**
  * exclude pre-compiling modules in mfsu mode
@@ -88,6 +88,11 @@ export default (api: IApi) => {
       !api.config.ssr || api.config.ssr.builder === 'webpack',
       'Only `webpack` builder is supported in SSR mode!',
     );
+    if (api.userConfig.history?.type === 'hash') {
+      logger.warn(
+        'Hash history is temporarily incompatible, it is recommended to use browser history for now.',
+      );
+    }
   });
 
   // skip mfsu for client api, to avoid circular resolve in mfsu mode
