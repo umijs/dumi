@@ -1,4 +1,5 @@
 import { Scrollspy as ScrollSpy } from '@makotot/ghostui/src/Scrollspy';
+import animateScrollTo from 'animated-scroll-to';
 import { useLocation, useRouteMeta, useSiteData } from 'dumi';
 import React, {
   useEffect,
@@ -30,6 +31,24 @@ const Toc: FC = () => {
     }
   }, [pathname, loading]);
 
+  const scrollTo = (newTop: number) => {
+    console.log(newTop)
+    animateScrollTo(newTop, {
+      speed: 200
+    })
+  }
+
+  // 点击toc item，页面滚动平滑到对应为止
+  const scrollToByIndex = (h2Index: number) => {
+    const clickNode = sectionRefs[h2Index].current;
+
+    if(clickNode) {
+      // 点击目标位置
+      const newTop = clickNode.offsetTop
+      scrollTo(newTop);
+    }
+  }
+
   return sectionRefs.length ? (
     <ScrollSpy sectionRefs={sectionRefs}>
       {({ currentElementIndexInViewport }) => {
@@ -42,7 +61,6 @@ const Toc: FC = () => {
             {toc
               .filter(({ depth }) => depth > 1 && depth < 4)
               .map((item, i) => {
-                const link = `#${encodeURIComponent(item.id)}`;
                 const activeIndex =
                   currentElementIndexInViewport > -1
                     ? currentElementIndexInViewport
@@ -51,7 +69,7 @@ const Toc: FC = () => {
                 return (
                   <li key={item.id} data-depth={item.depth}>
                     <a
-                      href={link}
+                      onClick={() => scrollToByIndex(i)}
                       title={item.title}
                       {...(activeIndex === i ? { className: 'active' } : {})}
                     >
