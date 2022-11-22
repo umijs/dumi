@@ -243,7 +243,7 @@ export default function rehypeDemo(
               );
               component = techStack.transformCode(codeValue, {
                 type: 'code-block',
-                fileAbsPath: opts.fileAbsPath,
+                fileAbsPath: parseOpts.fileAbsPath,
               });
             }
 
