@@ -31,7 +31,7 @@ export default (api: IApi) => {
   api.addContentTab(() => ({
     key: 'test',
     component: require.resolve('./a.tsx'),
-    test: '/^/components//',
+    test: /^\/components\//,
   }));
 };
 ```
