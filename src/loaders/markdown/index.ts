@@ -198,6 +198,7 @@ export default function mdLoader(this: any, content: string) {
       // save cache with final cache key
       cache.setSync(finalCacheKey, ret);
       cb(null, emit.call(this, opts, ret));
+      delete deferrer[cacheKey];
     })
     .catch(cb);
 }
