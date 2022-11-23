@@ -18,6 +18,7 @@ export {
   RawIntlProvider,
   useIntl,
 } from 'react-intl';
+export { AtomRenderer } from './AtomRenderer';
 export { useSiteData } from './context';
 export { DumiDemo } from './DumiDemo';
 export { DumiDemoGrid } from './DumiDemoGrid';
