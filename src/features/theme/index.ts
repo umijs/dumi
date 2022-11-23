@@ -72,7 +72,14 @@ export default (api: IApi) => {
   // skip mfsu for client api, to avoid circular resolve in mfsu mode
   safeExcludeInMFSU(
     api,
-    ['dumi/theme-default', '@ant-design/icons-svg', getPkgThemeName(api)]
+    [
+      'dumi/theme-default',
+      // for svgr
+      '@ant-design/icons-svg',
+      // for search service worker
+      'highlight-words-core',
+      getPkgThemeName(api),
+    ]
       .filter(Boolean)
       .map((pkg) => new RegExp(pkg!)),
   );
