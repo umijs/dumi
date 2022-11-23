@@ -91,8 +91,8 @@ export default (api: IApi) => {
 
     // append plugin tabs
     tabs.push(
-      ...tabsFromPlugins.map((tab) => ({
-        index: tabs.length,
+      ...tabsFromPlugins.map((tab, index) => ({
+        index: tabs.length + index,
         key: tab.key,
         id: tab.id!,
         file: tab.component,
