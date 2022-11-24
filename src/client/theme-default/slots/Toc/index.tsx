@@ -11,7 +11,6 @@ import './index.less';
 
 const Toc: FC = () => {
   const { pathname } = useLocation();
-
   const meta = useRouteMeta();
   const { loading } = useSiteData();
   const prevIndexRef = useRef(0);
@@ -51,16 +50,13 @@ const Toc: FC = () => {
 
                 return (
                   <li key={item.id} data-depth={item.depth}>
-                    {
-                      // use the Link component to replace the a tag to solve the problem that the hash cannot be updated
-                      <Link
-                        to={link}
-                        title={item.title}
-                        {...(activeIndex === i ? { className: 'active' } : {})}
-                      >
-                        {item.title}
-                      </Link>
-                    }
+                    <Link
+                      to={link}
+                      title={item.title}
+                      {...(activeIndex === i ? { className: 'active' } : {})}
+                    >
+                      {item.title}
+                    </Link>
                   </li>
                 );
               })}
