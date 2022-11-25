@@ -4,14 +4,15 @@ import type { ILocalesConfig, IThemeConfig } from '@/client/theme-api/types';
 import type { IContentTab } from '@/features/tabs';
 import type { IThemeLoadResult } from '@/features/theme/loader';
 import type { IModify } from '@umijs/core';
+import type { IConfig } from '@umijs/preset-umi';
 import type { AssetsPackage, ExampleBlockAsset } from 'dumi-assets-types';
 import type { Element } from 'hast';
-import type { defineConfig, IApi as IUmiApi } from 'umi';
+import type { IApi as IUmiApi } from 'umi';
 
 type NoStringIndex<T> = {
   [K in keyof T as string extends K ? never : K]: T[K];
 };
-type IUmiConfig = NoStringIndex<Parameters<typeof defineConfig>[0]>;
+type IUmiConfig = NoStringIndex<IConfig>;
 
 export interface IDumiConfig extends IUmiConfig {
   resolve: {
