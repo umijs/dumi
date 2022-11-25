@@ -130,6 +130,9 @@
       box-sizing: border-box;
       box-shadow: inset 1px 1px 0 0 hsl(0deg 0% 100% / 50%), 0 3px 8px 0 #555a64;
       border-radius: 8px;
+      max-height: calc(100% - 120px);
+      display: flex;
+      flex-direction: column;
     }
 
     .@{prefix}-search-bar-input {
@@ -140,6 +143,8 @@
     .@{prefix}-search-result {
       min-height: 60px;
       margin-top: 12px;
+      flex: auto;
+      overflow: auto;
 
       > dl > dd {
         margin: 0 auto;
