@@ -217,9 +217,9 @@ importers:
 
   suites/theme-mobile:
     specifiers:
-      dumi: 2.0.2
+      dumi: workspace:*
       f2-touchemulator: ^0.0.1
-      father-plugin-dumi-theme: 1.0.0-rc.1
+      father-plugin-dumi-theme: workspace:*
       umi-hd: ^5.0.1
     dependencies:
       f2-touchemulator: 0.0.1

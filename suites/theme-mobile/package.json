@@ -31,11 +31,11 @@
     "umi-hd": "^5.0.1"
   },
   "devDependencies": {
-    "dumi": "2.0.2",
-    "father-plugin-dumi-theme": "1.0.0-rc.1"
+    "dumi": "workspace:*",
+    "father-plugin-dumi-theme": "workspace:*"
   },
   "peerDependencies": {
-    "dumi": "2.0.2"
+    "dumi": "^2.0.0"
   },
   "authors": [
     "xiaohuoni <448627663@qq.com> (https://github.com/xiaohuoni)"
