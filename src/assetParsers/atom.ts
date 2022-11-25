@@ -20,6 +20,7 @@ class AtomAssetsParser {
   constructor(opts: {
     entryFile: string;
     resolveDir: string;
+    unpkgHost?: string;
     watch?: boolean;
   }) {
     this.resolveDir = opts.resolveDir;
@@ -30,7 +31,7 @@ class AtomAssetsParser {
     this.parser = new SchemaParser({
       entryPath: opts.entryFile,
       basePath: opts.resolveDir,
-      unPkgHost: 'https://unpkg.com',
+      unPkgHost: opts.unpkgHost ?? 'https://unpkg.com',
     });
   }
 

@@ -27,7 +27,7 @@ importers:
       animated-scroll-to: ^2.3.0
       codesandbox: ^2.2.3
       deepmerge: ^4.2.2
-      dumi-afx-deps: ^1.0.0-alpha.1
+      dumi-afx-deps: ^1.0.0-alpha.2
       dumi-assets-types: 2.0.0-alpha.0
       enhanced-resolve: ^5.10.0
       eslint: ^8.20.0
@@ -95,7 +95,7 @@ importers:
       animated-scroll-to: 2.3.0
       codesandbox: 2.2.3
       deepmerge: 4.2.2
-      dumi-afx-deps: 1.0.0-alpha.1_typescript@4.7.4
+      dumi-afx-deps: 1.0.0-alpha.2_typescript@4.7.4
       dumi-assets-types: link:assets-types
       enhanced-resolve: 5.10.0
       estree-util-to-js: 1.1.0
@@ -4730,8 +4730,8 @@ packages:
       is-obj: 2.0.0
     dev: true
 
-  /dumi-afx-deps/1.0.0-alpha.1_typescript@4.7.4:
-    resolution: {integrity: sha512-UwQlYua1+wzMvpt6h6T7ctta4BqkwlBMyEFBketY4/u8ULUDR9U6a1c2dVIi0FEv89oAsWebYddpw1u+lxNMxg==}
+  /dumi-afx-deps/1.0.0-alpha.2_typescript@4.7.4:
+    resolution: {integrity: sha512-wRXIPGG+Ebn2o85yqe0LxvuE67299LJbPFofU8ioFwYo2pJYFNbiWM3xBqughwh9CKI5OQdN7Stw1//BgXyE0A==}
     peerDependencies:
       typescript: ^4.7.2
     dependencies:
@@ -9355,9 +9355,6 @@ packages:
     resolution: {integrity: sha512-rdVMIi7Q4B0XbXqNUEI+Z4E+pueiu/CS5E6vRCQommzdQ/sgsS4dK42U7GX8oJR+TJOtT+Qv3GkNo6iijUMp3Q==}
     peerDependencies:
       postcss: '>4 <9'
-    peerDependenciesMeta:
-      postcss:
-        optional: true
     dev: false
 
   /postcss-preset-env/7.5.0:
@@ -10090,9 +10087,6 @@ packages:
     resolution: {integrity: sha512-fU1Txz7Budmvamp7bshe4Zi32d0ll7ect+ccxNu9FlObT605GOEB8BfO4tmRJ39R5Zj831VCpvQ05QPBW5yb+w==}
     peerDependencies:
       react: ^18.1.0
-    peerDependenciesMeta:
-      react:
-        optional: true
     dependencies:
       loose-envify: 1.4.0
       react: 18.1.0
