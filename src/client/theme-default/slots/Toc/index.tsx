@@ -1,5 +1,5 @@
 import { Scrollspy as ScrollSpy } from '@makotot/ghostui/src/Scrollspy';
-import { useLocation, useRouteMeta, useSiteData } from 'dumi';
+import { Link, useLocation, useRouteMeta, useSiteData } from 'dumi';
 import React, {
   useEffect,
   useRef,
@@ -50,13 +50,13 @@ const Toc: FC = () => {
 
                 return (
                   <li key={item.id} data-depth={item.depth}>
-                    <a
-                      href={link}
+                    <Link
+                      to={link}
                       title={item.title}
                       {...(activeIndex === i ? { className: 'active' } : {})}
                     >
                       {item.title}
-                    </a>
+                    </Link>
                   </li>
                 );
               })}

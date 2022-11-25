@@ -24,6 +24,7 @@ importers:
       '@umijs/core': ^4.0.32
       '@umijs/lint': ^4.0.32
       '@umijs/plugins': 4.0.32
+      animated-scroll-to: ^2.3.0
       codesandbox: ^2.2.3
       deepmerge: ^4.2.2
       dumi-afx-deps: ^1.0.0-alpha.1
@@ -91,6 +92,7 @@ importers:
       '@types/mdast': 3.0.10
       '@umijs/bundler-utils': 4.0.32
       '@umijs/core': 4.0.32
+      animated-scroll-to: 2.3.0
       codesandbox: 2.2.3
       deepmerge: 4.2.2
       dumi-afx-deps: 1.0.0-alpha.1_typescript@4.7.4
@@ -3202,6 +3204,10 @@ packages:
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
       uri-js: 4.4.1
+
+  /animated-scroll-to/2.3.0:
+    resolution: {integrity: sha512-PT/5MSKCWQaK2kuOl2HT2KJMuJEvUS4/TgMhWy82c2EmF74/CIkvPBPKOvd8nMYP6Higo7xCn49/iSW9BccMoQ==}
+    dev: false
 
   /ansi-align/2.0.0:
     resolution: {integrity: sha512-TdlOggdA/zURfMYa7ABC66j+oqfMew58KpJMbUlH3bcZP1b+cBHIHDDn5uH9INsxrHBPjsqM0tDB4jPTF/vgJA==}

@@ -1,3 +1,4 @@
+import animateScrollTo from 'animated-scroll-to';
 import { useLocation, useRouteMeta, useSiteData } from 'dumi';
 import ContentTabs from 'dumi/theme/slots/ContentTabs';
 import React, { useEffect, useState, type FC, type ReactNode } from 'react';
@@ -24,7 +25,12 @@ export const DumiPage: FC<{ children: ReactNode }> = (props) => {
     setTimeout(() => {
       const elm = id && document.getElementById(decodeURIComponent(id));
 
-      if (elm) document.documentElement.scrollTo(0, elm.offsetTop - 80);
+      if (elm) {
+        // animated-scroll-to instead of native scroll
+        animateScrollTo(elm.offsetTop - 80, {
+          speed: 200,
+        });
+      }
     }, 1);
   }, [hash]);
 
