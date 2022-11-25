@@ -22,7 +22,6 @@ export const CLIENT_DEPS = [
   '@ant-design/icons-svg',
   '@makotot/ghostui',
   'deepmerge',
-  'highlight-words-core',
   'lodash.throttle',
   'prism-react-renderer',
   'prismjs',

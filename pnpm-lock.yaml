@@ -107,7 +107,6 @@ importers:
       hast-util-to-estree: 2.1.0
       hast-util-to-string: 2.0.0
       heti: 0.9.2
-      highlight-words-core: 1.2.2
       html-to-text: 8.2.1
       js-yaml: 4.1.0
       lodash.throttle: 4.1.1
@@ -154,6 +153,7 @@ importers:
       '@umijs/plugins': 4.0.32_bbvjflvjoibwhtpmedigb26h6y
       eslint: 8.26.0
       father: 4.1.0
+      highlight-words-core: 1.2.2
       husky: 8.0.1
       lint-staged: 13.0.3
       prettier: 2.7.1
@@ -6641,7 +6641,7 @@ packages:
 
   /highlight-words-core/1.2.2:
     resolution: {integrity: sha512-BXUKIkUuh6cmmxzi5OIbUJxrG8OAk2MqoL1DtO3Wo9D2faJg2ph5ntyuQeLqaHJmzER6H5tllCDA9ZnNe9BVGg==}
-    dev: false
+    dev: true
 
   /history/5.3.0:
     resolution: {integrity: sha512-ZqaKwjjrAYUYfLG+htGaIIZ4nioX2L70ZUMIFysS3xvBsSG4x/n1V6TXV3N8ZYNuFGlDirFg32T7B6WOUPDYcQ==}

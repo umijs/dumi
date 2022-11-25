@@ -86,8 +86,6 @@ export default (api: IApi) => {
       'dumi/theme-default',
       // for svgr
       '@ant-design/icons-svg',
-      // for search service worker
-      'highlight-words-core',
       getPkgThemeName(api),
     ]
       .filter(Boolean)
