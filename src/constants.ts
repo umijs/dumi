@@ -29,3 +29,5 @@ export const CLIENT_DEPS = [
   'react-copy-to-clipboard',
   'react-intl',
 ];
+
+export const USELESS_TMP_FILES = ['tsconfig.json', 'typings.d.ts'];

@@ -1,10 +1,15 @@
-import { CLIENT_DEPS, LOCAL_DUMI_DIR, LOCAL_PAGES_DIR } from '@/constants';
+import {
+  CLIENT_DEPS,
+  LOCAL_DUMI_DIR,
+  LOCAL_PAGES_DIR,
+  USELESS_TMP_FILES,
+} from '@/constants';
 import type { IApi } from '@/types';
 import { parseModule } from '@umijs/bundler-utils';
 import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
-import { deepmerge, glob, logger, winPath } from 'umi/plugin-utils';
+import { deepmerge, fsExtra, glob, logger, winPath } from 'umi/plugin-utils';
 
 /**
  * exclude pre-compiling modules in mfsu mode
@@ -163,6 +168,18 @@ export default (api: IApi) => {
       for (const [key, strategy] of Object.entries(strategies)) {
         api.appData[key] = await strategy();
       }
+    },
+  });
+
+  // remove tsconfig.json, because the paths in tsconfig.json cannot be resolved in dumi project
+  api.register({
+    key: 'onGenerateFiles',
+    // make sure after umi generate files
+    stage: Infinity,
+    fn() {
+      USELESS_TMP_FILES.forEach((file) => {
+        fsExtra.rmSync(path.join(api.paths.absTmpPath, file), { force: true });
+      });
     },
   });
 
