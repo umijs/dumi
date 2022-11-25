@@ -111,7 +111,7 @@ yarn add gh-pages -D
 编译生成 `dist` 目录
 
 ```bash
-npm run docs:build
+npm run build
 ```
 
 一键发布
@@ -140,12 +140,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: npm install
-      - run: npm run docs:build
+      - run: npm run build
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs-dist
+          publish_dir: ./dist
 ```
 
 ## dumi 如何支持对 Swift、C#、Kotlin 等语言的语法高亮？
