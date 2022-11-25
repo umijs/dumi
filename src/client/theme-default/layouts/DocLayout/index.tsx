@@ -1,5 +1,14 @@
 import { ReactComponent as IconSidebar } from '@ant-design/icons-svg/inline-svg/outlined/align-left.svg';
-import { Helmet, useIntl, useOutlet, useRouteMeta, useSidebarData } from 'dumi';
+import animateScrollTo from 'animated-scroll-to';
+import {
+  Helmet,
+  useIntl,
+  useLocation,
+  useOutlet,
+  useRouteMeta,
+  useSidebarData,
+  useSiteData,
+} from 'dumi';
 import Content from 'dumi/theme/slots/Content';
 import Features from 'dumi/theme/slots/Features';
 import Footer from 'dumi/theme/slots/Footer';
@@ -7,15 +16,35 @@ import Header from 'dumi/theme/slots/Header';
 import Hero from 'dumi/theme/slots/Hero';
 import Sidebar from 'dumi/theme/slots/Sidebar';
 import Toc from 'dumi/theme/slots/Toc';
-import React, { useState, type FC } from 'react';
+import React, { useEffect, useState, type FC } from 'react';
 import './index.less';
 
 const DocLayout: FC = () => {
   const intl = useIntl();
   const outlet = useOutlet();
   const sidebar = useSidebarData();
+  const { hash } = useLocation();
+  const { loading } = useSiteData();
   const [showSidebar, setShowSidebar] = useState(false);
   const { frontmatter: fm } = useRouteMeta();
+
+  // handle hash change or visit page hash after async chunk loaded
+  useEffect(() => {
+    const id = hash.replace('#', '');
+
+    if (id) {
+      setTimeout(() => {
+        const elm = document.getElementById(decodeURIComponent(id));
+
+        if (elm) {
+          // animated-scroll-to instead of native scroll
+          animateScrollTo(elm.offsetTop - 80, {
+            maxDuration: 300,
+          });
+        }
+      }, 1);
+    }
+  }, [loading, hash]);
 
   return (
     <div
