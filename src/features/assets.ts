@@ -40,7 +40,10 @@ export default (api: IApi) => {
   });
 
   api.onBuildComplete(async () => {
-    const { components } = await api.service.atomParser.parse();
+    const { components } = api.service.atomParser
+      ? await api.service.atomParser.parse()
+      : // allow generate assets.json without atoms when parser is not available
+        { components: {} };
     const assets = await api.applyPlugins({
       key: 'modifyAssetsMetadata',
       initialValue: {
