@@ -101,7 +101,11 @@ export default (api: IApi) => {
   });
 
   // skip mfsu for client api, to avoid circular resolve in mfsu mode
-  safeExcludeInMFSU(api, [new RegExp('dumi/dist/client')]);
+  safeExcludeInMFSU(api, [
+    new RegExp('dumi/dist/client'),
+    // for useSiteSearch api
+    new RegExp('compiled/_internal/searchWorker'),
+  ]);
 
   api.modifyDefaultConfig((memo) => {
     if (api.userConfig.mfsu !== false) {
