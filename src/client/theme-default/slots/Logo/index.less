@@ -8,6 +8,7 @@
   line-height: 1;
   font-weight: 500;
   text-decoration: none;
+  width: 100%;
 
   @media @mobile {
     font-size: 18px;
@@ -24,5 +25,12 @@
     @media @mobile {
       height: 32px;
     }
+  }
+
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    margin-inline-end: 12px;
   }
 }
