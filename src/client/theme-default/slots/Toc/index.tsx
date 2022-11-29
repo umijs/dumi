@@ -10,7 +10,7 @@ import React, {
 import './index.less';
 
 const Toc: FC = () => {
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   const meta = useRouteMeta();
   const { loading } = useSiteData();
   const prevIndexRef = useRef(0);
@@ -28,7 +28,7 @@ const Toc: FC = () => {
 
       setSectionRefs(refs as any);
     }
-  }, [pathname, loading]);
+  }, [pathname, search, loading]);
 
   return sectionRefs.length ? (
     <ScrollSpy sectionRefs={sectionRefs}>
