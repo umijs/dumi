@@ -24,48 +24,58 @@
     }
   }
 
-  > li {
-    height: inherit;
+  &-nav {
+    flex: auto;
+    display: flex;
+    height: 60px;
 
-    > button {
-      padding: 0;
+    >li {
       height: inherit;
-      color: @c-text-secondary;
-      font-size: 17px;
-      border: 0;
-      background: transparent;
-      cursor: pointer;
-      transition: all 0.2s;
 
-      &:hover {
-        color: @c-primary;
+      >button {
+        padding: 0;
+        height: inherit;
+        color: @c-text-secondary;
+        font-size: 17px;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover {
+          color: @c-primary;
+        }
+      }
+
+      &:not(last-child) {
+        margin-inline-end: 42px;
+
+        @media @mobile {
+          margin-inline-end: 20px;
+        }
+      }
+
+      &[data-active] {
+        position: relative;
+
+        >button {
+          color: @c-text;
+        }
+
+        &::after {
+          content: '';
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: -1px;
+          height: 1px;
+          background-color: @c-primary;
+        }
       }
     }
+  }
 
-    &:not(last-child) {
-      margin-inline-end: 42px;
-
-      @media @mobile {
-        margin-inline-end: 20px;
-      }
-    }
-
-    &[data-active] {
-      position: relative;
-
-      > button {
-        color: @c-text;
-      }
-
-      &::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: -1px;
-        height: 1px;
-        background-color: @c-primary;
-      }
-    }
+  &-action {
+    flex: none;
   }
 }
