@@ -14,7 +14,7 @@ const WhoAreUsing: FC = () => {
         </a>
       </li>
       <li>
-        <a href="https://antv.vision" target="_blank" rel="noreferrer">
+        <a href="https://antv.antgroup.com" target="_blank" rel="noreferrer">
           <img
             src="https://gw.alipayobjects.com/zos/antfincdn/nc7Fc0XBg5/8a6844f5-a6ed-4630-9177-4fa5d0b7dd47.png"
             alt="AntV"
