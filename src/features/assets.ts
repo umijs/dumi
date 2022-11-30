@@ -40,7 +40,7 @@ export default (api: IApi) => {
     });
 
     api.register({
-      key: 'onCompileDone',
+      key: 'onBuildComplete',
       stage: -Infinity,
       fn: resolve,
     });
