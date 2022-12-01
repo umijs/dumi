@@ -65,7 +65,7 @@ export default (api: IApi) => {
       return await api.applyPlugins({
         key: 'modifyAssetsMetadata',
         initialValue: {
-          name: api.config.themeConfig.title || api.pkg.name,
+          name: api.config.themeConfig.name || api.pkg.name,
           npmPackageName: api.pkg.name,
           version: api.pkg.version,
           description: api.pkg.description,
