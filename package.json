@@ -81,6 +81,7 @@
     "@types/mdast": "^3.0.10",
     "@umijs/bundler-utils": "^4.0.32",
     "@umijs/core": "^4.0.32",
+    "classnames": "2.3.2",
     "codesandbox": "^2.2.3",
     "deepmerge": "^4.2.2",
     "dumi-afx-deps": "^1.0.0-alpha.1",

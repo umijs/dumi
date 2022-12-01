@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import { IPreviewerProps, useLocation } from 'dumi';
 import PreviewerActions from 'dumi/theme/slots/PreviewerActions';
 import React, { type FC } from 'react';
@@ -10,14 +11,18 @@ const Previewer: FC<IPreviewerProps> = (props) => {
   return (
     <div
       id={props.asset.id}
-      className={`dumi-default-previewer ${props?.className}`}
+      className={classnames({
+        'dumi-default-previewer': true,
+        [props?.className]: !!props?.className,
+      })}
       data-debug={props.debug}
       data-active={hash === link || undefined}
     >
       <div
-        className={`dumi-default-previewer-demo ${
-          props?.className ? props?.className + '-demo' : ''
-        }`}
+        className={classnames({
+          'dumi-default-previewer-demo': true,
+          [`${props?.className}-demo`]: !!props?.className,
+        })}
         style={{ background: props.background }}
         data-compact={props.compact || undefined}
         data-transform={props.transform || undefined}
@@ -37,15 +42,17 @@ const Previewer: FC<IPreviewerProps> = (props) => {
         )}
       </div>
       <div
-        className={`dumi-default-previewer-meta ${
-          props?.className ? props?.className + '-meta' : ''
-        }`}
+        className={classnames({
+          'dumi-default-previewer-meta': true,
+          [`${props?.className}-meta`]: !!props?.className,
+        })}
       >
         {(props.title || props.debug) && (
           <div
-            className={`dumi-default-previewer-desc ${
-              props?.className ? props?.className + '-desc' : ''
-            }`}
+            className={classnames({
+              'dumi-default-previewer-desc': true,
+              [`${props?.className}-desc`]: !!props?.className,
+            })}
           >
             <h5>
               <a href={link}>

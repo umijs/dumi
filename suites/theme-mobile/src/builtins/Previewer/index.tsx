@@ -14,7 +14,7 @@ const MobilePreviewer: FC<IPreviewerProps> = (props) => {
       {...props}
       iframe={mobile ? false : props?.iframe}
       className={mobile ? 'dumi-default-mobile-previewer' : ''}
-      hasShowCodeButton={mobile ? false : true}
+      forceShowCode={mobile ? false : true}
     >
       {mobile && <Device url={props.demoUrl} />}
       {!mobile && props?.children}

@@ -7,11 +7,13 @@
   flex-direction: row-reverse;
   align-items: stretch;
   overflow: hidden;
-  @media only screen and (max-width: 1440px) {
+
+  @media @tablet {
     max-height: 600px;
   }
-  @media only screen and (max-width: 960px) {
-    max-height: 500px;
+
+  @media @mobile {
+    display: block;
   }
 
   &-demo {
@@ -21,6 +23,5 @@
 
   &-meta {
     flex: 1;
-    width: 100%;
   }
 }
