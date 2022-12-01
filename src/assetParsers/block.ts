@@ -59,9 +59,11 @@ async function parseBlockAsset(opts: {
               });
 
               if (pkgJsonPath) {
-                asset.dependencies[args.path] = {
+                const pkg = require(pkgJsonPath);
+
+                asset.dependencies[pkg.name] = {
                   type: 'NPM',
-                  value: require(pkgJsonPath).version,
+                  value: pkg.version,
                 };
               }
 
@@ -94,7 +96,9 @@ async function parseBlockAsset(opts: {
               ? `index${ext}`
               : winPath(
                   path.relative(path.dirname(opts.fileAbsPath), args.path),
-                );
+                )
+                  // discard leading ./ or ../
+                  .replace(/^(\.?\.\/)+/g, '');
 
             if (isModule || isPlainText) {
               asset.dependencies[filename] = {

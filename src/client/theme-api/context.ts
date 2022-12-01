@@ -5,6 +5,7 @@ import type { ILocalesConfig, IPreviewerProps, IThemeConfig } from './types';
 
 interface ISiteContext {
   pkg: Partial<Record<keyof typeof PICKED_PKG_FIELDS, any>>;
+  entryExports: Record<string, any>;
   demos: Record<
     string,
     {
@@ -22,6 +23,7 @@ interface ISiteContext {
 
 export const SiteContext = createContext<ISiteContext>({
   pkg: {},
+  entryExports: {},
   demos: {},
   components: {},
   locales: [],

@@ -9,7 +9,6 @@
       "@@/*": [".dumi/tmp/*"],
       "dumi": ["."],
       "dumi/theme/*": ["src/client/theme-default/*"]
-    },
-    "types": ["../../.dumi/tmp/typings"]
+    }
   }
 }

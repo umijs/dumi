@@ -1,13 +1,38 @@
 import { useNavData, useSiteData } from 'dumi';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocaleDocRoutes } from '../utils';
-import type { ISearchResult } from './worker';
+// @ts-ignore
+import workerCode from '-!../../../../compiled/_internal/searchWorker.min?dumi-raw';
+
+export interface IHighlightText {
+  highlighted?: boolean;
+  text: string;
+}
+
+export interface ISearchNavResult {
+  title?: string;
+  priority: number;
+  hints: {
+    type: 'page' | 'title' | 'demo' | 'content';
+    link: string;
+    priority: number;
+    highlightTitleTexts: IHighlightText[];
+    highlightTexts: IHighlightText[];
+  }[];
+}
+
+export type ISearchResult = ISearchNavResult[];
 
 let worker: Worker;
 
 // for ssr
 if (typeof window !== 'undefined') {
-  worker = new Worker(new URL('./worker', import.meta.url));
+  // use blob to avoid generate entry(chunk) for worker
+  worker = new Worker(
+    URL.createObjectURL(
+      new Blob([workerCode], { type: 'application/javascript' }),
+    ),
+  );
 }
 
 export const useSiteSearch = () => {

@@ -20,6 +20,7 @@ class AtomAssetsParser {
   constructor(opts: {
     entryFile: string;
     resolveDir: string;
+    unpkgHost?: string;
     watch?: boolean;
   }) {
     this.resolveDir = opts.resolveDir;
@@ -30,7 +31,7 @@ class AtomAssetsParser {
     this.parser = new SchemaParser({
       entryPath: opts.entryFile,
       basePath: opts.resolveDir,
-      unPkgHost: 'https://unpkg.com',
+      unPkgHost: opts.unpkgHost ?? 'https://unpkg.com',
     });
   }
 
@@ -39,7 +40,7 @@ class AtomAssetsParser {
     if (!this.resolverDeferrer || this.unresolvedFiles.length) {
       this.resolverDeferrer = (async () => {
         // patch unresolved files, and this method also will init parser before the first time
-        await this.parser.patch(this.unresolvedFiles);
+        await this.parser.patch(this.unresolvedFiles.splice(0));
 
         return new SchemaResolver(await this.parser.parse());
       })();
@@ -119,6 +120,10 @@ class AtomAssetsParser {
           }
         });
     }
+  }
+
+  unwatch(cb: AtomAssetsParser['cbs'][number]) {
+    this.cbs.splice(this.cbs.indexOf(cb), 1);
   }
 }
 

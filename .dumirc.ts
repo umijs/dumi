@@ -13,4 +13,5 @@ export default {
 Powered by self`,
   },
   ssr: process.env.NODE_ENV === 'development' ? false : {},
+  sitemap: { hostname: 'https://d.umijs.org' },
 };

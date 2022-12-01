@@ -103,4 +103,8 @@ export type IApi = IUmiApi & {
    * modify assets metadata
    */
   modifyAssetsMetadata: IModify<AssetsPackage, null>;
+  /**
+   * get assets metadata
+   */
+  getAssetsMetadata?: () => Promise<AssetsPackage>;
 };

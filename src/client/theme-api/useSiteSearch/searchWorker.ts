@@ -1,27 +1,9 @@
 import type { useAppData, useNavData, useSiteData } from 'dumi';
 import { findAll } from 'highlight-words-core';
+import type { IHighlightText, ISearchNavResult, ISearchResult } from '.';
 import type { IRouteMeta } from '../types';
 
 const TAB_QUERY_KEY = 'tab';
-
-interface IHighlightText {
-  highlighted?: boolean;
-  text: string;
-}
-
-interface ISearchNavResult {
-  title?: string;
-  priority: number;
-  hints: {
-    type: 'page' | 'title' | 'demo' | 'content';
-    link: string;
-    priority: number;
-    highlightTitleTexts: IHighlightText[];
-    highlightTexts: IHighlightText[];
-  }[];
-}
-
-export type ISearchResult = ISearchNavResult[];
 
 type ISearchMetadata = {
   navTitle?: string;

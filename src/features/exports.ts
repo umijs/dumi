@@ -16,7 +16,7 @@ export default (api: IApi) => {
     api.writeTmpFile({
       noPluginDir: true,
       path: 'dumi/exports.ts',
-      content: `export * from '../exports.ts';
+      content: `export * from '../exports';
 export * from '${winPath(require.resolve('../client/theme-api'))}';`,
     });
   });

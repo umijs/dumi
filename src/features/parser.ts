@@ -22,7 +22,10 @@ export default (api: IApi) => {
     key: 'apiParser',
     enableBy: api.EnableBy.config,
     config: {
-      schema: (Joi) => Joi.object(),
+      schema: (Joi) =>
+        Joi.object({
+          unpkgHost: Joi.string().uri(),
+        }),
     },
   });
 
@@ -50,6 +53,7 @@ export default (api: IApi) => {
     api.service.atomParser = new AtomAssetsParser({
       entryFile: api.config.resolve.entryFile!,
       resolveDir: api.cwd,
+      unpkgHost: api.config.apiParser.unpkgHost,
     });
 
     // lazy parse & use watch mode in development

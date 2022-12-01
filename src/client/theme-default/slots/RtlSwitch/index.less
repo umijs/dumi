@@ -1,5 +1,11 @@
 @import '../LangSwitch/index.less';
 
+.@{prefix}-lang-switch {
+  & + & {
+    margin-inline-start: 20px;
+  }
+}
+
 html[data-direction='rtl'] {
   direction: rtl;
 }

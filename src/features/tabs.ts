@@ -44,7 +44,7 @@ export default (api: IApi) => {
 
     // generate id for tabs
     tabsFromPlugins.forEach((tab) => {
-      tab.id ??= `plugin-tab${tab.test ? `-${tab.test}` : ''}-${tab.key}`;
+      tab.id ??= `plugin-tab-${tab.key}`;
       tab.component = winPath(tab.component);
     });
 
@@ -91,8 +91,8 @@ export default (api: IApi) => {
 
     // append plugin tabs
     tabs.push(
-      ...tabsFromPlugins.map((tab) => ({
-        index: tabs.length,
+      ...tabsFromPlugins.map((tab, index) => ({
+        index: tabs.length + index,
         key: tab.key,
         id: tab.id!,
         file: tab.component,

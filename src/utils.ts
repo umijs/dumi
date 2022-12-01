@@ -122,7 +122,8 @@ export async function tryFatherBuildConfigs(cwd: string) {
     /* nothing */
   }
 
-  process.env.APP_ROOT = APP_ROOT;
+  // why check first? because assign undefined to env will be converted to string
+  if (APP_ROOT) process.env.APP_ROOT = APP_ROOT;
 
   return configs;
 }

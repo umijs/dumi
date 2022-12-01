@@ -8,7 +8,10 @@ export default defineConfig({
   esm: {
     input: 'src/client',
     output: 'dist/client',
-    ignores: ['src/client/theme-default'],
+    ignores: [
+      'src/client/theme-default',
+      'src/client/theme-api/useSiteSearch/searchWorker.ts',
+    ],
     overrides: {
       'src/client/theme-default': {
         output: 'theme-default',

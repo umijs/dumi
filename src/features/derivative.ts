@@ -1,10 +1,15 @@
-import { CLIENT_DEPS, LOCAL_DUMI_DIR, LOCAL_PAGES_DIR } from '@/constants';
+import {
+  CLIENT_DEPS,
+  LOCAL_DUMI_DIR,
+  LOCAL_PAGES_DIR,
+  USELESS_TMP_FILES,
+} from '@/constants';
 import type { IApi } from '@/types';
 import { parseModule } from '@umijs/bundler-utils';
 import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
-import { deepmerge, glob, winPath } from 'umi/plugin-utils';
+import { deepmerge, fsExtra, glob, logger, winPath } from 'umi/plugin-utils';
 
 /**
  * exclude pre-compiling modules in mfsu mode
@@ -88,10 +93,19 @@ export default (api: IApi) => {
       !api.config.ssr || api.config.ssr.builder === 'webpack',
       'Only `webpack` builder is supported in SSR mode!',
     );
+    if (api.userConfig.history?.type === 'hash') {
+      logger.warn(
+        'Hash history is temporarily incompatible, it is recommended to use browser history for now.',
+      );
+    }
   });
 
   // skip mfsu for client api, to avoid circular resolve in mfsu mode
-  safeExcludeInMFSU(api, [new RegExp('dumi/dist/client')]);
+  safeExcludeInMFSU(api, [
+    new RegExp('dumi/dist/client'),
+    // for useSiteSearch api
+    new RegExp('compiled/_internal/searchWorker'),
+  ]);
 
   api.modifyDefaultConfig((memo) => {
     if (api.userConfig.mfsu !== false) {
@@ -158,6 +172,18 @@ export default (api: IApi) => {
       for (const [key, strategy] of Object.entries(strategies)) {
         api.appData[key] = await strategy();
       }
+    },
+  });
+
+  // remove tsconfig.json, because the paths in tsconfig.json cannot be resolved in dumi project
+  api.register({
+    key: 'onGenerateFiles',
+    // make sure after umi generate files
+    stage: Infinity,
+    fn() {
+      USELESS_TMP_FILES.forEach((file) => {
+        fsExtra.rmSync(path.join(api.paths.absTmpPath, file), { force: true });
+      });
     },
   });
 

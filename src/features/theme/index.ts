@@ -39,6 +39,16 @@ function getPkgThemePath(api: IApi) {
   );
 }
 
+/**
+ * get exports for module
+ */
+function getModuleExports(modulePath: string) {
+  return parseModuleSync({
+    path: modulePath,
+    content: fs.readFileSync(modulePath, 'utf-8'),
+  })[1];
+}
+
 export default (api: IApi) => {
   // load default theme
   const defaultThemeData = loadTheme(DEFAULT_THEME_PATH);
@@ -72,7 +82,12 @@ export default (api: IApi) => {
   // skip mfsu for client api, to avoid circular resolve in mfsu mode
   safeExcludeInMFSU(
     api,
-    ['dumi/theme-default', '@ant-design/icons-svg', getPkgThemeName(api)]
+    [
+      'dumi/theme-default',
+      // for svgr
+      '@ant-design/icons-svg',
+      getPkgThemeName(api),
+    ]
       .filter(Boolean)
       .map((pkg) => new RegExp(pkg!)),
   );
@@ -155,10 +170,7 @@ export default (api: IApi) => {
 
         let contents = [];
         // parse exports for theme module
-        const [, exports] = parseModuleSync({
-          path: item.source,
-          content: fs.readFileSync(item.source, 'utf-8'),
-        });
+        const exports = getModuleExports(item.source);
 
         // export default
         if (exports.includes('default')) {
@@ -178,6 +190,13 @@ export default (api: IApi) => {
       });
     });
 
+    const entryFile =
+      api.config.resolve.entryFile &&
+      [path.resolve(api.cwd, api.config.resolve.entryFile)].find(fs.existsSync);
+    const entryExports = entryFile ? getModuleExports(entryFile) : [];
+    const hasDefaultExport = entryExports.includes('default');
+    const hasNamedExport = entryExports.some((exp) => exp !== 'default');
+
     // generate context layout
     api.writeTmpFile({
       noPluginDir: true,
@@ -188,7 +207,20 @@ import { SiteContext } from '${winPath(
         require.resolve('../../client/theme-api/context'),
       )}';
 import { demos, components } from '../meta';
-import { locales } from '../locales/config';
+import { locales } from '../locales/config';${
+        hasDefaultExport
+          ? `\nimport entryDefaultExport from '${winPath(entryFile!)}';`
+          : ''
+      }${
+        hasNamedExport
+          ? `\nimport * as entryMemberExports from '${winPath(entryFile!)}';`
+          : ''
+      }
+
+const entryExports = {
+  ${hasDefaultExport ? 'default: entryDefaultExport,' : ''}
+  ${hasNamedExport ? '...entryMemberExports,' : ''}
+};
 
 export default function DumiContextWrapper() {
   const outlet = useOutlet();
@@ -197,12 +229,13 @@ export default function DumiContextWrapper() {
 
   useEffect(() => {
     return history.listen((next) => {
-      // mark loading when route change, page component will set false when loaded
-      setLoading(true);
-
-      // scroll to top when route changed
       if (next.location.pathname !== prev.current) {
         prev.current = next.location.pathname;
+
+        // mark loading when route change, page component will set false when loaded
+        setLoading(true);
+
+        // scroll to top when route changed
         document.documentElement.scrollTo(0, 0);
       }
     });
@@ -213,6 +246,7 @@ export default function DumiContextWrapper() {
       pkg: ${JSON.stringify(
         lodash.pick(api.pkg, ...Object.keys(PICKED_PKG_FIELDS)),
       )},
+      entryExports,
       demos,
       components,
       locales,

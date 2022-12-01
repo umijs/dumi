@@ -41,7 +41,7 @@ export default async ({
           { title: 'yarn', value: 'yarn' },
           { title: 'pnpm', value: 'pnpm' },
         ],
-        initial: 4,
+        initial: 0,
       },
     ],
     {
@@ -93,6 +93,10 @@ export default async ({
       name: 'name',
       type: 'text',
       message: 'Input NPM package name',
+      validate: (value: string) => {
+        if (value && value.trim()) return true;
+        return 'NPM package name is required';
+      },
     });
   }
 

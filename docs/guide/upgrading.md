@@ -52,7 +52,7 @@ $ git checkout src docs # 恢复原有的源码及文档
 ```diff
 {
   "compilerOptions": {
-    "paths: {
+    "paths": {
 +     "@@/*": [".dumi/tmp/*"]
     }
   }
@@ -68,6 +68,15 @@ $ git checkout src docs # 恢复原有的源码及文档
 + .dumi/tmp
 + .dumi/tmp-test
 + .dumi/tmp-production
+```
+
+#### 更新外部引入 demo
+
+单标签改为双标签。
+
+```diff
+- <code src="path/to/demo.tsx" />
++ <code src="path/to/demo.tsx"></code>
 ```
 
 ## 项目文件升级
