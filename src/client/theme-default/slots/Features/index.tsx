@@ -13,10 +13,10 @@ const Features: FC = () => {
         [3, 2].find((n) => frontmatter.features!.length % n === 0) || 3
       }
     >
-      {frontmatter.features!.map(({ title, description, emoji }) => (
+      {frontmatter.features!.map(({ title, description, emoji, link }) => (
         <div key={title} className="dumi-default-features-item">
           {emoji && <i>{emoji}</i>}
-          {title && <h3>{title}</h3>}
+          {title && <h3> {link ? <a href={link} rel='noreferrer'>title</a> : title }</h3>}
           {description && (
             <p dangerouslySetInnerHTML={{ __html: description }} />
           )}
