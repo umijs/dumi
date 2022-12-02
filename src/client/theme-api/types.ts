@@ -70,6 +70,7 @@ export interface IRouteMeta {
     features?: {
       emoji?: string;
       title?: string;
+      link?: string;
       description?: string;
       [key: string]: any;
     }[];
