@@ -14,9 +14,11 @@ hero:
 features:
   - title: 更好的编译性能
     emoji: 🚀
+    link: http://baidu.com
     description: 通过结合使用 <a href="https://umijs.org/blog/mfsu-faster-than-vite" target="_blank" rel="noreferrer">Umi 4 MFSU</a>、esbuild、SWC、持久缓存等方案，带来比 dumi 1.x 更快的编译速度
   - title: 内置全文搜索
     emoji: 🔍
+    link: /guide
     description: 不需要接入任何三方服务，标题、正文、demo 等内容均可被搜索，支持多关键词搜索，且不会带来产物体积的增加
   - title: 全新主题系统
     emoji: 🎨
