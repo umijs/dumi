@@ -11,7 +11,12 @@ class AtomAssetsParser {
   private resolveDir: string;
   private unresolvedFiles: string[] = [];
   private parser: SchemaParser;
-  private resolverDeferrer: Promise<SchemaResolver> | undefined;
+  private parseDeferrer:
+    | Promise<{
+        components: Record<string, AtomComponentAsset>;
+        functions: Record<string, AtomFunctionAsset>;
+      }>
+    | undefined;
   private watcher: chokidar.FSWatcher | null = null;
   private cbs: Array<
     (data: Awaited<ReturnType<AtomAssetsParser['parse']>>) => void
@@ -44,75 +49,80 @@ class AtomAssetsParser {
 
   async parse() {
     // use valid cache first
-    if (!this.resolverDeferrer || this.unresolvedFiles.length) {
-      this.resolverDeferrer = (async () => {
+    if (!this.parseDeferrer || this.unresolvedFiles.length) {
+      this.parseDeferrer = (async () => {
         // patch unresolved files, and this method also will init parser before the first time
         await this.parser.patch(this.unresolvedFiles.splice(0));
 
-        return new SchemaResolver(await this.parser.parse());
+        // create resolver
+        const resolver = new SchemaResolver(await this.parser.parse());
+
+        // parse atoms from resolver
+        const result: Awaited<NonNullable<AtomAssetsParser['parseDeferrer']>> =
+          {
+            components: {},
+            functions: {},
+          };
+        const fallbackProps = { type: 'object', properties: {} };
+        const fallbackSignature = { arguments: [] };
+
+        resolver.componentList.forEach((id) => {
+          const needResolve = this.resolveFilter({
+            id,
+            type: 'COMPONENT',
+            ids: resolver.componentList,
+          });
+          let propsConfig = needResolve
+            ? resolver.getComponent(id).props
+            : fallbackProps;
+          const size = Buffer.byteLength(JSON.stringify(propsConfig));
+
+          if (size > MAX_PARSE_SIZE) {
+            propsConfig = fallbackProps;
+            logger.warn(
+              `Parsed component ${id} props size ${size} exceeds 512KB, skip it.`,
+            );
+          }
+
+          result.components[id] = {
+            type: 'COMPONENT',
+            id,
+            title: id,
+            propsConfig,
+          };
+        });
+
+        resolver.functionList.forEach((id) => {
+          const needResolve = this.resolveFilter({
+            id,
+            type: 'FUNCTION',
+            ids: resolver.functionList,
+          });
+          let signature = needResolve
+            ? resolver.getFunction(id).signature
+            : fallbackSignature;
+          const size = Buffer.byteLength(JSON.stringify(signature));
+
+          if (size > MAX_PARSE_SIZE) {
+            signature = fallbackSignature;
+            logger.warn(
+              `Parsed function ${id} signature size ${size} exceeds 512KB, skip it.`,
+            );
+          }
+
+          result.functions[id] = {
+            type: 'FUNCTION',
+            id,
+            title: id,
+            signature,
+          };
+        });
+
+        return result;
       })();
     }
 
-    return this.resolverDeferrer.then((resolver) => {
-      const components: Record<string, AtomComponentAsset> = {};
-      const functions: Record<string, AtomFunctionAsset> = {};
-      const fallbackProps = { type: 'object', properties: {} };
-      const fallbackSignature = { arguments: [] };
-
-      resolver.componentList.forEach((id) => {
-        const needResolve = this.resolveFilter({
-          id,
-          type: 'COMPONENT',
-          ids: resolver.componentList,
-        });
-        let propsConfig = needResolve
-          ? resolver.getComponent(id).props
-          : fallbackProps;
-        const size = Buffer.byteLength(JSON.stringify(propsConfig));
-
-        if (size > MAX_PARSE_SIZE) {
-          propsConfig = fallbackProps;
-          logger.warn(
-            `Parsed component ${id} props size ${size} exceeds 512KB, skip it.`,
-          );
-        }
-
-        components[id] = {
-          type: 'COMPONENT',
-          id,
-          title: id,
-          propsConfig,
-        };
-      });
-
-      resolver.functionList.forEach((id) => {
-        const needResolve = this.resolveFilter({
-          id,
-          type: 'FUNCTION',
-          ids: resolver.functionList,
-        });
-        let signature = needResolve
-          ? resolver.getFunction(id).signature
-          : fallbackSignature;
-        const size = Buffer.byteLength(JSON.stringify(signature));
-
-        if (size > MAX_PARSE_SIZE) {
-          signature = fallbackSignature;
-          logger.warn(
-            `Parsed function ${id} signature size ${size} exceeds 512KB, skip it.`,
-          );
-        }
-
-        functions[id] = {
-          type: 'FUNCTION',
-          id,
-          title: id,
-          signature,
-        };
-      });
-
-      return { components, functions };
-    });
+    return this.parseDeferrer;
   }
 
   watch(cb: AtomAssetsParser['cbs'][number]) {
