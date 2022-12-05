@@ -37,11 +37,6 @@ export default (api: IApi) => {
       '`resolve.entryFile` must be configured when `apiParser` enable',
     );
 
-    assert(
-      api.pkg.devDependencies?.['typescript'],
-      'typescript must be installed when `apiParser` enable',
-    );
-
     return memo;
   });
 
@@ -54,6 +49,7 @@ export default (api: IApi) => {
       entryFile: api.config.resolve.entryFile!,
       resolveDir: api.cwd,
       unpkgHost: api.config.apiParser.unpkgHost,
+      resolveFilter: api.config.apiParser.resolveFilter,
     });
 
     // lazy parse & use watch mode in development

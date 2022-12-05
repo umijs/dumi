@@ -16,14 +16,21 @@ class AtomAssetsParser {
   private cbs: Array<
     (data: Awaited<ReturnType<AtomAssetsParser['parse']>>) => void
   > = [];
+  private resolveFilter: (args: {
+    type: 'COMPONENT' | 'FUNCTION';
+    id: string;
+    ids: string[];
+  }) => boolean;
 
   constructor(opts: {
     entryFile: string;
     resolveDir: string;
+    resolveFilter?: AtomAssetsParser['resolveFilter'];
     unpkgHost?: string;
     watch?: boolean;
   }) {
     this.resolveDir = opts.resolveDir;
+    this.resolveFilter = opts.resolveFilter || (() => true);
     this.entryDir = path.relative(
       opts.resolveDir,
       path.dirname(opts.entryFile),
@@ -49,13 +56,22 @@ class AtomAssetsParser {
     return this.resolverDeferrer.then((resolver) => {
       const components: Record<string, AtomComponentAsset> = {};
       const functions: Record<string, AtomFunctionAsset> = {};
+      const fallbackProps = { type: 'object', properties: {} };
+      const fallbackSignature = { arguments: [] };
 
       resolver.componentList.forEach((id) => {
-        let propsConfig = resolver.getComponent(id).props;
+        const needResolve = this.resolveFilter({
+          id,
+          type: 'COMPONENT',
+          ids: resolver.componentList,
+        });
+        let propsConfig = needResolve
+          ? resolver.getComponent(id).props
+          : fallbackProps;
         const size = Buffer.byteLength(JSON.stringify(propsConfig));
 
         if (size > MAX_PARSE_SIZE) {
-          propsConfig = { type: 'object', properties: {} };
+          propsConfig = fallbackProps;
           logger.warn(
             `Parsed component ${id} props size ${size} exceeds 512KB, skip it.`,
           );
@@ -70,11 +86,18 @@ class AtomAssetsParser {
       });
 
       resolver.functionList.forEach((id) => {
-        let signature = resolver.getFunction(id).signature;
+        const needResolve = this.resolveFilter({
+          id,
+          type: 'FUNCTION',
+          ids: resolver.functionList,
+        });
+        let signature = needResolve
+          ? resolver.getFunction(id).signature
+          : fallbackSignature;
         const size = Buffer.byteLength(JSON.stringify(signature));
 
         if (size > MAX_PARSE_SIZE) {
-          signature = { arguments: [] };
+          signature = fallbackSignature;
           logger.warn(
             `Parsed function ${id} signature size ${size} exceeds 512KB, skip it.`,
           );
