@@ -1,4 +1,4 @@
-import { useFullSidebarData, useSiteData } from 'dumi';
+import { useFullSidebarData, useLocale, useSiteData } from 'dumi';
 import { useState } from 'react';
 import type { IThemeConfig } from './types';
 import {
@@ -11,6 +11,7 @@ import {
  * hook for get nav data
  */
 export const useNavData = () => {
+  const locale = useLocale();
   const routes = useLocaleDocRoutes();
   const { themeConfig } = useSiteData();
   const sidebar = useFullSidebarData();
@@ -18,7 +19,10 @@ export const useNavData = () => {
     useRouteDataComparer<NonNullable<IThemeConfig['nav']>[0]>();
   const [nav] = useState<NonNullable<IThemeConfig['nav']>>(() => {
     // use user config first
-    if (themeConfig.nav) return themeConfig.nav;
+    if (themeConfig.nav)
+      return typeof themeConfig.nav === 'object'
+        ? themeConfig.nav[locale.id]
+        : themeConfig.nav;
 
     // fallback to generate nav data from sidebar data
     const data = Object.entries(sidebar).map<
