@@ -51,6 +51,12 @@
       color: @c-text;
       font-weight: normal;
       font-size: 20px;
+      a {
+        color: @c-primary;
+        &:not(:hover) {
+          text-decoration: none;
+        }
+      }
 
       @media @mobile {
         font-size: 18px;
