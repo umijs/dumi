@@ -27,7 +27,7 @@ const Features: FC = () => {
         return (
           <div key={title} className="dumi-default-features-item">
             {emoji && <i>{emoji}</i>}
-            {title && <h3> {titleWithLink || title}</h3>}
+            {title && <h3>{titleWithLink || title}</h3>}
             {description && (
               <p dangerouslySetInnerHTML={{ __html: description }} />
             )}
