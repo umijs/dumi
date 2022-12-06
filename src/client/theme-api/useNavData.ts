@@ -20,9 +20,9 @@ export const useNavData = () => {
   const [nav] = useState<NonNullable<IThemeConfig['nav']>>(() => {
     // use user config first
     if (themeConfig.nav)
-      return typeof themeConfig.nav === 'object'
-        ? themeConfig.nav[locale.id]
-        : themeConfig.nav;
+      return Array.isArray(themeConfig.nav)
+        ? themeConfig.nav
+        : themeConfig.nav[locale.id];
 
     // fallback to generate nav data from sidebar data
     const data = Object.entries(sidebar).map<
