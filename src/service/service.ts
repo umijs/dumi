@@ -19,10 +19,10 @@ export class DumiService extends Service {
   async getPaths() {
     const cwd = this.cwd;
     const absSrcPath = this.userConfig.alias?.['@'] ?? cwd;
-    const absPagesPath = winJoin(absSrcPath, 'pages');
+    const absPagesPath = winJoin(cwd, `.${FRAMEWORK_NAME}`, 'pages');
     const absApiRoutesPath = winJoin(absSrcPath, 'api');
     const tmp = this.env === Env.development ? `tmp` : `tmp-${this.env}`;
-    const absTmpPath = winJoin(absSrcPath, `.${FRAMEWORK_NAME}`, tmp);
+    const absTmpPath = winJoin(cwd, `.${FRAMEWORK_NAME}`, tmp);
     const absNodeModulesPath = winJoin(cwd, 'node_modules');
     const absOutputPath = winJoin(cwd, 'dist');
 

@@ -154,7 +154,9 @@ export interface ISidebarGroup {
 export interface IThemeConfig {
   name?: string;
   logo?: string;
-  nav?: (INavItem & { children?: INavItem[] })[];
+  nav?:
+    | (INavItem & { children?: INavItem[] })[]
+    | Record<string, (INavItem & { children?: INavItem[] })[]>;
   sidebar?: Record<string, ISidebarGroup[]>;
   footer?: string;
   [key: string]: any;

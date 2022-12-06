@@ -12,11 +12,11 @@ export default (api: IApi) => {
     enableBy: ({ userConfig }) => userConfig.autoAlias !== false,
   });
 
-  api.modifyDefaultConfig(async (memo) => {
+  api.modifyConfig(async (memo) => {
     let entryDir = '';
 
-    if (api.userConfig.resolve?.entryFile) {
-      entryDir = path.resolve(api.cwd, api.userConfig.resolve.entryFile);
+    if (memo.resolve?.entryFile) {
+      entryDir = path.resolve(api.cwd, memo.resolve.entryFile);
     } else if (fs.existsSync(path.join(api.cwd, 'src'))) {
       entryDir = path.join(api.cwd, 'src');
     }
@@ -34,12 +34,12 @@ export default (api: IApi) => {
 
       // create subpaths alias for each input/entry
       fatherConfigs.forEach((item) => {
-        memo.alias[`${api.pkg.name}/${item.output?.path || item.output}`] =
+        memo.alias[`${api.pkg.name}/${item.output?.path || item.output}`] ??=
           path.join(api.cwd, item.entry || item.input);
       });
 
       // create pkg alias to entry dir
-      memo.alias[api.pkg.name] = entryDir;
+      memo.alias[api.pkg.name] ??= entryDir;
     }
 
     return memo;
