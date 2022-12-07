@@ -122,6 +122,13 @@ export default (api: IApi) => {
         // only normal mode is supported, because src is not fixed in dumi project, eager mode may scan wrong dir
         memo.mfsu.strategy = 'normal';
 
+        // make react singleton, because MFSU only process import
+        // but the parsed code block demo will has require('react')
+        memo.mfsu.shared = {
+          react: { singleton: true },
+          'react-dom': { singleton: true },
+        };
+
         // alias all client dependencies, to make sure normal mfsu can resolve them, until umi fixed
         // ref: https://github.com/umijs/umi/blob/de59054b2afe6ba92d0b52b530d71612ac4055a8/packages/mfsu/src/dep/dep.ts#L91-L92
         CLIENT_DEPS.forEach((pkg) => {
