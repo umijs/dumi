@@ -19,7 +19,7 @@
     "debug": "umi-test",
     "lint": "eslint --cache --ext .js,.jsx,.ts,.tsx --format=pretty \"./packages\"",
     "prettier": "prettier -c --write \"**/*\"",
-    "publish": "npm run build && umi-test && lerna publish -m \"chore: publish\"",
+    "publish": "npm run build && umi-test && lerna publish -m \"chore: publish\" --dist-tag \"latest-1\"",
     "now-build": "echo \"hello\""
   },
   "repository": {
