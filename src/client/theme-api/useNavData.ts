@@ -7,6 +7,8 @@ import {
   useRouteDataComparer,
 } from './utils';
 
+type INavData = Extract<NonNullable<IThemeConfig['nav']>, Array<any>>;
+
 /**
  * hook for get nav data
  */
@@ -15,9 +17,8 @@ export const useNavData = () => {
   const routes = useLocaleDocRoutes();
   const { themeConfig } = useSiteData();
   const sidebar = useFullSidebarData();
-  const sidebarDataComparer =
-    useRouteDataComparer<NonNullable<IThemeConfig['nav']>[0]>();
-  const [nav] = useState<NonNullable<IThemeConfig['nav']>>(() => {
+  const sidebarDataComparer = useRouteDataComparer<INavData[0]>();
+  const [nav] = useState<INavData>(() => {
     // use user config first
     if (themeConfig.nav)
       return Array.isArray(themeConfig.nav)
@@ -25,9 +26,7 @@ export const useNavData = () => {
         : themeConfig.nav[locale.id];
 
     // fallback to generate nav data from sidebar data
-    const data = Object.entries(sidebar).map<
-      NonNullable<IThemeConfig['nav']>[0]
-    >(([link, groups]) => {
+    const data = Object.entries(sidebar).map<INavData[0]>(([link, groups]) => {
       const meta = Object.values(routes).reduce<{
         title?: string;
         order?: number;
