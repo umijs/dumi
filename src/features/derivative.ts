@@ -1,15 +1,9 @@
-import {
-  CLIENT_DEPS,
-  LOCAL_DUMI_DIR,
-  LOCAL_PAGES_DIR,
-  USELESS_TMP_FILES,
-} from '@/constants';
+import { CLIENT_DEPS, LOCAL_PAGES_DIR, USELESS_TMP_FILES } from '@/constants';
 import type { IApi } from '@/types';
-import { parseModule } from '@umijs/bundler-utils';
 import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
-import { deepmerge, fsExtra, glob, logger, winPath } from 'umi/plugin-utils';
+import { deepmerge, fsExtra, logger, winPath } from 'umi/plugin-utils';
 
 /**
  * exclude pre-compiling modules in mfsu mode
@@ -33,52 +27,9 @@ export function safeExcludeInMFSU(api: IApi, excludes: RegExp[]) {
 }
 
 /**
- * get files by glob pattern
- */
-function getFilesByGlob(globExp: string, dir: string) {
-  return glob
-    .sync(globExp, { cwd: dir })
-    .map((file) => winPath(path.join(dir, file)));
-}
-
-/**
  * plugin for derive default behaviors from umi
  */
 export default (api: IApi) => {
-  const dumiAbsDir = path.join(api.cwd, LOCAL_DUMI_DIR);
-  const strategies = {
-    // make return value same with umi
-    // ref: https://github.com/umijs/umi/blob/9551b4d7832bc30088af75ecea60a0572d8ad767/packages/preset-umi/src/features/appData/appData.ts#L128
-    async appJS() {
-      const [appJS] = getFilesByGlob('app.{js,jsx,ts,tsx}', dumiAbsDir);
-
-      if (appJS) {
-        const [, exports] = await parseModule({
-          path: appJS,
-          content: fs.readFileSync(appJS, 'utf-8'),
-        });
-
-        return {
-          path: appJS,
-          exports,
-        };
-      }
-
-      return null;
-    },
-    globalCSS: getFilesByGlob.bind(
-      null,
-      'global.{css,less,scss,sass}',
-      dumiAbsDir,
-    ),
-    globalJS: getFilesByGlob.bind(null, 'global.{js,jsx,ts,tsx}', dumiAbsDir),
-    overridesCSS: getFilesByGlob.bind(
-      null,
-      'overrides.{css,less,scss,sass}',
-      dumiAbsDir,
-    ),
-  };
-
   api.describe({ key: 'dumi:derivative' });
 
   // pre-check config
@@ -162,24 +113,16 @@ export default (api: IApi) => {
     return memo;
   });
 
-  // move all conventional files to .dumi dir
-  api.modifyAppData(async (memo) => {
-    for (const [key, strategy] of Object.entries(strategies)) {
-      memo[key] = await strategy();
+  // respect user @ alias
+  // because dumi force to use .dumi as absSrcPath for move all conventional
+  // files (such as app.ts) to .dumi, but Umi force to set absSrcPath as @
+  // ref: https://github.com/umijs/umi/blob/6e1bd3a8a8a9ec86c8ac6f11f68b9c3dc897e8ad/packages/preset-umi/src/features/configPlugins/configPlugins.ts#L105
+  api.modifyConfig((memo) => {
+    if (api.userConfig.alias?.['@']) {
+      memo['@'] = api.userConfig.alias['@'];
     }
 
     return memo;
-  });
-
-  api.register({
-    key: 'onGenerateFiles',
-    // make sure before umi generate files
-    stage: -Infinity,
-    async fn() {
-      for (const [key, strategy] of Object.entries(strategies)) {
-        api.appData[key] = await strategy();
-      }
-    },
   });
 
   // remove tsconfig.json, because the paths in tsconfig.json cannot be resolved in dumi project
