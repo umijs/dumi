@@ -92,11 +92,7 @@ export default {
 
 ```bash
 npm install gh-pages --save-dev
-```
-
-or
-
-```bash
+# or
 yarn add gh-pages -D
 ```
 
@@ -111,7 +107,11 @@ yarn add gh-pages -D
 编译生成 `dist` 目录
 
 ```bash
+# site 模版
 npm run build
+
+# react 模版
+npm run docs:build
 ```
 
 一键发布
@@ -140,11 +140,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: npm install
+      # 文档编译
       - run: npm run build
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          # 文档目录
           publish_dir: ./dist
 ```
 
