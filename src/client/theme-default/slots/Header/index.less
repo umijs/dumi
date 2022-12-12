@@ -43,6 +43,13 @@
     &-aside {
       display: flex;
       align-items: center;
+
+      @media @mobile {
+        margin: 8px 16px;
+        padding-top: 24px;
+        justify-content: center;
+        border-top: 1px solid @c-border-light;
+      }
     }
 
     @media @mobile {
@@ -69,7 +76,7 @@
   &-menu-btn {
     position: absolute;
     top: 50%;
-    right: 24px;
+    inset-inline-end: 24px;
     padding: 0;
     border: 0;
     background: transparent;

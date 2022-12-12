@@ -90,7 +90,7 @@ dumi 2.0 将使用特有的 `.dumirc.ts` 作为配置文件，请将原有的 `.
 
 
 - export default {
-+ export defualt defineConfig({
++ export default defineConfig({
    # 以下为文档配置升级
    # 已内置全文搜索，默认不再集成 algolia，有需要可以手动覆盖 SearchBar 组件
 -  algolia: { ... },

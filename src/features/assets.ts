@@ -32,34 +32,60 @@ export function addAtomMeta(atomId: string, data: Partial<AtomAsset>) {
  * plugin for generate assets.json
  */
 export default (api: IApi) => {
+  let compileDeferrer = new Promise<void>((resolve) => {
+    api.register({
+      key: 'onDevCompileDone',
+      stage: -Infinity,
+      fn: resolve,
+    });
+
+    api.register({
+      key: 'onBuildComplete',
+      stage: -Infinity,
+      fn: resolve,
+    });
+  });
+
   api.describe({
     config: {
       schema: (Joi) => Joi.object(),
     },
-    enableBy: ({ env }) => env === 'production' && Boolean(api.args.assets),
+    enableBy: ({ env }) => env === 'development' || Boolean(api.args.assets),
+  });
+
+  api.registerMethod({
+    name: 'getAssetsMetadata',
+    async fn() {
+      await compileDeferrer;
+      const { components } = api.service.atomParser
+        ? await api.service.atomParser.parse()
+        : // allow generate assets.json without atoms when parser is not available
+          { components: {} };
+
+      return await api.applyPlugins({
+        key: 'modifyAssetsMetadata',
+        initialValue: {
+          name: api.config.themeConfig.name || api.pkg.name,
+          npmPackageName: api.pkg.name,
+          version: api.pkg.version,
+          description: api.pkg.description,
+          logo: api.config.themeConfig.logo,
+          homepage: api.pkg.homepage,
+          repository: api.pkg.repository,
+          assets: {
+            atoms: Object.values(components).map((atom) =>
+              // assign extra meta data from md frontmatter
+              Object.assign(atom, atomsMeta[atom.id] || {}),
+            ),
+            examples: lodash.uniqBy(examples, 'id'),
+          },
+        } as AssetsPackage,
+      });
+    },
   });
 
   api.onBuildComplete(async () => {
-    const { components } = await api.service.atomParser.parse();
-    const assets = await api.applyPlugins({
-      key: 'modifyAssetsMetadata',
-      initialValue: {
-        name: api.config.themeConfig.title || api.pkg.name,
-        npmPackageName: api.pkg.name,
-        version: api.pkg.version,
-        description: api.pkg.description,
-        logo: api.config.themeConfig.logo,
-        homepage: api.pkg.homepage,
-        repository: api.pkg.repository,
-        assets: {
-          atoms: Object.values(components).map((atom) =>
-            // assign extra meta data from md frontmatter
-            Object.assign(atom, atomsMeta[atom.id] || {}),
-          ),
-          examples: lodash.uniqBy(examples, 'id'),
-        },
-      } as AssetsPackage,
-    });
+    const assets = await api.getAssetsMetadata!();
 
     fs.writeFileSync(
       path.join(api.cwd, 'assets.json'),

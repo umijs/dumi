@@ -1,3 +1,4 @@
+import HeaderExtra from '@/client/theme-default/slots/HeadeExtra';
 import { ReactComponent as IconClose } from '@ant-design/icons-svg/inline-svg/outlined/close.svg';
 import { ReactComponent as IconMenu } from '@ant-design/icons-svg/inline-svg/outlined/menu.svg';
 import { useRouteMeta } from 'dumi';
@@ -30,6 +31,7 @@ const Header: FC = () => {
             <SearchBar />
             <LangSwitch />
             <RtlSwitch />
+            <HeaderExtra />
           </div>
         </section>
         <button

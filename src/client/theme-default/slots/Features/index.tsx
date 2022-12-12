@@ -1,4 +1,4 @@
-import { useRouteMeta } from 'dumi';
+import { Link, useRouteMeta } from 'dumi';
 import React, { type FC } from 'react';
 import './index.less';
 
@@ -13,15 +13,27 @@ const Features: FC = () => {
         [3, 2].find((n) => frontmatter.features!.length % n === 0) || 3
       }
     >
-      {frontmatter.features!.map(({ title, description, emoji }) => (
-        <div key={title} className="dumi-default-features-item">
-          {emoji && <i>{emoji}</i>}
-          {title && <h3>{title}</h3>}
-          {description && (
-            <p dangerouslySetInnerHTML={{ __html: description }} />
-          )}
-        </div>
-      ))}
+      {frontmatter.features!.map(({ title, description, emoji, link }) => {
+        let titleWithLink: React.ReactNode;
+        if (link) {
+          titleWithLink = /^(\w+:)\/\/|^(mailto|tel):/.test(link) ? (
+            <a href={link} target="_blank" rel="noreferrer">
+              {title}
+            </a>
+          ) : (
+            <Link to={link}>{title}</Link>
+          );
+        }
+        return (
+          <div key={title} className="dumi-default-features-item">
+            {emoji && <i>{emoji}</i>}
+            {title && <h3>{titleWithLink || title}</h3>}
+            {description && (
+              <p dangerouslySetInnerHTML={{ __html: description }} />
+            )}
+          </div>
+        );
+      })}
     </div>
   ) : null;
 };

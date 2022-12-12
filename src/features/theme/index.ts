@@ -229,12 +229,13 @@ export default function DumiContextWrapper() {
 
   useEffect(() => {
     return history.listen((next) => {
-      // mark loading when route change, page component will set false when loaded
-      setLoading(true);
-
-      // scroll to top when route changed
       if (next.location.pathname !== prev.current) {
         prev.current = next.location.pathname;
+
+        // mark loading when route change, page component will set false when loaded
+        setLoading(true);
+
+        // scroll to top when route changed
         document.documentElement.scrollTo(0, 0);
       }
     });

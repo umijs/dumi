@@ -219,7 +219,9 @@ export default function rehypeDemo(
               parseOpts.id = getCodeId(
                 opts.cwd,
                 opts.fileAbsPath,
-                path.parse(parseOpts.fileAbsPath).name,
+                path.parse(
+                  parseOpts.fileAbsPath.replace(/\/index\.(j|t)sx?$/, ''),
+                ).name,
                 vFile.data.frontmatter!.atomId,
               );
               component = `React.lazy(() => import( /* webpackChunkName: "${chunkName}" */ '${winPath(
