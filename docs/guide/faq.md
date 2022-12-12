@@ -140,13 +140,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: npm install
-      # 文档编译
+      # 文档编译命令，如果是 react 模板需要修改为 npm run docs:build
       - run: npm run build
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          # 文档目录
+          # 文档目录，如果是 react 模板需要修改为 docs-dist
           publish_dir: ./dist
 ```
 
