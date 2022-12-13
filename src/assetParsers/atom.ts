@@ -1,3 +1,4 @@
+import { getProjectRoot } from '@/utils';
 import { SchemaParser, SchemaResolver } from 'dumi-afx-deps/compiled/parser';
 import { AtomComponentAsset, AtomFunctionAsset } from 'dumi-assets-types';
 import path from 'path';
@@ -42,7 +43,7 @@ class AtomAssetsParser {
     );
     this.parser = new SchemaParser({
       entryPath: opts.entryFile,
-      basePath: opts.resolveDir,
+      basePath: getProjectRoot(opts.resolveDir),
       unPkgHost: opts.unpkgHost ?? 'https://unpkg.com',
     });
   }
