@@ -6,6 +6,7 @@ import React, { type FC } from 'react';
 interface IAtomRendererProps {
   type: AtomAsset['type'];
   value: ExamplePresetAsset['value'];
+  processor?: typeof builtInProcessor;
 }
 
 type Entity = TypeMap['element'] | TypeMap['function'] | TypeMap['dom'];
@@ -85,10 +86,14 @@ export const AtomRenderer: FC<IAtomRendererProps> = (props) => {
 
   switch (props.type) {
     case 'COMPONENT':
-      return translatePresetToReact(props.value, (entity) => {
-        // TODO: support custom processor
-        return builtInProcessor(entity, entryExports);
-      });
+      return translatePresetToReact(
+        props.value,
+        (entity) =>
+          // support custom processor
+          props.processor?.(entity, entryExports) ??
+          // fallback to built-in processor
+          builtInProcessor(entity, entryExports),
+      );
 
     default:
       // TODO: handle FUNCTION type

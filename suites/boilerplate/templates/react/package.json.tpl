@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "{{{ description }}}",
   "module": "dist/index.js",
-  "types": "dist/types.d.ts",
+  "types": "dist/index.d.ts",
   "scripts": {
     "start": "npm run dev",
     "dev": "dumi dev",

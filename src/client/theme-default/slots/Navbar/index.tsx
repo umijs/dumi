@@ -1,4 +1,5 @@
 import { Link, useLocation, useNavData } from 'dumi';
+import NavbarExtra from 'dumi/theme/slots/NavbarExtra';
 import React, { type FC } from 'react';
 import './index.less';
 
@@ -27,6 +28,7 @@ const Navbar: FC = () => {
           )}
         </li>
       ))}
+      <NavbarExtra />
     </ul>
   );
 };

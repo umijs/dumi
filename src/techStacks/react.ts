@@ -28,6 +28,12 @@ class ReactDemoVisitor extends Visitor {
       argument: n.expression,
     } as any;
   }
+
+  visitTsType(n: any) {
+    // to avoid `Error: Method visitTsType not implemented.`
+    // ref: https://github.com/swc-project/swc/blob/31630ba913fffa68fc4703cf6497d09f2e6ba2e9/node-swc/src/Visitor.ts#L1680
+    return n;
+  }
 }
 
 export default class ReactTechStack implements IDumiTechStack {

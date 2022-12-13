@@ -70,6 +70,7 @@ export interface IRouteMeta {
     features?: {
       emoji?: string;
       title?: string;
+      link?: string;
       description?: string;
       [key: string]: any;
     }[];
@@ -153,7 +154,9 @@ export interface ISidebarGroup {
 export interface IThemeConfig {
   name?: string;
   logo?: string;
-  nav?: (INavItem & { children?: INavItem[] })[];
+  nav?:
+    | (INavItem & { children?: INavItem[] })[]
+    | Record<string, (INavItem & { children?: INavItem[] })[]>;
   sidebar?: Record<string, ISidebarGroup[]>;
   footer?: string;
   [key: string]: any;

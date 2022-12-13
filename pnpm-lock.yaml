@@ -28,7 +28,7 @@ importers:
       classnames: 2.3.2
       codesandbox: ^2.2.3
       deepmerge: ^4.2.2
-      dumi-afx-deps: ^1.0.0-alpha.2
+      dumi-afx-deps: ^1.0.0-alpha.6
       dumi-assets-types: 2.0.0-alpha.0
       enhanced-resolve: ^5.10.0
       eslint: ^8.20.0
@@ -97,7 +97,7 @@ importers:
       classnames: 2.3.2
       codesandbox: 2.2.3
       deepmerge: 4.2.2
-      dumi-afx-deps: 1.0.0-alpha.2_typescript@4.7.4
+      dumi-afx-deps: 1.0.0-alpha.6
       dumi-assets-types: link:assets-types
       enhanced-resolve: 5.10.0
       estree-util-to-js: 1.1.0
@@ -4732,12 +4732,8 @@ packages:
       is-obj: 2.0.0
     dev: true
 
-  /dumi-afx-deps/1.0.0-alpha.2_typescript@4.7.4:
-    resolution: {integrity: sha512-wRXIPGG+Ebn2o85yqe0LxvuE67299LJbPFofU8ioFwYo2pJYFNbiWM3xBqughwh9CKI5OQdN7Stw1//BgXyE0A==}
-    peerDependencies:
-      typescript: ^4.7.2
-    dependencies:
-      typescript: 4.7.4
+  /dumi-afx-deps/1.0.0-alpha.6:
+    resolution: {integrity: sha512-PAstGjZTWoSEYOAtcmTUQ7mhN8l48t6rY0vaEmk5Tbjiuq2XBhp+bjXwhxlw7jUilXVamEQo5adHb6M7u13eEg==}
     dev: false
 
   /duplexer3/0.1.5:
