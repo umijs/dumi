@@ -4,6 +4,7 @@ import fs from 'fs';
 import type { Paragraph, Root } from 'mdast';
 import path from 'path';
 import type { Root as YAMLRoot } from 'remark-frontmatter';
+import { winPath } from 'umi/plugin-utils';
 import type { FrozenProcessor, Transformer } from 'unified';
 import url from 'url';
 import type { IMdTransformerOptions } from '.';
@@ -27,6 +28,56 @@ let visit: typeof import('unist-util-visit-parents').visitParents;
   ({ default: remarkDirective } = await import('remark-directive'));
   ({ default: remarkGfm } = await import('remark-gfm'));
 })();
+
+/**
+ * remark plugin to replace relative src path
+ */
+function remarkReplaceSrc(opts: {
+  fileAbsPath: string;
+  parentAbsPath: string;
+}) {
+  function getEmbedRltPath(value: string) {
+    const { fileAbsPath, parentAbsPath } = opts;
+    const absPath = path.resolve(fileAbsPath, '..', value);
+
+    return (
+      winPath(path.relative(path.dirname(parentAbsPath), absPath))
+        // add leading ./
+        .replace(/^([^.])/, './$1')
+    );
+  }
+
+  return (ast: Root) => {
+    visit<Root, ['html', 'image', 'link']>(
+      ast,
+      ['html', 'image', 'link'],
+      (node) => {
+        switch (node.type) {
+          // transform src for code & img, href for a, to the new relative path from parent file
+          case 'html':
+            if (/^<(code|img|a)[^>]+(src|href)=('|")\.\.?\//.test(node.value)) {
+              node.value = node.value.replace(
+                /(src|href)=("|')([^]+?)\2/,
+                (_, tag, quote, value) =>
+                  `${tag}=${quote}${getEmbedRltPath(value)}${quote}`,
+              );
+            }
+            break;
+
+          // transform url for markdown image & link, to the new relative path from parent file
+          case 'image':
+          case 'link':
+            if (/^\.\.?\//.test(node.url)) {
+              node.url = getEmbedRltPath(node.url);
+            }
+            break;
+
+          default:
+        }
+      },
+    );
+  };
+}
 
 /**
  * remark compiler to return raw ast
@@ -100,6 +151,11 @@ export default function remarkEmbed(
             // and if they are not applied, the embed ast will be wrong
             .use(remarkDirective)
             .use(remarkGfm)
+            // for update relative src path
+            .use(remarkReplaceSrc, {
+              fileAbsPath: absPath,
+              parentAbsPath: opts.fileAbsPath,
+            })
             // for return raw ast
             .use(remarkRawAST)
             .processSync(content);

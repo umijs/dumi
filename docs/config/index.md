@@ -71,6 +71,24 @@ export default () => '我会被编译，展示为组件';
 ```
 </code></pre>
 
+#### entryFile
+
+- 类型：`string`
+- 默认值：`undefined`
+
+指定项目的入口文件，比如 `./src/index.ts`，目前该配置会用于 API 解析，可参考[指南 - 自动 API 表格](../guide/auto-api-table.md)。
+
+### apiParser
+
+- 类型：`{ unpkgHost?: 'https://unpkg.com'; resolveFilter?: (args: { id: string; ids: string; type: 'COMPONENT' | 'FUNCTION' }) => boolean }`
+- 默认值：`undefined`
+
+启用 API 自动解析功能，开启后可使用 `API` 全局组件，参考[指南 - 自动 API 表格](../guide/auto-api-table.md)。
+
+其中 `unpkgHost` 配置项用于自定义 unpkg.com 的地址以加快访问速度，比如自己的私有镜像地址。解析过程中如果存在找不到的依赖，会兜底到 `unpkgHost` 的地址去找。
+
+`resolveFilter` 配置项用于跳过指定原子资产的解析以提升性能。部分组件属性或函数签名存在多层嵌套，甚至是循环引用时，会导致解析结果巨大，此时可以通过该配置项跳过解析。
+
 ### autoAlias
 
 - 类型：`boolean`

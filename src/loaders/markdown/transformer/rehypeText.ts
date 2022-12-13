@@ -1,5 +1,6 @@
 import type { Element, Root } from 'hast';
 import type { Transformer } from 'unified';
+import { isReactComponent } from './rehypeIsolation';
 import { HEADING_TAGS } from './rehypeSlug';
 
 export const CONTENT_TEXTS_OBJ_NAME = '$$contentTexts';
@@ -16,7 +17,8 @@ function findParagraphAncestor(ancestors: (Root | Element)[]) {
     const node = ancestors[i];
 
     if (
-      (node.type === 'element' && node.tagName === 'p') ||
+      (node.type === 'element' &&
+        (['p', 'ul', 'ol'].includes(node.tagName) || isReactComponent(node))) ||
       node.type === 'root'
     ) {
       return node;

@@ -4,9 +4,8 @@ import assert from 'assert';
 import { ATOMS_META_PATH } from './meta';
 
 export default (api: IApi) => {
-  const writeAtomsMetaFile = (
-    data: Awaited<ReturnType<AtomAssetsParser['parse']>>,
-  ) => {
+  let prevData: Awaited<ReturnType<AtomAssetsParser['parse']>>;
+  const writeAtomsMetaFile = (data: typeof prevData) => {
     api.writeTmpFile({
       noPluginDir: true,
       path: ATOMS_META_PATH,
@@ -24,7 +23,8 @@ export default (api: IApi) => {
     config: {
       schema: (Joi) =>
         Joi.object({
-          unpkgHost: Joi.string().uri(),
+          unpkgHost: Joi.string().uri().optional(),
+          resolveFilter: Joi.function().optional(),
         }),
     },
   });
@@ -35,11 +35,6 @@ export default (api: IApi) => {
     assert(
       api.userConfig.resolve?.entryFile,
       '`resolve.entryFile` must be configured when `apiParser` enable',
-    );
-
-    assert(
-      api.pkg.devDependencies?.['typescript'],
-      'typescript must be installed when `apiParser` enable',
     );
 
     return memo;
@@ -54,18 +49,25 @@ export default (api: IApi) => {
       entryFile: api.config.resolve.entryFile!,
       resolveDir: api.cwd,
       unpkgHost: api.config.apiParser.unpkgHost,
+      resolveFilter: api.config.apiParser.resolveFilter,
     });
 
     // lazy parse & use watch mode in development
     if (api.env === 'development') {
-      api.service.atomParser.watch(writeAtomsMetaFile);
+      api.service.atomParser.watch((data) => {
+        prevData = data;
+        writeAtomsMetaFile(prevData);
+      });
     }
   });
 
-  // sync parse in production
-  if (api.env === 'production') {
-    api.onGenerateFiles(async () => {
+  api.onGenerateFiles(async () => {
+    if (api.env === 'production') {
+      // sync parse in production
       writeAtomsMetaFile(await api.service.atomParser.parse());
-    });
-  }
+    } else if (prevData) {
+      // also write prev data when re-generate files in development
+      writeAtomsMetaFile(prevData);
+    }
+  });
 };

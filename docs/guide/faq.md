@@ -92,11 +92,7 @@ export default {
 
 ```bash
 npm install gh-pages --save-dev
-```
-
-or
-
-```bash
+# or
 yarn add gh-pages -D
 ```
 
@@ -111,6 +107,10 @@ yarn add gh-pages -D
 编译生成 `dist` 目录
 
 ```bash
+# site 模版
+npm run build
+
+# react 模版
 npm run docs:build
 ```
 
@@ -140,12 +140,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: npm install
-      - run: npm run docs:build
+      # 文档编译命令，如果是 react 模板需要修改为 npm run docs:build
+      - run: npm run build
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs-dist
+          # 文档目录，如果是 react 模板需要修改为 docs-dist
+          publish_dir: ./dist
 ```
 
 ## dumi 如何支持对 Swift、C#、Kotlin 等语言的语法高亮？

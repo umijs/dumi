@@ -18,7 +18,7 @@ function isDemoNode(node: Element) {
 /**
  * Checks if `node` is a reactComponent
  */
-function isReactComponent(node: Element) {
+export function isReactComponent(node: Element) {
   // FIXME: exclude Link, and read from themeData
   return /^[A-Z].+/.test(node.tagName);
 }

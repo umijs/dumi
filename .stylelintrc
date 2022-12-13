@@ -1,6 +1,7 @@
 {
   "extends": "@umijs/lint/dist/config/stylelint",
   "rules": {
-    "function-no-unknown": null
+    "function-no-unknown": null,
+    "color-function-notation": "legacy"
   }
 }

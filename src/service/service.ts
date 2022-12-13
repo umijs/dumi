@@ -17,12 +17,16 @@ export class DumiService extends Service {
   }
 
   async getPaths() {
-    const cwd = this.cwd;
-    const absSrcPath = this.userConfig.alias?.['@'] ?? cwd;
+    const { cwd } = this;
+    const tmp = this.env === Env.development ? `tmp` : `tmp-${this.env}`;
+    const absFWPath = winJoin(cwd, `.${FRAMEWORK_NAME}`);
+
+    // use .dumi as src dir for move all conventional files to .dumi
+    // such as app.ts, global.ts, loading.tsx & etc.
+    const absSrcPath = absFWPath;
     const absPagesPath = winJoin(absSrcPath, 'pages');
     const absApiRoutesPath = winJoin(absSrcPath, 'api');
-    const tmp = this.env === Env.development ? `tmp` : `tmp-${this.env}`;
-    const absTmpPath = winJoin(absSrcPath, `.${FRAMEWORK_NAME}`, tmp);
+    const absTmpPath = winJoin(absSrcPath, tmp);
     const absNodeModulesPath = winJoin(cwd, 'node_modules');
     const absOutputPath = winJoin(cwd, 'dist');
 
