@@ -3,7 +3,7 @@ export interface IThemeConfig {
    * hd solution configurations
    * @note  base on https://github.com/umijs/umi-hd
    */
-  hd: {
+  hd?: {
     rules: {
       minWidth?: number;
       maxWidth?: number;
@@ -11,4 +11,8 @@ export interface IThemeConfig {
       options?: number | [number, number];
     }[];
   };
+  /**
+   * set device width in desktop
+   */
+  deviceWidth?: number;
 }

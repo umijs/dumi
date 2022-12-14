@@ -11,18 +11,13 @@ const Previewer: FC<IPreviewerProps> = (props) => {
   return (
     <div
       id={props.asset.id}
-      className={classnames({
-        'dumi-default-previewer': true,
-        [props?.className]: !!props?.className,
-      })}
+      className={classnames('dumi-default-previewer', props.className)}
+      style={props.style}
       data-debug={props.debug}
       data-active={hash === link || undefined}
     >
       <div
-        className={classnames({
-          'dumi-default-previewer-demo': true,
-          [`${props?.className}-demo`]: !!props?.className,
-        })}
+        className="dumi-default-previewer-demo"
         style={{ background: props.background }}
         data-compact={props.compact || undefined}
         data-transform={props.transform || undefined}
@@ -41,19 +36,9 @@ const Previewer: FC<IPreviewerProps> = (props) => {
           props.children
         )}
       </div>
-      <div
-        className={classnames({
-          'dumi-default-previewer-meta': true,
-          [`${props?.className}-meta`]: !!props?.className,
-        })}
-      >
+      <div className="dumi-default-previewer-meta">
         {(props.title || props.debug) && (
-          <div
-            className={classnames({
-              'dumi-default-previewer-desc': true,
-              [`${props?.className}-desc`]: !!props?.className,
-            })}
-          >
+          <div className="dumi-default-previewer-desc">
             <h5>
               <a href={link}>
                 {props.debug && <strong>DEV ONLY</strong>}

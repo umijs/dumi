@@ -1,27 +1,66 @@
-@import (reference) 'dumi/theme-default/styles/variables.less';
+@import (reference) '../../styles/variables.less';
 
-.@{prefix}-mobile-previewer {
-  display: flex;
-  margin-bottom: 24px;
-  width: 100%;
-  flex-direction: row-reverse;
-  align-items: stretch;
-  overflow: hidden;
+.@{prefix}-previewer {
+  @media @desktop {
+    --device-width: @device-width;
 
-  @media @tablet {
-    max-height: 600px;
-  }
+    position: relative;
+    display: flex;
+    flex-direction: row-reverse;
 
-  @media @mobile {
-    display: block;
-  }
+    .dumi-default-previewer {
+      &-demo {
+        border-inline-start: solid 1px @c-border-light;
+        padding: 0;
+      }
 
-  &-demo {
-    border-left: dashed 1px @c-border-light;
-    padding: 0;
-  }
+      &-meta {
+        position: absolute;
+        margin-inline-end: 1px;
+        top: 0;
+        inset-inline-start: 0;
+        inset-inline-end: var(--device-width);
+        bottom: 0;
+        display: flex;
+        align-self: stretch;
+        flex-direction: column;
+        border-top: 0;
+      }
 
-  &-meta {
-    flex: 1;
+      &-actions {
+        position: absolute;
+        top: 6px;
+        inset-inline-end: 20px;
+        border-bottom: 0;
+
+        &:first-child + .dumi-default-previewer-sources {
+          border-top: 1px dashed @c-border-light;
+          margin-top: 42px;
+        }
+      }
+
+      &-action-btn > svg {
+        width: 17px;
+      }
+
+      &-desc {
+        > h5 {
+          position: static;
+          display: block;
+          padding: 14px 24px;
+          border-bottom: 1px dashed @c-border-light;
+        }
+
+        > .markdown {
+          font-size: 14px;
+        }
+      }
+    }
+
+    .dumi-default-source-code {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+    }
   }
 }
