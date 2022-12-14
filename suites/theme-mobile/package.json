@@ -1,11 +1,11 @@
 {
   "name": "dumi-theme-mobile",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0",
   "description": "dumi-theme-mobile",
   "keywords": [
     "dumi",
-    "dumi-theme",
-    "umi"
+    "dumi theme",
+    "mobile library"
   ],
   "homepage": "https://github.com/umijs/dumi/tree/master/suites/theme-mobile#readme",
   "bugs": "https://github.com/umijs/dumi/issues",
@@ -16,10 +16,10 @@
   },
   "license": "MIT",
   "sideEffects": [
-    "./**/*.less"
+    "**/*.less"
   ],
   "files": [
-    "plugin"
+    "dist"
   ],
   "scripts": {
     "build": "father build",

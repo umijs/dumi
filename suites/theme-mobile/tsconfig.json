@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@@/*": ["../../.dumi/tmp"],
+      "dumi/theme/*": ["src/*"]
+    }
+  }
+}
