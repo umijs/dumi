@@ -35,14 +35,13 @@ class AtomAssetsParser {
     unpkgHost?: string;
     watch?: boolean;
   }) {
+    const absEntryFile = path.resolve(opts.resolveDir, opts.entryFile);
+
     this.resolveDir = opts.resolveDir;
     this.resolveFilter = opts.resolveFilter || (() => true);
-    this.entryDir = path.relative(
-      opts.resolveDir,
-      path.dirname(opts.entryFile),
-    );
+    this.entryDir = path.relative(opts.resolveDir, path.dirname(absEntryFile));
     this.parser = new SchemaParser({
-      entryPath: opts.entryFile,
+      entryPath: absEntryFile,
       basePath: getProjectRoot(opts.resolveDir),
       unPkgHost: opts.unpkgHost ?? 'https://unpkg.com',
     });
