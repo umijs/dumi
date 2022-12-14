@@ -2,7 +2,7 @@
 mobile: false
 ---
 
-组件路由测试
+指定 PC 模式渲染
 
 ```jsx
 export default () => 'Hello Foo!';
