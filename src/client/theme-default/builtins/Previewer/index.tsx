@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import { IPreviewerProps, useLocation } from 'dumi';
 import PreviewerActions from 'dumi/theme/slots/PreviewerActions';
 import React, { type FC } from 'react';
@@ -10,7 +11,8 @@ const Previewer: FC<IPreviewerProps> = (props) => {
   return (
     <div
       id={props.asset.id}
-      className="dumi-default-previewer"
+      className={classnames('dumi-default-previewer', props.className)}
+      style={props.style}
       data-debug={props.debug}
       data-active={hash === link || undefined}
     >

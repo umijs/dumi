@@ -79,8 +79,6 @@ $ git checkout src docs # 恢复原有的源码及文档
 + <code src="path/to/demo.tsx"></code>
 ```
 
-
-
 ## 项目文件升级
 
 dumi 2.0 将使用特有的 `.dumirc.ts` 作为配置文件，请将原有的 `.umirc.ts` 或者 `config/config.ts` 重命名为 `.dumirc.ts`，并做如下调整：

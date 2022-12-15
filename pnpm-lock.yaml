@@ -25,6 +25,7 @@ importers:
       '@umijs/lint': ^4.0.33
       '@umijs/plugins': 4.0.32
       animated-scroll-to: ^2.3.0
+      classnames: 2.3.2
       codesandbox: ^2.2.3
       deepmerge: ^4.2.2
       dumi-afx-deps: ^1.0.0-alpha.6
@@ -93,6 +94,7 @@ importers:
       '@umijs/bundler-utils': 4.0.33
       '@umijs/core': 4.0.33
       animated-scroll-to: 2.3.0
+      classnames: 2.3.2
       codesandbox: 2.2.3
       deepmerge: 4.2.2
       dumi-afx-deps: 1.0.0-alpha.6
