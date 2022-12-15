@@ -40,6 +40,7 @@
     "react-dom": ">=16.8"
   },
   "authors": [
-    "xiaohuoni <448627663@qq.com> (https://github.com/xiaohuoni)"
+    "xiaohuoni <448627663@qq.com> (https://github.com/xiaohuoni)",
+    "Peach <scdzwyxst@gmail.com> (https://github.com/PeachScript)"
   ]
 }
