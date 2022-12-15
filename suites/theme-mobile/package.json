@@ -35,7 +35,9 @@
     "father-plugin-dumi-theme": "workspace:*"
   },
   "peerDependencies": {
-    "dumi": "^2.0.0"
+    "dumi": "^2.0.0",
+    "react": ">=16.8",
+    "react-dom": ">=16.8"
   },
   "authors": [
     "xiaohuoni <448627663@qq.com> (https://github.com/xiaohuoni)"

@@ -28,7 +28,7 @@ const MobilePreviewer: FC<IPreviewerProps> = (props) => {
     <Previewer
       {...props}
       demoUrl={demoUrl}
-      iframe={!mobile ?? props?.iframe}
+      iframe={mobile ? false : props?.iframe}
       className={mobile ? 'dumi-mobile-previewer' : undefined}
       forceShowCode={!mobile}
       style={{
