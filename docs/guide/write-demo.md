@@ -2,6 +2,7 @@
 nav: 指南
 group: 基础
 order: 5
+mobile: false
 ---
 
 # 写组件 demo
@@ -215,7 +216,8 @@ export default () => (
 
 ```jsx
 /**
- * iframe: true // 设置为数值可控制 iframe 高度
+ * iframe: true
+ * compact: true
  */
 import React from 'react';
 

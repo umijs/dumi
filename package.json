@@ -37,6 +37,7 @@
   "scripts": {
     "build": "father build",
     "build:deps": "node scripts/pre-bundle-worker.js && father prebundle",
+    "build:suites": "pnpm run --filter=\"./suites/**\" build",
     "custom-install": "pnpm i",
     "dev": "father dev",
     "docs:build": "node ./bin/dumi.js build",
@@ -46,7 +47,7 @@
     "lint": "npm run lint:es && npm run lint:css",
     "lint:css": "stylelint \"{src,test}/**/*.{css,less}\"",
     "lint:es": "eslint \"{src,test}/**/*.{js,jsx,ts,tsx}\"",
-    "prepare": "husky install && npm run build && node ./bin/dumi.js setup && npm run docs:sync",
+    "prepare": "husky install && npm run build && npm run build:suites && node ./bin/dumi.js setup && npm run docs:sync",
     "prepublishOnly": "npm run build",
     "test": "vitest"
   },
@@ -142,6 +143,7 @@
     "@types/react-copy-to-clipboard": "^5.0.4",
     "@umijs/lint": "^4.0.33",
     "@umijs/plugins": "4.0.32",
+    "dumi-theme-mobile": "workspace:*",
     "eslint": "^8.20.0",
     "father": "^4.1.0",
     "highlight-words-core": "^1.2.2",

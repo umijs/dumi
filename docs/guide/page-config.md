@@ -2,6 +2,7 @@
 nav: 指南
 group: 基础
 order: 4
+mobile: false
 demo:
   cols: 2
   tocDepth: 4
