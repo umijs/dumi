@@ -30,7 +30,7 @@ const MobilePreviewer: FC<IPreviewerProps> = (props) => {
       demoUrl={demoUrl}
       iframe={mobile ? false : props?.iframe}
       className={mobile ? 'dumi-mobile-previewer' : undefined}
-      forceShowCode={!mobile}
+      forceShowCode={mobile}
       style={{
         '--device-width': themeConfig.deviceWidth
           ? `${themeConfig.deviceWidth}px`
