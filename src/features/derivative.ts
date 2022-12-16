@@ -119,10 +119,10 @@ export default (api: IApi) => {
       // because dumi force to use .dumi as absSrcPath for move all conventional
       // files (such as app.ts) to .dumi, but Umi force to set absSrcPath as @
       // ref: https://github.com/umijs/umi/blob/6e1bd3a8a8a9ec86c8ac6f11f68b9c3dc897e8ad/packages/preset-umi/src/features/configPlugins/configPlugins.ts#L105
-      memo['@'] = api.userConfig.alias['@'];
+      memo.alias['@'] = api.userConfig.alias['@'];
     } else {
       // fallback to use src as @ first, like Umi
-      memo['@'] = winPath(
+      memo.alias['@'] = winPath(
         [path.join(api.cwd, 'src'), api.cwd].find(fs.existsSync)!,
       );
     }
