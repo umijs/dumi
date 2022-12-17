@@ -1,4 +1,5 @@
 import type { Root } from 'hast';
+import { logger } from 'umi/plugin-utils';
 import type { Transformer } from 'unified';
 
 let raw: typeof import('hast-util-raw').raw;
@@ -29,6 +30,12 @@ export default function rehypeRaw(): Transformer<Root> {
         // ref: https://github.com/syntax-tree/hast-util-raw/issues/13#issuecomment-912451531
         node.properties ??= {};
         node.properties[CODE_META_STUB_ATTR] = node.data.meta as string;
+      }
+
+      if (node.type === 'raw' && /<code[^>]*src=[^>]*\/>/.test(node.value)) {
+        logger.warn(
+          '<code /> is not supported, please use <code></code> instead.',
+        );
       }
     });
 
