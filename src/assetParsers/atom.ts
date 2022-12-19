@@ -145,6 +145,7 @@ class AtomAssetsParser {
             '**/_*/**',
             '**/*.{md,less,scss,sass,styl,css}',
           ],
+          ignoreInitial: true,
         })
         .on('all', (ev, file) => {
           if (['add', 'change'].includes(ev) && /\.(j|t)sx?$/.test(file)) {
@@ -152,6 +153,7 @@ class AtomAssetsParser {
             lazyParse();
           }
         });
+      lazyParse();
     }
   }
 
