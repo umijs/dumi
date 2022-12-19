@@ -1,11 +1,16 @@
-import { useAtomAssets, useIntl } from 'dumi';
+import { useAtomAssets, useIntl, useRouteMeta } from 'dumi';
 import React, { type FC } from 'react';
 import Table from '../Table';
 
-const API: FC<{ id: string }> = ({ id }) => {
+const API: FC<{ id?: string }> = (props) => {
+  const { frontmatter } = useRouteMeta();
   const { components } = useAtomAssets();
-  const definition = components?.[id];
+  const id = props.id || frontmatter.atomId;
   const intl = useIntl();
+
+  if (!id) throw new Error('`id` properties if required for API component!');
+
+  const definition = components?.[id];
 
   return (
     <div className="markdown">
