@@ -41,6 +41,10 @@ export default (api: IApi) => {
       'MFSU eager mode is not supported yet!',
     );
     assert(
+      api.config.mfsu?.esbuild !== true,
+      'MFSU esbuild bundler is not supported yet!',
+    );
+    assert(
       !api.config.ssr || api.config.ssr.builder === 'webpack',
       'Only `webpack` builder is supported in SSR mode!',
     );
