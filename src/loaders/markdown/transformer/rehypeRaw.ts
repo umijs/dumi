@@ -1,5 +1,7 @@
 import type { Root } from 'hast';
+import { logger } from 'umi/plugin-utils';
 import type { Transformer } from 'unified';
+import type { IMdTransformerOptions } from '.';
 
 let raw: typeof import('hast-util-raw').raw;
 let visit: typeof import('unist-util-visit').visit;
@@ -13,7 +15,9 @@ const CODE_META_STUB_ATTR = '$code-meta';
   ({ raw } = await import('hast-util-raw'));
 })();
 
-export default function rehypeRaw(): Transformer<Root> {
+type IRehypeRawOptions = Pick<IMdTransformerOptions, 'fileAbsPath'>;
+
+export default function rehypeRaw(opts: IRehypeRawOptions): Transformer<Root> {
   return (tree, vFile) => {
     visit<Root>(tree, (node) => {
       if (node.type === 'raw' && COMPONENT_NAME_REGEX.test(node.value)) {
@@ -29,6 +33,11 @@ export default function rehypeRaw(): Transformer<Root> {
         // ref: https://github.com/syntax-tree/hast-util-raw/issues/13#issuecomment-912451531
         node.properties ??= {};
         node.properties[CODE_META_STUB_ATTR] = node.data.meta as string;
+      }
+
+      if (node.type === 'raw' && /<code[^>]*src=[^>]*\/>/.test(node.value)) {
+        logger.warn(`<code /> is not supported, please use <code></code> instead.
+File: ${opts.fileAbsPath}`);
       }
     });
 
