@@ -149,7 +149,7 @@ class AtomAssetsParser {
         })
         .on('all', (ev, file) => {
           if (['add', 'change'].includes(ev) && /\.(j|t)sx?$/.test(file)) {
-            this.unresolvedFiles.push(file);
+            this.unresolvedFiles.push(path.join(this.resolveDir, file));
             lazyParse();
           }
         });
