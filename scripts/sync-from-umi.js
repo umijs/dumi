@@ -97,6 +97,31 @@ const FILE_LIST = [
       },
     ],
   },
+  {
+    localname: 'plugin.md',
+    upstream:
+      'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/guides/plugins.md',
+    actions: [
+      // remove head content
+      { type: 'slice', value: [1] },
+      { type: 'replace', value: ['Umi 的核心就在于它的插件机制。', ''] },
+      // remove unnecessary section
+      ...['preset-umi'].map((option) => ({
+        type: 'replace',
+        value: [new RegExp(`(?:^|[\r\n])### ${option}[^]+?([\r\n]#|$)`), '$1'],
+      })),
+      // replace umi word
+      { type: 'replace', value: [/('|")umi/g, '$1dumi'] },
+      { type: 'replace', value: [/umi@3/g, 'dumi@1'] },
+      { type: 'replace', value: [/Umi(\s|-)/gi, 'dumi$1'] },
+      { type: 'replace', value: [/UMI/g, 'DUMI'] },
+      // replace plugin api link
+      {
+        type: 'replace',
+        value: [/\/api\/plugin-api/g, '/plugin/api'],
+      },
+    ],
+  },
 ];
 
 if (!fs.existsSync(UMI_DOC_DIR)) {
