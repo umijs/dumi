@@ -122,6 +122,45 @@ const FILE_LIST = [
       },
     ],
   },
+  {
+    localname: 'plugin-api.md',
+    upstream:
+      'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/api/plugin-api.md',
+    actions: [
+      // remove head content
+      { type: 'slice', value: [6] },
+      // remove unnecessary section
+      ...['modifyViteConfig'].map((option) => ({
+        type: 'replace',
+        value: [new RegExp(`(?:^|[\r\n])### ${option}[^]+?([\r\n]#|$)`), '$1'],
+      })),
+      // replace umi word
+      { type: 'replace', value: [/('|")umi/g, '$1dumi'] },
+      { type: 'replace', value: [/umi@3/g, 'dumi@1'] },
+      { type: 'replace', value: [/umi@4/g, 'dumi@2'] },
+      { type: 'replace', value: [/Umi(\s|-|!)/gi, 'dumi$1'] },
+      { type: 'replace', value: [/UMI/g, 'DUMI'] },
+      // put embed flag
+      { type: 'replace', value: [/(## 核心 API)/, '<!-- core api -->\n\n$1'] },
+      {
+        type: 'replace',
+        value: [
+          /(## 扩展方法)/,
+          '<!-- core api end -->\n\n<!-- methods -->\n\n$1',
+        ],
+      },
+      {
+        type: 'replace',
+        value: [/(## 属性)/, '<!-- methods end -->\n\n<!-- props -->\n\n$1'],
+      },
+      { type: 'replace', value: [/$/, '<!-- props end -->'] },
+      // replace plugin api link
+      // {
+      //   type: 'replace',
+      //   value: [/\/api\/plugin-api/g, '/plugin/api'],
+      // },
+    ],
+  },
 ];
 
 if (!fs.existsSync(UMI_DOC_DIR)) {
