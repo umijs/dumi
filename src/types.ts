@@ -7,10 +7,11 @@ import type { IModify } from '@umijs/core';
 import type { AssetsPackage, ExampleBlockAsset } from 'dumi-assets-types';
 import type { Element } from 'hast';
 import type { IApi as IUmiApi } from 'umi';
+import { defineConfig as defineUmiConfig } from 'umi';
 
-type IUmiConfig = IUmiApi['config'];
+type IUmiConfig = Parameters<typeof defineUmiConfig>[0];
 
-export interface IDumiConfig extends IUmiConfig {
+interface IDumiExtendsConfig {
   resolve: {
     docDirs: (string | { type?: string; dir: string })[];
     /**
@@ -32,9 +33,11 @@ export interface IDumiConfig extends IUmiConfig {
   // eslint-disable-next-line @typescript-eslint/ban-types
   extraRehypePlugins?: (string | Function | [string | Function, object])[];
 }
+export type IDumiConfig = IUmiConfig & IDumiExtendsConfig;
 
 export interface IDumiUserConfig
-  extends Partial<Omit<IDumiConfig, 'resolve' | 'locales'>> {
+  extends Partial<Omit<IDumiConfig, 'resolve' | 'locales'>>,
+    IUmiConfig {
   resolve?: Partial<IDumiConfig['resolve']>;
   locales?: (
     | IDumiConfig['locales'][0]
