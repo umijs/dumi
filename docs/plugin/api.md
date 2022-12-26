@@ -1,8 +1,9 @@
 ---
 group: 开发
+order: 1
 ---
 
-# API
+# 插件 API
 
 <embed src="../.upstream/plugin-api.md#RE-/<!-- core api[^]+ core api end -->/"></embed>
 
