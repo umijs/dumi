@@ -7,5 +7,6 @@
     "paths": {
       "@@/*": [".dumi/tmp/*"]
     }
-  }
+  },
+  "include": [".dumi", ".dumirc.ts"]
 }

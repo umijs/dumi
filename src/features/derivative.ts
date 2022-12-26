@@ -53,6 +53,18 @@ export default (api: IApi) => {
         'Hash history is temporarily incompatible, it is recommended to use browser history for now.',
       );
     }
+
+    // check tsconfig.json
+    try {
+      const tsconfig = require(path.join(api.cwd, 'tsconfig.json'));
+      const expected = ['.dumi', '.dumirc.ts'];
+
+      if (!expected.every((f) => tsconfig.include?.includes(f))) {
+        logger.warn(
+          'Please append `.dumi` & `.dumirc.ts` into `include` option of `tsconfig.json`, to make sure `defineConfig` works.',
+        );
+      }
+    } catch {}
   });
 
   // skip mfsu for client api, to avoid circular resolve in mfsu mode
