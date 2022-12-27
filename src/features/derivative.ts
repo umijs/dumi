@@ -155,6 +155,15 @@ export default (api: IApi) => {
       USELESS_TMP_FILES.forEach((file) => {
         fsExtra.rmSync(path.join(api.paths.absTmpPath, file), { force: true });
       });
+
+      // replace @/loading from umi.ts, because dumi use `<rootDir>/.dumi` as absSrcPath
+      const umiPath = path.join(api.paths.absTmpPath, 'umi.ts');
+      fsExtra.writeFileSync(
+        umiPath,
+        fsExtra
+          .readFileSync(umiPath, 'utf-8')
+          .replace("'@/loading'", "'../loading'"),
+      );
     },
   });
 
