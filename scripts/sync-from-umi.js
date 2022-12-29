@@ -3,12 +3,32 @@ const path = require('path');
 const https = require('https');
 
 const UMI_DOC_DIR = path.join(__dirname, '..', 'docs', '.upstream');
+const REPLACE_MESSAGE_MDX = [
+  // remove mdx component import statements
+  { type: 'replace', value: [/^[^\r\n]+ from 'umi';\n*/, ''] },
+  // replace Message component
+  {
+    type: 'replace',
+    value: [
+      /<Message(?: type="[^"]+")? emoji="(?:🚨|⚠️)">([^]+?)<\/Message>/,
+      ':::warning$1:::',
+    ],
+  },
+  {
+    type: 'replace',
+    value: [
+      /<Message(?: type="[^"]+")? emoji="(💡|🚀)">([^]+?)<\/Message>/,
+      ':::info$1:::',
+    ],
+  },
+];
 const FILE_LIST = [
   // config docs
   {
     localname: 'config.md',
     upstream: 'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/api/config.md',
     actions: [
+      ...REPLACE_MESSAGE_MDX,
       // remove head content
       { type: 'slice', value: [2] },
       // remove unnecessary option
@@ -78,6 +98,7 @@ const FILE_LIST = [
     localname: 'api.md',
     upstream: 'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/api/api.md',
     actions: [
+      ...REPLACE_MESSAGE_MDX,
       // remove head content
       { type: 'slice', value: [6] },
       { type: 'replace', value: ['{\n/*\n', ''] },
@@ -102,6 +123,7 @@ const FILE_LIST = [
     upstream:
       'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/guides/plugins.md',
     actions: [
+      ...REPLACE_MESSAGE_MDX,
       // remove head content
       { type: 'slice', value: [1] },
       { type: 'replace', value: ['Umi 的核心就在于它的插件机制。', ''] },
