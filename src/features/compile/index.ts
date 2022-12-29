@@ -112,6 +112,7 @@ export default (api: IApi) => {
     // get raw content for demo source file
     memo.module
       .rule('dumi-raw')
+      .type('javascript/auto')
       .post()
       .resourceQuery(/dumi-raw/)
       .use('raw-loader')
