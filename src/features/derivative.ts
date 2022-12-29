@@ -48,6 +48,10 @@ export default (api: IApi) => {
       !api.config.ssr || api.config.ssr.builder === 'webpack',
       'Only `webpack` builder is supported in SSR mode!',
     );
+    assert(
+      api.config.cssLoader?.modules === undefined,
+      'CSS Modules is not supported! Because it is not suitable for UI library development, please use normal CSS, Less, etc. instead.',
+    );
     if (api.userConfig.history?.type === 'hash') {
       logger.warn(
         'Hash history is temporarily incompatible, it is recommended to use browser history for now.',
@@ -142,6 +146,13 @@ export default (api: IApi) => {
         [path.join(api.cwd, 'src'), api.cwd].find(fs.existsSync)!,
       );
     }
+
+    return memo;
+  });
+
+  // force to disable auto CSSModules
+  api.modifyBabelPresetOpts((memo) => {
+    delete memo.pluginAutoCSSModules;
 
     return memo;
   });
