@@ -215,7 +215,9 @@ export default function rehypeDemo(
                 .join('__');
 
               // external demo options
-              parseOpts.fileAbsPath = codeNode.properties!.src as string;
+              parseOpts.fileAbsPath = winPath(
+                codeNode.properties!.src as string,
+              );
               parseOpts.id = getCodeId(
                 opts.cwd,
                 opts.fileAbsPath,
