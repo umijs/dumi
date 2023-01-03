@@ -165,3 +165,11 @@ import Prism from 'prism-react-renderer/prism';
 require('prismjs/components/prism-kotlin');
 require('prismjs/components/prism-csharp');
 ```
+
+## 为什么不支持 CSS Modules？
+
+主要两个原因：
+1. 使用者很难覆写样式，因为最终 `className` 不稳定
+2. 自动 CSS Modules 依赖 babel 编译产物，给使用项目带来额外的编译成本，而大部分框架默认都不编译 `node_modules`（比如 Umi 框架就需要配置 `extraBabelIncludes` 才会编译 `node_modules` 下的产物）
+
+也许大部分人选择在组件库项目中使用它，是因为做前端应用研发时的习惯性选型，但它其实不适合组件库项目；另外，原因 2 也会产生额外的调时成本：『为什么 dev 生效、发布后在项目里不生效？』
