@@ -36,4 +36,17 @@ export default (api: IApi) => {
 };
 ```
 
+```ts
+// a.tsx
+import React from 'react';
+
+export default () => <>Hi, hello</>;
+
+export const Extra = () => <>😄</>;
+
+export const Action = () => <>🏀</>;
+
+```
+
 `component` 放入我们自定义的 Tab 内容，`test` 可以写入正则来匹配路由，这样我们就实现了为 `/componets` 下的路由页面添加自定义 Tab。
+`component` 组件默认导出的是 Tab 页内容，`Extra` 和 `Action` 都是可选导出项，`Extra` 可以自定义每个 Tab 的紧跟内容，`Action` 可以自定义整个tab栏的右侧内容，同一路由下只有第一个 `Action` 有效。
