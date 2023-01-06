@@ -5,7 +5,7 @@ import { createRouteId } from '@umijs/core/dist/route/utils';
 import path from 'path';
 import { plural } from 'pluralize';
 import type { IRoute } from 'umi';
-import { glob, resolve, winPath } from 'umi/plugin-utils';
+import { glob, lodash, resolve, winPath } from 'umi/plugin-utils';
 
 const CTX_LAYOUT_ID = 'dumi-context-layout';
 
@@ -63,6 +63,20 @@ function flatRoute(route: IRoute, docLayoutId: string) {
           route.path
         : route.absPath.slice(1);
   }
+}
+
+/**
+ * make route path kebab case
+ */
+function kebabCaseRoute(route: IRoute) {
+  route.path = route.path
+    .split('/')
+    .map((p) => lodash.kebabCase(p))
+    .join('/');
+  route.absPath = route.absPath
+    .split('/')
+    .map((p) => lodash.kebabCase(p))
+    .join('/');
 }
 
 /**
@@ -237,6 +251,9 @@ export default (api: IApi) => {
     at ${route.file}`,
         );
       } else if (!route.isLayout) {
+        // kebab case route path
+        kebabCaseRoute(route);
+
         // flat route
         flatRoute(route, docLayoutId);
 

@@ -36,14 +36,18 @@ export default (api: IApi) => {
   api.onCheck(() => {
     assert(!api.config.mpa, 'MPA mode is not supported in dumi!');
     assert(!api.config.vite, 'Vite mode is not supported yet!');
-    assert(
-      api.config.mfsu?.strategy !== 'eager',
-      'MFSU eager mode is not supported yet!',
-    );
-    assert(
-      api.config.mfsu?.esbuild !== true,
-      'MFSU esbuild bundler is not supported yet!',
-    );
+
+    if (typeof api.config.mfsu === 'object') {
+      assert(
+        api.config.mfsu.strategy !== 'eager',
+        'MFSU eager mode is not supported yet!',
+      );
+      assert(
+        api.config.mfsu.esbuild !== true,
+        'MFSU esbuild bundler is not supported yet!',
+      );
+    }
+
     assert(
       !api.config.ssr || api.config.ssr.builder === 'webpack',
       'Only `webpack` builder is supported in SSR mode!',
