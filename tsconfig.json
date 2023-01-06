@@ -12,5 +12,5 @@
     },
     "types": ["vitest/globals"]
   },
-  "exclude": ["dist"]
+  "include": [".dumi/**/*", ".dumirc.ts", "src/**/*"]
 }

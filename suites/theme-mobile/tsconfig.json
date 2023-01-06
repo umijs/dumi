@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@@/*": ["../../.dumi/tmp"],
+      "@@/*": ["../../.dumi/tmp/*"],
       "dumi/theme/*": ["src/*"]
     }
   }
