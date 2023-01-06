@@ -159,6 +159,10 @@ export interface IThemeConfig {
     | Record<string, (INavItem & { children?: INavItem[] })[]>;
   sidebar?: Record<string, ISidebarGroup[]>;
   footer?: string;
+  prefersColor: {
+    default: 'light' | 'dark' | 'auto';
+    switch: boolean;
+  };
   [key: string]: any;
 }
 

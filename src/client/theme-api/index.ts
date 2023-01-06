@@ -29,6 +29,7 @@ export type { IPreviewerProps } from './types';
 export { useAtomAssets } from './useAtomAssets';
 export { useLocale } from './useLocale';
 export { useNavData } from './useNavData';
+export { usePrefersColor } from './usePrefersColor';
 export { useRouteMeta } from './useRouteMeta';
 export { useFullSidebarData, useSidebarData } from './useSidebarData';
 export { useSiteSearch } from './useSiteSearch';

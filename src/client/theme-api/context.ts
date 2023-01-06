@@ -15,7 +15,7 @@ interface ISiteContext {
     }
   >;
   components: Record<string, AtomComponentAsset>;
-  locales: NonNullable<ILocalesConfig>;
+  locales: ILocalesConfig;
   themeConfig: IThemeConfig;
   loading: boolean;
   setLoading: (status: boolean) => void;
@@ -27,7 +27,7 @@ export const SiteContext = createContext<ISiteContext>({
   demos: {},
   components: {},
   locales: [],
-  themeConfig: {},
+  themeConfig: {} as IThemeConfig,
   loading: false,
   setLoading: () => {},
 });

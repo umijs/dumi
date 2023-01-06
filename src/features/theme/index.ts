@@ -1,4 +1,9 @@
-import { LOCAL_THEME_DIR, PICKED_PKG_FIELDS, THEME_PREFIX } from '@/constants';
+import {
+  LOCAL_THEME_DIR,
+  PICKED_PKG_FIELDS,
+  PREFERS_COLOR_ATTR,
+  THEME_PREFIX,
+} from '@/constants';
 import type { IApi } from '@/types';
 import { parseModuleSync } from '@umijs/bundler-utils';
 import fs from 'fs';
@@ -158,6 +163,10 @@ export default (api: IApi) => {
       path.resolve(__dirname, '../../client/theme-api'),
     );
 
+    // set dark mode selector as less variable
+    memo.theme ??= {};
+    memo.theme['dark-selector'] = `~'[${PREFERS_COLOR_ATTR}="dark"]'`;
+
     return memo;
   });
 
@@ -264,6 +273,28 @@ export default function DumiContextWrapper() {
   );
 }`,
     });
+  });
+
+  // read prefers-color from localStorage before app render
+  api.addEntryCodeAhead(() => {
+    const { prefersColor } = api.config.themeConfig;
+
+    if (prefersColor.switch === false && prefersColor.default !== 'auto') {
+      return `document.documentElement.setAttribute('${PREFERS_COLOR_ATTR}', '${prefersColor.default}');`;
+    }
+
+    return `(function () {
+  var cache = navigator.cookieEnabled && typeof window.localStorage !== 'undefined' && localStorage.getItem('dumi:prefers-color') || '${prefersColor.default}';
+  var isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  var enums = ['light', 'dark', 'auto'];
+
+  document.documentElement.setAttribute(
+    '${PREFERS_COLOR_ATTR}',
+    cache === enums[2]
+      ? (isDark ? enums[1] : enums[0])
+      : (enums.indexOf(cache) > -1 ? cache : enums[0])
+  );
+})();`;
   });
 
   // workaround for avoid oom, when developing theme package example in tnpm node_modules
