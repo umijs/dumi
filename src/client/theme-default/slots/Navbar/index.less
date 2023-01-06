@@ -26,13 +26,25 @@
       text-decoration: none;
       transition: all 0.3s;
 
+      @{dark-selector} & {
+        color: @c-text-secondary-dark;
+      }
+
       &:hover {
         color: @c-primary;
+
+        @{dark-selector} & {
+          color: @c-primary-dark;
+        }
       }
 
       &.active {
         color: @c-text;
         font-weight: 500;
+
+        @{dark-selector} & {
+          color: @c-text-dark;
+        }
       }
     }
 

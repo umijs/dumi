@@ -6,6 +6,7 @@
 @s-header-height: 76px;
 @s-header-height-m: 52px;
 
+// default theme colors
 @c-primary: #1677ff;
 @c-warning: #d59200;
 @c-success: #208a41;
@@ -16,6 +17,22 @@
 @c-border: #d0d5d8;
 @c-border-light: #e4e9ec;
 @c-site-bg: #f7f9fb;
+
+// dark theme colors
+// @dark-selector be injected by less-loader in feature/theme/index.ts
+@dark-solid-amount: 15%;
+@dark-light-amount: 22%;
+@dark-border-amount: 73%;
+@c-primary-dark: darken(@c-primary, @dark-solid-amount);
+@c-warning-dark: darken(@c-warning, @dark-solid-amount);
+@c-success-dark: darken(@c-success, @dark-solid-amount);
+@c-error-dark: darken(@c-error, @dark-solid-amount);
+@c-text-dark: lighten(@c-text-note, @dark-light-amount);
+@c-text-secondary-dark: lighten(@c-text-secondary, @dark-light-amount);
+@c-text-note-dark: lighten(@c-text, @dark-light-amount);
+@c-border-dark: darken(@c-border, @dark-border-amount);
+@c-border-less-dark: darken(@c-border-light, @dark-border-amount);
+@c-site-bg-dark: darken(@c-site-bg, 95%);
 
 @mobile: ~'only screen and (max-width: 767px)';
 @tablet: ~'only screen and (min-width: 768px) and (max-width: 1024px)';

@@ -20,6 +20,10 @@
     width: 16px;
     fill: @c-text-note;
     transform: translateY(-50%);
+
+    @{dark-selector} & {
+      fill: @c-text-note-dark;
+    }
   }
 
   &-input {
@@ -37,10 +41,21 @@
     transition: all 0.3s;
     background-color: transparent;
 
+    @{dark-selector} & {
+      color: @c-text-dark;
+      border-color: @c-border-dark;
+    }
+
     &:focus {
       border-color: fade(@c-primary, 50%);
       background-color: #fff;
       box-shadow: 0 0 0 3px fade(@c-primary, 10%);
+
+      @{dark-selector} & {
+        border-color: fade(@c-primary-dark, 50%);
+        background-color: @c-site-bg-dark;
+        box-shadow: 0 0 0 3px fade(@c-primary-dark, 10%);
+      }
 
       ~ .@{prefix}-search-shortcut {
         opacity: 0;
@@ -65,6 +80,11 @@
     transition: all 0.3s;
     pointer-events: none;
 
+    @{dark-selector} & {
+      background-color: fade(#000, 20%);
+      border-color: @c-border-dark;
+    }
+
     @media @mobile {
       display: none;
     }
@@ -83,6 +103,10 @@
     border-radius: 8px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 20%);
 
+    @{dark-selector} & {
+      background-color: lighten(@c-site-bg-dark, 6%);
+    }
+
     &::before {
       content: '';
       position: absolute;
@@ -93,6 +117,10 @@
       height: 0;
       border: 8px solid transparent;
       border-bottom-color: #fff;
+
+      @{dark-selector} & {
+        border-bottom-color: lighten(@c-site-bg-dark, 6%);
+      }
     }
 
     > section {
@@ -134,6 +162,10 @@
       max-height: calc(100% - 120px);
       display: flex;
       flex-direction: column;
+
+      @{dark-selector} & {
+        background-color: lighten(@c-site-bg-dark, 6%);
+      }
     }
 
     .@{prefix}-search-bar-input {
@@ -165,6 +197,11 @@
       align-items: center;
       user-select: none;
 
+      @{dark-selector} & {
+        color: @c-text-note-dark;
+        border-top-color: @c-border-less-dark;
+      }
+
       > li {
         margin-inline-end: 10px;
       }
@@ -193,6 +230,12 @@
       border-bottom-width: 2px;
       transition: all 0.3s;
       pointer-events: none;
+
+      @{dark-selector} & {
+        color: @c-text-note-dark;
+        background-color: @c-site-bg-dark;
+        border-color: @c-border-dark;
+      }
     }
   }
 }

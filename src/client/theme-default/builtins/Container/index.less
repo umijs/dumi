@@ -1,5 +1,18 @@
 @import (reference) '../../styles/variables.less';
 
+.container-colors(@bg-color, @title-color, @text-color) {
+  background: @bg-color;
+
+  > h4,
+  > svg {
+    color: @title-color;
+  }
+
+  > section {
+    color: @text-color;
+  }
+}
+
 .@{prefix}-container.markdown {
   padding: 18px 0;
   padding-inline-start: 44px;
@@ -39,60 +52,48 @@
   &[data-type='info'] {
     @color: darken(desaturate(@c-primary, 45%), 10%);
 
-    background: lighten(@c-primary, 42%);
+    .container-colors(lighten(@c-primary, 42%), @color, desaturate(@color, 20%));
 
-    > h4,
-    > svg {
-      color: @color;
-    }
+    @{dark-selector} & {
+      @color: lighten(desaturate(@c-primary-dark, 45%), 20%);
 
-    > section {
-      color: desaturate(@color, 20%);
+      .container-colors(darken(@c-primary-dark, 26%), @color, desaturate(@color, 20%));
     }
   }
 
   &[data-type='warning'] {
     @color: darken(desaturate(@c-warning, 20%), 2%);
 
-    background: lighten(@c-warning, 51%);
+    .container-colors(lighten(@c-warning, 51%), @color, desaturate(@color, 24%));
 
-    > h4,
-    > svg {
-      color: @color;
-    }
+    @{dark-selector} & {
+      @color: lighten(desaturate(@c-warning, 20%), 3%);
 
-    > section {
-      color: desaturate(@color, 24%);
+      .container-colors(darken(@c-warning-dark, 18%), @color, desaturate(@color, 20%));
     }
   }
 
   &[data-type='success'] {
     @color: darken(desaturate(@c-success, 5%), 1%);
 
-    background: lighten(@c-success, 59%);
+    .container-colors(lighten(@c-success, 59%), @color, desaturate(@color, 22%));
 
-    > h4,
-    > svg {
-      color: @color;
-    }
+    @{dark-selector} & {
+      @color: lighten(desaturate(@c-success, 5%), 5%);
 
-    > section {
-      color: desaturate(@color, 22%);
+      .container-colors(darken(@c-success-dark, 10%), @color, desaturate(@color, 20%));
     }
   }
 
   &[data-type='error'] {
     @color: darken(desaturate(@c-error, 20%), 1%);
 
-    background: lighten(@c-error, 51%);
+    .container-colors(lighten(@c-error, 51%), @color, desaturate(@color, 25%));
 
-    > h4,
-    > svg {
-      color: @color;
-    }
+    @{dark-selector} & {
+      @color: lighten(desaturate(@c-error, 20%), 5%);
 
-    > section {
-      color: desaturate(@color, 25%);
+      .container-colors(darken(@c-error-dark, 22%), @color, desaturate(@color, 20%));
     }
   }
 }

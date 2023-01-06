@@ -25,6 +25,11 @@
     box-shadow: 0 0 20px rgba(0, 0, 0, 10%);
     transition: 0.2s all;
 
+    @{dark-selector} & {
+      background-color: @c-site-bg-dark;
+      border-top-color: @c-border-less-dark;
+    }
+
     .@{prefix}-doc-layout:not([data-mobile-sidebar-active]) & {
       opacity: 0;
       visibility: hidden;
@@ -46,6 +51,10 @@
       overflow: hidden;
       text-overflow: ellipsis;
       text-transform: uppercase;
+
+      @{dark-selector} & {
+        color: @c-text-dark;
+      }
     }
 
     > dd {
@@ -63,13 +72,25 @@
         overflow: hidden;
         text-overflow: ellipsis;
 
+        @{dark-selector} & {
+          color: @c-text-secondary-dark;
+        }
+
         &:hover {
           color: @c-primary;
+
+          @{dark-selector} & {
+            color: @c-primary-dark;
+          }
         }
 
         &.active {
           color: @c-primary;
           font-weight: 500;
+
+          @{dark-selector} & {
+            color: @c-primary-dark;
+          }
         }
       }
     }
@@ -79,6 +100,10 @@
       margin-top: 16px;
       padding-top: 16px;
       border-top: 1px solid @c-border;
+
+      @{dark-selector} & {
+        border-top-color: @c-border-dark;
+      }
     }
   }
 }

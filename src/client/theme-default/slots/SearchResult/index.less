@@ -13,6 +13,11 @@
       color: @c-text-secondary;
       background-color: @c-border-light;
 
+      @{dark-selector} & {
+        color: @c-text-secondary-dark;
+        background-color: @c-border-less-dark;
+      }
+
       &:first-child {
         margin-top: -2px;
       }
@@ -28,6 +33,10 @@
 
       + dd {
         border-top: 1px dashed @c-border-light;
+
+        @{dark-selector} & {
+          border-top-color: @c-border-less-dark;
+        }
       }
 
       + dt {
@@ -52,13 +61,25 @@
         &:hover {
           background-color: @c-primary;
 
+          @{dark-selector} & {
+            background-color: darken(@c-primary-dark, 28%);
+          }
+
           > h4,
           > p {
             color: #fff;
+
+            @{dark-selector} & {
+              color: darken(#fff, 20%);
+            }
           }
 
           > svg {
             fill: #fff;
+
+            @{dark-selector} & {
+              fill: darken(#fff, 20%);
+            }
           }
         }
 
@@ -69,6 +90,10 @@
           width: 32px;
           height: 32px;
           fill: darken(@c-border, 5%);
+
+          @{dark-selector} & {
+            fill: lighten(@c-border-dark, 5%);
+          }
         }
 
         > h4,
@@ -83,12 +108,20 @@
         > h4 {
           color: @c-text-secondary;
           font-size: 14px;
+
+          @{dark-selector} & {
+            color: @c-text-secondary-dark;
+          }
         }
 
         > p {
           margin-top: 2px;
           font-size: 13px;
           color: @c-text-note;
+
+          @{dark-selector} & {
+            color: @c-text-note-dark;
+          }
 
           &:empty {
             display: none;
@@ -99,10 +132,15 @@
   }
 
   mark {
-    color: rgb(72 70 7);
+    color: rgb(72, 70, 7);
     padding: 0 2px;
     border-radius: 2px;
-    background-color: rgb(255 249 197);
+    background-color: rgb(255, 249, 197);
+
+    @{dark-selector} & {
+      color: rgb(147, 145, 71);
+      background-color: rgb(56, 37, 6);
+    }
   }
 
   .@{prefix}-search-empty {
@@ -113,10 +151,18 @@
     color: @c-text-note;
     font-size: 16px;
 
+    @{dark-selector} & {
+      color: @c-text-note-dark;
+    }
+
     > svg {
       margin-inline-end: 8px;
       width: 48px;
       fill: lighten(@c-text-note, 20%);
+
+      @{dark-selector} & {
+        fill: darken(@c-text-note-dark, 20%);
+      }
     }
   }
 }

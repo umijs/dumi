@@ -14,6 +14,10 @@
         border-bottom-right-radius: 3px;
         border-inline-start: solid 1px @c-border-light;
         padding: 0;
+
+        @{dark-selector} & {
+          border-inline-start-color: @c-border-less-dark;
+        }
       }
 
       &-meta {
@@ -38,6 +42,10 @@
         &:first-child + .dumi-default-previewer-sources {
           border-top: 1px dashed @c-border-light;
           margin-top: 42px;
+
+          @{dark-selector} & {
+            border-top-color: @c-border-less-dark;
+          }
         }
       }
 
@@ -50,7 +58,12 @@
           position: static;
           display: block;
           padding: 14px 24px;
+          background: transparent;
           border-bottom: 1px dashed @c-border-light;
+
+          @{dark-selector} & {
+            border-bottom-color: @c-border-less-dark;
+          }
         }
 
         > .markdown {

@@ -6,6 +6,10 @@
   padding: 4px 0;
   border-inline-start: 1px solid @c-border;
 
+  @{dark-selector} & {
+    border-inline-start-color: @c-border-dark;
+  }
+
   &:empty {
     display: none;
   }
@@ -23,14 +27,27 @@
       overflow: hidden;
       text-overflow: ellipsis;
 
+      @{dark-selector} & {
+        color: @c-text-secondary-dark;
+      }
+
       &:hover {
         color: @c-text;
+
+        @{dark-selector} & {
+          color: @c-text-dark;
+        }
       }
 
       &.active {
         margin-inline-start: -1px;
         color: @c-text;
         border-inline-start: 1px solid @c-primary;
+
+        @{dark-selector} & {
+          color: @c-text-dark;
+          border-inline-start-color: @c-primary-dark;
+        }
       }
     }
 

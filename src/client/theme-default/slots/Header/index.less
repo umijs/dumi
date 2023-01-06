@@ -10,10 +10,18 @@
     background-color: fadeout(@c-site-bg, 10%);
     backdrop-filter: blur(6px);
 
+    @{dark-selector} & {
+      background-color: fadeout(@c-site-bg-dark, 10%);
+    }
+
     // to avoid backdrop filter conflict with navbar overlay
     &[data-mobile-active] {
       background-color: @c-site-bg;
       backdrop-filter: none;
+
+      @{dark-selector} & {
+        background-color: @c-site-bg-dark;
+      }
     }
   }
 
@@ -49,6 +57,10 @@
         padding-top: 24px;
         justify-content: center;
         border-top: 1px solid @c-border-light;
+
+        @{dark-selector} & {
+          border-top-color: @c-border-less-dark;
+        }
       }
     }
 
@@ -64,6 +76,11 @@
       backdrop-filter: blur(30px);
       box-sizing: border-box;
       transition: all 0.2s;
+
+      @{dark-selector} & {
+        background-color: fadeout(@c-site-bg-dark, 40%);
+        border-top: 1px solid @c-border-less-dark;
+      }
 
       .@{prefix}-header:not([data-mobile-active]) & {
         opacity: 0;
@@ -90,6 +107,10 @@
     > svg {
       width: 20px;
       fill: @c-text-secondary;
+
+      @{dark-selector} & {
+        fill: @c-text-secondary-dark;
+      }
     }
   }
 }

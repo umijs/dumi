@@ -3,13 +3,21 @@
 .@{prefix}-lang-switch {
   color: @c-text-secondary;
   font-size: 14px;
-  line-height: 1;
+  line-height: 16px;
   text-decoration: none;
   transition: all 0.3s;
   cursor: pointer;
 
+  @{dark-selector} & {
+    color: @c-text-secondary-dark;
+  }
+
   &:hover {
     color: @c-primary;
+
+    @{dark-selector} & {
+      color: @c-primary-dark;
+    }
   }
 }
 
@@ -28,6 +36,10 @@
     line-height: 1;
     border: 0;
     background-color: transparent;
+
+    @{dark-selector} & {
+      color: @c-text-secondary-dark;
+    }
   }
 
   > svg {
@@ -35,5 +47,9 @@
     width: 12px;
     fill: darken(@c-border, 10%);
     pointer-events: none;
+
+    @{dark-selector} & {
+      fill: lighten(@c-border-dark, 10%);
+    }
   }
 }

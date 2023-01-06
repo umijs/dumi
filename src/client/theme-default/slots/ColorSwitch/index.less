@@ -1,0 +1,45 @@
+@import (reference) '../../styles/variables.less';
+
+.@{prefix}-color-switch {
+  position: relative;
+  padding: 0 6px;
+  font-size: 0;
+  line-height: 0;
+
+  .@{prefix}-lang-switch + & {
+    margin-inline-start: 15px;
+    padding-inline-start: 15px;
+    border-inline-start: 1px solid @c-border;
+
+    @{dark-selector} & {
+      border-inline-start-color: @c-border-dark;
+    }
+  }
+
+  svg {
+    width: 16px;
+    fill: @c-text-secondary;
+
+    @{dark-selector} & {
+      fill: @c-text-secondary-dark;
+    }
+  }
+
+  &:hover svg {
+    fill: @c-primary;
+
+    @{dark-selector} & {
+      fill: @c-primary-dark;
+    }
+  }
+
+  select {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    max-width: 100%;
+    max-height: 16px;
+    cursor: pointer;
+  }
+}

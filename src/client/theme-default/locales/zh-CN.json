@@ -1,6 +1,8 @@
 {
-  "a": "嘿",
   "header.search.placeholder": "输入关键字搜索...",
+  "header.color.mode.light": "亮色模式",
+  "header.color.mode.dark": "暗色模式",
+  "header.color.mode.auto": "跟随系统",
   "previewer.actions.code.expand": "展开代码",
   "previewer.actions.code.shrink": "收起代码",
   "previewer.actions.codesandbox": "在 CodeSandbox 中打开",

@@ -1,6 +1,8 @@
 {
-  "a": "A",
   "header.search.placeholder": "Type keywords...",
+  "header.color.mode.light": "Light Mode",
+  "header.color.mode.dark": "Dark Mode",
+  "header.color.mode.auto": "Follow System",
   "previewer.actions.code.expand": "Show Code",
   "previewer.actions.code.shrink": "Hide Code",
   "previewer.actions.codesandbox": "Open in CodeSandbox",

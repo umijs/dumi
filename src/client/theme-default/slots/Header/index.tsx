@@ -1,7 +1,8 @@
 import HeaderExtra from '@/client/theme-default/slots/HeadeExtra';
 import { ReactComponent as IconClose } from '@ant-design/icons-svg/inline-svg/outlined/close.svg';
 import { ReactComponent as IconMenu } from '@ant-design/icons-svg/inline-svg/outlined/menu.svg';
-import { useRouteMeta } from 'dumi';
+import { useRouteMeta, useSiteData } from 'dumi';
+import ColorSwitch from 'dumi/theme/slots/ColorSwitch';
 import LangSwitch from 'dumi/theme/slots/LangSwitch';
 import Logo from 'dumi/theme/slots/Logo';
 import Navbar from 'dumi/theme/slots/Navbar';
@@ -13,6 +14,7 @@ import './index.less';
 const Header: FC = () => {
   const { frontmatter } = useRouteMeta();
   const [showMenu, setShowMenu] = useState(false);
+  const { themeConfig } = useSiteData();
 
   return (
     <div
@@ -31,6 +33,7 @@ const Header: FC = () => {
             <SearchBar />
             <LangSwitch />
             <RtlSwitch />
+            {themeConfig.prefersColor.switch && <ColorSwitch />}
             <HeaderExtra />
           </div>
         </section>

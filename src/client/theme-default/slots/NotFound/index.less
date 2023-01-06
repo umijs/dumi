@@ -14,10 +14,19 @@
     font-size: 78px;
     font-weight: 700;
     text-shadow: -1px -1px 0 @c-border;
+
+    @{dark-selector} & {
+      color: @c-border-less-dark;
+      text-shadow: -1px -1px 0 @c-border-dark;
+    }
   }
 
   > a {
     color: @c-primary;
+
+    @{dark-selector} & {
+      color: @c-primary-dark;
+    }
 
     &:not(:hover) {
       text-decoration: none;
