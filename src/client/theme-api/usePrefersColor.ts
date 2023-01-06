@@ -5,8 +5,6 @@ import { useCallback, useEffect, useState } from 'react';
 export type IColorValue = 'light' | 'dark';
 export type IPrefersColorValue = IColorValue | 'auto';
 
-const COOKIE_ENABLE = navigator.cookieEnabled;
-
 let colorChanger: ColorChanger;
 class ColorChanger {
   /**
@@ -30,7 +28,7 @@ class ColorChanger {
   }) => void)[] = [];
 
   constructor(opts: { default: string }) {
-    this.prefersColor = ((COOKIE_ENABLE &&
+    this.prefersColor = ((navigator.cookieEnabled &&
       // read from localStorage first, because `auto` will not be set to attr
       localStorage.getItem(PREFERS_COLOR_LS_KEY)) ||
       // then use default value from themeConfig

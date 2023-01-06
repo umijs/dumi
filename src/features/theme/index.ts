@@ -284,7 +284,7 @@ export default function DumiContextWrapper() {
     }
 
     return `(function () {
-  var cache = navigator.cookieEnabled && typeof window.localStorage !== 'undefined' && localStorage.getItem('dumi:prefers-color') || '${prefersColor.default}';
+  var cache = typeof navigator !== 'undefined' && navigator.cookieEnabled && typeof window.localStorage !== 'undefined' && localStorage.getItem('dumi:prefers-color') || '${prefersColor.default}';
   var isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   var enums = ['light', 'dark', 'auto'];
 
