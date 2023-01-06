@@ -180,7 +180,7 @@ export default (api: IApi) => {
     // prepend page routes from .dumi/pages
     Object.entries(pages).forEach(([, route]) => {
       route.file = winPath(
-        path.resolve(api.config.conventionRoutes.base, route.file),
+        path.resolve(api.config.conventionRoutes!.base!, route.file),
       );
 
       // save route

@@ -6,10 +6,32 @@ import type { IThemeLoadResult } from '@/features/theme/loader';
 import type { IModify } from '@umijs/core';
 import type { AssetsPackage, ExampleBlockAsset } from 'dumi-assets-types';
 import type { Element } from 'hast';
-import type { IApi as IUmiApi } from 'umi';
-import { defineConfig as defineUmiConfig } from 'umi';
+import type { defineConfig as defineUmiConfig, IApi as IUmiApi } from 'umi';
 
-type IUmiConfig = Parameters<typeof defineUmiConfig>[0];
+// ref: https://grrr.tech/posts/2021/typescript-partial/
+type Subset<K> = {
+  [attr in keyof K]?: K[attr] extends Array<any>
+    ? K[attr]
+    : K[attr] extends object
+    ? Subset<K[attr]>
+    : K[attr] extends object | null
+    ? Subset<K[attr]> | null
+    : K[attr] extends object | null | undefined
+    ? Subset<K[attr]> | null | undefined
+    : K[attr];
+};
+// ref: https://stackoverflow.com/a/69299668
+type NoStringIndex<T> = {
+  [K in keyof T as string extends K ? never : K]: T[K];
+};
+
+type IUmiConfig = Omit<
+  // for exclude [key: string]: any to avoid omit failed
+  // ref: https://github.com/microsoft/TypeScript/issues/31153
+  NoStringIndex<Parameters<typeof defineUmiConfig>[0]>,
+  // omit incomplete types from @@/core/pluginConfig
+  'resolve' | 'extraRemarkPlugins' | 'extraRehypePlugins' | 'themeConfig'
+>;
 
 interface IDumiExtendsConfig {
   resolve: {
@@ -35,15 +57,11 @@ interface IDumiExtendsConfig {
 }
 export type IDumiConfig = IUmiConfig & IDumiExtendsConfig;
 
-export interface IDumiUserConfig
-  extends Partial<Omit<IDumiConfig, 'resolve' | 'locales'>>,
-    IUmiConfig {
-  resolve?: Partial<IDumiConfig['resolve']>;
-  locales?: (
-    | IDumiConfig['locales'][0]
-    | Omit<IDumiConfig['locales'][0], 'base'>
-  )[];
-}
+export type IDumiUserConfig = Subset<Omit<IDumiConfig, 'locales'>> & {
+  locales?:
+    | Exclude<IDumiConfig['locales'][0], { base: string }>[]
+    | Omit<Exclude<IDumiConfig['locales'][0], { suffix: string }>, 'base'>[];
+};
 
 export abstract class IDumiTechStack {
   /**

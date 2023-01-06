@@ -3,8 +3,9 @@ import type { IApi } from '@/types';
 import { getExampleAssets } from './assets';
 
 export default (api: IApi) => {
-  const prevExtraRoutePaths: IApi['config']['exportStatic']['extraRoutePaths'][] =
-    [];
+  const prevExtraRoutePaths: NonNullable<
+    IApi['config']['exportStatic']
+  >['extraRoutePaths'][] = [];
 
   api.describe({ key: 'dumi:exportStatic' });
 
@@ -24,6 +25,7 @@ export default (api: IApi) => {
     key: 'modifyConfig',
     stage: Infinity,
     fn(memo: IApi['config']) {
+      // @ts-ignore
       if (memo.exportStatic !== false) {
         // save extraRoutePaths from config, will merge theme later
         if (memo.exportStatic?.extraRoutePaths) {

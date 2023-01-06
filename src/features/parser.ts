@@ -48,8 +48,8 @@ export default (api: IApi) => {
     api.service.atomParser = new AtomAssetsParser({
       entryFile: api.config.resolve.entryFile!,
       resolveDir: api.cwd,
-      unpkgHost: api.config.apiParser.unpkgHost,
-      resolveFilter: api.config.apiParser.resolveFilter,
+      unpkgHost: api.config.apiParser!.unpkgHost,
+      resolveFilter: api.config.apiParser!.resolveFilter,
     });
 
     // lazy parse & use watch mode in development

@@ -116,6 +116,7 @@ export default (api: IApi) => {
     }
 
     // enable conventional routes
+    // @ts-ignore
     if (api.userConfig.conventionRoutes !== false) {
       memo.conventionRoutes = {
         base: path.join(api.cwd, LOCAL_PAGES_DIR),
