@@ -17,6 +17,16 @@ function normalizeDocDir(docDir: IApi['config']['resolve']['docDirs'][0]) {
 }
 
 /**
+ * make route path kebab case
+ */
+function kebabCaseRoutePath(routePath: string) {
+  return routePath
+    .split('/')
+    .map((p) => lodash.kebabCase(p))
+    .join('/');
+}
+
+/**
  * localize standard umi route path by locales config
  */
 function localizeUmiRoute(route: IRoute, locales: IApi['config']['locales']) {
@@ -37,16 +47,16 @@ function localizeUmiRoute(route: IRoute, locales: IApi['config']['locales']) {
     const suffix = 'suffix' in locale ? locale.suffix : '';
     // /foo/zh-CN => /{prefix}/foo
     // /bar/index/zh-CN => /{prefix}/bar
-    route.path = `${base}${route.path
-      .replace(new RegExp(`/${locale.id}$`), '')
-      .replace(/((^|\/)(index|README))$/, '')
-      // lowercase for original route path
-      .toLowerCase()}${suffix}`;
+    route.path = `${base}${kebabCaseRoutePath(
+      route.path
+        .replace(new RegExp(`/${locale.id}$`), '')
+        .replace(/((^|\/)(index|README))$/, ''),
+    )}${suffix}`;
     route.absPath = route.path !== '/' ? `/${route.path}` : route.path;
   } else {
-    // also lowercase for non-locale route
-    route.path = route.path.toLowerCase();
-    route.absPath = route.absPath.toLowerCase();
+    // also kebab-case for non-locale route
+    route.path = kebabCaseRoutePath(route.path);
+    route.absPath = kebabCaseRoutePath(route.absPath);
   }
 }
 
@@ -63,20 +73,6 @@ function flatRoute(route: IRoute, docLayoutId: string) {
           route.path
         : route.absPath.slice(1);
   }
-}
-
-/**
- * make route path kebab case
- */
-function kebabCaseRoute(route: IRoute) {
-  route.path = route.path
-    .split('/')
-    .map((p) => lodash.kebabCase(p))
-    .join('/');
-  route.absPath = route.absPath
-    .split('/')
-    .map((p) => lodash.kebabCase(p))
-    .join('/');
 }
 
 /**
@@ -251,9 +247,6 @@ export default (api: IApi) => {
     at ${route.file}`,
         );
       } else if (!route.isLayout) {
-        // kebab case route path
-        kebabCaseRoute(route);
-
         // flat route
         flatRoute(route, docLayoutId);
 
