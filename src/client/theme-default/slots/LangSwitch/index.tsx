@@ -27,7 +27,12 @@ function getTargetLocalePath({
       : pathname.replace(new RegExp(`${current.suffix}$`), '');
 
   return 'base' in target
-    ? `${target.base}${clearPath}`.replace(/^\/\//, '/')
+    ? `${
+        // for `/` base, strip duplicated leading slash
+        target.base.replace(/\/$/, '')
+      }${clearPath}`
+        // for `/` clearPath, strip duplicated ending slash
+        .replace(/([^/])\/$/, '$1')
     : `${clearPath}${target.suffix}`;
 }
 
