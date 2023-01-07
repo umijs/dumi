@@ -2,13 +2,26 @@
 
 .@{prefix}-color-switch {
   position: relative;
-  padding: 0 6px;
   font-size: 0;
   line-height: 0;
 
-  .@{prefix}-lang-switch + & {
+  @media screen and (max-width: 1430px) {
+    &::before {
+      left: auto;
+      right: auto;
+      inset-inline-end: -15px;
+      transform: none;
+
+      [class*='-switch'] + & {
+        inset-inline-end: 0;
+      }
+    }
+  }
+
+  [class*='-switch'] + & {
     margin-inline-start: 15px;
-    padding-inline-start: 15px;
+    margin-inline-end: -15px;
+    padding-inline: 15px;
     border-inline-start: 1px solid @c-border;
 
     @{dark-selector} & {
