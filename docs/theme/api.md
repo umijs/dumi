@@ -151,6 +151,7 @@ const Example = () => {
   // 可参考 dumi 默认主题的主题切换按钮实现：https://github.com/umijs/dumi/tree/master/src/client/theme-default/slots/ColorSwitch/index.tsx
 
   // 其他逻辑
+};
 ```
 
 ### useRouteMeta

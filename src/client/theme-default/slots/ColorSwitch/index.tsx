@@ -1,4 +1,4 @@
-import { FormattedMessage, useIntl, usePrefersColor } from 'dumi';
+import { FormattedMessage, useIntl, usePrefersColor, useSiteData } from 'dumi';
 import React, { type FC } from 'react';
 import './index.less';
 
@@ -27,8 +27,13 @@ const ICON_MAPPING = {
 };
 
 const ColorSwitch: FC = () => {
+  const {
+    themeConfig: {
+      prefersColor: { default: defaultColor },
+    },
+  } = useSiteData();
   const intl = useIntl();
-  const [, prefersColor, setPrefersColor] = usePrefersColor();
+  const [, prefersColor = defaultColor, setPrefersColor] = usePrefersColor();
   const Icon = ICON_MAPPING[prefersColor];
 
   return (
