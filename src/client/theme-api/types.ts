@@ -109,6 +109,8 @@ export interface IRouteMeta {
   // tabs
   tabs?: {
     key: string;
+    name?: string;
+    messageId?: string;
     components: {
       default: ComponentType;
       Extra: ComponentType;
