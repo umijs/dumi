@@ -61,6 +61,7 @@ export type IDumiUserConfig = Subset<Omit<IDumiConfig, 'locales'>> & {
   locales?:
     | Exclude<IDumiConfig['locales'][0], { base: string }>[]
     | Omit<Exclude<IDumiConfig['locales'][0], { suffix: string }>, 'base'>[];
+  [key: string]: any;
 };
 
 export abstract class IDumiTechStack {
@@ -102,7 +103,7 @@ export abstract class IDumiTechStack {
 }
 
 export type IApi = IUmiApi & {
-  config: IDumiConfig;
+  config: IDumiConfig & { [key: string]: any };
   userConfig: IDumiUserConfig;
   service: IUmiApi['service'] & {
     themeData: IThemeLoadResult;
