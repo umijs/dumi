@@ -110,7 +110,7 @@ export interface IRouteMeta {
   tabs?: {
     key: string;
     name?: string;
-    messageId?: string;
+    nameIntlId?: string;
     components: {
       default: ComponentType;
       Extra: ComponentType;

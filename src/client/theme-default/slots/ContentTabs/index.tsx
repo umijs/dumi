@@ -33,8 +33,8 @@ const ContentTabs: FC<IContentTabsProps> = ({
           data-active={key === tab.key || undefined}
         >
           <button type="button">
-            {tab.messageId
-              ? intl.formatMessage({ id: tab.messageId })
+            {tab.nameIntlId
+              ? intl.formatMessage({ id: tab.nameIntlId })
               : tab.name || tab.meta.frontmatter.title}
           </button>
         </li>

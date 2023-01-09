@@ -37,4 +37,4 @@ export default (api: IApi) => {
 };
 ```
 
-`component` 放入我们自定义的 Tab 内容，`test` 可以写入正则来匹配路由，`name` 为我们自定义 Tab 标题，如果需要配置国际化标题，可以通过 [messageId](/plugin/api#addcontenttab) 来定义。这样我们就实现了为 `/componets` 下的路由页面添加自定义 Tab。
+`component` 放入我们自定义的 Tab 内容，`test` 可以写入正则来匹配路由，`name` 为我们自定义 Tab 标题，如果需要配置国际化标题，可以通过 [modifyTheme](/plugin/api#modifytheme) API 来添加 locales 数据，然后配置 [nameIntlId](/plugin/api#addcontenttab) 关联对应的 key 来实现国际化。这样我们就实现了为 `/componets` 下的路由页面添加自定义 Tab。

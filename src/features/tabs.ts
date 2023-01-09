@@ -9,7 +9,7 @@ export interface IContentTab {
   id?: string;
   test?: RegExp;
   name?: string;
-  messageId?: string;
+  nameIntlId?: string;
   component: string;
 }
 
@@ -33,7 +33,7 @@ export default (api: IApi) => {
     id: string;
     file: string;
     name?: string;
-    messageId?: string;
+    nameIntlId?: string;
   }[] = [];
 
   api.describe({ key: undefined });
@@ -100,7 +100,7 @@ export default (api: IApi) => {
         key: tab.key,
         id: tab.id!,
         name: tab.name,
-        messageId: tab.messageId,
+        nameIntlId: tab.nameIntlId,
         file: tab.component,
       })),
     );
@@ -144,7 +144,7 @@ import * as tab{{{index}}} from '{{{file}}}';
 
 export const tabs = {
   {{#tabs}}
-  '{{{id}}}': { key: '{{{key}}}', name: '{{{name}}}', messageId: '{{{messageId}}}', components: tab{{{index}}} },
+  '{{{id}}}': { key: '{{{key}}}', name: '{{{name}}}', nameIntlId: '{{{nameIntlId}}}', components: tab{{{index}}} },
   {{/tabs}}
 }
 `,
