@@ -32,7 +32,11 @@ const ContentTabs: FC<IContentTabsProps> = ({
           onClick={() => onChange(tab)}
           data-active={key === tab.key || undefined}
         >
-          <button type="button">{tab.meta.frontmatter.title}</button>
+          <button type="button">
+            {tab.nameIntlId
+              ? intl.formatMessage({ id: tab.nameIntlId })
+              : tab.name || tab.meta.frontmatter.title}
+          </button>
         </li>
       ))}
     </ul>
