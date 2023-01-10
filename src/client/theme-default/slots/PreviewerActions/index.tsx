@@ -46,7 +46,9 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
     ([, { type }]) => type === 'FILE',
   );
   const [activeKey, setActiveKey] = useState(0);
-  const [showCode, setShowCode] = useState(props?.forceShowCode);
+  const [showCode, setShowCode] = useState(
+    props.forceShowCode || props.defaultShowCode,
+  );
   const isSingleFile = files.length === 1;
   const lang = (files[activeKey][0].match(/\.([^.]+)$/)?.[1] || 'text') as any;
 

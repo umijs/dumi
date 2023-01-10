@@ -244,9 +244,6 @@ Demo 支持的 frontmatter 有如下变化：
 +* description: xxxx
    # 已废弃，可通过覆盖 PreviewerActions 组件实现全局控制
 -* hideActions: ['xxx']
-  # 以下配置暂不支持，后续版本会支持
--* defaultShowCode: true
-+* debug: true
  */
 ```
 

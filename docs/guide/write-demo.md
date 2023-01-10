@@ -26,6 +26,10 @@ export default () => &lt;h1&gt;Hello dumi!&lt;/h1&gt;;
 `jsx` 和 `tsx` 的代码块将会被 dumi 解析为 React 组件，以上代码块将会被渲染成：
 
 ```jsx
+/**
+ * defaultShowCode: true
+ */
+
 import React from 'react';
 
 export default () => <h1>Hello dumi!</h1>;
@@ -101,6 +105,10 @@ dumi 目前支持如下 demo 控制能力。
 ```jsx
 /**
  * transform: true
+ * defaultShowCode: true
+ */
+/**
+ * transform: true
  */
 
 import React from 'react';
@@ -117,6 +125,10 @@ export default () => (
 ```jsx
 /**
  * background: '#f6f7f9'
+ * defaultShowCode: true
+ */
+/**
+ * background: '#f6f7f9'
  */
 
 import React from 'react';
@@ -131,6 +143,10 @@ export default () => null;
 ```jsx
 /**
  * compact: true
+ * defaultShowCode: true
+ */
+/**
+ * compact: true
  */
 
 import React from 'react';
@@ -143,6 +159,11 @@ export default () => '我会贴边站';
 通过 `title` 和 `description` 配置 demo 的标题和简介：
 
 ```jsx
+/**
+ * title: 我是标题
+ * description: 我是简介，我可以用 `Markdown` 来编写
+ * defaultShowCode: true
+ */
 /**
  * title: 我是标题
  * description: 我是简介，我可以用 `Markdown` 来编写
@@ -195,7 +216,7 @@ import Previewer from 'dumi/theme/builtins/Previewer';
 export default () => (
   <Previewer
     asset={{
-      id: 'debug-demo',
+      id: 'docs-guide-write-demo-demo-6',
       dependencies: {
         'index.tsx': {
           type: 'FILE',
@@ -205,6 +226,8 @@ export default () => (
       },
     }}
     demoUrl=""
+    disabledActions={['EXTERNAL']}
+    defaultShowCode
     debug
   >
     我仅在开发环境下展示
@@ -217,6 +240,11 @@ export default () => (
 设置 `iframe` 为 `true`，将会使用 `iframe` 渲染 demo，可实现和文档的完全隔离，通常用于布局型组件，此时 [`compact`](/config/demo#compact) 配置默认为 `true`：
 
 ```jsx
+/**
+ * iframe: true
+ * compact: true
+ * defaultShowCode: true
+ */
 /**
  * iframe: true
  * compact: true
