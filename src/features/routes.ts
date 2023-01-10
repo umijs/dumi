@@ -188,7 +188,7 @@ export default (api: IApi) => {
       const base = path.join(api.cwd, dir);
       const dirRoutes: Record<string, IRoute> = getConventionRoutes({
         base,
-        exclude: [/.*(?<!md)$/, /(\/|^)(\.|_\/)/],
+        exclude: [/.*(?<!md)$/, /(\/|^)(\.|_)/],
       });
 
       Object.entries(dirRoutes).forEach(([key, route]) => {
