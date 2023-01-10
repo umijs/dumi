@@ -41,6 +41,10 @@ export const DumiDemo: FC<IDumiDemoProps> = (props) => {
   const { basename } = useAppData();
   const { component, asset } = demos[props.demo.id];
 
+  // hide debug demo in production
+  if (process.env.NODE_ENV === 'production' && props.previewerProps.debug)
+    return null;
+
   if (props.demo.inline) {
     return <DemoErrorBoundary>{createElement(component)}</DemoErrorBoundary>;
   }

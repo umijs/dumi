@@ -10,8 +10,13 @@ export interface IDumiDemoGridProps {
 export const DumiDemoGrid: FC<IDumiDemoGridProps> = (props) => {
   const { frontmatter: fm } = useRouteMeta();
   const generator = useCallback(
-    (fm: IRouteMeta['frontmatter'], items: typeof props.items) => {
+    (fm: IRouteMeta['frontmatter'], oItems: typeof props.items) => {
       const cols: IDumiDemoProps[][] = [];
+      const items =
+        process.env.NODE_ENV === 'production'
+          ? // hide debug demo in production
+            oItems.filter((d) => !d.previewerProps.debug)
+          : oItems;
 
       if (
         fm.demo?.cols &&
