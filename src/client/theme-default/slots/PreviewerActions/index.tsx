@@ -105,7 +105,7 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
           </a>
         )}
         <PreviewerActionsExtra {...props} />
-        {!props?.forceShowCode && (
+        {!props.forceShowCode && (
           <button
             className="dumi-default-previewer-action-btn"
             type="button"
