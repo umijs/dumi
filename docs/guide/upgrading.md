@@ -229,8 +229,10 @@ Markdown 头部支持的 frontmatter 有如下变化：
 - footer: xxx
   # 已废弃
 - translateHelp: true
-  # 以下配置暂不支持，后续版本会支持
+  # hide 配置项升级为 debug
 - hide: true
++ debug: true
+  # 以下配置暂不支持，后续版本会支持
 - sidemenu: false
 ---
 ```
