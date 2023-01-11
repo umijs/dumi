@@ -160,7 +160,7 @@ export interface IThemeConfig {
     | (INavItem & { children?: INavItem[] })[]
     | Record<string, (INavItem & { children?: INavItem[] })[]>;
   sidebar?: Record<string, ISidebarGroup[]>;
-  footer?: string;
+  footer?: string | false;
   prefersColor: {
     default: 'light' | 'dark' | 'auto';
     switch: boolean;

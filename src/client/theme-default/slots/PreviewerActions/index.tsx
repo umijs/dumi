@@ -19,6 +19,7 @@ export interface IPreviewerActionsProps extends IPreviewerProps {
    */
   disabledActions?: ('CSB' | 'CODEPEN' | 'STACKBLITZ' | 'EXTERNAL')[];
   forceShowCode?: boolean;
+  defaultShowCode?: boolean;
 }
 
 const IconCode: FC = () => (
