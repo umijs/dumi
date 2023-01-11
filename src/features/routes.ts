@@ -5,7 +5,7 @@ import { createRouteId } from '@umijs/core/dist/route/utils';
 import path from 'path';
 import { plural } from 'pluralize';
 import type { IRoute } from 'umi';
-import { glob, lodash, resolve, winPath } from 'umi/plugin-utils';
+import { glob, resolve, winPath } from 'umi/plugin-utils';
 
 const CTX_LAYOUT_ID = 'dumi-context-layout';
 
@@ -20,10 +20,19 @@ function normalizeDocDir(docDir: IApi['config']['resolve']['docDirs'][0]) {
  * make route path kebab case
  */
 function kebabCaseRoutePath(routePath: string) {
-  return routePath
-    .split('/')
-    .map((p) => lodash.kebabCase(p))
-    .join('/');
+  const replacer = (_: string, s1: string, s2: string, i: number) => {
+    const symbol = ['', '/'].includes(s1) || !i ? '' : '-';
+
+    return `${s1 || ''}${symbol}${s2.toLowerCase()}`;
+  };
+
+  return (
+    routePath
+      // kebab for normal word
+      .replace(/(.)?([A-Z][^A-Z/])/g, replacer)
+      // kebab for upper word
+      .replace(/(.)?([A-Z]+)/g, replacer)
+  );
 }
 
 /**
