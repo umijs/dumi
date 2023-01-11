@@ -32,6 +32,7 @@ dumi 为我们提供了 `hero` 和 `features` 的 FrontMatter 属性，让我们
 
 ```md
 ---
+title: 首页标签栏的title
 hero:
   title: dumi
   description: 企业级前端开发框架
