@@ -1,4 +1,4 @@
-import { FormattedMessage, useIntl, usePrefersColor, useSiteData } from 'dumi';
+import { useIntl, usePrefersColor, useSiteData } from 'dumi';
 import React, { type FC } from 'react';
 import './index.less';
 
@@ -49,15 +49,11 @@ const ColorSwitch: FC = () => {
         onChange={(ev) => setPrefersColor(ev.target.value as any)}
         value={prefersColor}
       >
-        <option value="light">
-          <FormattedMessage id="header.color.mode.light" />
-        </option>
-        <option value="dark">
-          <FormattedMessage id="header.color.mode.dark" />
-        </option>
-        <option value="auto">
-          <FormattedMessage id="header.color.mode.auto" />
-        </option>
+        {['light', 'dark', 'auto'].map((c) => (
+          <option value={c} key={c}>
+            {intl.formatMessage({ id: `header.color.mode.${c}` })}
+          </option>
+        ))}
       </select>
     </span>
   );
