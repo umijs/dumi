@@ -23,6 +23,10 @@ export interface IPreviewerProps {
    */
   debug?: boolean;
   /**
+   * display the source code or not by default
+   */
+  defaultShowCode?: boolean;
+  /**
    * url for render current demo in a single page
    */
   demoUrl: string;
@@ -160,7 +164,7 @@ export interface IThemeConfig {
     | (INavItem & { children?: INavItem[] })[]
     | Record<string, (INavItem & { children?: INavItem[] })[]>;
   sidebar?: Record<string, ISidebarGroup[]>;
-  footer?: string;
+  footer?: string | false;
   prefersColor: {
     default: 'light' | 'dark' | 'auto';
     switch: boolean;
