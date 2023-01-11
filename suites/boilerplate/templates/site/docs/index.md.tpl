@@ -1,4 +1,5 @@
 ---
+title: title
 hero:
   title: Site
   description: {{{ description }}}
