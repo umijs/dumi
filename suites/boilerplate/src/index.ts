@@ -56,6 +56,7 @@ export default async ({
       name: 'description',
       type: 'text',
       message: `Input project description`,
+      initial: 'description',
     },
     {
       name: 'author',
