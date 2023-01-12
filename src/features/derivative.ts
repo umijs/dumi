@@ -65,11 +65,23 @@ export default (api: IApi) => {
     // check tsconfig.json
     try {
       const tsconfig = require(path.join(api.cwd, 'tsconfig.json'));
-      const expected = ['.dumi/**/*', '.dumirc.ts'];
+      const expected = ['.dumi/**/*'];
+
+      if (api.service.configManager?.mainConfigFile) {
+        expected.push(
+          winPath(
+            path.relative(api.cwd, api.service.configManager.mainConfigFile),
+          ),
+        );
+      }
 
       if (!expected.every((f) => tsconfig.include?.includes(f))) {
         logger.warn(
-          'Please append `.dumi/**/*` & `.dumirc.ts` into `include` option of `tsconfig.json`, to make sure `defineConfig` works.',
+          `Please append ${expected
+            .map((e) => `\`${e}\``)
+            .join(
+              ' & ',
+            )} into \`include\` option of \`tsconfig.json\`, to make sure \`defineConfig\` works.`,
         );
       }
     } catch {}
