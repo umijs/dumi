@@ -1,6 +1,5 @@
 ---
 group: 开发
-debug: true
 ---
 
 # API
