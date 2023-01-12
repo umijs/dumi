@@ -142,7 +142,7 @@ export type ILocalesConfig = ILocale[];
 export interface INavItem {
   title: string;
   link: string;
-  order: number;
+  order?: number;
   activePath?: string;
   [key: string]: any;
 }
