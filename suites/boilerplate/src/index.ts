@@ -51,12 +51,17 @@ export default async ({
     },
   );
   let hasPlugin = false;
+  const descriptions = {
+    site: 'A static site based on dumi',
+    react: 'A react library developed with dumi',
+    theme: 'A theme package for dumi',
+  };
   const questions: prompts.PromptObject[] = [
     {
       name: 'description',
       type: 'text',
       message: `Input project description`,
-      initial: 'description',
+      initial: descriptions[type],
     },
     {
       name: 'author',
