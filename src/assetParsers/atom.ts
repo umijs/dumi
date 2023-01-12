@@ -52,7 +52,9 @@ class AtomAssetsParser {
     if (!this.parseDeferrer || this.unresolvedFiles.length) {
       this.parseDeferrer = (async () => {
         // patch unresolved files, and this method also will init parser before the first time
-        await this.parser.patch(this.unresolvedFiles.splice(0));
+        // FIXME: patch will throw error, pass empty array currently
+        this.unresolvedFiles.splice(0);
+        await this.parser.patch([]);
 
         // create resolver
         const resolver = new SchemaResolver(await this.parser.parse());
