@@ -265,6 +265,15 @@ export default function rehypeDemo(
                     'snapshot',
                     'keywords',
                   ];
+                  const techStackOpts = {
+                    type: codeType,
+                    mdAbsPath: opts.fileAbsPath,
+                    fileAbsPath:
+                      codeType === 'external'
+                        ? parseOpts.fileAbsPath
+                        : undefined,
+                    entryPointCode: parseOpts.entryPointCode,
+                  };
 
                   // transform empty string attr to boolean, such as `debug`, `iframe` & etc.
                   Object.keys(restAttrs).forEach((key) => {
@@ -301,15 +310,10 @@ export default function rehypeDemo(
                   // HINT: must use `Object.assign` to keep the reference
                   Object.assign(
                     previewerProps,
-                    (await techStack.generatePreviewerProps?.(originalProps, {
-                      type: codeType,
-                      mdAbsPath: opts.fileAbsPath,
-                      fileAbsPath:
-                        codeType === 'external'
-                          ? parseOpts.fileAbsPath
-                          : undefined,
-                      entryPointCode: parseOpts.entryPointCode,
-                    })) || originalProps,
+                    (await techStack.generatePreviewerProps?.(
+                      originalProps,
+                      techStackOpts,
+                    )) || originalProps,
                   );
 
                   // md to string for asset metadata
@@ -345,7 +349,7 @@ export default function rehypeDemo(
                     id: asset.id,
                     component,
                     asset: techStack.generateMetadata
-                      ? await techStack.generateMetadata(asset)
+                      ? await techStack.generateMetadata(asset, techStackOpts)
                       : asset,
                     sources,
                   };

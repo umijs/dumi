@@ -85,18 +85,19 @@ export abstract class IDumiTechStack {
    */
   abstract generateMetadata?(
     asset: ExampleBlockAsset,
-  ): Promise<ExampleBlockAsset> | ExampleBlockAsset;
-  /**
-   * generator for return previewer props
-   */
-  abstract generatePreviewerProps?(
-    props: IDumiDemoProps['previewerProps'],
     opts: {
       type: Parameters<IDumiTechStack['transformCode']>[1]['type'];
       mdAbsPath: string;
       fileAbsPath?: string;
       entryPointCode?: string;
     },
+  ): Promise<ExampleBlockAsset> | ExampleBlockAsset;
+  /**
+   * generator for return previewer props
+   */
+  abstract generatePreviewerProps?(
+    props: IDumiDemoProps['previewerProps'],
+    opts: Parameters<NonNullable<IDumiTechStack['generateMetadata']>>[1],
   ):
     | Promise<IDumiDemoProps['previewerProps']>
     | IDumiDemoProps['previewerProps'];
