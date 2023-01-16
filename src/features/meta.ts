@@ -116,10 +116,17 @@ export const patchRoutes = ({ routes }) => {
         route.meta = deepmerge(route.meta, filesMeta[route.id]);
 
         // apply real tab data from id
-        route.meta.tabs = route.meta.tabs?.map(id => ({
+        route.meta.tabs = route.meta.tabs?.map((id) => {
+          const meta = {
+            frontmatter: { title: tabs[id].title },
+            toc: [],
+            texts: [],
+          }
+          return {
           ...tabs[id],
-          meta: filesMeta[id] ? filesMeta[id] : { frontmatter: { title: tabs[id].title } },
-        }));
+          meta: filesMeta[id] ? filesMeta[id] : meta,
+          }
+        });
       }
     }
   });
