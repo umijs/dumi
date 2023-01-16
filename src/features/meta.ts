@@ -118,7 +118,7 @@ export const patchRoutes = ({ routes }) => {
         // apply real tab data from id
         route.meta.tabs = route.meta.tabs?.map(id => ({
           ...tabs[id],
-          meta: filesMeta[id],
+          meta: filesMeta[id] ? filesMeta[id] : { frontmatter: { title: tabs[id].title } },
         }));
       }
     }
