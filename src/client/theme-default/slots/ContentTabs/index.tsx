@@ -33,9 +33,9 @@ const ContentTabs: FC<IContentTabsProps> = ({
           data-active={key === tab.key || undefined}
         >
           <button type="button">
-            {tab.nameIntlId
-              ? intl.formatMessage({ id: tab.nameIntlId })
-              : tab.name || tab.meta.frontmatter.title}
+            {tab.titleIntlId
+              ? intl.formatMessage({ id: tab.titleIntlId })
+              : tab.meta.frontmatter.title}
           </button>
         </li>
       ))}

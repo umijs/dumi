@@ -89,7 +89,7 @@ const FILE_LIST = [
         type: 'replace',
         value: [
           /(theme: { '@primary-color': '#1DA57A' })/,
-          '// 修改 dumi 默认主题的主色，更多变量详见：https://github.com/umijs/dumi/blob/master/src/client/theme-default/styles/variables.less\n$1',
+          `// 修改 dumi 默认主题的主色，更多变量详见：https://github.com/umijs/dumi/blob/master/src/client/theme-default/styles/variables.less\n(theme: { '@c-primary': '#1DA57A' })`,
         ],
       },
     ],
