@@ -30,11 +30,11 @@ api.addContentTab(() => ({
   /**
    * 用于自定义 tab 名称
    */
-  name?: string;
+  title?: string;
   /**
    * tab 名称文案国际化，通过传入国际化文案 key 来实现。优先级高于 name 配置项
    */
-  nameIntlId?: string;
+  titleIntlId?: string;
   /**
    * 页面 Tab 的 React 组件
    */

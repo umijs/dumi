@@ -8,8 +8,8 @@ export interface IContentTab {
   key: string;
   id?: string;
   test?: RegExp;
-  name?: string;
-  nameIntlId?: string;
+  title?: string;
+  titleIntlId?: string;
   component: string;
 }
 
@@ -32,8 +32,8 @@ export default (api: IApi) => {
     key: string;
     id: string;
     file: string;
-    name?: string;
-    nameIntlId?: string;
+    title?: string;
+    titleIntlId?: string;
   }[] = [];
 
   api.describe({ key: undefined });
@@ -99,8 +99,8 @@ export default (api: IApi) => {
         index: tabs.length + index,
         key: tab.key,
         id: tab.id!,
-        name: tab.name,
-        nameIntlId: tab.nameIntlId,
+        title: tab.title || path.parse(tab.component).name.toUpperCase(),
+        titleIntlId: tab.titleIntlId,
         file: tab.component,
       })),
     );
@@ -121,11 +121,14 @@ export default (api: IApi) => {
 
       // append tabs to meta files
       tabs.forEach((tab) => {
-        metaFiles.push({
-          id: tab.id,
-          file: tab.file,
-          index: metaFiles.length,
-        });
+        const isFromPlugin = tabsFromPlugins.some((item) => item.id === tab.id);
+        if (!isFromPlugin) {
+          metaFiles.push({
+            id: tab.id,
+            file: tab.file,
+            index: metaFiles.length,
+          });
+        }
       });
 
       return metaFiles;
@@ -144,7 +147,7 @@ import * as tab{{{index}}} from '{{{file}}}';
 
 export const tabs = {
   {{#tabs}}
-  '{{{id}}}': { key: '{{{key}}}', name: '{{{name}}}', nameIntlId: '{{{nameIntlId}}}', components: tab{{{index}}} },
+  '{{{id}}}': { key: '{{{key}}}', title: '{{{title}}}', titleIntlId: '{{{titleIntlId}}}', components: tab{{{index}}} },
   {{/tabs}}
 }
 `,
