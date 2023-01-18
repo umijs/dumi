@@ -151,6 +151,9 @@ export default (api: IApi) => {
   });
 
   api.modifyConfig((memo) => {
+    if (api.userConfig.mfsu === true) {
+      memo.mfsu = {};
+    }
     if (api.userConfig.alias?.['@']) {
       // respect user @ alias
       // because dumi force to use .dumi as absSrcPath for move all conventional

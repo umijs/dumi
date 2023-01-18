@@ -9,10 +9,4 @@ let unistUtilVisit: typeof import('unist-util-visit');
 
 export * from 'umi';
 export { unistUtilVisit };
-export const defineConfig = (config: IDumiUserConfig) => {
-  // delete the mfsu prop from config to use default mfsu config when pass ture
-  if (config.mfsu === true) {
-    delete config.mfsu;
-  }
-  return config;
-};
+export const defineConfig = (config: IDumiUserConfig) => config;
