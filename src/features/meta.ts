@@ -123,8 +123,8 @@ export const patchRoutes = ({ routes }) => {
             texts: [],
           }
           return {
-          ...tabs[id],
-          meta: filesMeta[id] ? filesMeta[id] : meta,
+            ...tabs[id],
+            meta: filesMeta[id] || meta,
           }
         });
       }
