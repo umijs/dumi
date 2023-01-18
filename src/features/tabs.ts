@@ -1,7 +1,7 @@
 import type { IApi } from '@/types';
 import { createRouteId } from '@umijs/core/dist/route/utils';
 import path from 'path';
-import { Mustache, winPath } from 'umi/plugin-utils';
+import { lodash, Mustache, winPath } from 'umi/plugin-utils';
 import { TABS_META_PATH } from './meta';
 
 export interface IContentTab {
@@ -99,7 +99,7 @@ export default (api: IApi) => {
         index: tabs.length + index,
         key: tab.key,
         id: tab.id!,
-        title: tab.title || path.parse(tab.component).name.toUpperCase(),
+        title: tab.title || lodash.startCase(path.parse(tab.component).name),
         titleIntlId: tab.titleIntlId,
         file: tab.component,
       })),
