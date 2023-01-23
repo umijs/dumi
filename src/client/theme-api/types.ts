@@ -160,7 +160,7 @@ export interface ISidebarGroup {
 }
 export interface IThemeConfig {
   name?: string;
-  logo?: string;
+  logo?: string | false;
   nav?:
     | (INavItem & { children?: INavItem[] })[]
     | Record<string, (INavItem & { children?: INavItem[] })[]>;
