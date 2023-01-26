@@ -15,6 +15,9 @@ export default defineConfig({
 <br />
 Powered by self`,
     prefersColor: { default: 'auto' },
+    preview: {
+      disabledActions: ['CSB', 'STACKBLITZ', 'STACKBLITZ', 'EXTERNAL'],
+    },
   },
   ...(process.env.NODE_ENV === 'development' ? {} : { ssr: {} }),
   sitemap: { hostname: 'https://d.umijs.org' },

@@ -1,10 +1,12 @@
 import { ReactComponent as IconCodeSandbox } from '@ant-design/icons-svg/inline-svg/outlined/code-sandbox.svg';
 // import { ReactComponent as IconCodePen } from '@ant-design/icons-svg/inline-svg/outlined/codepen.svg';
+import { type IPreviewConfig } from '@/client/theme-api/types';
 import { ReactComponent as IconStackBlitz } from '@ant-design/icons-svg/inline-svg/outlined/thunderbolt.svg';
 import {
   openCodeSandbox,
   openStackBlitz,
   useIntl,
+  useSiteData,
   type IPreviewerProps,
 } from 'dumi';
 import SourceCode from 'dumi/theme/builtins/SourceCode';
@@ -17,7 +19,7 @@ export interface IPreviewerActionsProps extends IPreviewerProps {
   /**
    * disabled actions
    */
-  disabledActions?: ('CSB' | 'CODEPEN' | 'STACKBLITZ' | 'EXTERNAL')[];
+  disabledActions?: IPreviewConfig['disabledActions'];
   forceShowCode?: boolean;
 }
 
@@ -52,10 +54,14 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
   const isSingleFile = files.length === 1;
   const lang = (files[activeKey][0].match(/\.([^.]+)$/)?.[1] || 'text') as any;
 
+  const { themeConfig } = useSiteData();
+  const disabledActions =
+    props.disabledActions || themeConfig.preview?.disabledActions || [];
+
   return (
     <>
       <div className="dumi-default-previewer-actions">
-        {!props.disabledActions?.includes('CSB') && (
+        {!disabledActions.includes('CSB') && (
           <button
             className="dumi-default-previewer-action-btn"
             type="button"
@@ -67,7 +73,7 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
             <IconCodeSandbox />
           </button>
         )}
-        {/* {!props.disabledActions?.includes('CODEPEN') && (
+        {/* {!disabledActions.includes('CODEPEN') && (
           <button
             className="dumi-default-previewer-action-btn"
             type="button"
@@ -78,7 +84,7 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
             <IconCodePen />
           </button>
         )} */}
-        {!props.disabledActions?.includes('STACKBLITZ') && (
+        {!disabledActions.includes('STACKBLITZ') && (
           <button
             className="dumi-default-previewer-action-btn"
             type="button"
@@ -91,7 +97,7 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
           </button>
         )}
 
-        {!props.disabledActions?.includes('EXTERNAL') && (
+        {!disabledActions.includes('EXTERNAL') && (
           <a
             target="_blank"
             rel="noreferrer"

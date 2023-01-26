@@ -170,7 +170,12 @@ export interface IThemeConfig {
     default: 'light' | 'dark' | 'auto';
     switch: boolean;
   };
+  preview?: IPreviewConfig;
   [key: string]: any;
+}
+
+export interface IPreviewConfig {
+  disabledActions?: ('CSB' | 'CODEPEN' | 'STACKBLITZ' | 'EXTERNAL')[];
 }
 
 export type IRoutesById = Record<
