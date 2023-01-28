@@ -335,7 +335,7 @@ export default function rehypeDemo(
                       .use(remarkParse)
                       .use(remarkGfm)
                       .use(remarkRehype, { allowDangerousHtml: true })
-                      .use(rehypeStringify)
+                      .use(rehypeStringify, { allowDangerousHtml: true })
                       .process(previewerProps.description);
 
                     previewerProps.description = String(result.value);
