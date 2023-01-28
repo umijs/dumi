@@ -23,10 +23,12 @@ dumi 内置了一套完善的默认主题，默认主题的呈现效果与 dumi 
 
 ### logo
 
-- 类型：`string`
+- 类型：`string | false`
 - 默认值：`dumi 的 LOGO`
 
 配置导航栏上的站点 LOGO，如果需要配置为本地图片文件，可将图片资源放入 `public` 文件夹，例如放置 `public/logo.png`，则配置 `/logo.png` 即可。
+
+为 `false` 时不显示
 
 ### nav
 
