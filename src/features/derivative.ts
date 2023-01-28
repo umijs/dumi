@@ -67,14 +67,12 @@ export default (api: IApi) => {
       const tsconfig = require(path.join(api.cwd, 'tsconfig.json'));
       const expected = ['.dumi/**/*'];
 
-      if (api.service.configManager?.mainConfigFile) {
-        const { mainConfigFile } = api.service.configManager;
-
-        if (mainConfigFile.endsWith('.ts')) {
-          expected.push(winPath(path.relative(api.cwd, mainConfigFile)));
-        } else {
-          expected.pop();
-        }
+      if (api.service.configManager?.mainConfigFile?.endsWith('.ts')) {
+        expected.push(
+          winPath(
+            path.relative(api.cwd, api.service.configManager.mainConfigFile),
+          ),
+        );
       }
 
       if (!expected.every((f) => tsconfig.include?.includes(f))) {
@@ -83,7 +81,7 @@ export default (api: IApi) => {
             .map((e) => `\`${e}\``)
             .join(
               ' & ',
-            )} into \`include\` option of \`tsconfig.json\`, to make sure \`defineConfig\` works.`,
+            )} into \`include\` option of \`tsconfig.json\`, to make sure the types exported by framework works.`,
         );
       }
     } catch {}
