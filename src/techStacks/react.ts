@@ -3,30 +3,132 @@ import {
   transformSync,
   type ExportDefaultDeclaration,
   type ExportDefaultExpression,
-  type ModuleDeclaration,
+  type Expression,
+  type ImportDeclaration,
+  type ObjectPattern,
+  type ReturnStatement,
+  type Span,
+  type VariableDeclaration,
 } from '@swc/core';
 import Visitor from '@swc/core/Visitor';
 
+function createReturnStmt(exp: Expression, span: Span): ReturnStatement {
+  return {
+    type: 'ReturnStatement',
+    span,
+    argument: {
+      type: 'ObjectExpression',
+      span,
+      properties: [
+        {
+          type: 'KeyValueProperty',
+          key: {
+            type: 'Identifier',
+            span,
+            value: 'default',
+            optional: false,
+          },
+          value: exp,
+        },
+      ],
+    },
+  };
+}
+
 /**
- * swc plugin for replace export to return
+ * swc plugin for replace export to return, and replace import to await import
  */
 class ReactDemoVisitor extends Visitor {
-  visitExportDefaultDeclaration(
-    n: ExportDefaultDeclaration,
-  ): ModuleDeclaration {
-    return {
-      type: 'ReturnStatement',
-      span: n.span,
-      argument: n.decl,
-    } as any;
+  // @ts-ignore
+  visitImportDeclaration(
+    n: ImportDeclaration,
+  ): ImportDeclaration | VariableDeclaration {
+    if (!n.typeOnly) {
+      const namespaceImport = n.specifiers.find(
+        (s) => s.type === 'ImportNamespaceSpecifier',
+      );
+      const id = namespaceImport
+        ? namespaceImport.local
+        : ({
+            type: 'ObjectPattern',
+            span: n.span,
+            properties: n.specifiers.map((s) => {
+              if (
+                s.type === 'ImportDefaultSpecifier' ||
+                (s.type === 'ImportSpecifier' &&
+                  s.imported?.type === 'Identifier')
+              ) {
+                return {
+                  type: 'KeyValuePatternProperty',
+                  span: s.span,
+                  key:
+                    s.type === 'ImportSpecifier'
+                      ? s.imported!
+                      : {
+                          type: 'Identifier',
+                          span: s.span,
+                          value: 'default',
+                          optional: false,
+                        },
+                  value: s.local,
+                };
+              }
+
+              return {
+                type: 'AssignmentPatternProperty',
+                span: s.span,
+                key: s.local,
+              };
+            }),
+            optional: false,
+          } as ObjectPattern);
+
+      return {
+        type: 'VariableDeclaration',
+        kind: 'const',
+        declare: false,
+        span: n.span,
+        declarations: [
+          {
+            type: 'VariableDeclarator',
+            span: n.span,
+            definite: false,
+            id,
+            init: {
+              span: n.span,
+              type: 'AwaitExpression',
+              argument: {
+                type: 'CallExpression',
+                span: n.span,
+                callee: {
+                  type: 'Import',
+                  span: n.span,
+                },
+                arguments: [{ expression: n.source }],
+              },
+            },
+          },
+        ],
+      };
+    }
+
+    return n;
   }
 
-  visitExportDefaultExpression(n: ExportDefaultExpression): ModuleDeclaration {
-    return {
-      type: 'ReturnStatement',
-      span: n.span,
-      argument: n.expression,
-    } as any;
+  // @ts-ignore
+  visitExportDefaultDeclaration(
+    n: ExportDefaultDeclaration,
+  ): ExportDefaultDeclaration | ReturnStatement {
+    if (n.decl.type !== 'TsInterfaceDeclaration') {
+      return createReturnStmt(n.decl, n.span);
+    }
+
+    return n;
+  }
+
+  // @ts-ignore
+  visitExportDefaultExpression(n: ExportDefaultExpression): ReturnStatement {
+    return createReturnStmt(n.expression, n.span);
   }
 
   visitTsType(n: any) {
@@ -56,21 +158,14 @@ export default class ReactTechStack implements IDumiTechStack {
           target: 'es2022',
         },
         module: {
-          // all imports to require
-          type: 'commonjs',
-          // TODO: find a way to remove the useless __esModule flag
-          // Object.defineProperty(exports, "__esModule", {
-          //   value: true
-          // });
-          // no 'use strict'
-          strictMode: false,
+          type: 'es6',
         },
         plugin: (m) => new ReactDemoVisitor().visitProgram(m),
       });
 
-      return `(function () {
+      return `React.lazy(async () => {
 ${code}
-})()`;
+})`;
     }
 
     return raw;
