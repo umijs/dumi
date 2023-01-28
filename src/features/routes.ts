@@ -88,19 +88,23 @@ function flatRoute(route: IRoute, docLayoutId: string) {
  * get page route file
  */
 function getClientPageFile(file: string, cwd: string) {
+  let clientFile: string;
+
   try {
     // why use `resolve`?
     // because `require.resolve` will use the final path of symlink file
     // and in tnpm project, umi will get a file path includes `@` symbol then
     // generate a chunk name with `@` symbol, which is not supported by cdn
-    return resolve.sync(`dumi/dist/${file}`, {
+    clientFile = resolve.sync(`dumi/dist/${file}`, {
       basedir: cwd,
       preserveSymlinks: false,
     });
   } catch {
     // fallback to use `require.resolve`, for dumi self docs & examples
-    return require.resolve(`../${file}`);
+    clientFile = require.resolve(`../${file}`);
   }
+
+  return winPath(clientFile);
 }
 
 export default (api: IApi) => {
