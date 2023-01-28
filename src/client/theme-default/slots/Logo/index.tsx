@@ -18,7 +18,9 @@ const Logo: FC = () => {
         }
         alt={themeConfig.name}
       />
-      {themeConfig.name}
+      <span>
+        {themeConfig.name}
+      </span>
     </Link>
   );
 };
