@@ -51,9 +51,11 @@ export default (api: IApi) => {
       unpkgHost: api.config.apiParser!.unpkgHost,
       resolveFilter: api.config.apiParser!.resolveFilter,
     });
+  });
 
-    // lazy parse & use watch mode in development
-    if (api.env === 'development') {
+  // lazy parse & use watch mode in dev compiling
+  api.onDevCompileDone(({ isFirstCompile }) => {
+    if (isFirstCompile) {
       api.service.atomParser.watch((data) => {
         prevData = data;
         writeAtomsMetaFile(prevData);
