@@ -43,12 +43,7 @@ export function getSchemas(): Record<string, (Joi: JoiRoot) => any> {
       }).optional(),
     extraRemarkPlugins: getUnifiedPluginSchema,
     extraRehypePlugins: getUnifiedPluginSchema,
-    themeConfig: (Joi) =>
-      Joi.object({
-        logo: Joi.alternatives(Joi.string(), Joi.equal(false)).optional(),
-      })
-        .unknown()
-        .optional(),
+    themeConfig: (Joi) => Joi.object().optional(),
     logo: (Joi) => Joi.string(),
   };
 }
