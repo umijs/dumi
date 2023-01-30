@@ -10,8 +10,7 @@
       "@/*": ["src/*"],
       "@@/*": [".dumi/tmp/*"]
     },
-    "types": ["vitest/globals"],
-    "resolveJsonModule": true
+    "types": ["vitest/globals"]
   },
   "include": [".dumi/**/*", ".dumirc.ts", "src/**/*"]
 }

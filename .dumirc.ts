@@ -1,5 +1,4 @@
 import { defineConfig } from './dist';
-import themeCases from './theme-cases.json';
 
 export default defineConfig({
   favicons: [
@@ -16,7 +15,6 @@ export default defineConfig({
 <br />
 Powered by self`,
     prefersColor: { default: 'auto' },
-    themeCases,
   },
   ...(process.env.NODE_ENV === 'development' ? {} : { ssr: {} }),
   sitemap: { hostname: 'https://d.umijs.org' },

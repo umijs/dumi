@@ -4,8 +4,6 @@
 @card-radius: 0.8em;
 
 .@{prefixCls} {
-  margin-top: -1em;
-
   a {
     text-decoration: none;
   }
@@ -18,9 +16,14 @@
     display: inline-flex;
     align-items: center;
 
+    &:hover {
+      padding-block-end: 0.3em !important;
+      border-bottom: none !important;
+    }
+
     &.primary {
       background-color: @c-primary;
-      color: #fff;
+      color: #fff !important;
 
       @{dark-selector} & {
         background-color: @c-primary-dark;
@@ -46,6 +49,10 @@
 
   &-center {
     text-align: center;
+
+    p {
+      text-align: center;
+    }
   }
 
   &-list {
