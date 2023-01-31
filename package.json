@@ -86,7 +86,7 @@
     "classnames": "2.3.2",
     "codesandbox": "^2.2.3",
     "deepmerge": "^4.2.2",
-    "dumi-afx-deps": "^1.0.0-alpha.6",
+    "dumi-afx-deps": "^1.0.0-alpha.12",
     "dumi-assets-types": "2.0.0-alpha.0",
     "enhanced-resolve": "^5.10.0",
     "estree-util-to-js": "^1.1.0",

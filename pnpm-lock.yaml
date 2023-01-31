@@ -28,7 +28,7 @@ importers:
       classnames: 2.3.2
       codesandbox: ^2.2.3
       deepmerge: ^4.2.2
-      dumi-afx-deps: ^1.0.0-alpha.6
+      dumi-afx-deps: ^1.0.0-alpha.12
       dumi-assets-types: 2.0.0-alpha.0
       dumi-theme-mobile: workspace:*
       enhanced-resolve: ^5.10.0
@@ -98,7 +98,7 @@ importers:
       classnames: 2.3.2
       codesandbox: 2.2.3
       deepmerge: 4.2.2
-      dumi-afx-deps: 1.0.0-alpha.6
+      dumi-afx-deps: 1.0.0-alpha.12
       dumi-assets-types: link:assets-types
       enhanced-resolve: 5.10.0
       estree-util-to-js: 1.1.0
@@ -4639,8 +4639,8 @@ packages:
       is-obj: 2.0.0
     dev: true
 
-  /dumi-afx-deps/1.0.0-alpha.6:
-    resolution: {integrity: sha512-PAstGjZTWoSEYOAtcmTUQ7mhN8l48t6rY0vaEmk5Tbjiuq2XBhp+bjXwhxlw7jUilXVamEQo5adHb6M7u13eEg==}
+  /dumi-afx-deps/1.0.0-alpha.12:
+    resolution: {integrity: sha512-my+92PapBT+NFSFwVb60b8nqbOz1moLOfZpD3+XqryzaqCno1MSuX0oYc8TqN0wPLd7nEly8c8TIcaZGwj9U5g==}
     dev: false
 
   /duplexer3/0.1.5:

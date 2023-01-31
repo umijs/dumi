@@ -44,20 +44,22 @@ class AtomAssetsParser {
       entryPath: absEntryFile,
       basePath: getProjectRoot(opts.resolveDir),
       unPkgHost: opts.unpkgHost ?? 'https://unpkg.com',
+      mode: 'worker',
     });
   }
 
   async parse() {
-    // use valid cache first
-    if (!this.parseDeferrer || this.unresolvedFiles.length) {
+    // to avoid parse multiple times
+    // FIXME: result may outdated
+    if (!this.parseDeferrer) {
       this.parseDeferrer = (async () => {
         // patch unresolved files, and this method also will init parser before the first time
-        // FIXME: patch will throw error, pass empty array currently
-        this.unresolvedFiles.splice(0);
-        await this.parser.patch([]);
+        await this.parser.patch(this.unresolvedFiles.splice(0));
 
         // create resolver
-        const resolver = new SchemaResolver(await this.parser.parse());
+        const resolver = new SchemaResolver(await this.parser.parse(), {
+          mode: 'worker',
+        });
 
         // parse atoms from resolver
         const result: Awaited<NonNullable<AtomAssetsParser['parseDeferrer']>> =
@@ -67,15 +69,17 @@ class AtomAssetsParser {
           };
         const fallbackProps = { type: 'object', properties: {} };
         const fallbackSignature = { arguments: [] };
+        const componentList = await resolver.componentList;
+        const functionList = await resolver.functionList;
 
-        resolver.componentList.forEach((id) => {
+        for (const id of componentList) {
           const needResolve = this.resolveFilter({
             id,
             type: 'COMPONENT',
-            ids: resolver.componentList,
+            ids: componentList,
           });
           let propsConfig = needResolve
-            ? resolver.getComponent(id).props
+            ? (await resolver.getComponent(id)).props
             : fallbackProps;
           const size = Buffer.byteLength(JSON.stringify(propsConfig));
 
@@ -92,16 +96,16 @@ class AtomAssetsParser {
             title: id,
             propsConfig,
           };
-        });
+        }
 
-        resolver.functionList.forEach((id) => {
+        for (const id of functionList) {
           const needResolve = this.resolveFilter({
             id,
             type: 'FUNCTION',
-            ids: resolver.functionList,
+            ids: functionList,
           });
           let signature = needResolve
-            ? resolver.getFunction(id).signature
+            ? (await resolver.getFunction(id)).signature
             : fallbackSignature;
           const size = Buffer.byteLength(JSON.stringify(signature));
 
@@ -118,10 +122,17 @@ class AtomAssetsParser {
             title: id,
             signature,
           };
-        });
+        }
+
+        resolver.$$destroyWorker();
 
         return result;
       })();
+
+      // reset deferred after parse finished
+      this.parseDeferrer.finally(() => {
+        this.parseDeferrer = undefined;
+      });
     }
 
     return this.parseDeferrer;
@@ -150,7 +161,10 @@ class AtomAssetsParser {
           ignoreInitial: true,
         })
         .on('all', (ev, file) => {
-          if (['add', 'change'].includes(ev) && /\.(j|t)sx?$/.test(file)) {
+          if (
+            ['add', 'change'].includes(ev) &&
+            /((?<!\.d)\.ts|\.(jsx?|tsx))$/.test(file)
+          ) {
             this.unresolvedFiles.push(path.join(this.resolveDir, file));
             lazyParse();
           }
