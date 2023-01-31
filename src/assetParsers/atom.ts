@@ -12,6 +12,7 @@ class AtomAssetsParser {
   private resolveDir: string;
   private unresolvedFiles: string[] = [];
   private parser: SchemaParser;
+  private resolver: SchemaResolver | undefined;
   private parseDeferrer:
     | Promise<{
         components: Record<string, AtomComponentAsset>;
@@ -60,6 +61,7 @@ class AtomAssetsParser {
         const resolver = new SchemaResolver(await this.parser.parse(), {
           mode: 'worker',
         });
+        this.resolver = resolver;
 
         // parse atoms from resolver
         const result: Awaited<NonNullable<AtomAssetsParser['parseDeferrer']>> =
@@ -124,13 +126,13 @@ class AtomAssetsParser {
           };
         }
 
-        resolver.$$destroyWorker();
-
         return result;
       })();
 
       // reset deferred after parse finished
       this.parseDeferrer.finally(() => {
+        this.resolver?.$$destroyWorker();
+        this.resolver = undefined;
         this.parseDeferrer = undefined;
       });
     }
@@ -175,6 +177,11 @@ class AtomAssetsParser {
 
   unwatch(cb: AtomAssetsParser['cbs'][number]) {
     this.cbs.splice(this.cbs.indexOf(cb), 1);
+  }
+
+  destroy() {
+    this.resolver?.$$destroyWorker();
+    this.parser.$$destroyWorker();
   }
 }
 
