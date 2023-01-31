@@ -272,7 +272,7 @@ export default (api: IApi) => {
         localizeUmiRoute(
           route,
           api.config.locales,
-          api.config.resolve.forceKebabCaseRoutes,
+          api.config.resolve.forceKebabCaseRouting,
         );
       }
     });

@@ -76,7 +76,7 @@ export default () => '我会被编译，展示为组件';
 
 指定项目的入口文件，比如 `./src/index.ts`，目前该配置会用于 API 解析，可参考[指南 - 自动 API 表格](../guide/auto-api-table.md)。
 
-#### forceKebabCaseRoutes
+#### forceKebabCaseRouting
 
 - 类型：`boolean`
 - 默认值：`true`
