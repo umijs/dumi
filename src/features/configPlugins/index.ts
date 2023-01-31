@@ -7,6 +7,7 @@ export default (api: IApi) => {
       docDirs: ['docs'],
       atomDirs: [{ type: 'component', dir: 'src' }],
       codeBlockMode: 'active',
+      forceKebabCaseRoutes: true,
     },
     themeConfig: {
       footer: `Copyright © ${new Date().getFullYear()} | Powered by <a href="https://d.umijs.org" target="_blank" rel="noreferrer">dumi</a>`,

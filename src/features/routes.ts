@@ -38,13 +38,18 @@ function kebabCaseRoutePath(routePath: string) {
 /**
  * localize standard umi route path by locales config
  */
-function localizeUmiRoute(route: IRoute, locales: IApi['config']['locales']) {
+function localizeUmiRoute(
+  route: IRoute,
+  locales: IApi['config']['locales'],
+  forceKebabCase: boolean,
+) {
   const locale = locales.find(
     (locale) =>
       route.path.endsWith(`/${locale.id}`) &&
       // avoid locale id conflict with folder/file name
       path.parse(route.file).name.endsWith(`.${locale.id}`),
   );
+  const format = forceKebabCase ? kebabCaseRoutePath : (str: string) => str;
 
   if (locale) {
     // strip single `/` locale base or move `/` to the end of locale base for join
@@ -56,7 +61,7 @@ function localizeUmiRoute(route: IRoute, locales: IApi['config']['locales']) {
     const suffix = 'suffix' in locale ? locale.suffix : '';
     // /foo/zh-CN => /{prefix}/foo
     // /bar/index/zh-CN => /{prefix}/bar
-    route.path = `${base}${kebabCaseRoutePath(
+    route.path = `${base}${format(
       route.path
         .replace(new RegExp(`/${locale.id}$`), '')
         .replace(/((^|\/)(index|README))$/, ''),
@@ -64,8 +69,8 @@ function localizeUmiRoute(route: IRoute, locales: IApi['config']['locales']) {
     route.absPath = route.path !== '/' ? `/${route.path}` : route.path;
   } else {
     // also kebab-case for non-locale route
-    route.path = kebabCaseRoutePath(route.path);
-    route.absPath = kebabCaseRoutePath(route.absPath);
+    route.path = format(route.path);
+    route.absPath = format(route.absPath);
   }
 }
 
@@ -264,7 +269,11 @@ export default (api: IApi) => {
         flatRoute(route, docLayoutId);
 
         // localize route
-        localizeUmiRoute(route, api.config.locales);
+        localizeUmiRoute(
+          route,
+          api.config.locales,
+          api.config.resolve.forceKebabCaseRoutes,
+        );
       }
     });
 

@@ -76,6 +76,13 @@ export default () => '我会被编译，展示为组件';
 
 指定项目的入口文件，比如 `./src/index.ts`，目前该配置会用于 API 解析，可参考[指南 - 自动 API 表格](../guide/auto-api-table.md)。
 
+#### forceKebabCaseRoutes
+
+- 类型：`boolean`
+- 默认值：`true`
+
+配置强制 kebab-case 路由模式，即所有路径都会被转换为短横线模式，比如 `HelloWorld` 将会被转换为 `hello-world`，该配置默认开启，配置为 `false` 时将以实际文件路径为准。
+
 ### apiParser
 
 - 类型：`{ unpkgHost?: 'https://unpkg.com'; resolveFilter?: (args: { id: string; ids: string; type: 'COMPONENT' | 'FUNCTION' }) => boolean }`

@@ -43,6 +43,7 @@ interface IDumiExtendsConfig {
     atomDirs: { type: string; dir: string }[];
     codeBlockMode: 'active' | 'passive';
     entryFile?: string;
+    forceKebabCaseRoutes: boolean;
   };
   locales: ILocalesConfig;
   themeConfig: IThemeConfig;
