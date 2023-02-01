@@ -112,6 +112,40 @@ export default {
 }
 ```
 
+### socialLinks
+
+如果想要在顶部导航栏右侧增加一些社交网站的外链图标，可以通过 `socialLinks` 进行配置，目前最多支持配置 **5** 个外链图标
+
+目前支持以下社交平台图标：
+
+|   Key    |     描述      |
+| :------: | :-----------: |
+|  github  |  GitHub 平台  |
+|  weibo   |   微博平台    |
+| twitter  | Twitter 平台  |
+|  gitlab  |  Gitlab 平台  |
+| facebook | Facebook 平台 |
+|  zhihu   |   知乎平台    |
+|  yuque   |   语雀平台    |
+| linkedin | Linkedin 平台 |
+
+```ts
+export default {
+  themeConfig: {
+    socialLinks: {
+      github: 'https://github.com/umijs/dumi',
+      weibo: 'https://xxxx',
+      twitter: 'https://xxxx',
+      gitlab: 'https://xxxx',
+      facebook: 'https://xxxx',
+      zhihu: 'https://xxxx',
+      yueque: 'https://xxxx',
+      linkedin: 'https://xxxx',
+    },
+  },
+};
+```
+
 <!-- site config end -->
 
 ## Markdown 配置
