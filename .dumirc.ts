@@ -15,6 +15,9 @@ export default defineConfig({
 <br />
 Powered by self`,
     prefersColor: { default: 'auto' },
+    socialLinks: {
+      github: 'https://github.com/umijs/dumi',
+    },
   },
   ...(process.env.NODE_ENV === 'development' ? {} : { ssr: {} }),
   sitemap: { hostname: 'https://d.umijs.org' },

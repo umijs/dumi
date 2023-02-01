@@ -158,6 +158,15 @@ export interface ISidebarGroup {
   children: ISidebarItem[];
   [key: string]: any;
 }
+export type SocialTypes =
+  | 'github'
+  | 'weibo'
+  | 'twitter'
+  | 'gitlab'
+  | 'facebook'
+  | 'zhihu'
+  | 'yuque'
+  | 'linkedin';
 export interface IThemeConfig {
   name?: string;
   logo?: string | false;
@@ -169,6 +178,12 @@ export interface IThemeConfig {
   prefersColor: {
     default: 'light' | 'dark' | 'auto';
     switch: boolean;
+  };
+  socialLinks: {
+    /**
+     * 形如：github: "https://github.com/umijs/dumi"
+     */
+    [key in SocialTypes]: string;
   };
   [key: string]: any;
 }
