@@ -179,7 +179,7 @@ class AtomAssetsParser {
     this.cbs.splice(this.cbs.indexOf(cb), 1);
   }
 
-  destroy() {
+  destroyWorker() {
     // wait for current parse finished
     if (this.parseDeferrer) {
       this.parseDeferrer.finally(() => this.parser.$$destroyWorker());

@@ -67,10 +67,17 @@ export default (api: IApi) => {
     if (api.env === 'production') {
       // sync parse in production
       writeAtomsMetaFile(await api.service.atomParser.parse());
-      api.service.atomParser.destroy();
     } else if (prevData) {
       // also write prev data when re-generate files in development
       writeAtomsMetaFile(prevData);
     }
+  });
+
+  // destroy parser worker after build complete
+  api.onBuildComplete({
+    stage: Infinity,
+    fn() {
+      api.service.atomParser.destroyWorker();
+    },
   });
 };
