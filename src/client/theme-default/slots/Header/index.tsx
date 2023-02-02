@@ -18,7 +18,7 @@ const Header: FC = () => {
   const [showMenu, setShowMenu] = useState(false);
   const { themeConfig } = useSiteData();
 
-  const extraIcons = useMemo(
+  const socialIcons = useMemo(
     () =>
       themeConfig.socialLinks
         ? Object.keys(themeConfig.socialLinks)
@@ -49,10 +49,10 @@ const Header: FC = () => {
             <LangSwitch />
             <RtlSwitch />
             {themeConfig.prefersColor.switch && <ColorSwitch />}
-            <HeaderExtra />
-            {extraIcons.map((item) => (
+            {socialIcons.map((item) => (
               <SocialIcon icon={item.icon} link={item.link} key={item.link} />
             ))}
+            <HeaderExtra />
           </div>
         </section>
         <button

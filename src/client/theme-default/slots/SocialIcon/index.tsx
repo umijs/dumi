@@ -46,7 +46,7 @@ const SocialIcon: FC<SocialIconProps> = (props: SocialIconProps) => {
     <a
       className="dumi-default-icon"
       data-dumi-tooltip={intl.formatMessage({
-        id: `header.socialIcon.title.${icon}`,
+        id: `header.social.${icon}`,
       })}
       data-dumi-tooltip-bottom
       target="_blank"
