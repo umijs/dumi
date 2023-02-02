@@ -295,6 +295,9 @@ export default (api: IApi) => {
       absPath: `/${SP_ROUTE_PREFIX}demos/:id`,
       parentId: demoLayoutId,
       file: getClientPageFile('client/pages/Demo', api.cwd),
+      // disable prerender for demo render page, because umi-hd doesn't support ssr
+      // ref: https://github.com/umijs/dumi/pull/1451
+      prerender: false,
     };
 
     return routes;
