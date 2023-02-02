@@ -1,5 +1,6 @@
 import { SP_ROUTE_PREFIX } from '@/constants';
 import type { IApi } from '@/types';
+import { semver } from 'umi/plugin-utils';
 import { getExampleAssets } from './assets';
 
 export default (api: IApi) => {
@@ -35,7 +36,15 @@ export default (api: IApi) => {
         memo.exportStatic ??= {};
         memo.exportStatic.extraRoutePaths = async () => {
           const examples = getExampleAssets();
-          const userExtraPaths: string[] = [];
+          const userExtraPaths: (
+            | string
+            | { path: string; prerender: boolean }
+          )[] = [];
+          // Umi support disable prerender since 4.0.48
+          const isSupportDisablePrerender = semver.gte(
+            api.appData.umi.version,
+            '4.0.48',
+          );
 
           // merge all extraRoutePaths from default config & config
           for (const prev of prevExtraRoutePaths) {
@@ -45,7 +54,13 @@ export default (api: IApi) => {
           }
 
           return userExtraPaths.concat(
-            examples.map(({ id }) => `/${SP_ROUTE_PREFIX}demos/${id}`),
+            examples.map(({ id }) => {
+              const demoPath = `/${SP_ROUTE_PREFIX}demos/${id}`;
+
+              return isSupportDisablePrerender
+                ? { path: demoPath, prerender: false }
+                : demoPath;
+            }),
           );
         };
       }
