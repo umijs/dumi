@@ -180,8 +180,12 @@ class AtomAssetsParser {
   }
 
   destroy() {
-    this.resolver?.$$destroyWorker();
-    this.parser.$$destroyWorker();
+    // wait for current parse finished
+    if (this.parseDeferrer) {
+      this.parseDeferrer.finally(() => this.parser.$$destroyWorker());
+    } else {
+      this.parser.$$destroyWorker();
+    }
   }
 }
 
