@@ -41,10 +41,14 @@ export default (api: IApi) => {
   });
 
   // share parser with other plugins via service
-  api.onStart(async () => {
+  // why use `onCheckPkgJSON` instead of `onStart`?
+  // because `onStart` will be called before any commands
+  // and `onCheckPkgJson` only be called in dev and build
+  api.onCheckPkgJSON(async () => {
     const {
       default: AtomAssetsParser,
     }: typeof import('@/assetParsers/atom') = require('@/assetParsers/atom');
+
     api.service.atomParser = new AtomAssetsParser({
       entryFile: api.config.resolve.entryFile!,
       resolveDir: api.cwd,
