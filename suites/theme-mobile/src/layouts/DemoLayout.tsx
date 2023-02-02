@@ -17,8 +17,6 @@ const HD_MODES: any = {
   vh,
 };
 
-const isSupportTouch = 'ontouchstart' in window;
-
 const MobileDemoLayout: React.FC = ({}) => {
   const target = useRef<HTMLDivElement>(null);
   const {
@@ -31,9 +29,9 @@ const MobileDemoLayout: React.FC = ({}) => {
 
   useEffect(() => {
     // Simulate the touch event of mobile terminal
-    if (target.current && !isSupportTouch) {
+    if (target.current && !('ontouchstart' in window)) {
       // fix https://github.com/umijs/dumi/issues/996
-      TouchEmulator(document);
+      TouchEmulator(document.documentElement);
     }
   }, []);
 
