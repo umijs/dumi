@@ -36,6 +36,10 @@ export default (api: IApi) => {
   api.onCheck(() => {
     assert(!api.config.mpa, 'MPA mode is not supported in dumi!');
     assert(!api.config.vite, 'Vite mode is not supported yet!');
+    assert(
+      !api.config.phantomDependency,
+      'PhantomDependency is not supported yet!',
+    );
 
     if (typeof api.config.mfsu === 'object') {
       assert(
