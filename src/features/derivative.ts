@@ -36,6 +36,10 @@ export default (api: IApi) => {
   api.onCheck(() => {
     assert(!api.config.mpa, 'MPA mode is not supported in dumi!');
     assert(!api.config.vite, 'Vite mode is not supported yet!');
+    assert(
+      !api.config.phantomDependency,
+      'PhantomDependency is not supported yet!',
+    );
 
     if (typeof api.config.mfsu === 'object') {
       assert(
@@ -200,4 +204,7 @@ export default (api: IApi) => {
 
   // built-in other umi plugins (such as analytics)
   api.registerPlugins([require.resolve('../../compiled/@umijs/plugins')]);
+
+  // FIXME: skip prepare plugin since umi@4.0.48, because it is not compatible with dumi currently
+  if (api.isPluginEnable('prepare')) api.skipPlugins(['prepare']);
 };
