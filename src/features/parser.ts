@@ -41,10 +41,14 @@ export default (api: IApi) => {
   });
 
   // share parser with other plugins via service
-  api.onStart(async () => {
+  // why use `onCheckPkgJSON` instead of `onStart`?
+  // because `onStart` will be called before any commands
+  // and `onCheckPkgJson` only be called in dev and build
+  api.onCheckPkgJSON(async () => {
     const {
       default: AtomAssetsParser,
     }: typeof import('@/assetParsers/atom') = require('@/assetParsers/atom');
+
     api.service.atomParser = new AtomAssetsParser({
       entryFile: api.config.resolve.entryFile!,
       resolveDir: api.cwd,
@@ -67,10 +71,17 @@ export default (api: IApi) => {
     if (api.env === 'production') {
       // sync parse in production
       writeAtomsMetaFile(await api.service.atomParser.parse());
-      api.service.atomParser.destroy();
     } else if (prevData) {
       // also write prev data when re-generate files in development
       writeAtomsMetaFile(prevData);
     }
+  });
+
+  // destroy parser worker after build complete
+  api.onBuildComplete({
+    stage: Infinity,
+    fn() {
+      api.service.atomParser.destroyWorker();
+    },
   });
 };

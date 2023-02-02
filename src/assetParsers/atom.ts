@@ -12,7 +12,7 @@ class AtomAssetsParser {
   private resolveDir: string;
   private unresolvedFiles: string[] = [];
   private parser: SchemaParser;
-  private resolver: SchemaResolver | undefined;
+  private isParsing = false;
   private parseDeferrer:
     | Promise<{
         components: Record<string, AtomComponentAsset>;
@@ -50,9 +50,13 @@ class AtomAssetsParser {
   }
 
   async parse() {
-    // to avoid parse multiple times
+    // use cache first, and only one parse task can be running at the same time
     // FIXME: result may outdated
-    if (!this.parseDeferrer) {
+    if (
+      !this.parseDeferrer ||
+      (this.unresolvedFiles.length && !this.isParsing)
+    ) {
+      this.isParsing = true;
       this.parseDeferrer = (async () => {
         // patch unresolved files, and this method also will init parser before the first time
         await this.parser.patch(this.unresolvedFiles.splice(0));
@@ -61,7 +65,6 @@ class AtomAssetsParser {
         const resolver = new SchemaResolver(await this.parser.parse(), {
           mode: 'worker',
         });
-        this.resolver = resolver;
 
         // parse atoms from resolver
         const result: Awaited<NonNullable<AtomAssetsParser['parseDeferrer']>> =
@@ -126,15 +129,12 @@ class AtomAssetsParser {
           };
         }
 
+        // reset status after parse finished
+        resolver.$$destroyWorker();
+        this.isParsing = false;
+
         return result;
       })();
-
-      // reset deferred after parse finished
-      this.parseDeferrer.finally(() => {
-        this.resolver?.$$destroyWorker();
-        this.resolver = undefined;
-        this.parseDeferrer = undefined;
-      });
     }
 
     return this.parseDeferrer;
@@ -179,9 +179,13 @@ class AtomAssetsParser {
     this.cbs.splice(this.cbs.indexOf(cb), 1);
   }
 
-  destroy() {
-    this.resolver?.$$destroyWorker();
-    this.parser.$$destroyWorker();
+  destroyWorker() {
+    // wait for current parse finished
+    if (this.parseDeferrer) {
+      this.parseDeferrer.finally(() => this.parser.$$destroyWorker());
+    } else {
+      this.parser.$$destroyWorker();
+    }
   }
 }
 
