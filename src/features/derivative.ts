@@ -200,4 +200,7 @@ export default (api: IApi) => {
 
   // built-in other umi plugins (such as analytics)
   api.registerPlugins([require.resolve('../../compiled/@umijs/plugins')]);
+
+  // FIXME: skip prepare plugin since umi@4.0.48, because it is not compatible with dumi currently
+  if (api.isPluginEnable('prepare')) api.skipPlugins(['prepare']);
 };
