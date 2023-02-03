@@ -87,7 +87,7 @@ export default (api: IApi) => {
       }
       if (hasOrder) {
         logger.warn(
-          `order is deprecated in themeConfig.navs, you can order them directly in config`,
+          `\`order\` is deprecated in \`themeConfig.nav\`, you can order them directly in config`,
         );
       }
     }
