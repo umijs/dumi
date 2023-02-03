@@ -1,3 +1,4 @@
+import { NavItems, Navs, NavsWithMode } from '@/client/theme-api/types';
 import { CLIENT_DEPS, LOCAL_PAGES_DIR, USELESS_TMP_FILES } from '@/constants';
 import type { IApi } from '@/types';
 import assert from 'assert';
@@ -64,6 +65,31 @@ export default (api: IApi) => {
       logger.warn(
         'Hash history is temporarily incompatible, it is recommended to use browser history for now.',
       );
+    }
+
+    const { themeConfig } = api.userConfig;
+    if (themeConfig?.nav) {
+      const mode = (themeConfig.nav as NavsWithMode<Navs>).mode;
+      let nav: Navs;
+      if (mode) {
+        nav = (themeConfig.nav as NavsWithMode<Navs>).value;
+      } else {
+        nav = themeConfig.nav as Navs;
+      }
+      let hasOrder = false;
+      if (Array.isArray(nav)) {
+        hasOrder = !!nav.find((item) => item.order !== undefined);
+      } else {
+        hasOrder = Object.keys(nav).some((key: string) => {
+          const item = (nav as Record<string, NavItems>)[key];
+          return !!item.find((item2) => item2.order !== undefined);
+        });
+      }
+      if (hasOrder) {
+        logger.warn(
+          `order is deprecated in themeConfig.navs, you can order them directly in config`,
+        );
+      }
     }
 
     // check tsconfig.json

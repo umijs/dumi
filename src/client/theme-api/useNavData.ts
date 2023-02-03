@@ -1,13 +1,14 @@
 import { useFullSidebarData, useLocale, useSiteData } from 'dumi';
 import { useState } from 'react';
-import type { IThemeConfig } from './types';
+import type { NavItems, Navs, NavsWithMode } from './types';
 import {
   pickRouteSortMeta,
+  resolveNav,
   useLocaleDocRoutes,
   useRouteDataComparer,
 } from './utils';
 
-type INavData = Extract<NonNullable<IThemeConfig['nav']>, Array<any>>;
+type INavData = Extract<NonNullable<Navs | NavsWithMode<Navs>>, Array<any>>;
 
 /**
  * hook for get nav data
@@ -20,10 +21,24 @@ export const useNavData = () => {
   const sidebarDataComparer = useRouteDataComparer<INavData[0]>();
   const [nav] = useState<INavData>(() => {
     // use user config first
-    if (themeConfig.nav)
-      return Array.isArray(themeConfig.nav)
-        ? themeConfig.nav
-        : themeConfig.nav[locale.id];
+    let customNav: NavItems = [];
+    let mode: NavsWithMode<Navs>['mode'] | undefined;
+    if (themeConfig.nav) {
+      mode = (themeConfig.nav as NavsWithMode<Navs>).mode;
+      let nav: Navs;
+      if (mode) {
+        nav = (themeConfig.nav as NavsWithMode<Navs>).value;
+      } else {
+        nav = themeConfig.nav as Navs;
+      }
+      customNav = resolveNav(nav, locale);
+      if (customNav.find((item) => item.order !== undefined)) {
+        console.warn(
+          `order is no longer support now, you can adjust the order of nav to achieve the same effect`,
+        );
+      }
+      if (mode === 'override') return customNav;
+    }
 
     // fallback to generate nav data from sidebar data
     const data = Object.entries(sidebar).map<INavData[0]>(([link, groups]) => {
@@ -47,8 +62,20 @@ export const useNavData = () => {
     });
 
     // TODO: 2-level nav data
-
-    return data.sort(sidebarDataComparer);
+    // 如果没有模式，说明类型为 Navs,那么沿用目前逻辑，若存在 nav,则直接用 nav 覆盖约定路由
+    if (!mode)
+      return [
+        ...(themeConfig.nav
+          ? resolveNav(themeConfig.nav as Navs, locale)
+          : data),
+      ].sort(sidebarDataComparer);
+    if (mode === 'prepend')
+      return customNav
+        .sort(sidebarDataComparer)
+        .concat(data.sort(sidebarDataComparer));
+    return data
+      .sort(sidebarDataComparer)
+      .concat(customNav.sort(sidebarDataComparer));
   });
 
   return nav;
