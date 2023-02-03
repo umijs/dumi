@@ -32,11 +32,6 @@ export const useNavData = () => {
         nav = themeConfig.nav as Navs;
       }
       customNav = resolveNav(nav, locale);
-      if (customNav.find((item) => item.order !== undefined)) {
-        console.warn(
-          `order is no longer support now, you can adjust the order of nav to achieve the same effect`,
-        );
-      }
       if (mode === 'override') return customNav;
     }
 
