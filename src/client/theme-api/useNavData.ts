@@ -65,12 +65,8 @@ export const useNavData = () => {
           : data),
       ].sort(sidebarDataComparer);
     if (mode === 'prepend')
-      return customNav
-        .sort(sidebarDataComparer)
-        .concat(data.sort(sidebarDataComparer));
-    return data
-      .sort(sidebarDataComparer)
-      .concat(customNav.sort(sidebarDataComparer));
+      return customNav.concat(data.sort(sidebarDataComparer));
+    return data.sort(sidebarDataComparer).concat(customNav);
   });
 
   return nav;
