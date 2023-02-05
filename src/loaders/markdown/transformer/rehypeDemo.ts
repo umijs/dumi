@@ -155,7 +155,8 @@ export default function rehypeDemo(
                 nextChild &&
                 ((isElement(nextChild, 'code') &&
                   tryMarkDemoNode(nextChild, opts)) ||
-                  isElement(nextChild, 'br'))
+                  isElement(nextChild, 'br')) ||
+                  nextChild.type === 'text'
               ) {
                 // move to the next child index
                 splitFrom += 1;
