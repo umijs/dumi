@@ -23,7 +23,8 @@ function getTargetLocalePath({
 }) {
   const clearPath =
     'base' in current
-      ? pathname.replace(current.base.replace(/\/$/, ''), '')
+      ? // handle '/en-US/a' => '/a' or '/en-US' => '' => '/'
+        pathname.replace(current.base.replace(/\/$/, ''), '') || '/'
       : pathname.replace(new RegExp(`${current.suffix}$`), '');
 
   return 'base' in target
