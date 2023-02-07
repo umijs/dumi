@@ -182,7 +182,9 @@ export const useSidebarData = () => {
   // /en-US/a/b => /en-US/a
   // /en-US/a/b/ => /en-US/a (also strip trailing /)
   const parentPath = clearPath
-    ? pathname.replace(/(\/[^/]+)(\/[^/]+\/?)$/, '$1')
+    ? pathname.replace(clearPath, (s) =>
+        s.replace(/([^/]+)(\/[^/]+\/?)$/, '$1'),
+      )
     : pathname;
 
   return parentPath ? sidebar[parentPath] : [];
