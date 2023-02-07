@@ -10,7 +10,11 @@ let visit: typeof import('unist-util-visit').visit;
 })();
 
 function isRelativeUrl(url: string) {
-  return !/^((blob:)?\w+:)?\/\//.test(url) && !path.isAbsolute(url);
+  return (
+    !url.startsWith('data:image') &&
+    !/^((blob:)?\w+:)?\/\//.test(url) &&
+    !path.isAbsolute(url)
+  );
 }
 
 /**
