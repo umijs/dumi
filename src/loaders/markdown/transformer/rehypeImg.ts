@@ -10,7 +10,11 @@ let visit: typeof import('unist-util-visit').visit;
 })();
 
 function isRelativeUrl(url: string) {
-  return !/^((blob:)?\w+:)?\/\//.test(url) && !path.isAbsolute(url);
+  return (
+    !url.startsWith('data:image') &&
+    !/^((blob:)?\w+:)?\/\//.test(url) &&
+    !path.isAbsolute(url)
+  );
 }
 
 /**
@@ -22,17 +26,13 @@ export default function rehypeImg(): Transformer<Root> {
       if (node.tagName === 'img' && typeof node.properties?.src === 'string') {
         const src = node.properties.src.trim();
 
-        const value = src.startsWith('data:image')
-          ? '`' + src + '`'
-          : `require('${decodeURI(src)}')`;
-
         if (src && isRelativeUrl(src)) {
           delete node.properties.src;
           node.JSXAttributes = [
             {
               type: 'JSXAttribute',
               name: 'src',
-              value,
+              value: `require('${decodeURI(src)}')`,
             },
           ];
         }
