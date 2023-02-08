@@ -37,7 +37,7 @@ toc: null
       data-title="dumi-theme-antd"
       data-url="https://kuangpf.com/dumi-theme-antd"
       data-picture="https://user-images.githubusercontent.com/20694238/217142436-84032340-588c-4b68-9f30-9b3a4d24c1c4.png"
-      data-description="AntD v5 site theme for dumi2"
+      data-description="dumi2 theme similar to antd v5 website"
       data-source="https://github.com/KuangPF/dumi-theme-antd"
     >
       <img src="https://user-images.githubusercontent.com/20694238/217142436-84032340-588c-4b68-9f30-9b3a4d24c1c4.png" alt="dumi-theme-antd" />
