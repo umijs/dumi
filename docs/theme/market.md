@@ -11,7 +11,7 @@ toc: null
   <a
     className="dumi-site-theme-cases-button primary"
     type="button"
-    href="https://github.com/umijs/dumi/edit/master/docs/theme/cases.md"
+    href="https://github.com/umijs/dumi/edit/master/docs/theme/market.md"
     target="_blank"
     rel="noopener noreferrer"
   >
