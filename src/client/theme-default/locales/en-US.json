@@ -24,6 +24,7 @@
   "api.component.type": "Type",
   "api.component.default": "Default",
   "api.component.required": "(required)",
+  "api.component.unavailable": "apiParser must be enabled to use auto-generated API",
   "api.component.loading": "Properties definition is resolving, wait a moment...",
   "api.component.not.found": "Properties definition not found for {id} component",
   "content.tabs.default": "Doc",
