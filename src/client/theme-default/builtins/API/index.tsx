@@ -48,7 +48,9 @@ const API: FC<{ id?: string }> = (props) => {
               <td colSpan={4}>
                 {intl.formatMessage(
                   {
-                    id: `api.component.${components ? 'not.found' : 'loading'}`,
+                    id: `api.component.${
+                      components ? 'not.found' : 'unavailable'
+                    }`,
                   },
                   { id },
                 )}
