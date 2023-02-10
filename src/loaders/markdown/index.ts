@@ -93,6 +93,9 @@ export const texts = {{{texts}}};
 
           // use raw-loader to load all source files
           Object.keys(this.sources).forEach((file: string) => {
+            // handle un-existed source file, e.g. custom tech-stack return custom dependencies
+            if (!asset.dependencies[file]) return;
+
             // to avoid modify original asset object
             asset = lodash.cloneDeep(asset);
             asset.dependencies[

@@ -351,7 +351,9 @@ export default function rehypeDemo(
                     asset: techStack.generateMetadata
                       ? await techStack.generateMetadata(asset, techStackOpts)
                       : asset,
-                    sources,
+                    sources: techStack.generateSources
+                      ? await techStack.generateSources(sources, techStackOpts)
+                      : sources,
                   };
                 },
               ),
