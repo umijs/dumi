@@ -84,4 +84,19 @@ export default (api: IApi) => {
       api.service.atomParser.destroyWorker();
     },
   });
+
+  // update unavailable locale text for API component
+  api.modifyTheme((memo) => {
+    const parserOffKey = 'api.component.unavailable';
+    const parserOnKey = 'api.component.loading';
+
+    // use loading key as normal unavailable key when apiParser enabled
+    Object.keys(memo.locales).forEach((locale) => {
+      if (memo.locales[locale][parserOnKey]) {
+        memo.locales[locale][parserOffKey] = memo.locales[locale][parserOnKey];
+      }
+    });
+
+    return memo;
+  });
 };

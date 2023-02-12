@@ -16,7 +16,7 @@ const MobilePreviewer: FC<IPreviewerProps> = (props) => {
     if (p.compact) params.set('compact', '');
     if (p.background) params.set('background', p.background);
 
-    return `${pathname}?${params.toString()}`;
+    return `${pathname}?${params.toString()}`.replace(/\?$/, '');
   }, []);
   const [demoUrl, setDemoUrl] = useState(() => generateUrl(props));
 
