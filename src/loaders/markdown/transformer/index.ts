@@ -5,6 +5,7 @@ import enhancedResolve from 'enhanced-resolve';
 import type { IRoute } from 'umi';
 import type { Plugin, Processor } from 'unified';
 import type { Data } from 'vfile';
+import parseEmbed from './parseEmbed';
 import rehypeDemo from './rehypeDemo';
 import rehypeDesc from './rehypeDesc';
 import rehypeEnhancedTag from './rehypeEnhancedTag';
@@ -17,7 +18,6 @@ import rehypeSlug from './rehypeSlug';
 import rehypeStrip from './rehypeStrip';
 import rehypeText from './rehypeText';
 import remarkContainer from './remarkContainer';
-import remarkEmbed from './remarkEmbed';
 import remarkMeta from './remarkMeta';
 
 declare module 'hast' {
@@ -67,6 +67,7 @@ export interface IMdTransformerOptions {
 export interface IMdTransformerResult {
   content: string;
   meta: Data;
+  embeds: string[];
 }
 
 function applyUnifiedPlugin(opts: {
@@ -107,7 +108,6 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
 
   const processor = unified()
     .use(remarkParse)
-    .use(remarkEmbed, { fileAbsPath: opts.fileAbsPath, alias: opts.alias })
     .use(remarkFrontmatter)
     .use(remarkMeta, {
       cwd: opts.cwd,
@@ -165,10 +165,18 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     }),
   );
 
-  const result = await processor.use(rehypeJsxify).process(raw);
+  const parseEmbedResult = parseEmbed(raw, {
+    fileAbsPath: opts.fileAbsPath,
+    alias: opts.alias,
+  });
+
+  const result = await processor
+    .use(rehypeJsxify)
+    .process(parseEmbedResult.content);
 
   return {
     content: String(result.value),
     meta: result.data,
+    embeds: parseEmbedResult.embeds,
   };
 };

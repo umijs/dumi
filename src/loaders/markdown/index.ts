@@ -42,10 +42,10 @@ function getDemoSourceFiles(demos: IMdTransformerResult['meta']['demos'] = []) {
 }
 
 function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
-  const { demos, embeds } = ret.meta;
+  const { demos } = ret.meta;
 
   // declare embedded files as loader dependency, for re-compiling when file changed
-  embeds!.forEach((file) => this.addDependency(file));
+  ret.embeds!.forEach((file) => this.addDependency(file));
 
   // declare demo source files as loader dependency, for re-compiling when file changed
   getDemoSourceFiles(demos).forEach((file) => this.addDependency(file));
@@ -132,7 +132,7 @@ export default DumiMarkdownContent;`;
   }
 }
 
-function getDepsCacheKey(deps: typeof depsMapping['0'] = []) {
+function getDepsCacheKey(deps: (typeof depsMapping)['0'] = []) {
   return JSON.stringify(
     deps.map((file) => `${file}:${fs.statSync(file).mtimeMs}`),
   );
@@ -185,7 +185,7 @@ export default function mdLoader(this: any, content: string) {
   deferrer[cacheKey]
     .then((ret) => {
       // update deps mapping
-      depsMapping[this.resourcePath] = ret.meta.embeds!.concat(
+      depsMapping[this.resourcePath] = ret.embeds!.concat(
         getDemoSourceFiles(ret.meta.demos),
       );
 
