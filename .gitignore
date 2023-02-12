@@ -13,3 +13,4 @@
 /examples/*/.dumi/tmp
 /examples/*/.dumi/tmp-production
 /docs/.upstream
+.idea

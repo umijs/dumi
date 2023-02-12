@@ -1,14 +1,14 @@
 import { useFullSidebarData, useLocale, useSiteData } from 'dumi';
 import { useState } from 'react';
-import type { NavItems, Navs, NavsWithMode } from './types';
+import type { INavItems, INavs, NavsWithMode } from './types';
 import {
+  getLocaleNav,
   pickRouteSortMeta,
-  resolveNav,
   useLocaleDocRoutes,
   useRouteDataComparer,
 } from './utils';
 
-type INavData = Extract<NonNullable<Navs | NavsWithMode<Navs>>, Array<any>>;
+type INavData = Extract<NonNullable<INavs | NavsWithMode<INavs>>, Array<any>>;
 
 /**
  * hook for get nav data
@@ -21,18 +21,14 @@ export const useNavData = () => {
   const sidebarDataComparer = useRouteDataComparer<INavData[0]>();
   const [nav] = useState<INavData>(() => {
     // use user config first
-    let customNav: NavItems = [];
-    let mode: NavsWithMode<Navs>['mode'] | undefined;
+    let userNavValue: INavItems = [];
+    let mode: NavsWithMode<INavs>['mode'] | undefined;
     if (themeConfig.nav) {
-      mode = (themeConfig.nav as NavsWithMode<Navs>).mode;
-      let nav: Navs;
-      if (mode) {
-        nav = (themeConfig.nav as NavsWithMode<Navs>).value;
-      } else {
-        nav = themeConfig.nav as Navs;
-      }
-      customNav = resolveNav(nav, locale);
-      if (mode === 'override') return customNav;
+      mode = (themeConfig.nav as NavsWithMode<INavs>).mode;
+      const value =
+        'mode' in themeConfig.nav ? themeConfig.nav.value : themeConfig.nav;
+      userNavValue = getLocaleNav(value as INavs, locale);
+      if (!mode || mode === 'override') return userNavValue;
     }
 
     // fallback to generate nav data from sidebar data
@@ -56,17 +52,12 @@ export const useNavData = () => {
       };
     });
 
+    data.sort(sidebarDataComparer);
     // TODO: 2-level nav data
-    // 如果没有模式，说明类型为 Navs,那么沿用目前逻辑，若存在 nav,则直接用 nav 覆盖约定路由
-    if (!mode)
-      return [
-        ...(themeConfig.nav
-          ? resolveNav(themeConfig.nav as Navs, locale)
-          : data),
-      ].sort(sidebarDataComparer);
-    if (mode === 'prepend')
-      return customNav.concat(data.sort(sidebarDataComparer));
-    return data.sort(sidebarDataComparer).concat(customNav);
+    if (mode === 'prepend') data.unshift(...userNavValue);
+    else if (mode === 'append') data.push(...userNavValue);
+
+    return data;
   });
 
   return nav;

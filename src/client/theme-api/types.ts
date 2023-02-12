@@ -168,13 +168,13 @@ export type SocialTypes =
   | 'yuque'
   | 'linkedin';
 
-export type IUserNavItem = Omit<INavItem, 'order'>;
-export type UserNavItems = (IUserNavItem & { children?: IUserNavItem[] })[];
-export type UserNavs = IUserNavItem | Record<string, IUserNavItem>;
-export type NavItems = (INavItem & { children?: INavItem[] })[];
-export type Navs = NavItems | Record<string, NavItems>;
+export type IUserNavItem = Pick<INavItem, 'title' | 'link'>;
+export type INavItems = (INavItem & { children?: INavItem[] })[];
+export type INavs = INavItems | Record<string, INavItems>;
+type IUserNavItems = (IUserNavItem & { children?: IUserNavItem[] })[];
+type IUserNavs = IUserNavItems | Record<string, IUserNavItems>;
 
-export type NavsWithMode<T> = {
+export type NavsWithMode<T extends INavs | IUserNavs> = {
   /**
    * 扩展导航的模式
    * @description
@@ -189,7 +189,7 @@ export type NavsWithMode<T> = {
 export interface IThemeConfig {
   name?: string;
   logo?: string | false;
-  nav?: UserNavs | NavsWithMode<UserNavs>;
+  nav?: IUserNavs | NavsWithMode<IUserNavs>;
   sidebar?: Record<string, ISidebarGroup[]>;
   footer?: string | false;
   prefersColor: {
