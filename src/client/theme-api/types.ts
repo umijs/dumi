@@ -171,10 +171,11 @@ export type SocialTypes =
 export type IUserNavItem = Pick<INavItem, 'title' | 'link'>;
 export type INavItems = (INavItem & { children?: INavItem[] })[];
 export type INavs = INavItems | Record<string, INavItems>;
+export type IUserNavMode = 'override' | 'append' | 'prepend';
 type IUserNavItems = (IUserNavItem & { children?: IUserNavItem[] })[];
-type IUserNavs = IUserNavItems | Record<string, IUserNavItems>;
+type IUserNavValue = IUserNavItems | Record<string, IUserNavItems>;
 
-export type NavsWithMode<T extends INavs | IUserNavs> = {
+export type NavsWithMode<T extends INavs | IUserNavValue> = {
   /**
    * 扩展导航的模式
    * @description
@@ -182,14 +183,14 @@ export type NavsWithMode<T extends INavs | IUserNavs> = {
    * - 'append': 将 value 中配置的导航追加到约定路由导航后面
    * - 'prepend': 将 value 中配置的导航添加到约定路由导航前面
    */
-  mode: 'override' | 'append' | 'prepend';
+  mode: IUserNavMode;
   value: T;
 };
 
 export interface IThemeConfig {
   name?: string;
   logo?: string | false;
-  nav?: IUserNavs | NavsWithMode<IUserNavs>;
+  nav?: IUserNavValue | NavsWithMode<IUserNavValue>;
   sidebar?: Record<string, ISidebarGroup[]>;
   footer?: string | false;
   prefersColor: {
