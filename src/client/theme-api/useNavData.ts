@@ -30,12 +30,10 @@ export const useNavData = () => {
         typeof themeConfig.nav.mode === 'string'
       ) {
         mode = themeConfig.nav.mode;
-        const value = themeConfig.nav.value;
-        userNavValue = getLocaleNav(value, locale);
+        userNavValue = getLocaleNav(themeConfig.nav.value, locale);
       } else if (!('mode' in themeConfig.nav)) {
         // 形如：[] 或 {"zh-CN": []}
-        const value = themeConfig.nav;
-        userNavValue = getLocaleNav(value, locale);
+        userNavValue = getLocaleNav(themeConfig.nav, locale);
       }
       if (!mode || mode === 'override') return userNavValue;
     }
