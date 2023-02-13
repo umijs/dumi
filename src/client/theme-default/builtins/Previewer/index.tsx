@@ -1,4 +1,3 @@
-import { IFrameProps } from '@/client/theme-api/types';
 import classnames from 'classnames';
 import { IPreviewerProps, useLocation } from 'dumi';
 import PreviewerActions from 'dumi/theme/slots/PreviewerActions';
@@ -6,11 +5,12 @@ import React, { type FC } from 'react';
 import './index.less';
 
 function getIframeStyle(props: IPreviewerProps) {
-  if (['string', 'number'].includes(typeof props.iframe))
-    return { height: Number(props.iframe) };
   const style: React.CSSProperties = {};
-  const iframeProps = props.iframe as IFrameProps;
-  if (iframeProps && iframeProps.height) style.height = iframeProps.height;
+  if (['string', 'number'].includes(typeof props.iframe)) {
+    style.height = Number(props.iframe) || props.iframe;
+  } else if (props.iframe && props.iframe.height) {
+    style.height = props.iframe.height;
+  }
   return style;
 }
 
@@ -32,12 +32,12 @@ const Previewer: FC<IPreviewerProps> = (props) => {
         style={{ background: props.background }}
         data-compact={props.compact || undefined}
         data-transform={props.transform || undefined}
-        data-iframe={JSON.stringify(props.iframe) || undefined}
+        data-iframe={Boolean(props.iframe) || undefined}
       >
         {props.iframe ? (
           <iframe
-            style={getIframeStyle(props)}
             {...iframeProps}
+            style={getIframeStyle(props)}
             src={props.demoUrl}
           ></iframe>
         ) : (

@@ -1,6 +1,5 @@
 import type { ExampleBlockAsset } from 'dumi-assets-types';
-import type { ComponentType, ReactNode } from 'react';
-
+import type { ComponentType, IframeHTMLAttributes, ReactNode } from 'react';
 export interface IPreviewerProps {
   /**
    * title of current demo
@@ -17,7 +16,7 @@ export interface IPreviewerProps {
   /**
    * use iframe to render demo
    */
-  iframe?: boolean | number | IFrameProps;
+  iframe?: boolean | number | IframeHTMLAttributes<Element>;
   /**
    * debug mark (will only render in dev by default)
    */
@@ -199,8 +198,3 @@ export type IRoutesById = Record<
     [key: string]: any;
   }
 >;
-
-export interface IFrameProps {
-  height?: number;
-  allow?: string;
-}

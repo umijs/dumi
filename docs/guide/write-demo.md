@@ -263,3 +263,62 @@ export default () => (
   </h2>
 );
 ```
+
+```jsx
+/**
+ * iframe:
+ *  name: hello-iframe
+ *  height: 150px
+ *  allow: "camera 'none'"
+ * compact: true
+ * defaultShowCode: true
+ */
+/**
+ * iframe:
+ *  name: hello-iframe
+ *  height: 150px
+ *  allow: "camera 'none'"
+ * compact: true
+ */
+import React from 'react';
+
+export default () => {
+  function handleClickOpenVideo() {
+    navigator.mediaDevices
+      .getUserMedia({
+        video: {
+          width: 600,
+          height: 400,
+        },
+      })
+      .catch((e) => {
+        alert(e);
+      });
+  }
+  function handleClickOpenAudio() {
+    navigator.mediaDevices.getUserMedia({
+      audio: true,
+    });
+  }
+  return (
+    <div
+      style={{
+        boxShadow: '0 2px 15px rgba(0,0,0,0.1)',
+        padding: '5px 20px',
+        margin: 0,
+      }}
+    >
+      <h2>可配置iframe属性</h2>
+      <button onClick={handleClickOpenVideo}>打开摄像头(已禁止权限)</button>
+      <button
+        style={{
+          marginLeft: '10px',
+        }}
+        onClick={handleClickOpenAudio}
+      >
+        打开麦克风
+      </button>
+    </div>
+  );
+};
+```

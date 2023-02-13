@@ -1,4 +1,4 @@
-import type { IFrameProps } from 'dumi';
+import type { IPreviewerProps } from 'dumi';
 import { useSiteData } from 'dumi';
 import type { FC } from 'react';
 import React from 'react';
@@ -6,7 +6,7 @@ import './index.less';
 
 interface IDeviceProps {
   url: string;
-  iframe: IFrameProps;
+  iframe: IPreviewerProps['iframe'];
 }
 
 const Device: FC<IDeviceProps> = (props) => {
