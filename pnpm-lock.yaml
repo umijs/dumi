@@ -49,6 +49,7 @@ importers:
       js-yaml: ^4.1.0
       lint-staged: ^13.0.3
       lodash.throttle: ^4.1.1
+      mdast-util-from-markdown: ^1.3.0
       mdast-util-to-string: ^3.1.0
       pluralize: ^8.0.0
       prettier: ^2.7.1
@@ -72,6 +73,7 @@ importers:
       remark-gfm: ^3.0.1
       remark-parse: ^10.0.1
       remark-rehype: ^10.1.0
+      remark-stringify: ^10.0.2
       sass: ^1.55.0
       sitemap: ^7.1.1
       stylelint: ^14.9.1
@@ -113,6 +115,7 @@ importers:
       html-to-text: 8.2.1
       js-yaml: 4.1.0
       lodash.throttle: 4.1.1
+      mdast-util-from-markdown: 1.3.0
       mdast-util-to-string: 3.1.0
       pluralize: 8.0.0
       prism-react-renderer: 1.3.5_react@18.2.0
@@ -132,6 +135,7 @@ importers:
       remark-gfm: 3.0.1
       remark-parse: 10.0.1
       remark-rehype: 10.1.0
+      remark-stringify: 10.0.2
       sass: 1.55.0
       sitemap: 7.1.1
       umi: 4.0.48_ewgkhfnnis2k3zpfz2helyrdou
@@ -4608,8 +4612,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
     dependencies:
-      is-text-path: 1.0.1
       JSONStream: 1.3.5
+      is-text-path: 1.0.1
       lodash: 4.17.21
       meow: 8.1.2
       split2: 3.2.2
@@ -4980,7 +4984,6 @@ packages:
     dependencies:
       ms: 2.1.2
     dev: false
-    optional: true
 
   /debug/4.3.4:
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
@@ -7106,7 +7109,7 @@ packages:
     engines: {node: '>= 4.5.0'}
     dependencies:
       agent-base: 4.3.0
-      debug: 3.1.0
+      debug: 3.2.7
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -8207,8 +8210,8 @@ packages:
       unist-util-visit-parents: 5.1.1
     dev: false
 
-  /mdast-util-from-markdown/1.2.0:
-    resolution: {integrity: sha512-iZJyyvKD1+K7QX1b5jXdE7Sc5dtoTry1vzV28UZZe8Z1xVnB/czKntJ7ZAkG0tANqRnBF6p3p7GpU1y19DTf2Q==}
+  /mdast-util-from-markdown/1.3.0:
+    resolution: {integrity: sha512-HN3W1gRIuN/ZW295c7zi7g9lVBllMgZE40RxCX37wrTPWXCWtpvOZdfnuK+1WNpvZje6XuJeI3Wnb4TJEUem+g==}
     dependencies:
       '@types/mdast': 3.0.10
       '@types/unist': 2.0.6
@@ -8261,7 +8264,7 @@ packages:
     dependencies:
       '@types/mdast': 3.0.10
       markdown-table: 3.0.2
-      mdast-util-from-markdown: 1.2.0
+      mdast-util-from-markdown: 1.3.0
       mdast-util-to-markdown: 1.3.0
     transitivePeerDependencies:
       - supports-color
@@ -8277,7 +8280,7 @@ packages:
   /mdast-util-gfm/2.0.1:
     resolution: {integrity: sha512-42yHBbfWIFisaAfV1eixlabbsa6q7vHeSPY+cg+BBjX51M8xhgMacqH9g6TftB/9+YkcI0ooV4ncfrJslzm/RQ==}
     dependencies:
-      mdast-util-from-markdown: 1.2.0
+      mdast-util-from-markdown: 1.3.0
       mdast-util-gfm-autolink-literal: 1.0.2
       mdast-util-gfm-footnote: 1.0.1
       mdast-util-gfm-strikethrough: 1.0.1
@@ -8294,7 +8297,7 @@ packages:
       '@types/estree-jsx': 1.0.0
       '@types/hast': 2.3.4
       '@types/mdast': 3.0.10
-      mdast-util-from-markdown: 1.2.0
+      mdast-util-from-markdown: 1.3.0
       mdast-util-to-markdown: 1.3.0
     transitivePeerDependencies:
       - supports-color
@@ -8306,7 +8309,7 @@ packages:
       '@types/estree-jsx': 1.0.0
       '@types/hast': 2.3.4
       '@types/mdast': 3.0.10
-      mdast-util-from-markdown: 1.2.0
+      mdast-util-from-markdown: 1.3.0
       mdast-util-to-markdown: 1.3.0
     transitivePeerDependencies:
       - supports-color
@@ -10209,9 +10212,6 @@ packages:
     resolution: {integrity: sha512-rdVMIi7Q4B0XbXqNUEI+Z4E+pueiu/CS5E6vRCQommzdQ/sgsS4dK42U7GX8oJR+TJOtT+Qv3GkNo6iijUMp3Q==}
     peerDependencies:
       postcss: '>4 <9'
-    peerDependenciesMeta:
-      postcss:
-        optional: true
     dev: false
 
   /postcss-preset-env/7.5.0:
@@ -11346,7 +11346,7 @@ packages:
     resolution: {integrity: sha512-1fUyHr2jLsVOkhbvPRBJ5zTKZZyD6yZzYaWCS6BPBdQ8vEMBCH+9zNCDA6tET/zHCi/jLqjCWtlJZUPk+DbnFw==}
     dependencies:
       '@types/mdast': 3.0.10
-      mdast-util-from-markdown: 1.2.0
+      mdast-util-from-markdown: 1.3.0
       unified: 10.1.2
     transitivePeerDependencies:
       - supports-color
@@ -11358,6 +11358,14 @@ packages:
       '@types/hast': 2.3.4
       '@types/mdast': 3.0.10
       mdast-util-to-hast: 12.2.4
+      unified: 10.1.2
+    dev: false
+
+  /remark-stringify/10.0.2:
+    resolution: {integrity: sha512-6wV3pvbPvHkbNnWB0wdDvVFHOe1hBRAx1Q/5g/EpH4RppAII6J8Gnwe7VbHuXaoKIF6LAg6ExTel/+kNqSQ7lw==}
+    dependencies:
+      '@types/mdast': 3.0.10
+      mdast-util-to-markdown: 1.3.0
       unified: 10.1.2
     dev: false
 
