@@ -1,6 +1,6 @@
 import { useFullSidebarData, useLocale, useSiteData } from 'dumi';
 import { useState } from 'react';
-import type { INav, IThemeConfig, IUserNavItems, NavWithMode } from './types';
+import type { IThemeConfig, IUserNavItems, IUserNavMode } from './types';
 import {
   getLocaleNav,
   pickRouteSortMeta,
@@ -22,20 +22,19 @@ export const useNavData = () => {
   const [nav] = useState<INavData>(() => {
     // use user config first
     let userNavValue: IUserNavItems = [];
-    let mode: NavWithMode<INav>['mode'] | undefined;
+    let mode: IUserNavMode | undefined;
     if (themeConfig.nav) {
-      let value;
       // 形如：{mode: "append", value: []}
       if (
         'mode' in themeConfig.nav &&
         typeof themeConfig.nav.mode === 'string'
       ) {
         mode = themeConfig.nav.mode;
-        value = themeConfig.nav.value;
+        const value = themeConfig.nav.value;
         userNavValue = getLocaleNav(value, locale);
       } else if (!('mode' in themeConfig.nav)) {
         // 形如：[] 或 {"zh-CN": []}
-        value = themeConfig.nav;
+        const value = themeConfig.nav;
         userNavValue = getLocaleNav(value, locale);
       }
       if (!mode || mode === 'override') return userNavValue;
