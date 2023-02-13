@@ -1,7 +1,7 @@
 import { getFileContentByRegExp, getFileRangeLines } from '@/utils';
 import enhancedResolve from 'enhanced-resolve';
 import fs from 'fs';
-import type { Root } from 'mdast';
+import type { Root, Text } from 'mdast';
 import path from 'path';
 import { winPath } from 'umi/plugin-utils';
 import url from 'url';
@@ -103,7 +103,13 @@ function replaceEmbedRltPath(
       fileAbsPath,
       parentAbsPath,
     })
-    .use(remarkStringify)
+    .use(remarkStringify, {
+      handlers: {
+        text: (node: Text) => {
+          return node.value;
+        },
+      },
+    })
     .processSync(content);
   return String(result);
 }
