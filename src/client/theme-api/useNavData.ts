@@ -1,6 +1,6 @@
 import { useFullSidebarData, useLocale, useSiteData } from 'dumi';
 import { useState } from 'react';
-import type { INavItems, INavs, NavsWithMode } from './types';
+import type { INav, IThemeConfig, IUserNavItems, NavWithMode } from './types';
 import {
   getLocaleNav,
   pickRouteSortMeta,
@@ -8,7 +8,7 @@ import {
   useRouteDataComparer,
 } from './utils';
 
-type INavData = Extract<NonNullable<INavs | NavsWithMode<INavs>>, Array<any>>;
+type INavData = Extract<NonNullable<IThemeConfig['nav']>, Array<any>>;
 
 /**
  * hook for get nav data
@@ -21,13 +21,23 @@ export const useNavData = () => {
   const sidebarDataComparer = useRouteDataComparer<INavData[0]>();
   const [nav] = useState<INavData>(() => {
     // use user config first
-    let userNavValue: INavItems = [];
-    let mode: NavsWithMode<INavs>['mode'] | undefined;
+    let userNavValue: IUserNavItems = [];
+    let mode: NavWithMode<INav>['mode'] | undefined;
     if (themeConfig.nav) {
-      mode = (themeConfig.nav as NavsWithMode<INavs>).mode;
-      const value =
-        'mode' in themeConfig.nav ? themeConfig.nav.value : themeConfig.nav;
-      userNavValue = getLocaleNav(value as INavs, locale);
+      let value;
+      // 形如：{mode: "append", value: []}
+      if (
+        'mode' in themeConfig.nav &&
+        typeof themeConfig.nav.mode === 'string'
+      ) {
+        mode = themeConfig.nav.mode;
+        value = themeConfig.nav.value;
+        userNavValue = getLocaleNav(value, locale);
+      } else if (!('mode' in themeConfig.nav)) {
+        // 形如：[] 或 {"zh-CN": []}
+        value = themeConfig.nav;
+        userNavValue = getLocaleNav(value, locale);
+      }
       if (!mode || mode === 'override') return userNavValue;
     }
 

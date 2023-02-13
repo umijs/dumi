@@ -168,14 +168,13 @@ export type SocialTypes =
   | 'yuque'
   | 'linkedin';
 
-export type IUserNavItem = Pick<INavItem, 'title' | 'link'>;
 export type INavItems = (INavItem & { children?: INavItem[] })[];
-export type INavs = INavItems | Record<string, INavItems>;
+export type INav = INavItems | Record<string, INavItems>;
+type IUserNavItem = Pick<INavItem, 'title' | 'link'>;
 export type IUserNavMode = 'override' | 'append' | 'prepend';
-type IUserNavItems = (IUserNavItem & { children?: IUserNavItem[] })[];
-type IUserNavValue = IUserNavItems | Record<string, IUserNavItems>;
-
-export type NavsWithMode<T extends INavs | IUserNavValue> = {
+export type IUserNavItems = (IUserNavItem & { children?: IUserNavItem[] })[];
+export type IUserNavValue = IUserNavItems | Record<string, IUserNavItems>;
+export type NavWithMode<T extends IUserNavValue> = {
   /**
    * 扩展导航的模式
    * @description
@@ -190,7 +189,7 @@ export type NavsWithMode<T extends INavs | IUserNavValue> = {
 export interface IThemeConfig {
   name?: string;
   logo?: string | false;
-  nav?: IUserNavValue | NavsWithMode<IUserNavValue>;
+  nav?: IUserNavValue | NavWithMode<IUserNavValue>;
   sidebar?: Record<string, ISidebarGroup[]>;
   footer?: string | false;
   prefersColor: {

@@ -68,7 +68,7 @@ export default (api: IApi) => {
 
     const { themeConfig } = api.config;
     if (themeConfig?.nav) {
-      const hasOrder = !!JSON.stringify(themeConfig.nav).includes('order');
+      const hasOrder = !!JSON.stringify(themeConfig.nav).includes('"order":');
       if (hasOrder) {
         logger.warn(
           `\`order\` is deprecated in \`themeConfig.nav\`, you can order them directly in config`,

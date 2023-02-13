@@ -2,10 +2,11 @@ import { useAppData, useIntl, useSiteData } from 'dumi';
 import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import type {
   ILocale,
+  INav,
   INavItem,
-  INavs,
   IRouteMeta,
   IRoutesById,
+  IUserNavValue,
 } from './types';
 import { useLocale } from './useLocale';
 
@@ -128,6 +129,6 @@ export const pickRouteSortMeta = (
   return original;
 };
 
-export function getLocaleNav(nav: INavs, locale: ILocale) {
+export function getLocaleNav(nav: IUserNavValue | INav, locale: ILocale) {
   return Array.isArray(nav) ? nav : nav[locale.id];
 }
