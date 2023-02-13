@@ -25,7 +25,7 @@ export { DumiDemoGrid } from './DumiDemoGrid';
 export { DumiPage } from './DumiPage';
 export { openCodeSandbox } from './openCodeSandbox';
 export { openStackBlitz } from './openStackBlitz';
-export type { IPreviewerProps } from './types';
+export type { IFrameProps, IPreviewerProps } from './types';
 export { useAtomAssets } from './useAtomAssets';
 export { useLocale } from './useLocale';
 export { useNavData } from './useNavData';

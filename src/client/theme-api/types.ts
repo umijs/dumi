@@ -17,7 +17,7 @@ export interface IPreviewerProps {
   /**
    * use iframe to render demo
    */
-  iframe?: boolean | number;
+  iframe?: boolean | number | IFrameProps;
   /**
    * debug mark (will only render in dev by default)
    */
@@ -199,3 +199,8 @@ export type IRoutesById = Record<
     [key: string]: any;
   }
 >;
+
+export interface IFrameProps {
+  height?: number;
+  allow?: string;
+}

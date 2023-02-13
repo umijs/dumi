@@ -37,14 +37,7 @@ const MobilePreviewer: FC<IPreviewerProps> = (props) => {
           : undefined,
       }}
     >
-      {mobile && (
-        <Device
-          url={demoUrl}
-          inlineHeight={
-            typeof props.iframe === 'number' ? props.iframe : undefined
-          }
-        />
-      )}
+      {mobile && <Device url={demoUrl} iframe={props.iframe} />}
       {!mobile && props?.children}
     </Previewer>
   );

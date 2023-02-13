@@ -1,3 +1,4 @@
+import type { IFrameProps } from 'dumi';
 import { useSiteData } from 'dumi';
 import type { FC } from 'react';
 import React from 'react';
@@ -5,7 +6,7 @@ import './index.less';
 
 interface IDeviceProps {
   url: string;
-  inlineHeight?: number;
+  iframe: IFrameProps;
 }
 
 const Device: FC<IDeviceProps> = (props) => {
@@ -13,15 +14,22 @@ const Device: FC<IDeviceProps> = (props) => {
     themeConfig: { deviceWidth },
   } = useSiteData();
 
+  let inlineHeight = undefined;
+  if (typeof props.iframe === 'number') inlineHeight = props.iframe;
+  else if (typeof props.iframe === 'object' && props.iframe.height)
+    inlineHeight = props.iframe.height;
+
+  const iframeProps = typeof props.iframe === 'object' ? props.iframe : {};
+
   return (
     <div
       className="dumi-mobile-device"
       style={{
         width: deviceWidth,
-        paddingTop: props.inlineHeight,
+        paddingTop: inlineHeight,
       }}
     >
-      <iframe title="dumi-previewer" src={props.url} />
+      <iframe title="dumi-previewer" {...iframeProps} src={props.url} />
     </div>
   );
 };
