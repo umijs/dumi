@@ -16,7 +16,7 @@ export interface IPreviewerProps {
   /**
    * use iframe to render demo
    */
-  iframe?: boolean | number | IframeHTMLAttributes<Element>;
+  iframe?: boolean | number | IframeHTMLAttributes<HTMLIFrameElement>;
   /**
    * debug mark (will only render in dev by default)
    */

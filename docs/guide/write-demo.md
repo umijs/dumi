@@ -308,7 +308,7 @@ export default () => {
         margin: 0,
       }}
     >
-      <h2>可配置iframe属性</h2>
+      <h2>可配置 iframe 属性</h2>
       <button onClick={handleClickOpenVideo}>打开摄像头(已禁止权限)</button>
       <button
         style={{
