@@ -1,7 +1,8 @@
 import { useFullSidebarData, useLocale, useSiteData } from 'dumi';
 import { useState } from 'react';
-import type { IThemeConfig } from './types';
+import type { IThemeConfig, IUserNavItems, IUserNavMode } from './types';
 import {
+  getLocaleNav,
   pickRouteSortMeta,
   useLocaleDocRoutes,
   useRouteDataComparer,
@@ -20,10 +21,22 @@ export const useNavData = () => {
   const sidebarDataComparer = useRouteDataComparer<INavData[0]>();
   const [nav] = useState<INavData>(() => {
     // use user config first
-    if (themeConfig.nav)
-      return Array.isArray(themeConfig.nav)
-        ? themeConfig.nav
-        : themeConfig.nav[locale.id];
+    let userNavValue: IUserNavItems = [];
+    let mode: IUserNavMode | undefined;
+    if (themeConfig.nav) {
+      // 形如：{mode: "append", value: []}
+      if (
+        'mode' in themeConfig.nav &&
+        typeof themeConfig.nav.mode === 'string'
+      ) {
+        mode = themeConfig.nav.mode;
+        userNavValue = getLocaleNav(themeConfig.nav.value, locale);
+      } else if (!('mode' in themeConfig.nav)) {
+        // 形如：[] 或 {"zh-CN": []}
+        userNavValue = getLocaleNav(themeConfig.nav, locale);
+      }
+      if (!mode || mode === 'override') return userNavValue;
+    }
 
     // fallback to generate nav data from sidebar data
     const data = Object.entries(sidebar).map<INavData[0]>(([link, groups]) => {
@@ -46,9 +59,12 @@ export const useNavData = () => {
       };
     });
 
+    data.sort(sidebarDataComparer);
     // TODO: 2-level nav data
+    if (mode === 'prepend') data.unshift(...userNavValue);
+    else if (mode === 'append') data.push(...userNavValue);
 
-    return data.sort(sidebarDataComparer);
+    return data;
   });
 
   return nav;

@@ -32,7 +32,8 @@ dumi 内置了一套完善的默认主题，默认主题的呈现效果与 dumi 
 
 ### nav
 
-- 类型：`{ title: '导航标题', link: '导航路由' }[] | Record<string, { title: '导航标题', link: '导航路由' }[]>`
+- `Navs`类型：`{ title: '导航标题', link: '导航路由' }[] | Record<string, { title: '导航标题', link: '导航路由' }[]>`
+- 类型：`Navs | {mode: "override" | "append" | "prepend", value: Navs}`
 - 默认值：`约定式导航`
 
 配置导航栏上的导航项，不配置时默认为约定式导航。约定式导航生成规则可参考 [约定式路由](/guide/conventional-routing)。
@@ -47,6 +48,16 @@ dumi 内置了一套完善的默认主题，默认主题的呈现效果与 dumi 
     'zh-CN': [{ title: '博客', link: '/blog' }],
     'en-US': [{ title: 'Blog', link: '/en/blog' }],
   },
+
+  // 支持通过 nav 将路由追加到约定路由前面或后面
+  nav: {
+    // mode可选值有：override、append、prepend
+    // - override: 直接覆盖约定导航，与 nav: [{ title: 'Blog', link: '/blog' }] 配置相同
+    // - append: 将 value 中的导航追加到约定路由后面
+    // - prepend: 将 value 中的导航添加到约定路由前面
+    mode: "append",
+    value: [{ title: 'Blog', link: '/blog' }]
+  }
 }
 ```
 

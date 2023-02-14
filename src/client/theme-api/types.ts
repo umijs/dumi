@@ -167,12 +167,29 @@ export type SocialTypes =
   | 'zhihu'
   | 'yuque'
   | 'linkedin';
+
+export type INavItems = (INavItem & { children?: INavItem[] })[];
+export type INav = INavItems | Record<string, INavItems>;
+type IUserNavItem = Pick<INavItem, 'title' | 'link'>;
+export type IUserNavMode = 'override' | 'append' | 'prepend';
+export type IUserNavItems = (IUserNavItem & { children?: IUserNavItem[] })[];
+export type IUserNavValue = IUserNavItems | Record<string, IUserNavItems>;
+export type NavWithMode<T extends IUserNavValue> = {
+  /**
+   * 扩展导航的模式
+   * @description
+   * - 'override': 用 value 中配置的导航直接覆盖约定路由的导航
+   * - 'append': 将 value 中配置的导航追加到约定路由导航后面
+   * - 'prepend': 将 value 中配置的导航添加到约定路由导航前面
+   */
+  mode: IUserNavMode;
+  value: T;
+};
+
 export interface IThemeConfig {
   name?: string;
   logo?: string | false;
-  nav?:
-    | (INavItem & { children?: INavItem[] })[]
-    | Record<string, (INavItem & { children?: INavItem[] })[]>;
+  nav?: IUserNavValue | NavWithMode<IUserNavValue>;
   sidebar?: Record<string, ISidebarGroup[]>;
   footer?: string | false;
   prefersColor: {
