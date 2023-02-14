@@ -1,4 +1,5 @@
 import type AtomAssetsParser from '@/assetParsers/atom';
+import type { IParsedBlockAsset } from '@/assetParsers/block';
 import type { IDumiDemoProps } from '@/client/theme-api/DumiDemo';
 import type { ILocalesConfig, IThemeConfig } from '@/client/theme-api/types';
 import type { IContentTab } from '@/features/tabs';
@@ -102,6 +103,13 @@ export abstract class IDumiTechStack {
   ):
     | Promise<IDumiDemoProps['previewerProps']>
     | IDumiDemoProps['previewerProps'];
+  /**
+   * generator for return file path of demo sources
+   */
+  abstract generateSources?(
+    sources: IParsedBlockAsset['sources'],
+    opts: Parameters<NonNullable<IDumiTechStack['generateMetadata']>>[1],
+  ): Promise<IParsedBlockAsset['sources']> | IParsedBlockAsset['sources'];
 }
 
 export type IApi = IUmiApi & {
