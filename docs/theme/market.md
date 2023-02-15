@@ -48,7 +48,7 @@ toc: null
       data-title="dumi-theme-antd-style"
       data-url="https://dumi-theme-antd-style.arvinx.app"
       data-picture="https://mdn.alipayobjects.com/huamei_rqvucu/afts/img/A*kuxBSKkIwYEAAAAAAAAAAAAADoN6AQ/fmt.webp"
-      data-description="dumi2 theme for [antd-style](https://github.com/ant-design/antd-style) document website"
+      data-description="dumi2 theme for antd-style document website"
       data-source="https://github.com/arvinxx/dumi-theme-antd-style"
     >
       <img src="https://mdn.alipayobjects.com/huamei_rqvucu/afts/img/A*kuxBSKkIwYEAAAAAAAAAAAAADoN6AQ/fmt.webp" alt="dumi-theme-antd-style" />
