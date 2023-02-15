@@ -43,5 +43,17 @@ toc: null
       <img src="https://user-images.githubusercontent.com/20694238/217142436-84032340-588c-4b68-9f30-9b3a4d24c1c4.png" alt="dumi-theme-antd" />
       <a href="https://kuangpf.com/dumi-theme-antd" target="_blank" rel="noopener noreferrer">dumi-theme-antd</a>
     </li>
+    <li
+      class="dumi-site-theme-cases-item"
+      data-title="dumi-theme-antd-style"
+      data-url="https://dumi-theme-antd-style.arvinx.app"
+      data-picture="https://mdn.alipayobjects.com/huamei_rqvucu/afts/img/A*kuxBSKkIwYEAAAAAAAAAAAAADoN6AQ/fmt.webp"
+      data-description="dumi2 theme for [antd-style](https://github.com/ant-design/antd-style) document website"
+      data-source="https://github.com/arvinxx/dumi-theme-antd-style"
+    >
+      <img src="https://mdn.alipayobjects.com/huamei_rqvucu/afts/img/A*kuxBSKkIwYEAAAAAAAAAAAAADoN6AQ/fmt.webp" alt="dumi-theme-antd-style" />
+      <a href="https://kuangpf.com/dumi-theme-antd" target="_blank" rel="noopener noreferrer">dumi-theme-antd-style</a>
+    </li>
+    
   </ul>
 </ThemeCases>
