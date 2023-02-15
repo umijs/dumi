@@ -42,7 +42,7 @@ $ git checkout src docs # 恢复原有的源码及文档
   },
   "devDependencies": {
 -   "dumi": "^1.0.0",
-+   "dumi": "^2.0.0-rc.0"
++   "dumi": "^2.0.0"
   }
 }
 ```
