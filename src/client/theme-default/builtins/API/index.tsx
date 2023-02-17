@@ -55,7 +55,7 @@ const HANDLERS = {
       );
     });
 
-    return props.length ? `{ ${props.join(', ')} }` : '{}';
+    return props.length ? `{ ${props.join('; ')} }` : '{}';
   },
   array(prop: Extract<PropertySchema, { type: 'array' }>) {
     if (prop.items) {
