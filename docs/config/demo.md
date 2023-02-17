@@ -73,10 +73,10 @@ export default () => <>Hello world!</>;
 
 ## iframe
 
-- 类型：`boolean`
+- 类型：`boolean` | `string` | `number`
 - 默认值：`false`
 
-使用 iframe 形式渲染 demo，通常用于 Layout 等需要与页面隔离的 demo。
+使用 iframe 形式渲染 demo，通常用于 Layout 等需要与页面隔离的 demo。 如果参数设置为 `number` 或者 `string` 类型，最终会被渲染成为 iframe 的高度，注意 `string` 类型目前只能是可以转换为数字的值， 比如字符串 `100`。
 
 ## inline
 
