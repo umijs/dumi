@@ -163,9 +163,30 @@ export default (api: IApi) => {
       path.resolve(__dirname, '../../client/theme-api'),
     );
 
-    // set dark mode selector as less variable
-    memo.theme ??= {};
-    memo.theme['dark-selector'] = `~'[${PREFERS_COLOR_ATTR}="dark"]'`;
+    return memo;
+  });
+
+  // set dark mode selector as less variable
+  // why not use `theme` or `modifyVars`?
+  // because `theme` will be override by `modifyVars` in umi
+  // and `modifyVar` will override `theme` from user
+  api.chainWebpack((memo) => {
+    const lessRule = memo.module.rule('less');
+
+    ['css', 'css-modules'].forEach((rule) => {
+      Object.values(lessRule.oneOf(rule).uses.entries()).forEach((loader) => {
+        if (loader.get('loader').includes('less-loader')) {
+          loader.tap((opts) => {
+            opts.lessOptions.modifyVars ??= {};
+            opts.lessOptions.modifyVars[
+              'dark-selector'
+            ] = `~'[${PREFERS_COLOR_ATTR}="dark"]'`;
+
+            return opts;
+          });
+        }
+      });
+    });
 
     return memo;
   });
