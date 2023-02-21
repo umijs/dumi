@@ -21,6 +21,10 @@ export function getTabKeyFromFile(file: string) {
   return file.match(/\$tab-([^.]+)/)![1];
 }
 
+export function getHostForTabRouteFile(file: string) {
+  return file.replace(/\$tab-[^.]+\./, '');
+}
+
 /**
  * plugin for add conventional tab and plugin tab into page content
  */
