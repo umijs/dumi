@@ -61,7 +61,7 @@ export interface IMdTransformerOptions {
   resolve: IDumiConfig['resolve'];
   extraRemarkPlugins?: IDumiConfig['extraRemarkPlugins'];
   extraRehypePlugins?: IDumiConfig['extraRehypePlugins'];
-  routers: Record<string, IRoute>;
+  routes: Record<string, IRoute>;
 }
 
 export interface IMdTransformerResult {
@@ -147,7 +147,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     .use(rehypeSlug)
     .use(rehypeLink, {
       fileAbsPath: opts.fileAbsPath,
-      routers: opts.routers,
+      routes: opts.routes,
     })
     .use(rehypeAutolinkHeadings)
     .use(rehypeIsolation)
