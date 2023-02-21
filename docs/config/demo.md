@@ -69,7 +69,7 @@ export default () => <>Hello world!</>;
 - 类型：`string`
 - 默认值：`undefined`
 
-配置 demo 的描述，会展示在 demo 预览器里，后续也会用于搜索。
+配置 demo 的描述，会展示在 demo 预览器里，支持被搜索；需要注意的是，**仅在 demo 标题已配置时才会展示描述**。
 
 ## iframe
 
@@ -90,7 +90,7 @@ export default () => <>Hello world!</>;
 - 类型：`string`
 - 默认值：`undefined`
 
-配置 demo 的标题，会展示在 demo 预览器里，后续也会用于搜索。
+配置 demo 的标题，会展示在 demo 预览器里，支持被搜索。
 
 ## transform
 
