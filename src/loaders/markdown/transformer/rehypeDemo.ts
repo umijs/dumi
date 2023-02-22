@@ -150,12 +150,13 @@ export default function rehypeDemo(
               node!.data ??= {};
               node!.data[DEMO_NODE_CONTAINER] = true;
 
-              // if there has no next node, it means need not to split, SKIP directly
-              if (!nextChild) return SKIP;
-
               // try to find the next demo node or br node
               while (nextChild) {
-                if ((isElement(nextChild, 'code') && tryMarkDemoNode(nextChild, opts)) || isElement(nextChild, 'br')) {
+                if (
+                  (isElement(nextChild, 'code') &&
+                    tryMarkDemoNode(nextChild, opts)) ||
+                  isElement(nextChild, 'br')
+                ) {
                   // move to the next child index
                   splitFrom += 1;
 
@@ -167,6 +168,9 @@ export default function rehypeDemo(
                   break;
                 }
               }
+
+              // if there has no next node, it means need not to split, SKIP directly
+              if (!nextChild) return SKIP;
             }
 
             // split paragraph
