@@ -4,7 +4,35 @@ group:
   title: 基础
   order: 0
 order: 0
+mobile: false
 ---
+
+```tsx | inline
+export default () => <input type="text" placeholder="test 1" />;
+```
+
+---
+
+```tsx | inline
+export default () => <textarea placeholder="test 2" />;
+```
+
+---
+
+```tsx
+export default () => <input type="text" placeholder="test 3" />;
+```
+
+```tsx
+export default () => (
+  <div
+    contentEditable
+    style={{ width: '300px', height: '50px', backgroundColor: 'cyan' }}
+  >
+    可以输入内容哦
+  </div>
+);
+```
 
 # 初始化
 

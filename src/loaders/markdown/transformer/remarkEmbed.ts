@@ -111,7 +111,7 @@ export default function remarkEmbed(
     vFile.data.embeds = [];
 
     visit<Root, 'html'>(tree, 'html', (node, ancestors) => {
-      if (node.value.startsWith(EMBED_OPEN_TAG)) {
+      if (node.value.startsWith(EMBED_OPEN_TAG) && false) {
         let relatedNodeCount = 1;
         const parent = ancestors[ancestors.length - 1] as Paragraph;
         const grandParent = ancestors[ancestors.length - 2] as Root;
