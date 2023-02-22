@@ -1,5 +1,4 @@
-import type { IPreviewerProps } from 'dumi';
-import { useSiteData } from 'dumi';
+import { useSiteData, type IPreviewerProps } from 'dumi';
 import type { FC } from 'react';
 import React from 'react';
 import './index.less';

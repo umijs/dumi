@@ -6,11 +6,13 @@ import './index.less';
 
 function getIframeStyle(props: IPreviewerProps) {
   const style: React.CSSProperties = {};
+
   if (['string', 'number'].includes(typeof props.iframe)) {
     style.height = Number(props.iframe) || props.iframe;
   } else if (props.iframe?.height) {
     style.height = props.iframe.height;
   }
+
   return style;
 }
 
