@@ -220,7 +220,7 @@ hero:
       link: /getting-started
 ```
 
-### sidemenu
+### sidebar
 
 - 类型：`Boolean`
 - 默认值：`true`

@@ -90,7 +90,7 @@ export interface IRouteMeta {
      * Control the display of the sidebar menu.
      * @default true
      */
-    sidemenu?: boolean;
+    sidebar?: boolean;
     [key: string]: any;
   };
   // route toc

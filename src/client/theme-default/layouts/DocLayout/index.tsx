@@ -28,7 +28,7 @@ const DocLayout: FC = () => {
   const [activateSidebar, updateActivateSidebar] = useState(false);
   const { frontmatter: fm } = useRouteMeta();
 
-  const showSidebar = fm.sidemenu !== false && sidebar?.length > 0;
+  const showSidebar = fm.sidebar !== false && sidebar?.length > 0;
 
   // handle hash change or visit page hash after async chunk loaded
   useEffect(() => {
