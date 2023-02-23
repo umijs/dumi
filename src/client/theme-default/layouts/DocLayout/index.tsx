@@ -25,8 +25,10 @@ const DocLayout: FC = () => {
   const sidebar = useSidebarData();
   const { hash } = useLocation();
   const { loading } = useSiteData();
-  const [showSidebar, setShowSidebar] = useState(false);
+  const [activateSidebar, updateActivateSidebar] = useState(false);
   const { frontmatter: fm } = useRouteMeta();
+
+  const showSidebar = (fm.sidemenu ?? true) && sidebar?.length > 0;
 
   // handle hash change or visit page hash after async chunk loaded
   useEffect(() => {
@@ -49,8 +51,8 @@ const DocLayout: FC = () => {
   return (
     <div
       className="dumi-default-doc-layout"
-      data-mobile-sidebar-active={showSidebar || undefined}
-      onClick={() => setShowSidebar(false)}
+      data-mobile-sidebar-active={activateSidebar || undefined}
+      onClick={() => updateActivateSidebar(false)}
     >
       <Helmet>
         <html lang={intl.locale.replace(/-.+$/, '')} />
@@ -70,14 +72,14 @@ const DocLayout: FC = () => {
       <Header />
       <Hero />
       <Features />
-      {sidebar && (
+      {showSidebar && (
         <div className="dumi-default-doc-layout-mobile-bar">
           <button
             type="button"
             className="dumi-default-sidebar-btn"
             onClick={(ev) => {
               ev.stopPropagation();
-              setShowSidebar((v) => !v);
+              updateActivateSidebar((v) => !v);
             }}
           >
             <IconSidebar />
@@ -86,7 +88,7 @@ const DocLayout: FC = () => {
         </div>
       )}
       <main>
-        <Sidebar />
+        {showSidebar && <Sidebar />}
         <Content>
           {outlet}
           <Footer />
