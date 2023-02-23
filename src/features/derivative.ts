@@ -217,4 +217,23 @@ export default (api: IApi) => {
 
   // FIXME: skip prepare plugin since umi@4.0.48, because it is not compatible with dumi currently
   if (api.isPluginEnable('prepare')) api.skipPlugins(['prepare']);
+
+  // skip routeProps plugin since umi@4.0.53
+  // because dumi support conventional route props by default and it will cause ssr failed
+  if (api.isPluginEnable('routeProps')) {
+    api.skipPlugins(['routeProps']);
+
+    // FIXME: write a empty routeProps file to avoid umi throw error, should be removed after umi fixed
+    api.onGenerateFiles({
+      // make sure before umi generate files
+      stage: -Infinity,
+      fn() {
+        api.writeTmpFile({
+          noPluginDir: true,
+          path: 'core/routeProps.js',
+          content: 'export default {}',
+        });
+      },
+    });
+  }
 };
