@@ -88,7 +88,7 @@ export const useFullSidebarData = () => {
     }, {});
 
     // allow user partial override
-    return Object.assign(sidebarConfig, themeConfig.sidebar);
+    return Object.assign(sidebarConfig, themeConfig.sidebar || {});
   });
 
   return sidebar;

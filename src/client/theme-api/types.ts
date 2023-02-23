@@ -195,7 +195,7 @@ export interface IThemeConfig {
   name?: string;
   logo?: string | false;
   nav?: IUserNavValue | NavWithMode<IUserNavValue>;
-  sidebar?: Record<string, ISidebarGroup[]>;
+  sidebar?: false | Record<string, ISidebarGroup[]>;
   footer?: string | false;
   prefersColor: {
     default: 'light' | 'dark' | 'auto';

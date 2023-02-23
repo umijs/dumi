@@ -63,12 +63,12 @@ dumi 内置了一套完善的默认主题，默认主题的呈现效果与 dumi 
 
 ### sidebar
 
-- 类型：`Record<'/nav_path', { title: '分组名称（可选）', children: { title: '菜单项', link: '菜单路由' }[] }[]>`
+- 类型：`false | Record<'/nav_path', { title: '分组名称（可选）', children: { title: '菜单项', link: '菜单路由' }[] }[]>`
 - 默认值：`约定式侧边菜单`
 
 配置侧边栏菜单，`key` 为导航路由，配置后对该导航下的所有一级子页面生效，例如 `{ '/guide': [] }` 只对 `/guide` 及 `/guide/xxx` 生效。
 
-不配置时默认为约定式侧边菜单，约定式侧边菜单生成规则可参考 [约定式路由](/guide/conventional-routing)。
+不配置时默认为约定式侧边菜单，约定式侧边菜单生成规则可参考 [约定式路由](/guide/conventional-routing), 配置为 `false` 时不展示侧边栏。
 
 ### footer
 
