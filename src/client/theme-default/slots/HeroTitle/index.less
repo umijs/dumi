@@ -10,14 +10,18 @@
   display: inline-block;
   font-family: Alibaba-PuHuiTi, 'Gill Sans', 'Gill Sans MT', Calibri,
     'Trebuchet MS', sans-serif;
-  color: #82cdf8;
+  color: lighten(desaturate(spin(@c-primary, -13), 10.5), 20);
   font-size: 180px;
   line-height: 1;
 
   > span {
+    // generated via: https://nicothin.pro/lessColourFunctionCalculator/
+    @from: lighten(spin(@c-primary, -12.5), 24);
+    @to: lighten(@c-primary, 15.5);
+
     color: transparent;
-    text-shadow: 0 10px 20px rgba(22, 119, 255, 15%);
-    background: linear-gradient(30deg, #91d6ff 30%, #66a6ff);
+    text-shadow: 0 10px 20px fadeout(@c-primary, 85%);
+    background: linear-gradient(30deg, @from 30%, @to);
     background-clip: text;
   }
 

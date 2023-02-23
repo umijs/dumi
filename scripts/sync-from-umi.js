@@ -140,7 +140,7 @@ const FILE_LIST = [
       // replace plugin api link
       {
         type: 'replace',
-        value: [/\/api\/plugin-api/g, '/plugin/api'],
+        value: [/\/api\/plugin-api/g, '/plugin/api.md'],
       },
     ],
   },
