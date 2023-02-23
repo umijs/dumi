@@ -86,6 +86,11 @@ export interface IRouteMeta {
     atomId?: string;
     filename?: string;
     debug?: boolean;
+    /**
+     * Control the display of the sidebar menu.
+     * @default true
+     */
+    sidemenu?: boolean;
     [key: string]: any;
   };
   // route toc
