@@ -220,4 +220,12 @@ hero:
       link: /getting-started
 ```
 
+### sidemenu
+
+- 类型：`Boolean`
+- 默认值：`true`
+- 详细：
+
+控制侧边栏菜单的显示或隐藏。
+
 <!-- md config end -->
