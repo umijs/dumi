@@ -23,6 +23,7 @@ const Foo: FC<{
   onClick: (e?: MouseEvent) => void;
   children: React.ReactNode;
   onConfirm: (output: { children: any[] }) => void;
+  dom: HTMLElement;
 }> = (props) => {
   return <>{props.title}</>;
 };
