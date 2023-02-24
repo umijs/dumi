@@ -4,7 +4,7 @@ import { getRoutePathFromFsPath } from '@/utils';
 import type { sync } from 'enhanced-resolve';
 import type { Element, Root } from 'hast';
 import path from 'path';
-import { winPath } from 'umi/plugin-utils';
+import { lodash, logger, winPath } from 'umi/plugin-utils';
 import type { Transformer } from 'unified';
 import type { DataMap } from 'vfile';
 import type { IMdTransformerOptions } from '.';
@@ -202,7 +202,8 @@ export default function rehypeDemo(
               .techStack as IRehypeDemoOptions['techStacks'][0];
             const codeValue = toString(codeNode).trim();
             const parseOpts = {
-              id: '',
+              // https://github.com/umijs/dumi/issues/1440
+              id: codeNode.properties?.id as string,
               refAtomIds: vFile.data.frontmatter!.atomId
                 ? [vFile.data.frontmatter!.atomId]
                 : [],
@@ -222,7 +223,7 @@ export default function rehypeDemo(
               parseOpts.fileAbsPath = winPath(
                 codeNode.properties!.src as string,
               );
-              parseOpts.id = getCodeId(
+              parseOpts.id ??= getCodeId(
                 opts.cwd,
                 opts.fileAbsPath,
                 path.parse(
@@ -399,6 +400,13 @@ export default function rehypeDemo(
     await Promise.all(deferrers).then((demos) => {
       // to make sure the order of demos is correct
       vFile.data.demos = demos;
+
+      // Determine if the id is duplicated
+      if (lodash.uniqBy(demos, 'id').length !== demos.length) {
+        logger.warn(
+          `Duplicate demo ids were found, which may trigger an incorrect preview, please check if there are duplicate demo code blocks in the same file: ${opts.fileAbsPath}`,
+        );
+      }
 
       // parse final value for jsx attributes
       replaceNodes.forEach((node) => {
