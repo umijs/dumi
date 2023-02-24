@@ -78,7 +78,7 @@ const HANDLERS = {
   },
   // FIXME: extract real type
   dom(prop: any) {
-    return `<${prop.$$__body.id} />`;
+    return prop.className || 'DOM';
   },
 
   // special handlers
