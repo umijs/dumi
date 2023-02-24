@@ -76,6 +76,7 @@ const MobileDemoLayout: React.FC = ({}) => {
         padding: compact !== null ? 0 : compact,
         background,
       }}
+      data-html2sketch-container
     >
       {outlet}
     </div>
