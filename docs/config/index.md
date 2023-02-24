@@ -166,7 +166,7 @@ dumi 内置了站点统计的功能，目前支持 [Google Analytics](https://an
 
 启用 `sitemap.xml` 自动生成功能。`hostname` 配置项用来指定 URL 的域名前缀，`exclude` 配置项用来忽略某些不需要包含在 sitemap 中的路由。
 
-### html2sketch<Badge>2.1.14+</Badge>
+### html2sketch<Badge>2.2.0+</Badge>
 
 - 类型：`{ scriptUrl?: string }`
 - 默认值：`undefined`
