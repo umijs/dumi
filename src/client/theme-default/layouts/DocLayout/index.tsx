@@ -27,12 +27,8 @@ const DocLayout: FC = () => {
   const { loading } = useSiteData();
   const [activateSidebar, updateActivateSidebar] = useState(false);
   const { frontmatter: fm } = useRouteMeta();
-  const { themeConfig } = useSiteData();
 
-  const showSidebar =
-    themeConfig.sidebar !== false &&
-    fm.sidebar !== false &&
-    sidebar?.length > 0;
+  const showSidebar = fm.sidebar !== false && sidebar?.length > 0;
 
   // handle hash change or visit page hash after async chunk loaded
   useEffect(() => {
