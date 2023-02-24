@@ -36,10 +36,10 @@ window.addEventListener('message', (ev) => {
       path: 'index.ts',
       content: `import type { nodeToGroup, nodeToSymbol, SketchFormat } from 'html2sketch';
 
-const html2sketch = window.html2sketch as {
+const html2sketch = typeof window !== 'undefined' ? window.html2sketch as {
   nodeToGroup: typeof nodeToGroup;
   nodeToSymbol: typeof nodeToSymbol;
-};
+} : null;
 
 async function toSketchJSON(
   node: HTMLElement,
