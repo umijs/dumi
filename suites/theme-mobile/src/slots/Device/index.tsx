@@ -5,6 +5,8 @@ import './index.less';
 
 interface IDeviceProps {
   url: string;
+  /** @deprecated use iframe.height */
+  inlineHeight?: number;
   iframe: IPreviewerProps['iframe'];
 }
 
@@ -13,10 +15,10 @@ const Device: FC<IDeviceProps> = (props) => {
     themeConfig: { deviceWidth },
   } = useSiteData();
 
-  let inlineHeight = undefined;
+  let inlineHeight = props.inlineHeight;
   if (typeof props.iframe === 'number') inlineHeight = props.iframe;
   else if (typeof props.iframe === 'object' && props.iframe.height)
-    inlineHeight = props.iframe.height;
+    inlineHeight = Number(props.iframe.height);
 
   const iframeProps = typeof props.iframe === 'object' ? props.iframe : {};
 
