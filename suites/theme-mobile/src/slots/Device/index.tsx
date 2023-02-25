@@ -15,10 +15,11 @@ const Device: FC<IDeviceProps> = (props) => {
     themeConfig: { deviceWidth },
   } = useSiteData();
 
-  let inlineHeight = props.inlineHeight;
+  let inlineHeight = undefined;
   if (typeof props.iframe === 'number') inlineHeight = props.iframe;
   else if (typeof props.iframe === 'object' && props.iframe.height)
-    inlineHeight = Number(props.iframe.height);
+    inlineHeight = props.iframe.height;
+  else if (props.inlineHeight) inlineHeight = props.inlineHeight;
 
   const iframeProps = typeof props.iframe === 'object' ? props.iframe : {};
 
