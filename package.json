@@ -124,7 +124,6 @@
     "sitemap": "^7.1.1",
     "umi": "^4.0.53",
     "unified": "^10.1.2",
-    "unist-util-position": "^4.0.4",
     "unist-util-visit": "^4.1.0",
     "unist-util-visit-parents": "^5.1.1",
     "url": "^0.11.0",
