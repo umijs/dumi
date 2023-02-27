@@ -278,7 +278,7 @@ export default function rehypeDemo(
                     const suffix = startLine ? `:${startLine}` : '';
 
                     logger.warn(
-                      `Duplicate demo id found due to filename conflicts, please consider adding a unique id to code tag or source code frontmatter to resolve this.
+                      `Duplicate demo id found due to filename conflicts, please consider adding a unique id to code tag to resolve this.
         at ${opts.fileAbsPath}${suffix}`,
                     );
                   }
