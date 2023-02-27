@@ -13,7 +13,6 @@ let visit: typeof import('unist-util-visit').visit;
 let SKIP: typeof import('unist-util-visit').SKIP;
 let toString: typeof import('hast-util-to-string').toString;
 let isElement: typeof import('hast-util-is-element').isElement;
-let pointStart: typeof import('unist-util-position').pointStart;
 const DEMO_NODE_CONTAINER = '$demo-container';
 
 export const DEMO_PROP_VALUE_KEY = '$demo-prop-value-key';
@@ -25,7 +24,6 @@ export const DUMI_DEMO_GRID_TAG = 'DumiDemoGrid';
   ({ visit, SKIP } = await import('unist-util-visit'));
   ({ toString } = await import('hast-util-to-string'));
   ({ isElement } = await import('hast-util-is-element'));
-  ({ pointStart } = await import('unist-util-position'));
 })();
 
 type IRehypeDemoOptions = Pick<
@@ -276,9 +274,11 @@ export default function rehypeDemo(
                     demoIds.indexOf(parseOpts.id) !==
                     demoIds.lastIndexOf(parseOpts.id)
                   ) {
-                    const { line } = pointStart(node);
+                    const startLine = node.position?.start.line;
+                    const suffix = startLine ? `:${startLine}` : '';
+
                     logger.warn(
-                      `There is a duplicate Demo id: '${parseOpts.id}' in the file ${opts.fileAbsPath}:${line}.`,
+                      `Discovered duplicate demo id at ${opts.fileAbsPath}${suffix}. Please consider adding a unique id to the code tag to resolve this. See more at: https://github.com/umijs/dumi/pull/1508.`,
                     );
                   }
 
