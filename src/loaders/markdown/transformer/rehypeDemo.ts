@@ -202,8 +202,7 @@ export default function rehypeDemo(
               .techStack as IRehypeDemoOptions['techStacks'][0];
             const codeValue = toString(codeNode).trim();
             const parseOpts = {
-              // https://github.com/umijs/dumi/issues/1440
-              id: codeNode.properties?.id as string,
+              id: '',
               refAtomIds: vFile.data.frontmatter!.atomId
                 ? [vFile.data.frontmatter!.atomId]
                 : [],
@@ -223,12 +222,17 @@ export default function rehypeDemo(
               parseOpts.fileAbsPath = winPath(
                 codeNode.properties!.src as string,
               );
-              parseOpts.id ??= getCodeId(
-                opts.cwd,
-                opts.fileAbsPath,
+
+              let localId =
+                (codeNode.properties?.id as string) ??
                 path.parse(
                   parseOpts.fileAbsPath.replace(/\/index\.(j|t)sx?$/, ''),
-                ).name,
+                ).name;
+
+              parseOpts.id = getCodeId(
+                opts.cwd,
+                opts.fileAbsPath,
+                localId,
                 vFile.data.frontmatter!.atomId,
               );
               component = `React.lazy(() => import( /* webpackChunkName: "${chunkName}" */ '${winPath(
