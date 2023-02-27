@@ -278,7 +278,8 @@ export default function rehypeDemo(
                     const suffix = startLine ? `:${startLine}` : '';
 
                     logger.warn(
-                      `Discovered duplicate demo id at ${opts.fileAbsPath}${suffix}. Please consider adding a unique id to the code tag to resolve this. See more at: https://github.com/umijs/dumi/pull/1508.`,
+                      `Duplicate demo id found due to filename conflicts, please consider adding a unique id to code tag or source code frontmatter to resolve this.
+        at ${opts.fileAbsPath}${suffix}`,
                     );
                   }
 
