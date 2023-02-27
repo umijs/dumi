@@ -83,7 +83,7 @@ demo:
 <code src="./demos/cols.tsx">分栏 4</code>
 ```
 
-<code id="$-1" src="./demos/cols.tsx">分栏 1</code>
-<code id="$-2" src="./demos/cols.tsx">分栏 2</code>
-<code id="$-3" src="./demos/cols.tsx">分栏 3</code>
-<code id="$-4" src="./demos/cols.tsx">分栏 4</code>
+<code src="./demos/cols.tsx">分栏 1</code>
+<code src="./demos/cols.tsx">分栏 2</code>
+<code src="./demos/cols.tsx">分栏 3</code>
+<code src="./demos/cols.tsx">分栏 4</code>
