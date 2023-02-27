@@ -4,7 +4,7 @@ import { getRoutePathFromFsPath } from '@/utils';
 import type { sync } from 'enhanced-resolve';
 import type { Element, Root } from 'hast';
 import path from 'path';
-import { lodash, logger, winPath } from 'umi/plugin-utils';
+import { logger, winPath } from 'umi/plugin-utils';
 import type { Transformer } from 'unified';
 import type { DataMap } from 'vfile';
 import type { IMdTransformerOptions } from '.';
@@ -13,6 +13,7 @@ let visit: typeof import('unist-util-visit').visit;
 let SKIP: typeof import('unist-util-visit').SKIP;
 let toString: typeof import('hast-util-to-string').toString;
 let isElement: typeof import('hast-util-is-element').isElement;
+let pointStart: typeof import('unist-util-position').pointStart;
 const DEMO_NODE_CONTAINER = '$demo-container';
 
 export const DEMO_PROP_VALUE_KEY = '$demo-prop-value-key';
@@ -24,6 +25,7 @@ export const DUMI_DEMO_GRID_TAG = 'DumiDemoGrid';
   ({ visit, SKIP } = await import('unist-util-visit'));
   ({ toString } = await import('hast-util-to-string'));
   ({ isElement } = await import('hast-util-is-element'));
+  ({ pointStart } = await import('unist-util-position'));
 })();
 
 type IRehypeDemoOptions = Pick<
@@ -110,6 +112,8 @@ export default function rehypeDemo(
 ): Transformer<Root> {
   return async (tree, vFile) => {
     const deferrers: Promise<DataMap['demos'][0]>[] = [];
+    // sse an array to store all demo ids for subsequent repeat warnings
+    const demoIds: string[] = [];
     const replaceNodes: Element[] = [];
     let index = 0;
 
@@ -261,11 +265,23 @@ export default function rehypeDemo(
             }
 
             const propDemo: IDumiDemoProps['demo'] = { id: parseOpts.id };
+            demoIds.push(parseOpts.id);
 
             // generate asset data for demo
             deferrers.push(
               parseBlockAsset(parseOpts).then(
                 async ({ asset, sources, frontmatter }) => {
+                  // repeat id to give warning
+                  if (
+                    demoIds.indexOf(parseOpts.id) !==
+                    demoIds.lastIndexOf(parseOpts.id)
+                  ) {
+                    const { line } = pointStart(node);
+                    logger.warn(
+                      `There is a duplicate Demo id: '${parseOpts.id}' in the file ${opts.fileAbsPath}:${line}.`,
+                    );
+                  }
+
                   // eslint-disable-next-line @typescript-eslint/no-unused-vars
                   const { src, className, ...restAttrs } =
                     codeNode.properties || {};
@@ -404,13 +420,6 @@ export default function rehypeDemo(
     await Promise.all(deferrers).then((demos) => {
       // to make sure the order of demos is correct
       vFile.data.demos = demos;
-
-      // Determine if the id is duplicated
-      if (lodash.uniqBy(demos, 'id').length !== demos.length) {
-        logger.warn(
-          `Duplicate demo ids were found, which may trigger an incorrect preview, please check if there are duplicate demo code blocks in the same file: ${opts.fileAbsPath}`,
-        );
-      }
 
       // parse final value for jsx attributes
       replaceNodes.forEach((node) => {
