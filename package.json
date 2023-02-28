@@ -111,6 +111,7 @@
     "react-copy-to-clipboard": "^5.1.0",
     "react-error-boundary": "^3.1.4",
     "react-intl": "^6.1.1",
+    "react-loading-skeleton": "^3.1.1",
     "rehype-autolink-headings": "^6.1.1",
     "rehype-remove-comments": "^5.0.0",
     "rehype-stringify": "^9.0.3",

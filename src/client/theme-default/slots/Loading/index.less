@@ -1,0 +1,66 @@
+@import (reference) '../../styles/variables.less';
+
+@skeleton-cls: react-loading-skeleton;
+
+.@{prefix}-loading-skeleton {
+  // title
+  .@{skeleton-cls}.title {
+    margin-block-end: 0.5em;
+  }
+
+  // action-item
+  .@{skeleton-cls}.code-action-item {
+    margin-inline-end: 1em;
+  }
+
+  // description
+  & > .description {
+    & > *:first-child {
+      display: inline-block;
+      width: calc(100% - 2em);
+      margin-inline-start: 2em;
+    }
+  }
+
+  .demo-block {
+    border: 1px solid @c-border-light;
+    border-radius: 2px;
+    min-height: 180px;
+    margin-block: 1em;
+    padding: 0.5em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    @{dark-selector} & {
+      border-color: @c-border-less-dark;
+    }
+
+    & > .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+    }
+
+    & > .actions {
+      text-align: center;
+    }
+
+    & + .demo-block {
+      margin-inline-start: 1em;
+    }
+  }
+
+  & > .demo-bock-guid {
+    @media @mobile {
+      display: none;
+    }
+
+    display: flex;
+
+    .demo-block {
+      flex: 1;
+    }
+  }
+}

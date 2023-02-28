@@ -201,7 +201,7 @@ export interface IThemeConfig {
     default: 'light' | 'dark' | 'auto';
     switch: boolean;
   };
-  socialLinks: {
+  socialLinks?: {
     /**
      * 形如：github: "https://github.com/umijs/dumi"
      */

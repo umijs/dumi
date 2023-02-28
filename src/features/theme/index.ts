@@ -5,14 +5,18 @@ import {
   THEME_PREFIX,
 } from '@/constants';
 import type { IApi } from '@/types';
+import { getClientDistFile } from '@/utils';
 import { parseModuleSync } from '@umijs/bundler-utils';
 import fs from 'fs';
 import path from 'path';
-import { deepmerge, lodash, winPath } from 'umi/plugin-utils';
+import { deepmerge, lodash, resolve, winPath } from 'umi/plugin-utils';
 import { safeExcludeInMFSU } from '../derivative';
 import loadTheme, { IThemeLoadResult } from './loader';
 
 const DEFAULT_THEME_PATH = path.join(__dirname, '../../../theme-default');
+const loadingComponentPath = winPath(
+  path.resolve(__dirname, '../../client/pages/Loading'),
+);
 
 /**
  * get pkg theme name
@@ -135,6 +139,20 @@ export default (api: IApi) => {
       });
 
       return memo;
+    },
+  });
+
+  api.modifyAppData((memo) => {
+    memo.globalLoading ??= loadingComponentPath;
+
+    return memo;
+  });
+
+  api.register({
+    key: 'onGenerateFiles',
+    stage: -Infinity,
+    fn() {
+      api.appData.globalLoading ??= loadingComponentPath;
     },
   });
 
