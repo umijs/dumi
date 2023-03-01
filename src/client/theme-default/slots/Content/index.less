@@ -158,12 +158,21 @@
       background-color: lighten(@c-site-bg-dark, 3%);
     }
 
+    &:not([data-has-footer]) {
+      padding-bottom: @s-content-padding;
+    }
+
     @media @mobile {
       max-width: initial;
       margin: 0 -24px;
       padding: 24px 24px 0;
       border-radius: 0;
       box-shadow: none;
+
+      &:not([data-has-footer]) {
+        padding: 24px;
+        margin-bottom: 0;
+      }
     }
   }
 
@@ -173,6 +182,14 @@
 
     @media @mobile {
       min-height: calc(100vh - @s-header-height-m);
+    }
+  }
+
+  &:not([data-has-footer]) {
+    margin-bottom: @s-content-padding;
+
+    @media @mobile {
+      margin-bottom: 24px;
     }
   }
 }

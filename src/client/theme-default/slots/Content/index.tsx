@@ -1,15 +1,17 @@
-import { useSidebarData } from 'dumi';
+import { useSidebarData, useSiteData } from 'dumi';
 import React, { type FC, type ReactNode } from 'react';
 import './heti.scss';
 import './index.less';
 
 const Content: FC<{ children: ReactNode }> = (props) => {
   const sidebar = useSidebarData();
+  const { themeConfig } = useSiteData();
 
   return (
     <div
       className="dumi-default-content"
       data-no-sidebar={!sidebar || undefined}
+      data-has-footer={!!themeConfig.footer || undefined}
     >
       {props.children}
     </div>
