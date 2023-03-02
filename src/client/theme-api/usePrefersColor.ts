@@ -108,7 +108,7 @@ class ColorChanger {
     this.prefersColor = color;
     this.color =
       color === 'auto' ? (this.isColorMode('dark') ? 'dark' : 'light') : color;
-    document.documentElement.setAttribute(PREFERS_COLOR_ATTR, color);
+    document.documentElement.setAttribute(PREFERS_COLOR_ATTR, this.color);
     this.applyCallbacks();
 
     return color;
