@@ -50,9 +50,7 @@ const Toc: FC = () => {
             {memoToc
               .filter(({ depth }) => depth > 1 && depth < 4)
               .map((item, i) => {
-                const link = `${pathname}${search}#${encodeURIComponent(
-                  item.id,
-                )}`;
+                const link = `${search}#${encodeURIComponent(item.id)}`;
                 const activeIndex =
                   currentElementIndexInViewport > -1
                     ? currentElementIndexInViewport
