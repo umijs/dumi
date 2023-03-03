@@ -103,7 +103,14 @@ const cache = createIntlCache();
 
 const LocalesContainer: FC<{ children: ReactNode }> = (props) => {
   const getIntl = useCallback(() => {
-    const matched = locales.slice().reverse().find((locale) => (
+
+    // sort locales by base length to match the longest base first
+    // 同上 / 和 /en-US 的情况下, startsWith('/en-US') 会匹配到 /,所以需要先匹配 /en-US
+    const sortedLocales = locales.slice().sort((a,b) => {
+      return b.base.length - a.base.length;
+    });
+
+    const matched = sortedLocales.find((locale) => (
       'suffix' in locale
         // suffix mode
         ? history.location.pathname.replace(/([^/])\\/$/, '$1').endsWith(locale.suffix)
