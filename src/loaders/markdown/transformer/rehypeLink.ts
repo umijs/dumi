@@ -27,7 +27,7 @@ export default function rehypeLink(
         //   - ./xx or ../xx or ./xx.md
         //   - xx or xx.md
         //   - xx/yy
-        /^[^/:]+(\/[^/:]|(\.\w+)?$)/.test(node.properties.href)
+        /^[^/:#]+(\/[^/]|(\.\w+)?$)/.test(node.properties.href)
       ) {
         const href = node.properties.href;
         const parsedUrl = url.parse(href);
