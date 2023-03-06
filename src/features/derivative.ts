@@ -212,11 +212,11 @@ export default (api: IApi) => {
 
       // replace helmet for ssr since @umi@4.0.54
       // ref: https://github.com/umijs/umi/pull/10633
-      const helmetPath = path.join(api.paths.absTmpPath, 'core/helmet.ts');
       if (
         api.config.ssr &&
         semver.subset(api.appData.umi.version, '4.0.54 - 4.0.55')
       ) {
+        const helmetPath = path.join(api.paths.absTmpPath, 'core/helmet.ts');
         fsExtra.writeFileSync(
           helmetPath,
           fsExtra
