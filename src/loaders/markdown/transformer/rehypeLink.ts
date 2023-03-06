@@ -7,11 +7,10 @@ import url from 'url';
 import type { IMdTransformerOptions } from '.';
 
 let visit: typeof import('unist-util-visit').visit;
-let SKIP: typeof import('unist-util-visit').SKIP;
 
 // workaround to import pure esm module
 (async () => {
-  ({ visit, SKIP } = await import('unist-util-visit'));
+  ({ visit } = await import('unist-util-visit'));
 })();
 
 type IRehypeLinkOptions = Pick<IMdTransformerOptions, 'fileAbsPath' | 'routes'>;
@@ -21,13 +20,14 @@ export default function rehypeLink(
 ): Transformer<Root> {
   return (tree) => {
     visit<Root, 'element'>(tree, 'element', (node, i, parent) => {
-      if (node.tagName === 'a' && typeof node.properties?.href === 'string') {
+      if (
+        node.tagName === 'a' &&
+        typeof node.properties?.href === 'string' &&
+        /^\.?\.\//.test(node.properties.href)
+      ) {
         const href = node.properties.href;
         const parsedUrl = url.parse(href);
         const hostAbsPath = getHostForTabRouteFile(opts.fileAbsPath);
-
-        // handle internal link
-        if (parsedUrl.hostname) return SKIP;
 
         if (/\.md$/i.test(parsedUrl.pathname!)) {
           // handle markdown link
@@ -41,10 +41,7 @@ export default function rehypeLink(
               parsedUrl.pathname = routes[key].absPath;
             }
           });
-        } else if (
-          /^\.?\.\//.test(parsedUrl.pathname!) ||
-          /^(\w+:)?\/\//.test(parsedUrl.pathname!)
-        ) {
+        } else {
           // handle relative link
           // transform relative link to absolute link
           // because react-router@6 and HTML href are different in processing relative link
