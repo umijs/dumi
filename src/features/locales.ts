@@ -4,7 +4,6 @@ import { winPath } from 'umi/plugin-utils';
 
 export default (api: IApi) => {
   api.describe({
-    key: 'locales',
     config: {
       default: [
         {
@@ -44,24 +43,11 @@ export default (api: IApi) => {
     key: 'modifyConfig',
     stage: Infinity,
     fn: (memo: IApi['config']) => {
-      /**
-       * 如果用户配置了 locales，且第一个语言未配置 base，且不是 suffix 模式；
-       * const locales = [
-       *  { id: 'zh-CN', name: '中文'},
-       *  { id: 'en-US', name: 'English', base: '/' },
-       * ]
-       */
-      const firstMatchedLocale = memo.locales?.findIndex(
-        (locale: any) => locale.base === '/' && !('suffix' in locale),
-      );
-
       // fallback to use id as locale route base
       memo.locales?.forEach((locale, i) => {
         if (!('suffix' in locale)) {
-          const isDefaultLocale =
-            firstMatchedLocale >= 0 ? firstMatchedLocale : 0;
           // only apply for non-suffix mode
-          locale.base ??= i === isDefaultLocale ? '/' : `/${locale.id}`;
+          locale.base ??= i ? `/${locale.id}` : '/';
         }
       });
 
