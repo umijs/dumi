@@ -7,10 +7,11 @@ import url from 'url';
 import type { IMdTransformerOptions } from '.';
 
 let visit: typeof import('unist-util-visit').visit;
+let SKIP: typeof import('unist-util-visit').SKIP;
 
 // workaround to import pure esm module
 (async () => {
-  ({ visit } = await import('unist-util-visit'));
+  ({ visit, SKIP } = await import('unist-util-visit'));
 })();
 
 type IRehypeLinkOptions = Pick<IMdTransformerOptions, 'fileAbsPath' | 'routes'>;
@@ -23,15 +24,19 @@ export default function rehypeLink(
       if (
         node.tagName === 'a' &&
         typeof node.properties?.href === 'string' &&
-        // match:
-        //   - ./xx or ../xx or ./xx.md
-        //   - xx or xx.md
-        //   - xx/yy
-        /^[^/:#]+(\/[^/]|(\.\w+)?$)/.test(node.properties.href)
+        // skip target specified link
+        !node.properties?.target &&
+        // skip download link
+        !node.properties?.download
       ) {
         const href = node.properties.href;
         const parsedUrl = url.parse(href);
         const hostAbsPath = getHostForTabRouteFile(opts.fileAbsPath);
+
+        // skip external or special links:
+        //   - http://www.example.com or mailto:xxx@example.com or data:image/xxx
+        //   - //www.example.com
+        if (parsedUrl.protocol || href.startsWith('//')) return SKIP;
 
         if (/\.md$/i.test(parsedUrl.pathname!)) {
           // handle markdown link
@@ -45,7 +50,7 @@ export default function rehypeLink(
               parsedUrl.pathname = routes[key].absPath;
             }
           });
-        } else {
+        } else if (parsedUrl.pathname && /^[^/]+/.test(parsedUrl.pathname)) {
           // handle relative link
           // transform relative link to absolute link
           // because react-router@6 and HTML href are different in processing relative link
