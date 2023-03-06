@@ -95,11 +95,9 @@ export default (api: IApi) => {
         ) {
           assert(
             false,
-            `You can't put base= '/' in \`locales[${
-              index + 1
-            }]\`. If you want \`${
-              locale.name ?? locale.id
-            }\` to be the default language, you should put it at the first index of locales. See https://d.umijs.org/config#locales`,
+            `You can't put base= '/' in \`locales[${index + 1}]\`.
+If you want \`${locale.name ?? locale.id}\` to be the default language,
+you should put it at the first index of locales. See https://d.umijs.org/config#locales`,
           );
         }
       });
