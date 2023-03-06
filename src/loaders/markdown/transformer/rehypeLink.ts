@@ -26,8 +26,9 @@ export default function rehypeLink(
         // skip:
         //   - schema:// (full) or // (protocol-relative)
         //   - mailto: or tel: (protocol)
+        //   - data:image (data)
         //   - / (absolute)
-        !/^(\w+:)?\/\/|^(mailto|tel):|^\//.test(node.properties.href)
+        !/^((\w+:)?\/\/|(mailto|tel):|\w+:\w+|\/)/.test(node.properties.href)
       ) {
         const href = node.properties.href;
         const parsedUrl = url.parse(href);
