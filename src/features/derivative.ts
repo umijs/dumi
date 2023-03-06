@@ -209,6 +209,20 @@ export default (api: IApi) => {
           .readFileSync(umiPath, 'utf-8')
           .replace("'@/loading'", "'../loading'"),
       );
+
+      // replace helmet for ssr since @umi@4.0.54
+      const helmetPath = path.join(api.paths.absTmpPath, 'core/helmet.ts');
+      if (api.config.ssr && fsExtra.existsSync(helmetPath)) {
+        fsExtra.writeFileSync(
+          helmetPath,
+          fsExtra
+            .readFileSync(helmetPath, 'utf-8')
+            .replace(
+              /(return )(React\.createElement)/,
+              "$1typeof window === 'undefined' ? container : $2",
+            ),
+        );
+      }
     },
   });
 
