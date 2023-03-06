@@ -39,6 +39,25 @@ export default (api: IApi) => {
     },
   });
 
+  api.onCheck(() => {
+    // check locales config
+    if (api.config.locales) {
+      // other locale must set base to /
+      api.config.locales.slice(1).forEach((locale: any) => {
+        if (
+          typeof locale.suffix === 'undefined' &&
+          locale.base &&
+          locale.base === '/'
+        ) {
+          assert(
+            false,
+            `Only the first locale item is allowed to set base: '/', you can move ${locale.id} to the front as default locale. See more: See https://d.umijs.org/config#locales`,
+          );
+        }
+      });
+    }
+  });
+
   api.register({
     key: 'modifyConfig',
     stage: Infinity,

@@ -71,38 +71,6 @@ export default (api: IApi) => {
       );
     }
 
-    /**
-     * check locales config
-     */
-    if (api.config.locales) {
-      const firstLocale: any = api.config.locales[0];
-      if (
-        typeof firstLocale.suffix === 'undefined' &&
-        firstLocale.base &&
-        firstLocale.base !== '/'
-      ) {
-        assert(
-          false,
-          `The first locale must be set to / by default. See https://d.umijs.org/config#locales`,
-        );
-      }
-      // other locale must set base to /
-      api.config.locales.slice(1).forEach((locale: any, index: number) => {
-        if (
-          typeof locale.suffix === 'undefined' &&
-          locale.base &&
-          locale.base === '/'
-        ) {
-          assert(
-            false,
-            `You can't put base= '/' in \`locales[${index + 1}]\`.
-If you want \`${locale.name ?? locale.id}\` to be the default language,
-you should put it at the first index of locales. See https://d.umijs.org/config#locales`,
-          );
-        }
-      });
-    }
-
     const { themeConfig } = api.config;
     if (themeConfig?.nav) {
       const hasOrder = !!JSON.stringify(themeConfig.nav).includes('"order":');
