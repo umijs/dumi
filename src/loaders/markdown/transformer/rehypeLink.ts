@@ -23,7 +23,11 @@ export default function rehypeLink(
       if (
         node.tagName === 'a' &&
         typeof node.properties?.href === 'string' &&
-        /^\.?\.\//.test(node.properties.href)
+        // skip:
+        //   - schema:// (full) or // (protocol-relative)
+        //   - mailto: or tel: (protocol)
+        //   - / (absolute)
+        !/^(\w+:)?\/\/|^(mailto|tel):|^\//.test(node.properties.href)
       ) {
         const href = node.properties.href;
         const parsedUrl = url.parse(href);
