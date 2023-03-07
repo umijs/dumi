@@ -3,7 +3,7 @@ import type { IApi } from '@/types';
 import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
-import { deepmerge, fsExtra, logger, winPath } from 'umi/plugin-utils';
+import { deepmerge, fsExtra, logger, semver, winPath } from 'umi/plugin-utils';
 
 /**
  * exclude pre-compiling modules in mfsu mode
@@ -209,6 +209,24 @@ export default (api: IApi) => {
           .readFileSync(umiPath, 'utf-8')
           .replace("'@/loading'", "'../loading'"),
       );
+
+      // replace helmet for ssr since @umi@4.0.54
+      // ref: https://github.com/umijs/umi/pull/10633
+      if (
+        api.config.ssr &&
+        semver.subset(api.appData.umi.version, '4.0.54 - 4.0.55')
+      ) {
+        const helmetPath = path.join(api.paths.absTmpPath, 'core/helmet.ts');
+        fsExtra.writeFileSync(
+          helmetPath,
+          fsExtra
+            .readFileSync(helmetPath, 'utf-8')
+            .replace(
+              /(return )(React\.createElement)/,
+              "$1typeof window === 'undefined' ? container : $2",
+            ),
+        );
+      }
     },
   });
 
