@@ -12,6 +12,13 @@ export default (api: IApi) => {
     enableBy: ({ userConfig }) => userConfig.autoAlias !== false,
   });
 
+  api.modifyAppData(async (memo) => {
+    // save father configs to appData, allow other plugins to modify
+    memo.fatherConfigs = await tryFatherBuildConfigs(api.cwd);
+
+    return memo;
+  });
+
   api.modifyConfig(async (memo) => {
     let entryDir = '';
 
@@ -22,7 +29,7 @@ export default (api: IApi) => {
     }
 
     if (entryDir && api.pkg.name) {
-      const fatherConfigs = await tryFatherBuildConfigs(api.cwd);
+      const fatherConfigs = api.appData.fatherConfigs as any[];
 
       // sort by output level, make sure the deepest output has the highest priority
       fatherConfigs.sort((a, b) => {
