@@ -56,6 +56,8 @@
   "devDependencies": {
     "@commitlint/cli": "^17.1.2",
     "@commitlint/config-conventional": "^17.1.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
     "@umijs/lint": "^4.0.0",
     "dumi": "{{{ version }}}",
     "eslint": "^8.23.0",
