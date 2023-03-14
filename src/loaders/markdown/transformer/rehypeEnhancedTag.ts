@@ -22,11 +22,13 @@ export default function rehypeEnhancedTag(): Transformer<Root> {
         const className = (node.children[0].properties?.className ||
           []) as string[];
         const lang = className.join('').match(/language-(\w+)(?:$| )/)?.[1];
+        const highlightLines =
+          (node.children[0].data?.highlightLines as number[]) ?? [];
 
         parent!.children.splice(i!, 1, {
           type: 'element',
           tagName: 'SourceCode',
-          properties: { lang },
+          properties: { lang, highlightLines: highlightLines.join(',') },
           children: [
             {
               type: 'text',
