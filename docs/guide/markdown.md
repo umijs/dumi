@@ -91,3 +91,67 @@ dumi 内置了 Badge 组件，可以为 Markdown 内容（例如标题）添加�
 :::error
 这是一条错误信息
 :::
+
+## Line Highlighting
+
+在代码块中，如果您想要突出显示特定的一行，可以使用行高亮功能。使用行高亮功能的语法如下：
+
+<pre lang="markdown">
+```jsx {4}
+import React from 'react';
+
+export default () => (
+  &lt;p&gt;我会被直接嵌入&lt;/p&gt;
+);
+```
+</pre>
+
+渲染为：
+
+```jsx {4}
+import React from 'react';
+
+export default () => <h1>Hello dumi!</h1>;
+```
+
+**除了单行之外，你还可以指定多个单行、范围或两者:**
+
+- 使用花括号指定单个行号，如：`{5}`, 逗号分隔指定多个行，如：`{4,7,9}`。
+- 使用连字符指定一系列行，如：`{5-8}`。
+- 也可以结合两种方式进行选择，如：`{4,7-13,16,23-27,40}`。
+
+<pre lang="markdown">
+```yml {3,6-9,12,13}
+features:
+  - title: 更好的编译性能
+    emoji: 🚀
+  - title: 内置全文搜索
+    emoji: 🔍
+  - title: 全新主题系统
+    emoji: 🎨
+  - title: 约定式路由增强
+    emoji: 🚥
+  - title: 资产元数据 2.0
+    emoji: 💡
+  - title: 继续为组件研发而生
+    emoji: 💎
+```
+</pre>
+
+渲染为：
+
+```yml {3,6-9,12,13}
+features:
+  - title: 更好的编译性能
+    emoji: 🚀
+  - title: 内置全文搜索
+    emoji: 🔍
+  - title: 全新主题系统
+    emoji: 🎨
+  - title: 约定式路由增强
+    emoji: 🚥
+  - title: 资产元数据 2.0
+    emoji: 💡
+  - title: 继续为组件研发而生
+    emoji: 💎
+```
