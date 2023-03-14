@@ -31,6 +31,10 @@
 /* code block */
 ```
 
+```jsx {1}
+console.log('line highlighting');
+```
+
 <pre>
 manual pre tag
 </pre>
