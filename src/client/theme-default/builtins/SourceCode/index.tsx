@@ -18,18 +18,13 @@ const SIMILAR_DSL: Record<string, Language> = {
 interface SourceCodeProps {
   children: string;
   lang: Language;
-  highlightLines?: string;
+  highlightLines?: number[];
 }
 
 const SourceCode: FC<SourceCodeProps> = (props) => {
-  const { children, lang, highlightLines = '' } = props;
+  const { children, lang, highlightLines = [] } = props;
   const timer = useRef<number>();
   const [isCopied, setIsCopied] = useState(false);
-
-  const highlightNumbers = React.useMemo(
-    () => highlightLines.split(',').map(Number),
-    [highlightLines],
-  );
 
   return (
     <div className="dumi-default-source-code">
@@ -64,7 +59,7 @@ const SourceCode: FC<SourceCodeProps> = (props) => {
                   line,
                   key: i,
                   className: classNames({
-                    highlighted: highlightNumbers.includes(i + 1),
+                    highlighted: highlightLines.includes(i + 1),
                   }),
                 })}
               >
