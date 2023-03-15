@@ -1,4 +1,4 @@
-import { CLIENT_DEPS, LOCAL_PAGES_DIR, USELESS_TMP_FILES } from '@/constants';
+import { LOCAL_PAGES_DIR, USELESS_TMP_FILES } from '@/constants';
 import type { IApi } from '@/types';
 import assert from 'assert';
 import fs from 'fs';
@@ -110,14 +110,8 @@ export default (api: IApi) => {
 
   api.modifyDefaultConfig((memo) => {
     if (api.userConfig.mfsu !== false) {
-      if (
-        fs.existsSync(path.join(api.cwd, 'node_modules', '.pnpm')) ||
-        process.platform === 'win32'
-      ) {
-        // FIXME: mfsu compatibility for pnpm and windows
-        // mfsu normal model will broken in pnpm mode, because dumi exclude client
-        // files in mfsu mode and umi cannot resolve nested deps from dumi client
-        // and mfsu will broken on window platform with unknown reason
+      if (process.platform === 'win32') {
+        // FIXME: mfsu will broken on window platform with unknown reason
         memo.mfsu = false;
       } else {
         // only normal mode is supported, because src is not fixed in dumi project, eager mode may scan wrong dir
@@ -129,15 +123,6 @@ export default (api: IApi) => {
           react: { singleton: true },
           'react-dom': { singleton: true },
         };
-
-        // alias all client dependencies, to make sure normal mfsu can resolve them, until umi fixed
-        // ref: https://github.com/umijs/umi/blob/de59054b2afe6ba92d0b52b530d71612ac4055a8/packages/mfsu/src/dep/dep.ts#L91-L92
-        CLIENT_DEPS.forEach((pkg) => {
-          memo.alias ??= {};
-          memo.alias[pkg] = winPath(
-            path.dirname(require.resolve(`${pkg}/package.json`)),
-          );
-        });
       }
     }
 
