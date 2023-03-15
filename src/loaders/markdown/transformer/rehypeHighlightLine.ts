@@ -1,6 +1,5 @@
 import type { Root } from 'hast';
 import type { Transformer } from 'unified';
-import type { IMdTransformerOptions } from '.';
 
 let visit: typeof import('unist-util-visit').visit;
 let isElement: typeof import('hast-util-is-element').isElement;
@@ -13,8 +12,6 @@ const RE = /{([\d,-]+)}/;
   ({ isElement } = await import('hast-util-is-element'));
 })();
 
-type IRehypeHighlightLine = Pick<IMdTransformerOptions, 'resolve'>;
-
 const attrsToLines = (rawAttrs: string) => {
   const attrs = rawAttrs.replace(/^(?:\[.*?\])?.*?([\d,-]+).*/, '$1').trim();
   const result: number[] = [];
@@ -23,9 +20,9 @@ const attrsToLines = (rawAttrs: string) => {
     .map((v) => v.split('-').map((v) => parseInt(v, 10)))
     .forEach(([start, end]) => {
       if (start && end) {
-        result.push(
-          ...Array.from({ length: end - start + 1 }, (_, i) => start + i),
-        );
+        for (let i = start; i <= end; i++) {
+          result.push(i);
+        }
       } else {
         result.push(start);
       }
@@ -33,37 +30,17 @@ const attrsToLines = (rawAttrs: string) => {
   return result;
 };
 
-function rehypeHighlightLine(opts: IRehypeHighlightLine): Transformer<Root> {
+function rehypeHighlightLine(): Transformer<Root> {
   return async (tree) => {
-    const { resolve } = opts;
     visit<Root, 'element'>(tree, 'element', (node) => {
       if (isElement(node, 'code') && typeof node.data?.meta === 'string') {
-        const lines = node.data.meta.match(RE);
+        const lines = node.data.meta.match(RE)?.[1];
+
         if (lines) {
-          const lineNumbers = attrsToLines(lines[1]);
-
           // ensure the next plugin get the correct lang
-          let meta = node.data.meta.replace(RE, '').trim();
+          node.data.meta = node.data.meta.replace(lines, '').trim();
 
-          // active mode (default)
-          if (
-            resolve.codeBlockMode === 'active' &&
-            !/ pure/.test(String(node.data?.meta))
-          ) {
-            // add pure keyword
-            meta += ' pure';
-          }
-          // passive mode
-          if (
-            resolve.codeBlockMode === 'passive' &&
-            / demo/.test(String(node.data?.meta))
-          ) {
-            // remove demo keyword
-            meta = meta.replace('demo', '').trim();
-          }
-
-          node.data.meta = meta;
-          node.data.highlightLines = lineNumbers;
+          node.data.highlightLines = attrsToLines(lines);
         }
       }
     });
