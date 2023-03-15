@@ -35,7 +35,7 @@
 console.log('line highlighting');
 ```
 
-```jsx {1} | pure
+```jsx {1,2,3-5} | pure
 console.log('line highlighting');
 ```
 
