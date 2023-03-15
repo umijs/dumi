@@ -31,7 +31,11 @@
 /* code block */
 ```
 
-```jsx {1}
+```ts {1}
+console.log('line highlighting');
+```
+
+```jsx {1} | pure
 console.log('line highlighting');
 ```
 
