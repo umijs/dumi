@@ -97,7 +97,7 @@ dumi 内置了 Badge 组件，可以为 Markdown 内容（例如标题）添加�
 在代码块中，如果您想要突出显示特定的一行，可以使用行高亮功能。使用行高亮功能的语法如下：
 
 <pre lang="markdown">
-```jsx {5}
+```jsx {5} | pure
 import React from 'react';
 
 export default () =&gt; (
@@ -110,7 +110,7 @@ export default () =&gt; (
 
 渲染为：
 
-```jsx {5}
+```jsx {5} | pure
 import React from 'react';
 
 export default () => (
