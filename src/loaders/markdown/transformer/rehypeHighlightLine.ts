@@ -15,15 +15,11 @@ const RE = /{((?:\d+(?:-\d+)?,?)+)}/;
 const attrsToLines = (attrs: string) => {
   const result: number[] = [];
   attrs
-    ?.split(',')
+    .split(',')
     .map((v) => v.split('-').map((v) => parseInt(v, 10)))
-    .forEach(([start, end]) => {
-      if (start && end) {
-        for (let i = start; i <= end; i++) {
-          result.push(i);
-        }
-      } else {
-        result.push(start);
+    .forEach(([start, end = start]) => {
+      for (let i = start; i <= end; i++) {
+        result.push(i);
       }
     });
   return result;
