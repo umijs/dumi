@@ -109,21 +109,19 @@ export default (api: IApi) => {
   ]);
 
   api.modifyDefaultConfig((memo) => {
-    if (api.userConfig.mfsu !== false) {
-      if (process.platform === 'win32') {
-        // FIXME: mfsu will broken on window platform with unknown reason
-        memo.mfsu = false;
-      } else {
-        // only normal mode is supported, because src is not fixed in dumi project, eager mode may scan wrong dir
-        memo.mfsu.strategy = 'normal';
+    if (process.platform === 'win32') {
+      // FIXME: mfsu will broken on window platform for unknown reason
+      memo.mfsu = false;
+    } else if (api.userConfig.mfsu !== false) {
+      // only normal mode is supported, because src is not fixed in dumi project, eager mode may scan wrong dir
+      memo.mfsu.strategy = 'normal';
 
-        // make react singleton, because MFSU only process import
-        // but the parsed code block demo will has require('react')
-        memo.mfsu.shared = {
-          react: { singleton: true },
-          'react-dom': { singleton: true },
-        };
-      }
+      // make react singleton, because MFSU only process import
+      // but the parsed code block demo will has require('react')
+      memo.mfsu.shared = {
+        react: { singleton: true },
+        'react-dom': { singleton: true },
+      };
     }
 
     // enable conventional routes
