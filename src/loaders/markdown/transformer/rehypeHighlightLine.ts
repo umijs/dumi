@@ -4,7 +4,7 @@ import type { Transformer } from 'unified';
 let visit: typeof import('unist-util-visit').visit;
 let isElement: typeof import('hast-util-is-element').isElement;
 
-const RE = /{([\d,-]+)}/;
+const RE = /{((?:\d+(?:-\d+)?,?)+)}/;
 
 // workaround to import pure esm module
 (async () => {
@@ -12,8 +12,7 @@ const RE = /{([\d,-]+)}/;
   ({ isElement } = await import('hast-util-is-element'));
 })();
 
-const attrsToLines = (rawAttrs: string) => {
-  const attrs = rawAttrs.replace(/^(?:\[.*?\])?.*?([\d,-]+).*/, '$1').trim();
+const attrsToLines = (attrs: string) => {
   const result: number[] = [];
   attrs
     ?.split(',')
