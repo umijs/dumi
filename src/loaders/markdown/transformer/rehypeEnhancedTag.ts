@@ -28,16 +28,12 @@ export default function rehypeEnhancedTag(): Transformer<Root> {
         parent!.children.splice(i!, 1, {
           type: 'element',
           tagName: 'SourceCode',
+          properties: { lang },
           JSXAttributes: [
             {
               type: 'JSXAttribute',
               name: 'highlightLines',
               value: JSON.stringify(highlightLines),
-            },
-            {
-              type: 'JSXAttribute',
-              name: 'lang',
-              value: JSON.stringify(`${lang}`),
             },
           ],
           children: [
