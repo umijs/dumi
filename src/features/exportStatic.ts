@@ -28,20 +28,26 @@ export default (api: IApi) => {
   });
 
   // static /~demos/:id pages when exportStatic enabled
-  api.modifyExportHTMLFiles((htmlFiles) => {
-    const filePrefix = `${SP_ROUTE_PREFIX}demos`;
-    const examples = getExampleAssets();
-    const content = htmlFiles.find((file) =>
-      file.path.startsWith(`${filePrefix}/:id/`),
-    )!.content;
+  api.modifyExportHTMLFiles({
+    // make sure before umi exportStatic
+    before: 'exportStatic',
+    fn(memo) {
+      // append demo routes to exportHtmlData
+      // why not generate html content for each demo then push to memo?
+      // because umi exportStatic will handle relative publicPath
+      // so push routes to exportHtmlData to make it also work for demo routes
+      const routePrefix = `${SP_ROUTE_PREFIX}demos`;
+      const examples = getExampleAssets();
 
-    htmlFiles.push(
-      ...examples.map(({ id }) => ({
-        path: `${filePrefix}/${id}/index.html`,
-        content,
-      })),
-    );
+      api.appData.exportHtmlData.push(
+        ...examples.map(({ id }) => ({
+          route: { path: `/${routePrefix}/${id}` },
+          file: `${routePrefix}/${id}/index.html`,
+          prerender: false,
+        })),
+      );
 
-    return htmlFiles;
+      return memo;
+    },
   });
 };
