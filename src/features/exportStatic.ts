@@ -3,13 +3,13 @@ import type { IApi } from '@/types';
 import { getExampleAssets } from './assets';
 
 const NO_PRERENDER_ROUTES = [
-  // to avoid hydration error for gh-pages
-  // it cannot support `~` and will fall back demo single page to 404
-  '404',
   // disable prerender for demo render page, because umi-hd doesn't support ssr
   // ref: https://github.com/umijs/dumi/pull/1451
   'demo-render',
 ];
+
+const getRoutePath = (routePrefix: string, id: string) =>
+  `/${routePrefix}/${id}`;
 
 export default (api: IApi) => {
   api.describe({ key: 'dumi:exportStatic' });
@@ -41,7 +41,7 @@ export default (api: IApi) => {
 
       api.appData.exportHtmlData.push(
         ...examples.map(({ id }) => ({
-          route: { path: `/${routePrefix}/${id}` },
+          route: { path: getRoutePath(routePrefix, id) },
           file: `${routePrefix}/${id}/index.html`,
           prerender: false,
         })),
@@ -49,5 +49,26 @@ export default (api: IApi) => {
 
       return memo;
     },
+  });
+
+  api.onGenerateFiles(() => {
+    api.writeTmpFile({
+      path: 'core/exportStaticRuntimePlugin.ts',
+      content: `
+export function modifyClientRenderOpts(memo: any) {
+  const { history, hydrate } = memo;
+
+  return {
+    ...memo,
+    hydrate: hydrate && !history.location.pathname.startsWith('/~demo'),
+  };
+}
+      `.trim(),
+      noPluginDir: true,
+    });
+  });
+
+  api.addRuntimePlugin(() => {
+    return [`@@/core/exportStaticRuntimePlugin.ts`];
   });
 };
