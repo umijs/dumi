@@ -8,9 +8,6 @@ const NO_PRERENDER_ROUTES = [
   'demo-render',
 ];
 
-const getRoutePath = (routePrefix: string, id: string) =>
-  `/${routePrefix}/${id}`;
-
 export default (api: IApi) => {
   api.describe({ key: 'dumi:exportStatic' });
 
@@ -41,7 +38,7 @@ export default (api: IApi) => {
 
       api.appData.exportHtmlData.push(
         ...examples.map(({ id }) => ({
-          route: { path: getRoutePath(routePrefix, id) },
+          route: { path: `/${routePrefix}/${id}` },
           file: `${routePrefix}/${id}/index.html`,
           prerender: false,
         })),
