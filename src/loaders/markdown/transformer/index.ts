@@ -8,6 +8,7 @@ import type { Data } from 'vfile';
 import rehypeDemo from './rehypeDemo';
 import rehypeDesc from './rehypeDesc';
 import rehypeEnhancedTag from './rehypeEnhancedTag';
+import rehypeHighlightLine from './rehypeHighlightLine';
 import rehypeImg from './rehypeImg';
 import rehypeIsolation from './rehypeIsolation';
 import rehypeJsxify from './rehypeJsxify';
@@ -133,6 +134,9 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeRaw, {
       fileAbsPath: opts.fileAbsPath,
+    })
+    .use(rehypeHighlightLine, {
+      resolve: opts.resolve,
     })
     .use(rehypeRemoveComments, { removeConditional: true })
     .use(rehypeStrip)
