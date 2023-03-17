@@ -6,10 +6,6 @@ export default defineConfig({
   ],
   autoAlias: false,
   outputPath: 'docs-dist',
-  locales: [
-    { id: 'zh-CN', name: '中文' },
-    { id: 'en-US', name: 'English' },
-  ],
   themeConfig: {
     hd: { rules: [] },
     rtl: true,
