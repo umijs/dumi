@@ -5,14 +5,19 @@ import fs from 'fs';
 import path from 'path';
 import { deepmerge, fsExtra, logger, semver, winPath } from 'umi/plugin-utils';
 
+function isMFSUAvailable(api: IApi) {
+  return process.platform !== 'win32' && api.userConfig.mfsu !== false;
+}
+
 /**
  * exclude pre-compiling modules in mfsu mode
  * and make sure there has no multiple instances problem (such as react)
  */
 export function safeExcludeInMFSU(api: IApi, excludes: RegExp[]) {
-  if (api.userConfig.mfsu !== false) {
-    api.modifyDefaultConfig((memo) => {
+  if (isMFSUAvailable(api)) {
+    api.modifyConfig((memo) => {
       if (memo.mfsu === false) return memo;
+      else if (memo.mfsu === true) memo.mfsu = {};
 
       memo.mfsu ??= {};
       memo.mfsu.exclude = deepmerge(memo.mfsu.exclude || [], excludes);
@@ -109,10 +114,10 @@ export default (api: IApi) => {
   ]);
 
   api.modifyDefaultConfig((memo) => {
-    if (process.platform === 'win32') {
+    if (!isMFSUAvailable(api)) {
       // FIXME: mfsu will broken on window platform for unknown reason
       memo.mfsu = false;
-    } else if (api.userConfig.mfsu !== false) {
+    } else {
       // only normal mode is supported, because src is not fixed in dumi project, eager mode may scan wrong dir
       memo.mfsu.strategy = 'normal';
 
@@ -148,9 +153,6 @@ export default (api: IApi) => {
   });
 
   api.modifyConfig((memo) => {
-    if (api.userConfig.mfsu === true) {
-      memo.mfsu = {};
-    }
     if (api.userConfig.alias?.['@']) {
       // respect user @ alias
       // because dumi force to use .dumi as absSrcPath for move all conventional
