@@ -3,9 +3,6 @@ import type { IApi } from '@/types';
 import { getExampleAssets } from './assets';
 
 const NO_PRERENDER_ROUTES = [
-  // to avoid hydration error for gh-pages
-  // it cannot support `~` and will fall back demo single page to 404
-  '404',
   // disable prerender for demo render page, because umi-hd doesn't support ssr
   // ref: https://github.com/umijs/dumi/pull/1451
   'demo-render',
@@ -49,5 +46,26 @@ export default (api: IApi) => {
 
       return memo;
     },
+  });
+
+  api.onGenerateFiles(() => {
+    api.writeTmpFile({
+      path: 'dumi/exportStaticRuntimePlugin.ts',
+      content: `
+export function modifyClientRenderOpts(memo: any) {
+  const { history, hydrate } = memo;
+
+  return {
+    ...memo,
+    hydrate: hydrate && !history.location.pathname.startsWith('/${SP_ROUTE_PREFIX}demos'),
+  };
+}
+      `.trim(),
+      noPluginDir: true,
+    });
+  });
+
+  api.addRuntimePlugin(() => {
+    return [`@@/dumi/exportStaticRuntimePlugin.ts`];
   });
 };
