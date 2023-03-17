@@ -50,14 +50,14 @@ export default (api: IApi) => {
 
   api.onGenerateFiles(() => {
     api.writeTmpFile({
-      path: 'core/exportStaticRuntimePlugin.ts',
+      path: 'dumi/exportStaticRuntimePlugin.ts',
       content: `
 export function modifyClientRenderOpts(memo: any) {
   const { history, hydrate } = memo;
 
   return {
     ...memo,
-    hydrate: hydrate && !history.location.pathname.startsWith('/~demo'),
+    hydrate: hydrate && !history.location.pathname.startsWith('/${SP_ROUTE_PREFIX}demos'),
   };
 }
       `.trim(),
@@ -66,6 +66,6 @@ export function modifyClientRenderOpts(memo: any) {
   });
 
   api.addRuntimePlugin(() => {
-    return [`@@/core/exportStaticRuntimePlugin.ts`];
+    return [`@@/dumi/exportStaticRuntimePlugin.ts`];
   });
 };
