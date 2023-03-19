@@ -9,7 +9,10 @@ const NO_PRERENDER_ROUTES = [
 ];
 
 export default (api: IApi) => {
-  api.describe({ key: 'dumi:exportStatic' });
+  api.describe({
+    key: 'dumi:exportStatic',
+    enableBy: () => api.isPluginEnable('exportStatic'),
+  });
 
   // disable prerender for some routes, to avoid prerender error or hydration error
   api.modifyRoutes({
