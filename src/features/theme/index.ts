@@ -282,6 +282,7 @@ export default function DumiContextWrapper() {
       pkg: ${JSON.stringify(
         lodash.pick(api.pkg, ...Object.keys(PICKED_PKG_FIELDS)),
       )},
+      historyType: "${api.config.history?.type || 'browser'}",
       entryExports,
       demos,
       components,
