@@ -49,13 +49,21 @@ export const DumiDemo: FC<IDumiDemoProps> = (props) => {
     return <DemoErrorBoundary>{createElement(component)}</DemoErrorBoundary>;
   }
 
+  const {
+    location: { href },
+  } = window;
+  const [, hashRoute] = href.split(/#\//);
+  const isHashRoute = typeof hashRoute === 'string';
+
   return (
     <Previewer
       asset={asset}
       demoUrl={
         // allow user override demoUrl by frontmatter
         props.previewerProps.demoUrl ||
-        `${basename}${SP_ROUTE_PREFIX}demos/${props.demo.id}`
+        `${isHashRoute ? `/#${basename}` : basename}${SP_ROUTE_PREFIX}demos/${
+          props.demo.id
+        }`
       }
       {...props.previewerProps}
     >
