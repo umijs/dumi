@@ -81,7 +81,7 @@ const FILE_LIST = [
       {
         type: 'replace',
         value: [
-          /(# conventionRoutes[^]+?默认值：)`undefined`/g,
+          /(# conventionRoutes[^]+?默认值：)`null`/g,
           "$1`{ base: './.dumi/pages', exclude: [/(\\/|^)(\\.|_\\/)/] }`",
         ],
       },
