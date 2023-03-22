@@ -39,12 +39,24 @@ export default (api: IApi) => {
 
   // pre-check config
   api.onCheck(() => {
-    assert(!api.config.mpa, 'MPA mode is not supported in dumi!');
-    assert(!api.config.vite, 'Vite mode is not supported yet!');
-    assert(
-      !api.config.phantomDependency,
-      'PhantomDependency is not supported yet!',
-    );
+    // unsuitable config for library development
+    [
+      'clientLoader',
+      'deadCode',
+      'icons',
+      'mdx',
+      'mpa',
+      'monorepoRedirect',
+      'reactRouter5Compat',
+      'verifyCommit',
+    ].forEach((key) => {
+      assert(!api.config[key], `${key} is not supported in dumi!`);
+    });
+
+    // not supported config for temporary
+    ['vite', 'PhantomDependency'].forEach((key) => {
+      assert(!api.config[key], `${key} is not supported yet!`);
+    });
 
     if (typeof api.config.mfsu === 'object') {
       assert(
@@ -62,7 +74,8 @@ export default (api: IApi) => {
       'Only `webpack` builder is supported in SSR mode!',
     );
     assert(
-      api.config.cssLoader?.modules === undefined,
+      api.config.cssLoader?.modules === undefined &&
+        api.config.cssLoaderModules === undefined,
       'CSS Modules is not supported! Because it is not suitable for UI library development, please use normal CSS, Less, etc. instead.',
     );
     if (api.userConfig.history?.type === 'hash') {
