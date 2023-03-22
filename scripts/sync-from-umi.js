@@ -35,15 +35,24 @@ const FILE_LIST = [
       ...[
         'clientLoader',
         'cssLoaderModules',
+        'deadCode',
+        'helmet',
+        'icons',
+        '本地 icon 使用',
+        'jsMinifier \\(vite 构建\\)',
         'mdx',
         'mpa',
         'monorepoRedirect',
+        'phantomDependency',
         'reactRouter5Compat',
         'vite',
         'verifyCommit',
       ].map((option) => ({
         type: 'replace',
-        value: [new RegExp(`(?:^|[\r\n])## ${option}[^]+?([\r\n]#|$)`), '$1'],
+        value: [
+          new RegExp(`(?:^|[\\r\\n])## ${option}[^]+?([\\r\\n]## |$)`),
+          '$1',
+        ],
       })),
       // replace h2 -> h3
       { type: 'replace', value: [/(\n?)##/g, '\n###'] },
@@ -68,6 +77,14 @@ const FILE_LIST = [
         type: 'replace',
         value: [/(# exportStatic[^]+?默认值：)`undefined`/g, '$1`{}`'],
       },
+      // replace conventionRoutes default
+      {
+        type: 'replace',
+        value: [
+          /(# conventionRoutes[^]+?默认值：)`null`/g,
+          "$1`{ base: './.dumi/pages', exclude: [/(\\/|^)(\\.|_\\/)/] }`",
+        ],
+      },
       // replace metas
       { type: 'replace', value: [/('|")umi, umijs/g, '$1dumi, base on umi'] },
       // replace umi statement
@@ -78,7 +95,8 @@ const FILE_LIST = [
       // replace umi config
       { type: 'replace', value: [/\.umirc/g, '.dumirc'] },
       // replace umi word
-      { type: 'replace', value: [/('|`)umi/g, '$1dumi'] },
+      { type: 'replace', value: [/('|`|\s)umi/gi, '$1dumi'] },
+      { type: 'replace', value: [/umi 4/gi, 'dumi'] },
       // replace same page url
       {
         type: 'replace',
@@ -90,6 +108,54 @@ const FILE_LIST = [
         value: [
           /(theme: { '@primary-color': '#1DA57A' })/,
           `// 修改 dumi 默认主题的主色，更多变量详见：https://github.com/umijs/dumi/blob/master/src/client/theme-default/styles/variables.less\n(theme: { '@c-primary': '#1DA57A' })`,
+        ],
+      },
+      // replace directory structure link
+      {
+        type: 'replace',
+        value: ['guides/directory-structure', 'guide/project-structure'],
+      },
+      // strip command link
+      {
+        type: 'replace',
+        value: ['[命令行](./commands)', '命令行'],
+      },
+      // strip runtime config
+      {
+        type: 'replace',
+        value: [/> 关于浏览器端构建需要用到的一些配置[^\r\n]+[\r\n]/, ''],
+      },
+      // strip vite for analyze
+      {
+        type: 'replace',
+        value: [/使用 Vite 模式时[^\r\n]+[\r\n]/, ''],
+      },
+      // clear jsMinifier vite
+      {
+        type: 'replace',
+        value: [/{\n\/\*| \(webpack\)/g, ''],
+      },
+      // replace src/pages to .dumi/pages
+      {
+        type: 'replace',
+        value: [/src\/pages/g, '.dumi/pages'],
+      },
+      // replace convention routes link
+      {
+        type: 'replace',
+        value: ['guides/routes#约定式路由', 'guide/conventional-routing'],
+      },
+      // unlink for ANALYZE env
+      {
+        type: 'replace',
+        value: [/\[`ANALYZE`\]\(.+?\)/, '`ANALYZE=1`'],
+      },
+      // update routes option
+      {
+        type: 'replace',
+        value: [
+          /更多信息，请查看 \[配置路由[^\r\n]+/,
+          '非推荐用法，暂不提供示例',
         ],
       },
     ],
