@@ -51,20 +51,16 @@ export const DumiDemo: FC<IDumiDemoProps> = (props) => {
 
   const isHashRoute = historyType === 'hash';
 
-  const {
-    location: { href, origin },
-  } = window;
-  const [base] = href.split(/#\//);
-
   return (
     <Previewer
       asset={asset}
       demoUrl={
         // allow user override demoUrl by frontmatter
         props.previewerProps.demoUrl ||
-        `${
-          isHashRoute ? `${base}#` : origin
-        }${basename}${SP_ROUTE_PREFIX}demos/${props.demo.id}`
+        // when use hash route, browser can automatically handle relative paths starting with #
+        `${isHashRoute ? `#` : ''}${basename}${SP_ROUTE_PREFIX}demos/${
+          props.demo.id
+        }`
       }
       {...props.previewerProps}
     >
