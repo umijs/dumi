@@ -9,8 +9,8 @@ import Logo from 'dumi/theme/slots/Logo';
 import Navbar from 'dumi/theme/slots/Navbar';
 import RtlSwitch from 'dumi/theme/slots/RtlSwitch';
 import SearchBar from 'dumi/theme/slots/SearchBar';
+import SocialIcon from 'dumi/theme/slots/SocialIcon';
 import React, { useMemo, useState, type FC } from 'react';
-import SocialIcon from '../SocialIcon';
 import './index.less';
 
 const Header: FC = () => {
