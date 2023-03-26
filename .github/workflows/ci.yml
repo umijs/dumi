@@ -37,6 +37,12 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org/'
+      - name: Install rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          # specific manually because action not support rust-toolchain.toml
+          toolchain: nightly-2022-09-23
+          target: wasm32-wasi
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2.2.2
@@ -61,9 +67,6 @@ jobs:
 
       - name: Lint code
         run: pnpm lint:es
-
-      - name: Run build
-        run: pnpm build
 
       - name: Run tests
         run: pnpm test
