@@ -35,7 +35,8 @@
     "plugin-utils.d.ts"
   ],
   "scripts": {
-    "build": "father build",
+    "build": "father build && npm run build:crates",
+    "build:crates": "cargo build --target wasm32-wasi -r --out-dir compiled/crates -Z unstable-options",
     "build:deps": "node scripts/pre-bundle-worker.js && father prebundle",
     "build:suites": "pnpm run --filter=\"./suites/**\" build",
     "custom-install": "pnpm i",

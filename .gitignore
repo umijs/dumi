@@ -14,3 +14,5 @@
 /examples/*/.dumi/tmp-production
 /docs/.upstream
 .idea
+/target
+/compiled/crates
