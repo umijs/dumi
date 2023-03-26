@@ -1,48 +1,161 @@
-use swc_core::ecma::{
-    ast::Program,
-    transforms::testing::test,
-    visit::{as_folder, FoldWith, VisitMut},
+use crate::utils::create_return_with_default;
+use swc_core::{
+  common::{Spanned, DUMMY_SP},
+  ecma::{ast::*, transforms::testing::test, visit::*},
+  plugin::{proxies::TransformPluginProgramMetadata, plugin_transform},
 };
-use swc_core::plugin::{plugin_transform, proxies::TransformPluginProgramMetadata};
 
-pub struct TransformVisitor;
+mod utils;
+pub struct ReactDemoVisitor;
 
-impl VisitMut for TransformVisitor {
-    // Implement necessary visit_mut_* methods for actual custom transform.
-    // A comprehensive list of possible visitor methods can be found here:
-    // https://rustdoc.swc.rs/swc_ecma_visit/trait.VisitMut.html
+impl VisitMut for ReactDemoVisitor {
+  fn visit_mut_module_item(&mut self, n: &mut ModuleItem) {
+    if let Some(decl) = n.clone().module_decl() {
+      if let Some(import_decl) = decl.clone().import() {
+        // transform import declaration to await import declaration
+        if !import_decl.type_only {
+          // skip non-type import
+          let name: Pat;
+
+          if let Some(import) = import_decl.specifiers.iter().find(|s| s.is_namespace()) {
+            // extract local name from `import * as x from'y'`
+            name = Pat::Ident(import.clone().namespace().unwrap().local.into());
+          } else {
+            // extract local name from `import x from 'y'` and `import { x } from 'y'`
+            // and transform to { default: x } or { x: x }
+            let props: Vec<ObjectPatProp> = import_decl
+              .specifiers
+              .iter()
+              .map::<ObjectPatProp, _>(|s| {
+                match s {
+                  ImportSpecifier::Default(import_default) => {
+                    // transform default import to { default: x }
+                    return ObjectPatProp::KeyValue(KeyValuePatProp {
+                      key: PropName::Ident(Ident::new("default".into(), import_default.span)),
+                      value: import_default.clone().local.into(),
+                    });
+                  }
+                  ImportSpecifier::Named(import_named) => {
+                    // transform non-default import, e.g. { y: x } or { 'y*y': x } or { x: x }
+                    let key: PropName = match &import_named.imported {
+                      Some(ModuleExportName::Ident(ident)) => {
+                        PropName::Ident(ident.clone())
+                      }
+                      Some(ModuleExportName::Str(str)) => {
+                        PropName::Str(str.clone())
+                      }
+                      None => {
+                        PropName::Ident(import_named.local.clone())
+                      },
+                    };
+
+                    return ObjectPatProp::KeyValue(KeyValuePatProp {
+                      key,
+                      value: import_named.clone().local.into(),
+                    });
+                  }
+                  ImportSpecifier::Namespace(_) => {
+                    // already handle in prev if arm
+                    todo!()
+                  },
+                }
+              })
+              .collect();
+
+            name = Pat::Object(ObjectPat {
+              span: import_decl.span,
+              props,
+              optional: false,
+              type_ann: None,
+            });
+          };
+
+          // replace import declaration to variable declaration with await import
+          *n = ModuleItem::Stmt(Stmt::Decl(Decl::Var(Box::new(VarDecl {
+            kind: VarDeclKind::Const,
+            declare: false,
+            span: n.span(),
+            decls: vec![VarDeclarator {
+              // variable name
+              name,
+              // await import expression
+              init: Some(Box::new(Expr::Await(AwaitExpr {
+                span: DUMMY_SP,
+                arg: CallExpr {
+                  span: DUMMY_SP,
+                  callee: Callee::Import(Import { span: DUMMY_SP }),
+                  args: vec![ExprOrSpread {
+                    spread: None,
+                    expr: Box::new(Expr::Lit(Lit::Str(*import_decl.src))),
+                  }],
+                  type_args: None,
+                }
+                .into(),
+              }))),
+              span: DUMMY_SP,
+              definite: false,
+            }],
+          }))));
+        }
+      } else if let Some(export_expr) = decl.clone().export_default_expr() {
+        // transform export default expression to return statement
+        *n = ModuleItem::Stmt(create_return_with_default(*export_expr.expr, n.span()));
+      } else if let Some(export_decl) = decl.clone().export_default_decl() {
+        // transform export default declaration to return statement
+        match export_decl.decl {
+          DefaultDecl::Class(c) => {
+            *n = ModuleItem::Stmt(create_return_with_default(Expr::Class(c), n.span()));
+          }
+          DefaultDecl::Fn(f) => {
+            *n = ModuleItem::Stmt(create_return_with_default(Expr::Fn(f), n.span()));
+          }
+          DefaultDecl::TsInterfaceDecl(_) => { /* omit interface declaration */ }
+        }
+      }
+    }
+  }
 }
 
-/// An example plugin function with macro support.
-/// `plugin_transform` macro interop pointers into deserialized structs, as well
-/// as returning ptr back to host.
-///
-/// It is possible to opt out from macro by writing transform fn manually
-/// if plugin need to handle low-level ptr directly via
-/// `__transform_plugin_process_impl(
-///     ast_ptr: *const u8, ast_ptr_len: i32,
-///     unresolved_mark: u32, should_enable_comments_proxy: i32) ->
-///     i32 /*  0 for success, fail otherwise.
-///             Note this is only for internal pointer interop result,
-///             not actual transform result */`
-///
-/// This requires manual handling of serialization / deserialization from ptrs.
-/// Refer swc_plugin_macro to see how does it work internally.
 #[plugin_transform]
 pub fn process_transform(program: Program, _metadata: TransformPluginProgramMetadata) -> Program {
-    program.fold_with(&mut as_folder(TransformVisitor))
+  program.fold_with(&mut as_folder(ReactDemoVisitor))
 }
 
-// An example to test plugin transform.
-// Recommended strategy to test plugin's transform is verify
-// the Visitor's behavior, instead of trying to run `process_transform` with mocks
-// unless explicitly required to do so.
 test!(
-    Default::default(),
-    |_| as_folder(TransformVisitor),
-    boo,
-    // Input codes
-    r#"console.log("transform");"#,
-    // Output codes after transformed with plugin
-    r#"console.log("transform");"#
+  Default::default(),
+  |_| as_folder(ReactDemoVisitor),
+  imports,
+  // input
+  r#"import a from 'a';
+import { b } from 'b';
+import { c1 as c } from 'c';
+import * as d from 'd';
+import e, { e1, e2 as e3 } from 'e';"#,
+  // output
+  r#"const { default: a  } = await import('a');
+const { b: b  } = await import('b');
+const { c1: c  } = await import('c');
+const d = await import('d');
+const { default: e , e1: e1 , e2: e3  } = await import('e');"#
+);
+
+test!(
+  Default::default(),
+  |_| as_folder(ReactDemoVisitor),
+  exports,
+  // input
+  r#"export default a;
+export default () => null;
+export default class A {}"#,
+  // output
+  r#"return {
+    default: a
+};
+return {
+    default: ()=>null
+};
+return {
+    default: class A {
+    }
+};"#
 );

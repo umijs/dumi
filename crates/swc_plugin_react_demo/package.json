@@ -1,16 +1,8 @@
 {
   "name": "swc_plugin_react_demo",
-  "version": "0.1.0",
-  "description": "",
-  "keywords": [
-    "swc-plugin"
-  ],
-  "license": "ISC",
-  "author": "",
-  "main": "target/wasm32-wasi/release/swc_plugin_react_demo.wasm",
-  "files": [],
-  "scripts": {
-    "prepublishOnly": "cargo build-wasi --release"
-  },
-  "preferUnplugged": true
+  "version": "0.0.0",
+  "private": true,
+  "description": "swc plugin for transform dumi react demo",
+  "license": "MIT",
+  "author": "Peach <scdzwyxst@gmail.com>"
 }
