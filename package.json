@@ -39,7 +39,7 @@
     "build:crates": "cargo build --target wasm32-wasi -r --out-dir compiled/crates -Z unstable-options",
     "build:deps": "node scripts/pre-bundle-worker.js && father prebundle",
     "build:suites": "pnpm run --filter=\"./suites/**\" build",
-    "custom-install": "pnpm i && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh && rustup install nightly-2022-09-23 && rustup target add wasm32-wasi && rustup default nightly-2022-09-23",
+    "custom-install": "rustup default nightly-2022-09-23 && rustup target add wasm32-wasi && pnpm i",
     "dev": "father dev",
     "docs:build": "node ./bin/dumi.js build",
     "docs:dev": "node ./bin/dumi.js dev",
