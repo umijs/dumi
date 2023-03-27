@@ -20,7 +20,14 @@ export default class ReactTechStack implements IDumiTechStack {
           },
           target: 'es2022',
           experimental: {
-            plugins: [['../../compiled/crates/swc_plugin_react_demo.wasm', {}]],
+            plugins: [
+              [
+                require.resolve(
+                  '../../compiled/crates/swc_plugin_react_demo.wasm',
+                ),
+                {},
+              ],
+            ],
           },
         },
         module: {
