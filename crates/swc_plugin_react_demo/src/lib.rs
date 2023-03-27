@@ -34,10 +34,10 @@ impl VisitMut for ReactDemoVisitor {
                   match s {
                     ImportSpecifier::Default(import_default) => {
                       // transform default import to { default: x }
-                      return ObjectPatProp::KeyValue(KeyValuePatProp {
+                      ObjectPatProp::KeyValue(KeyValuePatProp {
                         key: PropName::Ident(Ident::new("default".into(), import_default.span)),
                         value: import_default.clone().local.into(),
-                      });
+                      })
                     }
                     ImportSpecifier::Named(import_named) => {
                       // transform non-default import, e.g. { y: x } or { 'y*y': x } or { x: x }
@@ -47,10 +47,10 @@ impl VisitMut for ReactDemoVisitor {
                         None => PropName::Ident(import_named.local.clone()),
                       };
 
-                      return ObjectPatProp::KeyValue(KeyValuePatProp {
+                      ObjectPatProp::KeyValue(KeyValuePatProp {
                         key,
                         value: import_named.clone().local.into(),
-                      });
+                      })
                     }
                     ImportSpecifier::Namespace(_) => unreachable!("already handle in prev if arm"),
                   }
