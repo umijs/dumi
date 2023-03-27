@@ -2,115 +2,117 @@ use crate::utils::create_return_with_default;
 use swc_core::{
   common::{Spanned, DUMMY_SP},
   ecma::{ast::*, transforms::testing::test, visit::*},
-  plugin::{proxies::TransformPluginProgramMetadata, plugin_transform},
+  plugin::{plugin_transform, proxies::TransformPluginProgramMetadata},
 };
 
 mod utils;
 pub struct ReactDemoVisitor;
 
+/**
+ * implement `VisitMut` trait for transform `export` to `return`, and transform `import` to `await import`
+ */
 impl VisitMut for ReactDemoVisitor {
   fn visit_mut_module_item(&mut self, n: &mut ModuleItem) {
-    if let Some(decl) = n.clone().module_decl() {
-      if let Some(import_decl) = decl.clone().import() {
-        // transform import declaration to await import declaration
-        if !import_decl.type_only {
-          // skip non-type import
-          let name: Pat;
+    if let ModuleItem::ModuleDecl(module_decl) = n.clone() {
+      match module_decl {
+        ModuleDecl::Import(import_decl) => {
+          // transform import declaration to await import declaration
+          if !import_decl.type_only {
+            // skip non-type import
+            let name: Pat = if let Some(import) =
+              import_decl.specifiers.iter().find(|s| s.is_namespace())
+            {
+              // extract local name from `import * as x from'y'`
+              Pat::Ident(import.clone().namespace().unwrap().local.into())
+            } else {
+              // extract local name from `import x from 'y'` and `import { x } from 'y'`
+              // and transform to { default: x } or { x: x }
+              let props: Vec<ObjectPatProp> = import_decl
+                .specifiers
+                .iter()
+                .map::<ObjectPatProp, _>(|s| {
+                  match s {
+                    ImportSpecifier::Default(import_default) => {
+                      // transform default import to { default: x }
+                      return ObjectPatProp::KeyValue(KeyValuePatProp {
+                        key: PropName::Ident(Ident::new("default".into(), import_default.span)),
+                        value: import_default.clone().local.into(),
+                      });
+                    }
+                    ImportSpecifier::Named(import_named) => {
+                      // transform non-default import, e.g. { y: x } or { 'y*y': x } or { x: x }
+                      let key: PropName = match &import_named.imported {
+                        Some(ModuleExportName::Ident(ident)) => PropName::Ident(ident.clone()),
+                        Some(ModuleExportName::Str(str)) => PropName::Str(str.clone()),
+                        None => PropName::Ident(import_named.local.clone()),
+                      };
 
-          if let Some(import) = import_decl.specifiers.iter().find(|s| s.is_namespace()) {
-            // extract local name from `import * as x from'y'`
-            name = Pat::Ident(import.clone().namespace().unwrap().local.into());
-          } else {
-            // extract local name from `import x from 'y'` and `import { x } from 'y'`
-            // and transform to { default: x } or { x: x }
-            let props: Vec<ObjectPatProp> = import_decl
-              .specifiers
-              .iter()
-              .map::<ObjectPatProp, _>(|s| {
-                match s {
-                  ImportSpecifier::Default(import_default) => {
-                    // transform default import to { default: x }
-                    return ObjectPatProp::KeyValue(KeyValuePatProp {
-                      key: PropName::Ident(Ident::new("default".into(), import_default.span)),
-                      value: import_default.clone().local.into(),
-                    });
+                      return ObjectPatProp::KeyValue(KeyValuePatProp {
+                        key,
+                        value: import_named.clone().local.into(),
+                      });
+                    }
+                    ImportSpecifier::Namespace(_) => unreachable!("already handle in prev if arm"),
                   }
-                  ImportSpecifier::Named(import_named) => {
-                    // transform non-default import, e.g. { y: x } or { 'y*y': x } or { x: x }
-                    let key: PropName = match &import_named.imported {
-                      Some(ModuleExportName::Ident(ident)) => {
-                        PropName::Ident(ident.clone())
-                      }
-                      Some(ModuleExportName::Str(str)) => {
-                        PropName::Str(str.clone())
-                      }
-                      None => {
-                        PropName::Ident(import_named.local.clone())
-                      },
-                    };
+                })
+                .collect();
 
-                    return ObjectPatProp::KeyValue(KeyValuePatProp {
-                      key,
-                      value: import_named.clone().local.into(),
-                    });
-                  }
-                  ImportSpecifier::Namespace(_) => {
-                    // already handle in prev if arm
-                    todo!()
-                  },
-                }
+              Pat::Object(ObjectPat {
+                span: import_decl.span,
+                props,
+                optional: false,
+                type_ann: None,
               })
-              .collect();
+            };
 
-            name = Pat::Object(ObjectPat {
-              span: import_decl.span,
-              props,
-              optional: false,
-              type_ann: None,
-            });
-          };
-
-          // replace import declaration to variable declaration with await import
-          *n = ModuleItem::Stmt(Stmt::Decl(Decl::Var(Box::new(VarDecl {
-            kind: VarDeclKind::Const,
-            declare: false,
-            span: n.span(),
-            decls: vec![VarDeclarator {
-              // variable name
-              name,
-              // await import expression
-              init: Some(Box::new(Expr::Await(AwaitExpr {
-                span: DUMMY_SP,
-                arg: CallExpr {
+            // replace import declaration to variable declaration with await import
+            *n = ModuleItem::Stmt(Stmt::Decl(Decl::Var(Box::new(VarDecl {
+              kind: VarDeclKind::Const,
+              declare: false,
+              span: n.span(),
+              decls: vec![VarDeclarator {
+                // variable name
+                name,
+                // await import expression
+                init: Some(Box::new(Expr::Await(AwaitExpr {
                   span: DUMMY_SP,
-                  callee: Callee::Import(Import { span: DUMMY_SP }),
-                  args: vec![ExprOrSpread {
-                    spread: None,
-                    expr: Box::new(Expr::Lit(Lit::Str(*import_decl.src))),
-                  }],
-                  type_args: None,
-                }
-                .into(),
-              }))),
-              span: DUMMY_SP,
-              definite: false,
-            }],
-          }))));
-        }
-      } else if let Some(export_expr) = decl.clone().export_default_expr() {
-        // transform export default expression to return statement
-        *n = ModuleItem::Stmt(create_return_with_default(*export_expr.expr, n.span()));
-      } else if let Some(export_decl) = decl.clone().export_default_decl() {
-        // transform export default declaration to return statement
-        match export_decl.decl {
-          DefaultDecl::Class(c) => {
-            *n = ModuleItem::Stmt(create_return_with_default(Expr::Class(c), n.span()));
+                  arg: CallExpr {
+                    span: DUMMY_SP,
+                    callee: Callee::Import(Import { span: DUMMY_SP }),
+                    args: vec![ExprOrSpread {
+                      spread: None,
+                      expr: Box::new(Expr::Lit(Lit::Str(*import_decl.src))),
+                    }],
+                    type_args: None,
+                  }
+                  .into(),
+                }))),
+                span: DUMMY_SP,
+                definite: false,
+              }],
+            }))));
           }
-          DefaultDecl::Fn(f) => {
-            *n = ModuleItem::Stmt(create_return_with_default(Expr::Fn(f), n.span()));
-          }
-          DefaultDecl::TsInterfaceDecl(_) => { /* omit interface declaration */ }
         }
+        ModuleDecl::ExportDefaultExpr(export_expr) => {
+          // transform export default expression to return statement
+          *n = ModuleItem::Stmt(create_return_with_default(*export_expr.expr, n.span()));
+        }
+        ModuleDecl::ExportDefaultDecl(export_decl) => {
+          // transform export default declaration to return statement
+          match export_decl.decl {
+            DefaultDecl::Class(c) => {
+              *n = ModuleItem::Stmt(create_return_with_default(Expr::Class(c), n.span()));
+            }
+            DefaultDecl::Fn(f) => {
+              *n = ModuleItem::Stmt(create_return_with_default(Expr::Fn(f), n.span()));
+            }
+            DefaultDecl::TsInterfaceDecl(_) => { /* omit interface declaration */ }
+          }
+        }
+        ModuleDecl::ExportNamed(_) => {
+          unreachable!("export named should be transform to export default")
+        }
+        _ => { /* omit other declarations */ }
       }
     }
   }
