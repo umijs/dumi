@@ -34,6 +34,6 @@ export default {
   styles: ['a[title=站长统计] { display: none; }'],
   exportStatic: {},
   sitemap: {
-    hostname: 'https://d.umijs.org',
+    hostname: 'https://v1.d.umijs.org',
   },
 };
