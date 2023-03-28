@@ -1,4 +1,5 @@
 import {
+  catchUnhandledRejection,
   checkVersion as checkNodeVersion,
   setNodeTitle,
 } from 'umi/dist/cli/node';
@@ -11,6 +12,8 @@ import { DumiService } from './service';
 interface IOpts {
   presets?: string[];
 }
+
+catchUnhandledRejection();
 
 export async function run(opts?: IOpts) {
   checkNodeVersion();
