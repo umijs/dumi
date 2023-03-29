@@ -20,6 +20,7 @@ export default class ReactTechStack implements IDumiTechStack {
           },
           target: 'es2022',
           experimental: {
+            cacheRoot: 'node_modules/.cache/swc',
             plugins: [
               [
                 require.resolve(
