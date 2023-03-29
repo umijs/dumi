@@ -22,7 +22,7 @@ interface SourceCodeProps {
 }
 
 const SourceCode: FC<SourceCodeProps> = (props) => {
-  const { children, lang, highlightLines = [] } = props;
+  const { children = '', lang, highlightLines = [] } = props;
   const timer = useRef<number>();
   const [isCopied, setIsCopied] = useState(false);
 
