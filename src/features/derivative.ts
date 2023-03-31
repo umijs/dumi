@@ -3,7 +3,7 @@ import type { IApi } from '@/types';
 import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
-import { deepmerge, fsExtra, logger, semver, winPath } from 'umi/plugin-utils';
+import { deepmerge, fsExtra, logger, winPath } from 'umi/plugin-utils';
 
 function isMFSUAvailable(api: IApi) {
   return process.platform !== 'win32' && api.userConfig.mfsu !== false;
@@ -201,58 +201,19 @@ export default (api: IApi) => {
       USELESS_TMP_FILES.forEach((file) => {
         fsExtra.rmSync(path.join(api.paths.absTmpPath, file), { force: true });
       });
-
-      // replace @/loading from umi.ts, because dumi use `<rootDir>/.dumi` as absSrcPath
-      const umiPath = path.join(api.paths.absTmpPath, 'umi.ts');
-      fsExtra.writeFileSync(
-        umiPath,
-        fsExtra
-          .readFileSync(umiPath, 'utf-8')
-          .replace("'@/loading'", "'../loading'"),
-      );
-
-      // replace helmet for ssr since @umi@4.0.54
-      // ref: https://github.com/umijs/umi/pull/10633
-      if (
-        api.config.ssr &&
-        semver.subset(api.appData.umi.version, '4.0.54 - 4.0.55')
-      ) {
-        const helmetPath = path.join(api.paths.absTmpPath, 'core/helmet.ts');
-        fsExtra.writeFileSync(
-          helmetPath,
-          fsExtra
-            .readFileSync(helmetPath, 'utf-8')
-            .replace(
-              /(return )(React\.createElement)/,
-              "$1typeof window === 'undefined' ? container : $2",
-            ),
-        );
-      }
     },
   });
 
   // built-in other umi plugins (such as analytics)
   api.registerPlugins([require.resolve('../../compiled/@umijs/plugins')]);
 
-  // FIXME: skip prepare plugin since umi@4.0.48, because it is not compatible with dumi currently
-  if (api.isPluginEnable('prepare')) api.skipPlugins(['prepare']);
-
-  // skip routeProps plugin since umi@4.0.53
-  // because dumi support conventional route props by default and it will cause ssr failed
-  if (api.isPluginEnable('routeProps')) {
-    api.skipPlugins(['routeProps']);
-
-    // FIXME: write a empty routeProps file to avoid umi throw error, should be removed after umi fixed
-    api.onGenerateFiles({
-      // make sure before umi generate files
-      stage: -Infinity,
-      fn() {
-        api.writeTmpFile({
-          noPluginDir: true,
-          path: 'core/routeProps.js',
-          content: 'export default {}',
-        });
-      },
-    });
-  }
+  // skip useless umi built-in plugins
+  [
+    // skip prepare plugin since umi@4.0.48, because it is not compatible with dumi currently
+    'prepare',
+    // skip routeProps plugin since umi@4.0.53, because dumi support conventional route props by default
+    'routeProps',
+  ].forEach((plugin) => {
+    if (api.isPluginEnable(plugin)) api.skipPlugins([plugin]);
+  });
 };
