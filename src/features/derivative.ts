@@ -162,6 +162,9 @@ export default (api: IApi) => {
     // enable exportStatic by default
     memo.exportStatic ||= {};
 
+    // enable esbuildMinifyIIFE by default
+    memo.esbuildMinifyIIFE = true;
+
     return memo;
   });
 

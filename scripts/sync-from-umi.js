@@ -72,6 +72,11 @@ const FILE_LIST = [
       { type: 'replace', value: [/- `include` 仅在 `strategy[^\n]+\n/, ''] },
       // replace hash default
       { type: 'replace', value: [/(# hash[^]+?默认值：)`false`/g, '$1`true`'] },
+      // replace esbuildMinifyIIFE default
+      {
+        type: 'replace',
+        value: [/(# esbuildMinifyIIFE[^]+?默认值：)`false`/g, '$1`true`'],
+      },
       // replace exportStatic default
       {
         type: 'replace',
@@ -87,16 +92,14 @@ const FILE_LIST = [
       },
       // replace metas
       { type: 'replace', value: [/('|")umi, umijs/g, '$1dumi, base on umi'] },
-      // replace umi statement
-      {
-        type: 'replace',
-        value: [/(额外的|，|。|让|删除)(\s?)umi/gi, '$1$2dumi'],
-      },
       // replace umi config
       { type: 'replace', value: [/\.umirc/g, '.dumirc'] },
       // replace umi word
-      { type: 'replace', value: [/('|`|\s)umi/gi, '$1dumi'] },
       { type: 'replace', value: [/umi 4/gi, 'dumi'] },
+      {
+        type: 'replace',
+        value: [/(额外的|，|。|让|删除|'|`|[^-]\s)umi/gi, '$1dumi'],
+      },
       // replace same page url
       {
         type: 'replace',
