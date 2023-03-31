@@ -6,7 +6,15 @@ import path from 'path';
 import { deepmerge, fsExtra, logger, winPath } from 'umi/plugin-utils';
 
 function isMFSUAvailable(api: IApi) {
-  return process.platform !== 'win32' && api.userConfig.mfsu !== false;
+  return (
+    // maybe not working on windows
+    process.platform !== 'win32' &&
+    // allow user to disable mfsu
+    api.userConfig.mfsu !== false &&
+    // mfsu will interrupt 2-level esm for strip-ansi with unknown reason
+    // ref: https://github.com/umijs/dumi/issues/1587
+    api.pkg.type !== 'module'
+  );
 }
 
 /**
@@ -78,7 +86,7 @@ export default (api: IApi) => {
         api.config.cssLoaderModules === undefined,
       'CSS Modules is not supported! Because it is not suitable for UI library development, please use normal CSS, Less, etc. instead.',
     );
-    if (api.userConfig.history?.type === 'hash') {
+    if (api.userConfig.history && api.userConfig.history.type === 'hash') {
       logger.warn(
         'Hash history is temporarily incompatible, it is recommended to use browser history for now.',
       );
@@ -128,7 +136,6 @@ export default (api: IApi) => {
 
   api.modifyDefaultConfig((memo) => {
     if (!isMFSUAvailable(api)) {
-      // FIXME: mfsu will broken on window platform for unknown reason
       memo.mfsu = false;
     } else {
       // only normal mode is supported, because src is not fixed in dumi project, eager mode may scan wrong dir
