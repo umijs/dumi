@@ -241,7 +241,7 @@ function generateSearchResult(metadata: ISearchMetadata, keywordsStr: string) {
   const keywords = keywordsStr.split(' ');
   const matchReg = new RegExp(
     keywordsStr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(' ', '|'),
-    'gi',
+    'i',
   );
   const resultMapping: Record<string, ISearchNavResult> = {};
 
