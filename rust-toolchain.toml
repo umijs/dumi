@@ -1,5 +1,0 @@
-[toolchain]
-profile = "default"
-# use nightly for unstable features, and this date is aligned to @swc/plugin-*
-# ref: https://github.com/swc-project/plugins/blob/main/rust-toolchain
-channel = "nightly-2022-09-23"
