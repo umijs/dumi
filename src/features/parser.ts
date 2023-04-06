@@ -25,6 +25,7 @@ export default (api: IApi) => {
         Joi.object({
           unpkgHost: Joi.string().uri().optional(),
           resolveFilter: Joi.function().optional(),
+          parseOptions: Joi.object().optional(),
         }),
     },
   });
@@ -54,6 +55,7 @@ export default (api: IApi) => {
       resolveDir: api.cwd,
       unpkgHost: api.config.apiParser!.unpkgHost,
       resolveFilter: api.config.apiParser!.resolveFilter,
+      parseOptions: api.config.apiParser!.parseOptions,
     });
   });
 

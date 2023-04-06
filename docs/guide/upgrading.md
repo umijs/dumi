@@ -153,6 +153,16 @@ dumi 2.0 将使用特有的 `.dumirc.ts` 作为配置文件，请将原有的 `.
 });
 ```
 
+Monorepo 模式下特别注意 🚨：
+
+由于 `dumi 2` 不再感知 `monorepo` ，因此会出现热更新失效的问题，需要手动配置包名到 src 的 alias。
+
+```ts
+alias: {
+  pkg: path.join(__dirname, 'packages/pkg/src');
+}
+```
+
 ## 目录结构升级
 
 由于 dumi 2.0 拆分了普通文档与资产文档的解析逻辑，其中资产文档的解析**仅识别解析路径顶层 md 及顶层下的 index.md**，所以在 `src` 下的文档目录结构可能需要做调整，例如：

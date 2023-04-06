@@ -1,5 +1,6 @@
 import { ReactComponent as IconCheck } from '@ant-design/icons-svg/inline-svg/outlined/check.svg';
 import { ReactComponent as IconCopy } from '@ant-design/icons-svg/inline-svg/outlined/copy.svg';
+import classNames from 'classnames';
 import Highlight, { defaultProps, type Language } from 'prism-react-renderer';
 import 'prism-themes/themes/prism-one-light.css';
 import React, { useRef, useState, type FC } from 'react';
@@ -14,10 +15,14 @@ const SIMILAR_DSL: Record<string, Language> = {
   axml: 'markup',
 };
 
-const SourceCode: FC<{ children: string; lang: Language }> = ({
-  children,
-  lang,
-}) => {
+interface SourceCodeProps {
+  children: string;
+  lang: Language;
+  highlightLines?: number[];
+}
+
+const SourceCode: FC<SourceCodeProps> = (props) => {
+  const { children = '', lang, highlightLines = [] } = props;
   const timer = useRef<number>();
   const [isCopied, setIsCopied] = useState(false);
 
@@ -48,7 +53,16 @@ const SourceCode: FC<{ children: string; lang: Language }> = ({
         {({ className, style, tokens, getLineProps, getTokenProps }) => (
           <pre className={className} style={style}>
             {tokens.map((line, i) => (
-              <div key={String(i)} {...getLineProps({ line, key: i })}>
+              <div
+                key={String(i)}
+                {...getLineProps({
+                  line,
+                  key: i,
+                  className: classNames({
+                    highlighted: highlightLines.includes(i + 1),
+                  }),
+                })}
+              >
                 {line.map((token, key) => (
                   <span key={String(i)} {...getTokenProps({ token, key })} />
                 ))}

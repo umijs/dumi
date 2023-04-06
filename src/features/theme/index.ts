@@ -5,14 +5,13 @@ import {
   THEME_PREFIX,
 } from '@/constants';
 import type { IApi } from '@/types';
+import { getClientDistFile } from '@/utils';
 import { parseModuleSync } from '@umijs/bundler-utils';
 import fs from 'fs';
 import path from 'path';
-import { deepmerge, lodash, winPath } from 'umi/plugin-utils';
+import { deepmerge, lodash, resolve, winPath } from 'umi/plugin-utils';
 import { safeExcludeInMFSU } from '../derivative';
 import loadTheme, { IThemeLoadResult } from './loader';
-
-const DEFAULT_THEME_PATH = path.join(__dirname, '../../../theme-default');
 
 /**
  * get pkg theme name
@@ -39,7 +38,10 @@ function getPkgThemePath(api: IApi) {
   return (
     pkgThemeName &&
     path.dirname(
-      require.resolve(`${pkgThemeName}/package.json`, { paths: [api.cwd] }),
+      resolve.sync(`${pkgThemeName}/package.json`, {
+        basedir: api.cwd,
+        preserveSymlinks: true,
+      }),
     )
   );
 }
@@ -55,6 +57,10 @@ function getModuleExports(modulePath: string) {
 }
 
 export default (api: IApi) => {
+  const DEFAULT_THEME_PATH = path.join(
+    getClientDistFile('package.json', api.cwd),
+    '../theme-default',
+  );
   // load default theme
   const defaultThemeData = loadTheme(DEFAULT_THEME_PATH);
   // try to load theme package
@@ -276,6 +282,7 @@ export default function DumiContextWrapper() {
       pkg: ${JSON.stringify(
         lodash.pick(api.pkg, ...Object.keys(PICKED_PKG_FIELDS)),
       )},
+      historyType: "${api.config.history?.type || 'browser'}",
       entryExports,
       demos,
       components,

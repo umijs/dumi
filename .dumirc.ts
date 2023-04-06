@@ -21,5 +21,8 @@ Powered by self`,
     },
   },
   ...(process.env.NODE_ENV === 'development' ? {} : { ssr: {} }),
+  analytics: {
+    ga_v2: 'G-GX2S89BMXB',
+  },
   sitemap: { hostname: 'https://d.umijs.org' },
 });

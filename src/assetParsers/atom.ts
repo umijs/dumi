@@ -35,6 +35,7 @@ class AtomAssetsParser {
     resolveFilter?: AtomAssetsParser['resolveFilter'];
     unpkgHost?: string;
     watch?: boolean;
+    parseOptions?: object;
   }) {
     const absEntryFile = path.resolve(opts.resolveDir, opts.entryFile);
 
@@ -46,6 +47,8 @@ class AtomAssetsParser {
       basePath: getProjectRoot(opts.resolveDir),
       unPkgHost: opts.unpkgHost ?? 'https://unpkg.com',
       mode: 'worker',
+      // @ts-ignore
+      parseOptions: opts.parseOptions,
     });
   }
 

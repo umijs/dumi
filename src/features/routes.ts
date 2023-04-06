@@ -1,11 +1,12 @@
 import { SP_ROUTE_PREFIX } from '@/constants';
 import type { IApi } from '@/types';
+import { getClientDistFile } from '@/utils';
 import { getConventionRoutes } from '@umijs/core';
 import { createRouteId } from '@umijs/core/dist/route/utils';
 import path from 'path';
 import { plural } from 'pluralize';
 import type { IRoute } from 'umi';
-import { glob, resolve, winPath } from 'umi/plugin-utils';
+import { glob, winPath } from 'umi/plugin-utils';
 
 const CTX_LAYOUT_ID = 'dumi-context-layout';
 
@@ -87,29 +88,6 @@ function flatRoute(route: IRoute, docLayoutId: string) {
           route.path
         : route.absPath.slice(1);
   }
-}
-
-/**
- * get page route file
- */
-function getClientPageFile(file: string, cwd: string) {
-  let clientFile: string;
-
-  try {
-    // why use `resolve`?
-    // because `require.resolve` will use the final path of symlink file
-    // and in tnpm project, umi will get a file path includes `@` symbol then
-    // generate a chunk name with `@` symbol, which is not supported by cdn
-    clientFile = resolve.sync(`dumi/dist/${file}`, {
-      basedir: cwd,
-      preserveSymlinks: false,
-    });
-  } catch {
-    // fallback to use `require.resolve`, for dumi self docs & examples
-    clientFile = require.resolve(`../${file}`);
-  }
-
-  return winPath(clientFile);
 }
 
 export default (api: IApi) => {
@@ -284,7 +262,7 @@ export default (api: IApi) => {
         path: '*',
         absPath: '/*',
         parentId: docLayoutId,
-        file: getClientPageFile('client/pages/404', api.cwd),
+        file: getClientDistFile('dist/client/pages/404', api.cwd),
       };
     }
 
@@ -294,10 +272,7 @@ export default (api: IApi) => {
       path: `${SP_ROUTE_PREFIX}demos/:id`,
       absPath: `/${SP_ROUTE_PREFIX}demos/:id`,
       parentId: demoLayoutId,
-      file: getClientPageFile('client/pages/Demo', api.cwd),
-      // disable prerender for demo render page, because umi-hd doesn't support ssr
-      // ref: https://github.com/umijs/dumi/pull/1451
-      prerender: false,
+      file: getClientDistFile('dist/client/pages/Demo', api.cwd),
     };
 
     return routes;

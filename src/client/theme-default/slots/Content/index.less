@@ -51,6 +51,7 @@
   // table
   table {
     width: 100%;
+    table-layout: auto;
   }
 
   th {
@@ -157,12 +158,20 @@
       background-color: lighten(@c-site-bg-dark, 3%);
     }
 
+    &[data-no-footer] {
+      padding-bottom: @s-content-padding;
+    }
+
     @media @mobile {
       max-width: initial;
       margin: 0 -24px;
       padding: 24px 24px 0;
       border-radius: 0;
       box-shadow: none;
+
+      &[data-no-footer] {
+        padding: 24px;
+      }
     }
   }
 
@@ -172,6 +181,14 @@
 
     @media @mobile {
       min-height: calc(100vh - @s-header-height-m);
+    }
+  }
+
+  &[data-no-sidebar][data-no-footer] {
+    margin-bottom: @s-content-padding;
+
+    @media @mobile {
+      margin-bottom: 24px;
     }
   }
 }

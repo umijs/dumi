@@ -37,7 +37,7 @@ const DemoErrorBoundary: FC<{ children: ReactNode }> = (props) => (
 );
 
 export const DumiDemo: FC<IDumiDemoProps> = (props) => {
-  const { demos } = useSiteData();
+  const { demos, historyType } = useSiteData();
   const { basename } = useAppData();
   const { component, asset } = demos[props.demo.id];
 
@@ -49,13 +49,18 @@ export const DumiDemo: FC<IDumiDemoProps> = (props) => {
     return <DemoErrorBoundary>{createElement(component)}</DemoErrorBoundary>;
   }
 
+  const isHashRoute = historyType === 'hash';
+
   return (
     <Previewer
       asset={asset}
       demoUrl={
         // allow user override demoUrl by frontmatter
         props.previewerProps.demoUrl ||
-        `${basename}${SP_ROUTE_PREFIX}demos/${props.demo.id}`
+        // when use hash route, browser can automatically handle relative paths starting with #
+        `${isHashRoute ? `#` : ''}${basename}${SP_ROUTE_PREFIX}demos/${
+          props.demo.id
+        }`
       }
       {...props.previewerProps}
     >

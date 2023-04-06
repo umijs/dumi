@@ -4,7 +4,7 @@ import { getRoutePathFromFsPath } from '@/utils';
 import type { sync } from 'enhanced-resolve';
 import type { Element, Root } from 'hast';
 import path from 'path';
-import { winPath } from 'umi/plugin-utils';
+import { logger, winPath } from 'umi/plugin-utils';
 import type { Transformer } from 'unified';
 import type { DataMap } from 'vfile';
 import type { IMdTransformerOptions } from '.';
@@ -110,6 +110,8 @@ export default function rehypeDemo(
 ): Transformer<Root> {
   return async (tree, vFile) => {
     const deferrers: Promise<DataMap['demos'][0]>[] = [];
+    // sse an array to store all demo ids for subsequent repeat warnings
+    const demoIds: string[] = [];
     const replaceNodes: Element[] = [];
     let index = 0;
 
@@ -222,12 +224,17 @@ export default function rehypeDemo(
               parseOpts.fileAbsPath = winPath(
                 codeNode.properties!.src as string,
               );
+
+              let localId =
+                (codeNode.properties?.id as string) ??
+                path.parse(
+                  parseOpts.fileAbsPath.replace(/\/index\.(j|t)sx?$/, ''),
+                ).name;
+
               parseOpts.id = getCodeId(
                 opts.cwd,
                 opts.fileAbsPath,
-                path.parse(
-                  parseOpts.fileAbsPath.replace(/\/index\.(j|t)sx?$/, ''),
-                ).name,
+                localId,
                 vFile.data.frontmatter!.atomId,
               );
               component = `React.lazy(() => import( /* webpackChunkName: "${chunkName}" */ '${winPath(
@@ -256,11 +263,26 @@ export default function rehypeDemo(
             }
 
             const propDemo: IDumiDemoProps['demo'] = { id: parseOpts.id };
+            demoIds.push(parseOpts.id);
 
             // generate asset data for demo
             deferrers.push(
               parseBlockAsset(parseOpts).then(
                 async ({ asset, sources, frontmatter }) => {
+                  // repeat id to give warning
+                  if (
+                    demoIds.indexOf(parseOpts.id) !==
+                    demoIds.lastIndexOf(parseOpts.id)
+                  ) {
+                    const startLine = node.position?.start.line;
+                    const suffix = startLine ? `:${startLine}` : '';
+
+                    logger.warn(
+                      `Duplicate demo id found due to filename conflicts, please consider adding a unique id to code tag to resolve this.
+        at ${opts.fileAbsPath}${suffix}`,
+                    );
+                  }
+
                   // eslint-disable-next-line @typescript-eslint/no-unused-vars
                   const { src, className, ...restAttrs } =
                     codeNode.properties || {};

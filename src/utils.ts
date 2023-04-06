@@ -2,7 +2,7 @@ import Cache from 'file-system-cache';
 import fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'path';
-import { lodash, logger, winPath } from 'umi/plugin-utils';
+import { lodash, logger, resolve, winPath } from 'umi/plugin-utils';
 
 /**
  * get route path from file-system path
@@ -157,4 +157,26 @@ export function getProjectRoot(cwd: string) {
   }
 
   return winPath(cwd);
+}
+
+/**
+ * get dumi client dist file and preserve symlink(pnpm, tnpm & etc.) to make chunk name clean
+ */
+export function getClientDistFile(file: string, cwd: string) {
+  let clientFile: string;
+
+  try {
+    // why use `resolve`?
+    // because `require.resolve` will use the final path of symlink file
+    // and in tnpm or pnpm project, the long realpath make chunk name unexpected
+    clientFile = resolve.sync(`dumi/${file}`, {
+      basedir: cwd,
+      preserveSymlinks: true,
+    });
+  } catch {
+    // fallback to use `require.resolve`, for dumi self docs & examples
+    clientFile = require.resolve(`../${file}`);
+  }
+
+  return winPath(clientFile);
 }

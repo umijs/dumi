@@ -1,0 +1,7 @@
+[workspace]
+members = [
+  "crates/swc_plugin_react_demo",
+]
+
+[profile.release]
+lto = true

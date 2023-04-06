@@ -1,14 +1,12 @@
 import { useFullSidebarData, useLocale, useSiteData } from 'dumi';
 import { useState } from 'react';
-import type { IThemeConfig, IUserNavItems, IUserNavMode } from './types';
+import type { INavItems, IUserNavItems, IUserNavMode } from './types';
 import {
   getLocaleNav,
   pickRouteSortMeta,
   useLocaleDocRoutes,
   useRouteDataComparer,
 } from './utils';
-
-type INavData = Extract<NonNullable<IThemeConfig['nav']>, Array<any>>;
 
 /**
  * hook for get nav data
@@ -18,8 +16,8 @@ export const useNavData = () => {
   const routes = useLocaleDocRoutes();
   const { themeConfig } = useSiteData();
   const sidebar = useFullSidebarData();
-  const sidebarDataComparer = useRouteDataComparer<INavData[0]>();
-  const [nav] = useState<INavData>(() => {
+  const sidebarDataComparer = useRouteDataComparer<INavItems[0]>();
+  const [nav] = useState<INavItems>(() => {
     // use user config first
     let userNavValue: IUserNavItems = [];
     let mode: IUserNavMode | undefined;
@@ -39,7 +37,7 @@ export const useNavData = () => {
     }
 
     // fallback to generate nav data from sidebar data
-    const data = Object.entries(sidebar).map<INavData[0]>(([link, groups]) => {
+    const data = Object.entries(sidebar).map<INavItems[0]>(([link, groups]) => {
       const meta = Object.values(routes).reduce<{
         title?: string;
         order?: number;
