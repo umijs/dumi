@@ -66,9 +66,9 @@ function runtimeToSketchJSON(
   });
 }
 
-export const getSketchJSON = async ${
+export const getSketchJSON = ${
         api.config.html2sketch
-          ? `(
+          ? `async (
   target: HTMLElement | Document,
   opts: Parameters<typeof toSketchJSON>[1],
 ): ReturnType<typeof toSketchJSON> => {
