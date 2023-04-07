@@ -5,13 +5,14 @@ import {
   THEME_PREFIX,
 } from '@/constants';
 import type { IApi } from '@/types';
-import { getClientDistFile } from '@/utils';
 import { parseModuleSync } from '@umijs/bundler-utils';
 import fs from 'fs';
 import path from 'path';
 import { deepmerge, lodash, resolve, winPath } from 'umi/plugin-utils';
 import { safeExcludeInMFSU } from '../derivative';
 import loadTheme, { IThemeLoadResult } from './loader';
+
+const DEFAULT_THEME_PATH = path.join(__dirname, '../../../theme-default');
 
 /**
  * get pkg theme name
@@ -57,10 +58,6 @@ function getModuleExports(modulePath: string) {
 }
 
 export default (api: IApi) => {
-  const DEFAULT_THEME_PATH = path.join(
-    getClientDistFile('theme-default/locales/zh-CN.json', api.cwd),
-    '../..',
-  );
   // load default theme
   const defaultThemeData = loadTheme(DEFAULT_THEME_PATH);
   // try to load theme package
