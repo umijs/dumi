@@ -3,6 +3,7 @@ import type { IApi } from '../types';
 const SCRIPT_URL =
   'https://gw.alipayobjects.com/os/lib/html2sketch/1.0.1/dist/html2sketch.min.js';
 const CONTAINER_ATTR = 'data-html2sketch-container';
+const RUNTIME_CONFIG = 'toSketchJSON';
 
 export default (api: IApi) => {
   api.describe({
@@ -35,6 +36,8 @@ window.addEventListener('message', (ev) => {
     api.writeTmpFile({
       path: 'index.ts',
       content: `import type { nodeToGroup, nodeToSymbol, SketchFormat } from 'html2sketch';
+import { ApplyPluginsType } from 'dumi';
+import { getPluginManager } from '@@/core/plugin';
 
 const html2sketch = typeof window !== 'undefined' ? window.html2sketch as {
   nodeToGroup: typeof nodeToGroup;
@@ -50,7 +53,20 @@ async function toSketchJSON(
     : (await html2sketch.nodeToSymbol(node)).toSketchJSON();
 }
 
-export const getSketchJSON = ${
+function runtimeToSketchJSON(
+  target: HTMLElement | Document,
+  opts: Parameters<typeof toSketchJSON>[1],
+): ReturnType<typeof toSketchJSON> | Promise<null> {
+  return getPluginManager().applyPlugins({
+    key: '${RUNTIME_CONFIG}',
+    type: ApplyPluginsType.modify,
+    initialValue: null,
+    args: { target, opts },
+    async: true,
+  });
+}
+
+export const getSketchJSON = async ${
         api.config.html2sketch
           ? `(
   target: HTMLElement | Document,
@@ -65,7 +81,7 @@ export const getSketchJSON = ${
     node = doc.querySelector('[${CONTAINER_ATTR}], #${api.config.mountElementId}');
   }
 
-  return toSketchJSON(node, opts);
+  return await runtimeToSketchJSON(node, opts) || await toSketchJSON(node, opts);
 }`
           : 'null'
       };
@@ -85,4 +101,7 @@ export const getSketchJSON = ${
       ? [api.config.html2sketch.scriptUrl || SCRIPT_URL]
       : [];
   });
+
+  // add runtime plugin key
+  api.addRuntimePluginKey(() => [RUNTIME_CONFIG]);
 };
