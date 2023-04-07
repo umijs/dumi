@@ -103,5 +103,7 @@ export const getSketchJSON = async ${
   });
 
   // add runtime plugin key
-  api.addRuntimePluginKey(() => [RUNTIME_CONFIG]);
+  api.addRuntimePluginKey(() =>
+    api.config.html2sketch ? [RUNTIME_CONFIG] : [],
+  );
 };
