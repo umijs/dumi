@@ -58,8 +58,8 @@ function getModuleExports(modulePath: string) {
 
 export default (api: IApi) => {
   const DEFAULT_THEME_PATH = path.join(
-    getClientDistFile('package.json', api.cwd),
-    '../theme-default',
+    getClientDistFile('theme-default/locales/zh-CN.json', api.cwd),
+    '../..',
   );
   // load default theme
   const defaultThemeData = loadTheme(DEFAULT_THEME_PATH);
