@@ -57,7 +57,7 @@
     "dumi": "{{{ version }}}",
     "eslint": "^8.23.0",
     "father": "^4.1.0",
-    "father-plugin-dumi-theme": "^1.0.0-beta.0",
+    "father-plugin-dumi-theme": "^1.0.0-rc.1",
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
