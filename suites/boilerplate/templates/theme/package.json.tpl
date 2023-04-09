@@ -4,9 +4,9 @@
   "description": "{{{ description }}}",
   "types": "dist/types.d.ts",
   "scripts": {
-    "dev": "father dev",
+    "dev": "APP_ROOT=example dumi dev",
     "build": "father build",
-    "prepare": "husky install && father link-dev-theme",
+    "prepare": "husky install && father link-dev-theme && APP_ROOT=example dumi setup",
     "lint": "npm run lint:es && npm run lint:css",
     "lint:css": "stylelint \"{src,test}/**/*.{css,less}\"",
     "lint:es": "eslint \"{src,test}/**/*.{js,jsx,ts,tsx}\"",
