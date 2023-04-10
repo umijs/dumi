@@ -81,8 +81,9 @@ import Button from '@/Button/index.tsx';
 为了方便调试，你可以像 Jest 一样对 `<code />` 标签添加 `skip` 或 `only` 标识（仅在开发环境下有效）以跳过解析，例如：
 
 ```html
-<code src="./demos/foo.tsx"></code> <code src="./demos/bar.tsx" skip></code>
-<!-- 开发环境下将跳过解析 -->
+<code src="./demos/foo.tsx"></code>
+<!-- 下面这条将跳过解析 -->
+<code src="./demos/bar.tsx" skip></code>
 <code src="./demos/baz.tsx"></code>
 ```
 
