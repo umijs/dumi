@@ -190,15 +190,68 @@ export default function rehypeDemo(
       }
     });
 
+    // find all demo nodes, and check whether there is `only` mark
+    let hasOnlySign = false;
+    let hasSkipSign = false;
+    visit<Root, 'element'>(tree, 'element', (node) => {
+      if (isElement(node, 'p') && node.data?.[DEMO_NODE_CONTAINER]) {
+        node.children.forEach((child) => {
+          if (isElement(child, 'code')) {
+            if (child.properties?.hasOwnProperty('only')) {
+              hasOnlySign = true;
+            }
+            if (child.properties?.hasOwnProperty('skip')) {
+              hasSkipSign = true;
+            }
+          }
+        });
+      }
+    });
+
+    if (process.env.NODE_ENV === 'production' && (hasOnlySign || hasSkipSign)) {
+      logger.warn(
+        `The 'only' or 'skip' mark is not supported in production environment, please remove it. at ${
+          vFile.data.frontmatter?.filename ?? 'file'
+        }`,
+      );
+    }
+
     visit<Root, 'element'>(tree, 'element', (node) => {
       if (isElement(node, 'p') && node.data?.[DEMO_NODE_CONTAINER]) {
         const demosPropData: IDumiDemoProps[] = [];
 
+        const shouldSkipNonOnlyDemos = (function () {
+          let hasProcessedOnlySign: boolean = false;
+          return function (node: Element) {
+            if (process.env.NODE_ENV === 'production') {
+              return false;
+            }
+            // only process demos with the first occurrence of `only` mark
+            if (hasProcessedOnlySign) {
+              return true;
+            }
+
+            hasProcessedOnlySign = !!node.properties?.hasOwnProperty('only');
+
+            return hasOnlySign && !hasProcessedOnlySign;
+          };
+        })();
+
+        const shouldSkipDemosWithSkipMark = (node: Element) => {
+          if (process.env.NODE_ENV === 'production') {
+            return false;
+          }
+          return node.properties?.hasOwnProperty('skip');
+        };
+
         for (let i = 0; i < node.children.length; i++) {
           const codeNode = node.children[i];
 
-          // strip invalid br elements
-          if (isElement(codeNode, 'code')) {
+          if (
+            isElement(codeNode, 'code') && // strip invalid br elements
+            !shouldSkipDemosWithSkipMark(codeNode) &&
+            !shouldSkipNonOnlyDemos(codeNode)
+          ) {
             const codeType = codeNode.data!.type as Parameters<
               IRehypeDemoOptions['techStacks'][0]['transformCode']
             >[1]['type'];
