@@ -147,6 +147,7 @@
     "@umijs/plugins": "4.0.32",
     "dumi-theme-mobile": "workspace:*",
     "eslint": "^8.20.0",
+    "fast-glob": "^3.2.12",
     "father": "^4.1.0",
     "highlight-words-core": "^1.2.2",
     "husky": "^8.0.1",
