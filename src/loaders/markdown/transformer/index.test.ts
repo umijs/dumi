@@ -18,15 +18,7 @@ class FakeTechStack implements IDumiTechStack {
   }
 }
 
-const onlyCases: string[] = [
-  // fixtures/{folderName}，e.g. embed
-  'embed',
-];
-const toBeTested = cases.filter((name) =>
-  onlyCases.filter(Boolean).includes(name),
-);
-
-for (let name of toBeTested) {
+for (let name of cases) {
   test(`markdown transformer: ${name}`, async () => {
     const fileAbsPath = path.join(CASES_DIR, name, 'index.md');
     const content = fs.readFileSync(fileAbsPath, 'utf8');
