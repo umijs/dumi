@@ -86,20 +86,20 @@ function tryMarkDemoNode(node: Element, opts: IRehypeDemoOptions) {
   let isDemoNode = Boolean(node.data?.techStack);
 
   // to prevent duplicate mark
-  if (!isDemoNode) {
-    const lang = getCodeLang(node, opts);
-    const techStack =
-      lang && opts.techStacks.find((ts) => ts.isSupported(node, lang));
+  if (isDemoNode) return isDemoNode;
 
-    // mark tech stack data for reuse
-    if (techStack) {
-      isDemoNode = true;
-      node.data ??= {};
-      node.data.techStack = techStack;
-      node.data.lang = lang;
-      node.data.type =
-        typeof node.properties?.src === 'string' ? 'external' : 'code-block';
-    }
+  const lang = getCodeLang(node, opts);
+  const techStack =
+    lang && opts.techStacks.find((ts) => ts.isSupported(node, lang));
+
+  // mark tech stack data for reuse
+  if (techStack) {
+    isDemoNode = true;
+    node.data ??= {};
+    node.data.techStack = techStack;
+    node.data.lang = lang;
+    node.data.type =
+      typeof node.properties?.src === 'string' ? 'external' : 'code-block';
   }
 
   return isDemoNode;
@@ -194,7 +194,9 @@ export default function rehypeDemo(
       if (isElement(node, 'p') && node.data?.[DEMO_NODE_CONTAINER]) {
         const demosPropData: IDumiDemoProps[] = [];
 
-        node.children.forEach((codeNode) => {
+        for (let i = 0; i < node.children.length; i++) {
+          const codeNode = node.children[i];
+
           // strip invalid br elements
           if (isElement(codeNode, 'code')) {
             const codeType = codeNode.data!.type as Parameters<
@@ -278,8 +280,7 @@ export default function rehypeDemo(
                     const suffix = startLine ? `:${startLine}` : '';
 
                     logger.warn(
-                      `Duplicate demo id found due to filename conflicts, please consider adding a unique id to code tag to resolve this.
-        at ${opts.fileAbsPath}${suffix}`,
+                      `Duplicate demo id found due to filename conflicts, please consider adding a unique id to code tag to resolve this. at ${opts.fileAbsPath}${suffix}`,
                     );
                   }
 
@@ -391,7 +392,7 @@ export default function rehypeDemo(
               previewerProps,
             });
           }
-        });
+        }
 
         // replace original node, and save it for parse the final real jsx attributes after all deferrers resolved
         // because the final `previewerProps` depends on the async parse result from `parseBlockAsset`
