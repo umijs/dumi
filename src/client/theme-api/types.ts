@@ -50,16 +50,6 @@ export interface IPreviewerProps {
    * react node of current demo
    */
   children: ReactNode;
-  /**
-   * Only render this demo in the current file.
-   * @note Always false in production environment
-   */
-  only?: boolean;
-  /**
-   * Skips rendering this demo in the current file.
-   * @note Always false in production environment
-   */
-  skip?: boolean;
   [key: string]: any;
 }
 
