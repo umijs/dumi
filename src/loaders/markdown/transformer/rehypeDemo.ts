@@ -197,12 +197,8 @@ export default function rehypeDemo(
       if (isElement(node, 'p') && node.data?.[DEMO_NODE_CONTAINER]) {
         node.children.forEach((child) => {
           if (isElement(child, 'code')) {
-            if (child.properties?.hasOwnProperty('only')) {
-              hasOnlySign = true;
-            }
-            if (child.properties?.hasOwnProperty('skip')) {
-              hasSkipSign = true;
-            }
+            hasOnlySign ||= !!child.properties?.hasOwnProperty('only');
+            hasSkipSign ||= !!child.properties?.hasOwnProperty('skip');
           }
         });
       }
@@ -211,7 +207,8 @@ export default function rehypeDemo(
     if (process.env.NODE_ENV === 'production' && (hasOnlySign || hasSkipSign)) {
       logger.warn(
         `The 'only' or 'skip' mark is not supported in production environment, please remove it. at ${
-          vFile.data.frontmatter?.filename ?? 'file'
+          vFile.data.frontmatter!.filename
+        }'
         }`,
       );
     }
@@ -244,9 +241,7 @@ export default function rehypeDemo(
           return node.properties?.hasOwnProperty('skip');
         };
 
-        for (let i = 0; i < node.children.length; i++) {
-          const codeNode = node.children[i];
-
+        for (const codeNode of node.children) {
           if (
             isElement(codeNode, 'code') && // strip invalid br elements
             !shouldSkipDemosWithSkipMark(codeNode) &&
