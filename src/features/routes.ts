@@ -1,6 +1,5 @@
 import { SP_ROUTE_PREFIX } from '@/constants';
 import type { IApi } from '@/types';
-import { getClientDistFile } from '@/utils';
 import { getConventionRoutes } from '@umijs/core';
 import { createRouteId } from '@umijs/core/dist/route/utils';
 import path from 'path';
@@ -9,6 +8,8 @@ import type { IRoute } from 'umi';
 import { glob, winPath } from 'umi/plugin-utils';
 
 const CTX_LAYOUT_ID = 'dumi-context-layout';
+const ALIAS_THEME_TMP = '@/dumi__theme';
+const ALIAS_INTERNAL_PAGES = '@/dumi__pages';
 
 /**
  * normalize item of `resolve.docDirs` to object
@@ -103,9 +104,9 @@ export default (api: IApi) => {
   // watch docs paths to re-generate routes
   api.addTmpGenerateWatcherPaths(() => extraWatchPaths);
 
-  // support to disable docDirs & atomDirs by empty array
-  // because the empty array will be ignored by config merge logic
   api.modifyDefaultConfig((memo) => {
+    // support to disable docDirs & atomDirs by empty array
+    // because the empty array will be ignored by config merge logic
     if (api.userConfig.resolve) {
       const keys: ['docDirs', 'atomDirs'] = ['docDirs', 'atomDirs'];
 
@@ -113,6 +114,16 @@ export default (api: IApi) => {
         if (api.userConfig.resolve![key]?.length === 0) memo.resolve[key] = [];
       });
     }
+
+    // set alias for internal pages and layouts rather than use absolute path
+    // to avoid umi generate chunk name with long path
+    // ref: https://github.com/umijs/umi/blob/30a11c60b1be9066ea0162fe279aaf62b70b0b14/packages/preset-umi/src/features/tmpFiles/routes.ts#L229
+    memo.alias[ALIAS_THEME_TMP] = winPath(
+      path.join(api.paths.absTmpPath!, 'dumi/theme'),
+    );
+    memo.alias[ALIAS_INTERNAL_PAGES] = winPath(
+      path.join(__dirname, '../client/pages'),
+    );
 
     return memo;
   });
@@ -149,7 +160,10 @@ export default (api: IApi) => {
       routes[DocLayout.specifier] = {
         id: DocLayout.specifier,
         path: '/',
-        file: DocLayout.source,
+        // why not use DocLayout.source?
+        // because umi will generate chunk name from file path
+        // but source may too long in pnpm/monorepo project
+        file: `${ALIAS_THEME_TMP}/layouts/DocLayout`,
         parentId: lastLayoutId,
         absPath: '/',
         isLayout: true,
@@ -162,7 +176,7 @@ export default (api: IApi) => {
       routes[DemoLayout.specifier] = {
         id: DemoLayout.specifier,
         path: '/',
-        file: DemoLayout.source,
+        file: `${ALIAS_THEME_TMP}/layouts/DemoLayout`,
         parentId: lastLayoutId,
         absPath: '/',
         isLayout: true,
@@ -262,7 +276,7 @@ export default (api: IApi) => {
         path: '*',
         absPath: '/*',
         parentId: docLayoutId,
-        file: getClientDistFile('dist/client/pages/404', api.cwd),
+        file: `${ALIAS_INTERNAL_PAGES}/404`,
       };
     }
 
@@ -272,7 +286,7 @@ export default (api: IApi) => {
       path: `${SP_ROUTE_PREFIX}demos/:id`,
       absPath: `/${SP_ROUTE_PREFIX}demos/:id`,
       parentId: demoLayoutId,
-      file: getClientDistFile('dist/client/pages/Demo', api.cwd),
+      file: `${ALIAS_INTERNAL_PAGES}/Demo`,
     };
 
     return routes;
@@ -283,7 +297,7 @@ export default (api: IApi) => {
     const layouts = [
       {
         id: CTX_LAYOUT_ID,
-        file: `${api.paths.absTmpPath}/dumi/theme/ContextWrapper.tsx`,
+        file: `${ALIAS_THEME_TMP}/ContextWrapper`,
       },
     ];
     const { GlobalLayout } = api.service.themeData.layouts;
@@ -291,7 +305,7 @@ export default (api: IApi) => {
     if (GlobalLayout) {
       layouts.unshift({
         id: GlobalLayout.specifier,
-        file: GlobalLayout.source,
+        file: `${ALIAS_THEME_TMP}/layouts/GlobalLayout`,
       });
     }
 
