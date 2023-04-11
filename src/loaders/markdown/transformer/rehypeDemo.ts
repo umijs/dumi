@@ -197,8 +197,12 @@ export default function rehypeDemo(
       if (isElement(node, 'p') && node.data?.[DEMO_NODE_CONTAINER]) {
         node.children.forEach((child) => {
           if (isElement(child, 'code')) {
-            hasOnlySign ||= !!child.properties?.hasOwnProperty('only');
-            hasSkipSign ||= !!child.properties?.hasOwnProperty('skip');
+            child.data ??= {};
+            child.data.skip = !!child.properties?.hasOwnProperty('skip');
+            child.data.only = !!child.properties?.hasOwnProperty('only');
+
+            hasSkipSign ||= child.data.skip as boolean;
+            hasOnlySign ||= child.data.only as boolean;
           }
         });
       }
@@ -215,37 +219,18 @@ export default function rehypeDemo(
     visit<Root, 'element'>(tree, 'element', (node) => {
       if (isElement(node, 'p') && node.data?.[DEMO_NODE_CONTAINER]) {
         const demosPropData: IDumiDemoProps[] = [];
-
-        const shouldSkipNonOnlyDemos = (function () {
-          let hasProcessedOnlySign: boolean = false;
-          return function (node: Element) {
-            if (process.env.NODE_ENV === 'production') {
-              return false;
-            }
-            // only process demos with the first occurrence of `only` mark
-            if (hasProcessedOnlySign) {
-              return true;
-            }
-
-            hasProcessedOnlySign = !!node.properties?.hasOwnProperty('only');
-
-            return hasOnlySign && !hasProcessedOnlySign;
-          };
-        })();
-
-        const shouldSkipDemosWithSkipMark = (node: Element) => {
-          if (process.env.NODE_ENV === 'production') {
-            return false;
-          }
-          return node.properties?.hasOwnProperty('skip');
-        };
-
         for (const codeNode of node.children) {
-          if (
-            isElement(codeNode, 'code') && // strip invalid br elements
-            !shouldSkipDemosWithSkipMark(codeNode) &&
-            !shouldSkipNonOnlyDemos(codeNode)
-          ) {
+          // strip invalid br elements
+          if (isElement(codeNode, 'code')) {
+            // check whether to skip this demo
+            const shouldSkipNonOnlyDemos = hasOnlySign && !codeNode.data!.only;
+            if (
+              process.env.NODE_ENV !== 'production' &&
+              (codeNode.data!.skip || shouldSkipNonOnlyDemos)
+            ) {
+              continue;
+            }
+
             const codeType = codeNode.data!.type as Parameters<
               IRehypeDemoOptions['techStacks'][0]['transformCode']
             >[1]['type'];
@@ -439,6 +424,11 @@ export default function rehypeDemo(
               demo: propDemo,
               previewerProps,
             });
+
+            // only process demos with the first occurrence of `only` mark
+            if (process.env.NODE_ENV !== 'production' && codeNode.data!.only) {
+              break;
+            }
           }
         }
 
