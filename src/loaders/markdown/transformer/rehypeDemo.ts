@@ -208,7 +208,6 @@ export default function rehypeDemo(
       logger.warn(
         `The 'only' or 'skip' mark is not supported in production environment, please remove it. at ${
           vFile.data.frontmatter!.filename
-        }'
         }`,
       );
     }
