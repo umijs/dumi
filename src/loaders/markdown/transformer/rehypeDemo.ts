@@ -86,20 +86,20 @@ function tryMarkDemoNode(node: Element, opts: IRehypeDemoOptions) {
   let isDemoNode = Boolean(node.data?.techStack);
 
   // to prevent duplicate mark
-  if (isDemoNode) return isDemoNode;
+  if (!isDemoNode) {
+    const lang = getCodeLang(node, opts);
+    const techStack =
+      lang && opts.techStacks.find((ts) => ts.isSupported(node, lang));
 
-  const lang = getCodeLang(node, opts);
-  const techStack =
-    lang && opts.techStacks.find((ts) => ts.isSupported(node, lang));
-
-  // mark tech stack data for reuse
-  if (techStack) {
-    isDemoNode = true;
-    node.data ??= {};
-    node.data.techStack = techStack;
-    node.data.lang = lang;
-    node.data.type =
-      typeof node.properties?.src === 'string' ? 'external' : 'code-block';
+    // mark tech stack data for reuse
+    if (techStack) {
+      isDemoNode = true;
+      node.data ??= {};
+      node.data.techStack = techStack;
+      node.data.lang = lang;
+      node.data.type =
+        typeof node.properties?.src === 'string' ? 'external' : 'code-block';
+    }
   }
 
   return isDemoNode;
@@ -333,7 +333,8 @@ export default function rehypeDemo(
                     const suffix = startLine ? `:${startLine}` : '';
 
                     logger.warn(
-                      `Duplicate demo id found due to filename conflicts, please consider adding a unique id to code tag to resolve this. at ${opts.fileAbsPath}${suffix}`,
+                      `Duplicate demo id found due to filename conflicts, please consider adding a unique id to code tag to resolve this.
+        at ${opts.fileAbsPath}${suffix}`,
                     );
                   }
 
