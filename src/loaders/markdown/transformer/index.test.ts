@@ -21,9 +21,9 @@ class FakeTechStack implements IDumiTechStack {
   }
 }
 
-for (let castPath of cases) {
-  test(`markdown transformer: ${castPath}`, async () => {
-    const fileAbsPath = path.join(CASES_DIR, castPath, 'index.md');
+for (let casePath of cases) {
+  test(`markdown transformer: ${casePath}`, async () => {
+    const fileAbsPath = path.join(CASES_DIR, casePath, 'index.md');
     const content = fs.readFileSync(fileAbsPath, 'utf8');
     const ret = await transformer(content, {
       techStacks: [new FakeTechStack()],
@@ -35,6 +35,6 @@ for (let castPath of cases) {
       },
     });
 
-    (await import(`${CASES_DIR}/${castPath}/expect.ts`)).default(ret);
+    (await import(`${CASES_DIR}/${casePath}/expect.ts`)).default(ret);
   });
 }
