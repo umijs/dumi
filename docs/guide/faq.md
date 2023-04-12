@@ -74,7 +74,7 @@ export default {
 
 ```ts
 export default {
-  base: '/文档起始路由',
+  base: '/文档起始路由/',
   publicPath: '/静态资源起始路径/',
   // 其他配置
 };
