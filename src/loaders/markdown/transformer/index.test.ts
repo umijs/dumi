@@ -1,10 +1,13 @@
 import type { IDumiTechStack } from '@/types';
+import glob from 'fast-glob';
 import fs from 'fs';
 import path from 'path';
 import transformer from '.';
 
 const CASES_DIR = path.join(__dirname, 'fixtures');
-const cases = fs.readdirSync(CASES_DIR);
+const cases = glob
+  .sync('**/index.md', { cwd: CASES_DIR, deep: 3 })
+  .map((file) => path.dirname(file));
 
 class FakeTechStack implements IDumiTechStack {
   name = 'fake';
@@ -18,9 +21,9 @@ class FakeTechStack implements IDumiTechStack {
   }
 }
 
-for (let name of cases) {
-  test(`markdown transformer: ${name}`, async () => {
-    const fileAbsPath = path.join(CASES_DIR, name, 'index.md');
+for (let casePath of cases) {
+  test(`markdown transformer: ${casePath}`, async () => {
+    const fileAbsPath = path.join(CASES_DIR, casePath, 'index.md');
     const content = fs.readFileSync(fileAbsPath, 'utf8');
     const ret = await transformer(content, {
       techStacks: [new FakeTechStack()],
@@ -32,6 +35,6 @@ for (let name of cases) {
       },
     });
 
-    (await import(`${CASES_DIR}/${name}/expect.ts`)).default(ret);
+    (await import(`${CASES_DIR}/${casePath}/expect.ts`)).default(ret);
   });
 }

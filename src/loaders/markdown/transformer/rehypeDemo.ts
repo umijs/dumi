@@ -11,6 +11,7 @@ import type { IMdTransformerOptions } from '.';
 
 let visit: typeof import('unist-util-visit').visit;
 let SKIP: typeof import('unist-util-visit').SKIP;
+let EXIT: typeof import('unist-util-visit').EXIT;
 let toString: typeof import('hast-util-to-string').toString;
 let isElement: typeof import('hast-util-is-element').isElement;
 const DEMO_NODE_CONTAINER = '$demo-container';
@@ -21,7 +22,7 @@ export const DUMI_DEMO_GRID_TAG = 'DumiDemoGrid';
 
 // workaround to import pure esm module
 (async () => {
-  ({ visit, SKIP } = await import('unist-util-visit'));
+  ({ visit, SKIP, EXIT } = await import('unist-util-visit'));
   ({ toString } = await import('hast-util-to-string'));
   ({ isElement } = await import('hast-util-is-element'));
 })();
@@ -190,13 +191,48 @@ export default function rehypeDemo(
       }
     });
 
+    // find all demo nodes, and check whether there is `only` mark
+    let hasOnlySign = false;
+    let hasSkipSign = false;
+    visit<Root, 'element'>(tree, 'element', (node) => {
+      if (isElement(node, 'p') && node.data?.[DEMO_NODE_CONTAINER]) {
+        for (const codeNode of node.children) {
+          if (isElement(codeNode, 'code')) {
+            hasSkipSign ||= 'skip' in codeNode.properties!;
+
+            if ('only' in codeNode.properties!) {
+              hasOnlySign = true;
+              return EXIT;
+            }
+          }
+        }
+      }
+    });
+
+    if (process.env.NODE_ENV === 'production' && (hasOnlySign || hasSkipSign)) {
+      logger.warn(
+        `The 'only' or 'skip' mark is not supported in production environment, please remove it. at ${
+          vFile.data.frontmatter!.filename
+        }`,
+      );
+    }
+
     visit<Root, 'element'>(tree, 'element', (node) => {
       if (isElement(node, 'p') && node.data?.[DEMO_NODE_CONTAINER]) {
         const demosPropData: IDumiDemoProps[] = [];
-
-        node.children.forEach((codeNode) => {
+        for (const codeNode of node.children) {
           // strip invalid br elements
           if (isElement(codeNode, 'code')) {
+            // check whether to skip this demo
+            const shouldSkipNonOnlyDemos =
+              hasOnlySign && !('only' in codeNode.properties!);
+            if (
+              process.env.NODE_ENV !== 'production' &&
+              ('skip' in codeNode.properties! || shouldSkipNonOnlyDemos)
+            ) {
+              continue;
+            }
+
             const codeType = codeNode.data!.type as Parameters<
               IRehypeDemoOptions['techStacks'][0]['transformCode']
             >[1]['type'];
@@ -390,8 +426,16 @@ export default function rehypeDemo(
               demo: propDemo,
               previewerProps,
             });
+
+            // only process demos with the first occurrence of `only` mark
+            if (
+              process.env.NODE_ENV !== 'production' &&
+              'only' in codeNode.properties!
+            ) {
+              break;
+            }
           }
-        });
+        }
 
         // replace original node, and save it for parse the final real jsx attributes after all deferrers resolved
         // because the final `previewerProps` depends on the async parse result from `parseBlockAsset`
