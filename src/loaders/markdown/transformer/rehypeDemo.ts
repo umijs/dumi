@@ -11,6 +11,7 @@ import type { IMdTransformerOptions } from '.';
 
 let visit: typeof import('unist-util-visit').visit;
 let SKIP: typeof import('unist-util-visit').SKIP;
+let EXIT: typeof import('unist-util-visit').EXIT;
 let toString: typeof import('hast-util-to-string').toString;
 let isElement: typeof import('hast-util-is-element').isElement;
 const DEMO_NODE_CONTAINER = '$demo-container';
@@ -21,7 +22,7 @@ export const DUMI_DEMO_GRID_TAG = 'DumiDemoGrid';
 
 // workaround to import pure esm module
 (async () => {
-  ({ visit, SKIP } = await import('unist-util-visit'));
+  ({ visit, SKIP, EXIT } = await import('unist-util-visit'));
   ({ toString } = await import('hast-util-to-string'));
   ({ isElement } = await import('hast-util-is-element'));
 })();
@@ -195,16 +196,16 @@ export default function rehypeDemo(
     let hasSkipSign = false;
     visit<Root, 'element'>(tree, 'element', (node) => {
       if (isElement(node, 'p') && node.data?.[DEMO_NODE_CONTAINER]) {
-        node.children.forEach((child) => {
-          if (isElement(child, 'code')) {
-            child.data ??= {};
-            child.data.skip = !!child.properties?.hasOwnProperty('skip');
-            child.data.only = !!child.properties?.hasOwnProperty('only');
+        for (const codeNode of node.children) {
+          if (isElement(codeNode, 'code')) {
+            hasSkipSign ||= 'skip' in codeNode.properties!;
 
-            hasSkipSign ||= child.data.skip as boolean;
-            hasOnlySign ||= child.data.only as boolean;
+            if ('only' in codeNode.properties!) {
+              hasOnlySign = true;
+              return EXIT;
+            }
           }
-        });
+        }
       }
     });
 
@@ -223,10 +224,11 @@ export default function rehypeDemo(
           // strip invalid br elements
           if (isElement(codeNode, 'code')) {
             // check whether to skip this demo
-            const shouldSkipNonOnlyDemos = hasOnlySign && !codeNode.data!.only;
+            const shouldSkipNonOnlyDemos =
+              hasOnlySign && !('only' in codeNode.properties!);
             if (
               process.env.NODE_ENV !== 'production' &&
-              (codeNode.data!.skip || shouldSkipNonOnlyDemos)
+              ('skip' in codeNode.properties! || shouldSkipNonOnlyDemos)
             ) {
               continue;
             }
@@ -426,7 +428,10 @@ export default function rehypeDemo(
             });
 
             // only process demos with the first occurrence of `only` mark
-            if (process.env.NODE_ENV !== 'production' && codeNode.data!.only) {
+            if (
+              process.env.NODE_ENV !== 'production' &&
+              'only' in codeNode.properties!
+            ) {
               break;
             }
           }
