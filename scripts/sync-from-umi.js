@@ -28,6 +28,10 @@ const FILE_LIST = [
     localname: 'config.md',
     upstream: 'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/api/config.md',
     actions: [
+      {
+        type: 'replace',
+        value: ["<Message fontsize='small'", '<Message emoji="💡"'],
+      },
       ...REPLACE_MESSAGE_MDX,
       // remove head content
       { type: 'slice', value: [2] },
