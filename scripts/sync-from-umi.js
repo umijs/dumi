@@ -42,7 +42,6 @@ const FILE_LIST = [
         'jsMinifier \\(vite 构建\\)',
         'mdx',
         'mpa',
-        'monorepoRedirect',
         'phantomDependency',
         'reactRouter5Compat',
         'vite',
