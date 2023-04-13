@@ -28,6 +28,10 @@ class AtomAssetsParser {
     id: string;
     ids: string[];
   }) => boolean;
+  private watchArgs: {
+    paths: string | string[];
+    options: chokidar.WatchOptions;
+  };
 
   constructor(opts: {
     entryFile: string;
@@ -50,6 +54,20 @@ class AtomAssetsParser {
       // @ts-ignore
       parseOptions: opts.parseOptions,
     });
+    this.watchArgs = {
+      paths: this.entryDir,
+      options: {
+        cwd: this.resolveDir,
+        ignored: [
+          '**/.*',
+          '**/.*/**',
+          '**/_*',
+          '**/_*/**',
+          '**/*.{md,less,scss,sass,styl,css}',
+        ],
+        ignoreInitial: true,
+      },
+    };
   }
 
   async parse() {
@@ -154,17 +172,7 @@ class AtomAssetsParser {
       }, 100);
 
       this.watcher = chokidar
-        .watch(this.entryDir, {
-          cwd: this.resolveDir,
-          ignored: [
-            '**/.*',
-            '**/.*/**',
-            '**/_*',
-            '**/_*/**',
-            '**/*.{md,less,scss,sass,styl,css}',
-          ],
-          ignoreInitial: true,
-        })
+        .watch(this.watchArgs.paths, this.watchArgs.options)
         .on('all', (ev, file) => {
           if (
             ['add', 'change'].includes(ev) &&
@@ -180,6 +188,14 @@ class AtomAssetsParser {
 
   unwatch(cb: AtomAssetsParser['cbs'][number]) {
     this.cbs.splice(this.cbs.indexOf(cb), 1);
+  }
+
+  patchWatchArgs(
+    handler: (
+      args: AtomAssetsParser['watchArgs'],
+    ) => AtomAssetsParser['watchArgs'],
+  ) {
+    this.watchArgs = handler(this.watchArgs);
   }
 
   destroyWorker() {
