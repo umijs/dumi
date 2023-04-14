@@ -93,11 +93,11 @@ function flatRoute(route: IRoute, docLayoutId: string) {
 }
 
 /**
- * get final layout specifier from alias
+ * get final layout file from alias
  */
-function getAliasLayoutSpecifier(specifier: string) {
-  const name = path.basename(specifier);
-  const alias = specifier.includes('/.dumi/theme/layouts/')
+function getAliasLayoutFile(source: string) {
+  const name = path.basename(source.replace(/(\/index)?\.(j|t)sx?$/, ''));
+  const alias = source.includes('/.dumi/theme/layouts/')
     ? ALIAS_LAYOUTS_LOCAL
     : `${ALIAS_THEME_TMP}/layouts`;
 
@@ -179,7 +179,7 @@ export default (api: IApi) => {
         // why not use DocLayout.source?
         // because umi will generate chunk name from file path
         // but source may too long in pnpm/monorepo project
-        file: getAliasLayoutSpecifier(DocLayout.specifier),
+        file: getAliasLayoutFile(DocLayout.source),
         parentId: lastLayoutId,
         absPath: '/',
         isLayout: true,
@@ -192,7 +192,7 @@ export default (api: IApi) => {
       routes[DemoLayout.specifier] = {
         id: DemoLayout.specifier,
         path: '/',
-        file: getAliasLayoutSpecifier(DemoLayout.specifier),
+        file: getAliasLayoutFile(DemoLayout.source),
         parentId: lastLayoutId,
         absPath: '/',
         isLayout: true,
@@ -321,7 +321,7 @@ export default (api: IApi) => {
     if (GlobalLayout) {
       layouts.unshift({
         id: GlobalLayout.specifier,
-        file: getAliasLayoutSpecifier(GlobalLayout.specifier),
+        file: getAliasLayoutFile(GlobalLayout.source),
       });
     }
 
