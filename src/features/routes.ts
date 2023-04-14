@@ -9,7 +9,7 @@ import { glob, winPath } from 'umi/plugin-utils';
 
 const CTX_LAYOUT_ID = 'dumi-context-layout';
 const ALIAS_THEME_TMP = '@/dumi__theme';
-const ALIAS_LAYOUTS_TMP = '@/dumi__theme__layouts';
+const ALIAS_LAYOUTS_LOCAL = '@/dumi__theme__layouts';
 const ALIAS_INTERNAL_PAGES = '@/dumi__pages';
 
 /**
@@ -92,6 +92,18 @@ function flatRoute(route: IRoute, docLayoutId: string) {
   }
 }
 
+/**
+ * get final layout specifier from alias
+ */
+function getAliasLayoutSpecifier(specifier: string) {
+  const name = path.basename(specifier);
+  const alias = specifier.includes('/.dumi/theme/layouts/')
+    ? ALIAS_LAYOUTS_LOCAL
+    : `${ALIAS_THEME_TMP}/layouts`;
+
+  return `${alias}/${name}`;
+}
+
 export default (api: IApi) => {
   const extraWatchPaths = [
     ...(api.userConfig.resolve?.atomDirs || []),
@@ -122,12 +134,9 @@ export default (api: IApi) => {
     memo.alias[ALIAS_THEME_TMP] = winPath(
       path.join(api.paths.absTmpPath!, 'dumi/theme'),
     );
-    memo.alias[ALIAS_LAYOUTS_TMP] = [
-      // why resolve local layouts first?
-      // because .dumi/tmp/dumi/theme not include local layouts
-      winPath(path.join(api.cwd, LOCAL_THEME_DIR, 'layouts')),
-      `${ALIAS_THEME_TMP}/layouts`,
-    ];
+    memo.alias[ALIAS_LAYOUTS_LOCAL] = winPath(
+      path.join(api.cwd, LOCAL_THEME_DIR, 'layouts'),
+    );
     memo.alias[ALIAS_INTERNAL_PAGES] = winPath(
       path.join(__dirname, '../client/pages'),
     );
@@ -170,7 +179,7 @@ export default (api: IApi) => {
         // why not use DocLayout.source?
         // because umi will generate chunk name from file path
         // but source may too long in pnpm/monorepo project
-        file: `${ALIAS_LAYOUTS_TMP}/DocLayout`,
+        file: getAliasLayoutSpecifier(DocLayout.specifier),
         parentId: lastLayoutId,
         absPath: '/',
         isLayout: true,
@@ -183,7 +192,7 @@ export default (api: IApi) => {
       routes[DemoLayout.specifier] = {
         id: DemoLayout.specifier,
         path: '/',
-        file: `${ALIAS_LAYOUTS_TMP}/DemoLayout`,
+        file: getAliasLayoutSpecifier(DemoLayout.specifier),
         parentId: lastLayoutId,
         absPath: '/',
         isLayout: true,
@@ -312,7 +321,7 @@ export default (api: IApi) => {
     if (GlobalLayout) {
       layouts.unshift({
         id: GlobalLayout.specifier,
-        file: `${ALIAS_LAYOUTS_TMP}/GlobalLayout`,
+        file: getAliasLayoutSpecifier(GlobalLayout.specifier),
       });
     }
 
