@@ -102,19 +102,14 @@ import { locales, messages } from './config';
 
 const cache = createIntlCache();
 
-const removeTrailingSlash = (path: string) =>
-  path.endsWith('/') ? path.slice(0, -1) : path;
-
 const LocalesContainer: FC<{ children: ReactNode }> = (props) => {
   const getIntl = useCallback(() => {
     const matched = locales.slice().reverse().find((locale) => (
       'suffix' in locale
         // suffix mode
-        ? removeTrailingSlash(history.location.pathname).endsWith(locale.suffix)
+        ? history.location.pathname.replace(/([^/])\\/$/, '$1').endsWith(locale.suffix)
         // base mode
-        : removeTrailingSlash(history.location.pathname).startsWith(
-          removeTrailingSlash("${api.config.base ?? '/'}") + locale.base
-        )
+        : history.location.pathname.replace(/([^/])\\/$/, '$1').startsWith(locale.base)
     ));
     const locale = matched ? matched.id : locales[0].id;
 
