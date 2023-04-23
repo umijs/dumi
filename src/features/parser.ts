@@ -4,9 +4,8 @@ import assert from 'assert';
 import { ATOMS_META_PATH } from './meta';
 
 export default (api: IApi) => {
-  const writeAtomsMetaFile = (
-    data: Awaited<ReturnType<AtomAssetsParser['parse']>>,
-  ) => {
+  let prevData: Awaited<ReturnType<AtomAssetsParser['parse']>>;
+  const writeAtomsMetaFile = (data: typeof prevData) => {
     api.writeTmpFile({
       noPluginDir: true,
       path: ATOMS_META_PATH,
@@ -24,7 +23,9 @@ export default (api: IApi) => {
     config: {
       schema: (Joi) =>
         Joi.object({
-          unpkgHost: Joi.string().uri(),
+          unpkgHost: Joi.string().uri().optional(),
+          resolveFilter: Joi.function().optional(),
+          parseOptions: Joi.object().optional(),
         }),
     },
   });
@@ -41,27 +42,63 @@ export default (api: IApi) => {
   });
 
   // share parser with other plugins via service
-  api.onStart(async () => {
+  // why use `onCheckPkgJSON` instead of `onStart`?
+  // because `onStart` will be called before any commands
+  // and `onCheckPkgJson` only be called in dev and build
+  api.onCheckPkgJSON(async () => {
     const {
       default: AtomAssetsParser,
     }: typeof import('@/assetParsers/atom') = require('@/assetParsers/atom');
+
     api.service.atomParser = new AtomAssetsParser({
       entryFile: api.config.resolve.entryFile!,
       resolveDir: api.cwd,
-      unpkgHost: api.config.apiParser.unpkgHost,
-      resolveFilter: api.config.apiParser.resolveFilter,
+      unpkgHost: api.config.apiParser!.unpkgHost,
+      resolveFilter: api.config.apiParser!.resolveFilter,
+      parseOptions: api.config.apiParser!.parseOptions,
     });
+  });
 
-    // lazy parse & use watch mode in development
-    if (api.env === 'development') {
-      api.service.atomParser.watch(writeAtomsMetaFile);
+  // lazy parse & use watch mode in dev compiling
+  api.onDevCompileDone(({ isFirstCompile }) => {
+    if (isFirstCompile) {
+      api.service.atomParser.watch((data) => {
+        prevData = data;
+        writeAtomsMetaFile(prevData);
+      });
     }
   });
 
-  // sync parse in production
-  if (api.env === 'production') {
-    api.onGenerateFiles(async () => {
+  api.onGenerateFiles(async () => {
+    if (api.env === 'production') {
+      // sync parse in production
       writeAtomsMetaFile(await api.service.atomParser.parse());
+    } else if (prevData) {
+      // also write prev data when re-generate files in development
+      writeAtomsMetaFile(prevData);
+    }
+  });
+
+  // destroy parser worker after build complete
+  api.onBuildComplete({
+    stage: Infinity,
+    fn() {
+      api.service.atomParser.destroyWorker();
+    },
+  });
+
+  // update unavailable locale text for API component
+  api.modifyTheme((memo) => {
+    const parserOffKey = 'api.component.unavailable';
+    const parserOnKey = 'api.component.loading';
+
+    // use loading key as normal unavailable key when apiParser enabled
+    Object.keys(memo.locales).forEach((locale) => {
+      if (memo.locales[locale][parserOnKey]) {
+        memo.locales[locale][parserOffKey] = memo.locales[locale][parserOnKey];
+      }
     });
-  }
+
+    return memo;
+  });
 };

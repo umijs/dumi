@@ -10,13 +10,9 @@ dumi is a static site generator for component library development.
 
 To view more online examples and docs, please visit [dumi official site](https://d.umijs.org).
 
-## Development
+## Contributing
 
-```bash
-$ pnpm install
-$ pnpm dev
-$ pnpm docs:dev
-```
+See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Badge
 

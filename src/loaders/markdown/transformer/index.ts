@@ -8,6 +8,7 @@ import type { Data } from 'vfile';
 import rehypeDemo from './rehypeDemo';
 import rehypeDesc from './rehypeDesc';
 import rehypeEnhancedTag from './rehypeEnhancedTag';
+import rehypeHighlightLine from './rehypeHighlightLine';
 import rehypeImg from './rehypeImg';
 import rehypeIsolation from './rehypeIsolation';
 import rehypeJsxify from './rehypeJsxify';
@@ -61,7 +62,7 @@ export interface IMdTransformerOptions {
   resolve: IDumiConfig['resolve'];
   extraRemarkPlugins?: IDumiConfig['extraRemarkPlugins'];
   extraRehypePlugins?: IDumiConfig['extraRehypePlugins'];
-  routers: Record<string, IRoute>;
+  routes: Record<string, IRoute>;
 }
 
 export interface IMdTransformerResult {
@@ -131,7 +132,12 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
   // apply internal rehype plugins
   processor
     .use(remarkRehype, { allowDangerousHtml: true })
-    .use(rehypeRaw)
+    .use(rehypeRaw, {
+      fileAbsPath: opts.fileAbsPath,
+    })
+    .use(rehypeHighlightLine, {
+      resolve: opts.resolve,
+    })
     .use(rehypeRemoveComments, { removeConditional: true })
     .use(rehypeStrip)
     .use(rehypeImg)
@@ -145,7 +151,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     .use(rehypeSlug)
     .use(rehypeLink, {
       fileAbsPath: opts.fileAbsPath,
-      routers: opts.routers,
+      routes: opts.routes,
     })
     .use(rehypeAutolinkHeadings)
     .use(rehypeIsolation)

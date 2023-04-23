@@ -9,6 +9,11 @@
   text-align: center;
   padding: @s-content-padding * 0.6 0;
 
+  @{dark-selector} & {
+    border-top-color: @c-border-less-dark;
+    color: @c-text-note-dark;
+  }
+
   @media @mobile {
     padding: @s-content-padding * 0.3 0;
     font-size: 13px;
@@ -16,6 +21,10 @@
 
   a {
     color: @c-primary;
+
+    @{dark-selector} & {
+      color: @c-primary-dark;
+    }
 
     &:not(:hover) {
       text-decoration: none;

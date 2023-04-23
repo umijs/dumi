@@ -1,13 +1,26 @@
 @import (reference) '../../styles/variables.less';
 
+@{dark-selector} {
+  color-scheme: dark;
+}
+
 body {
   margin: 0;
   padding: 0;
+  background-color: @c-site-bg;
+
+  @{dark-selector} & {
+    background-color: @c-site-bg-dark;
+  }
 }
 
 .@{prefix}-doc-layout {
   font-family: sans-serif;
   background-color: @c-site-bg;
+
+  @{dark-selector} & {
+    background-color: @c-site-bg-dark;
+  }
 
   @media @mobile {
     &::before {
@@ -18,7 +31,7 @@ body {
       right: 0;
       left: 0;
       bottom: 0;
-      background-color: rgb(0 0 0 / 50%);
+      background-color: rgba(0, 0, 0, 50%);
       transition: all 0.1s;
     }
 
@@ -44,6 +57,11 @@ body {
     background-color: fadeout(@c-site-bg, 10%);
     backdrop-filter: blur(6px);
 
+    @{dark-selector} & {
+      border-top-color: @c-border-less-dark;
+      background-color: fadein(@c-site-bg-dark, 10%);
+    }
+
     @media @mobile {
       display: flex;
     }
@@ -54,11 +72,19 @@ body {
       border: 0;
       background-color: transparent;
 
+      @{dark-selector} & {
+        color: @c-text-secondary-dark;
+      }
+
       > svg {
         width: 16px;
         margin-right: 6px;
         fill: @c-text-secondary;
         vertical-align: middle;
+
+        @{dark-selector} & {
+          fill: @c-text-secondary-dark;
+        }
       }
     }
   }
@@ -95,6 +121,10 @@ body {
         color: @c-text-note;
         font-size: 13px;
         line-height: 1;
+
+        @{dark-selector} & {
+          color: @c-text-note-dark;
+        }
       }
     }
   }

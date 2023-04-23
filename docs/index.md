@@ -41,5 +41,5 @@ features:
 请访问 [GitHub](https://github.com/umijs/dumi) 或加入讨论群：
 
 <div>
-  <img data-type="dingtalk" src="https://gw.alipayobjects.com/zos/bmw-prod/ce3439e7-3bf9-4031-b823-6473439ec9e6/kxkiis4c_w1004_h1346.jpeg" width="300" />
+  <img data-type="dingtalk" src="https://gw.alipayobjects.com/zos/bmw-prod/7362dab4-374e-42c6-9d52-85fd4b5e357b/lbesxxl3_w1004_h1346.jpeg" width="300" />
 </div>

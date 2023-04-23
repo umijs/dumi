@@ -23,14 +23,17 @@ dumi 内置了一套完善的默认主题，默认主题的呈现效果与 dumi 
 
 ### logo
 
-- 类型：`string`
+- 类型：`string | false`
 - 默认值：`dumi 的 LOGO`
 
 配置导航栏上的站点 LOGO，如果需要配置为本地图片文件，可将图片资源放入 `public` 文件夹，例如放置 `public/logo.png`，则配置 `/logo.png` 即可。
 
+配置为 `false` 时不展示 LOGO。
+
 ### nav
 
-- 类型：`{ title: '导航标题', link: '导航路由' }[] | Record<string, { title: '导航标题', link: '导航路由' }[]>`
+- `Navs`类型：`{ title: '导航标题', link: '导航路由' }[] | Record<string, { title: '导航标题', link: '导航路由' }[]>`
+- 类型：`Navs | {mode: "override" | "append" | "prepend", value: Navs}`
 - 默认值：`约定式导航`
 
 配置导航栏上的导航项，不配置时默认为约定式导航。约定式导航生成规则可参考 [约定式路由](/guide/conventional-routing)。
@@ -45,6 +48,16 @@ dumi 内置了一套完善的默认主题，默认主题的呈现效果与 dumi 
     'zh-CN': [{ title: '博客', link: '/blog' }],
     'en-US': [{ title: 'Blog', link: '/en/blog' }],
   },
+
+  // 支持通过 nav 将路由追加到约定路由前面或后面
+  nav: {
+    // mode可选值有：override、append、prepend
+    // - override: 直接覆盖约定导航，与 nav: [{ title: 'Blog', link: '/blog' }] 配置相同
+    // - append: 将 value 中的导航追加到约定路由后面
+    // - prepend: 将 value 中的导航添加到约定路由前面
+    mode: "append",
+    value: [{ title: 'Blog', link: '/blog' }]
+  }
 }
 ```
 
@@ -70,6 +83,79 @@ dumi 内置了一套完善的默认主题，默认主题的呈现效果与 dumi 
 - 默认值：`false`
 
 是否开启 RTL 切换，配置为 `true` 时导航栏会展示 RTL 按钮，用于将站点文本阅读方向切换为『从右到左』，通常在站点用户群体中有使用希伯来语或阿拉伯语时启用。
+
+### prefersColor
+
+- 类型：`{ default: 'light' | 'dark' | 'auto'; switch: boolean }`
+- 默认值：`{ default: 'light', switch: true }`
+
+配置站点的主题色，其中 `default` 配置项为默认主题色，默认为亮色模式，配置为 `auto` 时将跟随用户的操作系统配置自动切换；`switch` 配置项控制主题色切换器的展示与否，配置为 `false` 时用户将无法主动切换站点主题色。
+
+对于普通文档站点来说，建议保持 `switch` 的默认值 `true`，将站点主题色的选择权交给用户，同时可以考虑将 `default` 设置为 `auto` 以跟随用户的系统配置：
+
+```ts
+export default {
+  themeConfig: {
+    prefersColor: { default: 'auto' },
+  },
+};
+```
+
+对于组件库文档站点来说，建议根据组件库对暗色模式的适配情况来选择是否配置 `switch` 为 `false`，避免用户切换主题色后组件 demo 的样式出现异常。
+
+:::warning
+请勿在组件源码或组件 demo 内使用 dumi 提供的 API 强行适配暗色模式，这将导致组件发布后工作异常，因为 dumi 的 API 仅在 dumi 的框架中可用！
+
+正确做法是和 antd 一样提供类似 `ConfigProvider` 的全局配置组件来控制组件的主题色，再使用 `usePrefersColor` API 在 `GlobalLayout` 中实现站点主题色和组件主题色的切换联动，具体可参考 `usePrefersColor` API 的 [使用示例](../theme/api.md#usepreferscolor)。
+:::
+
+对于主题开发者来说，可以在 Less 文件中使用 `@dark-selector` 的全局变量来为主题包的组件增加暗色模式的样式：
+
+```less
+.some-container {
+  // 亮色模式为白色
+  color: #fff;
+
+  // 暗色模式变黑色
+  @{dark-selector} & {
+    color: #000;
+  }
+}
+```
+
+### socialLinks
+
+如果想要在顶部导航栏右侧增加一些社交网站的外链图标，可以通过 `socialLinks` 进行配置，目前最多支持配置 **5** 个外链图标
+
+目前支持以下社交平台图标：
+
+|   Key    |     描述      |
+| :------: | :-----------: |
+|  github  |  GitHub 平台  |
+|  weibo   |   微博平台    |
+| twitter  | Twitter 平台  |
+|  gitlab  |  Gitlab 平台  |
+| facebook | Facebook 平台 |
+|  zhihu   |   知乎平台    |
+|  yuque   |   语雀平台    |
+| linkedin | Linkedin 平台 |
+
+```ts
+export default {
+  themeConfig: {
+    socialLinks: {
+      github: 'https://github.com/umijs/dumi',
+      weibo: 'https://xxxx',
+      twitter: 'https://xxxx',
+      gitlab: 'https://xxxx',
+      facebook: 'https://xxxx',
+      zhihu: 'https://xxxx',
+      yueque: 'https://xxxx',
+      linkedin: 'https://xxxx',
+    },
+  },
+};
+```
 
 <!-- site config end -->
 
@@ -133,5 +219,13 @@ hero:
     - text: Getting Started
       link: /getting-started
 ```
+
+### sidebar
+
+- 类型：`Boolean`
+- 默认值：`true`
+- 详细：
+
+控制侧边栏菜单的显示或隐藏。
 
 <!-- md config end -->

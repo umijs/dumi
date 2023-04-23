@@ -18,6 +18,7 @@ export interface IPreviewerActionsProps extends IPreviewerProps {
    * disabled actions
    */
   disabledActions?: ('CSB' | 'CODEPEN' | 'STACKBLITZ' | 'EXTERNAL')[];
+  forceShowCode?: boolean;
 }
 
 const IconCode: FC = () => (
@@ -45,7 +46,9 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
     ([, { type }]) => type === 'FILE',
   );
   const [activeKey, setActiveKey] = useState(0);
-  const [showCode, setShowCode] = useState(false);
+  const [showCode, setShowCode] = useState(
+    props.forceShowCode || props.defaultShowCode,
+  );
   const isSingleFile = files.length === 1;
   const lang = (files[activeKey][0].match(/\.([^.]+)$/)?.[1] || 'text') as any;
 
@@ -102,16 +105,18 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
           </a>
         )}
         <PreviewerActionsExtra {...props} />
-        <button
-          className="dumi-default-previewer-action-btn"
-          type="button"
-          onClick={() => setShowCode((prev) => !prev)}
-          data-dumi-tooltip={intl.formatMessage({
-            id: `previewer.actions.code.${showCode ? 'shrink' : 'expand'}`,
-          })}
-        >
-          {showCode ? <IconCodeExpand /> : <IconCode />}
-        </button>
+        {!props.forceShowCode && (
+          <button
+            className="dumi-default-previewer-action-btn"
+            type="button"
+            onClick={() => setShowCode((prev) => !prev)}
+            data-dumi-tooltip={intl.formatMessage({
+              id: `previewer.actions.code.${showCode ? 'shrink' : 'expand'}`,
+            })}
+          >
+            {showCode ? <IconCodeExpand /> : <IconCode />}
+          </button>
+        )}
       </div>
       {showCode && (
         <>

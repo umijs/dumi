@@ -2,53 +2,74 @@ import { SP_ROUTE_PREFIX } from '@/constants';
 import type { IApi } from '@/types';
 import { getExampleAssets } from './assets';
 
+const NO_PRERENDER_ROUTES = [
+  // disable prerender for demo render page, because umi-hd doesn't support ssr
+  // ref: https://github.com/umijs/dumi/pull/1451
+  'demo-render',
+];
+
 export default (api: IApi) => {
-  const prevExtraRoutePaths: IApi['config']['exportStatic']['extraRoutePaths'][] =
-    [];
+  api.describe({
+    key: 'dumi:exportStatic',
+    enableBy: ({ env }) =>
+      env === 'production' && api.isPluginEnable('exportStatic'),
+  });
 
-  api.describe({ key: 'dumi:exportStatic' });
-
-  // save extraRoutePaths from default config, will merge theme later
-  api.register({
-    key: 'modifyDefaultConfig',
+  // disable prerender for some routes, to avoid prerender error or hydration error
+  api.modifyRoutes({
+    // make sure be the last
     stage: Infinity,
-    fn(memo: IApi['config']) {
-      if (memo.exportStatic && memo.exportStatic.extraRoutePaths) {
-        prevExtraRoutePaths.push(memo.exportStatic.extraRoutePaths);
-      }
+    fn(memo) {
+      NO_PRERENDER_ROUTES.forEach((id) => {
+        if (memo[id]) memo[id].prerender = false;
+      });
+
+      return memo;
     },
   });
 
   // static /~demos/:id pages when exportStatic enabled
-  api.register({
-    key: 'modifyConfig',
-    stage: Infinity,
-    fn(memo: IApi['config']) {
-      if (memo.exportStatic !== false) {
-        // save extraRoutePaths from config, will merge theme later
-        if (memo.exportStatic?.extraRoutePaths) {
-          prevExtraRoutePaths.push(memo.exportStatic.extraRoutePaths);
-        }
+  api.modifyExportHTMLFiles({
+    // make sure before umi exportStatic
+    before: 'exportStatic',
+    fn(memo) {
+      // append demo routes to exportHtmlData
+      // why not generate html content for each demo then push to memo?
+      // because umi exportStatic will handle relative publicPath
+      // so push routes to exportHtmlData to make it also work for demo routes
+      const routePrefix = `${SP_ROUTE_PREFIX}demos`;
+      const examples = getExampleAssets();
 
-        memo.exportStatic ??= {};
-        memo.exportStatic.extraRoutePaths = async () => {
-          const examples = getExampleAssets();
-          const userExtraPaths: string[] = [];
-
-          // merge all extraRoutePaths from default config & config
-          for (const prev of prevExtraRoutePaths) {
-            userExtraPaths.push(
-              ...(typeof prev === 'function' ? await prev() : prev),
-            );
-          }
-
-          return userExtraPaths.concat(
-            examples.map(({ id }) => `/${SP_ROUTE_PREFIX}demos/${id}`),
-          );
-        };
-      }
+      api.appData.exportHtmlData.push(
+        ...examples.map(({ id }) => ({
+          route: { path: `/${routePrefix}/${id}` },
+          file: `${routePrefix}/${id}/index.html`,
+          prerender: false,
+        })),
+      );
 
       return memo;
     },
+  });
+
+  api.onGenerateFiles(() => {
+    api.writeTmpFile({
+      path: 'dumi/exportStaticRuntimePlugin.ts',
+      content: `
+export function modifyClientRenderOpts(memo: any) {
+  const { history, hydrate } = memo;
+
+  return {
+    ...memo,
+    hydrate: hydrate && !history.location.pathname.startsWith('/${SP_ROUTE_PREFIX}demos'),
+  };
+}
+      `.trim(),
+      noPluginDir: true,
+    });
+  });
+
+  api.addRuntimePlugin(() => {
+    return [`@@/dumi/exportStaticRuntimePlugin.ts`];
   });
 };

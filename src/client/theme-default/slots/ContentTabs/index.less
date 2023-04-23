@@ -9,6 +9,10 @@
   padding: 0 @s-content-padding;
   border-bottom: 1px solid @c-border-light;
 
+  @{dark-selector} & {
+    border-bottom-color: @c-border-less-dark;
+  }
+
   @media @mobile {
     margin: -24px -24px 24px;
     padding: 0 24px;
@@ -37,8 +41,16 @@
       cursor: pointer;
       transition: all 0.2s;
 
+      @{dark-selector} & {
+        color: @c-text-secondary-dark;
+      }
+
       &:hover {
         color: @c-primary;
+
+        @{dark-selector} & {
+          color: @c-primary-dark;
+        }
       }
     }
 
@@ -55,6 +67,10 @@
 
       > button {
         color: @c-text;
+
+        @{dark-selector} & {
+          color: @c-text-dark;
+        }
       }
 
       &::after {
@@ -65,6 +81,10 @@
         bottom: -1px;
         height: 1px;
         background-color: @c-primary;
+
+        @{dark-selector} & {
+          background-color: @c-primary-dark;
+        }
       }
     }
   }

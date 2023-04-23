@@ -2,6 +2,7 @@
 nav: 指南
 group: 基础
 order: 4
+mobile: false
 demo:
   cols: 2
   tocDepth: 4
@@ -82,7 +83,7 @@ demo:
 <code src="./demos/cols.tsx">分栏 4</code>
 ```
 
-<code src="./demos/cols.tsx">分栏 1</code>
-<code src="./demos/cols.tsx">分栏 2</code>
-<code src="./demos/cols.tsx">分栏 3</code>
-<code src="./demos/cols.tsx">分栏 4</code>
+<code id="foo" src="./demos/cols.tsx">分栏 1</code>
+<code id="bar" src="./demos/cols.tsx">分栏 2</code>
+<code id="baz" src="./demos/cols.tsx">分栏 3</code>
+<code id="other" src="./demos/cols.tsx">分栏 4</code>

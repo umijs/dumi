@@ -13,3 +13,7 @@
 /examples/*/.dumi/tmp
 /examples/*/.dumi/tmp-production
 /docs/.upstream
+.idea
+/target
+/compiled/crates
+.swc

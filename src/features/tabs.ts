@@ -1,13 +1,15 @@
 import type { IApi } from '@/types';
 import { createRouteId } from '@umijs/core/dist/route/utils';
 import path from 'path';
-import { Mustache, winPath } from 'umi/plugin-utils';
+import { lodash, Mustache, winPath } from 'umi/plugin-utils';
 import { TABS_META_PATH } from './meta';
 
 export interface IContentTab {
   key: string;
   id?: string;
   test?: RegExp;
+  title?: string;
+  titleIntlId?: string;
   component: string;
 }
 
@@ -17,6 +19,10 @@ export function isTabRouteFile(file: string) {
 
 export function getTabKeyFromFile(file: string) {
   return file.match(/\$tab-([^.]+)/)![1];
+}
+
+export function getHostForTabRouteFile(file: string) {
+  return file.replace(/\$tab-[^.]+\./, '');
 }
 
 /**
@@ -30,6 +36,8 @@ export default (api: IApi) => {
     key: string;
     id: string;
     file: string;
+    title?: string;
+    titleIntlId?: string;
   }[] = [];
 
   api.describe({ key: undefined });
@@ -95,6 +103,8 @@ export default (api: IApi) => {
         index: tabs.length + index,
         key: tab.key,
         id: tab.id!,
+        title: tab.title || lodash.startCase(path.parse(tab.component).name),
+        titleIntlId: tab.titleIntlId,
         file: tab.component,
       })),
     );
@@ -115,11 +125,14 @@ export default (api: IApi) => {
 
       // append tabs to meta files
       tabs.forEach((tab) => {
-        metaFiles.push({
-          id: tab.id,
-          file: tab.file,
-          index: metaFiles.length,
-        });
+        const isFromPlugin = tabsFromPlugins.some((item) => item.id === tab.id);
+        if (!isFromPlugin) {
+          metaFiles.push({
+            id: tab.id,
+            file: tab.file,
+            index: metaFiles.length,
+          });
+        }
       });
 
       return metaFiles;
@@ -138,7 +151,7 @@ import * as tab{{{index}}} from '{{{file}}}';
 
 export const tabs = {
   {{#tabs}}
-  '{{{id}}}': { key: '{{{key}}}', components: tab{{{index}}} },
+  '{{{id}}}': { key: '{{{key}}}', title: '{{{title}}}', titleIntlId: '{{{titleIntlId}}}', components: tab{{{index}}} },
   {{/tabs}}
 }
 `,

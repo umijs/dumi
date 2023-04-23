@@ -1,0 +1,39 @@
+@import (reference) '../../styles/variables.less';
+
+.@{prefix}-icon {
+  font-size: 0;
+  line-height: 0;
+
+  [class*='-switch'] + &,
+  [class*='-select'] + & {
+    margin-inline-start: 15px;
+    margin-inline-end: -15px;
+    padding-inline: 15px;
+    border-inline-start: 1px solid @c-border;
+
+    @{dark-selector} & {
+      border-inline-start-color: @c-border-dark;
+    }
+  }
+
+  & + & {
+    margin-inline-start: 18px;
+  }
+
+  > svg {
+    height: 16px;
+    fill: @c-text-secondary;
+
+    @{dark-selector} & {
+      fill: @c-text-secondary-dark;
+    }
+  }
+
+  &:hover svg {
+    fill: @c-primary;
+
+    @{dark-selector} & {
+      fill: @c-primary-dark;
+    }
+  }
+}

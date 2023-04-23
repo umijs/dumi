@@ -40,6 +40,7 @@ export function getSchemas(): Record<string, (Joi: JoiRoot) => any> {
         ),
         codeBlockMode: Joi.string().valid('active', 'passive').optional(),
         entryFile: Joi.string().optional(),
+        forceKebabCaseRouting: Joi.bool().optional(),
       }).optional(),
     extraRemarkPlugins: getUnifiedPluginSchema,
     extraRehypePlugins: getUnifiedPluginSchema,

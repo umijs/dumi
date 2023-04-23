@@ -14,20 +14,40 @@
   &[type='info'] {
     color: @c-primary;
     background: lighten(@c-primary, 40%);
+
+    @{dark-selector} & {
+      color: @c-primary;
+      background: darken(@c-primary-dark, 20%);
+    }
   }
 
   &[type='warning'] {
     color: @c-warning;
     background: lighten(@c-warning, 48%);
+
+    @{dark-selector} & {
+      color: @c-warning;
+      background: darken(@c-warning-dark, 20%);
+    }
   }
 
   &[type='success'] {
     color: @c-success;
     background: lighten(@c-success, 54%);
+
+    @{dark-selector} & {
+      color: @c-success;
+      background: darken(@c-success-dark, 9%);
+    }
   }
 
   &[type='error'] {
     color: @c-error;
     background: lighten(@c-error, 47%);
+
+    @{dark-selector} & {
+      color: @c-error;
+      background: darken(@c-error-dark, 18%);
+    }
   }
 }

@@ -42,7 +42,7 @@ $ git checkout src docs # 恢复原有的源码及文档
   },
   "devDependencies": {
 -   "dumi": "^1.0.0",
-+   "dumi": "^2.0.0-rc.0"
++   "dumi": "^2.0.0"
   }
 }
 ```
@@ -78,8 +78,6 @@ $ git checkout src docs # 恢复原有的源码及文档
 - <code src="path/to/demo.tsx" />
 + <code src="path/to/demo.tsx"></code>
 ```
-
-
 
 ## 项目文件升级
 
@@ -153,6 +151,16 @@ dumi 2.0 将使用特有的 `.dumirc.ts` 作为配置文件，请将原有的 `.
    # 默认使用 webpack 5
 -  webpack5: {},
 });
+```
+
+Monorepo 模式下特别注意 🚨：
+
+由于 `dumi 2` 不再感知 `monorepo` ，因此会出现热更新失效的问题，需要手动配置包名到 src 的 alias。
+
+```ts
+alias: {
+  pkg: path.join(__dirname, 'packages/pkg/src');
+}
 ```
 
 ## 目录结构升级
@@ -231,8 +239,10 @@ Markdown 头部支持的 frontmatter 有如下变化：
 - footer: xxx
   # 已废弃
 - translateHelp: true
-  # 以下配置暂不支持，后续版本会支持
+  # hide 配置项升级为 debug
 - hide: true
++ debug: true
+  # 以下配置暂不支持，后续版本会支持
 - sidemenu: false
 ---
 ```
@@ -246,9 +256,6 @@ Demo 支持的 frontmatter 有如下变化：
 +* description: xxxx
    # 已废弃，可通过覆盖 PreviewerActions 组件实现全局控制
 -* hideActions: ['xxx']
-  # 以下配置暂不支持，后续版本会支持
--* defaultShowCode: true
-+* debug: true
  */
 ```
 

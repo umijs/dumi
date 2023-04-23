@@ -21,10 +21,10 @@ export default (api: IApi) => {
 
   api.onBuildComplete(async () => {
     const smis = new SitemapStream({
-      hostname: api.config.sitemap.hostname,
+      hostname: api.config.sitemap!.hostname,
       xmlns: { video: false, image: false, news: false, xhtml: false },
     });
-    const exclude = ['/404'].concat(api.config.sitemap.exclude);
+    const exclude = ['/404'].concat(api.config.sitemap!.exclude || []);
     const writeStream = fs.createWriteStream(
       path.join(api.paths.absOutputPath, 'sitemap.xml'),
     );

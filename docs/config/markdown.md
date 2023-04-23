@@ -16,6 +16,13 @@ title: 配置页面标题
 
 目前 dumi 支持以下 Markdown 配置。
 
+## debug
+
+- 类型：`boolean`
+- 默认值：`false`
+
+将该页面标记为调试型文档，与[调试型 demo](../guide/write-demo.md#调试型-demo) 一样，它也只会在开发环境下展示。
+
 ## demo
 
 该配置项控制 demo 的展示方式，目前支持以下配置。

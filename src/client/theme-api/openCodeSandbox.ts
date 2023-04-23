@@ -42,7 +42,7 @@ function getCSBData(opts: IPreviewerProps) {
   files['sandbox.config.json'] = {
     content: JSON.stringify(
       {
-        template: isTSX ? 'create-react-app-typescript' : 'create-react-app',
+        template: 'create-react-app',
       },
       null,
       2,

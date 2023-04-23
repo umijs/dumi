@@ -1,3 +1,4 @@
+import { getProjectRoot } from '@/utils';
 import { SchemaParser, SchemaResolver } from 'dumi-afx-deps/compiled/parser';
 import { AtomComponentAsset, AtomFunctionAsset } from 'dumi-assets-types';
 import path from 'path';
@@ -11,6 +12,7 @@ class AtomAssetsParser {
   private resolveDir: string;
   private unresolvedFiles: string[] = [];
   private parser: SchemaParser;
+  private isParsing = false;
   private parseDeferrer:
     | Promise<{
         components: Record<string, AtomComponentAsset>;
@@ -26,6 +28,10 @@ class AtomAssetsParser {
     id: string;
     ids: string[];
   }) => boolean;
+  private watchArgs: {
+    paths: string | string[];
+    options: chokidar.WatchOptions;
+  };
 
   constructor(opts: {
     entryFile: string;
@@ -33,29 +39,53 @@ class AtomAssetsParser {
     resolveFilter?: AtomAssetsParser['resolveFilter'];
     unpkgHost?: string;
     watch?: boolean;
+    parseOptions?: object;
   }) {
+    const absEntryFile = path.resolve(opts.resolveDir, opts.entryFile);
+
     this.resolveDir = opts.resolveDir;
     this.resolveFilter = opts.resolveFilter || (() => true);
-    this.entryDir = path.relative(
-      opts.resolveDir,
-      path.dirname(opts.entryFile),
-    );
+    this.entryDir = path.relative(opts.resolveDir, path.dirname(absEntryFile));
     this.parser = new SchemaParser({
-      entryPath: opts.entryFile,
-      basePath: opts.resolveDir,
+      entryPath: absEntryFile,
+      basePath: getProjectRoot(opts.resolveDir),
       unPkgHost: opts.unpkgHost ?? 'https://unpkg.com',
+      mode: 'worker',
+      // @ts-ignore
+      parseOptions: opts.parseOptions,
     });
+    this.watchArgs = {
+      paths: this.entryDir,
+      options: {
+        cwd: this.resolveDir,
+        ignored: [
+          '**/.*',
+          '**/.*/**',
+          '**/_*',
+          '**/_*/**',
+          '**/*.{md,less,scss,sass,styl,css}',
+        ],
+        ignoreInitial: true,
+      },
+    };
   }
 
   async parse() {
-    // use valid cache first
-    if (!this.parseDeferrer || this.unresolvedFiles.length) {
+    // use cache first, and only one parse task can be running at the same time
+    // FIXME: result may outdated
+    if (
+      !this.parseDeferrer ||
+      (this.unresolvedFiles.length && !this.isParsing)
+    ) {
+      this.isParsing = true;
       this.parseDeferrer = (async () => {
         // patch unresolved files, and this method also will init parser before the first time
         await this.parser.patch(this.unresolvedFiles.splice(0));
 
         // create resolver
-        const resolver = new SchemaResolver(await this.parser.parse());
+        const resolver = new SchemaResolver(await this.parser.parse(), {
+          mode: 'worker',
+        });
 
         // parse atoms from resolver
         const result: Awaited<NonNullable<AtomAssetsParser['parseDeferrer']>> =
@@ -65,15 +95,17 @@ class AtomAssetsParser {
           };
         const fallbackProps = { type: 'object', properties: {} };
         const fallbackSignature = { arguments: [] };
+        const componentList = await resolver.componentList;
+        const functionList = await resolver.functionList;
 
-        resolver.componentList.forEach((id) => {
+        for (const id of componentList) {
           const needResolve = this.resolveFilter({
             id,
             type: 'COMPONENT',
-            ids: resolver.componentList,
+            ids: componentList,
           });
           let propsConfig = needResolve
-            ? resolver.getComponent(id).props
+            ? (await resolver.getComponent(id)).props
             : fallbackProps;
           const size = Buffer.byteLength(JSON.stringify(propsConfig));
 
@@ -90,16 +122,16 @@ class AtomAssetsParser {
             title: id,
             propsConfig,
           };
-        });
+        }
 
-        resolver.functionList.forEach((id) => {
+        for (const id of functionList) {
           const needResolve = this.resolveFilter({
             id,
             type: 'FUNCTION',
-            ids: resolver.functionList,
+            ids: functionList,
           });
           let signature = needResolve
-            ? resolver.getFunction(id).signature
+            ? (await resolver.getFunction(id)).signature
             : fallbackSignature;
           const size = Buffer.byteLength(JSON.stringify(signature));
 
@@ -116,7 +148,11 @@ class AtomAssetsParser {
             title: id,
             signature,
           };
-        });
+        }
+
+        // reset status after parse finished
+        resolver.$$destroyWorker();
+        this.isParsing = false;
 
         return result;
       })();
@@ -136,27 +172,39 @@ class AtomAssetsParser {
       }, 100);
 
       this.watcher = chokidar
-        .watch(this.entryDir, {
-          cwd: this.resolveDir,
-          ignored: [
-            '**/.*',
-            '**/.*/**',
-            '**/_*',
-            '**/_*/**',
-            '**/*.{md,less,scss,sass,styl,css}',
-          ],
-        })
+        .watch(this.watchArgs.paths, this.watchArgs.options)
         .on('all', (ev, file) => {
-          if (['add', 'change'].includes(ev) && /\.(j|t)sx?$/.test(file)) {
-            this.unresolvedFiles.push(file);
+          if (
+            ['add', 'change'].includes(ev) &&
+            /((?<!\.d)\.ts|\.(jsx?|tsx))$/.test(file)
+          ) {
+            this.unresolvedFiles.push(path.join(this.resolveDir, file));
             lazyParse();
           }
         });
+      lazyParse();
     }
   }
 
   unwatch(cb: AtomAssetsParser['cbs'][number]) {
     this.cbs.splice(this.cbs.indexOf(cb), 1);
+  }
+
+  patchWatchArgs(
+    handler: (
+      args: AtomAssetsParser['watchArgs'],
+    ) => AtomAssetsParser['watchArgs'],
+  ) {
+    this.watchArgs = handler(this.watchArgs);
+  }
+
+  destroyWorker() {
+    // wait for current parse finished
+    if (this.parseDeferrer) {
+      this.parseDeferrer.finally(() => this.parser.$$destroyWorker());
+    } else {
+      this.parser.$$destroyWorker();
+    }
   }
 }
 

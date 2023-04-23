@@ -1,5 +1,22 @@
 @import (reference) '../../styles/variables.less';
 
+// override prism theme for dark mode
+@{dark-selector} {
+  .token.doctype,
+  .token.punctuation,
+  .token.entity,
+  code[class*='language-'],
+  pre[class*='language-'] {
+    color: @c-text-secondary-dark;
+  }
+
+  .token.comment,
+  .token.prolog,
+  .token.cdata {
+    color: @c-text-note-dark;
+  }
+}
+
 .@{prefix}-source-code {
   @bg-color: tint(@c-site-bg, 50%);
 
@@ -21,6 +38,14 @@
     &::after {
       content: none;
     }
+
+    // highlight line
+    & > .highlighted {
+      background-color: shade(@bg-color, 5%);
+      width: calc(100% + 48px);
+      margin-inline-start: -24px;
+      padding-inline-start: 24px;
+    }
   }
 
   &-copy {
@@ -39,19 +64,45 @@
       width: 16px;
       fill: darken(@c-border, 20%);
       transition: fill 0.2s;
+
+      @{dark-selector} & {
+        fill: lighten(@c-border-dark, 20%);
+      }
     }
 
     &:hover > svg {
       fill: darken(@c-border, 30%);
+
+      @{dark-selector} & {
+        fill: lighten(@c-border-dark, 30%);
+      }
     }
 
     &[data-copied] > svg {
-      fill: rgb(11 174 11);
+      fill: @c-success;
+
+      @{dark-selector} & {
+        fill: @c-success-dark;
+      }
     }
   }
 
   &:not(:hover) &-copy {
     opacity: 0;
     visibility: hidden;
+  }
+
+  @{dark-selector} & {
+    @bg-color: shade(@c-site-bg-dark, 50%);
+
+    background-color: @bg-color;
+
+    &-copy {
+      background-color: fadeout(@bg-color, 80%);
+    }
+
+    & > pre.prism-code > .highlighted {
+      background-color: tint(@bg-color, 10%);
+    }
   }
 }

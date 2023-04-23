@@ -43,6 +43,20 @@ export default () => <>Hello world!</>;
 
 以紧凑模式渲染 demo，开启时 demo 预览容器将不会有内边距。
 
+## debug
+
+- 类型：`boolean`
+- 默认值：`false`
+
+标记当前 demo 为调试 demo，这意味着在生产模式下该 demo 是不可见的；另外，调试 demo 在开发环境下也会展示一个 DEV ONLY 的标记，以便开发者将其和其他 demo 区分开来。
+
+## defaultShowCode
+
+- 类型：`boolean`
+- 默认值：`false`
+
+配置是否默认展开 demo 源代码。
+
 ## demoUrl
 
 - 类型：`string`
@@ -55,14 +69,14 @@ export default () => <>Hello world!</>;
 - 类型：`string`
 - 默认值：`undefined`
 
-配置 demo 的描述，会展示在 demo 预览器里，后续也会用于搜索。
+配置 demo 的描述，会展示在 demo 预览器里，支持被搜索；需要注意的是，**仅在 demo 标题已配置时才会展示描述**。
 
 ## iframe
 
-- 类型：`boolean`
+- 类型：`boolean` | `string` | `number`
 - 默认值：`false`
 
-使用 iframe 形式渲染 demo，通常用于 Layout 等需要与页面隔离的 demo。
+使用 iframe 形式渲染 demo，通常用于 Layout 等需要与页面隔离的 demo。 如果参数设置为 `number` 或者 `string` 类型，最终会被渲染成为 iframe 的高度，注意 `string` 类型目前只能是可以转换为数字的值， 比如字符串 `100`。
 
 ## inline
 
@@ -76,7 +90,7 @@ export default () => <>Hello world!</>;
 - 类型：`string`
 - 默认值：`undefined`
 
-配置 demo 的标题，会展示在 demo 预览器里，后续也会用于搜索。
+配置 demo 的标题，会展示在 demo 预览器里，支持被搜索。
 
 ## transform
 

@@ -31,6 +31,10 @@
     pointer-events: none;
     background: no-repeat center/cover;
     background-image: url('https://gw.alipayobjects.com/zos/bmw-prod/a6c3488a-994c-4dd3-8e92-2324d9a1ca48/l9dmd9wl_w2858_h1864.png');
+
+    @{dark-selector} & {
+      opacity: 1;
+    }
   }
 
   > p {
@@ -38,6 +42,10 @@
     color: @c-text-secondary;
     font-size: 20px;
     line-height: 1.6;
+
+    @{dark-selector} & {
+      color: @c-text-secondary-dark;
+    }
 
     @media @mobile {
       font-size: 16px;
@@ -75,11 +83,20 @@
         margin-inline-start: 48px;
         color: @c-primary;
         border: 1px solid @c-primary;
+
+        @{dark-selector} & {
+          color: @c-primary-dark;
+          border-color: @c-primary-dark;
+        }
       }
 
       &:first-child {
         color: #fff;
         background-color: @c-primary;
+
+        @{dark-selector} & {
+          background-color: @c-primary-dark;
+        }
       }
     }
   }

@@ -112,6 +112,48 @@ const Example = () => {
 };
 ```
 
+### usePrefersColor
+
+- 作用：获取/设置站点的主题色
+- 场景：实现主题切换或全局控制组件 demo 主题色时可能需要用到
+- 用法：
+
+例如通过 `GlobalLayout` 对组件 demo 的主题色进行全局控制，此处假定组件库已经实现了类似 antd 的 `ConfigProvider` 来控制全局主题色：
+
+```tsx | pure
+// .dumi/theme/layouts/GlobalLayout.tsx
+import ConfigProvider from '@/config-provider';
+import { useOutlet, usePrefersColor } from 'dumi';
+
+const GlobalLayout: React.FC = ({ children }) => {
+  const outlet = useOutlet();
+  // color 为当前应用的主题色，dark or light
+  const [color] = usePrefersColor();
+
+  return <ConfigProvider theme={color}>{outlet}</ConfigProvider>;
+};
+```
+
+在制作主题包时也可以通过该 API 实现切换主题色的按钮，用法如下：
+
+```ts
+import { usePrefersColor } from 'dumi';
+
+const Example = () => {
+  const [
+    // 当前生效的主题色，dark or light
+    color,
+    // 当前的偏好主题色，dark or light or auto
+    prefersColor,
+    // 设置偏好主题色，如果设置为 auto，则 color 的值会根据系统设置自动改变
+    setPrefersColor,
+  ] = usePrefersColor();
+  // 可参考 dumi 默认主题的主题切换按钮实现：https://github.com/umijs/dumi/tree/master/src/client/theme-default/slots/ColorSwitch/index.tsx
+
+  // 其他逻辑
+};
+```
+
 ### useRouteMeta
 
 - 作用：获取当前路由的元数据

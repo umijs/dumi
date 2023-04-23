@@ -42,7 +42,7 @@ export default (api: IApi) => {
       resolve: api.config.resolve,
       extraRemarkPlugins: api.config.extraRemarkPlugins,
       extraRehypePlugins: api.config.extraRehypePlugins,
-      routers: api.appData.routes,
+      routes: api.appData.routes,
     };
 
     memo.module
@@ -112,6 +112,7 @@ export default (api: IApi) => {
     // get raw content for demo source file
     memo.module
       .rule('dumi-raw')
+      .type('javascript/auto')
       .post()
       .resourceQuery(/dumi-raw/)
       .use('raw-loader')

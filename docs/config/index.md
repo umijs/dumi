@@ -38,8 +38,6 @@ export default defineConfig({
 
 单独将资产的解析逻辑拆分是为了解决 dumi 1 中普通文档与源码目录下的组件文档混淆不清、分组困难的问题。
 
-是否自动 alias 项目包名到 src 目录，如果是 father 4 项目，还会根据配置自动 alias 产物目录到源码目录，默认开启。
-
 #### codeBlockMode
 
 - 类型：`'active' | 'passive'`
@@ -71,10 +69,37 @@ export default () => '我会被编译，展示为组件';
 ```
 </code></pre>
 
+#### entryFile
+
+- 类型：`string`
+- 默认值：`undefined`
+
+指定项目的入口文件，比如 `./src/index.ts`，目前该配置会用于 API 解析，可参考[指南 - 自动 API 表格](../guide/auto-api-table.md)。
+
+#### forceKebabCaseRouting
+
+- 类型：`boolean`
+- 默认值：`true`
+
+配置强制 kebab-case 路由模式，即所有路径都会被转换为短横线模式，比如 `HelloWorld` 将会被转换为 `hello-world`，该配置默认开启，配置为 `false` 时将以实际文件路径为准。
+
+### apiParser
+
+- 类型：`{ unpkgHost?: 'https://unpkg.com'; resolveFilter?: (args: { id: string; ids: string; type: 'COMPONENT' | 'FUNCTION' }) => boolean }`
+- 默认值：`undefined`
+
+启用 API 自动解析功能，开启后可使用 `API` 全局组件，参考[指南 - 自动 API 表格](../guide/auto-api-table.md)。
+
+其中 `unpkgHost` 配置项用于自定义 unpkg.com 的地址以加快访问速度，比如自己的私有镜像地址。解析过程中如果存在找不到的依赖，会兜底到 `unpkgHost` 的地址去找。
+
+`resolveFilter` 配置项用于跳过指定原子资产的解析以提升性能。部分组件属性或函数签名存在多层嵌套，甚至是循环引用时，会导致解析结果巨大，此时可以通过该配置项跳过解析。
+
 ### autoAlias
 
 - 类型：`boolean`
 - 默认值：`true`
+
+是否自动 alias 项目包名到 src 目录，如果是 father 4 项目，还会根据配置自动 alias 产物目录到源码目录，默认开启。
 
 ### locales
 
@@ -86,7 +111,8 @@ export default () => '我会被编译，展示为组件';
 1. `id` 值会作为 dumi 识别 Markdown 文件后缀的依据，以及主题国际化文案的 `key`。例如，值为 `zh-CN` 时意味着 `index.zh-CN.md` 的文件会被归类到该语言下
 2. 对于默认语言的 Markdown 文件而言，后缀是可选的。例如，在默认配置下，`index.zh-CN.md` 与 `index.md` 等价
 3. `name` 值会作为页面渲染语言切换链接的文本值，当只有一种语言时，不会展示切换链接
-4. `base` 值指定该语言的基础路由，对默认语言来说默认值为 `/`，对非默认语言来说默认值为 `/${id}`，仅在希望 `id` 和 `base` 不一致时才需要配置
+4. 约定第一项（即 `locales[0]`）为站点默认语言，其余为其他语言，对应页面需带上 `base` 才能访问到
+5. `base` 值指定该语言的基础路由，对默认语言来说默认值为 `/`，对非默认语言来说默认值为 `/${id}`，仅在希望 `id` 和 `base` 不一致时才需要配置，且**仅默认语言支持配置为 `/`**
 
 ### extraRemarkPlugins
 

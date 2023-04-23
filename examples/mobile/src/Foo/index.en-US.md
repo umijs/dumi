@@ -1,1 +1,0 @@
-English component route

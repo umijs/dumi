@@ -2,6 +2,7 @@
 nav: 指南
 group: 基础
 order: 5
+mobile: false
 ---
 
 # 写组件 demo
@@ -25,6 +26,10 @@ export default () => &lt;h1&gt;Hello dumi!&lt;/h1&gt;;
 `jsx` 和 `tsx` 的代码块将会被 dumi 解析为 React 组件，以上代码块将会被渲染成：
 
 ```jsx
+/**
+ * defaultShowCode: true
+ */
+
 import React from 'react';
 
 export default () => <h1>Hello dumi!</h1>;
@@ -73,6 +78,15 @@ import Button from '@/Button/index.tsx';
 
 <code src="./demos/cols.tsx"></code>
 
+为了方便调试，你可以像 Jest 一样对 `<code />` 标签添加 `skip` 或 `only` 标识（仅在开发环境下有效）以跳过解析，例如：
+
+```html
+<code src="./demos/foo.tsx"></code>
+<!-- 下面这条将跳过解析 -->
+<code src="./demos/bar.tsx" skip></code>
+<code src="./demos/baz.tsx"></code>
+```
+
 ## 控制 demo 渲染
 
 dumi 提供了一些 FrontMatter 属性，以满足不同的 demo 渲染需求，在**源代码顶部**配置即可：
@@ -100,6 +114,10 @@ dumi 目前支持如下 demo 控制能力。
 ```jsx
 /**
  * transform: true
+ * defaultShowCode: true
+ */
+/**
+ * transform: true
  */
 
 import React from 'react';
@@ -116,6 +134,10 @@ export default () => (
 ```jsx
 /**
  * background: '#f6f7f9'
+ * defaultShowCode: true
+ */
+/**
+ * background: '#f6f7f9'
  */
 
 import React from 'react';
@@ -130,6 +152,10 @@ export default () => null;
 ```jsx
 /**
  * compact: true
+ * defaultShowCode: true
+ */
+/**
+ * compact: true
  */
 
 import React from 'react';
@@ -142,6 +168,11 @@ export default () => '我会贴边站';
 通过 `title` 和 `description` 配置 demo 的标题和简介：
 
 ```jsx
+/**
+ * title: 我是标题
+ * description: 我是简介，我可以用 `Markdown` 来编写
+ * defaultShowCode: true
+ */
 /**
  * title: 我是标题
  * description: 我是简介，我可以用 `Markdown` 来编写
@@ -180,7 +211,7 @@ import React from 'react';
 export default () => <p>我会被直接嵌入</p>;
 ```
 
-<!-- ### 调试型 demo
+### 调试型 demo
 
 设置 `debug` 为 true，则该 demo 仅在开发环境下展示、且会有一个特殊标记：
 
@@ -194,6 +225,7 @@ import Previewer from 'dumi/theme/builtins/Previewer';
 export default () => (
   <Previewer
     asset={{
+      id: 'docs-guide-write-demo-demo-6',
       dependencies: {
         'index.tsx': {
           type: 'FILE',
@@ -202,12 +234,15 @@ export default () => (
         },
       },
     }}
+    demoUrl=""
+    disabledActions={['EXTERNAL']}
+    defaultShowCode
     debug
   >
     我仅在开发环境下展示
   </Previewer>
 );
-``` -->
+```
 
 ### iframe 模式
 
@@ -215,7 +250,13 @@ export default () => (
 
 ```jsx
 /**
- * iframe: true // 设置为数值可控制 iframe 高度
+ * iframe: true
+ * compact: true
+ * defaultShowCode: true
+ */
+/**
+ * iframe: true
+ * compact: true
  */
 import React from 'react';
 

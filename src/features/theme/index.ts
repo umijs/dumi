@@ -1,9 +1,14 @@
-import { LOCAL_THEME_DIR, PICKED_PKG_FIELDS, THEME_PREFIX } from '@/constants';
+import {
+  LOCAL_THEME_DIR,
+  PICKED_PKG_FIELDS,
+  PREFERS_COLOR_ATTR,
+  THEME_PREFIX,
+} from '@/constants';
 import type { IApi } from '@/types';
 import { parseModuleSync } from '@umijs/bundler-utils';
 import fs from 'fs';
 import path from 'path';
-import { deepmerge, lodash, winPath } from 'umi/plugin-utils';
+import { deepmerge, lodash, resolve, winPath } from 'umi/plugin-utils';
 import { safeExcludeInMFSU } from '../derivative';
 import loadTheme, { IThemeLoadResult } from './loader';
 
@@ -34,7 +39,10 @@ function getPkgThemePath(api: IApi) {
   return (
     pkgThemeName &&
     path.dirname(
-      require.resolve(`${pkgThemeName}/package.json`, { paths: [api.cwd] }),
+      resolve.sync(`${pkgThemeName}/package.json`, {
+        basedir: api.cwd,
+        preserveSymlinks: true,
+      }),
     )
   );
 }
@@ -161,6 +169,31 @@ export default (api: IApi) => {
     return memo;
   });
 
+  // set dark mode selector as less variable
+  // why not use `theme` or `modifyVars`?
+  // because `theme` will be override by `modifyVars` in umi
+  // and `modifyVar` will override `theme` from user
+  api.chainWebpack((memo) => {
+    const lessRule = memo.module.rule('less');
+
+    ['css', 'css-modules'].forEach((rule) => {
+      Object.values(lessRule.oneOf(rule).uses.entries()).forEach((loader) => {
+        if (loader.get('loader').includes('less-loader')) {
+          loader.tap((opts) => {
+            opts.lessOptions.modifyVars ??= {};
+            opts.lessOptions.modifyVars[
+              'dark-selector'
+            ] = `~'[${PREFERS_COLOR_ATTR}="dark"]'`;
+
+            return opts;
+          });
+        }
+      });
+    });
+
+    return memo;
+  });
+
   api.onGenerateFiles(() => {
     // write shadow theme files to tmp dir
     themeMapKeys.forEach((key) => {
@@ -246,6 +279,7 @@ export default function DumiContextWrapper() {
       pkg: ${JSON.stringify(
         lodash.pick(api.pkg, ...Object.keys(PICKED_PKG_FIELDS)),
       )},
+      historyType: "${api.config.history?.type || 'browser'}",
       entryExports,
       demos,
       components,
@@ -264,6 +298,28 @@ export default function DumiContextWrapper() {
   );
 }`,
     });
+  });
+
+  // read prefers-color from localStorage before app render
+  api.addEntryCodeAhead(() => {
+    const { prefersColor } = api.config.themeConfig;
+
+    if (prefersColor.switch === false && prefersColor.default !== 'auto') {
+      return `document.documentElement.setAttribute('${PREFERS_COLOR_ATTR}', '${prefersColor.default}');`;
+    }
+
+    return `(function () {
+  var cache = typeof navigator !== 'undefined' && navigator.cookieEnabled && typeof window.localStorage !== 'undefined' && localStorage.getItem('dumi:prefers-color') || '${prefersColor.default}';
+  var isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  var enums = ['light', 'dark', 'auto'];
+
+  document.documentElement.setAttribute(
+    '${PREFERS_COLOR_ATTR}',
+    cache === enums[2]
+      ? (isDark ? enums[1] : enums[0])
+      : (enums.indexOf(cache) > -1 ? cache : enums[0])
+  );
+})();`;
   });
 
   // workaround for avoid oom, when developing theme package example in tnpm node_modules

@@ -1,34 +1,5 @@
 import type { IDumiTechStack } from '@/types';
-import {
-  transformSync,
-  type ExportDefaultDeclaration,
-  type ExportDefaultExpression,
-  type ModuleDeclaration,
-} from '@swc/core';
-import Visitor from '@swc/core/Visitor';
-
-/**
- * swc plugin for replace export to return
- */
-class ReactDemoVisitor extends Visitor {
-  visitExportDefaultDeclaration(
-    n: ExportDefaultDeclaration,
-  ): ModuleDeclaration {
-    return {
-      type: 'ReturnStatement',
-      span: n.span,
-      argument: n.decl,
-    } as any;
-  }
-
-  visitExportDefaultExpression(n: ExportDefaultExpression): ModuleDeclaration {
-    return {
-      type: 'ReturnStatement',
-      span: n.span,
-      argument: n.expression,
-    } as any;
-  }
-}
+import { transformSync } from '@swc/core';
 
 export default class ReactTechStack implements IDumiTechStack {
   name = 'react';
@@ -48,23 +19,26 @@ export default class ReactTechStack implements IDumiTechStack {
             [isTSX ? 'tsx' : 'jsx']: true,
           },
           target: 'es2022',
+          experimental: {
+            cacheRoot: 'node_modules/.cache/swc',
+            plugins: [
+              [
+                require.resolve(
+                  '../../compiled/crates/swc_plugin_react_demo.wasm',
+                ),
+                {},
+              ],
+            ],
+          },
         },
         module: {
-          // all imports to require
-          type: 'commonjs',
-          // TODO: find a way to remove the useless __esModule flag
-          // Object.defineProperty(exports, "__esModule", {
-          //   value: true
-          // });
-          // no 'use strict'
-          strictMode: false,
+          type: 'es6',
         },
-        plugin: (m) => new ReactDemoVisitor().visitProgram(m),
       });
 
-      return `(function () {
+      return `React.lazy(async () => {
 ${code}
-})()`;
+})`;
     }
 
     return raw;

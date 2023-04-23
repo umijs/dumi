@@ -1,4 +1,5 @@
 import type AtomAssetsParser from '@/assetParsers/atom';
+import type { IParsedBlockAsset } from '@/assetParsers/block';
 import type { IDumiDemoProps } from '@/client/theme-api/DumiDemo';
 import type { ILocalesConfig, IThemeConfig } from '@/client/theme-api/types';
 import type { IContentTab } from '@/features/tabs';
@@ -6,11 +7,34 @@ import type { IThemeLoadResult } from '@/features/theme/loader';
 import type { IModify } from '@umijs/core';
 import type { AssetsPackage, ExampleBlockAsset } from 'dumi-assets-types';
 import type { Element } from 'hast';
-import type { IApi as IUmiApi } from 'umi';
+import type { defineConfig as defineUmiConfig, IApi as IUmiApi } from 'umi';
 
-type IUmiConfig = IUmiApi['config'];
+// ref: https://grrr.tech/posts/2021/typescript-partial/
+type Subset<K> = {
+  [attr in keyof K]?: K[attr] extends Array<any>
+    ? K[attr]
+    : K[attr] extends object
+    ? Subset<K[attr]>
+    : K[attr] extends object | null
+    ? Subset<K[attr]> | null
+    : K[attr] extends object | null | undefined
+    ? Subset<K[attr]> | null | undefined
+    : K[attr];
+};
+// ref: https://stackoverflow.com/a/69299668
+type NoStringIndex<T> = {
+  [K in keyof T as string extends K ? never : K]: T[K];
+};
 
-export interface IDumiConfig extends IUmiConfig {
+type IUmiConfig = Omit<
+  // for exclude [key: string]: any to avoid omit failed
+  // ref: https://github.com/microsoft/TypeScript/issues/31153
+  NoStringIndex<Parameters<typeof defineUmiConfig>[0]>,
+  // omit incomplete types from @@/core/pluginConfig
+  'resolve' | 'extraRemarkPlugins' | 'extraRehypePlugins' | 'themeConfig'
+>;
+
+interface IDumiExtendsConfig {
   resolve: {
     docDirs: (string | { type?: string; dir: string })[];
     /**
@@ -20,6 +44,7 @@ export interface IDumiConfig extends IUmiConfig {
     atomDirs: { type: string; dir: string }[];
     codeBlockMode: 'active' | 'passive';
     entryFile?: string;
+    forceKebabCaseRouting: boolean;
   };
   locales: ILocalesConfig;
   themeConfig: IThemeConfig;
@@ -32,15 +57,14 @@ export interface IDumiConfig extends IUmiConfig {
   // eslint-disable-next-line @typescript-eslint/ban-types
   extraRehypePlugins?: (string | Function | [string | Function, object])[];
 }
+export type IDumiConfig = IUmiConfig & IDumiExtendsConfig;
 
-export interface IDumiUserConfig
-  extends Partial<Omit<IDumiConfig, 'resolve' | 'locales'>> {
-  resolve?: Partial<IDumiConfig['resolve']>;
-  locales?: (
-    | IDumiConfig['locales'][0]
-    | Omit<IDumiConfig['locales'][0], 'base'>
-  )[];
-}
+export type IDumiUserConfig = Subset<Omit<IDumiConfig, 'locales'>> & {
+  locales?:
+    | Exclude<IDumiConfig['locales'][0], { base: string }>[]
+    | Omit<Exclude<IDumiConfig['locales'][0], { suffix: string }>, 'base'>[];
+  [key: string]: any;
+};
 
 export abstract class IDumiTechStack {
   /**
@@ -63,25 +87,33 @@ export abstract class IDumiTechStack {
    */
   abstract generateMetadata?(
     asset: ExampleBlockAsset,
-  ): Promise<ExampleBlockAsset> | ExampleBlockAsset;
-  /**
-   * generator for return previewer props
-   */
-  abstract generatePreviewerProps?(
-    props: IDumiDemoProps['previewerProps'],
     opts: {
       type: Parameters<IDumiTechStack['transformCode']>[1]['type'];
       mdAbsPath: string;
       fileAbsPath?: string;
       entryPointCode?: string;
     },
+  ): Promise<ExampleBlockAsset> | ExampleBlockAsset;
+  /**
+   * generator for return previewer props
+   */
+  abstract generatePreviewerProps?(
+    props: IDumiDemoProps['previewerProps'],
+    opts: Parameters<NonNullable<IDumiTechStack['generateMetadata']>>[1],
   ):
     | Promise<IDumiDemoProps['previewerProps']>
     | IDumiDemoProps['previewerProps'];
+  /**
+   * generator for return file path of demo sources
+   */
+  abstract generateSources?(
+    sources: IParsedBlockAsset['sources'],
+    opts: Parameters<NonNullable<IDumiTechStack['generateMetadata']>>[1],
+  ): Promise<IParsedBlockAsset['sources']> | IParsedBlockAsset['sources'];
 }
 
 export type IApi = IUmiApi & {
-  config: IDumiConfig;
+  config: IDumiConfig & { [key: string]: any };
   userConfig: IDumiUserConfig;
   service: IUmiApi['service'] & {
     themeData: IThemeLoadResult;

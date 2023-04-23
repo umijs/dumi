@@ -44,7 +44,9 @@ export const useFullSidebarData = () => {
         // en-US/a => /en-US/a
         // a/b => /a
         // en-US/a/b => /en-US/a
-        const parentPath = `/${route.path!.replace(/\/[^/]+$/, '')}`;
+        const parentPath = `/${route.path!.replace(clearPath, (s) =>
+          s.replace(/\/[^/]+$/, ''),
+        )}`;
         const { title, order } = pickRouteSortMeta(
           { order: 0 },
           'group',
@@ -182,7 +184,9 @@ export const useSidebarData = () => {
   // /en-US/a/b => /en-US/a
   // /en-US/a/b/ => /en-US/a (also strip trailing /)
   const parentPath = clearPath
-    ? pathname.replace(/(\/[^/]+)(\/[^/]+\/?)$/, '$1')
+    ? pathname.replace(clearPath, (s) =>
+        s.replace(/([^/]+)(\/[^/]+\/?)$/, '$1'),
+      )
     : pathname;
 
   return parentPath ? sidebar[parentPath] : [];

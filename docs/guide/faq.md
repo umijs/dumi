@@ -74,7 +74,7 @@ export default {
 
 ```ts
 export default {
-  base: '/文档起始路由',
+  base: '/文档起始路由/',
   publicPath: '/静态资源起始路径/',
   // 其他配置
 };
@@ -92,11 +92,7 @@ export default {
 
 ```bash
 npm install gh-pages --save-dev
-```
-
-or
-
-```bash
+# or
 yarn add gh-pages -D
 ```
 
@@ -111,6 +107,10 @@ yarn add gh-pages -D
 编译生成 `dist` 目录
 
 ```bash
+# site 模版
+npm run build
+
+# react 模版
 npm run docs:build
 ```
 
@@ -140,12 +140,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: npm install
-      - run: npm run docs:build
+      # 文档编译命令，如果是 react 模板需要修改为 npm run docs:build
+      - run: npm run build
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs-dist
+          # 文档目录，如果是 react 模板需要修改为 docs-dist
+          publish_dir: ./dist
 ```
 
 ## dumi 如何支持对 Swift、C#、Kotlin 等语言的语法高亮？
@@ -163,3 +165,42 @@ import Prism from 'prism-react-renderer/prism';
 require('prismjs/components/prism-kotlin');
 require('prismjs/components/prism-csharp');
 ```
+
+## 为什么不支持 CSS Modules？
+
+主要两个原因：
+
+1. 使用者很难覆写样式，因为最终 `className` 不稳定
+2. 自动 CSS Modules 依赖 babel 编译产物，给使用项目带来额外的编译成本，而大部分框架默认都不编译 `node_modules`（比如 Umi 框架就需要配置 `extraBabelIncludes` 才会编译 `node_modules` 下的产物）
+
+也许大部分人选择在组件库项目中使用它，是因为做前端应用研发时的习惯性选型，但它其实不适合组件库项目；另外，原因 2 也会产生额外的调时成本：『为什么 dev 生效、发布后在项目里不生效？』
+
+## 为什么组件库发布以后，在项目中引入组件但样式不生效？
+
+> 这里仅讨论**非 CSS-in-JS** 的组件库，CSS-in-JS 的组件库如果存在此问题，应该和组件实现有关。
+
+遇到这个问题说明组件库文档中引入的组件是有样式的，需要先确认文档中样式生效的原因，通常有 3 种可能：
+
+1. 借助 `.dumi/global.less` 加载了组件库样式表
+2. 借助 `.dumirc.ts` 中的 `styles` 配置项加载了组件库样式表
+3. 借助 `babel-plugin-import` 并将其配置到 `.dumirc.ts` 中按需加载了组件样式
+
+实际上，这些样式引入方案均只对文档构建生效，也就是说它们都是依托于 dumi 框架提供的能力，而组件库发布为 NPM 包以后，组件库的编译将由实际使用组件库的项目负责。
+
+因此，我们需要根据项目使用的开发框架做等价配置，才能确保样式生效，此处以 Umi 项目为例，上述 3 种方案的等价配置方式如下：
+
+1. 借助 `src/global.less` 加载组件库样式表
+2. 借助 `.umirc.ts` 中的 `styles` 配置项加载组件库样式表
+3. 借助 `babel-plugin-import` 并将其配置到 `.umirc.ts` 中按需加载组件样式
+
+其实该问题还有一种解决思路，那就是直接在组件源码里引入样式表，类似：
+
+```ts
+import './index.less';
+// or
+import './index.css';
+
+// 组件其他源码
+```
+
+这样无论是 dumi 还是实际项目里，都不需要做额外配置，但这种做法也有一些限制：如果引入的是 `.less`，那么目标项目的开发框架必须支持编译 Less。

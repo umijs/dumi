@@ -1,0 +1,60 @@
+@import (reference) '../../styles/variables.less';
+
+.@{prefix}-color-switch {
+  position: relative;
+  font-size: 0;
+  line-height: 0;
+
+  @media screen and (max-width: 1430px) {
+    &::before {
+      left: auto;
+      right: auto;
+      inset-inline-end: -15px;
+      transform: none;
+
+      [class*='-switch'] + &,
+      [class*='-select'] + & {
+        inset-inline-end: 0;
+      }
+    }
+  }
+
+  [class*='-switch'] + &,
+  [class*='-select'] + & {
+    margin-inline-start: 15px;
+    margin-inline-end: -15px;
+    padding-inline: 15px;
+    border-inline-start: 1px solid @c-border;
+
+    @{dark-selector} & {
+      border-inline-start-color: @c-border-dark;
+    }
+  }
+
+  svg {
+    width: 16px;
+    fill: @c-text-secondary;
+
+    @{dark-selector} & {
+      fill: @c-text-secondary-dark;
+    }
+  }
+
+  &:hover svg {
+    fill: @c-primary;
+
+    @{dark-selector} & {
+      fill: @c-primary-dark;
+    }
+  }
+
+  select {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    max-width: 100%;
+    max-height: 16px;
+    cursor: pointer;
+  }
+}

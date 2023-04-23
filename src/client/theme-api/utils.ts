@@ -1,6 +1,13 @@
 import { useAppData, useIntl, useSiteData } from 'dumi';
 import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
-import type { INavItem, IRouteMeta, IRoutesById } from './types';
+import type {
+  ILocale,
+  INav,
+  INavItem,
+  IRouteMeta,
+  IRoutesById,
+  IUserNavValue,
+} from './types';
 import { useLocale } from './useLocale';
 
 export const useLocaleDocRoutes = () => {
@@ -121,3 +128,7 @@ export const pickRouteSortMeta = (
 
   return original;
 };
+
+export function getLocaleNav(nav: IUserNavValue | INav, locale: ILocale) {
+  return Array.isArray(nav) ? nav : nav[locale.id];
+}

@@ -1,4 +1,5 @@
 import Cache from 'file-system-cache';
+import fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'path';
 import { lodash, logger, winPath } from 'umi/plugin-utils';
@@ -126,4 +127,34 @@ export async function tryFatherBuildConfigs(cwd: string) {
   if (APP_ROOT) process.env.APP_ROOT = APP_ROOT;
 
   return configs;
+}
+
+/**
+ * get root dir for monorepo project
+ */
+export function getProjectRoot(cwd: string) {
+  const splittedCwd = winPath(cwd).split('/');
+
+  // try to find root cwd for monorepo project, only support >= 3 level depth
+  for (let level = -1; level >= -3; level -= 1) {
+    const rootCwd = splittedCwd.slice(0, level).join('/');
+
+    // break if no parent dir
+    if (!rootCwd) break;
+
+    // check monorepo for parent dir
+    const pkgPath = path.join(rootCwd, 'package.json');
+
+    if (
+      fs.existsSync(pkgPath) &&
+      (['pnpm-workspace.yaml', 'lerna.json'].some((f) =>
+        fs.existsSync(path.join(rootCwd, f)),
+      ) ||
+        require(pkgPath).workspace)
+    ) {
+      return winPath(rootCwd);
+    }
+  }
+
+  return winPath(cwd);
 }

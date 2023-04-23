@@ -1,15 +1,11 @@
-import { useOutlet, useSiteData } from 'dumi';
-import React, { useEffect, useRef } from 'react';
-// @ts-ignore
+import { useOutlet, useSearchParams, useSiteData } from 'dumi';
 import TouchEmulator from 'f2-touchemulator';
-// @ts-ignore
+import React, { useEffect, useRef } from 'react';
 import vl from 'umi-hd';
-// @ts-ignore
 import flex from 'umi-hd/lib/flex';
-// @ts-ignore
-import vw from 'umi-hd/lib/vw';
-// @ts-ignore
 import vh from 'umi-hd/lib/vh';
+import vw from 'umi-hd/lib/vw';
+import './DemoLayout.less';
 
 export const ROUTE_MSG_TYPE = 'dumi:update-iframe-route';
 
@@ -21,19 +17,21 @@ const HD_MODES: any = {
   vh,
 };
 
-const isSupportTouch = 'ontouchstart' in window;
-
 const MobileDemoLayout: React.FC = ({}) => {
   const target = useRef<HTMLDivElement>(null);
   const {
-    themeConfig: { hd: { rules = [] } = {} },
+    themeConfig: { hd: { rules = [{ mode: 'vw', options: [100, 750] }] } = {} },
   } = useSiteData();
   const outlet = useOutlet();
+  const [params] = useSearchParams();
+  const compact = params.get('compact');
+  const background = params.get('background');
+
   useEffect(() => {
     // Simulate the touch event of mobile terminal
-    if (target.current && !isSupportTouch) {
+    if (target.current && !('ontouchstart' in window)) {
       // fix https://github.com/umijs/dumi/issues/996
-      TouchEmulator(document);
+      TouchEmulator(document.documentElement);
     }
   }, []);
 
@@ -71,7 +69,14 @@ const MobileDemoLayout: React.FC = ({}) => {
   }, [rules]);
 
   return (
-    <div className="__dumi-default-mobile-demo-layout" ref={target}>
+    <div
+      className="dumi-mobile-demo-layout"
+      ref={target}
+      style={{
+        padding: compact !== null ? 0 : compact,
+        background,
+      }}
+    >
       {outlet}
     </div>
   );

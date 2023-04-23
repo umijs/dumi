@@ -23,15 +23,15 @@
       left: 0;
       background-image: linear-gradient(
         to right,
-        rgb(0 0 0 / 10%),
-        rgb(0 0 0 / 0%)
+        rgba(0, 0, 0, 10%),
+        rgba(0, 0, 0, 0%)
       );
 
-      [data-prefers-color='dark'] & {
+      @{dark-selector} & {
         background-image: linear-gradient(
           to right,
-          rgb(0 0 0 / 50%),
-          rgb(0 0 0 / 0%)
+          rgba(0, 0, 0, 50%),
+          rgba(0, 0, 0, 0%)
         );
       }
     }
@@ -40,15 +40,15 @@
       right: 0;
       background-image: linear-gradient(
         to left,
-        rgb(0 0 0 / 10%),
-        rgb(0 0 0 / 0%)
+        rgba(0, 0, 0, 10%),
+        rgba(0, 0, 0, 0%)
       );
 
-      [data-prefers-color='dark'] & {
+      @{dark-selector} & {
         background-image: linear-gradient(
           to left,
-          rgb(0 0 0 / 50%),
-          rgb(0 0 0 / 0%)
+          rgba(0, 0, 0, 50%),
+          rgba(0, 0, 0, 0%)
         );
       }
     }

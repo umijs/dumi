@@ -1,13 +1,16 @@
-import { SP_ROUTE_PREFIX } from '@/constants';
+import { LOCAL_THEME_DIR, SP_ROUTE_PREFIX } from '@/constants';
 import type { IApi } from '@/types';
 import { getConventionRoutes } from '@umijs/core';
 import { createRouteId } from '@umijs/core/dist/route/utils';
 import path from 'path';
 import { plural } from 'pluralize';
 import type { IRoute } from 'umi';
-import { glob, resolve, winPath } from 'umi/plugin-utils';
+import { glob, winPath } from 'umi/plugin-utils';
 
 const CTX_LAYOUT_ID = 'dumi-context-layout';
+const ALIAS_THEME_TMP = '@/dumi__theme';
+const ALIAS_LAYOUTS_LOCAL = '@/dumi__theme__layouts';
+const ALIAS_INTERNAL_PAGES = '@/dumi__pages';
 
 /**
  * normalize item of `resolve.docDirs` to object
@@ -17,15 +20,39 @@ function normalizeDocDir(docDir: IApi['config']['resolve']['docDirs'][0]) {
 }
 
 /**
+ * make route path kebab case
+ */
+function kebabCaseRoutePath(routePath: string) {
+  const replacer = (_: string, s1: string, s2: string, i: number) => {
+    const symbol = ['', '/'].includes(s1) || !i ? '' : '-';
+
+    return `${s1 || ''}${symbol}${s2.toLowerCase()}`;
+  };
+
+  return (
+    routePath
+      // kebab for normal word
+      .replace(/(.)?([A-Z][^A-Z/])/g, replacer)
+      // kebab for upper word
+      .replace(/(.)?([A-Z]+)/g, replacer)
+  );
+}
+
+/**
  * localize standard umi route path by locales config
  */
-function localizeUmiRoute(route: IRoute, locales: IApi['config']['locales']) {
+function localizeUmiRoute(
+  route: IRoute,
+  locales: IApi['config']['locales'],
+  forceKebabCase: boolean,
+) {
   const locale = locales.find(
     (locale) =>
       route.path.endsWith(`/${locale.id}`) &&
       // avoid locale id conflict with folder/file name
       path.parse(route.file).name.endsWith(`.${locale.id}`),
   );
+  const format = forceKebabCase ? kebabCaseRoutePath : (str: string) => str;
 
   if (locale) {
     // strip single `/` locale base or move `/` to the end of locale base for join
@@ -37,16 +64,16 @@ function localizeUmiRoute(route: IRoute, locales: IApi['config']['locales']) {
     const suffix = 'suffix' in locale ? locale.suffix : '';
     // /foo/zh-CN => /{prefix}/foo
     // /bar/index/zh-CN => /{prefix}/bar
-    route.path = `${base}${route.path
-      .replace(new RegExp(`/${locale.id}$`), '')
-      .replace(/((^|\/)(index|README))$/, '')
-      // lowercase for original route path
-      .toLowerCase()}${suffix}`;
+    route.path = `${base}${format(
+      route.path
+        .replace(new RegExp(`/${locale.id}$`), '')
+        .replace(/((^|\/)(index|README))$/, ''),
+    )}${suffix}`;
     route.absPath = route.path !== '/' ? `/${route.path}` : route.path;
   } else {
-    // also lowercase for non-locale route
-    route.path = route.path.toLowerCase();
-    route.absPath = route.absPath.toLowerCase();
+    // also kebab-case for non-locale route
+    route.path = format(route.path);
+    route.absPath = format(route.absPath);
   }
 }
 
@@ -66,22 +93,17 @@ function flatRoute(route: IRoute, docLayoutId: string) {
 }
 
 /**
- * get page route file
+ * get final layout file from alias
  */
-function getClientPageFile(file: string, cwd: string) {
-  try {
-    // why use `resolve`?
-    // because `require.resolve` will use the final path of symlink file
-    // and in tnpm project, umi will get a file path includes `@` symbol then
-    // generate a chunk name with `@` symbol, which is not supported by cdn
-    return resolve.sync(`dumi/dist/${file}`, {
-      basedir: cwd,
-      preserveSymlinks: false,
-    });
-  } catch {
-    // fallback to use `require.resolve`, for dumi self docs & examples
-    return require.resolve(`../${file}`);
-  }
+function getAliasLayoutFile({
+  source,
+  specifier,
+}: NonNullable<IApi['service']['themeData']['layouts']['DocLayout']>) {
+  const alias = source.includes('/.dumi/theme/layouts/')
+    ? ALIAS_LAYOUTS_LOCAL
+    : `${ALIAS_THEME_TMP}/layouts`;
+
+  return `${alias}/${specifier}`;
 }
 
 export default (api: IApi) => {
@@ -97,9 +119,9 @@ export default (api: IApi) => {
   // watch docs paths to re-generate routes
   api.addTmpGenerateWatcherPaths(() => extraWatchPaths);
 
-  // support to disable docDirs & atomDirs by empty array
-  // because the empty array will be ignored by config merge logic
   api.modifyDefaultConfig((memo) => {
+    // support to disable docDirs & atomDirs by empty array
+    // because the empty array will be ignored by config merge logic
     if (api.userConfig.resolve) {
       const keys: ['docDirs', 'atomDirs'] = ['docDirs', 'atomDirs'];
 
@@ -107,6 +129,19 @@ export default (api: IApi) => {
         if (api.userConfig.resolve![key]?.length === 0) memo.resolve[key] = [];
       });
     }
+
+    // set alias for internal pages and layouts rather than use absolute path
+    // to avoid umi generate chunk name with long path
+    // ref: https://github.com/umijs/umi/blob/30a11c60b1be9066ea0162fe279aaf62b70b0b14/packages/preset-umi/src/features/tmpFiles/routes.ts#L229
+    memo.alias[ALIAS_THEME_TMP] = winPath(
+      path.join(api.paths.absTmpPath!, 'dumi/theme'),
+    );
+    memo.alias[ALIAS_LAYOUTS_LOCAL] = winPath(
+      path.join(api.cwd, LOCAL_THEME_DIR, 'layouts'),
+    );
+    memo.alias[ALIAS_INTERNAL_PAGES] = winPath(
+      path.join(__dirname, '../client/pages'),
+    );
 
     return memo;
   });
@@ -143,7 +178,10 @@ export default (api: IApi) => {
       routes[DocLayout.specifier] = {
         id: DocLayout.specifier,
         path: '/',
-        file: DocLayout.source,
+        // why not use DocLayout.source?
+        // because umi will generate chunk name from file path
+        // but source may too long in pnpm/monorepo project
+        file: getAliasLayoutFile(DocLayout),
         parentId: lastLayoutId,
         absPath: '/',
         isLayout: true,
@@ -156,7 +194,7 @@ export default (api: IApi) => {
       routes[DemoLayout.specifier] = {
         id: DemoLayout.specifier,
         path: '/',
-        file: DemoLayout.source,
+        file: getAliasLayoutFile(DemoLayout),
         parentId: lastLayoutId,
         absPath: '/',
         isLayout: true,
@@ -166,7 +204,7 @@ export default (api: IApi) => {
     // prepend page routes from .dumi/pages
     Object.entries(pages).forEach(([, route]) => {
       route.file = winPath(
-        path.resolve(api.config.conventionRoutes.base, route.file),
+        path.resolve(api.config.conventionRoutes!.base!, route.file),
       );
 
       // save route
@@ -178,7 +216,7 @@ export default (api: IApi) => {
       const base = path.join(api.cwd, dir);
       const dirRoutes: Record<string, IRoute> = getConventionRoutes({
         base,
-        exclude: [/.*(?<!md)$/, /(\/|^)(\.|_\/)/],
+        exclude: [/.*(?<!md)$/, /(\/|^)(\.|_)/],
       });
 
       Object.entries(dirRoutes).forEach(([key, route]) => {
@@ -241,7 +279,11 @@ export default (api: IApi) => {
         flatRoute(route, docLayoutId);
 
         // localize route
-        localizeUmiRoute(route, api.config.locales);
+        localizeUmiRoute(
+          route,
+          api.config.locales,
+          api.config.resolve.forceKebabCaseRouting,
+        );
       }
     });
 
@@ -252,7 +294,7 @@ export default (api: IApi) => {
         path: '*',
         absPath: '/*',
         parentId: docLayoutId,
-        file: getClientPageFile('client/pages/404', api.cwd),
+        file: `${ALIAS_INTERNAL_PAGES}/404`,
       };
     }
 
@@ -262,7 +304,7 @@ export default (api: IApi) => {
       path: `${SP_ROUTE_PREFIX}demos/:id`,
       absPath: `/${SP_ROUTE_PREFIX}demos/:id`,
       parentId: demoLayoutId,
-      file: getClientPageFile('client/pages/Demo', api.cwd),
+      file: `${ALIAS_INTERNAL_PAGES}/Demo`,
     };
 
     return routes;
@@ -273,7 +315,7 @@ export default (api: IApi) => {
     const layouts = [
       {
         id: CTX_LAYOUT_ID,
-        file: `${api.paths.absTmpPath}/dumi/theme/ContextWrapper.tsx`,
+        file: `${ALIAS_THEME_TMP}/ContextWrapper`,
       },
     ];
     const { GlobalLayout } = api.service.themeData.layouts;
@@ -281,7 +323,7 @@ export default (api: IApi) => {
     if (GlobalLayout) {
       layouts.unshift({
         id: GlobalLayout.specifier,
-        file: GlobalLayout.source,
+        file: getAliasLayoutFile(GlobalLayout),
       });
     }
 

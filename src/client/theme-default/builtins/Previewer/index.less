@@ -4,7 +4,11 @@
   margin: 24px 0 32px;
   border: 1px solid @c-border-light;
   border-radius: 4px;
-  background-color: #fff;
+  background-color: inherit;
+
+  @{dark-selector} & {
+    border-color: @c-border-less-dark;
+  }
 
   [data-dumi-demo-grid] & {
     margin: 0 0 16px;
@@ -41,6 +45,10 @@
         display: block;
         height: 24px;
         background-color: @c-border-light;
+
+        @{dark-selector} & {
+          background-color: @c-border-less-dark;
+        }
       }
 
       &::after {
@@ -72,6 +80,10 @@
 
   &-meta {
     border-top: 1px solid @c-border-light;
+
+    @{dark-selector} & {
+      border-top-color: @c-border-less-dark;
+    }
   }
 
   &-desc {
@@ -80,6 +92,10 @@
     > .markdown {
       padding: 14px 24px;
       border-bottom: 1px dashed @c-border-light;
+
+      @{dark-selector} & {
+        border-bottom-color: @c-border-less-dark;
+      }
     }
 
     > h5 {
@@ -91,26 +107,46 @@
       display: inline-block;
       font-size: 14px;
       line-height: 1;
-      font-weight: 500;
+      font-weight: bold;
       background: linear-gradient(
           to top,
-          rgb(255 255 255 / 100%),
-          rgb(255 255 255 / 100%) 50%,
-          rgb(255 255 255 / 0%)
+          rgba(255, 255, 255, 100%),
+          rgba(255, 255, 255, 100%) 50%,
+          rgba(255, 255, 255, 0%)
         )
         100%;
 
+      @{dark-selector} & {
+        background: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 95%),
+            rgba(0, 0, 0, 95%) 50%,
+            rgba(0, 0, 0, 0%)
+          )
+          100%;
+      }
+
       > a {
         color: @c-text;
+
+        @{dark-selector} & {
+          color: @c-text-dark;
+        }
 
         &:not(:hover) {
           text-decoration: none;
         }
 
         > strong {
+          float: inline-start;
           padding-inline-end: 8px;
           color: @c-warning;
           font-size: 12px;
+          line-height: 15px;
+
+          @{dark-selector} & {
+            color: @c-warning-dark;
+          }
         }
       }
     }
@@ -119,14 +155,27 @@
   &[data-active] {
     box-shadow: 0 0 0 4px fade(@c-primary, 10%);
     border-color: lighten(@c-primary, 20%);
+
+    @{dark-selector} & {
+      box-shadow: 0 0 0 4px fade(@c-primary-dark, 10%);
+      border-color: darken(@c-primary-dark, 20%);
+    }
   }
 
   // debug mode
   &[data-debug] {
     border-color: lighten(@c-warning, 20%);
 
+    @{dark-selector} & {
+      border-color: darken(@c-warning-dark, 20%);
+    }
+
     &[data-active] {
       box-shadow: 0 0 0 4px fade(@c-warning, 10%);
+
+      @{dark-selector} & {
+        box-shadow: 0 0 0 4px fade(@c-warning-dark, 10%);
+      }
     }
   }
 }

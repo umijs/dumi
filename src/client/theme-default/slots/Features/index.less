@@ -51,8 +51,18 @@
       color: @c-text;
       font-weight: normal;
       font-size: 20px;
+
+      @{dark-selector} & {
+        color: @c-text-dark;
+      }
+
       a {
         color: @c-primary;
+
+        @{dark-selector} & {
+          color: @c-primary-dark;
+        }
+
         &:not(:hover) {
           text-decoration: none;
         }
@@ -69,12 +79,20 @@
       font-size: 16px;
       line-height: 1.475;
 
+      @{dark-selector} & {
+        color: @c-text-secondary-dark;
+      }
+
       @media @mobile {
         font-size: 14px;
       }
 
       a {
         color: @c-primary;
+
+        @{dark-selector} & {
+          color: @c-primary-dark;
+        }
 
         &:not(:hover) {
           text-decoration: none;
