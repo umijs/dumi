@@ -16,6 +16,7 @@ export interface ISearchNavResult {
     type: 'page' | 'title' | 'demo' | 'content';
     link: string;
     priority: number;
+    pageTitle: string;
     highlightTitleTexts: IHighlightText[];
     highlightTexts: IHighlightText[];
   }[];
