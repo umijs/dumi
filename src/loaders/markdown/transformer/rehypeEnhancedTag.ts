@@ -29,6 +29,7 @@ export default function rehypeEnhancedTag(): Transformer<Root> {
           type: 'element',
           tagName: 'SourceCode',
           properties: { lang },
+          data: node.children[0].data,
           JSXAttributes: [
             {
               type: 'JSXAttribute',
