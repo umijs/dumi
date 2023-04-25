@@ -131,7 +131,7 @@ export default async ({
     path: join(__dirname, `../templates/${type}`),
     target,
     data: {
-      version: '^2.0.2',
+      version: process.env.DUMI_VERSION,
       npmClient,
       registry,
     },
