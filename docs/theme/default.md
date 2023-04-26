@@ -150,7 +150,7 @@ export default {
       gitlab: 'https://xxxx',
       facebook: 'https://xxxx',
       zhihu: 'https://xxxx',
-      yueque: 'https://xxxx',
+      yuque: 'https://xxxx',
       linkedin: 'https://xxxx',
     },
   },
