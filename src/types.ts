@@ -13,6 +13,12 @@ import type { defineConfig as defineUmiConfig, IApi as IUmiApi } from 'umi';
 type Subset<K> = {
   [attr in keyof K]?: K[attr] extends Array<any>
     ? K[attr]
+    : K[attr] extends Function
+    ? K[attr]
+    : K[attr] extends Function | null
+    ? K[attr] | null
+    : K[attr] extends Function | null | undefined
+    ? K[attr] | null | undefined
     : K[attr] extends object
     ? Subset<K[attr]>
     : K[attr] extends object | null
