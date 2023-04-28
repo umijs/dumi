@@ -11,9 +11,6 @@ import type { Element } from 'hast';
 import type { defineConfig as defineUmiConfig, IApi as IUmiApi } from 'umi';
 
 // ref: https://grrr.tech/posts/2021/typescript-partial/
-// 作用于函数类型的时候需要特殊处理一下
-type FunctionType = (...args: any[]) => any;
-
 type Subset<K> = {
   [attr in keyof K]?: K[attr] extends Array<any>
     ? K[attr]
