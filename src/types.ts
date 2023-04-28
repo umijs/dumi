@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import type AtomAssetsParser from '@/assetParsers/atom';
 import type { IParsedBlockAsset } from '@/assetParsers/block';
 import type { IDumiDemoProps } from '@/client/theme-api/DumiDemo';
@@ -16,14 +17,10 @@ type FunctionType = (...args: any[]) => any;
 type Subset<K> = {
   [attr in keyof K]?: K[attr] extends Array<any>
     ? K[attr]
+    : K[attr] extends Function | undefined
+    ? K[attr]
     : K[attr] extends object
     ? Subset<K[attr]>
-    : K[attr] extends FunctionType
-    ? K[attr]
-    : K[attr] extends FunctionType | null
-    ? K[attr] | null
-    : K[attr] extends FunctionType | null | undefined
-    ? K[attr] | null | undefined
     : K[attr] extends object | null
     ? Subset<K[attr]> | null
     : K[attr] extends object | null | undefined
@@ -61,9 +58,7 @@ interface IDumiExtendsConfig {
   /**
    * extra unified plugins
    */
-  // eslint-disable-next-line @typescript-eslint/ban-types
   extraRemarkPlugins?: (string | Function | [string | Function, object])[];
-  // eslint-disable-next-line @typescript-eslint/ban-types
   extraRehypePlugins?: (string | Function | [string | Function, object])[];
 }
 export type IDumiConfig = IUmiConfig & IDumiExtendsConfig;
