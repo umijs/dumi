@@ -20,7 +20,7 @@ const HANDLERS = {
       return this.getValidClassName(prop) || prop.type;
     } else if ('const' in prop) {
       // const value
-      return prop.const;
+      return `${prop.const}`;
     } else if ('oneOf' in prop) {
       // oneOf value
       return this.oneOf(prop);
