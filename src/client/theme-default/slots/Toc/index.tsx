@@ -38,6 +38,24 @@ const Toc: FC = () => {
     }
   }, [pathname, search, loading]);
 
+  const getElmScrollPosition = (elm: HTMLElement): number => {
+    return (
+      elm.offsetTop + (elm.offsetParent ? getElmScrollPosition(elm.offsetParent as HTMLElement) : 0)
+    );
+  }
+
+  const scrollTo = (anchor: string) => {
+    // wait for dom update
+    window.requestAnimationFrame(() => {
+      const elm = document.getElementById(decodeURIComponent(anchor));
+  
+      if (elm) {
+        // compatible in Edge
+        window.scrollTo(0, getElmScrollPosition(elm) - 100);
+      }
+    });
+  };
+
   return sectionRefs.length ? (
     <ScrollSpy sectionRefs={sectionRefs}>
       {({ currentElementIndexInViewport }) => {
@@ -61,6 +79,7 @@ const Toc: FC = () => {
                     <Link
                       to={link}
                       title={item.title}
+                      onClick={()=>scrollTo(encodeURIComponent(item.id))}
                       {...(activeIndex === i ? { className: 'active' } : {})}
                     >
                       {item.title}
