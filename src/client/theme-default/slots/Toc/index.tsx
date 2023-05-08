@@ -7,10 +7,11 @@ import React, {
   type FC,
   type RefObject,
 } from 'react';
+import { history } from 'umi';
 import './index.less';
 
 const Toc: FC = () => {
-  const { pathname, search } = useLocation();
+  const { pathname, search, hash } = useLocation();
   const meta = useRouteMeta();
   const tabMeta = useTabMeta();
   const { loading } = useSiteData();
@@ -38,24 +39,6 @@ const Toc: FC = () => {
     }
   }, [pathname, search, loading]);
 
-  const getElmScrollPosition = (elm: HTMLElement): number => {
-    return (
-      elm.offsetTop + (elm.offsetParent ? getElmScrollPosition(elm.offsetParent as HTMLElement) : 0)
-    );
-  }
-
-  const scrollTo = (anchor: string) => {
-    // wait for dom update
-    window.requestAnimationFrame(() => {
-      const elm = document.getElementById(decodeURIComponent(anchor));
-  
-      if (elm) {
-        // compatible in Edge
-        window.scrollTo(0, getElmScrollPosition(elm) - 100);
-      }
-    });
-  };
-
   return sectionRefs.length ? (
     <ScrollSpy sectionRefs={sectionRefs}>
       {({ currentElementIndexInViewport }) => {
@@ -78,8 +61,12 @@ const Toc: FC = () => {
                   <li key={item.id} data-depth={item.depth}>
                     <Link
                       to={link}
+                      onClickCapture={() => {
+                        if (decodeURIComponent(hash).slice(1) === item.id) {
+                          history.replace(search);
+                        }
+                      }}
                       title={item.title}
-                      onClick={()=>scrollTo(encodeURIComponent(item.id))}
                       {...(activeIndex === i ? { className: 'active' } : {})}
                     >
                       {item.title}
