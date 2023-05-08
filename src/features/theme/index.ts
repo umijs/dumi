@@ -286,7 +286,9 @@ export default function DumiContextWrapper() {
       locales,
       loading,
       setLoading,
-      sitemap: api.config.sitemap,
+      sitemap: api.config.sitemap?.hostname && {
+        hostname: JSON.stringify(api.config.sitemap.hostname)
+      },
       themeConfig: ${JSON.stringify(
         Object.assign(
           lodash.pick(api.config, 'logo', 'description', 'title'),
