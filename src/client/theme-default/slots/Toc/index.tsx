@@ -1,5 +1,12 @@
 import { Scrollspy as ScrollSpy } from '@makotot/ghostui/src/Scrollspy';
-import { Link, useLocation, useRouteMeta, useSiteData, useTabMeta } from 'dumi';
+import {
+  history,
+  Link,
+  useLocation,
+  useRouteMeta,
+  useSiteData,
+  useTabMeta,
+} from 'dumi';
 import React, {
   useEffect,
   useRef,
@@ -7,7 +14,6 @@ import React, {
   type FC,
   type RefObject,
 } from 'react';
-import { history } from 'umi';
 import './index.less';
 
 const Toc: FC = () => {
