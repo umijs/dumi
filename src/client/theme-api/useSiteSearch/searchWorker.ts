@@ -240,7 +240,7 @@ function generateHighlightTexts(
 function generateSearchResult(metadata: ISearchMetadata, keywordsStr: string) {
   const keywords = keywordsStr.split(' ');
   const matchReg = new RegExp(
-    keywordsStr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/ */g, '|'),
+    keywordsStr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\s+/g, '|'),
     'i',
   );
   const resultMapping: Record<string, ISearchNavResult> = {};
