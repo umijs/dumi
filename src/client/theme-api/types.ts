@@ -210,6 +210,11 @@ export interface IThemeConfig {
   [key: string]: any;
 }
 
+export interface ISitemap {
+  hostname: string;
+  exclude?: string[];
+}
+
 export type IRoutesById = Record<
   string,
   {

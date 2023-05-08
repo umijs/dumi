@@ -24,7 +24,7 @@ const DocLayout: FC = () => {
   const outlet = useOutlet();
   const sidebar = useSidebarData();
   const { hash } = useLocation();
-  const { loading } = useSiteData();
+  const { loading, sitemap } = useSiteData();
   const [activateSidebar, updateActivateSidebar] = useState(false);
   const { frontmatter: fm } = useRouteMeta();
 
@@ -66,7 +66,7 @@ const DocLayout: FC = () => {
           <meta name="keywords" content={fm.keywords.join(',')} />
         )}
         {fm.keywords && fm.keywords.map(keyword => (<meta key={keyword} property="article:tag" content={keyword}></meta>))}
-        <link rel="canonical" href={window.location.origin + pathname}></link>
+        {sitemap?.hostname && <link rel="canonical" href={sitemap.hostname + pathname}></link>}
       </Helmet>
       <Header />
       <Hero />
