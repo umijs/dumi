@@ -212,7 +212,6 @@ export interface IThemeConfig {
 
 export interface ISitemap {
   hostname: string;
-  exclude?: string[];
 }
 
 export type IRoutesById = Record<
