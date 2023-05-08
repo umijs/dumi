@@ -23,7 +23,7 @@ const DocLayout: FC = () => {
   const intl = useIntl();
   const outlet = useOutlet();
   const sidebar = useSidebarData();
-  const { hash } = useLocation();
+  const { hash, pathname } = useLocation();
   const { loading, sitemap } = useSiteData();
   const [activateSidebar, updateActivateSidebar] = useState(false);
   const { frontmatter: fm } = useRouteMeta();
