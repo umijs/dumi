@@ -236,6 +236,8 @@ export default (api: IApi) => {
       path: 'dumi/theme/ContextWrapper.tsx',
       content: `import React, { useState, useEffect, useRef } from 'react';
 import { useOutlet, history } from 'dumi';
+import nprogress from 'nprogress';
+import 'nprogress/nprogress.css';
 import { SiteContext } from '${winPath(
         require.resolve('../../client/theme-api/context'),
       )}';
@@ -267,6 +269,7 @@ export default function DumiContextWrapper() {
 
         // mark loading when route change, page component will set false when loaded
         setLoading(true);
+        nprogress.start();
 
         // scroll to top when route changed
         document.documentElement.scrollTo(0, 0);
