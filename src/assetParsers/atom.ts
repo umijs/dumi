@@ -178,7 +178,9 @@ class AtomAssetsParser {
             ['add', 'change'].includes(ev) &&
             /((?<!\.d)\.ts|\.(jsx?|tsx))$/.test(file)
           ) {
-            this.unresolvedFiles.push(path.join(this.watchArgs.options.cwd, file));
+            this.unresolvedFiles.push(
+              path.join(this.watchArgs.options.cwd!, file),
+            );
             lazyParse();
           }
         });

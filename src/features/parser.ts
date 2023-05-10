@@ -49,13 +49,17 @@ export default (api: IApi) => {
     const {
       default: AtomAssetsParser,
     }: typeof import('@/assetParsers/atom') = require('@/assetParsers/atom');
+    const apiParser = api.config.apiParser as Exclude<
+      IApi['config']['apiParser'],
+      false | undefined
+    >;
 
     api.service.atomParser = new AtomAssetsParser({
       entryFile: api.config.resolve.entryFile!,
       resolveDir: api.cwd,
-      unpkgHost: api.config.apiParser!.unpkgHost,
-      resolveFilter: api.config.apiParser!.resolveFilter,
-      parseOptions: api.config.apiParser!.parseOptions,
+      unpkgHost: apiParser.unpkgHost,
+      resolveFilter: apiParser.resolveFilter,
+      parseOptions: apiParser.parseOptions,
     });
   });
 
