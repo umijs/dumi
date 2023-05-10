@@ -276,7 +276,10 @@ export default function DumiContextWrapper() {
 
         // mark loading when route change, page component will set false when loaded
         setLoading(true);
-        ${enableNProgress ? `nprogress.start()` : ''}
+
+        // start nprogress
+        ${enableNProgress ? `nprogress.start();` : ''}
+
         // scroll to top when route changed
         document.documentElement.scrollTo(0, 0);
       }
