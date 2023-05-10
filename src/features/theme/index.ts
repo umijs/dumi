@@ -229,6 +229,7 @@ export default (api: IApi) => {
     const entryExports = entryFile ? getModuleExports(entryFile) : [];
     const hasDefaultExport = entryExports.includes('default');
     const hasNamedExport = entryExports.some((exp) => exp !== 'default');
+    const enableNProgress = !!api.config.themeConfig.nprogress;
 
     // generate context layout
     api.writeTmpFile({
@@ -236,8 +237,14 @@ export default (api: IApi) => {
       path: 'dumi/theme/ContextWrapper.tsx',
       content: `import React, { useState, useEffect, useRef } from 'react';
 import { useOutlet, history } from 'dumi';
+${
+  enableNProgress
+    ? `
 import nprogress from 'nprogress';
 import './nprogress.css';
+`
+    : ''
+}
 import { SiteContext } from '${winPath(
         require.resolve('../../client/theme-api/context'),
       )}';
@@ -269,8 +276,7 @@ export default function DumiContextWrapper() {
 
         // mark loading when route change, page component will set false when loaded
         setLoading(true);
-        nprogress.start();
-
+        ${enableNProgress ? `nprogress.start()` : ''}
         // scroll to top when route changed
         document.documentElement.scrollTo(0, 0);
       }

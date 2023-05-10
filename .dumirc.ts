@@ -18,6 +18,7 @@ Powered by self`,
     socialLinks: {
       github: 'https://github.com/umijs/dumi',
     },
+    nprogress: true,
   },
   ...(process.env.NODE_ENV === 'development' ? {} : { ssr: {} }),
   analytics: {
