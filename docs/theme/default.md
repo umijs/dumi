@@ -84,6 +84,13 @@ dumi 内置了一套完善的默认主题，默认主题的呈现效果与 dumi 
 
 是否开启 RTL 切换，配置为 `true` 时导航栏会展示 RTL 按钮，用于将站点文本阅读方向切换为『从右到左』，通常在站点用户群体中有使用希伯来语或阿拉伯语时启用。
 
+### showLineNum
+
+- 类型：`boolean`
+- 默认值：`false`
+
+是否在代码块中展示行号，配置为 `true` 时会展示代码行号。
+
 ### prefersColor
 
 - 类型：`{ default: 'light' | 'dark' | 'auto'; switch: boolean }`
