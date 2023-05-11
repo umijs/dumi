@@ -46,9 +46,10 @@ export const DumiDemoGrid: FC<IDumiDemoGridProps> = (props) => {
     const handler = () => setCols(generator(fm, props.items));
 
     window.addEventListener('resize', handler);
+    handler();
 
     return () => window.removeEventListener('resize', handler);
-  }, []);
+  }, [props.items, fm.demo]);
 
   return (
     <div style={{ display: 'flex', margin: -8 }} data-dumi-demo-grid>
