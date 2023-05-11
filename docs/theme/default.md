@@ -87,7 +87,7 @@ dumi 内置了一套完善的默认主题，默认主题的呈现效果与 dumi 
 ### nprogress (v2.1.23+)
 
 - 类型：`boolean`
-- 默认值：`false`
+- 默认值：`true`
 
 切换页面时是否在页面顶部展示进度条，效果如 [nprogress](https://github.com/rstacruz/nprogress)。
 
