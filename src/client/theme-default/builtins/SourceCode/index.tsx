@@ -55,22 +55,28 @@ const SourceCode: FC<SourceCodeProps> = (props) => {
         {({ className, style, tokens, getLineProps, getTokenProps }) => (
           <pre className={className} style={style}>
             {tokens.map((line, i) => (
-              <div key={String(i)} className="wrap">
-                {themeConfig.showLineNum ? (
+              <div
+                key={String(i)}
+                className={classNames(
+                  {
+                    highlighted: highlightLines.includes(i + 1),
+                  },
+                  'wrap',
+                )}
+              >
+                {themeConfig.showLineNum && (
                   <span className="token-line-num">{i + 1}</span>
-                ) : null}
+                )}
                 <div
-                  key={String(i)}
                   {...getLineProps({
                     line,
                     key: i,
-                    className: classNames({
-                      highlighted: highlightLines.includes(i + 1),
-                    }),
                   })}
                 >
                   {line.map((token, key) => (
-                    <span key={String(i)} {...getTokenProps({ token, key })} />
+                    // getTokenProps 返回值包含 key
+                    // eslint-disable-next-line react/jsx-key
+                    <span {...getTokenProps({ token, key })} />
                   ))}
                 </div>
               </div>
