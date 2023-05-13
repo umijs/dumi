@@ -42,9 +42,6 @@
     // highlight line
     & > .highlighted {
       background-color: shade(@bg-color, 5%);
-      width: calc(100% + 48px);
-      margin-inline-start: -24px;
-      padding-inline-start: 24px;
     }
 
     & > .wrap {
@@ -56,6 +53,11 @@
         padding-right: 1em;
         user-select: none;
         opacity: 0.5;
+      }
+
+      & > .line-cell {
+        display: table-cell;
+        width: 100%;
       }
     }
   }

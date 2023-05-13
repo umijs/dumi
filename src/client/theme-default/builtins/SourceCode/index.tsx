@@ -57,12 +57,10 @@ const SourceCode: FC<SourceCodeProps> = (props) => {
             {tokens.map((line, i) => (
               <div
                 key={String(i)}
-                className={classNames(
-                  {
-                    highlighted: highlightLines.includes(i + 1),
-                  },
-                  'wrap',
-                )}
+                className={classNames({
+                  highlighted: highlightLines.includes(i + 1),
+                  wrap: themeConfig.showLineNum,
+                })}
               >
                 {themeConfig.showLineNum && (
                   <span className="token-line-num">{i + 1}</span>
@@ -71,6 +69,9 @@ const SourceCode: FC<SourceCodeProps> = (props) => {
                   {...getLineProps({
                     line,
                     key: i,
+                  })}
+                  className={classNames({
+                    'line-cell': themeConfig.showLineNum,
                   })}
                 >
                   {line.map((token, key) => (
