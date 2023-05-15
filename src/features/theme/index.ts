@@ -240,7 +240,9 @@ import { useOutlet, history } from 'dumi';
 ${
   enableNProgress
     ? `
-import nprogress from 'nprogress';
+import nprogress from '${winPath(
+        path.dirname(require.resolve('nprogress/package')),
+      )}';
 import './nprogress.css';
 `
     : ''
