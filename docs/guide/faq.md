@@ -34,7 +34,7 @@ yarn add dumi cross-env -D
   },
 ```
 
-3. 增加配置，新建 `.dumirc`。
+3. 增加配置，新建 `.dumirc.js`。
 
 ```js
 export default {
