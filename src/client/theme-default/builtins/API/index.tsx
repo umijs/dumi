@@ -20,7 +20,7 @@ const HANDLERS = {
       return this.getValidClassName(prop) || prop.type;
     } else if ('const' in prop) {
       // const value
-      return prop.const;
+      return `${prop.const}`;
     } else if ('oneOf' in prop) {
       // oneOf value
       return this.oneOf(prop);
@@ -75,9 +75,12 @@ const HANDLERS = {
     const signatures = 'oneOf' in signature ? signature.oneOf : [signature];
 
     return signatures
-      .map(signature => `${signature.isAsync ? 'async ' : ''}(${signature.arguments
-           .map((arg: any) => `${arg.key}: ${this.toString(arg)}`)
-           .join(', ')}) => ${this.toString(signature.returnType)}`)
+      .map(
+        (signature) =>
+          `${signature.isAsync ? 'async ' : ''}(${signature.arguments
+            .map((arg: any) => `${arg.key}: ${this.toString(arg)}`)
+            .join(', ')}) => ${this.toString(signature.returnType)}`,
+      )
       .join(' | ');
   },
   // FIXME: extract real type

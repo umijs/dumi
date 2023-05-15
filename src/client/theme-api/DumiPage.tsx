@@ -1,5 +1,6 @@
 import { useRouteMeta, useSiteData } from 'dumi';
 import ContentTabs from 'dumi/theme/slots/ContentTabs';
+import nprogress from 'nprogress';
 import React, { useEffect, useState, type FC, type ReactNode } from 'react';
 import { useTabQueryState } from './useTabMeta';
 
@@ -14,6 +15,7 @@ export const DumiPage: FC<{ children: ReactNode }> = (props) => {
   // update loading status when page loaded
   useEffect(() => {
     setLoading(false);
+    nprogress.done();
   }, []);
 
   return (
