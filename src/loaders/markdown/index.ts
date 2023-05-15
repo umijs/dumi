@@ -148,10 +148,6 @@ export default function mdLoader(this: any, content: string) {
   const opts: IMdLoaderOptions = this.getOptions();
   const cb = this.async();
 
-  // disable cache for avoid onResolveDemos and onResolveAtomMeta not work
-  // and dumi already save cache by self, loader cache is unnecessary
-  this.cacheable(false);
-
   const cache = getCache('md-loader');
   // format: {path:mtime:loaderOpts}
   const baseCacheKey = [
