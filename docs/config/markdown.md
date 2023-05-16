@@ -82,6 +82,32 @@ title: 配置页面标题
 
 配置页面简介，该值会用于生成 `<meta>` 标签。
 
+## nav
+
+- 类型：`string | { title: string; order: number; parent: { title: string; order: string } }`
+- 默认值：`undefined`
+
+配置当前页所属的一级导航及二级导航，同一导航类目下仅需配置任意一个 Markdown 文件即可全局生效，未配置时将会使用[默认规则](../guide/conventional-routing.md#导航归类及生成)。
+
+例如：
+
+```md
+---
+# 单独配置名称
+nav: 名称
+# 同时配置名称和顺序，order 越小越靠前，默认为 0
+nav:
+  title: 名称
+  order: 1
+  # 单独配置二级导航名称
+  parent: 父级名称
+  # 同时配置二级导航名称和顺序，order 越小越靠前，默认为 0
+  parent:
+    title: 父级名称
+    order: 1
+---
+```
+
 ## group
 
 - 类型：`string | { title: string; order: number }`
