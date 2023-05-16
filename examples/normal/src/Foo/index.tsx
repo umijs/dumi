@@ -4,6 +4,11 @@ interface A {
   a: string;
 }
 
+interface SkipProps {
+  skipProps1: string;
+  skipProps2: number;
+}
+
 const Foo: FC<{
   /**
    * @description 标题
@@ -24,7 +29,7 @@ const Foo: FC<{
   children: React.ReactNode;
   onConfirm: (output: { children: any[] }) => void;
   dom: HTMLElement;
-}> = (props) => {
+} & SkipProps> = (props) => {
   return <>{props.title}</>;
 };
 

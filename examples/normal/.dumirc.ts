@@ -1,3 +1,8 @@
+const names = [
+  'skipProps1',
+  'skipProps2'
+];
+
 export default {
   locales: [
     { id: 'zh-CN', name: '中文' },
@@ -5,6 +10,10 @@ export default {
   ],
   themeConfig: { name: '示例' },
   mfsu: false,
-  apiParser: {},
+  apiParser: {
+    propFilter: {
+      skipPropsWithName: names
+    }
+  },
   resolve: { entryFile: './src/index.ts' },
 };
