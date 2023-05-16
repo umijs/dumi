@@ -31,10 +31,12 @@ export default defineConfig({
 
 #### atomDirs
 
-- 类型：`{ type: string; dir: string }[]`
+- 类型：`{ type: string; subType?: string; dir: string }[]`
 - 默认值：`[{ type: 'component', dir: 'src' }]`
 
-配置原子资产（例如组件、函数、工具等）Markdown 的解析目录，该目录下 **第一层级** 的 Markdown 文档会被解析为该实体分类下的路由，嵌套层级将不会识别。比如在默认配置下，`src/Foo/index.md` 将被解析为 `components/foo` 的路由。
+配置原子资产（例如组件、函数、工具等）Markdown 的解析目录。
+
+其中 `type` 用于指定资产类别，必须是 URL 友好的**单数单词**，比如 `component` 或者 `hook`；`subType` 用于指定资产的子类别，通常在需要生成二级导航时使用，值必须为 URL 友好的单词；`dir` 指定目录下**第一层级**的 Markdown 文档会被解析为该实体分类下的路由，嵌套层级将不会识别。比如在默认配置下，`src/Foo/index.md` 将被解析为 `components/foo` 的路由，`type` 配置值将**自动被复数化**后作为路由的前缀路径。
 
 单独将资产的解析逻辑拆分是为了解决 dumi 1 中普通文档与源码目录下的组件文档混淆不清、分组困难的问题。
 
