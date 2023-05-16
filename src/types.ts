@@ -40,10 +40,6 @@ type IUmiConfig = Omit<
 interface IDumiExtendsConfig {
   resolve: {
     docDirs: (string | { type?: string; dir: string })[];
-    /**
-     * @deprecated use `resolve.atomDirs` instead
-     */
-    entityDirs?: { type: string; dir: string }[];
     atomDirs: { type: string; subType?: string; dir: string }[];
     codeBlockMode: 'active' | 'passive';
     entryFile?: string;
