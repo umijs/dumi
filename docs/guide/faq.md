@@ -136,9 +136,9 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: npm install
       # 文档编译命令，如果是 react 模板需要修改为 npm run docs:build
       - run: npm run build
