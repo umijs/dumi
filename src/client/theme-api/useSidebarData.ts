@@ -1,4 +1,4 @@
-import { useLocale, useLocation, useSiteData } from 'dumi';
+import { useLocale, useLocation, useRouteMeta, useSiteData } from 'dumi';
 import { useState } from 'react';
 import type {
   ILocalesConfig,
@@ -21,6 +21,25 @@ const getLocaleClearPath = (routePath: string, locale: ILocalesConfig[0]) => {
 };
 
 /**
+ * get parent path from route path
+ */
+function getRouteParentPath(path: string, isIndexRoute?: boolean) {
+  const paths = path.split('/');
+  const sliceEnd = Math.min(
+    Math.max(
+      // increase 1 level if route file is index.md
+      isIndexRoute ? paths.length : paths.length - 1,
+      // least 1-level
+      1,
+    ),
+    // up to 2-level
+    2,
+  );
+
+  return paths.slice(0, sliceEnd).join('/');
+}
+
+/**
  * hook for get sidebar data for all nav
  */
 export const useFullSidebarData = () => {
@@ -40,12 +59,19 @@ export const useFullSidebarData = () => {
       // skip index routes
       if (clearPath && route.meta) {
         // extract parent path from route path
-        // a => /a
-        // en-US/a => /en-US/a
-        // a/b => /a
-        // en-US/a/b => /en-US/a
+        // normal examples:
+        //   a => /a
+        //   en-US/a => /en-US/a
+        //   a/b => /a
+        //   en-US/a/b => /en-US/a
+        // convention 2-level navs examples:
+        //   a/b => /a/b (if route file is a/b/index.md)
+        //   a/b/c => /a/b
         const parentPath = `/${route.path!.replace(clearPath, (s) =>
-          s.replace(/\/[^/]+$/, ''),
+          getRouteParentPath(
+            s,
+            route.meta!.frontmatter.filename?.endsWith('index.md'),
+          ),
         )}`;
         const { title, order } = pickRouteSortMeta(
           { order: 0 },
@@ -176,6 +202,7 @@ export const useSidebarData = () => {
   const locale = useLocale();
   const sidebar = useFullSidebarData();
   const { pathname } = useLocation();
+  const { frontmatter } = useRouteMeta();
   const clearPath = getLocaleClearPath(pathname.slice(1), locale);
   // extract parent path from location pathname
   // /a => /a
@@ -185,7 +212,7 @@ export const useSidebarData = () => {
   // /en-US/a/b/ => /en-US/a (also strip trailing /)
   const parentPath = clearPath
     ? pathname.replace(clearPath, (s) =>
-        s.replace(/([^/]+)(\/[^/]+\/?)$/, '$1'),
+        getRouteParentPath(s, frontmatter.filename?.endsWith('index.md')),
       )
     : pathname;
 
