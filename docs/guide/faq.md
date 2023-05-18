@@ -34,7 +34,7 @@ yarn add dumi cross-env -D
   },
 ```
 
-3. 增加配置，新建 `.dumirc`。
+3. 增加配置，新建 `.dumirc.js`。
 
 ```js
 export default {
@@ -74,7 +74,7 @@ export default {
 
 ```ts
 export default {
-  base: '/文档起始路由',
+  base: '/文档起始路由/',
   publicPath: '/静态资源起始路径/',
   // 其他配置
 };
@@ -136,9 +136,9 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: npm install
       # 文档编译命令，如果是 react 模板需要修改为 npm run docs:build
       - run: npm run build

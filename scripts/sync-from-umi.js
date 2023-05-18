@@ -17,7 +17,7 @@ const REPLACE_MESSAGE_MDX = [
   {
     type: 'replace',
     value: [
-      /<Message(?: type="[^"]+")? emoji="(💡|🚀)">([^]+?)<\/Message>/,
+      /<Message(?: type="[^"]+")? emoji="(?:💡|🚀)">([^]+?)<\/Message>/,
       ':::info$1:::',
     ],
   },
@@ -28,6 +28,10 @@ const FILE_LIST = [
     localname: 'config.md',
     upstream: 'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/api/config.md',
     actions: [
+      {
+        type: 'replace',
+        value: ["<Message fontsize='small'", '<Message emoji="💡"'],
+      },
       ...REPLACE_MESSAGE_MDX,
       // remove head content
       { type: 'slice', value: [2] },
@@ -42,7 +46,6 @@ const FILE_LIST = [
         'jsMinifier \\(vite 构建\\)',
         'mdx',
         'mpa',
-        'monorepoRedirect',
         'phantomDependency',
         'reactRouter5Compat',
         'vite',

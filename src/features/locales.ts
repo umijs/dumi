@@ -109,7 +109,8 @@ const LocalesContainer: FC<{ children: ReactNode }> = (props) => {
         // suffix mode
         ? history.location.pathname.replace(/([^/])\\/$/, '$1').endsWith(locale.suffix)
         // base mode
-        : history.location.pathname.replace(/([^/])\\/$/, '$1').startsWith(locale.base)
+        : history.location.pathname.replace(/([^/])\\/$/, '$1')
+          .startsWith("${api.config.base!.replace(/\/$/, '')}" + locale.base)
     ));
     const locale = matched ? matched.id : locales[0].id;
 

@@ -12,13 +12,15 @@
       inset-inline-end: -15px;
       transform: none;
 
-      [class*='-switch'] + & {
+      [class*='-switch'] + &,
+      [class*='-select'] + & {
         inset-inline-end: 0;
       }
     }
   }
 
-  [class*='-switch'] + & {
+  [class*='-switch'] + &,
+  [class*='-select'] + & {
     margin-inline-start: 15px;
     margin-inline-end: -15px;
     padding-inline: 15px;

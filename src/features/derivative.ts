@@ -54,7 +54,6 @@ export default (api: IApi) => {
       'icons',
       'mdx',
       'mpa',
-      'monorepoRedirect',
       'reactRouter5Compat',
       'verifyCommit',
     ].forEach((key) => {

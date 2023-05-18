@@ -78,6 +78,15 @@ import Button from '@/Button/index.tsx';
 
 <code src="./demos/cols.tsx"></code>
 
+为了方便调试，你可以像 Jest 一样对 `<code />` 标签添加 `skip` 或 `only` 标识（仅在开发环境下有效）以跳过解析，例如：
+
+```html
+<code src="./demos/foo.tsx"></code>
+<!-- 下面这条将跳过解析 -->
+<code src="./demos/bar.tsx" skip></code>
+<code src="./demos/baz.tsx"></code>
+```
+
 ## 控制 demo 渲染
 
 dumi 提供了一些 FrontMatter 属性，以满足不同的 demo 渲染需求，在**源代码顶部**配置即可：
