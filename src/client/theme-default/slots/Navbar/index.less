@@ -69,12 +69,12 @@
       vertical-align: middle;
 
       > svg {
-        fill: @c-text-secondary;
+        fill: @c-text-note;
         width: 14px;
         transition: transform 0.3s;
 
         @{dark-selector} & {
-          fill: @c-text-secondary-dark;
+          fill: @c-text-note-dark;
         }
       }
 
@@ -83,49 +83,41 @@
       }
 
       @media @desktop {
-        display: none;
+        margin-left: 4px;
+        margin-right: 0;
+        pointer-events: none;
+
+        > svg {
+          width: 12px;
+        }
       }
+    }
+
+    &:hover > .@{prefix}-navbar-collapse-btn > svg {
+      transform: rotate(180deg);
     }
 
     > .@{prefix}-navbar-dropdown {
       position: absolute;
       top: 100%;
-      left: -12px;
-      min-width: calc(100% + 24px);
+      left: -18px;
+      min-width: calc(100% + 16px);
       list-style: none;
       padding: 0;
-      margin: 12px 0 0;
+      margin: 6px 0 0;
       background-color: #fff;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 20%);
-      border-radius: 4px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 10%);
+      border-radius: 6px;
       transition: all 0.2s ease-in-out;
 
       @{dark-selector} & {
         background-color: lighten(@c-site-bg-dark, 6%);
       }
 
-      &::before {
-        content: '';
-        position: absolute;
-        left: 12px;
-        bottom: 100%;
-        display: block;
-        width: 0;
-        height: 0;
-        font-size: 1px;
-        line-height: 1px;
-        border: 6px solid transparent;
-        border-bottom-color: #fff;
-
-        @{dark-selector} & {
-          border-bottom-color: lighten(@c-site-bg-dark, 6%);
-        }
-      }
-
       > li {
         > a {
           display: block;
-          padding: 0 12px;
+          padding: 0 18px;
           color: @c-text-secondary;
           font-size: 15px;
           line-height: 1.5;
@@ -141,11 +133,11 @@
         }
 
         &:first-child > a {
-          padding-top: 6px;
+          padding-top: 8px;
         }
 
         &:last-child > a {
-          padding-bottom: 6px;
+          padding-bottom: 8px;
         }
       }
 
@@ -154,7 +146,6 @@
         background: transparent;
         box-shadow: none;
         min-width: 0;
-        margin-top: 6px;
 
         @{dark-selector} & {
           background: transparent;
@@ -162,10 +153,6 @@
 
         &:not([data-collapsed]) {
           display: none;
-        }
-
-        &::before {
-          content: none;
         }
       }
     }
