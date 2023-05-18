@@ -161,3 +161,79 @@ features:
   - title: 继续为组件研发而生
     emoji: 💎
 ```
+
+## Tree
+
+使用 Tree 组件可以创建文件树，使用语法如下：
+
+```md
+<Tree>
+  <ul>
+    <li>
+      src
+      <ul>
+        <li>index.md</li>
+      </ul>
+    </li>
+    <li>package.json</li>
+  </ul>
+</Tree>
+```
+
+渲染为：
+
+<Tree>
+  <ul>
+    <li>
+      src
+      <ul>
+        <li>index.md</li>
+      </ul>
+    </li>
+    <li>package.json</li>
+  </ul>
+</Tree>
+
+通过添加 `small` 元素可以为节点添加注释内容。
+
+```diff
+<Tree>
+  <ul>
+    <li>
+      src
++     <small>这是 src 文件夹</small>
+      <ul>
+        <li>
+          index.md
++         <small>这是 index.md</small>
+        </li>
+      </ul>
+    </li>
+    <li>
+      package.json
++     <small>这是 package.json</small>
+    </li>
+  </ul>
+</Tree>
+```
+
+渲染为：
+
+<Tree>
+  <ul>
+    <li>
+      src
+      <small>这是 src 文件夹</small>
+      <ul>
+        <li>
+          index.md
+          <small>这是 index.md</small>
+        </li>
+      </ul>
+    </li>
+    <li>
+      package.json
+      <small>这是 package.json</small>
+    </li>
+  </ul>
+</Tree>
