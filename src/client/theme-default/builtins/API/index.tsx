@@ -75,9 +75,12 @@ const HANDLERS = {
     const signatures = 'oneOf' in signature ? signature.oneOf : [signature];
 
     return signatures
-      .map(signature => `${signature.isAsync ? 'async ' : ''}(${signature.arguments
-           .map((arg: any) => `${arg.key}: ${this.toString(arg)}`)
-           .join(', ')}) => ${this.toString(signature.returnType)}`)
+      .map(
+        (signature) =>
+          `${signature.isAsync ? 'async ' : ''}(${signature.arguments
+            .map((arg: any) => `${arg.key}: ${this.toString(arg)}`)
+            .join(', ')}) => ${this.toString(signature.returnType)}`,
+      )
       .join(' | ');
   },
   // FIXME: extract real type
