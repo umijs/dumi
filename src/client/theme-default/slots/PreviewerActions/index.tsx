@@ -1,7 +1,10 @@
+import { ReactComponent as IconCheck } from '@ant-design/icons-svg/inline-svg/outlined/check.svg';
 import { ReactComponent as IconCodeSandbox } from '@ant-design/icons-svg/inline-svg/outlined/code-sandbox.svg';
-// import { ReactComponent as IconCodePen } from '@ant-design/icons-svg/inline-svg/outlined/codepen.svg';
+import { ReactComponent as IconSketch } from '@ant-design/icons-svg/inline-svg/outlined/sketch.svg';
 import { ReactComponent as IconStackBlitz } from '@ant-design/icons-svg/inline-svg/outlined/thunderbolt.svg';
+import copy from 'copy-to-clipboard';
 import {
+  getSketchJSON,
   openCodeSandbox,
   openStackBlitz,
   useIntl,
@@ -10,15 +13,15 @@ import {
 import SourceCode from 'dumi/theme/builtins/SourceCode';
 import PreviewerActionsExtra from 'dumi/theme/slots/PreviewerActionsExtra';
 import Tabs from 'rc-tabs';
-import React, { useState, type FC } from 'react';
+import React, { useRef, useState, type FC } from 'react';
 import './index.less';
-
 export interface IPreviewerActionsProps extends IPreviewerProps {
   /**
    * disabled actions
    */
-  disabledActions?: ('CSB' | 'CODEPEN' | 'STACKBLITZ' | 'EXTERNAL')[];
+  disabledActions?: ('CSB' | 'STACKBLITZ' | 'EXTERNAL' | 'HTML2SKETCH')[];
   forceShowCode?: boolean;
+  demoContainer: HTMLDivElement | HTMLIFrameElement;
 }
 
 const IconCode: FC = () => (
@@ -49,6 +52,8 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
   const [showCode, setShowCode] = useState(
     props.forceShowCode || props.defaultShowCode,
   );
+  const copyTimer = useRef<number>();
+  const [isCopied, setIsCopied] = useState(false);
   const isSingleFile = files.length === 1;
   const lang = (files[activeKey][0].match(/\.([^.]+)$/)?.[1] || 'text') as any;
 
@@ -67,17 +72,6 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
             <IconCodeSandbox />
           </button>
         )}
-        {/* {!props.disabledActions?.includes('CODEPEN') && (
-          <button
-            className="dumi-default-previewer-action-btn"
-            type="button"
-            data-dumi-tooltip={intl.formatMessage({
-              id: 'previewer.actions.codepen',
-            })}
-          >
-            <IconCodePen />
-          </button>
-        )} */}
         {!props.disabledActions?.includes('STACKBLITZ') && (
           <button
             className="dumi-default-previewer-action-btn"
@@ -89,6 +83,60 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
           >
             <IconStackBlitz />
           </button>
+        )}
+        {!props.disabledActions?.includes('HTML2SKETCH') && getSketchJSON && (
+          <span
+            className="dumi-default-previewer-action-btn dumi-default-previewer-action-sketch"
+            data-dumi-tooltip={intl.formatMessage({
+              id: 'previewer.actions.sketch',
+            })}
+            data-copied={isCopied || undefined}
+          >
+            {isCopied ? <IconCheck /> : <IconSketch />}
+            <select
+              value=""
+              onChange={(ev) => {
+                const { value: type } = ev.target;
+
+                switch (type) {
+                  case 'group':
+                  case 'symbol':
+                    getSketchJSON(props.demoContainer, { type }).then(
+                      (data) => {
+                        copy(JSON.stringify(data));
+                        setIsCopied(true);
+                        clearTimeout(copyTimer.current);
+                        copyTimer.current = window.setTimeout(
+                          () => setIsCopied(false),
+                          2000,
+                        );
+                      },
+                    );
+                    break;
+
+                  case 'guide':
+                    window.open('https://d.umijs.org/config#html2sketch');
+                    break;
+
+                  default:
+                }
+              }}
+            >
+              <option value="" hidden></option>
+              <option value="group">
+                {intl.formatMessage({ id: 'previewer.actions.sketch.group' })}
+              </option>
+              <option value="symbol">
+                {intl.formatMessage({ id: 'previewer.actions.sketch.symbol' })}
+              </option>
+              <option value="-" disabled>
+                {intl.formatMessage({ id: 'previewer.actions.sketch.divider' })}
+              </option>
+              <option value="guide">
+                {intl.formatMessage({ id: 'previewer.actions.sketch.guide' })}
+              </option>
+            </select>
+          </span>
         )}
 
         {!props.disabledActions?.includes('EXTERNAL') && (
