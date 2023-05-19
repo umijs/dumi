@@ -52,7 +52,46 @@ nav:
 ---
 ```
 
-需要注意的是，目前 dumi 尚不支持二级导航，所以如果路由路径存在超过 2 层嵌套，则会会从第 2 层开始形成新的一级导航，这并非推荐的用法，请耐心等待 dumi 对二级导航的原生支持。
+### 约定式二级导航 <Badge>2.2.0+</Badge>
+
+同时，为了便于组织文档，dumi 还支持生成二级导航，使用起来也非常简单，以如下目录结构为例：
+
+```bash
+docs
+└── platforms
+    ├── pc
+    │   ├── index.md
+    │   └── faq.md
+    └── mobile
+        ├── index.md
+        └── faq.md
+```
+
+根据一级导航的规则，上面所有的 Markdown 必然都归属于 `Platforms` 导航，但同时它们还会分别归属于 `Pc` 和 `Mobile` 这两个二级导航，这是因为这些路由路径除了拥有共同的 `/platforms` 前缀外，还拥有各自的二级路径前缀，即 `/pc` 和 `/mobile`，二级导航的 UI 效果如下：
+
+<img src="https://gw.alipayobjects.com/zos/bmw-prod/85a246ef-5f74-4f70-97fe-f6b40968e0bf/lhpzbiod_w288_h232.jpeg" width="140" />
+
+二级导航的名称及顺序的默认规则与一级导航一致，类似的，我们也可以在该二级导航类目下**任一文档**的 Markdown 源文件头部通过 FrontMatter 指定，比如：
+
+```md
+---
+nav:
+  # 单独设置二级导航名称
+  parent: 移动端
+  # 同时设置二级导航名称和顺序，order 越小越靠前，默认为 0
+  parent:
+    title: 移动端
+    order: 1
+---
+```
+
+最后，在创建约定式二级导航时，还有一些规则是需要我们注意的：
+
+1. 在相同一级路径下，二级及三级路径存在 2 组及以上时才能形成二级导航，比如上述例子中如果 `mobile` 文件夹不存在，则不会形成二级导航，但倘若添加 `platforms/xxx.md` 又可以形成二级导航；
+2. 在相同一级路径下，如果仅存在三级路径，则只展示下拉菜单，一级导航本身不带超链，比如上述例子中的 `Platforms` 导航就不带超链；
+3. 在相同一级路径下，在 2 的基础上还存在二级或一级路径，则一级导航除了下拉菜单外也带超链，比如上述例子中如果添加 `platforms/xx.md` 则 `Platforms` 带超链；
+4. 不同级导航之间的侧边菜单是完全隔离的，比如上述例子中 `Platforms`、`Pc`、`Mobile` 都拥有不同的菜单；
+5. 资产路由本身不支持嵌套，但我们仍然可以通过 [`resolve.atomDirs[n].subType`](../config/index.md#resolve) 配置项实现二级导航，比如 `[{ type: 'component', subType: 'pc' dir: 'src' }]` 会为 `src/xx/index.md` 生成 `/components/pc/xx` 路由，以满足二级导航的路径规则。
 
 ## 菜单归类及生成
 

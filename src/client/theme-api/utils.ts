@@ -108,10 +108,15 @@ export const useRouteDataComparer = <
  */
 export const pickRouteSortMeta = (
   original: Partial<Pick<INavItem, 'order' | 'title'>>,
-  field: 'nav' | 'group',
+  field: 'nav' | 'nav.parent' | 'group',
   fm: IRouteMeta['frontmatter'],
 ) => {
-  const sub = fm[field];
+  const sub: IRouteMeta['frontmatter']['group'] =
+    field === 'nav.parent'
+      ? typeof fm.nav === 'object'
+        ? fm.nav.parent
+        : {}
+      : fm[field];
 
   switch (typeof sub) {
     case 'object':

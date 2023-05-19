@@ -61,7 +61,13 @@ export interface IRouteMeta {
     description?: string;
     keywords?: string[];
     // render related
-    nav?: string | { title?: string; order?: number };
+    nav?:
+      | string
+      | {
+          title?: string;
+          order?: number;
+          parent?: Omit<IRouteMeta['frontmatter']['nav'], 'parent'>;
+        };
     group?: string | { title?: string; order?: number };
     order?: number;
     hero?: {
@@ -146,7 +152,7 @@ export type ILocalesConfig = ILocale[];
 
 export interface INavItem {
   title: string;
-  link: string;
+  link?: string;
   order?: number;
   activePath?: string;
   [key: string]: any;
