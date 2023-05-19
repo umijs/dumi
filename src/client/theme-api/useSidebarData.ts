@@ -2,6 +2,7 @@ import { useLocale, useLocation, useRouteMeta, useSiteData } from 'dumi';
 import { useState } from 'react';
 import type {
   ILocalesConfig,
+  IRouteMeta,
   ISidebarGroup,
   ISidebarItem,
   IThemeConfig,
@@ -23,12 +24,17 @@ const getLocaleClearPath = (routePath: string, locale: ILocalesConfig[0]) => {
 /**
  * get parent path from route path
  */
-function getRouteParentPath(path: string, isIndexRoute?: boolean) {
-  const paths = path.split('/');
+function getRouteParentPath(path: string, meta: IRouteMeta) {
+  const isIndexDocRoute =
+    meta.frontmatter.filename?.endsWith('index.md') && !meta._atom_route;
+  const paths = path
+    .split('/')
+    // strip end slash
+    .filter(Boolean);
   const sliceEnd = Math.min(
     Math.max(
       // increase 1 level if route file is index.md
-      isIndexRoute ? paths.length : paths.length - 1,
+      isIndexDocRoute ? paths.length : paths.length - 1,
       // least 1-level
       1,
     ),
@@ -68,10 +74,7 @@ export const useFullSidebarData = () => {
         //   a/b => /a/b (if route file is a/b/index.md)
         //   a/b/c => /a/b
         const parentPath = `/${route.path!.replace(clearPath, (s) =>
-          getRouteParentPath(
-            s,
-            route.meta!.frontmatter.filename?.endsWith('index.md'),
-          ),
+          getRouteParentPath(s, route.meta!),
         )}`;
         const { title, order } = pickRouteSortMeta(
           { order: 0 },
@@ -202,7 +205,7 @@ export const useSidebarData = () => {
   const locale = useLocale();
   const sidebar = useFullSidebarData();
   const { pathname } = useLocation();
-  const { frontmatter } = useRouteMeta();
+  const meta = useRouteMeta();
   const clearPath = getLocaleClearPath(pathname.slice(1), locale);
   // extract parent path from location pathname
   // /a => /a
@@ -211,9 +214,7 @@ export const useSidebarData = () => {
   // /en-US/a/b => /en-US/a
   // /en-US/a/b/ => /en-US/a (also strip trailing /)
   const parentPath = clearPath
-    ? pathname.replace(clearPath, (s) =>
-        getRouteParentPath(s, frontmatter.filename?.endsWith('index.md')),
-      )
+    ? pathname.replace(clearPath, (s) => getRouteParentPath(s, meta))
     : pathname;
 
   return parentPath ? sidebar[parentPath] : [];

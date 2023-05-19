@@ -142,6 +142,10 @@ export interface IRouteMeta {
       [key: string]: any;
     };
   }[];
+  /**
+   * private field, will be removed in the future
+   */
+  _atom_route?: boolean;
 }
 
 type IBasicLocale = { id: string; name: string };

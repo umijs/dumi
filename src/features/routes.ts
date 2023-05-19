@@ -265,6 +265,7 @@ export default (api: IApi) => {
           absPath: `/${routePath}`,
           parentId: docLayoutId,
           file: winPath(path.resolve(base, file)),
+          meta: { _atom_route: true },
         };
       });
     });
