@@ -62,10 +62,11 @@ function getModuleExports(modulePath: string) {
  * check if package dumi version is minor 2
  */
 function checkMinor2ByPkg(pkg: IApi['pkg']) {
+  // for dumi local example project
+  if (pkg.name?.startsWith('@examples/')) return true;
+
   const ver =
-    pkg.peerDependencies?.dumi ||
-    pkg.devDependencies?.dumi ||
-    VERSION_2_LEVEL_NAV;
+    pkg.peerDependencies?.dumi || pkg.devDependencies?.dumi || '^2.0.0';
 
   return semver.subset(ver, VERSION_2_LEVEL_NAV);
 }
