@@ -87,6 +87,14 @@ title: 配置页面标题
 - 类型：`string | { title: string; order: number; parent: { title: string; order: string } }`
 - 默认值：`undefined`
 
+<!-- 2-level nav warning start -->
+
+:::warning
+二级导航为 dumi v2.2 的新增特性，由于二级导航特性会影响主题 API 的行为，为了保证向前兼容，dumi 仅在项目声明的版本号大于等于 `2.2.0`（例如 `^2.2.0`）时才会启用该特性；如果你的项目使用了三方主题包，还需确保该主题包在 `peerDependencies` 中声明的 dumi 版本也满足前述要求才能使用该特性
+:::
+
+<!-- 2-level nav warning end -->
+
 配置当前页所属的一级导航及二级导航，同一导航类目下仅需配置任意一个 Markdown 文件即可全局生效，未配置时将会使用[默认规则](../guide/conventional-routing.md#导航归类及生成)。
 
 例如：
