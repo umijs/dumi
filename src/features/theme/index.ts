@@ -3,12 +3,13 @@ import {
   PICKED_PKG_FIELDS,
   PREFERS_COLOR_ATTR,
   THEME_PREFIX,
+  VERSION_2_LEVEL_NAV,
 } from '@/constants';
 import type { IApi } from '@/types';
 import { parseModuleSync } from '@umijs/bundler-utils';
 import fs from 'fs';
 import path from 'path';
-import { deepmerge, lodash, resolve, winPath } from 'umi/plugin-utils';
+import { deepmerge, lodash, resolve, semver, winPath } from 'umi/plugin-utils';
 import { safeExcludeInMFSU } from '../derivative';
 import loadTheme, { IThemeLoadResult } from './loader';
 
@@ -55,6 +56,18 @@ function getModuleExports(modulePath: string) {
     path: modulePath,
     content: fs.readFileSync(modulePath, 'utf-8'),
   })[1];
+}
+
+/**
+ * check if package dumi version is minor 2
+ */
+function checkMinor2ByPkg(pkg: IApi['pkg']) {
+  const ver =
+    pkg.peerDependencies?.dumi ||
+    pkg.devDependencies?.dumi ||
+    VERSION_2_LEVEL_NAV;
+
+  return semver.subset(ver, VERSION_2_LEVEL_NAV);
 }
 
 export default (api: IApi) => {
@@ -139,6 +152,21 @@ export default (api: IApi) => {
 
       return memo;
     },
+  });
+
+  api.modifyAppData((memo) => {
+    // auto enable 2-level nav by declared dumi version, for existing projects compatibility
+    // ref: https://github.com/umijs/dumi/discussions/1618
+    memo._2LevelNavAvailable = checkMinor2ByPkg(api.pkg);
+
+    // always respect theme package declaration, for theme compatibility
+    if (pkgThemePath && !memo._2LevelNavAvailable) {
+      memo._2LevelNavAvailable = checkMinor2ByPkg(
+        require(path.join(pkgThemePath, 'package.json')),
+      );
+    }
+
+    return memo;
   });
 
   api.modifyConfig((memo) => {
@@ -306,6 +334,7 @@ export default function DumiContextWrapper() {
           api.config.themeConfig,
         ),
       )},
+      _2_level_nav_available: ${api.appData._2LevelNavAvailable},
     }}>
       {outlet}
     </SiteContext.Provider>

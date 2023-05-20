@@ -20,6 +20,10 @@ interface ISiteContext {
   themeConfig: IThemeConfig;
   loading: boolean;
   setLoading: (status: boolean) => void;
+  /**
+   * private field, do not use it in your code
+   */
+  _2_level_nav_available: boolean;
 }
 
 export const SiteContext = createContext<ISiteContext>({
@@ -32,6 +36,7 @@ export const SiteContext = createContext<ISiteContext>({
   themeConfig: {} as IThemeConfig,
   loading: false,
   setLoading: () => {},
+  _2_level_nav_available: true,
 });
 
 export const useSiteData = () => {

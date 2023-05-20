@@ -35,7 +35,7 @@ function genNavItem(
 export const useNavData = () => {
   const locale = useLocale();
   const routes = useLocaleDocRoutes();
-  const { themeConfig } = useSiteData();
+  const { themeConfig, _2_level_nav_available: is2LevelNav } = useSiteData();
   const sidebar = useFullSidebarData();
   const sidebarDataComparer = useRouteDataComparer<INavItems[0]>();
   const [nav] = useState<INavItems>(() => {
@@ -65,7 +65,7 @@ export const useNavData = () => {
         // convert sidebar data to nav data
         .reduce<Record<string, INavItems[0]>>((ret, [link, groups]) => {
           const [, parentPath, restPath] = link.match(/^(\/[^/]+)([^]+)?$/)!;
-          const isNestedNav = Boolean(restPath);
+          const isNestedNav = Boolean(restPath) && is2LevelNav;
           const [rootMeta, parentMeta] = Object.values(routes).reduce<
             {
               title?: string;

@@ -24,9 +24,14 @@ const getLocaleClearPath = (routePath: string, locale: ILocalesConfig[0]) => {
 /**
  * get parent path from route path
  */
-function getRouteParentPath(path: string, meta: IRouteMeta) {
+function getRouteParentPath(
+  path: string,
+  { meta, is2LevelNav }: { meta: IRouteMeta; is2LevelNav: boolean },
+) {
   const isIndexDocRoute =
-    meta.frontmatter.filename?.endsWith('index.md') && !meta._atom_route;
+    meta.frontmatter.filename?.endsWith('index.md') &&
+    !meta._atom_route &&
+    is2LevelNav;
   const paths = path
     .split('/')
     // strip end slash
@@ -38,8 +43,8 @@ function getRouteParentPath(path: string, meta: IRouteMeta) {
       // least 1-level
       1,
     ),
-    // up to 2-level
-    2,
+    // up to 2-level when use conventional 2-level nav
+    is2LevelNav ? 2 : Infinity,
   );
 
   return paths.slice(0, sliceEnd).join('/');
@@ -51,7 +56,7 @@ function getRouteParentPath(path: string, meta: IRouteMeta) {
 export const useFullSidebarData = () => {
   const locale = useLocale();
   const routes = useLocaleDocRoutes();
-  const { themeConfig } = useSiteData();
+  const { themeConfig, _2_level_nav_available: is2LevelNav } = useSiteData();
   const sidebarDataComparer = useRouteDataComparer<
     ISidebarGroup | ISidebarItem
   >();
@@ -74,7 +79,7 @@ export const useFullSidebarData = () => {
         //   a/b => /a/b (if route file is a/b/index.md)
         //   a/b/c => /a/b
         const parentPath = `/${route.path!.replace(clearPath, (s) =>
-          getRouteParentPath(s, route.meta!),
+          getRouteParentPath(s, { is2LevelNav, meta: route.meta! }),
         )}`;
         const { title, order } = pickRouteSortMeta(
           { order: 0 },
@@ -204,6 +209,7 @@ export const useTreeSidebarData = () => {
 export const useSidebarData = () => {
   const locale = useLocale();
   const sidebar = useFullSidebarData();
+  const { _2_level_nav_available: is2LevelNav } = useSiteData();
   const { pathname } = useLocation();
   const meta = useRouteMeta();
   const clearPath = getLocaleClearPath(pathname.slice(1), locale);
@@ -214,7 +220,9 @@ export const useSidebarData = () => {
   // /en-US/a/b => /en-US/a
   // /en-US/a/b/ => /en-US/a (also strip trailing /)
   const parentPath = clearPath
-    ? pathname.replace(clearPath, (s) => getRouteParentPath(s, meta))
+    ? pathname.replace(clearPath, (s) =>
+        getRouteParentPath(s, { is2LevelNav, meta }),
+      )
     : pathname;
 
   return parentPath ? sidebar[parentPath] : [];

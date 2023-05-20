@@ -105,7 +105,7 @@ export interface IRouteMeta {
     depth: number;
     title: string;
     /**
-     * private field, will be removed in the future
+     * private field, do not use it in your code
      */
     _debug_demo?: boolean;
   }[];
@@ -143,7 +143,7 @@ export interface IRouteMeta {
     };
   }[];
   /**
-   * private field, will be removed in the future
+   * private field, do not use it in your code
    */
   _atom_route?: boolean;
 }
