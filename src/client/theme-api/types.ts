@@ -66,7 +66,7 @@ export interface IRouteMeta {
       | {
           title?: string;
           order?: number;
-          parent?: Omit<IRouteMeta['frontmatter']['nav'], 'parent'>;
+          second?: Omit<IRouteMeta['frontmatter']['nav'], 'second'>;
         };
     group?: string | { title?: string; order?: number };
     order?: number;

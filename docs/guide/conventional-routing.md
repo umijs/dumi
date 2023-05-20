@@ -79,9 +79,9 @@ docs
 ---
 nav:
   # 单独设置二级导航名称
-  parent: 移动端
+  second: 移动端
   # 同时设置二级导航名称和顺序，order 越小越靠前，默认为 0
-  parent:
+  second:
     title: 移动端
     order: 1
 ---

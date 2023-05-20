@@ -84,7 +84,7 @@ title: 配置页面标题
 
 ## nav
 
-- 类型：`string | { title: string; order: number; parent: { title: string; order: string } }`
+- 类型：`string | { title: string; order: number; second: { title: string; order: string } }`
 - 默认值：`undefined`
 
 <!-- 2-level nav warning start -->
@@ -108,9 +108,9 @@ nav:
   title: 名称
   order: 1
   # 单独配置二级导航名称
-  parent: 父级名称
+  second: 父级名称
   # 同时配置二级导航名称和顺序，order 越小越靠前，默认为 0
-  parent:
+  second:
     title: 父级名称
     order: 1
 ---
