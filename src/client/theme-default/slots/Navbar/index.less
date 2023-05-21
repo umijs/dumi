@@ -78,8 +78,10 @@
         }
       }
 
-      &[data-collapsed] > svg {
-        transform: rotate(180deg);
+      @media @mobile {
+        &[data-collapsed] > svg {
+          transform: rotate(180deg);
+        }
       }
 
       @media @desktop {
@@ -122,7 +124,7 @@
           padding: 0 18px;
           color: @c-text-secondary;
           font-size: 15px;
-          line-height: 1.5;
+          line-height: 1.6;
           text-align: left;
 
           @media @mobile {

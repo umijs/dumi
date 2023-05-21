@@ -35,7 +35,7 @@ function genNavItem(
 export const useNavData = () => {
   const locale = useLocale();
   const routes = useLocaleDocRoutes();
-  const { themeConfig } = useSiteData();
+  const { themeConfig, _2_level_nav_available: is2LevelNav } = useSiteData();
   const sidebar = useFullSidebarData();
   const sidebarDataComparer = useRouteDataComparer<INavItems[0]>();
   const [nav] = useState<INavItems>(() => {
@@ -65,8 +65,8 @@ export const useNavData = () => {
         // convert sidebar data to nav data
         .reduce<Record<string, INavItems[0]>>((ret, [link, groups]) => {
           const [, parentPath, restPath] = link.match(/^(\/[^/]+)([^]+)?$/)!;
-          const isNestedNav = Boolean(restPath);
-          const [rootMeta, parentMeta] = Object.values(routes).reduce<
+          const isNestedNav = Boolean(restPath) && is2LevelNav;
+          const [firstMeta, secondMeta] = Object.values(routes).reduce<
             {
               title?: string;
               order?: number;
@@ -80,7 +80,7 @@ export const useNavData = () => {
                 if (isNestedNav)
                   pickRouteSortMeta(
                     ret[1],
-                    'nav.parent',
+                    'nav.second',
                     route.meta!.frontmatter,
                   );
               }
@@ -90,26 +90,26 @@ export const useNavData = () => {
           );
 
           if (isNestedNav) {
-            // fallback to use parent path as title
-            parentMeta.title ??= parentPath
+            // fallback to use parent path as 1-level nav title
+            firstMeta.title ??= parentPath
               .slice(1)
               .replace(/^[a-z]/, (s) => s.toUpperCase());
 
             // handle nested nav item as parent children
-            const parent = (ret[parentPath] ??= genNavItem(
-              parentMeta,
+            const second = (ret[parentPath] ??= genNavItem(
+              firstMeta,
               groups,
               parentPath,
             ));
 
-            parent.children ??= [];
+            second.children ??= [];
             ret[parentPath].children!.push(
-              genNavItem(rootMeta, groups, link, groups[0].children[0].link),
+              genNavItem(secondMeta, groups, link, groups[0].children[0].link),
             );
           } else {
             // handle root nav item
             ret[link] = genNavItem(
-              rootMeta,
+              firstMeta,
               groups,
               link,
               groups[0].children[0].link,

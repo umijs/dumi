@@ -35,7 +35,7 @@
     "father-plugin-dumi-theme": "workspace:*"
   },
   "peerDependencies": {
-    "dumi": "^2.0.0",
+    "dumi": "^2.2.0",
     "react": ">=16.8",
     "react-dom": ">=16.8"
   },

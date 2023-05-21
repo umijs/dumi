@@ -68,7 +68,7 @@ import { useFullSidebarData } from 'dumi';
 const Example = () => {
   const sidebar = useFullSidebarData();
   // 返回值：Record<string, ISidebarGroup[]>
-  // 类型定义：https://github.com/umijs/dumi/tree/master/src/client/theme-api/types.ts#L140
+  // 类型定义：https://github.com/umijs/dumi/blob/master/src/client/theme-api/types.ts#L171
 
   // 其他逻辑
 };
@@ -86,7 +86,7 @@ import { useLocale } from 'dumi';
 const Example = () => {
   const locale = useLocale();
   // 返回值：{ id: string; name: string; base: string } | { id: string; name: string; suffix: string }
-  // 类型定义：https://github.com/umijs/dumi/tree/master/src/client/theme-api/types.ts#L121
+  // 类型定义：https://github.com/umijs/dumi/blob/master/src/client/theme-api/types.ts#L152
 
   // 其他逻辑
 };
@@ -98,7 +98,9 @@ const Example = () => {
 - 场景：定制导航栏时需要用到
 - 用法：
 
-> 注意，由于后续会支持二级导航，该 hook 的返回数据结构可能会有些许调整
+:::info
+如果你是 dumi v2.2 发布之前的主题包开发者，建议更新导航栏组件对[二级导航数据](https://github.com/umijs/dumi/discussions/1618)的支持，并将主题包 `peerDependencies` 中的 dumi 版本设置为 `^2.2.0`，以便主题包用户使用[约定式二级导航](../guide/conventional-routing.md#约定式二级导航)特性
+:::
 
 ```ts
 import { useNavData } from 'dumi';
@@ -106,7 +108,7 @@ import { useNavData } from 'dumi';
 const Example = () => {
   const nav = useNavData();
   // 返回值：INavItem[]
-  // 类型定义：https://github.com/umijs/dumi/tree/master/src/client/theme-api/types.ts#L126
+  // 类型定义：https://github.com/umijs/dumi/blob/master/src/client/theme-api/types.ts#L157
 
   // 其他逻辑
 };
@@ -175,7 +177,7 @@ const Example = () => {
     tabs,
   } = useRouteMeta();
   // 返回值：IRouteMeta
-  // 类型定义：https://github.com/umijs/dumi/tree/master/src/client/theme-api/types.ts#L48
+  // 类型定义：https://github.com/umijs/dumi/blob/master/src/client/theme-api/types.ts#L56
 
   // 其他逻辑
 };
@@ -224,7 +226,7 @@ import { useSidebarData } from 'dumi';
 const Example = () => {
   const sidebar = useSidebarData();
   // 返回值：ISidebarGroup[]
-  // 类型定义：https://github.com/umijs/dumi/tree/master/src/client/theme-api/types.ts#L140
+  // 类型定义：https://github.com/umijs/dumi/blob/master/src/client/theme-api/types.ts#L171
 
   // 其他逻辑
 };
@@ -275,7 +277,7 @@ const Example = () => {
     texts,
   } = useTabMeta();
   // 返回值：IRouteTabMeta
-  // 类型定义：https://github.com/umijs/dumi/tree/master/src/client/theme-api/types.ts#L108
+  // 类型定义：https://github.com/umijs/dumi/blob/master/src/client/theme-api/types.ts#L135
 
   // 其他逻辑
 };

@@ -54,6 +54,8 @@ nav:
 
 ### 约定式二级导航 <Badge>2.2.0+</Badge>
 
+<embed src="../config/markdown.md#RE-/<!-- 2-level nav warning[^]+ 2-level nav warning end -->/"></embed>
+
 同时，为了便于组织文档，dumi 还支持生成二级导航，使用起来也非常简单，以如下目录结构为例：
 
 ```bash
@@ -77,9 +79,9 @@ docs
 ---
 nav:
   # 单独设置二级导航名称
-  parent: 移动端
+  second: 移动端
   # 同时设置二级导航名称和顺序，order 越小越靠前，默认为 0
-  parent:
+  second:
     title: 移动端
     order: 1
 ---
