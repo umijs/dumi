@@ -98,6 +98,10 @@ const Example = () => {
 - 场景：定制导航栏时需要用到
 - 用法：
 
+:::info
+如果你是 dumi v2.2 发布之前的主题包开发者，建议更新导航栏组件对[二级导航数据](https://github.com/umijs/dumi/discussions/1618)的支持，并将主题包 `peerDependencies` 中的 dumi 版本设置为 `^2.2.0`，以便主题包用户使用[约定式二级导航](../guide/conventional-routing.md#约定式二级导航)特性
+:::
+
 ```ts
 import { useNavData } from 'dumi';
 
