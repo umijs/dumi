@@ -61,7 +61,13 @@ export interface IRouteMeta {
     description?: string;
     keywords?: string[];
     // render related
-    nav?: string | { title?: string; order?: number };
+    nav?:
+      | string
+      | {
+          title?: string;
+          order?: number;
+          second?: Omit<IRouteMeta['frontmatter']['nav'], 'second'>;
+        };
     group?: string | { title?: string; order?: number };
     order?: number;
     hero?: {
@@ -99,7 +105,7 @@ export interface IRouteMeta {
     depth: number;
     title: string;
     /**
-     * private field, will be removed in the future
+     * private field, do not use it in your code
      */
     _debug_demo?: boolean;
   }[];
@@ -136,6 +142,10 @@ export interface IRouteMeta {
       [key: string]: any;
     };
   }[];
+  /**
+   * private field, do not use it in your code
+   */
+  _atom_route?: boolean;
 }
 
 type IBasicLocale = { id: string; name: string };
@@ -146,7 +156,7 @@ export type ILocalesConfig = ILocale[];
 
 export interface INavItem {
   title: string;
-  link: string;
+  link?: string;
   order?: number;
   activePath?: string;
   [key: string]: any;
@@ -197,6 +207,7 @@ export interface IThemeConfig {
   nav?: IUserNavValue | NavWithMode<IUserNavValue>;
   sidebar?: Record<string, ISidebarGroup[]>;
   footer?: string | false;
+  showLineNum?: boolean;
   prefersColor: {
     default: 'light' | 'dark' | 'auto';
     switch: boolean;

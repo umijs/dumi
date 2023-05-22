@@ -203,9 +203,12 @@ export default (api: IApi) => {
 
     // prepend page routes from .dumi/pages
     Object.entries(pages).forEach(([, route]) => {
-      route.file = winPath(
-        path.resolve(api.config.conventionRoutes!.base!, route.file),
-      );
+      const { base } = api.config.conventionRoutes as Exclude<
+        IApi['config']['conventionRoutes'],
+        false | undefined
+      >;
+
+      route.file = winPath(path.resolve(base!, route.file));
 
       // save route
       routes[route.id] = route;
@@ -240,7 +243,7 @@ export default (api: IApi) => {
     });
 
     // generate atom routes
-    atomDirs.forEach(({ type, dir }) => {
+    atomDirs.forEach(({ type, subType = '', dir }) => {
       const base = path.join(api.cwd, dir);
       const atomFiles = glob.sync(
         '{*,*/index,*/index.*,*/README,*/README.*}.md',
@@ -248,7 +251,7 @@ export default (api: IApi) => {
       );
 
       atomFiles.forEach((file) => {
-        const routeFile = winPath(path.join(plural(type), file));
+        const routeFile = winPath(path.join(plural(type), subType, file));
         const routePath = routeFile
           .replace(/(\/index|\/README)?\.md$/, '')
           // like umi standard route
@@ -262,6 +265,7 @@ export default (api: IApi) => {
           absPath: `/${routePath}`,
           parentId: docLayoutId,
           file: winPath(path.resolve(base, file)),
+          meta: { _atom_route: true },
         };
       });
     });

@@ -136,9 +136,9 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: npm install
       # 文档编译命令，如果是 react 模板需要修改为 npm run docs:build
       - run: npm run build
@@ -204,3 +204,7 @@ import './index.css';
 ```
 
 这样无论是 dumi 还是实际项目里，都不需要做额外配置，但这种做法也有一些限制：如果引入的是 `.less`，那么目标项目的开发框架必须支持编译 Less。
+
+## 是否支持三级导航？
+
+不支持。如果文档目录结构的复杂度超过 3 级，应该考虑优化文档整体结构而非使用三级导航。如果有特殊场景需要，可以自定义主题实现。

@@ -1,6 +1,6 @@
 {
   "name": "dumi-theme-mobile",
-  "version": "2.0.4",
+  "version": "2.1.0",
   "description": "dumi-theme-mobile",
   "keywords": [
     "dumi",
@@ -35,7 +35,7 @@
     "father-plugin-dumi-theme": "workspace:*"
   },
   "peerDependencies": {
-    "dumi": "^2.0.0",
+    "dumi": "^2.2.0",
     "react": ">=16.8",
     "react-dom": ">=16.8"
   },

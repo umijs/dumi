@@ -1,6 +1,7 @@
 ---
 nav: 配置项
 toc: content
+mobile: false
 ---
 
 # 框架配置
@@ -31,10 +32,12 @@ export default defineConfig({
 
 #### atomDirs
 
-- 类型：`{ type: string; dir: string }[]`
+- 类型：`{ type: string; subType?: string; dir: string }[]`
 - 默认值：`[{ type: 'component', dir: 'src' }]`
 
-配置原子资产（例如组件、函数、工具等）Markdown 的解析目录，该目录下 **第一层级** 的 Markdown 文档会被解析为该实体分类下的路由，嵌套层级将不会识别。比如在默认配置下，`src/Foo/index.md` 将被解析为 `components/foo` 的路由。
+配置原子资产（例如组件、函数、工具等）Markdown 的解析目录。
+
+其中 `type` 用于指定资产类别，必须是 URL 友好的**单数单词**，比如 `component` 或者 `hook`；`subType` 用于指定资产的子类别，通常在需要生成二级导航时使用，值必须为 URL 友好的单词；`dir` 指定目录下**第一层级**的 Markdown 文档会被解析为该实体分类下的路由，嵌套层级将不会识别。比如在默认配置下，`src/Foo/index.md` 将被解析为 `components/foo` 的路由，`type` 配置值将**自动被复数化**后作为路由的前缀路径。
 
 单独将资产的解析逻辑拆分是为了解决 dumi 1 中普通文档与源码目录下的组件文档混淆不清、分组困难的问题。
 
@@ -165,6 +168,39 @@ dumi 内置了站点统计的功能，目前支持 [Google Analytics](https://an
 - 默认值：`undefined`
 
 启用 `sitemap.xml` 自动生成功能。`hostname` 配置项用来指定 URL 的域名前缀，`exclude` 配置项用来忽略某些不需要包含在 sitemap 中的路由。
+
+### html2sketch<Badge>2.2.0+</Badge>
+
+- 类型：`{ scriptUrl?: string }`
+- 默认值：`undefined`
+
+启用 HTML 转 [Sketch](https://www.sketch.com/) 的功能，`scriptUrl` 配置项用于指定 html2sketch 的脚本地址，如果你不希望使用内置的 CDN 地址，可以选择自定义。
+
+该功能会在 demo 预览器操作栏添加『拷贝到 Sketch』按钮，点击后会将当前 demo 转换为 Sketch 对象并复制到剪贴板，该功能基于 [Ant Design - html2sketch](https://github.com/ant-design/html2sketch) 项目，需要注意的是，目前必须配合 [Kitchen](https://kitchen.alipay.com/) 插件才能实现在 Sketch 中粘贴，步骤演示如下：
+
+<img src="https://gw.alipayobjects.com/zos/bmw-prod/0b8bbca9-e642-4964-bdeb-841d2b57dd21/leibpn7e_w1024_h686.gif" width="768" />
+
+光看演示不过瘾？不妨试试看：
+
+```jsx
+export default () => (
+  <div
+    style={{
+      width: 100,
+      height: 100,
+      color: '#fff',
+      lineHeight: '100px',
+      textAlign: 'center',
+      fontSize: 30,
+      background:
+        'linear-gradient(0, rgb(54, 138, 255) 0%, rgb(150, 239, 253) 100%)',
+      borderRadius: '50%',
+    }}
+  >
+    dumi
+  </div>
+);
+```
 
 ## 主题配置项
 

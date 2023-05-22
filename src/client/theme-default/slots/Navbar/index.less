@@ -13,14 +13,21 @@
   }
 
   > li {
+    color: @c-text-secondary;
     font-size: 18px;
     line-height: 1;
     text-align: center;
+    position: relative;
+
+    @{dark-selector} & {
+      color: @c-text-secondary-dark;
+    }
 
     @media @mobile {
       padding: 12px 0;
     }
 
+    > .@{prefix}-navbar-dropdown > li > a,
     > a {
       color: @c-text-secondary;
       text-decoration: none;
@@ -37,14 +44,133 @@
           color: @c-primary-dark;
         }
       }
+    }
 
-      &.active {
-        color: @c-text;
-        font-weight: bold;
+    > a.active,
+    > span.active,
+    > .@{prefix}-navbar-dropdown > li > a.active {
+      color: @c-text;
+      font-weight: bold;
+
+      @{dark-selector} & {
+        color: @c-text-dark;
+      }
+    }
+
+    > .@{prefix}-navbar-collapse-btn {
+      appearance: none;
+      margin-left: 6px;
+      margin-right: -24px;
+      width: 18px;
+      height: 18px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      vertical-align: middle;
+
+      > svg {
+        fill: @c-text-note;
+        width: 14px;
+        transition: transform 0.3s;
 
         @{dark-selector} & {
-          color: @c-text-dark;
+          fill: @c-text-note-dark;
         }
+      }
+
+      @media @mobile {
+        &[data-collapsed] > svg {
+          transform: rotate(180deg);
+        }
+      }
+
+      @media @desktop {
+        margin-left: 4px;
+        margin-right: 0;
+        pointer-events: none;
+
+        > svg {
+          width: 12px;
+          transition-delay: 0.1s;
+        }
+      }
+    }
+
+    &:hover > .@{prefix}-navbar-collapse-btn > svg {
+      transform: rotate(180deg);
+      transition-delay: 0;
+    }
+
+    > .@{prefix}-navbar-dropdown {
+      position: absolute;
+      top: 100%;
+      left: -18px;
+      min-width: calc(100% + 16px);
+      list-style: none;
+      padding: 0;
+      margin: 6px 0 0;
+      background-color: #fff;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 10%);
+      border-radius: 6px;
+      transition: all 0.2s ease-in-out;
+
+      @{dark-selector} & {
+        background-color: lighten(@c-site-bg-dark, 6%);
+      }
+
+      > li {
+        > a {
+          display: block;
+          padding: 0 18px;
+          color: @c-text-secondary;
+          font-size: 15px;
+          line-height: 1.6;
+          text-align: left;
+
+          @media @mobile {
+            display: inline;
+          }
+
+          &:hover {
+            color: @c-primary;
+          }
+        }
+
+        &:first-child > a {
+          padding-top: 8px;
+        }
+
+        &:last-child > a {
+          padding-bottom: 8px;
+        }
+      }
+
+      @media @mobile {
+        position: static;
+        background: transparent;
+        box-shadow: none;
+        min-width: 0;
+
+        @{dark-selector} & {
+          background: transparent;
+        }
+
+        &:not([data-collapsed]) {
+          display: none;
+        }
+      }
+    }
+
+    &:not(:hover) > .@{prefix}-navbar-dropdown {
+      visibility: hidden;
+      opacity: 0;
+      transform: translateY(-6px) scale(0.98);
+      transition-delay: 0.1s;
+
+      @media @mobile {
+        visibility: visible;
+        opacity: 1;
+        transform: none;
       }
     }
 
