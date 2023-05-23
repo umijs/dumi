@@ -1,8 +1,10 @@
 import type { IParsedBlockAsset } from '@/assetParsers/block';
 import type { IRouteMeta } from '@/client/theme-api/types';
-import type { IDumiConfig, IDumiTechStack } from '@/types';
+import { VERSION_2_DEPRECATE_SOFT_BREAKS } from '@/constants';
+import type { IApi, IDumiConfig, IDumiTechStack } from '@/types';
 import enhancedResolve from 'enhanced-resolve';
 import type { IRoute } from 'umi';
+import { semver } from 'umi/plugin-utils';
 import type { Plugin, Processor } from 'unified';
 import type { Data } from 'vfile';
 import rehypeDemo from './rehypeDemo';
@@ -63,11 +65,23 @@ export interface IMdTransformerOptions {
   extraRemarkPlugins?: IDumiConfig['extraRemarkPlugins'];
   extraRehypePlugins?: IDumiConfig['extraRehypePlugins'];
   routes: Record<string, IRoute>;
+  pkg: IApi['pkg'];
 }
 
 export interface IMdTransformerResult {
   content: string;
   meta: Data;
+}
+
+/**
+ * keep markdown soft break before 2.2.0
+ */
+function keepSoftBreak(pkg: IApi['pkg']) {
+  // for dumi local example project
+  if (pkg.name?.startsWith('@examples/')) return false;
+
+  const ver = pkg?.devDependencies?.dumi ?? pkg?.dependencies?.dumi ?? '^2.0.0';
+  return !semver.subset(ver, VERSION_2_DEPRECATE_SOFT_BREAKS);
 }
 
 function applyUnifiedPlugin(opts: {
@@ -106,7 +120,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     alias: opts.alias,
   });
 
-  const processor = unified()
+  let processor = unified()
     .use(remarkParse)
     .use(remarkEmbed, { fileAbsPath: opts.fileAbsPath, alias: opts.alias })
     .use(remarkFrontmatter)
@@ -117,8 +131,11 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     })
     .use(remarkDirective)
     .use(remarkContainer)
-    .use(remarkBreaks)
     .use(remarkGfm);
+
+  if (keepSoftBreak(opts.pkg)) {
+    processor = processor.use(remarkBreaks);
+  }
 
   // apply extra remark plugins
   opts.extraRemarkPlugins?.forEach((plugin) =>
