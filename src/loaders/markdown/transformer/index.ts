@@ -79,7 +79,7 @@ export interface IMdTransformerResult {
  */
 function keepSoftBreak(pkg: IApi['pkg']) {
   // for dumi local example project
-  if (pkg.name?.startsWith('@examples/')) return false;
+  if (pkg?.name?.startsWith('@examples/')) return false;
 
   const ver = pkg?.devDependencies?.dumi ?? pkg?.dependencies?.dumi ?? '^2.0.0';
   return !semver.subset(ver, VERSION_2_DEPRECATE_SOFT_BREAKS);
