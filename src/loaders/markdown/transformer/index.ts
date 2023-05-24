@@ -19,6 +19,7 @@ import rehypeRaw from './rehypeRaw';
 import rehypeSlug from './rehypeSlug';
 import rehypeStrip from './rehypeStrip';
 import rehypeText from './rehypeText';
+import remarkBreaks from './remarkBreaks';
 import remarkContainer from './remarkContainer';
 import remarkEmbed from './remarkEmbed';
 import remarkMeta from './remarkMeta';
@@ -106,7 +107,6 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
   const { default: remarkParse } = await import('remark-parse');
   const { default: remarkFrontmatter } = await import('remark-frontmatter');
   const { default: remarkDirective } = await import('remark-directive');
-  const { default: remarkBreaks } = await import('remark-breaks');
   const { default: remarkGfm } = await import('remark-gfm');
   const { default: remarkRehype } = await import('remark-rehype');
   const { default: rehypeAutolinkHeadings } = await import(

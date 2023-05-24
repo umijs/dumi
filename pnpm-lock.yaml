@@ -94,6 +94,9 @@ importers:
       lodash.throttle:
         specifier: ^4.1.1
         version: 4.1.1
+      mdast-util-find-and-replace:
+        specifier: ^2.2.2
+        version: 2.2.2
       mdast-util-to-string:
         specifier: ^3.1.0
         version: 3.1.0
@@ -145,9 +148,6 @@ importers:
       rehype-stringify:
         specifier: ^9.0.3
         version: 9.0.3
-      remark-breaks:
-        specifier: ^3.0.2
-        version: 3.0.2
       remark-directive:
         specifier: ^2.0.1
         version: 2.0.1
@@ -9255,9 +9255,10 @@ packages:
       unist-util-visit-parents: 5.1.1
     dev: false
 
-  /mdast-util-find-and-replace@2.2.1:
-    resolution: {integrity: sha512-SobxkQXFAdd4b5WmEakmkVoh18icjQRxGy5OWTCzgsLRm1Fu/KCtwD1HIQSsmq5ZRjVH0Ehwg6/Fn3xIUk+nKw==}
+  /mdast-util-find-and-replace@2.2.2:
+    resolution: {integrity: sha512-MTtdFRz/eMDHXzeK6W3dO7mXUlF82Gom4y0oOgvHhh/HXZAGvIQDUvQ0SuUx+j2tv44b8xTHOm8K/9OoRFnXKw==}
     dependencies:
+      '@types/mdast': 3.0.10
       escape-string-regexp: 5.0.0
       unist-util-is: 5.1.1
       unist-util-visit-parents: 5.1.1
@@ -9293,7 +9294,7 @@ packages:
     dependencies:
       '@types/mdast': 3.0.10
       ccount: 2.0.1
-      mdast-util-find-and-replace: 2.2.1
+      mdast-util-find-and-replace: 2.2.2
       micromark-util-character: 1.1.0
     dev: false
 
@@ -12645,14 +12646,6 @@ packages:
   /relateurl@0.2.7:
     resolution: {integrity: sha512-G08Dxvm4iDN3MLM0EsP62EDV9IuhXPR6blNz6Utcp7zyV3tr4HVNINt6MpaRWbxoOHT3Q7YN2P+jaHX8vUbgog==}
     engines: {node: '>= 0.10'}
-    dev: false
-
-  /remark-breaks@3.0.2:
-    resolution: {integrity: sha512-x96YDJ9X+Ry0/JNZFKfr1hpcAKvGYWfUTszxY9RbxKEqq6uzPPoLCuHdZsLPZZUdAv3nCROyc7FPrQLWr2rxyw==}
-    dependencies:
-      '@types/mdast': 3.0.10
-      unified: 10.1.2
-      unist-util-visit: 4.1.1
     dev: false
 
   /remark-directive@2.0.1:
