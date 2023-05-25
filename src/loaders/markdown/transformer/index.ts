@@ -120,7 +120,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     alias: opts.alias,
   });
 
-  let processor = unified()
+  const processor = unified()
     .use(remarkParse)
     .use(remarkEmbed, { fileAbsPath: opts.fileAbsPath, alias: opts.alias })
     .use(remarkFrontmatter)
@@ -134,7 +134,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     .use(remarkGfm);
 
   if (keepSoftBreak(opts.pkg)) {
-    processor = processor.use(remarkBreaks);
+    processor.use(remarkBreaks);
   }
 
   // apply extra remark plugins
