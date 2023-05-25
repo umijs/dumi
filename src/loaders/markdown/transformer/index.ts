@@ -134,7 +134,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     .use(remarkGfm);
 
   if (keepSoftBreak(opts.pkg)) {
-    processor.use(remarkBreaks);
+    processor.use(remarkBreaks, { fileAbsPath: opts.fileAbsPath });
   }
 
   // apply extra remark plugins
