@@ -50,18 +50,25 @@ export const DumiDemo: FC<IDumiDemoProps> = (props) => {
   }
 
   const isHashRoute = historyType === 'hash';
+  
+  // allow user override demoUrl by frontmatter
+  let demoUrl =
+    props.previewerProps.demoUrl ||
+    // when use hash route, browser can automatically handle relative paths starting with #
+    `${isHashRoute ? `#` : ''}${basename}${SP_ROUTE_PREFIX}demos/${props.demo.id}`;
+  
+  const [, prefix = '', demoId] =
+    new RegExp(`(.*)${SP_ROUTE_PREFIX}demos/(.*)$`).exec(props.previewerProps.demoUrl || '') ||
+    [];
+  if (demoId) {
+    // encode demo.id to avoid slash in id breaking the route
+    demoUrl = `${prefix}${SP_ROUTE_PREFIX}demos/${encodeURIComponent(demoId)}`;
+  }
 
   return (
     <Previewer
       asset={asset}
-      demoUrl={
-        // allow user override demoUrl by frontmatter
-        props.previewerProps.demoUrl ||
-        // when use hash route, browser can automatically handle relative paths starting with #
-        `${isHashRoute ? `#` : ''}${basename}${SP_ROUTE_PREFIX}demos/${
-          props.demo.id
-        }`
-      }
+      demoUrl={demoUrl}
       {...props.previewerProps}
     >
       {props.previewerProps.iframe ? null : (
