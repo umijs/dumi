@@ -1,7 +1,7 @@
 import type { PICKED_PKG_FIELDS } from '@/constants';
 import type { AtomComponentAsset } from 'dumi-assets-types';
 import { createContext, useContext, type ComponentType } from 'react';
-import type { ILocalesConfig, IPreviewerProps, IThemeConfig, ISitemap } from './types';
+import type { ILocalesConfig, IPreviewerProps, IThemeConfig } from './types';
 
 interface ISiteContext {
   pkg: Partial<Record<keyof typeof PICKED_PKG_FIELDS, any>>;
