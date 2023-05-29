@@ -92,7 +92,7 @@ title: 配置页面标题
 :::warning
 二级导航为 dumi v2.2 的新增特性，由于二级导航特性会影响主题 API 的行为，为了保证对存量项目及主题包的向前兼容，dumi 仅在项目 `devDependencies` 中声明的 dumi 版本号大于等于 `2.2.0`（例如 `^2.2.0`）时才会启用该特性
 
-如果你的项目使用了三方主题包，能否使用二级导航则取决于主题包是否适配该特性，dumi 会依据主题包 `peerDependencies` 中声明的 dumi 版本作为判断依据
+如果你的项目使用了三方主题包，能否使用二级导航则取决于主题包是否适配该特性，dumi 会将主题包 `peerDependencies` 中声明的 dumi 版本作为判断依据
 :::
 
 <!-- 2-level nav warning end -->
