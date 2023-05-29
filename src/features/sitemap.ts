@@ -38,7 +38,8 @@ export default (api: IApi) => {
         // ignore dynamic route, such as /~demos/:uuid
         ![':', '*'].some((char) => route.path.includes(char)) &&
         // ignore duplicate URLs
-        route.path !== '' && !route.isLayout
+        route.path !== '' &&
+        !route.isLayout
       ) {
         smis.write({ url: route.path });
       }
