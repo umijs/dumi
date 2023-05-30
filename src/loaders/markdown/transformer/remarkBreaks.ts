@@ -1,6 +1,7 @@
 import type { IMdTransformerOptions } from '@/loaders/markdown/transformer/index';
 import type { Root } from 'mdast';
 import type { ReplaceFunction } from 'mdast-util-find-and-replace';
+import { chalk, logger } from 'umi/plugin-utils';
 
 let findAndReplace: typeof import('mdast-util-find-and-replace').findAndReplace;
 
@@ -15,12 +16,12 @@ function logDeprecationWarning(fileAbsPath: string) {
 
   warningLock.set(fileAbsPath, true);
 
-  console.warn(
-    'warn - Detected that you are using soft breaks, dumi will transform them into spaces after the declaration',
+  logger.warn(
+    'Detected that you are using soft breaks, dumi will transform them into spaces after the declaration',
     'version greater than or equal to `2.2.0`, however, they are still being transformed as line breaks now, please',
     'migrate them to hard breaks before upgrading the declaration version for dumi.\n',
-    `  at ${fileAbsPath}\n`,
-    '  see also: https://github.com/umijs/dumi/issues/1683\n',
+    chalk.grey(`  at ${fileAbsPath}\n`),
+    chalk.grey('  see also: https://github.com/umijs/dumi/issues/1683\n'),
   );
 }
 
