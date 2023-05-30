@@ -36,9 +36,9 @@ export default class ReactTechStack implements IDumiTechStack {
         },
       });
 
-      return `React.lazy(async () => {
+      return `React.memo(React.lazy(async () => {
 ${code}
-})`;
+}))`;
     }
 
     return raw;
