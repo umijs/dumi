@@ -1,4 +1,4 @@
-import { IMdTransformerOptions } from '@/loaders/markdown/transformer/index';
+import type { IMdTransformerOptions } from '@/loaders/markdown/transformer/index';
 import type { Root } from 'mdast';
 import type { ReplaceFunction } from 'mdast-util-find-and-replace';
 
