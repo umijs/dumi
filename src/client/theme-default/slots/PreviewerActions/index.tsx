@@ -13,13 +13,14 @@ import {
 import SourceCode from 'dumi/theme/builtins/SourceCode';
 import PreviewerActionsExtra from 'dumi/theme/slots/PreviewerActionsExtra';
 import Tabs from 'rc-tabs';
-import React, { useRef, useState, type FC } from 'react';
+import React, { useRef, useState, type FC, type ReactNode } from 'react';
 import './index.less';
 export interface IPreviewerActionsProps extends IPreviewerProps {
   /**
    * disabled actions
    */
   disabledActions?: ('CSB' | 'STACKBLITZ' | 'EXTERNAL' | 'HTML2SKETCH')[];
+  extra?: ReactNode;
   forceShowCode?: boolean;
   demoContainer: HTMLDivElement | HTMLIFrameElement;
 }
@@ -152,6 +153,7 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
             <IconExternalLink />
           </a>
         )}
+        {props.extra}
         <PreviewerActionsExtra {...props} />
         {!props.forceShowCode && (
           <button
