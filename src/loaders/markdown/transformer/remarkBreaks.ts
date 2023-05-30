@@ -8,15 +8,12 @@ let findAndReplace: typeof import('mdast-util-find-and-replace').findAndReplace;
   ({ findAndReplace } = await import('mdast-util-find-and-replace'));
 })();
 
-const timeDelay = new Map<string, number>();
+const warningLock = new Map<string, true>();
 
 function logDeprecationWarning(fileAbsPath: string) {
-  const current = Date.now();
-  const last = timeDelay.get(fileAbsPath);
+  if (warningLock.get(fileAbsPath)) return;
 
-  if (last && current - last < 5000) return;
-
-  timeDelay.set(fileAbsPath, current);
+  warningLock.set(fileAbsPath, true);
 
   console.warn(
     'warn - Detected that you are using soft breaks, dumi will transform them into spaces after the declaration',
