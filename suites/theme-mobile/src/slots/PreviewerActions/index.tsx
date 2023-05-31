@@ -2,14 +2,14 @@ import { ReactComponent as IconQrcode } from '@ant-design/icons-svg/inline-svg/o
 import { useRouteMeta } from 'dumi';
 import PreviewerActions from 'dumi/theme-default/slots/PreviewerActions';
 import QRCode from 'qrcode.react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './index.less';
 
 const MobilePreviewerActions: typeof PreviewerActions = (props) => {
   const {
     frontmatter: { mobile = true },
   } = useRouteMeta();
-  const qrcodeUrl = `${location.origin}${props.demoUrl}`;
+  const [qrcodeUrl, setQrcodeUrl] = useState('');
   const extra = (
     <>
       {mobile && props.demoUrl && (
@@ -24,6 +24,11 @@ const MobilePreviewerActions: typeof PreviewerActions = (props) => {
       )}
     </>
   );
+
+  useEffect(() => {
+    // for adapt ssr
+    setQrcodeUrl(`${location.origin}${props.demoUrl}`);
+  }, [props.demoUrl]);
 
   return (
     <PreviewerActions
