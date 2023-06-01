@@ -28,7 +28,15 @@ function logDeprecationWarning(fileAbsPath: string) {
 export default function remarkBreaks(
   opts: Pick<IMdTransformerOptions, 'fileAbsPath'>,
 ) {
-  const replace: ReplaceFunction = () => {
+  const replace: ReplaceFunction = (_, match) => {
+    if (
+      match.input === '\n' ||
+      match.input === '\r' ||
+      match.input === '\r\n'
+    ) {
+      return false;
+    }
+
     logDeprecationWarning(opts.fileAbsPath);
     return { type: 'break' };
   };
