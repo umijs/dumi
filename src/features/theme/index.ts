@@ -45,7 +45,7 @@ function getPkgThemePath(api: IApi) {
     process.env.DUMI_THEME ||
     (pkgThemeName &&
       path.dirname(
-        resolve.sync(`${pkgThemeName}/package.json`, {
+        resolve.sync(`${process.env.DUMI_THEME || pkgThemeName}/package.json`, {
           basedir: api.cwd,
           preserveSymlinks: true,
         }),
