@@ -75,7 +75,7 @@ const NavbarContent: FC<{ data: ReturnType<typeof useNavData> }> = ({
   return (
     <>
       {data.map((item) => (
-        <li key={item.activePath}>
+        <li key={item.activePath || item.link || item.title}>
           {item.link && /^(\w+:)\/\/|^(mailto|tel):/.test(item.link) ? (
             <a href={item.link} target="_blank" rel="noreferrer">
               {item.title}
