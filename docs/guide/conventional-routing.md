@@ -71,7 +71,15 @@ docs
 
 根据一级导航的规则，上面所有的 Markdown 必然都归属于 `Platforms` 导航，但同时它们还会分别归属于 `Pc` 和 `Mobile` 这两个二级导航，这是因为这些路由路径除了拥有共同的 `/platforms` 前缀外，还拥有各自的二级路径前缀，即 `/pc` 和 `/mobile`，二级导航的 UI 效果如下：
 
-<img src="https://gw.alipayobjects.com/zos/bmw-prod/85a246ef-5f74-4f70-97fe-f6b40968e0bf/lhpzbiod_w288_h232.jpeg" width="140" />
+<style>
+  #two-level-nav-preview {
+    background-image: url(https://gw.alipayobjects.com/zos/bmw-prod/f1bc7aba-c1b5-41a1-bb00-7a713a6c791f/li8agnz8_w312_h252.jpeg);
+  }
+  [data-prefers-color="dark"] #two-level-nav-preview {
+    background-image: url(https://gw.alipayobjects.com/zos/bmw-prod/2ba687cd-4dd2-4a14-94df-38986a5beb0e/li8angg8_w312_h252.jpeg);
+  }
+</style>
+<div style="width: 156px; height: 126px; background-size: cover;" id="two-level-nav-preview"></div>
 
 二级导航的名称及顺序的默认规则与一级导航一致，类似的，我们也可以在该二级导航类目下**任一文档**的 Markdown 源文件头部通过 FrontMatter 指定，比如：
 

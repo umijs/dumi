@@ -1,6 +1,6 @@
 {
   "name": "dumi-theme-mobile",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "dumi-theme-mobile",
   "keywords": [
     "dumi",
@@ -27,7 +27,9 @@
     "prepublishOnly": "father doctor && npm run build"
   },
   "dependencies": {
+    "@ant-design/icons-svg": "^4.2.1",
     "f2-touchemulator": "^0.0.1",
+    "qrcode.react": "^3.1.0",
     "umi-hd": "^5.0.1"
   },
   "devDependencies": {

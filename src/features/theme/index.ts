@@ -19,6 +19,15 @@ const DEFAULT_THEME_PATH = path.join(__dirname, '../../../theme-default');
  * get pkg theme name
  */
 function getPkgThemeName(api: IApi) {
+  // respect env first
+  if (process.env.DUMI_THEME) {
+    const envThemePkgPath = require.resolve(
+      path.join(process.env.DUMI_THEME, 'package.json'),
+      { paths: [api.cwd] },
+    );
+
+    return require(envThemePkgPath).name;
+  }
   const validDeps = Object.assign(
     {},
     api.pkg.dependencies,
@@ -36,6 +45,11 @@ function getPkgThemeName(api: IApi) {
  */
 function getPkgThemePath(api: IApi) {
   const pkgThemeName = getPkgThemeName(api);
+
+  // respect env first
+  if (process.env.DUMI_THEME) {
+    return path.resolve(api.cwd, process.env.DUMI_THEME);
+  }
 
   return (
     pkgThemeName &&
@@ -329,6 +343,7 @@ export default function DumiContextWrapper() {
       locales,
       loading,
       setLoading,
+      hostname: ${JSON.stringify(api.config.sitemap?.hostname)},
       themeConfig: ${JSON.stringify(
         Object.assign(
           lodash.pick(api.config, 'logo', 'description', 'title'),
@@ -436,6 +451,23 @@ export default function DumiContextWrapper() {
   );
 })();`;
   });
+
+  // share pluginManager with theme-api
+  api.addEntryImportsAhead(() => [
+    {
+      specifier: '{ getPluginManager as getDumiPluginManager }',
+      source: './core/plugin',
+    },
+    {
+      specifier: '{ setPluginManager as setDumiPluginManager }',
+      source: winPath(require.resolve('../../client/theme-api/utils')),
+    },
+  ]);
+  api.addEntryCode(() => 'setDumiPluginManager(getDumiPluginManager());');
+  api.addRuntimePluginKey(() => [
+    'modifyCodeSandboxData',
+    'modifyStackBlitzData',
+  ]);
 
   // workaround for avoid oom, when developing theme package example in tnpm node_modules
   if (

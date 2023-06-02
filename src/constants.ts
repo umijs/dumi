@@ -25,3 +25,5 @@ export const PICKED_PKG_FIELDS = {
 export const USELESS_TMP_FILES = ['tsconfig.json', 'typings.d.ts'];
 
 export const VERSION_2_LEVEL_NAV = '^2.2.0';
+
+export const VERSION_2_DEPRECATE_SOFT_BREAKS = '^2.2.0';

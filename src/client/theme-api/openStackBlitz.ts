@@ -1,6 +1,6 @@
 import sdk, { type Project } from '@stackblitz/sdk';
-import type { IPreviewerProps } from 'dumi';
-import { genReactRenderCode } from './utils';
+import { ApplyPluginsType, type IPreviewerProps } from 'dumi';
+import { genReactRenderCode, pluginManager } from './utils';
 
 export const openStackBlitz = (data: IPreviewerProps) => {
   const isTSX = Boolean(data.asset.dependencies?.['index.tsx']);
@@ -48,5 +48,12 @@ export const openStackBlitz = (data: IPreviewerProps) => {
 
   config.files = files;
 
-  sdk.openProject(config);
+  const stbOpts = pluginManager.applyPlugins({
+    type: ApplyPluginsType.modify,
+    key: 'modifyStackBlitzData',
+    initialValue: config,
+    args: data,
+  });
+
+  sdk.openProject(stbOpts);
 };

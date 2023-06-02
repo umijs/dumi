@@ -1,4 +1,4 @@
-import { useAppData, useIntl, useSiteData } from 'dumi';
+import { PluginManager, useAppData, useIntl, useSiteData } from 'dumi';
 import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import type {
   ILocale,
@@ -9,6 +9,15 @@ import type {
   IUserNavValue,
 } from './types';
 import { useLocale } from './useLocale';
+
+/**
+ * private instance, do not use it in your code
+ */
+export let pluginManager: PluginManager;
+
+export const setPluginManager = (pm: PluginManager) => {
+  pluginManager = pm;
+};
 
 export const useLocaleDocRoutes = () => {
   const intl = useIntl();

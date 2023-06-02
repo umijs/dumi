@@ -273,9 +273,9 @@ export default function rehypeDemo(
                 localId,
                 vFile.data.frontmatter!.atomId,
               );
-              component = `React.lazy(() => import( /* webpackChunkName: "${chunkName}" */ '${winPath(
+              component = `React.memo(React.lazy(() => import( /* webpackChunkName: "${chunkName}" */ '${winPath(
                 parseOpts.fileAbsPath,
-              )}?techStack=${techStack.name}'))`;
+              )}?techStack=${techStack.name}')))`;
               // use code value as title
               // TODO: force checking
               if (codeValue) codeNode.properties!.title = codeValue;

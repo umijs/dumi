@@ -43,6 +43,7 @@ export default (api: IApi) => {
       extraRemarkPlugins: api.config.extraRemarkPlugins,
       extraRehypePlugins: api.config.extraRehypePlugins,
       routes: api.appData.routes,
+      pkg: api.pkg,
     };
 
     memo.module

@@ -18,6 +18,7 @@ interface ISiteContext {
   components: Record<string, AtomComponentAsset>;
   locales: ILocalesConfig;
   themeConfig: IThemeConfig;
+  hostname?: string;
   loading: boolean;
   setLoading: (status: boolean) => void;
   /**
