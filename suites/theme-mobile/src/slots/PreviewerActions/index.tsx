@@ -42,7 +42,12 @@ const MobilePreviewerActions: FC<IPreviewerActionsProps> = (props) => {
   return (
     <PreviewerActions
       {...props}
-      extra={extra}
+      extra={
+        <>
+          {extra}
+          {props.extra}
+        </>
+      }
       demoContainer={
         props.iframe === false
           ? // use mobile device iframe as demo container when original iframe is false
