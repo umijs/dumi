@@ -82,7 +82,7 @@ order: 1
 
 ### 运行时配置
 
-约定 `.dumi/app.(js|jsx|ts|tsx)` 为运行时配置文件，适用于修改框架运行时配置的场景。
+约定 `.dumi/app.(js|jsx|ts|tsx)` 为运行时配置文件，适用于修改框架[运行时配置](../config/runtime.md)的场景。
 
 ### 加载组件
 
