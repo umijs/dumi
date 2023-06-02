@@ -443,6 +443,23 @@ export default function DumiContextWrapper() {
 })();`;
   });
 
+  // share pluginManager with theme-api
+  api.addEntryImportsAhead(() => [
+    {
+      specifier: '{ getPluginManager as getDumiPluginManager }',
+      source: './core/plugin',
+    },
+    {
+      specifier: '{ setPluginManager as setDumiPluginManager }',
+      source: winPath(require.resolve('../../client/theme-api/utils')),
+    },
+  ]);
+  api.addEntryCode(() => 'setDumiPluginManager(getDumiPluginManager());');
+  api.addRuntimePluginKey(() => [
+    'modifyCodeSandboxData',
+    'modifyStackBlitzData',
+  ]);
+
   // workaround for avoid oom, when developing theme package example in tnpm node_modules
   if (
     /*isTnpm*/ require('@umijs/core/package').__npminstall_done &&

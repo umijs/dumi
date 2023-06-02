@@ -57,6 +57,8 @@ const FILE_LIST = [
           '$1',
         ],
       })),
+      // remove h1
+      { type: 'replace', value: [/^#\s[^\r\n]+/, ''] },
       // replace h2 -> h3
       { type: 'replace', value: [/(\n?)##/g, '\n###'] },
       // replace jsx to jsx | pure
@@ -253,6 +255,45 @@ const FILE_LIST = [
       //   type: 'replace',
       //   value: [/\/api\/plugin-api/g, '/plugin/api'],
       // },
+    ],
+  },
+  {
+    localname: 'runtime-config.md',
+    upstream:
+      'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/api/runtime-config.md',
+    actions: [
+      // replace jsx to jsx | pure
+      { type: 'replace', value: [/\n```(jsx|tsx)\s*\n/g, '\n```$1 | pure\n'] },
+      // replace umi to dumi
+      { type: 'replace', value: [/('|"|\s)umi/g, '$1dumi'] },
+      { type: 'replace', value: ['src/app.tsx', '.dumi/app.(js|ts|jsx|tsx)'] },
+      // mark runtime config intro
+      {
+        type: 'replace',
+        value: [/(# 运行时配置\s)/, '$1<!-- runtime config intro -->'],
+      },
+      {
+        type: 'replace',
+        value: [/(\s## 配置项)/, '<!-- runtime config intro end -->$1'],
+      },
+      // mark runtime config core
+      {
+        type: 'replace',
+        value: [/(\s### onRouteChange\()/, '<!-- runtime config core -->$1'],
+      },
+      {
+        type: 'replace',
+        value: [/(\s### qiankun)/, '\n<!-- runtime config core end -->$1'],
+      },
+      // remove useless line break
+      {
+        type: 'replace',
+        value: ['\n- `routeComponents`', '- `routeComponents`'],
+      },
+      // replace @/extraRoutes to ./extraRoutes
+      { type: 'replace', value: [/@(\/extraRoutes)/g, '.$1'] },
+      // remove args from title
+      { type: 'replace', value: [/(#+\s\w+)\([^)]+\)/g, '$1'] },
     ],
   },
   {

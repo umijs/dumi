@@ -1,3 +1,8 @@
+---
+toc: content
+group: 框架配置
+---
+
 # 环境变量配置
 
 <embed src="../.upstream/env-config.md"></embed>

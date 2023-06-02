@@ -65,7 +65,10 @@ const DocLayout: FC = () => {
         {fm.keywords && (
           <meta name="keywords" content={fm.keywords.join(',')} />
         )}
-        {fm.keywords && fm.keywords.map(keyword => (<meta key={keyword} property="article:tag" content={keyword}></meta>))}
+        {fm.keywords &&
+          fm.keywords.map((keyword) => (
+            <meta key={keyword} property="article:tag" content={keyword}></meta>
+          ))}
         {hostname && <link rel="canonical" href={hostname + pathname} />}
       </Helmet>
       <Header />
