@@ -1,8 +1,10 @@
 import type { IParsedBlockAsset } from '@/assetParsers/block';
 import type { IRouteMeta } from '@/client/theme-api/types';
-import type { IDumiConfig, IDumiTechStack } from '@/types';
+import { VERSION_2_DEPRECATE_SOFT_BREAKS } from '@/constants';
+import type { IApi, IDumiConfig, IDumiTechStack } from '@/types';
 import enhancedResolve from 'enhanced-resolve';
 import type { IRoute } from 'umi';
+import { semver } from 'umi/plugin-utils';
 import type { Plugin, Processor } from 'unified';
 import type { Data } from 'vfile';
 import rehypeDemo from './rehypeDemo';
@@ -17,6 +19,7 @@ import rehypeRaw from './rehypeRaw';
 import rehypeSlug from './rehypeSlug';
 import rehypeStrip from './rehypeStrip';
 import rehypeText from './rehypeText';
+import remarkBreaks from './remarkBreaks';
 import remarkContainer from './remarkContainer';
 import remarkEmbed from './remarkEmbed';
 import remarkMeta from './remarkMeta';
@@ -63,11 +66,23 @@ export interface IMdTransformerOptions {
   extraRemarkPlugins?: IDumiConfig['extraRemarkPlugins'];
   extraRehypePlugins?: IDumiConfig['extraRehypePlugins'];
   routes: Record<string, IRoute>;
+  pkg: IApi['pkg'];
 }
 
 export interface IMdTransformerResult {
   content: string;
   meta: Data;
+}
+
+/**
+ * keep markdown soft break before 2.2.0
+ */
+function keepSoftBreak(pkg: IApi['pkg']) {
+  // for dumi local example project
+  if (pkg?.name?.startsWith('@examples/') || pkg?.name === 'dumi') return false;
+
+  const ver = pkg?.devDependencies?.dumi ?? pkg?.dependencies?.dumi ?? '^2.0.0';
+  return !semver.subset(ver, VERSION_2_DEPRECATE_SOFT_BREAKS);
 }
 
 function applyUnifiedPlugin(opts: {
@@ -92,7 +107,6 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
   const { default: remarkParse } = await import('remark-parse');
   const { default: remarkFrontmatter } = await import('remark-frontmatter');
   const { default: remarkDirective } = await import('remark-directive');
-  const { default: remarkBreaks } = await import('remark-breaks');
   const { default: remarkGfm } = await import('remark-gfm');
   const { default: remarkRehype } = await import('remark-rehype');
   const { default: rehypeAutolinkHeadings } = await import(
@@ -117,8 +131,11 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     })
     .use(remarkDirective)
     .use(remarkContainer)
-    .use(remarkBreaks)
     .use(remarkGfm);
+
+  if (keepSoftBreak(opts.pkg)) {
+    processor.use(remarkBreaks, { fileAbsPath: opts.fileAbsPath });
+  }
 
   // apply extra remark plugins
   opts.extraRemarkPlugins?.forEach((plugin) =>
