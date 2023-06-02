@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "f2-touchemulator": "^0.0.1",
+    "qrcode.react": "^3.1.0",
     "umi-hd": "^5.0.1"
   },
   "devDependencies": {

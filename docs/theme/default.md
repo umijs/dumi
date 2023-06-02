@@ -91,7 +91,11 @@ dumi 内置了一套完善的默认主题，默认主题的呈现效果与 dumi 
 
 是否在代码块中展示行号，配置为 `true` 时会展示代码行号。
 
-### nprogress (v2.1.23+)
+<h3>
+nprogress
+<span style="display: none">-</span>
+<Badge>2.1.23+</Badge>
+</h3>
 
 - 类型：`boolean`
 - 默认值：`true`

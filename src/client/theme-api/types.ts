@@ -213,11 +213,11 @@ export interface IThemeConfig {
     switch: boolean;
   };
   nprogress?: boolean;
-  socialLinks: {
+  socialLinks?: {
     /**
      * 形如：github: "https://github.com/umijs/dumi"
      */
-    [key in SocialTypes]: string;
+    [key in SocialTypes]?: string;
   };
   [key: string]: any;
 }

@@ -49,13 +49,13 @@ export default {
 5. 新建文档 `dumi/docs/index.md`。
 
 ```markdown
-# 这是一个 Dumi 结合 create-react-app 的 Demo
+# 这是一个 dumi 结合 create-react-app 的 Demo
 ```
 
 6. 将 dumi 的临时文件添加到 `.gitignore` 中。
 
 ```text
-.dumi
+.dumi/tmp*
 ```
 
 ## dumi 支持基于其他技术框架、例如 Vue、Angular 编写文档和 Demo 吗？

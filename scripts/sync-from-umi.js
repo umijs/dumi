@@ -296,6 +296,28 @@ const FILE_LIST = [
       { type: 'replace', value: [/(#+\s\w+)\([^)]+\)/g, '$1'] },
     ],
   },
+  {
+    localname: 'env-config.md',
+    upstream:
+      'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/guides/env-variables.md',
+    actions: [
+      // remove head content
+      { type: 'slice', value: [1] },
+      // remove unnecessary section
+      ...['DID_YOU_KNOW'].map((option) => ({
+        type: 'replace',
+        value: [new RegExp(`(?:^|[\r\n])### ${option}[^]+?([\r\n]#|$)`), '$1'],
+      })),
+      // replace umi to dumi
+      { type: 'replace', value: [/UMI/g, 'DUMI'] },
+      { type: 'replace', value: [/('|"|\s|`)umi/gi, '$1dumi'] },
+      // replace BABEL_CACHE to DUMI_CACHE
+      { type: 'replace', value: [/BABEL_CACHE/g, 'DUMI_CACHE'] },
+      { type: 'replace', value: [/\sbabel\s/g, ' dumi '] },
+      // replace config to .dumirc
+      { type: 'replace', value: [/config\./g, '.dumirc.'] },
+    ],
+  },
 ];
 
 if (!fs.existsSync(UMI_DOC_DIR)) {

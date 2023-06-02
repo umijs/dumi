@@ -1,4 +1,5 @@
 import { defineConfig } from './dist';
+import { version } from './package.json';
 
 export default defineConfig({
   html2sketch: {},
@@ -7,6 +8,9 @@ export default defineConfig({
   ],
   autoAlias: false,
   outputPath: 'docs-dist',
+  define: {
+    'process.env.DUMI_VERSION': version,
+  },
   themeConfig: {
     hd: { rules: [] },
     rtl: true,
