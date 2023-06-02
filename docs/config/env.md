@@ -13,7 +13,7 @@ group: 框架配置
 
 ### DUMI_THEME
 
-指定 `dumi` 命令执行时项目所使用的主题包路径。
+指定主题包路径，优先级高于项目 `package.json` 中声明的 `dumi-theme-xx` 主题包依赖；该路径下存在主题包 `package.json` 和 `dist` 产物，通常用于 dumi 插件强制指定主题包或基于 dumi 二次开发的场景，非前述场景不建议使用。
 
 ```bash
 $ DUMI_THEME=./path/to/theme1 dumi dev

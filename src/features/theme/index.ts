@@ -19,9 +19,14 @@ const DEFAULT_THEME_PATH = path.join(__dirname, '../../../theme-default');
  * get pkg theme name
  */
 function getPkgThemeName(api: IApi) {
+  // respect env first
   if (process.env.DUMI_THEME) {
-    const themePkg = require(path.join(process.env.DUMI_THEME, 'package.json'));
-    return themePkg.name;
+    const envThemePkgPath = require.resolve(
+      path.join(process.env.DUMI_THEME, 'package.json'),
+      { paths: [api.cwd] },
+    );
+
+    return require(envThemePkgPath).name;
   }
   const validDeps = Object.assign(
     {},
@@ -41,15 +46,19 @@ function getPkgThemeName(api: IApi) {
 function getPkgThemePath(api: IApi) {
   const pkgThemeName = getPkgThemeName(api);
 
+  // respect env first
+  if (process.env.DUMI_THEME) {
+    return path.resolve(api.cwd, process.env.DUMI_THEME);
+  }
+
   return (
-    process.env.DUMI_THEME ||
-    (pkgThemeName &&
-      path.dirname(
-        resolve.sync(`${process.env.DUMI_THEME || pkgThemeName}/package.json`, {
-          basedir: api.cwd,
-          preserveSymlinks: true,
-        }),
-      ))
+    pkgThemeName &&
+    path.dirname(
+      resolve.sync(`${pkgThemeName}/package.json`, {
+        basedir: api.cwd,
+        preserveSymlinks: true,
+      }),
+    )
   );
 }
 

@@ -2,24 +2,33 @@ import { ReactComponent as IconQrcode } from '@ant-design/icons-svg/inline-svg/o
 import { useRouteMeta } from 'dumi';
 import PreviewerActions from 'dumi/theme-default/slots/PreviewerActions';
 import QRCode from 'qrcode.react';
-import React, { useEffect, useState } from 'react';
+import React, {
+  useEffect,
+  useState,
+  type ComponentProps,
+  type FC,
+} from 'react';
 import './index.less';
 
-const MobilePreviewerActions: typeof PreviewerActions = (props) => {
+type IPreviewerActionsProps = ComponentProps<typeof PreviewerActions> & {
+  qrCodeUrl?: string;
+};
+
+const MobilePreviewerActions: FC<IPreviewerActionsProps> = (props) => {
   const {
     frontmatter: { mobile = true },
   } = useRouteMeta();
-  const [qrcodeUrl, setQrcodeUrl] = useState('');
+  const [qrCodeUrl, setQrCodeUrl] = useState(props.qrCodeUrl || '');
   const extra = (
     <>
       {mobile && props.demoUrl && (
         <button
           className="dumi-default-previewer-action-btn dumi-mobile-previewer-action-qrcode"
           type="button"
-          title={qrcodeUrl}
+          title={qrCodeUrl}
         >
           <IconQrcode />
-          <QRCode value={qrcodeUrl} size={96} />
+          <QRCode value={qrCodeUrl} size={96} />
         </button>
       )}
     </>
@@ -27,13 +36,18 @@ const MobilePreviewerActions: typeof PreviewerActions = (props) => {
 
   useEffect(() => {
     // for adapt ssr
-    setQrcodeUrl(`${location.origin}${props.demoUrl}`);
-  }, [props.demoUrl]);
+    setQrCodeUrl(props.qrCodeUrl || `${location.origin}${props.demoUrl}`);
+  }, [props.demoUrl, props.qrCodeUrl]);
 
   return (
     <PreviewerActions
       {...props}
-      extra={extra}
+      extra={
+        <>
+          {extra}
+          {props.extra}
+        </>
+      }
       demoContainer={
         props.iframe === false
           ? // use mobile device iframe as demo container when original iframe is false
