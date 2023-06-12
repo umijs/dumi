@@ -92,6 +92,48 @@ dumi 内置了 Badge 组件，可以为 Markdown 内容（例如标题）添加�
 这是一条错误信息
 :::
 
+## CodeGroup
+
+当你的代码需要根据不同环境来采用不同的方案的时候使用，例如：
+
+````jsx
+/**
+ * inline: true
+ */
+import SourceCode from 'dumi/theme/builtins/SourceCode';
+const content =
+  ':::code-group \n\n' +
+  '```bash npm\n' +
+  '$ npm install\n' +
+  '```\n\n' +
+  '```bash yarn\n' +
+  '$ yarn install\n' +
+  '```\n\n' +
+  '```bash pnpm\n' +
+  '$ pnpm install\n' +
+  '```\n\n' +
+  ':::';
+export default () => <SourceCode lang="md">{content}</SourceCode>;
+````
+
+##### 将会被渲染为：
+
+:::code-group
+
+```bash npm
+$ npm install
+```
+
+```bash yarn
+$ yarn install
+```
+
+```bash pnpm
+$ pnpm install
+```
+
+:::
+
 ## Line Highlighting
 
 在代码块中，如果您想要突出显示特定的一行，可以使用行高亮功能。使用行高亮功能的语法如下：
