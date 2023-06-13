@@ -215,7 +215,7 @@ export default (api: IApi) => {
     });
 
     // generate normal docs routes
-    docDirs.map(normalizeDocDir).forEach(({ type, dir }) => {
+    docDirs.map(normalizeDocDir).forEach(({ type, dir, pluralType }) => {
       const base = path.join(api.cwd, dir);
       const dirRoutes: Record<string, IRoute> = getConventionRoutes({
         base,
@@ -228,9 +228,7 @@ export default (api: IApi) => {
 
         // also allow prefix type for doc routes
         if (type) {
-          const pluralType = plural(type);
-
-          route.path = `${pluralType}/${route.path}`.replace(/\/+$/, '/');
+          route.path = `${pluralType ? plural(type): type}/${route.path}`.replace(/\/+$/, '/');
           route.absPath = `/${route.path}`;
         }
 

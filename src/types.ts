@@ -39,7 +39,7 @@ type IUmiConfig = Omit<
 
 interface IDumiExtendsConfig {
   resolve: {
-    docDirs: (string | { type?: string; dir: string })[];
+    docDirs: (string | { type?: string; dir: string; pluralType?: boolean })[];
     atomDirs: { type: string; subType?: string; dir: string }[];
     codeBlockMode: 'active' | 'passive';
     entryFile?: string;

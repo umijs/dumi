@@ -26,7 +26,7 @@ export default defineConfig({
 
 #### docDirs
 
-- 类型：`string[]`
+- 类型：`(string | { type?: string; dir: string; pluralType? boolean })[]`
 - 默认值：`['docs']`
 
 配置 Markdown 文档的解析目录，路径下的 Markdown 文档会根据目录结构解析为路由。
