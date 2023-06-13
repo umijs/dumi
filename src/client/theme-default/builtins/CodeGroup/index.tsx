@@ -1,7 +1,7 @@
 import SourceCode from 'dumi/theme/builtins/SourceCode';
 import { Language } from 'prism-react-renderer';
 import Tabs from 'rc-tabs';
-import React from 'React';
+import React from 'react';
 
 import './index.less';
 
