@@ -36,6 +36,13 @@ export default function remarkContainer(this: any): Transformer<Root> {
       ) {
         switch (node.name) {
           case 'code-group': {
+            //@ts-ignore
+            const items = node.children.map(({ meta, lang, value }, index) => ({
+              label: meta,
+              key: index,
+              lang,
+              codeValue: value,
+            }));
             // replace directive node with container node
             parent!.children.splice(i!, 1, {
               type: 'code',
@@ -44,20 +51,10 @@ export default function remarkContainer(this: any): Transformer<Root> {
                 /**\n
                  * inline: true\n
                  */\n
-                import Tabs from 'rc-tabs';\n
-                import SourceCode from 'dumi/theme/builtins/SourceCode';\n       
-                const nodeChildren = ${JSON.stringify(node.children)}         
-                export default () => (
-                  <Tabs
-                    prefixCls="dumi-default-tabs"
-                    defaultActiveKey="1"
-                    items={nodeChildren.map((item,index) => ({
-                      label:item.meta,
-                      key:index,
-                      children: <SourceCode lang={item.lang} >{item.value}</SourceCode>
-                    }))}
-                  />
-                );`,
+                import CodeGroup from 'dumi/theme/builtins/CodeGroup';\n       
+                export default () => <CodeGroup items={${JSON.stringify(
+                  items,
+                )}}></CodeGroup>`,
               position: node.position,
             });
             break;

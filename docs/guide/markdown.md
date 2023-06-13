@@ -92,9 +92,9 @@ dumi 内置了 Badge 组件，可以为 Markdown 内容（例如标题）添加�
 这是一条错误信息
 :::
 
-## CodeGroup
+## CodeGroup <Badge>2.2.2+</Badge>
 
-当你的代码需要根据不同环境来采用不同的方案的时候使用，例如：
+需要将多代码块合并成一个分组进行展示时，可以使用 CodeGroup 语法，例如：
 
 ````jsx
 /**
@@ -104,35 +104,75 @@ import SourceCode from 'dumi/theme/builtins/SourceCode';
 const content =
   ':::code-group \n\n' +
   '```bash npm\n' +
-  '$ npm install\n' +
+  '$ npm install -D dumi\n' +
   '```\n\n' +
   '```bash yarn\n' +
-  '$ yarn install\n' +
+  '$ yarn install -D dumi\n' +
   '```\n\n' +
   '```bash pnpm\n' +
-  '$ pnpm install\n' +
+  '$ pnpm install -D dumi\n' +
   '```\n\n' +
   ':::';
 export default () => <SourceCode lang="md">{content}</SourceCode>;
 ````
 
-##### 将会被渲染为：
+将会被渲染为：
 
 :::code-group
 
 ```bash npm
-$ npm install
+$ npm install -D dumi
 ```
 
 ```bash yarn
-$ yarn install
+$ yarn install -D dumi
 ```
 
 ```bash pnpm
-$ pnpm install
+$ pnpm install -D dumi
 ```
 
 :::
+
+或者直接使用内置 `<code-group>` 标签
+
+````jsx
+/**
+ * inline: true
+ */
+import SourceCode from 'dumi/theme/builtins/SourceCode';
+const content =
+  '<code-group>\n' +
+  '\n' +
+  '```js JavaScript\n' +
+  "const dumi = 'dumi';\n" +
+  '```\n\n' +
+  '```ts TypeScript\n' +
+  "const dumi: string = 'dumi';\n" +
+  '```\n\n' +
+  '```md MarkDown\n' +
+  'Welcome to Dumi! 😄\n' +
+  '```\n' +
+  '\n' +
+  '</code-group>\n';
+export default () => <SourceCode lang="md">{content}</SourceCode>;
+````
+
+<code-group>
+
+```js JavaScript
+const dumi = 'dumi';
+```
+
+```ts TypeScript
+const dumi: string = 'dumi';
+```
+
+```md MarkDown
+Welcome to Dumi! 😄
+```
+
+</code-group>
 
 ## Line Highlighting
 

@@ -1,0 +1,14 @@
+@import (reference) '../../styles/variables.less';
+
+.@{prefix}-tabs {
+  padding: 0;
+  background-color: @c-site-bg;
+
+  @{dark-selector} & {
+    background-color: @c-site-bg-dark;
+  }
+
+  &-tabpane-hidden {
+    display: none;
+  }
+}
