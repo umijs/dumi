@@ -152,9 +152,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     .use(rehypeRaw, {
       fileAbsPath: opts.fileAbsPath,
     })
-    .use(rehypeHighlightLine, {
-      resolve: opts.resolve,
-    })
+    .use(rehypeHighlightLine)
     .use(rehypeRemoveComments, { removeConditional: true })
     .use(rehypeStrip)
     .use(rehypeImg)
