@@ -1,14 +1,37 @@
 @import (reference) '../../styles/variables.less';
 
-.@{prefix}-tabs {
+.dumi-default-tabs {
   padding: 0;
   background-color: @c-site-bg;
+  position: relative;
 
-  @{dark-selector} & {
+  &.@{dark-selector} {
     background-color: @c-site-bg-dark;
+  }
+
+  .tab {
+    display: inline-block;
+    height: 40px;
+    line-height: 40px;
+    margin-right: 20px;
+    cursor: pointer;
+  }
+
+  .active-tab {
+    color: #1677ff;
   }
 
   &-tabpane-hidden {
     display: none;
   }
+}
+
+.line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 32px;
+  height: 2px;
+  background-color: #1677ff;
+  transition: left 0.4s ease;
 }

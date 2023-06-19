@@ -1,42 +1,41 @@
-import SourceCode from 'dumi/theme/builtins/SourceCode';
-import { Language } from 'prism-react-renderer';
-import Tabs from 'rc-tabs';
-import React from 'react';
-
+import React, { useEffect, useRef, useState } from 'react';
 import './index.less';
 
-interface CodeGroupItem {
+interface CodeGroupChildrenProps {
   label: string;
-  key: string;
-  lang: Language;
-  codeValue: string;
+  children: React.ReactNode;
 }
 
 interface CodeGroupProps {
-  items: CodeGroupItem[];
-  defaultActiveKey?: string;
-  prefixCls?: string;
-  className?: string;
-  moreIcon?: string;
-  onChange?: (activeKey: string) => void;
+  children: React.ReactElement<CodeGroupChildrenProps>[];
 }
-const CodeGroup: React.FC<CodeGroupProps> = ({
-  items,
-  defaultActiveKey = '1',
-  prefixCls = 'dumi-default-tabs',
-  ...restProps
-}) => {
+
+const CodeGroup: React.FC<CodeGroupProps> = ({ children }) => {
+  const [activeTab, setActiveTab] = useState(0);
+  const [linePosition, setLinePosition] = useState(0);
+
+  const lineRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    setLinePosition(52 * activeTab);
+  }, [activeTab]);
+
   return (
-    <Tabs
-      defaultActiveKey={defaultActiveKey}
-      prefixCls={prefixCls}
-      items={items.map(({ label, key, lang, codeValue }) => ({
-        label,
-        key,
-        children: <SourceCode lang={lang}>{codeValue}</SourceCode>,
-      }))}
-      {...restProps}
-    />
+    <>
+      <div className="dumi-default-tabs" ref={lineRef}>
+        {children?.map((child, index) => (
+          <span
+            key={index}
+            className={index === activeTab ? 'active-tab tab' : 'tab'}
+            onClick={() => setActiveTab(index)}
+          >
+            {child.props.label}
+          </span>
+        ))}
+        <div className="line" style={{ left: linePosition }} />
+      </div>
+      <div className="tabs">{children?.[activeTab]}</div>
+    </>
   );
 };
 

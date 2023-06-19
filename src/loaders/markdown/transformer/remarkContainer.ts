@@ -36,27 +36,20 @@ export default function remarkContainer(this: any): Transformer<Root> {
       ) {
         switch (node.name) {
           case 'code-group': {
-            //@ts-ignore
-            const items = node.children.map(({ meta, lang, value }, index) => ({
-              label: meta,
-              key: index,
-              lang,
-              codeValue: value,
-            }));
             // replace directive node with container node
-            parent!.children.splice(i!, 1, {
-              type: 'code',
-              lang: 'jsx',
-              value: `
-                /**\n
-                 * inline: true\n
-                 */\n
-                import CodeGroup from 'dumi/theme/builtins/CodeGroup';\n       
-                export default () => <CodeGroup items={${JSON.stringify(
-                  items,
-                )}}></CodeGroup>`,
-              position: node.position,
-            });
+            parent!.children.splice(
+              i!,
+              1,
+              {
+                type: 'html',
+                value: `<CodeGroup>`,
+                position: node.position,
+              },
+              ...(node.children || []).concat({
+                type: 'html',
+                value: '</CodeGroup>',
+              }),
+            );
             break;
           }
           default: {

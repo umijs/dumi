@@ -24,7 +24,6 @@ export default function rehypeEnhancedTag(): Transformer<Root> {
         const lang = className.join('').match(/language-(\w+)(?:$| )/)?.[1];
         const highlightLines = node.children[0].data
           ?.highlightLines as number[];
-
         parent!.children.splice(i!, 1, {
           type: 'element',
           tagName: 'SourceCode',
@@ -35,6 +34,11 @@ export default function rehypeEnhancedTag(): Transformer<Root> {
               type: 'JSXAttribute',
               name: 'highlightLines',
               value: JSON.stringify(highlightLines),
+            },
+            {
+              type: 'JSXAttribute',
+              name: 'label',
+              value: JSON.stringify(node.children[0].data?.meta),
             },
           ],
           children: [
