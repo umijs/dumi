@@ -95,7 +95,7 @@
     "enhanced-resolve": "^5.10.0",
     "estree-util-to-js": "^1.1.0",
     "estree-util-visit": "^1.2.0",
-    "file-system-cache": "^2.0.0",
+    "file-system-cache": "2.3.0",
     "github-slugger": "^1.4.0",
     "hast-util-is-element": "^2.1.2",
     "hast-util-raw": "^7.2.2",
