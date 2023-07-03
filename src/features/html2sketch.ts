@@ -98,7 +98,7 @@ export const getSketchJSON = ${
   // add html2sketch script
   api.addHTMLHeadScripts(() => {
     return api.config.html2sketch
-      ? [api.config.html2sketch.scriptUrl || SCRIPT_URL]
+      ? [{ src: api.config.html2sketch.scriptUrl || SCRIPT_URL, async: true }]
       : [];
   });
 
