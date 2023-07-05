@@ -1,10 +1,12 @@
 import { ReactComponent as IconCheck } from '@ant-design/icons-svg/inline-svg/outlined/check.svg';
 import { ReactComponent as IconCodeSandbox } from '@ant-design/icons-svg/inline-svg/outlined/code-sandbox.svg';
+import { ReactComponent as IconCodePen } from '@ant-design/icons-svg/inline-svg/outlined/codepen.svg';
 import { ReactComponent as IconSketch } from '@ant-design/icons-svg/inline-svg/outlined/sketch.svg';
 import { ReactComponent as IconStackBlitz } from '@ant-design/icons-svg/inline-svg/outlined/thunderbolt.svg';
 import copy from 'copy-to-clipboard';
 import {
   getSketchJSON,
+  openCodePen,
   openCodeSandbox,
   openStackBlitz,
   useIntl,
@@ -19,7 +21,13 @@ export interface IPreviewerActionsProps extends IPreviewerProps {
   /**
    * disabled actions
    */
-  disabledActions?: ('CSB' | 'STACKBLITZ' | 'EXTERNAL' | 'HTML2SKETCH')[];
+  disabledActions?: (
+    | 'CSB'
+    | 'STACKBLITZ'
+    | 'EXTERNAL'
+    | 'HTML2SKETCH'
+    | 'CODEPEN'
+  )[];
   extra?: ReactNode;
   forceShowCode?: boolean;
   demoContainer: HTMLDivElement | HTMLIFrameElement;
@@ -71,6 +79,18 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
             onClick={() => openCodeSandbox(props)}
           >
             <IconCodeSandbox />
+          </button>
+        )}
+        {!props.disabledActions?.includes('CODEPEN') && (
+          <button
+            className="dumi-default-previewer-action-btn"
+            type="button"
+            data-dumi-tooltip={intl.formatMessage({
+              id: 'previewer.actions.codepen',
+            })}
+            onClick={() => openCodePen(props)}
+          >
+            <IconCodePen />
           </button>
         )}
         {!props.disabledActions?.includes('STACKBLITZ') && (

@@ -23,6 +23,7 @@ export { useSiteData } from './context';
 export { DumiDemo } from './DumiDemo';
 export { DumiDemoGrid } from './DumiDemoGrid';
 export { DumiPage } from './DumiPage';
+export { openCodePen } from './openCodePen';
 export { openCodeSandbox } from './openCodeSandbox';
 export { openStackBlitz } from './openStackBlitz';
 export type { IPreviewerProps } from './types';

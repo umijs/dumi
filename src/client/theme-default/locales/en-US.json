@@ -19,7 +19,7 @@
   "previewer.actions.sketch.divider": "------------------------",
   "previewer.actions.sketch.guide": "How to paste to Sketch?",
   "previewer.actions.codesandbox": "Open in CodeSandbox",
-  "previewer.actions.codepen": "Open in CodePen (Not implemented)",
+  "previewer.actions.codepen": "Open in CodePen",
   "previewer.actions.stackblitz": "Open in StackBlitz",
   "previewer.actions.separate": "Open in separate page",
   "404.title": "PAGE NOT FOUND",
