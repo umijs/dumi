@@ -55,7 +55,6 @@ export default (api: IApi) => {
       'mdx',
       'mpa',
       'reactRouter5Compat',
-      'verifyCommit',
     ].forEach((key) => {
       assert(!api.config[key], `${key} is not supported in dumi!`);
     });
