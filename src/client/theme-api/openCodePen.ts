@@ -13,6 +13,16 @@ const getDependencyData = (opts: IPreviewerProps) => {
     } else {
       jsx += value;
     }
+
+    /** 引入不同的文件的时候需要把这些文件导入去掉 */
+    if (type === 'FILE') {
+      const [fileName] = current.split('.');
+      const regex = new RegExp(
+        `import\\s+[\\w\\s{},]+from\\s+'.*?\\/(${fileName})';?`,
+        'g',
+      );
+      jsx = jsx.replace(regex, ``);
+    }
   });
 
   /**
@@ -52,9 +62,9 @@ const getDependencyData = (opts: IPreviewerProps) => {
         /import\s+{(\s+[^}]*\s+)}\s+from\s+'@ant-design\/icons';/,
         'const { $1 } = icons;',
       )
-      .replace(/import\s+([\w]+)\s+from\s+'lodash'/, '')
+      .replace(/import\s+([\w]+)\s+from\s+'lodash'/g, '')
       .replace("import moment from 'moment';", '')
-      .replace("import React from 'react';", '')
+      .replace(/import\s+React\s+from\s+['"]react['"];?/g, '')
       .replace(
         /import\s+{\s+(.*)\s+}\s+from\s+'react-router';/,
         'const { $1 } = ReactRouter;',
