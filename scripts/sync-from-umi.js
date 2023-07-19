@@ -10,14 +10,14 @@ const REPLACE_MESSAGE_MDX = [
   {
     type: 'replace',
     value: [
-      /<Message(?: type="[^"]+")? emoji="(?:🚨|⚠️)">([^]+?)<\/Message>/,
+      /<Message(?: type="[^"]+")? emoji="(?:🚨|⚠️)".*>([^]+?)<\/Message>/,
       ':::warning$1:::',
     ],
   },
   {
     type: 'replace',
     value: [
-      /<Message(?: type="[^"]+")? emoji="(?:💡|🚀)">([^]+?)<\/Message>/,
+      /<Message(?: type="[^"]+")? emoji="(?:💡|🚀)".*>([^]+?)<\/Message>/,
       ':::info$1:::',
     ],
   },
