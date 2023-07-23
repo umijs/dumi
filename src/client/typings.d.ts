@@ -1,8 +1,3 @@
-declare module '*.less' {
-  const classes: CSSModuleClasses;
-  export default classes;
-}
-
 declare module '*.svg' {
   import * as React from 'react';
   export const ReactComponent: React.FunctionComponent<

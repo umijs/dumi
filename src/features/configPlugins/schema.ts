@@ -31,7 +31,13 @@ export function getSchemas(): Record<string, (Joi: JoiRoot) => any> {
           )
           .optional(),
         atomDirs: Joi.array()
-          .items(Joi.object({ type: Joi.string(), dir: Joi.string() }))
+          .items(
+            Joi.object({
+              type: Joi.string(),
+              subType: Joi.string().optional(),
+              dir: Joi.string(),
+            }),
+          )
           .optional(),
         codeBlockMode: Joi.string().valid('active', 'passive').optional(),
         entryFile: Joi.string().optional(),
