@@ -69,7 +69,7 @@ const Toc: FC = () => {
                       to={link}
                       onClickCapture={() => {
                         if (decodeURIComponent(hash).slice(1) === item.id) {
-                          history.replace(search);
+                          history.replace(`${pathname}${search}`);
                         }
                       }}
                       title={item.title}
