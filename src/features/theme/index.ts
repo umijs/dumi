@@ -237,6 +237,67 @@ export default (api: IApi) => {
     return memo;
   });
 
+  api.onGenerateFiles({
+    // execute before umi tmpFiles plugin
+    stage: -Infinity,
+    fn() {
+      const { globalLoading } = api.appData;
+      const enableNProgress = !!api.config.themeConfig.nprogress;
+
+      // replace original loading component data
+      api.appData.globalLoading = '@@/dumi/theme/loading';
+
+      // generate dumi internal loading component for control loading status
+      // also wrap user loading component
+      api.writeTmpFile({
+        noPluginDir: true,
+        path: 'dumi/theme/loading.tsx',
+        content: `${
+          enableNProgress
+            ? `import nprogress from '${winPath(
+                path.dirname(require.resolve('nprogress/package')),
+              )}';
+import './nprogress.css';`
+            : ''
+        }${
+          globalLoading
+            ? `
+import UserLoading from '${globalLoading}';`
+            : ''
+        }
+import React, { useLayoutEffect, type FC } from 'react';
+import { useSiteData } from 'dumi';
+
+const DumiLoading: FC = () => {
+  const { setLoading } = useSiteData();
+
+  useLayoutEffect(() => {
+    setLoading(true);${
+      enableNProgress
+        ? `
+    nprogress.start();`
+        : ''
+    }
+
+    return () => {
+      setLoading(false);${
+        enableNProgress
+          ? `
+      nprogress.done();`
+          : ''
+      }
+    }
+  }, []);
+
+  return ${globalLoading ? '<UserLoading />' : 'null'};
+}
+
+export default DumiLoading;
+`,
+      });
+    },
+  });
+
   api.onGenerateFiles(() => {
     // write shadow theme files to tmp dir
     themeMapKeys.forEach((key) => {
@@ -272,7 +333,6 @@ export default (api: IApi) => {
     const entryExports = entryFile ? getModuleExports(entryFile) : [];
     const hasDefaultExport = entryExports.includes('default');
     const hasNamedExport = entryExports.some((exp) => exp !== 'default');
-    const enableNProgress = !!api.config.themeConfig.nprogress;
 
     // generate context layout
     api.writeTmpFile({
@@ -280,16 +340,6 @@ export default (api: IApi) => {
       path: 'dumi/theme/ContextWrapper.tsx',
       content: `import React, { useState, useEffect, useRef } from 'react';
 import { useOutlet, history } from 'dumi';
-${
-  enableNProgress
-    ? `
-import nprogress from '${winPath(
-        path.dirname(require.resolve('nprogress/package')),
-      )}';
-import './nprogress.css';
-`
-    : ''
-}
 import { SiteContext } from '${winPath(
         require.resolve('../../client/theme-api/context'),
       )}';
@@ -318,12 +368,6 @@ export default function DumiContextWrapper() {
     return history.listen((next) => {
       if (next.location.pathname !== prev.current) {
         prev.current = next.location.pathname;
-
-        // mark loading when route change, page component will set false when loaded
-        setLoading(true);
-
-        // start nprogress
-        ${enableNProgress ? `nprogress.start();` : ''}
 
         // scroll to top when route changed
         document.documentElement.scrollTo(0, 0);
