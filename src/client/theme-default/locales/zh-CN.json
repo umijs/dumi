@@ -34,6 +34,8 @@
   "content.tabs.default": "文档",
   "content.footer.last.updated": "最后更新时间：",
   "content.footer.actions.edit": "帮助改进此文档",
+  "content.footer.actions.previous": "上一篇",
+  "content.footer.actions.next": "下一篇",
   "search.not.found": "未找到相关内容",
   "layout.sidebar.btn": "侧边菜单"
 }
