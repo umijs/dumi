@@ -91,6 +91,7 @@ export interface IRouteMeta {
     };
     atomId?: string;
     filename?: string;
+    lastUpdated?: number;
     debug?: boolean;
     /**
      * Control the display of the sidebar menu.
@@ -219,6 +220,8 @@ export interface IThemeConfig {
      */
     [key in SocialTypes]?: string;
   };
+  editLink?: boolean | string;
+  lastUpdated?: boolean;
   [key: string]: any;
 }
 

@@ -7,7 +7,9 @@ import {
 } from '@/constants';
 import type { IApi } from '@/types';
 import { parseModuleSync } from '@umijs/bundler-utils';
+import { execSync } from 'child_process';
 import fs from 'fs';
+import hostedGit from 'hosted-git-info';
 import path from 'path';
 import { deepmerge, lodash, resolve, semver, winPath } from 'umi/plugin-utils';
 import { safeExcludeInMFSU } from '../derivative';
@@ -208,6 +210,35 @@ export default (api: IApi) => {
     memo.extraBabelIncludes.push(
       path.resolve(__dirname, '../../client/theme-api'),
     );
+
+    // set automatic edit link
+    // why not use default config?
+    // because true value should be transformed to automatic edit link
+    const repoUrl = api.pkg.repository?.url || api.pkg.repository;
+
+    if (memo.themeConfig?.editLink !== false && typeof repoUrl === 'string') {
+      const hostedGitIns = hostedGit.fromUrl(repoUrl);
+      let branch = '';
+
+      try {
+        branch = execSync('git branch --show-current', {
+          stdio: 'pipe',
+        })
+          .toString()
+          .trim();
+      } catch {
+        branch = 'master';
+      }
+
+      if (hostedGitIns) {
+        memo.themeConfig ??= {};
+        // @ts-ignore
+        memo.themeConfig.editLink = `${hostedGitIns.edit(
+          `${api.pkg.repository.directory || ''}/{filename}`,
+          { committish: branch },
+        )}`;
+      }
+    }
 
     return memo;
   });

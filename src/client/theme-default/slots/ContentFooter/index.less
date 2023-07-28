@@ -1,0 +1,70 @@
+@import (reference) '../../styles/variables.less';
+
+.@{prefix}-content-footer {
+  margin-top: 48px;
+  color: @c-text-note;
+  font-size: 14px;
+  line-height: 1;
+
+  @{dark-selector} & {
+    color: @c-text-note-dark;
+  }
+
+  svg {
+    fill: @c-text-note;
+    width: 14px;
+    vertical-align: -0.13em;
+    transition: fill 0.2s;
+
+    @{dark-selector} & {
+      fill: @c-text-note-dark;
+    }
+  }
+
+  > dl {
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+    padding-bottom: 12px;
+
+    &:empty {
+      display: none;
+    }
+
+    dd {
+      margin: 0;
+
+      svg {
+        margin-inline-end: 4px;
+      }
+
+      > a {
+        color: @c-primary;
+
+        @{dark-selector} & {
+          color: @c-primary-dark;
+        }
+
+        &:not(:hover) {
+          text-decoration: none;
+        }
+
+        > svg {
+          fill: @c-primary;
+
+          @{dark-selector} & {
+            fill: @c-primary-dark;
+          }
+        }
+      }
+    }
+  }
+
+  [data-no-sidebar] > & {
+    display: none;
+  }
+
+  :not([data-no-sidebar]) > & + .@{prefix}-footer {
+    margin-top: 0;
+  }
+}

@@ -33,6 +33,8 @@
   "api.component.loading": "Properties definition is resolving, wait a moment...",
   "api.component.not.found": "Properties definition not found for {id} component",
   "content.tabs.default": "Doc",
+  "content.footer.last.updated": "Last updated: ",
+  "content.footer.actions.edit": "Improve this documentation",
   "search.not.found": "No content was found",
   "layout.sidebar.btn": "Sidebar"
 }
