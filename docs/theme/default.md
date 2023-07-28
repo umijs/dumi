@@ -14,12 +14,21 @@ dumi 内置了一套完善的默认主题，默认主题的呈现效果与 dumi 
 
 <!-- site config -->
 
-### name
+### editLink <Badge>2.2.2+</Badge>
 
-- 类型：`string`
-- 默认值：`undefined`
+- 类型：`boolean | string`
+- 默认值：`true`
 
-配置导航栏上的站点名称，不配置时不展示。
+配置是否在页面内容区域底部展示当前文档的编辑链接。
+
+当配置为 `true` 时 dumi 会根据项目 `package.json` 中的 `repository` 配置及当前分支，使用 [hosted-git-info](https://github.com/npm/hosted-git-info) 自动生成编辑链接，仅支持[部分代码托管平台](https://github.com/npm/hosted-git-info#supported-hosts)；如果你使用的是其他代码托管平台或私有化部署的平台，可以使用字符串模板自定义编辑链接，例如 `https://gitlab.example.com/group/repo/{filename}`，其中 `{filename}` 会被替换为当前文档在仓库中的文件路径。
+
+### lastUpdated <Badge>2.2.2+</Badge>
+
+- 类型：`boolean`
+- 默认值：`true`
+
+配置是否在页面内容区域底部展示当前文档的最后更新时间。
 
 ### logo
 
@@ -29,6 +38,13 @@ dumi 内置了一套完善的默认主题，默认主题的呈现效果与 dumi 
 配置导航栏上的站点 LOGO，如果需要配置为本地图片文件，可将图片资源放入 `public` 文件夹，例如放置 `public/logo.png`，则配置 `/logo.png` 即可。
 
 配置为 `false` 时不展示 LOGO。
+
+### name
+
+- 类型：`string`
+- 默认值：`undefined`
+
+配置导航栏上的站点名称，不配置时不展示。
 
 ### nav
 
