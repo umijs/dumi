@@ -13,6 +13,10 @@
     margin-inline-end: -15px;
     padding-inline: 15px;
     border-inline-start: 1px solid @c-border-light;
+
+    @{dark-selector} & {
+      border-inline-start-color: @c-border-less-dark;
+    }
   }
 
   > svg {
