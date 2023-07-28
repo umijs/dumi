@@ -19,7 +19,7 @@ dumi 内置了一套完善的默认主题，默认主题的呈现效果与 dumi 
 - 类型：`boolean | string`
 - 默认值：`true`
 
-配置是否在页面内容区域底部展示当前文档的编辑链接。
+配置是否在 Markdown 页面内容区域底部展示当前文档的编辑链接。
 
 当配置为 `true` 时 dumi 会根据项目 `package.json` 中的 `repository` 配置及当前分支，使用 [hosted-git-info](https://github.com/npm/hosted-git-info) 自动生成编辑链接，仅支持[部分代码托管平台](https://github.com/npm/hosted-git-info#supported-hosts)；如果你使用的是其他代码托管平台或私有化部署的平台，可以使用字符串模板自定义编辑链接，例如 `https://gitlab.example.com/group/repo/{filename}`，其中 `{filename}` 会被替换为当前文档在仓库中的文件路径。
 
@@ -28,7 +28,7 @@ dumi 内置了一套完善的默认主题，默认主题的呈现效果与 dumi 
 - 类型：`boolean`
 - 默认值：`true`
 
-配置是否在页面内容区域底部展示当前文档的最后更新时间。
+配置是否在 Markdown 页面内容区域底部展示当前文档的最后更新时间。
 
 ### logo
 
