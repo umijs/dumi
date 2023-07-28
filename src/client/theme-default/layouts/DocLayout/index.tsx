@@ -92,7 +92,7 @@ const DocLayout: FC = () => {
       <main>
         {showSidebar && <Sidebar />}
         <Content>
-          {outlet}
+          <article>{outlet}</article>
           <Footer />
         </Content>
         {fm.toc === 'content' && (

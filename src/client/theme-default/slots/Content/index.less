@@ -142,7 +142,9 @@
 }
 
 .@{prefix}-content {
+  display: flex;
   flex: 1;
+  flex-direction: column;
   min-width: 0;
   max-width: 100%;
   box-sizing: border-box;
@@ -175,12 +177,16 @@
     }
   }
 
+  article {
+    flex: 1;
+  }
+
   .@{prefix}-header + main > &,
   .@{prefix}-doc-layout-mobile-bar + main > & {
     min-height: calc(100vh - @s-header-height);
 
     @media @mobile {
-      min-height: calc(100vh - @s-header-height-m);
+      min-height: calc(100vh - @s-header-height-m - 40px);
     }
   }
 
