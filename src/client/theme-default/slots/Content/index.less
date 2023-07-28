@@ -139,6 +139,15 @@
       visibility: hidden;
     }
   }
+
+  // horizontal line
+  hr {
+    background-color: @c-border-light;
+
+    @{dark-selector} & {
+      background-color: @c-border-less-dark;
+    }
+  }
 }
 
 .@{prefix}-content {
