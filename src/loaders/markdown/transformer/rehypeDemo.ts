@@ -1,6 +1,7 @@
 import parseBlockAsset from '@/assetParsers/block';
 import type { IDumiDemoProps } from '@/client/theme-api/DumiDemo';
-import { getRoutePathFromFsPath } from '@/utils';
+import { getTabKeyFromFile, isTabRouteFile } from '@/features/tabs';
+import { getFileIdFromFsPath } from '@/utils';
 import type { sync } from 'enhanced-resolve';
 import type { Element, Root } from 'hast';
 import path from 'path';
@@ -30,7 +31,11 @@ export const DUMI_DEMO_GRID_TAG = 'DumiDemoGrid';
 type IRehypeDemoOptions = Pick<
   IMdTransformerOptions,
   'techStacks' | 'cwd' | 'fileAbsPath' | 'resolve'
-> & { resolver: typeof sync };
+> & {
+  resolver: typeof sync;
+  fileLocaleLessPath: string;
+  fileLocale?: string;
+};
 
 /**
  * get language for code element
@@ -71,9 +76,7 @@ function getCodeId(
   atomId?: string,
 ) {
   // Foo, or docs-guide, or docs-guide-faq
-  const prefix =
-    atomId ||
-    getRoutePathFromFsPath(path.relative(cwd, fileAbsPath)).replace(/\//g, '-');
+  const prefix = atomId || getFileIdFromFsPath(path.relative(cwd, fileAbsPath));
 
   return [prefix.toLowerCase(), 'demo', localId.toLowerCase()]
     .filter(Boolean)
@@ -269,7 +272,7 @@ export default function rehypeDemo(
 
               parseOpts.id = getCodeId(
                 opts.cwd,
-                opts.fileAbsPath,
+                opts.fileLocaleLessPath,
                 localId,
                 vFile.data.frontmatter!.atomId,
               );
@@ -283,13 +286,20 @@ export default function rehypeDemo(
                 path.relative(opts.cwd, parseOpts.fileAbsPath),
               );
             } else {
+              const tabKey = isTabRouteFile(opts.fileAbsPath)
+                ? getTabKeyFromFile(opts.fileAbsPath)
+                : '';
+              const localId = [tabKey, opts.fileLocale, String(index++)]
+                .filter(Boolean)
+                .join('-');
+
               // pass a fake entry point for code block demo
               // and pass the real code via `entryPointCode` option
               parseOpts.fileAbsPath = opts.fileAbsPath.replace('.md', '.tsx');
               parseOpts.id = getCodeId(
                 opts.cwd,
-                opts.fileAbsPath,
-                String(index++),
+                opts.fileLocaleLessPath,
+                localId,
                 vFile.data.frontmatter!.atomId,
               );
               component = techStack.transformCode(codeValue, {
