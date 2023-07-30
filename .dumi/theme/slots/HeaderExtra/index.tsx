@@ -1,18 +1,11 @@
 import { ReactComponent as IconDown } from '@ant-design/icons-svg/inline-svg/outlined/down.svg';
 import React, { type FC } from 'react';
+import './index.less';
 
 const HeaderExtra: FC = () => {
   return (
-    <div
-      className="dumi-default-lang-select"
-      style={{
-        borderInlineStart: '1px solid #d0d5d8',
-        marginInlineStart: 15,
-        paddingInlineStart: 5,
-      }}
-    >
+    <div className="dumi-default-lang-select dumi-version-select">
       <select
-        style={{ paddingTop: 1, paddingBottom: 1 }}
         value={process.env.DUMI_VERSION}
         onChange={(e) => {
           if (e.target.value !== process.env.DUMI_VERSION) {

@@ -93,7 +93,7 @@ const DocLayout: FC = () => {
       <main>
         {showSidebar && <Sidebar />}
         <Content>
-          {outlet}
+          <article>{outlet}</article>
           <ContentFooter />
           <Footer />
         </Content>

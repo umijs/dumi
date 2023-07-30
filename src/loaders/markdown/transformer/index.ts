@@ -1,5 +1,5 @@
 import type { IParsedBlockAsset } from '@/assetParsers/block';
-import type { IRouteMeta } from '@/client/theme-api/types';
+import type { ILocalesConfig, IRouteMeta } from '@/client/theme-api/types';
 import { VERSION_2_DEPRECATE_SOFT_BREAKS } from '@/constants';
 import type { IApi, IDumiConfig, IDumiTechStack } from '@/types';
 import enhancedResolve from 'enhanced-resolve';
@@ -66,6 +66,7 @@ export interface IMdTransformerOptions {
   extraRemarkPlugins?: IDumiConfig['extraRemarkPlugins'];
   extraRehypePlugins?: IDumiConfig['extraRehypePlugins'];
   routes: Record<string, IRoute>;
+  locales: ILocalesConfig;
   pkg: IApi['pkg'];
 }
 
@@ -103,6 +104,7 @@ function applyUnifiedPlugin(opts: {
 }
 
 export default async (raw: string, opts: IMdTransformerOptions) => {
+  let fileLocaleLessPath = opts.fileAbsPath;
   const { unified } = await import('unified');
   const { default: remarkParse } = await import('remark-parse');
   const { default: remarkFrontmatter } = await import('remark-frontmatter');
@@ -119,6 +121,14 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
     alias: opts.alias,
   });
+  const fileLocale = opts.locales.find((locale) =>
+    opts.fileAbsPath.endsWith(`.${locale.id}.md`),
+  )?.id;
+
+  // generate locale-less file abs path, for generate code id and atom id
+  if (fileLocale) {
+    fileLocaleLessPath = opts.fileAbsPath.replace(`.${fileLocale}.md`, '.md');
+  }
 
   const processor = unified()
     .use(remarkParse)
@@ -127,6 +137,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     .use(remarkMeta, {
       cwd: opts.cwd,
       fileAbsPath: opts.fileAbsPath,
+      fileLocaleLessPath,
       resolve: opts.resolve,
     })
     .use(remarkDirective)
@@ -160,6 +171,8 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
       techStacks: opts.techStacks,
       cwd: opts.cwd,
       fileAbsPath: opts.fileAbsPath,
+      fileLocaleLessPath,
+      fileLocale,
       resolve: opts.resolve,
       resolver,
     })

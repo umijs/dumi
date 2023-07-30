@@ -1,4 +1,8 @@
-import { getTabKeyFromFile, isTabRouteFile } from '@/features/tabs';
+import {
+  getHostForTabRouteFile,
+  getTabKeyFromFile,
+  isTabRouteFile,
+} from '@/features/tabs';
 import { execSync } from 'child_process';
 import fs from 'fs';
 import yaml from 'js-yaml';
@@ -22,12 +26,9 @@ let toString: typeof import('mdast-util-to-string').toString;
  * guess atom id from filename
  */
 function getGuessAtomId(opts: IRemarkMetaOpts) {
-  const parsed = path.parse(opts.fileAbsPath);
-  // strip modifier from markdown filename, such as $tab-xx, zh-CN & etc.
-  const clearFileName = parsed.name.replace(
-    /(?:\.$tab-[^.]+)?(?:\.[^.]+)?(\.[^.]+)$/,
-    '$1',
-  );
+  const parsed = path.parse(opts.fileLocaleLessPath);
+  // strip modifier from markdown filename, such as $tab-xx
+  const clearFileName = getHostForTabRouteFile(parsed.name);
   // find same name component file
   const atomFile = ['.tsx', '.jsx']
     .map((ext) => path.join(parsed.dir, `${clearFileName}${ext}`))
@@ -53,7 +54,7 @@ function getGuessAtomId(opts: IRemarkMetaOpts) {
 type IRemarkMetaOpts = Pick<
   IMdTransformerOptions,
   'cwd' | 'fileAbsPath' | 'resolve'
->;
+> & { fileLocaleLessPath: string };
 
 export default function remarkMeta(opts: IRemarkMetaOpts): Transformer<Root> {
   return (tree, vFile) => {

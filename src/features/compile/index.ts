@@ -43,6 +43,7 @@ export default (api: IApi) => {
       extraRemarkPlugins: api.config.extraRemarkPlugins,
       extraRehypePlugins: api.config.extraRehypePlugins,
       routes: api.appData.routes,
+      locales: api.config.locales,
       pkg: api.pkg,
     };
 
