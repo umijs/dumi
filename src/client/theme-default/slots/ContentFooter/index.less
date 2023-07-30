@@ -94,28 +94,36 @@
       }
 
       &[data-prev] {
-        float: inline-start;
+        float: left;
         padding-inline-end: 24px;
 
         svg {
           margin-inline-end: 4px;
+        }
 
-          [data-direction='rtl'] & {
+        [data-direction='rtl'] & {
+          float: right;
+
+          svg {
             transform: rotate(180deg);
           }
         }
       }
 
       &[data-next] {
-        float: inline-end;
+        float: right;
         text-align: end;
         padding-inline-start: 24px;
 
         svg {
           margin-inline-start: 4px;
           transform: rotate(180deg);
+        }
 
-          [data-direction='rtl'] & {
+        [data-direction='rtl'] & {
+          float: left;
+
+          svg {
             transform: rotate(0);
           }
         }

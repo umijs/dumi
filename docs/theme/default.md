@@ -30,6 +30,8 @@ dumi 内置了一套完善的默认主题，默认主题的呈现效果与 dumi 
 
 配置是否在 Markdown 页面内容区域底部展示当前文档的最后更新时间。
 
+文档最后更新时间来源于 Git 提交记录，如果 Markdown 文档还未被 Git 追踪，那么则会展示构建时间；如果你的文档通过 GitHub Action 进行部署，还需要在 [actions/checkout](https://github.com/actions/checkout) 步骤中加上 `fetch-depth: 0` 参数以检出所有 Git 提交记录，确保可以 dumi 可以拿到正确的最后更新时间，具体可参考 [FAQ - 自动部署](../guide/faq.md#自动部署)。
+
 ### logo
 
 - 类型：`string | false`
