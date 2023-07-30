@@ -1,6 +1,5 @@
 import parseBlockAsset from '@/assetParsers/block';
 import type { IDumiDemoProps } from '@/client/theme-api/DumiDemo';
-import { getTabKeyFromFile, isTabRouteFile } from '@/features/tabs';
 import { getFileIdFromFsPath } from '@/utils';
 import type { sync } from 'enhanced-resolve';
 import type { Element, Root } from 'hast';
@@ -286,10 +285,7 @@ export default function rehypeDemo(
                 path.relative(opts.cwd, parseOpts.fileAbsPath),
               );
             } else {
-              const tabKey = isTabRouteFile(opts.fileAbsPath)
-                ? getTabKeyFromFile(opts.fileAbsPath)
-                : '';
-              const localId = [tabKey, opts.fileLocale, String(index++)]
+              const localId = [opts.fileLocale, String(index++)]
                 .filter(Boolean)
                 .join('-');
 
