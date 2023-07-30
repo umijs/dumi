@@ -29,7 +29,15 @@ for (let casePath of cases) {
       techStacks: [new FakeTechStack()],
       cwd: path.dirname(fileAbsPath),
       fileAbsPath: fileAbsPath,
-      resolve: { codeBlockMode: 'active', atomDirs: [], docDirs: [] },
+      resolve: {
+        codeBlockMode: 'active',
+        atomDirs: [],
+        docDirs: [],
+        forceKebabCaseRouting: true,
+      },
+      locales: [],
+      routes: {},
+      pkg: {},
       alias: {
         '@': __dirname,
       },

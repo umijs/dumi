@@ -54,7 +54,7 @@ interface IDumiExtendsConfig {
   extraRemarkPlugins?: (string | Function | [string | Function, object])[];
   extraRehypePlugins?: (string | Function | [string | Function, object])[];
 }
-export type IDumiConfig = IUmiConfig & IDumiExtendsConfig;
+export type IDumiConfig = Omit<IUmiConfig, 'locales'> & IDumiExtendsConfig;
 
 export type IDumiUserConfig = Subset<Omit<IDumiConfig, 'locales'>> & {
   locales?:
