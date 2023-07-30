@@ -1,3 +1,4 @@
+import ContentFooter from '@/client/theme-default/slots/ContentFooter';
 import { ReactComponent as IconSidebar } from '@ant-design/icons-svg/inline-svg/outlined/align-left.svg';
 import animateScrollTo from 'animated-scroll-to';
 import {
@@ -93,6 +94,7 @@ const DocLayout: FC = () => {
         {showSidebar && <Sidebar />}
         <Content>
           <article>{outlet}</article>
+          <ContentFooter />
           <Footer />
         </Content>
         {fm.toc === 'content' && (
