@@ -1,12 +1,13 @@
 name: Preview Build
 
-on: 
+on:
   pull_request:
     types: [opened, synchronize, reopened]
 
 jobs:
   build-preview:
     runs-on: ubuntu-latest
+    container: node:12
 
     steps:
       - uses: actions/checkout@v2
@@ -28,10 +29,10 @@ jobs:
           name: dist
           path: dist.zip
           retention-days: 5
-          
+
       - name: build mobile
         run: |
-          DUMI_THEME=./packages/theme-mobile yarn docs:build 
+          DUMI_THEME=./packages/theme-mobile yarn docs:build
 
       - run: |
           zip -r dist-mobile.zip dist
