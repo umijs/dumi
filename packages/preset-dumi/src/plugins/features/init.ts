@@ -35,12 +35,15 @@ export default (api: IApi) => {
   });
 
   // re-enable @ & @@ umi default alias for integrated mode
-  if (isIntegrateUmi || api.args?.dumi) {
-    api.modifyDefaultConfig(memo => {
+  api.modifyDefaultConfig(memo => {
+    if (isIntegrateUmi || api.args?.dumi) {
       memo.alias['@'] = api.paths.absSrcPath;
       memo.alias['@@'] = api.paths.absTmpPath;
+    }
 
-      return memo;
-    });
-  }
+    // enable dist hash by default
+    memo.hash = true;
+
+    return memo;
+  });
 };
