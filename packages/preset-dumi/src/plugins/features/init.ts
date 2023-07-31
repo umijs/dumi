@@ -40,6 +40,9 @@ export default (api: IApi) => {
       memo.alias['@'] = api.paths.absSrcPath;
       memo.alias['@@'] = api.paths.absTmpPath;
 
+      // enable dist hash by default
+      memo.hash = true;
+
       return memo;
     });
   }
