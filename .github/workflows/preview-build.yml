@@ -17,7 +17,7 @@ jobs:
         run: |
           yarn
           yarn build
-          yarn doc:build
+          yarn docs:build
 
       - run: |
           zip -r dist.zip dist
@@ -31,7 +31,7 @@ jobs:
           
       - name: build mobile
         run: |
-          DUMI_THEME=./packages/theme-mobile yarn doc:build 
+          DUMI_THEME=./packages/theme-mobile yarn docs:build 
 
       - run: |
           zip -r dist-mobile.zip dist
