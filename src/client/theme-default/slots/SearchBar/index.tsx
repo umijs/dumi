@@ -3,7 +3,7 @@ import { ReactComponent as IconArrowUp } from '@ant-design/icons-svg/inline-svg/
 import { ReactComponent as IconSearch } from '@ant-design/icons-svg/inline-svg/outlined/search.svg';
 import { useSiteSearch } from 'dumi';
 import React, { useEffect, useRef, useState, type FC } from 'react';
-import SearchResult from '../SearchResult';
+import SearchResult from 'dumi/theme/slots/SearchResult';
 import './index.less';
 import { Input } from './Input';
 import { Mask } from './Mask';
