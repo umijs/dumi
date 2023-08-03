@@ -1,6 +1,7 @@
 import path from 'path';
 import * as types from '@babel/types';
 import type { IApi } from '@umijs/types';
+import * as babel from '@babel/core';
 import type { PluginObj } from '@babel/core';
 import ctx from '../../context';
 
@@ -24,6 +25,7 @@ function dumiIsomorphicReactEffectPlugin(): PluginObj {
           callPathNode.imported.name === 'useLayoutEffect'
         ) {
           callPath.replaceWith(
+            // @ts-ignore
             types.importSpecifier(callPathNode.local, types.identifier('useEffect')),
           );
         }
@@ -41,6 +43,7 @@ function dumiIsomorphicReactEffectPlugin(): PluginObj {
           callPathNode.property.name === 'useLayoutEffect'
         ) {
           callPath.replaceWith(
+            // @ts-ignore
             types.memberExpression(callPathNode.object, types.identifier('useEffect')),
           );
         }
@@ -96,8 +99,8 @@ export default (api: IApi) => {
       .use('dumi-loader')
       .loader(require.resolve('../../loader'))
       .options({
-        previewLangs: ctx.opts.resolve.previewLangs,
-        passivePreview: ctx.opts.resolve.passivePreview
+        previewLangs: ctx.opts!.resolve.previewLangs,
+        passivePreview: ctx.opts!.resolve.passivePreview
       });
 
     // set asset type to javascript/auto to skip webpack internal json loader
@@ -118,8 +121,8 @@ export default (api: IApi) => {
 
   // watch .md files
   api.addTmpGenerateWatcherPaths(() => [
-    ...ctx.opts.resolve.includes.map(key => path.join(api.paths.cwd, key, '**/*.md')),
-    ...ctx.opts.resolve.examples.map(key => path.join(api.paths.cwd, key, '*.{tsx,jsx}')),
+    ...ctx.opts!.resolve.includes.map(key => path.join(api.paths.cwd!, key, '**/*.md')),
+    ...ctx.opts!.resolve.examples.map(key => path.join(api.paths.cwd!, key, '*.{tsx,jsx}')),
   ]);
 
   // replace all useLayoutEffect to useEffect for ssr

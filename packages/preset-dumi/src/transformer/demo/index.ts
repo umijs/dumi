@@ -115,6 +115,7 @@ export default (raw: string, opts: IDemoOpts): IDemoTransformResult => {
         if (isDynamicEnable() && !isHeaderHelpers) {
           // transform require('react') to await import ('react')
           callPath.replaceWith(
+            // @ts-ignore
             types.awaitExpression(
               types.callExpression(types.import(), [
                 types.stringLiteral(callPathNode.arguments[0].value),
@@ -165,6 +166,7 @@ export default (raw: string, opts: IDemoOpts): IDemoTransformResult => {
   }
 
   return {
+    // @ts-ignore
     content: generator(demoFunction, {}, raw).code,
   };
 };

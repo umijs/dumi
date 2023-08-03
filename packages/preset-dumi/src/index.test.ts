@@ -331,6 +331,10 @@ describe('preset-dumi', () => {
       presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
     });
 
+    // disable dist hash
+    await service.init();
+    service.config!.hash = false;
+
     // add UMI_DIR to avoid alias error
     process.env.UMI_DIR = path.dirname(require.resolve('umi/package'));
 
@@ -338,7 +342,7 @@ describe('preset-dumi', () => {
     process.env.BABEL_CACHE = 'none';
 
     // execute build
-    await service.run({ name: 'build' });
+    await service.runCommand({ name: 'build' });
     delete process.env.BABEL_CACHE;
 
     // expect css not be tree shaked
@@ -394,10 +398,14 @@ describe('preset-dumi', () => {
       presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
     });
 
+    // disable dist hash
+    await service.init();
+    service.config!.hash = false;
+
     // add UMI_DIR to avoid alias error
     process.env.UMI_DIR = path.dirname(require.resolve('umi/package'));
 
-    await service.run({
+    await service.runCommand({
       name: 'build',
     });
 
@@ -441,10 +449,14 @@ describe('preset-dumi', () => {
       presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
     });
 
+    // disable dist hash
+    await service.init();
+    service.config!.hash = false;
+
     // add UMI_DIR to avoid alias error
     process.env.UMI_DIR = path.dirname(require.resolve('umi/package'));
 
-    await service.run({
+    await service.runCommand({
       name: 'build',
     });
 
@@ -463,10 +475,14 @@ describe('preset-dumi', () => {
       presets: [require.resolve('@umijs/preset-built-in'), require.resolve('./index.ts')],
     });
 
+    // disable dist hash
+    await service.init();
+    service.config!.hash = false;
+
     // add UMI_DIR to avoid alias error
     process.env.UMI_DIR = path.dirname(require.resolve('umi/package'));
 
-    await service.run({
+    await service.runCommand({
       name: 'build',
     });
 
