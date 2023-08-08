@@ -15,6 +15,7 @@ export const getBabelOptions = ({ isTSX, fileAbsPath, transformRuntime }: IDemoO
       {
         reactRequire: false,
         typescript: isTSX,
+        env: { ignoreBrowserslistConfig: true },
         ...(transformRuntime === undefined ? {} : { transformRuntime }),
       },
     ],
