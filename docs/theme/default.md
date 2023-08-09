@@ -50,7 +50,7 @@ dumi 内置了一套完善的默认主题，默认主题的呈现效果与 dumi 
 
 ### nav
 
-- `Navs`类型：`{ title: '导航标题', link: '导航路由', activePath: '活动路径' }[] | Record<string, { title: '导航标题', link: '导航路由', activePath: '活动路径' }[]>`
+- `Navs`类型：`{ title: '导航标题', link: '导航路由', activePath: '高亮路径' }[] | Record<string, { title: '导航标题', link: '导航路由', activePath: '高亮路径' }[]>`
 - 类型：`Navs | {mode: "override" | "append" | "prepend", value: Navs}`
 - 默认值：`约定式导航`
 
