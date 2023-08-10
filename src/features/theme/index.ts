@@ -392,7 +392,7 @@ const entryExports = {
 
 export default function DumiContextWrapper() {
   const outlet = useOutlet();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const prev = useRef(history.location.pathname);
 
   useEffect(() => {
