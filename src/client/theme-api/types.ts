@@ -186,7 +186,7 @@ export type SocialTypes =
 
 export type INavItems = (INavItem & { children?: INavItem[] })[];
 export type INav = INavItems | Record<string, INavItems>;
-type IUserNavItem = Pick<INavItem, 'title' | 'link'>;
+type IUserNavItem = Pick<INavItem, 'title' | 'link' | 'activePath'>;
 export type IUserNavMode = 'override' | 'append' | 'prepend';
 export type IUserNavItems = (IUserNavItem & { children?: IUserNavItem[] })[];
 export type IUserNavValue = IUserNavItems | Record<string, IUserNavItems>;
