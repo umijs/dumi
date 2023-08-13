@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { useSiteData } from 'dumi';
 import Highlight, { defaultProps, type Language } from 'prism-react-renderer';
 import 'prism-themes/themes/prism-one-light.css';
-import React, { useRef, useState, type FC } from 'react';
+import React, { useRef, useState, useEffect, type FC } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import './index.less';
 
@@ -29,11 +29,13 @@ const SourceCode: FC<SourceCodeProps> = (props) => {
   const { themeConfig } = useSiteData();
 
   let text = '';
-  const isShell = /shellscript|shell|bash|sh|zsh/.test(lang);
-  if (isShell) {
-    text = children.replace(/^(\$|>)\s/gm, '');
-  }
-  
+  useEffect(() => {
+    const isShell = /shellscript|shell|bash|sh|zsh/.test(lang);
+    if (isShell) {
+      text = children.replace(/^(\$|>)\s/gm, '');
+    }
+  }, [lang]);
+    
   return (
     <div className="dumi-default-source-code">
       <CopyToClipboard
