@@ -31,7 +31,7 @@ const SourceCode: FC<SourceCodeProps> = (props) => {
   let text = '';
   const isShell = /shellscript|shell|bash|sh|zsh/.test(lang);
   if (isShell) {
-    text = children.replace(/^ *(\$|>) /gm, '');
+    text = children.replace(/^(\$|>)\s/gm, '');
   }
   
   return (
