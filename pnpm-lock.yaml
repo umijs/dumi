@@ -5717,8 +5717,8 @@ packages:
       character-entities: 2.0.2
     dev: false
 
-  /decode-uri-component@0.2.0:
-    resolution: {integrity: sha512-hjf+xovcEn31w/EUYdTXQh/8smFL/dzYjohQGEIgjyNavaJfBY2p5F527Bo1VPATxv0VYTUC2bOcXvqFwk78Og==}
+  /decode-uri-component@0.2.2:
+    resolution: {integrity: sha512-FqUYQ+8o158GyGTrMFJms9qh3CqTKvAqgqsTnkLI8sKu0028orqBhxNMFkFen0zGyg6epACD32pjVk58ngIErQ==}
     engines: {node: '>=0.10'}
     dev: false
 
@@ -11304,7 +11304,7 @@ packages:
     resolution: {integrity: sha512-XDxAeVmpfu1/6IjyT/gXHOl+S0vQ9owggJ30hhWKdHAsNPOcasn5o9BW0eejZqL2e4vMjhAxoW3jVHcD6mbcYw==}
     engines: {node: '>=6'}
     dependencies:
-      decode-uri-component: 0.2.0
+      decode-uri-component: 0.2.2
       filter-obj: 1.1.0
       split-on-first: 1.1.0
       strict-uri-encode: 2.0.0
@@ -13046,7 +13046,7 @@ packages:
     deprecated: See https://github.com/lydell/source-map-resolve#deprecated
     dependencies:
       atob: 2.1.2
-      decode-uri-component: 0.2.0
+      decode-uri-component: 0.2.2
     dev: false
 
   /source-map-support@0.5.21:
