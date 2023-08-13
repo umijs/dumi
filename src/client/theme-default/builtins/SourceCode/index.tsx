@@ -28,10 +28,16 @@ const SourceCode: FC<SourceCodeProps> = (props) => {
   const [isCopied, setIsCopied] = useState(false);
   const { themeConfig } = useSiteData();
 
+  let text = '';
+  const isShell = /shellscript|shell|bash|sh|zsh/.test(lang);
+  if (isShell) {
+    text = children.replace(/^ *(\$|>) /gm, '');
+  }
+  
   return (
     <div className="dumi-default-source-code">
       <CopyToClipboard
-        text={children}
+        text={text}
         onCopy={() => {
           setIsCopied(true);
           clearTimeout(timer.current);
