@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { useSiteData } from 'dumi';
 import Highlight, { defaultProps, type Language } from 'prism-react-renderer';
 import 'prism-themes/themes/prism-one-light.css';
-import React, { useRef, useState, type FC } from 'react';
+import React, { useRef, useState, useEffect, type FC } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import './index.less';
 
@@ -26,12 +26,21 @@ const SourceCode: FC<SourceCodeProps> = (props) => {
   const { children = '', lang, highlightLines = [] } = props;
   const timer = useRef<number>();
   const [isCopied, setIsCopied] = useState(false);
+  const [text, setText] = useState(children);
   const { themeConfig } = useSiteData();
 
+  useEffect(() => {
+    const isShell = /shellscript|shell|bash|sh|zsh/.test(lang);
+    if (isShell) {
+      const text = children.replace(/^(\$|>)\s/gm, '');
+      setText(text);
+    }
+  }, [lang, children]);
+    
   return (
     <div className="dumi-default-source-code">
       <CopyToClipboard
-        text={children}
+        text={text}
         onCopy={() => {
           setIsCopied(true);
           clearTimeout(timer.current);
