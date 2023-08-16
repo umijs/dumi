@@ -26,15 +26,16 @@ const SourceCode: FC<SourceCodeProps> = (props) => {
   const { children = '', lang, highlightLines = [] } = props;
   const timer = useRef<number>();
   const [isCopied, setIsCopied] = useState(false);
+  const [text, setText] = useState(children);
   const { themeConfig } = useSiteData();
 
-  let text = '';
   useEffect(() => {
     const isShell = /shellscript|shell|bash|sh|zsh/.test(lang);
     if (isShell) {
-      text = children.replace(/^(\$|>)\s/gm, '');
+      const text = children.replace(/^(\$|>)\s/gm, '');
+      setText(text);
     }
-  }, [lang]);
+  }, [lang, children]);
     
   return (
     <div className="dumi-default-source-code">
