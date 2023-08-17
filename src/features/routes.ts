@@ -107,17 +107,15 @@ function getAliasLayoutFile({
 }
 
 export default (api: IApi) => {
-  const extraWatchPaths = [
-    ...(api.userConfig.resolve?.atomDirs || []),
-    ...(api.userConfig.resolve?.docDirs?.map(normalizeDocDir) || [
-      { dir: 'docs' },
-    ]),
-  ].map(({ dir }) => path.join(api.cwd, dir, '**/*.md'));
-
   api.describe({ key: 'dumi:routes' });
 
   // watch docs paths to re-generate routes
-  api.addTmpGenerateWatcherPaths(() => extraWatchPaths);
+  api.addTmpGenerateWatcherPaths(() =>
+    [
+      ...api.config.resolve.atomDirs,
+      ...api.config.resolve.docDirs.map(normalizeDocDir),
+    ].map(({ dir }) => path.join(api.cwd, dir, '**/*.md')),
+  );
 
   api.modifyDefaultConfig((memo) => {
     // support to disable docDirs & atomDirs by empty array
