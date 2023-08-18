@@ -3,36 +3,18 @@ const path = require('path');
 const https = require('https');
 
 const UMI_DOC_DIR = path.join(__dirname, '..', 'docs', '.upstream');
-const REPLACE_MESSAGE_MDX = [
-  // remove mdx component import statements
-  { type: 'replace', value: [/^[^\r\n]+ from 'umi';\n*/, ''] },
-  // replace Message component
-  {
-    type: 'replace',
-    value: [
-      /<Message(?: type="[^"]+")? emoji="(?:🚨|⚠️)".*>([^]+?)<\/Message>/,
-      ':::warning$1:::',
-    ],
-  },
-  {
-    type: 'replace',
-    value: [
-      /<Message(?: type="[^"]+")? emoji="(?:💡|🚀)".*>([^]+?)<\/Message>/,
-      ':::info$1:::',
-    ],
-  },
-];
+const RM_FM_ACTION = {
+  type: 'replace',
+  value: [/^---[^]+?---\n/, ''],
+};
 const FILE_LIST = [
   // config docs
   {
     localname: 'config.md',
-    upstream: 'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/api/config.md',
+    upstream:
+      'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/docs/api/config.md',
     actions: [
-      {
-        type: 'replace',
-        value: ["<Message fontsize='small'", '<Message emoji="💡"'],
-      },
-      ...REPLACE_MESSAGE_MDX,
+      RM_FM_ACTION,
       // remove head content
       { type: 'slice', value: [2] },
       // remove unnecessary option
@@ -170,9 +152,10 @@ const FILE_LIST = [
   },
   {
     localname: 'api.md',
-    upstream: 'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/api/api.md',
+    upstream:
+      'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/docs/api/api.md',
     actions: [
-      ...REPLACE_MESSAGE_MDX,
+      RM_FM_ACTION,
       // remove head content
       { type: 'slice', value: [6] },
       { type: 'replace', value: ['{\n/*\n', ''] },
@@ -195,9 +178,9 @@ const FILE_LIST = [
   {
     localname: 'plugin.md',
     upstream:
-      'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/guides/plugins.md',
+      'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/docs/guides/plugins.md',
     actions: [
-      ...REPLACE_MESSAGE_MDX,
+      RM_FM_ACTION,
       // remove head content
       { type: 'slice', value: [1] },
       { type: 'replace', value: ['Umi 的核心就在于它的插件机制。', ''] },
@@ -221,8 +204,9 @@ const FILE_LIST = [
   {
     localname: 'plugin-api.md',
     upstream:
-      'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/api/plugin-api.md',
+      'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/docs/api/plugin-api.md',
     actions: [
+      RM_FM_ACTION,
       // remove head content
       { type: 'slice', value: [6] },
       // remove unnecessary section
@@ -260,8 +244,9 @@ const FILE_LIST = [
   {
     localname: 'runtime-config.md',
     upstream:
-      'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/api/runtime-config.md',
+      'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/docs/api/runtime-config.md',
     actions: [
+      RM_FM_ACTION,
       // replace jsx to jsx | pure
       { type: 'replace', value: [/\n```(jsx|tsx)\s*\n/g, '\n```$1 | pure\n'] },
       // replace umi to dumi
@@ -299,8 +284,9 @@ const FILE_LIST = [
   {
     localname: 'env-config.md',
     upstream:
-      'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/guides/env-variables.md',
+      'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/docs/guides/env-variables.md',
     actions: [
+      RM_FM_ACTION,
       // remove head content
       { type: 'slice', value: [1] },
       // remove unnecessary section
