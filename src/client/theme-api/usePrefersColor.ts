@@ -137,7 +137,7 @@ export const usePrefersColor = () => {
   useEffect(() => {
     // lazy initialize, for SSR
     colorChanger ??= new ColorChanger({
-      default: themeConfig.prefersColor.default,
+      default: themeConfig.prefersColor?.default ?? 'auto',
     });
     colorChanger.listen(colorChangeHandler);
     setColor(colorChanger.color);

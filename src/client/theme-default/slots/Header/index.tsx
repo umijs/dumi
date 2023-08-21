@@ -48,7 +48,7 @@ const Header: FC = () => {
             <SearchBar />
             <LangSwitch />
             <RtlSwitch />
-            {themeConfig.prefersColor.switch && <ColorSwitch />}
+            {themeConfig.prefersColor?.switch && <ColorSwitch />}
             {socialIcons.map((item) => (
               <SocialIcon icon={item.icon} link={item.link} key={item.link} />
             ))}

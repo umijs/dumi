@@ -34,9 +34,7 @@ export const SiteContext = createContext<ISiteContext>({
   demos: {},
   components: {},
   locales: [],
-  themeConfig: {
-    prefersColor: { default: 'light', switch: true },
-  },
+  themeConfig: {} as IThemeConfig,
   loading: false,
   setLoading: () => {},
   _2_level_nav_available: true,

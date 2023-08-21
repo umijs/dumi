@@ -11,7 +11,8 @@ const Content: FC<{ children: ReactNode }> = (props) => {
   return (
     <div
       className="dumi-default-content"
-      data-no-sidebar={!sidebar || undefined}
+      data-no-sidebar={!sidebar || frontmatter.sidebar === false || undefined}
+      data-no-footer={themeConfig.footer === false || undefined}
     >
       {props.children}
     </div>

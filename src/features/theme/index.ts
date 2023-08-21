@@ -6,7 +6,6 @@ import {
   VERSION_2_LEVEL_NAV,
 } from '@/constants';
 import type { IApi } from '@/types';
-import { getClientDistFile } from '@/utils';
 import { parseModuleSync } from '@umijs/bundler-utils';
 import { execSync } from 'child_process';
 import fs from 'fs';
