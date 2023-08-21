@@ -32,6 +32,7 @@ class AtomAssetsParser {
     paths: string | string[];
     options: chokidar.WatchOptions;
   };
+  private skipPropsWithName: string[] = [];
 
   constructor(opts: {
     entryFile: string;
@@ -40,11 +41,15 @@ class AtomAssetsParser {
     unpkgHost?: string;
     watch?: boolean;
     parseOptions?: object;
+    propFilter?: {
+      skipPropsWithName?: string[];
+    };
   }) {
     const absEntryFile = path.resolve(opts.resolveDir, opts.entryFile);
 
     this.resolveDir = opts.resolveDir;
     this.resolveFilter = opts.resolveFilter || (() => true);
+    this.skipPropsWithName = opts.propFilter?.skipPropsWithName || [];
     this.entryDir = path.relative(opts.resolveDir, path.dirname(absEntryFile));
     this.parser = new SchemaParser({
       entryPath: absEntryFile,
@@ -107,6 +112,17 @@ class AtomAssetsParser {
           let propsConfig = needResolve
             ? (await resolver.getComponent(id)).props
             : fallbackProps;
+
+          if (this.skipPropsWithName.length > 0) {
+            const filteredProperties = Object.keys(propsConfig.properties)
+              .filter((key) => !this.skipPropsWithName.includes(key))
+              .reduce((obj, key) => {
+                obj[key] = propsConfig.properties[key];
+                return obj;
+              }, {} as Record<string, any>);
+            propsConfig.properties = filteredProperties;
+          }
+
           const size = Buffer.byteLength(JSON.stringify(propsConfig));
 
           if (size > MAX_PARSE_SIZE) {
