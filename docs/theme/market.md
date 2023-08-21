@@ -54,6 +54,17 @@ toc: null
       <img src="https://mdn.alipayobjects.com/huamei_rqvucu/afts/img/A*kuxBSKkIwYEAAAAAAAAAAAAADoN6AQ/fmt.webp" alt="dumi-theme-antd-style" />
       <a href="https://kuangpf.com/dumi-theme-antd" target="_blank" rel="noopener noreferrer">dumi-theme-antd-style</a>
     </li>
-    
+    <li
+      class="dumi-site-theme-cases-item"
+      data-title="dumi-theme-lobehub"
+      data-url="https://dumi-theme.lobehub.com"
+      data-picture="https://github-production-user-asset-6210df.s3.amazonaws.com/28616219/261944983-9556f60d-d77d-4882-8582-a94208a3b5a8.png"
+      data-description="dumi2 theme for LobeHub document website"
+      data-source="https://github.com/lobehub/dumi-theme-lobehub"
+    >
+      <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/28616219/261944983-9556f60d-d77d-4882-8582-a94208a3b5a8.png" alt="dumi-theme-lobehub" />
+      <a href="https://dumi-theme.lobehub.com" target="_blank" rel="noopener noreferrer">dumi-theme-lobehub</a>
+    </li>
+        
   </ul>
 </ThemeCases>
