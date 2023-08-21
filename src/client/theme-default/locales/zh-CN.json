@@ -14,7 +14,11 @@
   "previewer.actions.code.expand": "展开代码",
   "previewer.actions.code.shrink": "收起代码",
   "previewer.actions.codesandbox": "在 CodeSandbox 中打开",
-  "previewer.actions.codepen": "在 CodePen 中打开（未实现）",
+  "previewer.actions.sketch": "拷贝到 Sketch",
+  "previewer.actions.sketch.group": "拷贝为 Sketch Group",
+  "previewer.actions.sketch.symbol": "拷贝为 Sketch Symbol",
+  "previewer.actions.sketch.divider": "----------------------",
+  "previewer.actions.sketch.guide": "如何粘贴到 SKetch？",
   "previewer.actions.stackblitz": "在 StackBlitz 中打开",
   "previewer.actions.separate": "在独立页面中打开",
   "404.title": "页面未找到",
@@ -28,6 +32,10 @@
   "api.component.loading": "属性定义正在解析中，稍等片刻...",
   "api.component.not.found": "未找到 {id} 组件的属性定义",
   "content.tabs.default": "文档",
+  "content.footer.last.updated": "最后更新时间：",
+  "content.footer.actions.edit": "帮助改进此文档",
+  "content.footer.actions.previous": "上一篇",
+  "content.footer.actions.next": "下一篇",
   "search.not.found": "未找到相关内容",
   "layout.sidebar.btn": "侧边菜单"
 }

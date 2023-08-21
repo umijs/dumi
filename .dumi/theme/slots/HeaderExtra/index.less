@@ -1,0 +1,16 @@
+@import (reference) '../../../../theme-default/styles/variables.less';
+
+.@{prefix}-lang-select.dumi-version-select {
+  border-inline-start: 1px solid @c-border;
+  margin-inline-start: 15px;
+  padding-inline-start: 5px;
+
+  @{dark-selector} & {
+    border-inline-start-color: @c-border-dark;
+  }
+
+  > select {
+    padding-top: 1px;
+    padding-bottom: 1px;
+  }
+}

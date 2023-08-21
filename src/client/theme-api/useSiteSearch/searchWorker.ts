@@ -88,7 +88,7 @@ function generateSearchMetadata(
   const metadata: ISearchMetadata = [];
   // generate demos mapping by route.id
   const demosMapping = Object.values(demos).reduce<
-    Record<string, typeof demos[0][]>
+    Record<string, (typeof demos)[0][]>
   >((acc, demo) => {
     if (demo.asset) {
       acc[demo.routeId] ??= [];
@@ -119,11 +119,17 @@ function generateSearchMetadata(
       const tocSections = routeMeta.toc.reduce<ISearchMetadata[0]['sections']>(
         (acc, toc, i) => {
           // exclude demo id, to avoid duplicate
-          if (!demoIds.includes(toc.id) && toc.depth > 1) {
+          if (!demoIds.includes(toc.id) && toc.depth >= 1) {
+            // 1 level is the pageTitle, 2 level is the pageTitle with toc title
+            let rawTitle = generateRouteTitle(routeMeta.frontmatter);
+            if (toc.depth !== 1) {
+              rawTitle = `${rawTitle} - ${toc.title}`;
+            }
+
             acc.push(
               createMetadataSection(
                 toc.title,
-                `${generateRouteTitle(routeMeta.frontmatter)} - ${toc.title}`,
+                rawTitle,
                 `${routeAbsPath}#${toc.id}`,
                 routeMeta.texts,
                 i,
@@ -191,7 +197,6 @@ function generateSearchMetadata(
       });
     }
   });
-
   return metadata;
 }
 
@@ -240,13 +245,14 @@ function generateHighlightTexts(
 function generateSearchResult(metadata: ISearchMetadata, keywordsStr: string) {
   const keywords = keywordsStr.split(' ');
   const matchReg = new RegExp(
-    keywordsStr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(' ', '|'),
-    'gi',
+    keywordsStr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\s+/g, '|'),
+    'i',
   );
   const resultMapping: Record<string, ISearchNavResult> = {};
 
   // traverse metadata from all routes
   metadata.forEach((data) => {
+    const pageTitle = data.title;
     const hints: ISearchResult[0]['hints'] = [];
 
     // find content & section hints
@@ -270,6 +276,7 @@ function generateSearchResult(metadata: ISearchMetadata, keywordsStr: string) {
             }).reduce((acc, p) => acc + p, 0),
             highlightTitleTexts,
             highlightTexts,
+            pageTitle,
           });
 
           // match at most once in the same section
@@ -277,8 +284,11 @@ function generateSearchResult(metadata: ISearchMetadata, keywordsStr: string) {
         }
       }
 
-      // find matched keywords in section title
-      if (matchReg.test(sec.rawTitle)) {
+      /**
+       * find matched keywords in section title
+       * if the section title is matched but the page title is not,
+       */
+      if (matchReg.test(sec.rawTitle) && !matchReg.test(data.title)) {
         const [highlightTitleTexts, titleMatchMapping] = generateHighlightTexts(
           sec.title,
           keywords,
@@ -297,6 +307,7 @@ function generateSearchResult(metadata: ISearchMetadata, keywordsStr: string) {
             sec.paragraphs[0] || '',
             keywords,
           )[0],
+          pageTitle,
         });
       }
     });
@@ -323,6 +334,7 @@ function generateSearchResult(metadata: ISearchMetadata, keywordsStr: string) {
           }).reduce((acc, p) => acc + p, 0),
           highlightTitleTexts,
           highlightTexts,
+          pageTitle,
         });
       }
     });
@@ -347,6 +359,7 @@ function generateSearchResult(metadata: ISearchMetadata, keywordsStr: string) {
           data.sections[0]?.paragraphs[0] || '',
           keywords,
         )[0],
+        pageTitle,
       });
     }
 

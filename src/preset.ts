@@ -21,6 +21,7 @@ export default (api: IApi) => {
       require.resolve('./features/assets'),
       require.resolve('./features/exportStatic'),
       require.resolve('./features/sitemap'),
+      require.resolve('./features/html2sketch'),
     ],
   };
 };

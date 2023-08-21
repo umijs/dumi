@@ -39,6 +39,21 @@ export default (api: IApi) => {
     },
   });
 
+  api.onCheck(() => {
+    // check locales config
+    if (api.config.locales) {
+      // other locale must set base to /
+      api.config.locales.slice(1).forEach((locale) => {
+        if ('base' in locale && locale.base === '/') {
+          assert(
+            false,
+            `Only the first locale item is allowed to set base: '/', you can move ${locale.id} to the front as default locale. See more: See https://d.umijs.org/config#locales`,
+          );
+        }
+      });
+    }
+  });
+
   api.register({
     key: 'modifyConfig',
     stage: Infinity,
@@ -94,11 +109,18 @@ const LocalesContainer: FC<{ children: ReactNode }> = (props) => {
         // suffix mode
         ? history.location.pathname.replace(/([^/])\\/$/, '$1').endsWith(locale.suffix)
         // base mode
-        : history.location.pathname.replace(/([^/])\\/$/, '$1').startsWith(locale.base)
+        : history.location.pathname.replace(/([^/])\\/$/, '$1')
+          .startsWith("${api.config.base!.replace(/\/$/, '')}" + locale.base)
     ));
     const locale = matched ? matched.id : locales[0].id;
+    const localeMessages = messages[locale] || {};
 
-    return createIntl({ locale, messages: messages[locale] || {} }, cache);
+    // append internal message, for use intl as string template util
+    localeMessages['$internal.edit.link'] = ${JSON.stringify(
+      api.config.themeConfig.editLink,
+    )};
+
+    return createIntl({ locale, messages: localeMessages }, cache);
   }, []);
   const [intl, setIntl] = useState(() => getIntl());
 

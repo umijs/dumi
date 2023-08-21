@@ -1,5 +1,12 @@
 import { Scrollspy as ScrollSpy } from '@makotot/ghostui/src/Scrollspy';
-import { Link, useLocation, useRouteMeta, useSiteData, useTabMeta } from 'dumi';
+import {
+  history,
+  Link,
+  useLocation,
+  useRouteMeta,
+  useSiteData,
+  useTabMeta,
+} from 'dumi';
 import React, {
   useEffect,
   useRef,
@@ -10,7 +17,7 @@ import React, {
 import './index.less';
 
 const Toc: FC = () => {
-  const { pathname, search } = useLocation();
+  const { pathname, search, hash } = useLocation();
   const meta = useRouteMeta();
   const tabMeta = useTabMeta();
   const { loading } = useSiteData();
@@ -60,6 +67,11 @@ const Toc: FC = () => {
                   <li key={item.id} data-depth={item.depth}>
                     <Link
                       to={link}
+                      onClickCapture={() => {
+                        if (decodeURIComponent(hash).slice(1) === item.id) {
+                          history.replace(`${pathname}${search}`);
+                        }
+                      }}
                       title={item.title}
                       {...(activeIndex === i ? { className: 'active' } : {})}
                     >

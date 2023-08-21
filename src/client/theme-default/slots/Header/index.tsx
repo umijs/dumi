@@ -1,16 +1,16 @@
 import type { SocialTypes } from '@/client/theme-api/types';
-import HeaderExtra from '@/client/theme-default/slots/HeadeExtra';
 import { ReactComponent as IconClose } from '@ant-design/icons-svg/inline-svg/outlined/close.svg';
 import { ReactComponent as IconMenu } from '@ant-design/icons-svg/inline-svg/outlined/menu.svg';
 import { useRouteMeta, useSiteData } from 'dumi';
 import ColorSwitch from 'dumi/theme/slots/ColorSwitch';
+import HeaderExtra from 'dumi/theme/slots/HeaderExtra';
 import LangSwitch from 'dumi/theme/slots/LangSwitch';
 import Logo from 'dumi/theme/slots/Logo';
 import Navbar from 'dumi/theme/slots/Navbar';
 import RtlSwitch from 'dumi/theme/slots/RtlSwitch';
 import SearchBar from 'dumi/theme/slots/SearchBar';
+import SocialIcon from 'dumi/theme/slots/SocialIcon';
 import React, { useMemo, useState, type FC } from 'react';
-import SocialIcon from '../SocialIcon';
 import './index.less';
 
 const Header: FC = () => {

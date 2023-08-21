@@ -91,3 +91,149 @@ dumi 内置了 Badge 组件，可以为 Markdown 内容（例如标题）添加�
 :::error
 这是一条错误信息
 :::
+
+## Line Highlighting
+
+在代码块中，如果您想要突出显示特定的一行，可以使用行高亮功能。使用行高亮功能的语法如下：
+
+<pre lang="markdown">
+```jsx {5} | pure
+import React from 'react';
+
+export default () =&gt; (
+  &lt;div&gt;
+    &lt;h1&gt;Hello dumi!&lt;/h1&gt;
+  &lt;/div&gt;
+);
+```
+</pre>
+
+渲染为：
+
+```jsx {5} | pure
+import React from 'react';
+
+export default () => (
+  <div>
+    <h1>Hello dumi!</h1>
+  </div>
+);
+```
+
+**除了单行之外，你还可以指定多个单行、范围或两者：**
+
+- 使用花括号指定单个行号，如：`{5}`, 逗号分隔指定多个行，如：`{4,7,9}`。
+- 使用连字符指定一系列行，如：`{5-8}`。
+- 也可以结合两种方式进行选择，如：`{4,7-13,16,23-27,40}`。
+
+<pre lang="markdown">
+```yml {3,6-9,12,13}
+features:
+  - title: 更好的编译性能
+    emoji: 🚀
+  - title: 内置全文搜索
+    emoji: 🔍
+  - title: 全新主题系统
+    emoji: 🎨
+  - title: 约定式路由增强
+    emoji: 🚥
+  - title: 资产元数据 2.0
+    emoji: 💡
+  - title: 继续为组件研发而生
+    emoji: 💎
+```
+</pre>
+
+渲染为：
+
+```yml {3,6-9,12,13}
+features:
+  - title: 更好的编译性能
+    emoji: 🚀
+  - title: 内置全文搜索
+    emoji: 🔍
+  - title: 全新主题系统
+    emoji: 🎨
+  - title: 约定式路由增强
+    emoji: 🚥
+  - title: 资产元数据 2.0
+    emoji: 💡
+  - title: 继续为组件研发而生
+    emoji: 💎
+```
+
+## Tree <Badge>2.2.0+</Badge>
+
+使用 Tree 组件可以创建文件树，使用语法如下：
+
+```md
+<Tree>
+  <ul>
+    <li>
+      src
+      <ul>
+        <li>index.md</li>
+      </ul>
+    </li>
+    <li>package.json</li>
+  </ul>
+</Tree>
+```
+
+渲染为：
+
+<Tree>
+  <ul>
+    <li>
+      src
+      <ul>
+        <li>index.md</li>
+      </ul>
+    </li>
+    <li>package.json</li>
+  </ul>
+</Tree>
+
+通过添加 `small` 元素可以为节点添加注释内容。
+
+```diff
+<Tree>
+  <ul>
+    <li>
+      src
++     <small>这是 src 文件夹</small>
+      <ul>
+        <li>
+          index.md
++         <small>这是 index.md</small>
+        </li>
+      </ul>
+    </li>
+    <li>
+      package.json
++     <small>这是 package.json</small>
+    </li>
+  </ul>
+</Tree>
+```
+
+渲染为：
+
+<Tree>
+  <ul>
+    <li>
+      src
+      <small>这是 src 文件夹</small>
+      <ul>
+        <li>
+          index.md
+          <small>这是 index.md</small>
+        </li>
+      </ul>
+    </li>
+    <li>
+      package.json
+      <small>这是 package.json</small>
+    </li>
+  </ul>
+</Tree>

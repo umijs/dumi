@@ -1,6 +1,11 @@
 import { useFullSidebarData, useLocale, useSiteData } from 'dumi';
 import { useState } from 'react';
-import type { IThemeConfig, IUserNavItems, IUserNavMode } from './types';
+import type {
+  INavItems,
+  ISidebarGroup,
+  IUserNavItems,
+  IUserNavMode,
+} from './types';
 import {
   getLocaleNav,
   pickRouteSortMeta,
@@ -8,7 +13,21 @@ import {
   useRouteDataComparer,
 } from './utils';
 
-type INavData = Extract<NonNullable<IThemeConfig['nav']>, Array<any>>;
+type INavSortMeta = Partial<Pick<INavItems[0], 'order' | 'title'>>;
+
+function genNavItem(
+  meta: INavSortMeta,
+  groups: ISidebarGroup[],
+  activePath: string,
+  link?: string,
+): INavItems[0] {
+  return {
+    title: meta.title || groups[0].title || groups[0].children[0].title,
+    order: meta.order || 0,
+    activePath: activePath,
+    ...(link ? { link } : {}),
+  };
+}
 
 /**
  * hook for get nav data
@@ -16,10 +35,10 @@ type INavData = Extract<NonNullable<IThemeConfig['nav']>, Array<any>>;
 export const useNavData = () => {
   const locale = useLocale();
   const routes = useLocaleDocRoutes();
-  const { themeConfig } = useSiteData();
+  const { themeConfig, _2_level_nav_available: is2LevelNav } = useSiteData();
   const sidebar = useFullSidebarData();
-  const sidebarDataComparer = useRouteDataComparer<INavData[0]>();
-  const [nav] = useState<INavData>(() => {
+  const sidebarDataComparer = useRouteDataComparer<INavItems[0]>();
+  const [nav] = useState<INavItems>(() => {
     // use user config first
     let userNavValue: IUserNavItems = [];
     let mode: IUserNavMode | undefined;
@@ -39,28 +58,80 @@ export const useNavData = () => {
     }
 
     // fallback to generate nav data from sidebar data
-    const data = Object.entries(sidebar).map<INavData[0]>(([link, groups]) => {
-      const meta = Object.values(routes).reduce<{
-        title?: string;
-        order?: number;
-      }>((ret, route) => {
-        // find routes which within the nav path
-        if (route.path!.startsWith(link.slice(1))) {
-          pickRouteSortMeta(ret, 'nav', route.meta!.frontmatter);
-        }
-        return ret;
-      }, {});
+    const data = Object.values(
+      Object.entries(sidebar)
+        // make sure shallow nav item before deep
+        .sort(([a], [b]) => a.split('/').length - b.split('/').length)
+        // convert sidebar data to nav data
+        .reduce<Record<string, INavItems[0]>>((ret, [link, groups]) => {
+          const [, parentPath, restPath] = link.match(/^(\/[^/]+)([^]+)?$/)!;
+          const isNestedNav = Boolean(restPath) && is2LevelNav;
+          const [firstMeta, secondMeta] = Object.values(routes).reduce<
+            {
+              title?: string;
+              order?: number;
+            }[]
+          >(
+            (ret, route) => {
+              // find routes which within the nav path
+              if (route.path!.startsWith(link.slice(1))) {
+                pickRouteSortMeta(ret[0], 'nav', route.meta!.frontmatter);
+                // generate parent meta for nested nav
+                if (isNestedNav)
+                  pickRouteSortMeta(
+                    ret[1],
+                    'nav.second',
+                    route.meta!.frontmatter,
+                  );
+              }
+              return ret;
+            },
+            [{}, {}],
+          );
 
-      return {
-        title: meta.title || groups[0].title || groups[0].children[0].title,
-        order: meta.order || 0,
-        link: groups[0].children[0].link,
-        activePath: link,
-      };
+          if (isNestedNav) {
+            // fallback to use parent path as 1-level nav title
+            firstMeta.title ??= parentPath
+              .slice(1)
+              .replace(/^[a-z]/, (s) => s.toUpperCase());
+
+            // handle nested nav item as parent children
+            const second = (ret[parentPath] ??= genNavItem(
+              firstMeta,
+              groups,
+              parentPath,
+            ));
+
+            second.children ??= [];
+            ret[parentPath].children!.push(
+              genNavItem(secondMeta, groups, link, groups[0].children[0].link),
+            );
+          } else {
+            // handle root nav item
+            ret[link] = genNavItem(
+              firstMeta,
+              groups,
+              link,
+              groups[0].children[0].link,
+            );
+          }
+
+          return ret;
+        }, {}),
+    );
+
+    data.forEach((item, i) => {
+      if (!item.link && item.children?.length === 1) {
+        // hoist nav item if only one child
+        data[i] = item.children[0];
+      } else if (item.children) {
+        // sort nav item children by order or title
+        item.children.sort(sidebarDataComparer);
+      }
     });
-
+    // sort nav items by order or title
     data.sort(sidebarDataComparer);
-    // TODO: 2-level nav data
+
     if (mode === 'prepend') data.unshift(...userNavValue);
     else if (mode === 'append') data.push(...userNavValue);
 

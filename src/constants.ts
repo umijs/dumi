@@ -22,16 +22,8 @@ export const PICKED_PKG_FIELDS = {
   authors: '',
 };
 
-export const CLIENT_DEPS = [
-  '@ant-design/icons-svg',
-  '@makotot/ghostui',
-  'deepmerge',
-  'lodash.throttle',
-  'prism-react-renderer',
-  'prismjs',
-  'rc-tabs',
-  'react-copy-to-clipboard',
-  'react-intl',
-];
-
 export const USELESS_TMP_FILES = ['tsconfig.json', 'typings.d.ts'];
+
+export const VERSION_2_LEVEL_NAV = '^2.2.0';
+
+export const VERSION_2_DEPRECATE_SOFT_BREAKS = '^2.2.0';

@@ -1,7 +1,8 @@
-import { useLocale, useLocation, useSiteData } from 'dumi';
+import { useLocale, useLocation, useRouteMeta, useSiteData } from 'dumi';
 import { useState } from 'react';
 import type {
   ILocalesConfig,
+  IRouteMeta,
   ISidebarGroup,
   ISidebarItem,
   IThemeConfig,
@@ -21,12 +22,41 @@ const getLocaleClearPath = (routePath: string, locale: ILocalesConfig[0]) => {
 };
 
 /**
+ * get parent path from route path
+ */
+function getRouteParentPath(
+  path: string,
+  { meta, is2LevelNav }: { meta: IRouteMeta; is2LevelNav: boolean },
+) {
+  const isIndexDocRoute =
+    meta.frontmatter.filename?.endsWith('index.md') &&
+    !meta._atom_route &&
+    is2LevelNav;
+  const paths = path
+    .split('/')
+    // strip end slash
+    .filter(Boolean);
+  const sliceEnd = Math.min(
+    Math.max(
+      // increase 1 level if route file is index.md
+      isIndexDocRoute ? paths.length : paths.length - 1,
+      // least 1-level
+      1,
+    ),
+    // up to 2-level when use conventional 2-level nav
+    is2LevelNav ? 2 : Infinity,
+  );
+
+  return paths.slice(0, sliceEnd).join('/');
+}
+
+/**
  * hook for get sidebar data for all nav
  */
 export const useFullSidebarData = () => {
   const locale = useLocale();
   const routes = useLocaleDocRoutes();
-  const { themeConfig } = useSiteData();
+  const { themeConfig, _2_level_nav_available: is2LevelNav } = useSiteData();
   const sidebarDataComparer = useRouteDataComparer<
     ISidebarGroup | ISidebarItem
   >();
@@ -40,12 +70,16 @@ export const useFullSidebarData = () => {
       // skip index routes
       if (clearPath && route.meta) {
         // extract parent path from route path
-        // a => /a
-        // en-US/a => /en-US/a
-        // a/b => /a
-        // en-US/a/b => /en-US/a
+        // normal examples:
+        //   a => /a
+        //   en-US/a => /en-US/a
+        //   a/b => /a
+        //   en-US/a/b => /en-US/a
+        // convention 2-level navs examples:
+        //   a/b => /a/b (if route file is a/b/index.md)
+        //   a/b/c => /a/b
         const parentPath = `/${route.path!.replace(clearPath, (s) =>
-          s.replace(/\/[^/]+$/, ''),
+          getRouteParentPath(s, { is2LevelNav, meta: route.meta! }),
         )}`;
         const { title, order } = pickRouteSortMeta(
           { order: 0 },
@@ -175,7 +209,9 @@ export const useTreeSidebarData = () => {
 export const useSidebarData = () => {
   const locale = useLocale();
   const sidebar = useFullSidebarData();
+  const { _2_level_nav_available: is2LevelNav } = useSiteData();
   const { pathname } = useLocation();
+  const meta = useRouteMeta();
   const clearPath = getLocaleClearPath(pathname.slice(1), locale);
   // extract parent path from location pathname
   // /a => /a
@@ -185,7 +221,7 @@ export const useSidebarData = () => {
   // /en-US/a/b/ => /en-US/a (also strip trailing /)
   const parentPath = clearPath
     ? pathname.replace(clearPath, (s) =>
-        s.replace(/([^/]+)(\/[^/]+\/?)$/, '$1'),
+        getRouteParentPath(s, { is2LevelNav, meta }),
       )
     : pathname;
 

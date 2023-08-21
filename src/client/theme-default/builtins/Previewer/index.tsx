@@ -1,10 +1,11 @@
 import classnames from 'classnames';
 import { IPreviewerProps, useLocation } from 'dumi';
 import PreviewerActions from 'dumi/theme/slots/PreviewerActions';
-import React, { type FC } from 'react';
+import React, { useRef, type FC } from 'react';
 import './index.less';
 
 const Previewer: FC<IPreviewerProps> = (props) => {
+  const demoContainer = useRef<HTMLDivElement>(null);
   const { hash } = useLocation();
   const link = `#${props.asset.id}`;
 
@@ -22,6 +23,7 @@ const Previewer: FC<IPreviewerProps> = (props) => {
         data-compact={props.compact || undefined}
         data-transform={props.transform || undefined}
         data-iframe={props.iframe || undefined}
+        ref={demoContainer}
       >
         {props.iframe ? (
           <iframe
@@ -53,7 +55,14 @@ const Previewer: FC<IPreviewerProps> = (props) => {
             )}
           </div>
         )}
-        <PreviewerActions {...props} />
+        <PreviewerActions
+          {...props}
+          demoContainer={
+            props.iframe
+              ? (demoContainer.current?.firstElementChild as HTMLIFrameElement)
+              : demoContainer.current!
+          }
+        />
       </div>
     </div>
   );

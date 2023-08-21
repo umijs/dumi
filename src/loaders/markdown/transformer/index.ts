@@ -1,13 +1,16 @@
 import type { IParsedBlockAsset } from '@/assetParsers/block';
-import type { IRouteMeta } from '@/client/theme-api/types';
-import type { IDumiConfig, IDumiTechStack } from '@/types';
+import type { ILocalesConfig, IRouteMeta } from '@/client/theme-api/types';
+import { VERSION_2_DEPRECATE_SOFT_BREAKS } from '@/constants';
+import type { IApi, IDumiConfig, IDumiTechStack } from '@/types';
 import enhancedResolve from 'enhanced-resolve';
 import type { IRoute } from 'umi';
+import { semver } from 'umi/plugin-utils';
 import type { Plugin, Processor } from 'unified';
 import type { Data } from 'vfile';
 import rehypeDemo from './rehypeDemo';
 import rehypeDesc from './rehypeDesc';
 import rehypeEnhancedTag from './rehypeEnhancedTag';
+import rehypeHighlightLine from './rehypeHighlightLine';
 import rehypeImg from './rehypeImg';
 import rehypeIsolation from './rehypeIsolation';
 import rehypeJsxify from './rehypeJsxify';
@@ -16,6 +19,7 @@ import rehypeRaw from './rehypeRaw';
 import rehypeSlug from './rehypeSlug';
 import rehypeStrip from './rehypeStrip';
 import rehypeText from './rehypeText';
+import remarkBreaks from './remarkBreaks';
 import remarkContainer from './remarkContainer';
 import remarkEmbed from './remarkEmbed';
 import remarkMeta from './remarkMeta';
@@ -62,11 +66,24 @@ export interface IMdTransformerOptions {
   extraRemarkPlugins?: IDumiConfig['extraRemarkPlugins'];
   extraRehypePlugins?: IDumiConfig['extraRehypePlugins'];
   routes: Record<string, IRoute>;
+  locales: ILocalesConfig;
+  pkg: IApi['pkg'];
 }
 
 export interface IMdTransformerResult {
   content: string;
   meta: Data;
+}
+
+/**
+ * keep markdown soft break before 2.2.0
+ */
+function keepSoftBreak(pkg: IApi['pkg']) {
+  // for dumi local example project
+  if (pkg?.name?.startsWith('@examples/') || pkg?.name === 'dumi') return false;
+
+  const ver = pkg?.devDependencies?.dumi ?? pkg?.dependencies?.dumi ?? '^2.0.0';
+  return !semver.subset(ver, VERSION_2_DEPRECATE_SOFT_BREAKS);
 }
 
 function applyUnifiedPlugin(opts: {
@@ -87,11 +104,11 @@ function applyUnifiedPlugin(opts: {
 }
 
 export default async (raw: string, opts: IMdTransformerOptions) => {
+  let fileLocaleLessPath = opts.fileAbsPath;
   const { unified } = await import('unified');
   const { default: remarkParse } = await import('remark-parse');
   const { default: remarkFrontmatter } = await import('remark-frontmatter');
   const { default: remarkDirective } = await import('remark-directive');
-  const { default: remarkBreaks } = await import('remark-breaks');
   const { default: remarkGfm } = await import('remark-gfm');
   const { default: remarkRehype } = await import('remark-rehype');
   const { default: rehypeAutolinkHeadings } = await import(
@@ -104,6 +121,14 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
     alias: opts.alias,
   });
+  const fileLocale = opts.locales.find((locale) =>
+    opts.fileAbsPath.endsWith(`.${locale.id}.md`),
+  )?.id;
+
+  // generate locale-less file abs path, for generate code id and atom id
+  if (fileLocale) {
+    fileLocaleLessPath = opts.fileAbsPath.replace(`.${fileLocale}.md`, '.md');
+  }
 
   const processor = unified()
     .use(remarkParse)
@@ -112,12 +137,16 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     .use(remarkMeta, {
       cwd: opts.cwd,
       fileAbsPath: opts.fileAbsPath,
+      fileLocaleLessPath,
       resolve: opts.resolve,
     })
     .use(remarkDirective)
     .use(remarkContainer)
-    .use(remarkBreaks)
     .use(remarkGfm);
+
+  if (keepSoftBreak(opts.pkg)) {
+    processor.use(remarkBreaks, { fileAbsPath: opts.fileAbsPath });
+  }
 
   // apply extra remark plugins
   opts.extraRemarkPlugins?.forEach((plugin) =>
@@ -134,6 +163,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     .use(rehypeRaw, {
       fileAbsPath: opts.fileAbsPath,
     })
+    .use(rehypeHighlightLine)
     .use(rehypeRemoveComments, { removeConditional: true })
     .use(rehypeStrip)
     .use(rehypeImg)
@@ -141,6 +171,8 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
       techStacks: opts.techStacks,
       cwd: opts.cwd,
       fileAbsPath: opts.fileAbsPath,
+      fileLocaleLessPath,
+      fileLocale,
       resolve: opts.resolve,
       resolver,
     })

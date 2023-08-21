@@ -1,4 +1,5 @@
 ---
+group: 文档渲染配置
 toc: content
 ---
 
@@ -81,6 +82,42 @@ title: 配置页面标题
 - 默认值：`undefined`
 
 配置页面简介，该值会用于生成 `<meta>` 标签。
+
+## nav
+
+- 类型：`string | { title: string; order: number; second: string | { title: string; order: string } }`
+- 默认值：`undefined`
+
+<!-- 2-level nav warning start -->
+
+:::warning
+二级导航为 dumi v2.2 的新增特性，由于二级导航特性会影响主题 API 的行为，为了保证对存量项目及主题包的向前兼容，dumi 仅在项目 `devDependencies` 中声明的 dumi 版本号大于等于 `2.2.0`（例如 `^2.2.0`）时才会启用该特性
+
+如果你的项目使用了三方主题包，能否使用二级导航则取决于主题包是否适配该特性，dumi 会将主题包 `peerDependencies` 中声明的 dumi 版本作为判断依据
+:::
+
+<!-- 2-level nav warning end -->
+
+配置当前页所属的一级导航及二级导航，同一导航类目下仅需配置任意一个 Markdown 文件即可全局生效，未配置时将会使用[默认规则](../guide/conventional-routing.md#导航归类及生成)。
+
+例如：
+
+```md
+---
+# 单独配置名称
+nav: 名称
+# 同时配置名称和顺序，order 越小越靠前，默认为 0
+nav:
+  title: 名称
+  order: 1
+  # 单独配置二级导航名称
+  second: 父级名称
+  # 同时配置二级导航名称和顺序，order 越小越靠前，默认为 0
+  second:
+    title: 父级名称
+    order: 1
+---
+```
 
 ## group
 

@@ -36,9 +36,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
       }}
       onChange={(ev) => {
         // wait for onCompositionEnd event be triggered
+        const value = ev.target.value;
         setTimeout(() => {
           if (!imeWaiting.current) {
-            props.onChange(ev.target.value);
+            props.onChange(value);
           }
         }, 1);
       }}

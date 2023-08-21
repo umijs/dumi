@@ -14,12 +14,23 @@ dumi 内置了一套完善的默认主题，默认主题的呈现效果与 dumi 
 
 <!-- site config -->
 
-### name
+### editLink <Badge>2.2.2+</Badge>
 
-- 类型：`string`
-- 默认值：`undefined`
+- 类型：`boolean | string`
+- 默认值：`true`
 
-配置导航栏上的站点名称，不配置时不展示。
+配置是否在 Markdown 页面内容区域底部展示当前文档的编辑链接。
+
+当配置为 `true` 时 dumi 会根据项目 `package.json` 中的 `repository` 配置及当前分支，使用 [hosted-git-info](https://github.com/npm/hosted-git-info) 自动生成编辑链接，仅支持[部分代码托管平台](https://github.com/npm/hosted-git-info#supported-hosts)；如果你使用的是其他代码托管平台或私有化部署的平台，可以使用字符串模板自定义编辑链接，例如 `https://gitlab.example.com/group/repo/{filename}`，其中 `{filename}` 会被替换为当前文档在仓库中的文件路径。
+
+### lastUpdated <Badge>2.2.2+</Badge>
+
+- 类型：`boolean`
+- 默认值：`true`
+
+配置是否在 Markdown 页面内容区域底部展示当前文档的最后更新时间。
+
+文档最后更新时间来源于 Git 提交记录，如果 Markdown 文档还未被 Git 追踪，那么则会展示构建时间；如果你的文档通过 GitHub Action 进行部署，还需要在 [actions/checkout](https://github.com/actions/checkout) 步骤中加上 `fetch-depth: 0` 参数以检出所有 Git 提交记录，确保可以 dumi 可以拿到正确的最后更新时间，具体可参考 [FAQ - 自动部署](../guide/faq.md#自动部署)。
 
 ### logo
 
@@ -30,9 +41,16 @@ dumi 内置了一套完善的默认主题，默认主题的呈现效果与 dumi 
 
 配置为 `false` 时不展示 LOGO。
 
+### name
+
+- 类型：`string`
+- 默认值：`undefined`
+
+配置导航栏上的站点名称，不配置时不展示。
+
 ### nav
 
-- `Navs`类型：`{ title: '导航标题', link: '导航路由' }[] | Record<string, { title: '导航标题', link: '导航路由' }[]>`
+- `Navs`类型：`{ title: '导航标题', link: '导航路由', activePath: '高亮路径' }[] | Record<string, { title: '导航标题', link: '导航路由', activePath: '高亮路径' }[]>`
 - 类型：`Navs | {mode: "override" | "append" | "prepend", value: Navs}`
 - 默认值：`约定式导航`
 
@@ -83,6 +101,24 @@ dumi 内置了一套完善的默认主题，默认主题的呈现效果与 dumi 
 - 默认值：`false`
 
 是否开启 RTL 切换，配置为 `true` 时导航栏会展示 RTL 按钮，用于将站点文本阅读方向切换为『从右到左』，通常在站点用户群体中有使用希伯来语或阿拉伯语时启用。
+
+### showLineNum <Badge>2.2.0+</Badge>
+
+- 类型：`boolean`
+- 默认值：`false`
+
+是否在代码块中展示行号，配置为 `true` 时会展示代码行号。
+
+<h3>
+nprogress
+<span style="display: none">-</span>
+<Badge>2.1.23+</Badge>
+</h3>
+
+- 类型：`boolean`
+- 默认值：`true`
+
+切换页面时是否在页面顶部展示进度条，效果如 [nprogress](https://github.com/rstacruz/nprogress)。
 
 ### prefersColor
 
@@ -150,7 +186,7 @@ export default {
       gitlab: 'https://xxxx',
       facebook: 'https://xxxx',
       zhihu: 'https://xxxx',
-      yueque: 'https://xxxx',
+      yuque: 'https://xxxx',
       linkedin: 'https://xxxx',
     },
   },

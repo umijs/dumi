@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import type AtomAssetsParser from '@/assetParsers/atom';
 import type { IParsedBlockAsset } from '@/assetParsers/block';
 import type { IDumiDemoProps } from '@/client/theme-api/DumiDemo';
@@ -12,6 +13,8 @@ import type { defineConfig as defineUmiConfig, IApi as IUmiApi } from 'umi';
 // ref: https://grrr.tech/posts/2021/typescript-partial/
 type Subset<K> = {
   [attr in keyof K]?: K[attr] extends Array<any>
+    ? K[attr]
+    : K[attr] extends Function | undefined
     ? K[attr]
     : K[attr] extends object
     ? Subset<K[attr]>
@@ -37,11 +40,7 @@ type IUmiConfig = Omit<
 interface IDumiExtendsConfig {
   resolve: {
     docDirs: (string | { type?: string; dir: string })[];
-    /**
-     * @deprecated use `resolve.atomDirs` instead
-     */
-    entityDirs?: { type: string; dir: string }[];
-    atomDirs: { type: string; dir: string }[];
+    atomDirs: { type: string; subType?: string; dir: string }[];
     codeBlockMode: 'active' | 'passive';
     entryFile?: string;
     forceKebabCaseRouting: boolean;
@@ -52,12 +51,10 @@ interface IDumiExtendsConfig {
   /**
    * extra unified plugins
    */
-  // eslint-disable-next-line @typescript-eslint/ban-types
   extraRemarkPlugins?: (string | Function | [string | Function, object])[];
-  // eslint-disable-next-line @typescript-eslint/ban-types
   extraRehypePlugins?: (string | Function | [string | Function, object])[];
 }
-export type IDumiConfig = IUmiConfig & IDumiExtendsConfig;
+export type IDumiConfig = Omit<IUmiConfig, 'locales'> & IDumiExtendsConfig;
 
 export type IDumiUserConfig = Subset<Omit<IDumiConfig, 'locales'>> & {
   locales?:

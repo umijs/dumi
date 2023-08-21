@@ -12,6 +12,8 @@ export default (api: IApi) => {
     themeConfig: {
       footer: `Copyright © ${new Date().getFullYear()} | Powered by <a href="https://d.umijs.org" target="_blank" rel="noreferrer">dumi</a>`,
       prefersColor: { default: 'light', switch: true },
+      nprogress: true,
+      lastUpdated: true,
     },
   };
 

@@ -3,13 +3,16 @@ import {
   PICKED_PKG_FIELDS,
   PREFERS_COLOR_ATTR,
   THEME_PREFIX,
+  VERSION_2_LEVEL_NAV,
 } from '@/constants';
 import type { IApi } from '@/types';
 import { getClientDistFile } from '@/utils';
 import { parseModuleSync } from '@umijs/bundler-utils';
+import { execSync } from 'child_process';
 import fs from 'fs';
+import hostedGit from 'hosted-git-info';
 import path from 'path';
-import { deepmerge, lodash, resolve, winPath } from 'umi/plugin-utils';
+import { deepmerge, lodash, resolve, semver, winPath } from 'umi/plugin-utils';
 import { safeExcludeInMFSU } from '../derivative';
 import loadTheme, { IThemeLoadResult } from './loader';
 
@@ -22,6 +25,15 @@ const loadingComponentPath = winPath(
  * get pkg theme name
  */
 function getPkgThemeName(api: IApi) {
+  // respect env first
+  if (process.env.DUMI_THEME) {
+    const envThemePkgPath = require.resolve(
+      path.join(process.env.DUMI_THEME, 'package.json'),
+      { paths: [api.cwd] },
+    );
+
+    return require(envThemePkgPath).name;
+  }
   const validDeps = Object.assign(
     {},
     api.pkg.dependencies,
@@ -40,10 +52,18 @@ function getPkgThemeName(api: IApi) {
 function getPkgThemePath(api: IApi) {
   const pkgThemeName = getPkgThemeName(api);
 
+  // respect env first
+  if (process.env.DUMI_THEME) {
+    return path.resolve(api.cwd, process.env.DUMI_THEME);
+  }
+
   return (
     pkgThemeName &&
     path.dirname(
-      require.resolve(`${pkgThemeName}/package.json`, { paths: [api.cwd] }),
+      resolve.sync(`${pkgThemeName}/package.json`, {
+        basedir: api.cwd,
+        preserveSymlinks: true,
+      }),
     )
   );
 }
@@ -56,6 +76,19 @@ function getModuleExports(modulePath: string) {
     path: modulePath,
     content: fs.readFileSync(modulePath, 'utf-8'),
   })[1];
+}
+
+/**
+ * check if package dumi version is minor 2
+ */
+function checkMinor2ByPkg(pkg: IApi['pkg']) {
+  // for dumi local example project
+  if (pkg.name?.startsWith('@examples/')) return true;
+
+  const ver =
+    pkg.peerDependencies?.dumi || pkg.devDependencies?.dumi || '^2.0.0';
+
+  return semver.subset(ver, VERSION_2_LEVEL_NAV);
 }
 
 export default (api: IApi) => {
@@ -141,19 +174,29 @@ export default (api: IApi) => {
       return memo;
     },
   });
-
-  api.modifyAppData((memo) => {
-    memo.globalLoading ??= loadingComponentPath;
-
-    return memo;
-  });
-
   api.register({
     key: 'onGenerateFiles',
     stage: -Infinity,
     fn() {
       api.appData.globalLoading ??= loadingComponentPath;
     },
+  });
+
+  api.modifyAppData((memo) => {
+    memo.globalLoading ??= loadingComponentPath;
+
+    // auto enable 2-level nav by declared dumi version, for existing projects compatibility
+    // ref: https://github.com/umijs/dumi/discussions/1618
+    memo._2LevelNavAvailable = checkMinor2ByPkg(api.pkg);
+
+    // always respect theme package declaration, for theme compatibility
+    if (pkgThemePath && !memo._2LevelNavAvailable) {
+      memo._2LevelNavAvailable = checkMinor2ByPkg(
+        require(path.join(pkgThemePath, 'package.json')),
+      );
+    }
+
+    return memo;
   });
 
   api.modifyConfig((memo) => {
@@ -181,6 +224,35 @@ export default (api: IApi) => {
       path.resolve(__dirname, '../../client/theme-api'),
     );
 
+    // set automatic edit link
+    // why not use default config?
+    // because true value should be transformed to automatic edit link
+    const repoUrl = api.pkg.repository?.url || api.pkg.repository;
+
+    if (memo.themeConfig?.editLink !== false && typeof repoUrl === 'string') {
+      const hostedGitIns = hostedGit.fromUrl(repoUrl);
+      let branch = '';
+
+      try {
+        branch = execSync('git branch --show-current', {
+          stdio: 'pipe',
+        })
+          .toString()
+          .trim();
+      } catch {
+        branch = 'master';
+      }
+
+      if (hostedGitIns) {
+        memo.themeConfig ??= {};
+        // @ts-ignore
+        memo.themeConfig.editLink = `${hostedGitIns.edit(
+          `${api.pkg.repository.directory || ''}/{filename}`,
+          { committish: branch },
+        )}`;
+      }
+    }
+
     return memo;
   });
 
@@ -207,6 +279,67 @@ export default (api: IApi) => {
     });
 
     return memo;
+  });
+
+  api.onGenerateFiles({
+    // execute before umi tmpFiles plugin
+    stage: -Infinity,
+    fn() {
+      const { globalLoading } = api.appData;
+      const enableNProgress = !!api.config.themeConfig.nprogress;
+
+      // replace original loading component data
+      api.appData.globalLoading = '@@/dumi/theme/loading';
+
+      // generate dumi internal loading component for control loading status
+      // also wrap user loading component
+      api.writeTmpFile({
+        noPluginDir: true,
+        path: 'dumi/theme/loading.tsx',
+        content: `${
+          enableNProgress
+            ? `import nprogress from '${winPath(
+                path.dirname(require.resolve('nprogress/package')),
+              )}';
+import './nprogress.css';`
+            : ''
+        }${
+          globalLoading
+            ? `
+import UserLoading from '${globalLoading}';`
+            : ''
+        }
+import React, { useLayoutEffect, type FC } from 'react';
+import { useSiteData } from 'dumi';
+
+const DumiLoading: FC = () => {
+  const { setLoading } = useSiteData();
+
+  useLayoutEffect(() => {
+    setLoading(true);${
+      enableNProgress
+        ? `
+    nprogress.start();`
+        : ''
+    }
+
+    return () => {
+      setLoading(false);${
+        enableNProgress
+          ? `
+      nprogress.done();`
+          : ''
+      }
+    }
+  }, []);
+
+  return ${globalLoading ? '<UserLoading />' : 'null'};
+}
+
+export default DumiLoading;
+`,
+      });
+    },
   });
 
   api.onGenerateFiles(() => {
@@ -272,16 +405,13 @@ const entryExports = {
 
 export default function DumiContextWrapper() {
   const outlet = useOutlet();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const prev = useRef(history.location.pathname);
 
   useEffect(() => {
     return history.listen((next) => {
       if (next.location.pathname !== prev.current) {
         prev.current = next.location.pathname;
-
-        // mark loading when route change, page component will set false when loaded
-        setLoading(true);
 
         // scroll to top when route changed
         document.documentElement.scrollTo(0, 0);
@@ -294,23 +424,97 @@ export default function DumiContextWrapper() {
       pkg: ${JSON.stringify(
         lodash.pick(api.pkg, ...Object.keys(PICKED_PKG_FIELDS)),
       )},
+      historyType: "${api.config.history?.type || 'browser'}",
       entryExports,
       demos,
       components,
       locales,
       loading,
       setLoading,
+      hostname: ${JSON.stringify(api.config.sitemap?.hostname)},
       themeConfig: ${JSON.stringify(
         Object.assign(
           lodash.pick(api.config, 'logo', 'description', 'title'),
           api.config.themeConfig,
         ),
       )},
+      _2_level_nav_available: ${api.appData._2LevelNavAvailable},
     }}>
       {outlet}
     </SiteContext.Provider>
   );
 }`,
+    });
+
+    const primaryColor =
+      typeof api.config?.theme === 'object'
+        ? api.config?.theme?.['@c-primary']
+        : '#1677ff';
+
+    api.writeTmpFile({
+      noPluginDir: true,
+      path: 'dumi/theme/nprogress.css',
+      content: `
+      /* https://unpkg.com/browse/nprogress@0.2.0/nprogress.css */
+      #nprogress {
+        pointer-events: none;
+      }
+
+      #nprogress .bar {
+        background: var;
+        position: fixed;
+        z-index: 1031;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+      }
+
+      #nprogress .peg {
+        display: block;
+        position: absolute;
+        right: 0px;
+        width: 100px;
+        height: 100%;
+        box-shadow: 0 0 10px ${primaryColor}, 0 0 5px ${primaryColor};
+        opacity: 1.0;
+        transform: rotate(3deg) translate(0px, -4px);
+      }
+
+      #nprogress .spinner {
+        display: block;
+        position: fixed;
+        z-index: 1031;
+        top: 15px;
+        right: 15px;
+      }
+
+      #nprogress .spinner-icon {
+        width: 18px;
+        height: 18px;
+        box-sizing: border-box;
+        border: solid 2px transparent;
+        border-top-color: ${primaryColor};
+        border-left-color: ${primaryColor};
+        border-radius: 50%;
+        animation: nprogress-spinner 400ms linear infinite;
+      }
+
+      .nprogress-custom-parent {
+        overflow: hidden;
+        position: relative;
+      }
+
+      .nprogress-custom-parent #nprogress .spinner,
+      .nprogress-custom-parent #nprogress .bar {
+        position: absolute;
+      }
+
+      @keyframes nprogress-spinner {
+        0%   { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      `,
     });
   });
 
@@ -335,6 +539,23 @@ export default function DumiContextWrapper() {
   );
 })();`;
   });
+
+  // share pluginManager with theme-api
+  api.addEntryImportsAhead(() => [
+    {
+      specifier: '{ getPluginManager as getDumiPluginManager }',
+      source: './core/plugin',
+    },
+    {
+      specifier: '{ setPluginManager as setDumiPluginManager }',
+      source: winPath(require.resolve('../../client/theme-api/utils')),
+    },
+  ]);
+  api.addEntryCode(() => 'setDumiPluginManager(getDumiPluginManager());');
+  api.addRuntimePluginKey(() => [
+    'modifyCodeSandboxData',
+    'modifyStackBlitzData',
+  ]);
 
   // workaround for avoid oom, when developing theme package example in tnpm node_modules
   if (

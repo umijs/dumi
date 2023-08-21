@@ -1,11 +1,32 @@
 import {
   BaseGenerator,
+  execa,
   fsExtra,
-  installWithNpmClient,
+  installWithNpmClient as installDeps,
   prompts,
   yParser,
 } from '@umijs/utils';
 import { join } from 'path';
+
+async function getPnpmVersion() {
+  try {
+    return (await execa.execa('pnpm', ['--version'])).stdout;
+  } catch (e) {
+    throw new Error('Please install pnpm first');
+  }
+}
+
+async function installWithNpmClient({
+  npmClient,
+  cwd,
+}: Parameters<typeof installDeps>[0]) {
+  if (npmClient === 'pnpm' && (await getPnpmVersion()).startsWith('8.')) {
+    // to avoid pnpm 8 install minimal version of deps
+    await execa.execa('pnpm', ['up', '-L'], { cwd, stdio: 'inherit' });
+  } else {
+    installDeps({ npmClient, cwd });
+  }
+}
 
 export default async ({
   cwd,
@@ -110,7 +131,7 @@ export default async ({
     path: join(__dirname, `../templates/${type}`),
     target,
     data: {
-      version: '^2.0.2',
+      version: process.env.DUMI_VERSION,
       npmClient,
       registry,
     },
@@ -122,5 +143,5 @@ export default async ({
     fsExtra.removeSync(join(target, './src/plugin'));
   }
   // install
-  installWithNpmClient({ npmClient, cwd: target });
+  await installWithNpmClient({ npmClient, cwd: target });
 };

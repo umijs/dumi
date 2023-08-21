@@ -13,6 +13,11 @@
   "header.social.linkedin": "Linkedin",
   "previewer.actions.code.expand": "Show Code",
   "previewer.actions.code.shrink": "Hide Code",
+  "previewer.actions.sketch": "Copy to Sketch app",
+  "previewer.actions.sketch.group": "Copy as Sketch Group",
+  "previewer.actions.sketch.symbol": "Copy as Sketch Symbol",
+  "previewer.actions.sketch.divider": "------------------------",
+  "previewer.actions.sketch.guide": "How to paste to Sketch?",
   "previewer.actions.codesandbox": "Open in CodeSandbox",
   "previewer.actions.codepen": "Open in CodePen (Not implemented)",
   "previewer.actions.stackblitz": "Open in StackBlitz",
@@ -28,6 +33,10 @@
   "api.component.loading": "Properties definition is resolving, wait a moment...",
   "api.component.not.found": "Properties definition not found for {id} component",
   "content.tabs.default": "Doc",
+  "content.footer.last.updated": "Last updated: ",
+  "content.footer.actions.edit": "Improve this documentation",
+  "content.footer.actions.previous": "PREV",
+  "content.footer.actions.next": "NEXT",
   "search.not.found": "No content was found",
   "layout.sidebar.btn": "Sidebar"
 }

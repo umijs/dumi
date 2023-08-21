@@ -1,3 +1,4 @@
+import ContentFooter from '@/client/theme-default/slots/ContentFooter';
 import { ReactComponent as IconSidebar } from '@ant-design/icons-svg/inline-svg/outlined/align-left.svg';
 import animateScrollTo from 'animated-scroll-to';
 import {
@@ -23,8 +24,8 @@ const DocLayout: FC = () => {
   const intl = useIntl();
   const outlet = useOutlet();
   const sidebar = useSidebarData();
-  const { hash } = useLocation();
-  const { loading } = useSiteData();
+  const { hash, pathname } = useLocation();
+  const { loading, hostname } = useSiteData();
   const [activateSidebar, updateActivateSidebar] = useState(false);
   const { frontmatter: fm } = useRouteMeta();
 
@@ -65,9 +66,11 @@ const DocLayout: FC = () => {
         {fm.keywords && (
           <meta name="keywords" content={fm.keywords.join(',')} />
         )}
-        {fm.keywords && (
-          <meta property="og:keywords" content={fm.keywords.join(',')} />
-        )}
+        {fm.keywords &&
+          fm.keywords.map((keyword) => (
+            <meta key={keyword} property="article:tag" content={keyword}></meta>
+          ))}
+        {hostname && <link rel="canonical" href={hostname + pathname} />}
       </Helmet>
       <Header />
       <Hero />
@@ -90,7 +93,8 @@ const DocLayout: FC = () => {
       <main>
         {showSidebar && <Sidebar />}
         <Content>
-          {outlet}
+          <article>{outlet}</article>
+          <ContentFooter />
           <Footer />
         </Content>
         {fm.toc === 'content' && (

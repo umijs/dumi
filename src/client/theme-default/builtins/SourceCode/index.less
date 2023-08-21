@@ -38,6 +38,54 @@
     &::after {
       content: none;
     }
+
+    // highlight line
+    & > .highlighted {
+      position: relative;
+      width: calc(100% + 24px);
+      background-color: shade(@bg-color, 5%);
+
+      .line-cell {
+        position: relative;
+
+        &::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          right: -24px;
+          bottom: 0;
+          width: 24px;
+          background-color: shade(@bg-color, 5%);
+        }
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -24px;
+        bottom: 0;
+        width: 24px;
+        background-color: shade(@bg-color, 5%);
+      }
+    }
+
+    & > .wrap {
+      display: table-row;
+
+      & > .token-line-num {
+        display: table-cell;
+        text-align: right;
+        padding-right: 1em;
+        user-select: none;
+        opacity: 0.5;
+      }
+
+      & > .line-cell {
+        display: table-cell;
+        width: 100%;
+      }
+    }
   }
 
   &-copy {
@@ -91,6 +139,20 @@
 
     &-copy {
       background-color: fadeout(@bg-color, 80%);
+    }
+
+    & > pre.prism-code > .highlighted {
+      background-color: tint(@bg-color, 10%);
+
+      &::after {
+        background-color: tint(@bg-color, 10%);
+      }
+
+      .line-cell {
+        &::after {
+          background-color: tint(@bg-color, 10%);
+        }
+      }
     }
   }
 }
