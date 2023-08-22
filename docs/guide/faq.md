@@ -104,6 +104,8 @@ yarn add gh-pages -D
 }
 ```
 
+> 同样的，如果是 react 文档，使用 `gh-pages -d docs-dist`命令即可。
+
 编译生成 `dist` 目录
 
 ```bash
@@ -155,6 +157,8 @@ jobs:
           # 文档目录，如果是 react 模板需要修改为 docs-dist
           publish_dir: ./dist
 ```
+
+> 如果 actions 部署时遇到403错误，可以尝试使用 [Deploy Token](https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-set-ssh-private-key-deploy_key)
 
 ## dumi 如何支持对 Swift、C#、Kotlin 等语言的语法高亮？
 
