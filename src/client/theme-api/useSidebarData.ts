@@ -15,7 +15,10 @@ import {
 
 const DEFAULT_GROUP_STUB_TITLE = '$default-group-title';
 
-const getLocaleClearPath = (routePath: string, locale: ILocalesConfig[0]) => {
+export const getLocaleClearPath = (
+  routePath: string,
+  locale: ILocalesConfig[0],
+) => {
   return 'base' in locale
     ? routePath.replace(locale.base.slice(1), '').replace(/^\//, '')
     : routePath;
