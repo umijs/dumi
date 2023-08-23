@@ -158,7 +158,7 @@ jobs:
           publish_dir: ./dist
 ```
 
-> 如果 actions 部署时遇到403错误，可以尝试使用 [Deploy Token](https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-set-ssh-private-key-deploy_key)
+> 如果 actions 部署时遇到 403 错误，可以尝试使用 [Deploy Token](https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-set-ssh-private-key-deploy_key)
 
 ## dumi 如何支持对 Swift、C#、Kotlin 等语言的语法高亮？
 
