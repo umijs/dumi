@@ -6,6 +6,7 @@ import type {
   IUserNavItems,
   IUserNavMode,
 } from './types';
+import { getLocaleClearPath } from './useSidebarData';
 import {
   getLocaleNav,
   pickRouteSortMeta,
@@ -64,7 +65,10 @@ export const useNavData = () => {
         .sort(([a], [b]) => a.split('/').length - b.split('/').length)
         // convert sidebar data to nav data
         .reduce<Record<string, INavItems[0]>>((ret, [link, groups]) => {
-          const [, parentPath, restPath] = link.match(/^(\/[^/]+)([^]+)?$/)!;
+          const [, parentPath, restPath] = `/${getLocaleClearPath(
+            link.replace(/^\//, ''),
+            locale,
+          )}`.match(/^(\/[^/]+)([^]+)?$/)!;
           const isNestedNav = Boolean(restPath) && is2LevelNav;
           const [firstMeta, secondMeta] = Object.values(routes).reduce<
             {
