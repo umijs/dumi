@@ -23,7 +23,6 @@ const Toc: FC = () => {
   const { loading } = useSiteData();
   const prevIndexRef = useRef(0);
   const [sectionRefs, setSectionRefs] = useState<RefObject<HTMLElement>[]>([]);
-
   const memoToc = React.useMemo(() => {
     let toc = meta.toc;
     if (tabMeta) {
@@ -43,7 +42,7 @@ const Toc: FC = () => {
 
       setSectionRefs(refs as any);
     }
-  }, [pathname, search, loading]);
+  }, [pathname, search, loading, memoToc]);
 
   return sectionRefs.length ? (
     <ScrollSpy sectionRefs={sectionRefs}>
