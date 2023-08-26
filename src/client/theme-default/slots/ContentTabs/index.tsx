@@ -16,6 +16,7 @@ const ContentTabs: FC<IContentTabsProps> = ({
   onChange,
 }) => {
   const intl = useIntl();
+  const { frontmatter: fm } = useRouteMeta();
 
   // TODO: tab.Extra & tab.Action render
 
@@ -23,7 +24,7 @@ const ContentTabs: FC<IContentTabsProps> = ({
     <ul className="dumi-default-content-tabs">
       <li onClick={() => onChange()} data-active={!key || undefined}>
         <button type="button">
-          {intl.formatMessage({ id: 'content.tabs.default' })}
+          {fm.title || intl.formatMessage({ id: 'content.tabs.default' })}
         </button>
       </li>
       {tabs!.map((tab) => (
