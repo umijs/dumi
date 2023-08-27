@@ -1,0 +1,17 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`rehypeRaw > addCustomPropsToMatchingJSX > should match nested jsx components 1`] = `
+"<Foo $tag-name=\\"Foo\\" props=\\"123\\" />
+<Foo $tag-name=\\"Foo\\" props=\\"ReutersType<Props>\\" />
+<Foo $tag-name=\\"Foo\\" props=\\"ReutersType<Props>\\"></Foo>
+<Foo $tag-name=\\"Foo\\" props=\\"ReutersType<Props>\\">bar</Foo>
+<Foo $tag-name=\\"Foo\\" props=\\"ReutersType<Props>\\"><Foo $tag-name=\\"Foo\\" props=\\"123\\" />
+<Foo $tag-name=\\"Foo\\" props=\\"ReutersType<Props>\\" />
+<Foo $tag-name=\\"Foo\\" props=\\"ReutersType<Props>\\"></Foo>
+<Foo $tag-name=\\"Foo\\" props=\\"ReutersType<Props>\\">bar</Foo>
+<Foo $tag-name=\\"Foo\\" props=\\"ReutersType<Props>\\"><Foo $tag-name=\\"Foo\\" props=\\"123\\" />
+<Foo $tag-name=\\"Foo\\" props=\\"ReutersType<Props>\\" />
+<Foo $tag-name=\\"Foo\\" props=\\"ReutersType<Props>\\"></Foo>
+<Foo $tag-name=\\"Foo\\" props=\\"ReutersType<Props>\\">bar</Foo>
+<Foo $tag-name=\\"Foo\\" props=\\"ReutersType<Props>\\">bar</Foo></Foo></Foo>"
+`;
