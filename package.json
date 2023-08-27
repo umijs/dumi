@@ -157,7 +157,6 @@
     "fast-glob": "^3.3.1",
     "father": "^4.3.0",
     "highlight-words-core": "^1.2.2",
-    "htmlparser2": "^9.0.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.3",
     "prettier": "^2.8.8",
