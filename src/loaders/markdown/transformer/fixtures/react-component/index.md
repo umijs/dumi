@@ -3,3 +3,7 @@
 <HelloWorld>dumi</HelloWorld>
 
 <inValid></inValid>
+
+<API value="Array<Function>">
+  <APIField html="<Some a></Some>"></APIField>
+</API>
