@@ -1,9 +1,9 @@
-import { TEMPLATES_DIR } from '@/constants';
 import type { IApi } from '@/types';
 import path, { join } from 'path';
 import type { IRoute } from 'umi';
 import { winPath } from 'umi/plugin-utils';
 import { isTabRouteFile } from './tabs';
+import { TEMPLATES_DIR } from './util';
 
 export const TABS_META_PATH = 'dumi/meta/tabs.ts';
 export const ATOMS_META_PATH = 'dumi/meta/atoms.ts';
