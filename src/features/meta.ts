@@ -65,18 +65,6 @@ export default (api: IApi) => {
       },
     });
 
-    // generate meta by per route
-    parsedMetaFiles.forEach((metaFile) => {
-      const fileId = metaFile.id.replace(/\//g, '_').replace(/\$/g, '_');
-
-      api.writeTmpFile({
-        noPluginDir: true,
-        path: `dumi/meta/route_${fileId}.ts`,
-        tplPath: winPath(join(TEMPLATES_DIR, 'meta-single.ts.tpl')),
-        context: metaFile,
-      });
-    });
-
     // generate runtime plugin, to append page meta to route object
     api.writeTmpFile({
       noPluginDir: true,
