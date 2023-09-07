@@ -76,3 +76,7 @@ export const DumiDemo: FC<IDumiDemoProps> = React.memo(
     return JSON.stringify(prev).length === JSON.stringify(next).length;
   },
 );
+
+if (process.env.NODE_ENV !== 'production') {
+  DumiDemo.displayName = 'DumiDemo';
+}

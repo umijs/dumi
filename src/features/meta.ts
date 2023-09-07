@@ -9,8 +9,10 @@ export const ATOMS_META_PATH = 'dumi/meta/atoms.ts';
 
 const TEMPLATES_DIR = join(__dirname, '../templates');
 
+type MetaFiles = { index: number; file: string; id: string }[];
+
 export default (api: IApi) => {
-  const metaFiles: { index: number; file: string; id: string }[] = [];
+  const metaFiles: MetaFiles = [];
 
   api.register({
     key: 'modifyRoutes',
@@ -48,18 +50,32 @@ export default (api: IApi) => {
       content: 'export const components = null;',
     });
 
-    // generate meta entry
+    // [legacy] generate meta entry
+    const parsedMetaFiles: MetaFiles = await api.applyPlugins({
+      type: api.ApplyPluginsType.modify,
+      key: 'dumi.modifyMetaFiles',
+      initialValue: JSON.parse(JSON.stringify(metaFiles)),
+    });
+
     api.writeTmpFile({
       noPluginDir: true,
       path: 'dumi/meta/index.ts',
       tplPath: winPath(join(TEMPLATES_DIR, 'meta.ts.tpl')),
       context: {
-        metaFiles: await api.applyPlugins({
-          type: api.ApplyPluginsType.modify,
-          key: 'dumi.modifyMetaFiles',
-          initialValue: metaFiles,
-        }),
+        metaFiles: parsedMetaFiles,
       },
+    });
+
+    // generate meta by per route
+    parsedMetaFiles.forEach((metaFile) => {
+      const fileId = metaFile.id.replace(/\//g, '_').replace(/\$/g, '_');
+
+      api.writeTmpFile({
+        noPluginDir: true,
+        path: `dumi/meta/route_${fileId}.ts`,
+        tplPath: winPath(join(TEMPLATES_DIR, 'meta-single.ts.tpl')),
+        context: metaFile,
+      });
     });
 
     // generate runtime plugin, to append page meta to route object
