@@ -135,7 +135,7 @@ export default DumiMarkdownContent;`;
   }
 }
 
-function getDepsCacheKey(deps: typeof depsMapping['0'] = []) {
+function getDepsCacheKey(deps: (typeof depsMapping)['0'] = []) {
   return JSON.stringify(
     deps.map((file) => `${file}:${fs.statSync(file).mtimeMs}`),
   );
