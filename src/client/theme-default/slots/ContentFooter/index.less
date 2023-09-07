@@ -61,6 +61,8 @@
   }
 
   > nav {
+    display: flex;
+    justify-content: space-between;
     padding: 12px 0;
     border-block-start: 1px solid @c-border-light;
     overflow: hidden;
@@ -94,9 +96,6 @@
       }
 
       &[data-prev] {
-        float: left;
-        padding-inline-end: 24px;
-
         svg {
           margin-inline-end: 4px;
         }
@@ -111,9 +110,7 @@
       }
 
       &[data-next] {
-        float: right;
         text-align: end;
-        padding-inline-start: 24px;
 
         svg {
           margin-inline-start: 4px;
