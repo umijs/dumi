@@ -3,11 +3,10 @@ import path, { join } from 'path';
 import type { IRoute } from 'umi';
 import { winPath } from 'umi/plugin-utils';
 import { isTabRouteFile } from './tabs';
+import { TEMPLATES_DIR } from './util';
 
 export const TABS_META_PATH = 'dumi/meta/tabs.ts';
 export const ATOMS_META_PATH = 'dumi/meta/atoms.ts';
-
-const TEMPLATES_DIR = join(__dirname, '../templates');
 
 type MetaFiles = { index: number; file: string; id: string }[];
 
