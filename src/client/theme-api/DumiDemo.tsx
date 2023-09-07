@@ -1,5 +1,5 @@
 import { SP_ROUTE_PREFIX } from '@/constants';
-import { useAppData, useSiteData } from 'dumi';
+import { useAppData, useRouteMeta, useSiteData } from 'dumi';
 import Container from 'dumi/theme/builtins/Container';
 import Previewer from 'dumi/theme/builtins/Previewer';
 import React, { createElement, type FC, type ReactNode } from 'react';
@@ -40,7 +40,9 @@ export const DumiDemo: FC<IDumiDemoProps> = React.memo(
   (props) => {
     const { demos, historyType } = useSiteData();
     const { basename } = useAppData();
+    const { id } = useRouteMeta();
     const { component, asset } = demos[props.demo.id];
+    console.log('demo route id:', id);
 
     // hide debug demo in production
     if (process.env.NODE_ENV === 'production' && props.previewerProps.debug)

@@ -1,8 +1,6 @@
 import {
-  useAppData,
-  useLocation,
   useOutlet,
-  useRouteData,
+  // useRouteData,
   useRouteMeta,
 } from 'dumi';
 import React from 'react';
@@ -15,16 +13,17 @@ export interface GlobalLayoutProps {
 export default function GlobalLayout({ children }: GlobalLayoutProps) {
   // console.log('site:', useSiteData());
   // console.log('route:', useRouteMeta());
-  const { route } = useRouteData();
+  // const { route } = useRouteData();
 
-  console.log('~'.repeat(20));
-  console.log('useRouteMeta:', useRouteMeta());
-  console.log('useAppData:', useAppData());
-  console.log('useLocation:', useLocation());
-  console.log('useRouteData:', useRouteData());
+  // console.log('~'.repeat(20));
+  // console.log('useRouteMeta:', useRouteMeta());
+  // console.log('useAppData:', useAppData());
+  // console.log('useLocation:', useLocation());
+  // console.log('useRouteData:', useRouteData());
+  const { id } = useRouteMeta();
 
   React.useEffect(() => {
-    lazyMeta(route.id).then((data) => {
+    lazyMeta(id).then((data) => {
       console.log('Lazy Data:', data);
     });
   }, []);
