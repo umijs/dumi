@@ -54,6 +54,8 @@ export interface IPreviewerProps {
 }
 
 export interface IRouteMeta {
+  /** id of matched route */
+  id: string;
   // route frontmatter
   frontmatter: {
     // seo related
