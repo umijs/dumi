@@ -2,6 +2,7 @@ import {
   LOCAL_THEME_DIR,
   PICKED_PKG_FIELDS,
   PREFERS_COLOR_ATTR,
+  TEMPLATES_DIR,
   THEME_PREFIX,
   VERSION_2_LEVEL_NAV,
 } from '@/constants';
@@ -13,7 +14,6 @@ import hostedGit from 'hosted-git-info';
 import path, { join } from 'path';
 import { deepmerge, lodash, resolve, semver, winPath } from 'umi/plugin-utils';
 import { safeExcludeInMFSU } from '../derivative';
-import { TEMPLATES_DIR } from '../util';
 import loadTheme, { IThemeLoadResult } from './loader';
 
 const DEFAULT_THEME_PATH = path.join(__dirname, '../../../theme-default');
