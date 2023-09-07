@@ -1,14 +1,17 @@
+import { TEMPLATES_DIR } from '@/constants';
 import type { IApi } from '@/types';
-import path from 'path';
+import path, { join } from 'path';
 import type { IRoute } from 'umi';
-import { Mustache, winPath } from 'umi/plugin-utils';
+import { winPath } from 'umi/plugin-utils';
 import { isTabRouteFile } from './tabs';
 
 export const TABS_META_PATH = 'dumi/meta/tabs.ts';
 export const ATOMS_META_PATH = 'dumi/meta/atoms.ts';
 
+type MetaFiles = { index: number; file: string; id: string }[];
+
 export default (api: IApi) => {
-  const metaFiles: { index: number; file: string; id: string }[] = [];
+  const metaFiles: MetaFiles = [];
 
   api.register({
     key: 'modifyRoutes',
@@ -46,55 +49,20 @@ export default (api: IApi) => {
       content: 'export const components = null;',
     });
 
-    // generate meta entry
+    // [legacy] generate meta entry
+    const parsedMetaFiles: MetaFiles = await api.applyPlugins({
+      type: api.ApplyPluginsType.modify,
+      key: 'dumi.modifyMetaFiles',
+      initialValue: JSON.parse(JSON.stringify(metaFiles)),
+    });
+
     api.writeTmpFile({
       noPluginDir: true,
       path: 'dumi/meta/index.ts',
-      content: Mustache.render(
-        `{{#metaFiles}}
-import { demos as dm{{{index}}}, frontmatter as fm{{{index}}}, toc as toc{{{index}}}, texts as txt{{{index}}} } from '{{{file}}}?type=meta';
-{{/metaFiles}}
-
-export { components } from './atoms';
-export { tabs } from './tabs';
-
-export const filesMeta = {
-  {{#metaFiles}}
-  '{{{id}}}': {
-    frontmatter: fm{{{index}}},
-    toc: toc{{{index}}},
-    texts: txt{{{index}}},
-    demos: dm{{{index}}},
-    {{#tabs}}
-    tabs: {{{tabs}}},
-    {{/tabs}}
-  },
-  {{/metaFiles}}
-}
-
-// generate demos data in runtime, for reuse route.id to reduce bundle size
-export const demos = Object.entries(filesMeta).reduce((acc, [id, meta]) => {
-  // append route id to demo
-  Object.values(meta.demos).forEach((demo) => {
-    demo.routeId = id;
-  });
-  // merge demos
-  Object.assign(acc, meta.demos);
-
-  // remove demos from meta, to avoid deep clone demos in umi routes/children compatible logic
-  delete meta.demos;
-
-  return acc;
-}, {});
-`,
-        {
-          metaFiles: await api.applyPlugins({
-            type: api.ApplyPluginsType.modify,
-            key: 'dumi.modifyMetaFiles',
-            initialValue: metaFiles,
-          }),
-        },
-      ),
+      tplPath: winPath(join(TEMPLATES_DIR, 'meta.ts.tpl')),
+      context: {
+        metaFiles: parsedMetaFiles,
+      },
     });
 
     // generate runtime plugin, to append page meta to route object

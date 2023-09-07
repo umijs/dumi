@@ -8,4 +8,5 @@ console.log('demo', demo);
 console.log('demoIndex', demoIndex);
 console.log('text', text);
 
-export default () => null;
+// Customize Page for dumi test
+export default () => 'Customize Dumi Test Page';
