@@ -25,13 +25,6 @@ interface IMdLoaderDefaultModeOptions
 interface IMdLoaderDemosModeOptions
   extends Omit<IMdLoaderDefaultModeOptions, 'builtins' | 'mode'> {
   mode: 'meta';
-  onResolveDemos?: (
-    demos: NonNullable<IMdTransformerResult['meta']['demos']>,
-  ) => void;
-  onResolveAtomMeta?: (
-    atomId: string,
-    meta: IMdTransformerResult['meta']['frontmatter'],
-  ) => void;
 }
 
 interface IMdLoaderDemoModeOptions
@@ -78,16 +71,6 @@ function emitMeta(
   ret: IMdTransformerResult,
 ) {
   const { frontmatter, toc, texts, demos } = ret.meta;
-
-  // apply demos resolve hook
-  if (demos && opts.onResolveDemos) {
-    opts.onResolveDemos(demos);
-  }
-
-  // apply atom meta resolve hook
-  if (frontmatter!.atomId && opts.onResolveAtomMeta) {
-    opts.onResolveAtomMeta(frontmatter!.atomId, frontmatter);
-  }
 
   return Mustache.render(
     `import React from 'react';
@@ -177,11 +160,7 @@ function DumiMarkdownContent() {
 export default DumiMarkdownContent;`;
 }
 
-function emitDemo(
-  this: any,
-  opts: IMdLoaderDemoModeOptions,
-  ret: IMdTransformerResult,
-) {
+function emitDemo(opts: IMdLoaderDemoModeOptions, ret: IMdTransformerResult) {
   const { demos } = ret.meta;
 
   return Mustache.render(
@@ -243,7 +222,6 @@ function emitDemoIndex(
 }
 
 function emitFrontmatter(
-  this: any,
   opts: IMdLoaderFrontmatterModeOptions,
   ret: IMdTransformerResult,
 ) {
@@ -254,11 +232,7 @@ function emitFrontmatter(
   });
 }
 
-function emitText(
-  this: any,
-  opts: IMdLoaderTextModeOptions,
-  ret: IMdTransformerResult,
-) {
+function emitText(opts: IMdLoaderTextModeOptions, ret: IMdTransformerResult) {
   const { texts, toc } = ret.meta;
 
   return Mustache.render(

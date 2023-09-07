@@ -97,10 +97,6 @@ export default (api: IApi) => {
       // get page demo-index for each markdown file
       .oneOf('md-demo-index')
       .resourceQuery(/demo-index$/)
-      .use('babel-loader')
-      .loader(babelInUmi.loader)
-      .options(babelInUmi.options)
-      .end()
       .use('md-demo-index-loader')
       .loader(loaderPath)
       .options({
@@ -112,10 +108,6 @@ export default (api: IApi) => {
       // get page frontmatter for each markdown file
       .oneOf('md-frontmatter')
       .resourceQuery(/frontmatter$/)
-      .use('babel-loader')
-      .loader(babelInUmi.loader)
-      .options(babelInUmi.options)
-      .end()
       .use('md-frontmatter-loader')
       .loader(loaderPath)
       .options({
@@ -127,10 +119,6 @@ export default (api: IApi) => {
       // get page text for each markdown file
       .oneOf('md-text')
       .resourceQuery(/text$/)
-      .use('babel-loader')
-      .loader(babelInUmi.loader)
-      .options(babelInUmi.options)
-      .end()
       .use('md-text-loader')
       .loader(loaderPath)
       .options({
