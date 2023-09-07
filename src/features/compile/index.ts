@@ -52,6 +52,7 @@ export default (api: IApi) => {
       .type('javascript/auto')
       .test(/\.md$/)
       // get meta for each markdown file
+      // TODO: should be removed
       .oneOf('md-meta')
       .resourceQuery(/meta$/)
       .use('babel-loader')
@@ -76,6 +77,66 @@ export default (api: IApi) => {
         },
         onResolveAtomMeta: addAtomMeta,
       } as IMdLoaderOptions)
+      .end()
+      .end()
+      // get page demo for each markdown file
+      .oneOf('md-demo')
+      .resourceQuery(/demo$/)
+      .use('babel-loader')
+      .loader(babelInUmi.loader)
+      .options(babelInUmi.options)
+      .end()
+      .use('md-demo-loader')
+      .loader(loaderPath)
+      .options({
+        ...loaderBaseOpts,
+        mode: 'demo',
+      })
+      .end()
+      .end()
+      // get page demo-index for each markdown file
+      .oneOf('md-demo-index')
+      .resourceQuery(/demo-index$/)
+      .use('babel-loader')
+      .loader(babelInUmi.loader)
+      .options(babelInUmi.options)
+      .end()
+      .use('md-demo-index-loader')
+      .loader(loaderPath)
+      .options({
+        ...loaderBaseOpts,
+        mode: 'demo-index',
+      })
+      .end()
+      .end()
+      // get page frontmatter for each markdown file
+      .oneOf('md-frontmatter')
+      .resourceQuery(/frontmatter$/)
+      .use('babel-loader')
+      .loader(babelInUmi.loader)
+      .options(babelInUmi.options)
+      .end()
+      .use('md-frontmatter-loader')
+      .loader(loaderPath)
+      .options({
+        ...loaderBaseOpts,
+        mode: 'frontmatter',
+      })
+      .end()
+      .end()
+      // get page text for each markdown file
+      .oneOf('md-text')
+      .resourceQuery(/text$/)
+      .use('babel-loader')
+      .loader(babelInUmi.loader)
+      .options(babelInUmi.options)
+      .end()
+      .use('md-text-loader')
+      .loader(loaderPath)
+      .options({
+        ...loaderBaseOpts,
+        mode: 'text',
+      })
       .end()
       .end()
       // get page component for each markdown file
