@@ -10,4 +10,6 @@ export default (ret: IMdTransformerResult) => {
   // don't transform tagName which is part of attr value
   expect(ret.content).toContain('value="Array<Function>"');
   expect(ret.content).toContain('html="<Some a></Some>"');
+  expect(ret.content).toContain('value="<Some a></Some>"');
+  expect(ret.content).toContain('html=&quot;<Other a></Other>&quot');
 };

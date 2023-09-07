@@ -33,8 +33,10 @@ export default function rehypeRaw(opts: IRehypeRawOptions): Transformer<Root> {
           COMPONENT_NAME_REGEX,
           (str, bracket, tagName, next, i, full) => {
             const isWithinQuotes =
-              /="[^"]*$/.test(full.slice(0, i)) &&
-              /^[^"]*"/.test(full.slice(i));
+              (/="[^"]*$/.test(full.slice(0, i)) &&
+                /^[^"]*"/.test(full.slice(i))) ||
+              (/='[^']*$/.test(full.slice(0, i)) &&
+                /^[^']*'/.test(full.slice(i)));
 
             // skip if tagName is part of attr value
             return isWithinQuotes
