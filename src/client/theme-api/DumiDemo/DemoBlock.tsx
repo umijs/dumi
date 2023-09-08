@@ -3,8 +3,10 @@ import { useAppData, useSiteData } from 'dumi';
 
 import Previewer from 'dumi/theme/builtins/Previewer';
 import React, { createElement, type FC } from 'react';
+import type { DemoInfo } from '../context';
 import type { IPreviewerProps } from '../types';
 import DemoErrorBoundary from './DemoErrorBoundary';
+import use from './use';
 
 export interface IDumiDemoBlockProps {
   demo: {
@@ -14,14 +16,33 @@ export interface IDumiDemoBlockProps {
   previewerProps: Omit<IPreviewerProps, 'asset' | 'children'>;
 }
 
+const cache = new Map<string, Promise<DemoInfo | null>>();
+
+// Async load demo data
+export function useDemoData(demoId: string) {
+  const { getDemoById } = useSiteData();
+
+  if (!cache.has(demoId)) {
+    cache.set(demoId, getDemoById(demoId));
+  }
+
+  return use(cache.get(demoId)!);
+}
+
 const DumiDemoBlock: FC<IDumiDemoBlockProps> = (props) => {
-  const { demos, historyType } = useSiteData();
+  const { historyType } = useSiteData();
   const { basename } = useAppData();
-  const { component, asset } = demos[props.demo.id];
+  const demoInfo = useDemoData(props.demo.id);
 
   // hide debug demo in production
   if (process.env.NODE_ENV === 'production' && props.previewerProps.debug)
     return null;
+
+  if (!demoInfo) {
+    return '[Empty]';
+  }
+
+  const { component, asset } = demoInfo;
 
   const demoNode = (
     <DemoErrorBoundary>{createElement(component)}</DemoErrorBoundary>
@@ -50,5 +71,9 @@ const DumiDemoBlock: FC<IDumiDemoBlockProps> = (props) => {
     </Previewer>
   );
 };
+
+if (process.env.NODE_ENV === 'development') {
+  DumiDemoBlock.displayName = 'DumiDemoBlock';
+}
 
 export default DumiDemoBlock;

@@ -1,18 +1,18 @@
 import { useOutlet } from 'dumi';
 import React from 'react';
 // import { lazyMeta } from '../../tmp/dumi/meta/lazy';
-import { getDemoById } from '../../tmp/dumi/meta/demos';
+// import { getDemoById } from '../../tmp/dumi/meta/demos';
 
 export interface GlobalLayoutProps {
   children?: React.ReactNode;
 }
 
-console.log(
-  'getDemoById:',
-  getDemoById('foo-demo-0').then((ret) => {
-    console.log('Demo:', ret);
-  }),
-);
+// console.log(
+//   'getDemoById:',
+//   getDemoById('foo-demo-0').then((ret) => {
+//     console.log('Demo:', ret);
+//   }),
+// );
 
 export default function GlobalLayout({ children }: GlobalLayoutProps) {
   // console.log('site:', useSiteData());

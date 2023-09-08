@@ -1,14 +1,14 @@
 // Copy from React official demo.
 // This will be replace if React release new version of use hooks
 type ReactPromise<T> = Promise<T> & {
-  status: 'pending' | 'fulfilled' | 'rejected';
+  status?: 'pending' | 'fulfilled' | 'rejected';
   value?: T;
   reason?: any;
 };
 
-export default function use(promise: ReactPromise<any>) {
+export default function use<T>(promise: ReactPromise<T>): T {
   if (promise.status === 'fulfilled') {
-    return promise.value;
+    return promise.value!;
   } else if (promise.status === 'rejected') {
     throw promise.reason;
   } else if (promise.status === 'pending') {
