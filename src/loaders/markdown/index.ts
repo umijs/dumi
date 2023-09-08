@@ -212,7 +212,7 @@ function emitDemoIndex(
   return Mustache.render(
     `export const demoIndex = {
   ids: {{{ids}}},
-  getter: () => {{{getter}}}
+  getter: {{{getter}}}
 };`,
     {
       ids: JSON.stringify(demos?.map((demo) => demo.id)),
