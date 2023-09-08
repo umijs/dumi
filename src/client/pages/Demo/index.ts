@@ -8,7 +8,7 @@ const DemoRenderPage: FC = () => {
   const demoData = useDemoData(id!);
 
   if (!demoData) {
-    return null;
+    return `Demo '${id}' not found!`;
   }
 
   const { component } = demoData;
