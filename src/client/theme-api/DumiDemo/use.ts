@@ -1,6 +1,12 @@
 // Copy from React official demo.
 // This will be replace if React release new version of use hooks
-function use(promise: Promise<any>) {
+type ReactPromise<T> = Promise<T> & {
+  status: 'pending' | 'fulfilled' | 'rejected';
+  value?: T;
+  reason?: any;
+};
+
+function use(promise: ReactPromise<any>) {
   if (promise.status === 'fulfilled') {
     return promise.value;
   } else if (promise.status === 'rejected') {
