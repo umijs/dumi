@@ -10,12 +10,14 @@ export interface IDumiDemoProps {
   previewerProps: Omit<IPreviewerProps, 'asset' | 'children'>;
 }
 
+const InternalDumiDemo = (props: IDumiDemoProps) => (
+  <Suspense>
+    <DumiDemoBlock {...props} />
+  </Suspense>
+);
+
 export const DumiDemo: FC<IDumiDemoProps> = React.memo(
-  (props) => (
-    <Suspense>
-      <DumiDemoBlock {...props} />
-    </Suspense>
-  ),
+  InternalDumiDemo,
   (prev, next) => {
     // compare length for performance
     return JSON.stringify(prev).length === JSON.stringify(next).length;
@@ -23,5 +25,5 @@ export const DumiDemo: FC<IDumiDemoProps> = React.memo(
 );
 
 if (process.env.NODE_ENV !== 'production') {
-  DumiDemo.displayName = 'DumiDemo';
+  InternalDumiDemo.displayName = 'DumiDemo';
 }

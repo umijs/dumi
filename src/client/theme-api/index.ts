@@ -1,6 +1,4 @@
 export {
-  createIntlCache,
-  defineMessages,
   FormattedDate,
   FormattedDateParts,
   FormattedDisplayName,
@@ -12,17 +10,19 @@ export {
   FormattedRelativeTime,
   FormattedTime,
   FormattedTimeParts,
-  injectIntl,
   IntlContext,
   IntlProvider,
   RawIntlProvider,
+  createIntlCache,
+  defineMessages,
+  injectIntl,
   useIntl,
 } from 'react-intl';
 export { AtomRenderer } from './AtomRenderer';
-export { useSiteData } from './context';
 export { DumiDemo } from './DumiDemo';
 export { DumiDemoGrid } from './DumiDemoGrid';
 export { DumiPage } from './DumiPage';
+export { useDemoData, useSiteData } from './context';
 export { openCodeSandbox } from './openCodeSandbox';
 export { openStackBlitz } from './openStackBlitz';
 export type { IPreviewerProps } from './types';

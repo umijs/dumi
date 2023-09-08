@@ -1,12 +1,10 @@
 import { SP_ROUTE_PREFIX } from '@/constants';
-import { useAppData, useSiteData } from 'dumi';
+import { useAppData, useDemoData, useSiteData } from 'dumi';
 
 import Previewer from 'dumi/theme/builtins/Previewer';
 import React, { createElement, type FC } from 'react';
-import type { DemoInfo } from '../context';
 import type { IPreviewerProps } from '../types';
 import DemoErrorBoundary from './DemoErrorBoundary';
-import use from './use';
 
 export interface IDumiDemoBlockProps {
   demo: {
@@ -14,19 +12,6 @@ export interface IDumiDemoBlockProps {
     inline?: boolean;
   };
   previewerProps: Omit<IPreviewerProps, 'asset' | 'children'>;
-}
-
-const cache = new Map<string, Promise<DemoInfo | null>>();
-
-// Async load demo data
-export function useDemoData(demoId: string) {
-  const { getDemoById } = useSiteData();
-
-  if (!cache.has(demoId)) {
-    cache.set(demoId, getDemoById(demoId));
-  }
-
-  return use(cache.get(demoId)!);
 }
 
 const DumiDemoBlock: FC<IDumiDemoBlockProps> = (props) => {
@@ -39,7 +24,7 @@ const DumiDemoBlock: FC<IDumiDemoBlockProps> = (props) => {
     return null;
 
   if (!demoInfo) {
-    return '[Empty]';
+    return null;
   }
 
   const { component, asset } = demoInfo;

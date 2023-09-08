@@ -1,11 +1,17 @@
-import { useParams, useSiteData } from 'dumi';
+import { useDemoData, useParams } from 'dumi';
 import { createElement, type FC } from 'react';
 import './index.less';
 
 const DemoRenderPage: FC = () => {
   const { id } = useParams();
-  const { demos } = useSiteData();
-  const { component } = demos[id!] || {};
+
+  const demoData = useDemoData(id!);
+
+  if (!demoData) {
+    return null;
+  }
+
+  const { component } = demoData;
 
   return component && createElement(component);
 };
