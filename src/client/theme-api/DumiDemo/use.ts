@@ -6,7 +6,7 @@ type ReactPromise<T> = Promise<T> & {
   reason?: any;
 };
 
-function use(promise: ReactPromise<any>) {
+export default function use(promise: ReactPromise<any>) {
   if (promise.status === 'fulfilled') {
     return promise.value;
   } else if (promise.status === 'rejected') {
@@ -28,5 +28,3 @@ function use(promise: ReactPromise<any>) {
     throw promise;
   }
 }
-
-export default use;

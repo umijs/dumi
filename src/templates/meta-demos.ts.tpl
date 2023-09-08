@@ -2,7 +2,7 @@
 import { demoIndex as dmi{{{index}}} } from '{{{file}}}?type=demo-index';
 {{/metaFiles}}
 
-const demoIndexes: Record<string, string> = {
+const demoIndexes: Record<string, { ids: string[], getter: () => Promise<any> }> = {
   {{#metaFiles}}
   '{{{id}}}': dmi{{{index}}},
   {{/metaFiles}}
@@ -25,10 +25,10 @@ export const getDemoById = async (id: string) => {
   const getter = demoIdMap[id];
 
   if (!getter) {
-    throw new Error(`Cannot find demo by id: ${id}`);
+    return null;
   }
 
-  const demos: any = await getter();
+  const { demos }: any = await getter() || {};
 
-  return demos[id];
+  return demos?.[id];
 };

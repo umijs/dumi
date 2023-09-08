@@ -71,7 +71,9 @@ export default (api: IApi) => {
       path: 'dumi/meta/demos.ts',
       tplPath: winPath(join(TEMPLATES_DIR, 'meta-demos.ts.tpl')),
       context: {
-        metaFiles: parsedMetaFiles,
+        metaFiles: parsedMetaFiles.filter((metaFile) =>
+          metaFile.file.endsWith('.md'),
+        ),
       },
     });
 
