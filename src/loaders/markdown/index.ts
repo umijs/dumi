@@ -216,7 +216,7 @@ function emitDemoIndex(
 };`,
     {
       ids: JSON.stringify(demos?.map((demo) => demo.id)),
-      getter: `() => import('${this.resourcePath}?type=demo')`,
+      getter: `() => import('${winPath(this.resourcePath)}?type=demo')`,
     },
   );
 }
