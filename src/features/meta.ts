@@ -68,8 +68,8 @@ export default (api: IApi) => {
     // generate meta lazy entry
     api.writeTmpFile({
       noPluginDir: true,
-      path: 'dumi/meta/lazy.ts',
-      tplPath: winPath(join(TEMPLATES_DIR, 'meta-lazy.ts.tpl')),
+      path: 'dumi/meta/demos.ts',
+      tplPath: winPath(join(TEMPLATES_DIR, 'meta-demos.ts.tpl')),
       context: {
         metaFiles: parsedMetaFiles,
       },
