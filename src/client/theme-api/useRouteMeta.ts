@@ -1,17 +1,17 @@
 import { matchRoutes, useAppData, useLocation, useRouteData } from 'dumi';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import type { IRouteMeta } from './types';
 import { useIsomorphicLayoutEffect } from './utils';
 
-export type RouteMatch = NonNullable<ReturnType<typeof matchRoutes>>[number];
-export type RouteObject = RouteMatch['route'];
-
-const useRouteInfo = () => {
+/**
+ * hook for get matched route meta
+ */
+export const useRouteMeta = () => {
   const { route } = useRouteData();
   const { pathname } = useLocation();
   const { clientRoutes } = useAppData();
-  const getter = useCallback(() => {
-    let ret: RouteObject | undefined;
+  const getter = useCallback((): IRouteMeta => {
+    let ret: IRouteMeta;
 
     if (route.path === pathname && !('isLayout' in route)) {
       // use `useRouteData` result if matched, for performance
@@ -20,34 +20,16 @@ const useRouteInfo = () => {
       // match manually for dynamic route & layout component
       const matched = matchRoutes(clientRoutes, pathname)?.pop();
 
-      ret = matched?.route;
+      ret = (matched?.route as any)?.meta;
     }
 
-    return ret;
+    return ret || { frontmatter: {}, toc: [], texts: [] };
   }, [clientRoutes.length, pathname]);
-  const [meta, setMeta] = useState<RouteObject | undefined>(getter);
+  const [meta, setMeta] = useState<IRouteMeta>(getter);
 
   useIsomorphicLayoutEffect(() => {
     setMeta(getter);
   }, [clientRoutes.length, pathname]);
 
   return meta;
-};
-
-/**
- * hook for get matched route meta
- */
-export const useRouteMeta = (): IRouteMeta => {
-  const routeInfo = useRouteInfo();
-
-  return useMemo(
-    () => ({
-      id: (routeInfo as any)?.id,
-      frontmatter: {},
-      toc: [],
-      texts: [],
-      ...(routeInfo as any)?.meta,
-    }),
-    [routeInfo],
-  );
 };

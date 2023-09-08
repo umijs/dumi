@@ -1,1 +1,1 @@
-export default () => 'Hello Demo!';
+export default () => 'External Demo Block';
