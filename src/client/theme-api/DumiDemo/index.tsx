@@ -17,15 +17,11 @@ export interface IDumiDemoProps {
 const InternalDumiDemo = (props: IDumiDemoProps) => {
   const { historyType } = useSiteData();
   const { basename } = useAppData();
-  const demoInfo = useDemoData(props.demo.id);
+  const demoInfo = useDemoData(props.demo.id)!;
 
   // hide debug demo in production
   if (process.env.NODE_ENV === 'production' && props.previewerProps.debug)
     return null;
-
-  if (!demoInfo) {
-    return `Demo '${props.demo.id}' not found!`;
-  }
 
   const { component, asset } = demoInfo;
 

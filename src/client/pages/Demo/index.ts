@@ -5,13 +5,9 @@ import './index.less';
 const DemoRenderPage: FC = () => {
   const { id } = useParams();
 
-  const demoData = useDemoData(id!);
+  const demoInfo = useDemoData(id!);
 
-  if (!demoData) {
-    return `Demo '${id}' not found!`;
-  }
-
-  const { component } = demoData;
+  const { component } = demoInfo!;
 
   return component && createElement(component);
 };
