@@ -142,18 +142,14 @@ function emitDefault(
     .map((item) => `import ${item.specifier} from '${item.source}';`)
     .join('\n')}
 import React from 'react';
-${
-  isTabContent
-    ? `import { useTabMeta } from 'dumi';`
-    : `import { DumiPage, useRouteMeta } from 'dumi';`
-}
+${isTabContent ? `` : `import { DumiPage } from 'dumi';`}
+import { texts as ${CONTENT_TEXTS_OBJ_NAME} } from '${winPath(
+    this.resourcePath,
+  )}?type=text';
 
 // export named function for fastRefresh
 // ref: https://github.com/pmmmwh/react-refresh-webpack-plugin/blob/main/docs/TROUBLESHOOTING.md#edits-always-lead-to-full-reload
 function DumiMarkdownContent() {
-  const { texts: ${CONTENT_TEXTS_OBJ_NAME} } = use${
-    isTabContent ? 'TabMeta' : 'RouteMeta'
-  }();
   return ${isTabContent ? ret.content : `<DumiPage>${ret.content}</DumiPage>`};
 }
 
