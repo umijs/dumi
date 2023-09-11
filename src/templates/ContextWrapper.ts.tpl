@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useOutlet, history } from 'dumi';
-import { warning } from 'rc-util'
+import { warning } from 'rc-util';
 import { SiteContext, type ISiteContext } from '{{{contextPath}}}';
 import { components } from '../meta';
 import { getDemoById } from '../meta/demos';

@@ -1,5 +1,17 @@
+import { warning } from 'rc-util';
 import { filesMeta, tabs } from '.';
 import deepmerge from '{{{deepmerge}}}';
+
+// Proxy do not warning since `Object.keys` will get nothing to loop
+function wrapEmpty(meta, fieldName, defaultValue) {
+  Object.defineProperty(meta, fieldName, {
+    get: () => {
+      warning(false, `'${fieldName}' return empty in latest version.`);
+      return defaultValue;
+    },
+  });
+}
+
 export const patchRoutes = ({ routes }) => {
   Object.values(routes).forEach((route) => {
     if (filesMeta[route.id]) {
@@ -10,16 +22,23 @@ export const patchRoutes = ({ routes }) => {
         // merge meta to route object
         route.meta = deepmerge(route.meta, filesMeta[route.id]);
 
+        wrapEmpty(route.meta, 'demos', {});
+        wrapEmpty(route.meta, 'texts', []);
+
         // apply real tab data from id
         route.meta.tabs = route.meta.tabs?.map((id) => {
-          const meta = {
+          const meta = filesMeta[id] || {
             frontmatter: { title: tabs[id].title },
             toc: [],
             texts: [],
           }
+
+          wrapEmpty(meta, 'demos', {});
+          wrapEmpty(meta, 'texts', []);
+
           return {
             ...tabs[id],
-            meta: filesMeta[id] || meta,
+            meta,
           }
         });
       }
