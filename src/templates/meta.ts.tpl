@@ -1,5 +1,5 @@
 {{#metaFiles}}
-import { demos as dm{{{index}}}, frontmatter as fm{{{index}}}, toc as toc{{{index}}}, texts as txt{{{index}}} } from '{{{file}}}?type=meta';
+import { frontmatter as fm{{{index}}}, toc as toc{{{index}}} } from '{{{file}}}?type=meta';
 {{/metaFiles}}
 
 export { components } from './atoms';
@@ -10,7 +10,7 @@ export const filesMeta = {
   '{{{id}}}': {
     frontmatter: fm{{{index}}},
     toc: toc{{{index}}},
-    texts: txt{{{index}}},
+    texts: [],
     demos: {},
     {{#tabs}}
     tabs: {{{tabs}}},
