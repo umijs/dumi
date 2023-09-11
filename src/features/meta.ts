@@ -65,6 +65,18 @@ export default (api: IApi) => {
       },
     });
 
+    // generate meta lazy entry
+    api.writeTmpFile({
+      noPluginDir: true,
+      path: 'dumi/meta/demos.ts',
+      tplPath: winPath(join(TEMPLATES_DIR, 'meta-demos.ts.tpl')),
+      context: {
+        metaFiles: parsedMetaFiles.filter((metaFile) =>
+          metaFile.file.endsWith('.md'),
+        ),
+      },
+    });
+
     // generate runtime plugin, to append page meta to route object
     api.writeTmpFile({
       noPluginDir: true,

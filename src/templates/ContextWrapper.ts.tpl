@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useOutlet, history } from 'dumi';
 import { SiteContext } from '{{{contextPath}}}';
 import { demos, components } from '../meta';
+import { getDemoById } from '../meta/demos';
 import { locales } from '../locales/config';
 {{{defaultExport}}}
 {{{namedExport}}}
@@ -43,6 +44,7 @@ export default function DumiContextWrapper() {
     hostname: {{{hostname}}},
     themeConfig: {{{themeConfig}}},
     _2_level_nav_available: {{{_2_level_nav_available}}},
+    getDemoById,
   };
 
   return (
