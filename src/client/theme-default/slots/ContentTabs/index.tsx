@@ -18,6 +18,7 @@ const ContentTabs: FC<IContentTabsProps> = ({
   const intl = useIntl();
 
   // TODO: tab.Extra & tab.Action render
+  console.log(tabs);
 
   return Boolean(tabs?.length) ? (
     <ul className="dumi-default-content-tabs">
@@ -35,7 +36,7 @@ const ContentTabs: FC<IContentTabsProps> = ({
           <button type="button">
             {tab.titleIntlId
               ? intl.formatMessage({ id: tab.titleIntlId })
-              : tab.meta.frontmatter.title}
+              : tab.meta.frontmatter?.title ?? tab.title}
           </button>
         </li>
       ))}
