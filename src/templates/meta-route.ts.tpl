@@ -16,14 +16,18 @@ export const getRouteMetaById = async (id: string) => {
   const file = files[id];
 
   if (!file) {
-    return {};
+    return null;
   }
 
   const text = await file.textGetter();
   const frontmatter = await file.frontmatterGetter();
 
   const tabsMeta = file.tabs && await Promise.all(file.tabs.map(async (tab) => {
-    const meta = await getRouteMetaById(tab)
+    const meta = await getRouteMetaById(tab) ?? {
+      frontmatter: { title: tabs[tab].title },
+      toc: [],
+      texts: [],
+    };
     return {
       ...tabs[tab],
       meta,

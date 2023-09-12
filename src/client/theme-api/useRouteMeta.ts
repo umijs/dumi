@@ -15,7 +15,7 @@ const useAsyncRouteMeta = (id: string) => {
     cache.set(id, getRouteMetaById(id));
   }
 
-  return use(cache.get(id));
+  return use<ReturnType<getRouteMetaById>>(cache.get(id));
 };
 
 /**
