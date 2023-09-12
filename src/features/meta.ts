@@ -66,14 +66,25 @@ export default (api: IApi) => {
     });
 
     // generate meta lazy entry
+    const mdFiles = parsedMetaFiles.filter((metaFile) =>
+      metaFile.file.endsWith('.md'),
+    );
+
     api.writeTmpFile({
       noPluginDir: true,
       path: 'dumi/meta/demos.ts',
       tplPath: winPath(join(TEMPLATES_DIR, 'meta-demos.ts.tpl')),
       context: {
-        metaFiles: parsedMetaFiles.filter((metaFile) =>
-          metaFile.file.endsWith('.md'),
-        ),
+        metaFiles: mdFiles,
+      },
+    });
+
+    api.writeTmpFile({
+      noPluginDir: true,
+      path: 'dumi/meta/route-meta.ts',
+      tplPath: winPath(join(TEMPLATES_DIR, 'meta-route.ts.tpl')),
+      context: {
+        metaFiles: mdFiles,
       },
     });
 
