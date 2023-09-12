@@ -222,6 +222,7 @@ export const useSidebarData = () => {
   // /en-US/a => /en-US/a
   // /en-US/a/b => /en-US/a
   // /en-US/a/b/ => /en-US/a (also strip trailing /)
+  console.log(meta);
   const parentPath = clearPath
     ? pathname.replace(clearPath, (s) =>
         getRouteParentPath(s, { is2LevelNav, meta }),

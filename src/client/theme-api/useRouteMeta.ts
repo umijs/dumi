@@ -5,8 +5,10 @@ import {
   useLocation,
   useRouteData,
 } from 'dumi';
-import { useMemo } from 'react';
+import { useCallback, useState } from 'react';
 import use from './context/use';
+import type { IRouteMeta } from './types';
+import { useIsomorphicLayoutEffect } from './utils';
 
 const cache = new Map<string, ReturnType<getRouteMetaById>>();
 
@@ -26,17 +28,28 @@ export const useRouteMeta = () => {
   const { pathname } = useLocation();
   const { clientRoutes } = useAppData();
 
-  const currentRoute = useMemo(() => {
+  const routeMeta = useAsyncRouteMeta(route.id);
+
+  const getter = useCallback((): IRouteMeta => {
+    let ret: IRouteMeta;
+
     if (route.path === pathname && !('isLayout' in route)) {
       // use `useRouteData` result if matched, for performance
-      return route;
+      ret = routeMeta;
     } else {
       // match manually for dynamic route & layout component
       const matched = matchRoutes(clientRoutes, pathname)?.pop();
 
-      return matched?.route;
+      ret = (matched?.route as any)?.meta;
     }
-  }, [route, pathname, clientRoutes]);
 
-  return useAsyncRouteMeta(currentRoute?.id);
+    return ret || { frontmatter: {}, toc: [], texts: [] };
+  }, [clientRoutes.length, pathname]);
+  const [meta, setMeta] = useState<IRouteMeta>(getter);
+
+  useIsomorphicLayoutEffect(() => {
+    setMeta(getter);
+  }, [clientRoutes.length, pathname]);
+
+  return meta;
 };
