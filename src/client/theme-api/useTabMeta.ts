@@ -29,7 +29,5 @@ export const useTabMeta = ():
   const { tabs } = useRouteMeta();
   const [tabKey] = useTabQueryState();
 
-  console.log(tabs);
-
   return tabs?.find(({ key }) => tabKey === key)?.meta;
 };
