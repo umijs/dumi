@@ -65,6 +65,15 @@ export default (api: IApi) => {
       },
     });
 
+    api.writeTmpFile({
+      noPluginDir: true,
+      path: 'dumi/meta/frontmatter.ts',
+      tplPath: winPath(join(TEMPLATES_DIR, 'meta-frontmatter.ts.tpl')),
+      context: {
+        metaFiles: parsedMetaFiles,
+      },
+    });
+
     // generate meta lazy entry
     const mdFiles = parsedMetaFiles.filter((metaFile) =>
       metaFile.file.endsWith('.md'),

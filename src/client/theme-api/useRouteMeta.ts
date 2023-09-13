@@ -5,10 +5,9 @@ import {
   useLocation,
   useRouteData,
 } from 'dumi';
-import { useCallback, useState } from 'react';
+import { useMemo } from 'react';
 import use from './context/use';
 import type { IRouteMeta } from './types';
-import { useIsomorphicLayoutEffect } from './utils';
 
 const cache = new Map<string, ReturnType<getRouteMetaById>>();
 
@@ -28,28 +27,26 @@ export const useRouteMeta = () => {
   const { pathname } = useLocation();
   const { clientRoutes } = useAppData();
 
-  const routeMeta = useAsyncRouteMeta(route.id);
-
-  const getter = useCallback((): IRouteMeta => {
-    let ret: IRouteMeta;
-
+  const curRoute = useMemo(() => {
     if (route.path === pathname && !('isLayout' in route)) {
       // use `useRouteData` result if matched, for performance
-      ret = routeMeta;
+      return route;
     } else {
       // match manually for dynamic route & layout component
       const matched = matchRoutes(clientRoutes, pathname)?.pop();
-
-      ret = (matched?.route as any)?.meta;
+      return matched?.route;
     }
-
-    return ret || { frontmatter: {}, toc: [], texts: [] };
   }, [clientRoutes.length, pathname]);
-  const [meta, setMeta] = useState<IRouteMeta>(getter);
 
-  useIsomorphicLayoutEffect(() => {
-    setMeta(getter);
-  }, [clientRoutes.length, pathname]);
+  const meta: IRouteMeta = useAsyncRouteMeta((curRoute as any)?.id) || {
+    frontmatter: {},
+    toc: [],
+    texts: [],
+  };
+
+  if (curRoute && 'meta' in curRoute && (curRoute.meta as any)._atom_route) {
+    meta._atom_route = true;
+  }
 
   return meta;
 };
