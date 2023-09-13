@@ -1,9 +1,9 @@
 import { tabs } from './tabs';
+import { filesFrontmatter } from './frontmatter';
 
 const files = {
 {{#metaFiles}}
   '{{{id}}}': {
-    frontmatterGetter: () => import('{{{file}}}?type=frontmatter'),
     textGetter: () => import('{{{file}}}?type=text'),
     {{#tabs}}
     tabs: {{{tabs}}},
@@ -20,7 +20,7 @@ export const getRouteMetaById = async (id: string) => {
   }
 
   const text = await file.textGetter();
-  const frontmatter = await file.frontmatterGetter();
+  const frontmatter = filesFrontmatter[id];
 
   const tabsMeta = file.tabs && await Promise.all(file.tabs.map(async (tab) => {
     const meta = await getRouteMetaById(tab) ?? {
