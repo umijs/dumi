@@ -145,7 +145,7 @@ export default (api: IApi) => {
       .rule('dumi-page')
       .type('javascript/auto')
       .test(/\.(j|t)sx?$/)
-      .resourceQuery(/meta$/)
+      .resourceQuery(/(meta|frontmatter)$/)
       .use('page-meta-loader')
       .loader(require.resolve('../../loaders/page'));
 
