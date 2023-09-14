@@ -112,7 +112,14 @@ const LocalesContainer: FC<{ children: ReactNode }> = (props) => {
         : history.location.pathname.replace(/([^/])\\/$/, '$1')
           .startsWith("${api.config.base!.replace(/\/$/, '')}" + locale.base)
     ));
-    const locale = matched ? matched.id : locales[0].id;
+    let locale = matched ? matched.id : locales[0].id;
+    // match the locale of the query
+    const [_, search] = history.location.search?.split('?');
+    const params = new URLSearchParams(search);
+    if (params.get('locale')){
+      locale = params.get('locale');
+    }
+    
     const localeMessages = messages[locale] || {};
 
     // append internal message, for use intl as string template util

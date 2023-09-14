@@ -1,4 +1,4 @@
-import { IPreviewerProps, useRouteMeta, useSiteData } from 'dumi';
+import { IPreviewerProps, useLocale, useRouteMeta, useSiteData } from 'dumi';
 import Previewer from 'dumi/theme-default/builtins/Previewer';
 import Device from 'dumi/theme/slots/Device';
 import React, { useCallback, useEffect, useState, type FC } from 'react';
@@ -9,12 +9,14 @@ const MobilePreviewer: FC<IPreviewerProps> = (props) => {
     frontmatter: { mobile = true },
   } = useRouteMeta();
   const { themeConfig } = useSiteData();
+  const locale = useLocale();
   const generateUrl = useCallback((p: typeof props) => {
     const [pathname, search] = p.demoUrl.split('?');
     const params = new URLSearchParams(search);
 
     if (p.compact) params.set('compact', '');
     if (p.background) params.set('background', p.background);
+    if (locale.id) params.set('locale', locale.id);
 
     return `${pathname}?${params.toString()}`.replace(/\?$/, '');
   }, []);
