@@ -19,6 +19,12 @@ const useAsyncRouteMeta = (id: string) => {
   return use<ReturnType<getRouteMetaById>>(cache.get(id));
 };
 
+const emptyMeta = {
+  frontmatter: {},
+  toc: [],
+  texts: [],
+};
+
 /**
  * hook for get matched route meta
  */
@@ -38,14 +44,13 @@ export const useRouteMeta = () => {
     }
   }, [clientRoutes.length, pathname]);
 
-  const meta: IRouteMeta = useAsyncRouteMeta((curRoute as any)?.id) || {
-    frontmatter: {},
-    toc: [],
-    texts: [],
-  };
+  const meta: IRouteMeta =
+    useAsyncRouteMeta((curRoute as any)?.id) || emptyMeta;
 
-  if (curRoute && 'meta' in curRoute && (curRoute.meta as any)._atom_route) {
-    meta._atom_route = true;
+  if (curRoute && 'meta' in curRoute && typeof curRoute.meta === 'object') {
+    Object.keys(curRoute.meta as IRouteMeta).forEach((key) => {
+      (meta as any)[key] ??= (curRoute as any).meta[key];
+    });
   }
 
   return meta;

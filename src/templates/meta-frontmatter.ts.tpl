@@ -4,8 +4,6 @@ import { frontmatter as fm{{{index}}} } from '{{{file}}}?type=frontmatter';
 
 export const filesFrontmatter = {
   {{#metaFiles}}
-  '{{{id}}}': {
-    frontmatter: fm{{{index}}},
-  },
+  '{{{id}}}': fm{{{index}}},
   {{/metaFiles}}
 }

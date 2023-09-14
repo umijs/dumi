@@ -16,20 +16,20 @@ function wrapEmpty(meta, fieldName, defaultValue) {
 export const patchRoutes = ({ routes }) => {
   Object.values(routes).forEach((route) => {
     if (filesFrontmatter[route.id]) {
-      if (process.env.NODE_ENV === 'production' && (route.meta?.frontmatter?.debug || filesFrontmatter[route.id].frontmatter.debug)) {
+      if (process.env.NODE_ENV === 'production' && (route.meta?.frontmatter?.debug || filesFrontmatter[route.id].debug)) {
         // hide route in production which set hide frontmatter
         delete routes[route.id];
       } else {
         // merge meta to route object
-        route.meta = deepmerge(route.meta, filesFrontmatter[route.id]);
+        route.meta = deepmerge(route.meta, { frontmatter: filesFrontmatter[route.id] });
 
         wrapEmpty(route.meta, 'demos', {});
         wrapEmpty(route.meta, 'texts', []);
 
         // apply real tab data from id
         route.meta.tabs = route.meta.tabs?.map((id) => {
-          const meta = filesFrontmatter[id] || {
-            frontmatter: { title: tabs[id].title },
+          const meta = {
+            frontmatter: filesFrontmatter[id] || { title: tabs[id].title },
             toc: [],
             texts: [],
           }
