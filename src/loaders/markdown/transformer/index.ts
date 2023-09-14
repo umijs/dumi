@@ -86,7 +86,7 @@ function keepSoftBreak(pkg: IApi['pkg']) {
   return !semver.subset(ver, VERSION_2_DEPRECATE_SOFT_BREAKS);
 }
 
-function applyUnifiedPlugin(opts: {
+async function applyUnifiedPlugin(opts: {
   processor: Processor;
   plugin: NonNullable<IMdTransformerOptions['extraRemarkPlugins']>[0];
   cwd: IMdTransformerOptions['cwd'];
@@ -94,13 +94,13 @@ function applyUnifiedPlugin(opts: {
   const [plugin, options] = Array.isArray(opts.plugin)
     ? opts.plugin
     : [opts.plugin];
-  const mod =
-    typeof plugin === 'function'
-      ? plugin
-      : require(require.resolve(plugin, { paths: [opts.cwd] }));
-  const fn: Plugin = mod.default || mod;
 
-  opts.processor.use(fn, options);
+  let mod = typeof plugin === 'function' ? plugin : undefined;
+  if (!mod && typeof plugin === 'string') {
+    mod = await import(plugin).then((module) => module.default);
+  }
+
+  opts.processor.use(mod as Plugin, options);
 }
 
 export default async (raw: string, opts: IMdTransformerOptions) => {
@@ -149,13 +149,13 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
   }
 
   // apply extra remark plugins
-  opts.extraRemarkPlugins?.forEach((plugin) =>
-    applyUnifiedPlugin({
+  for (const plugin of opts.extraRemarkPlugins ?? []) {
+    await applyUnifiedPlugin({
       plugin,
       processor,
       cwd: opts.cwd,
-    }),
-  );
+    });
+  }
 
   // apply internal rehype plugins
   processor
@@ -188,14 +188,13 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     // collect all texts for content search, must be the last rehype plugin
     .use(rehypeText);
 
-  // apply extra rehype plugins
-  opts.extraRehypePlugins?.forEach((plugin) =>
-    applyUnifiedPlugin({
+  for (const plugin of opts.extraRehypePlugins ?? []) {
+    await applyUnifiedPlugin({
       plugin,
       processor,
       cwd: opts.cwd,
-    }),
-  );
+    });
+  }
 
   const result = await processor.use(rehypeJsxify).process(raw);
 
