@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocaleDocRoutes } from '../utils';
 // @ts-ignore
 import workerCode from '-!../../../../compiled/_internal/searchWorker.min?dumi-raw';
+import useFilesMeta from './useFilesMeta';
 
 export interface IHighlightText {
   highlighted?: boolean;
@@ -42,12 +43,20 @@ export const useSiteSearch = () => {
   const { demos } = useSiteData();
   const [loading, setLoading] = useState(false);
   const [keywords, setKeywords] = useState('');
+  const [enabled, setEnabled] = useState(false);
   const navData = useNavData();
   const [result, setResult] = useState<ISearchResult>([]);
   const setter = useCallback((val: string) => {
     setLoading(true);
     setKeywords(val);
+
+    if (val) {
+      setEnabled(true);
+    }
   }, []);
+
+  const filesMeta = useFilesMeta(enabled);
+  const mergedLoading = loading && filesMeta;
 
   useEffect(() => {
     worker.onmessage = (e) => {
@@ -57,9 +66,15 @@ export const useSiteSearch = () => {
   }, []);
 
   useEffect(() => {
+    if (!filesMeta) {
+      return;
+    }
+
+    console.log('>>>', routes, filesMeta);
+
     // omit demo component for postmessage
     const demoData = Object.entries(demos).reduce<
-      Record<string, Partial<typeof demos[0]>>
+      Record<string, Partial<(typeof demos)[0]>>
     >(
       (acc, [key, { asset, routeId }]) => ({
         ...acc,
@@ -76,9 +91,13 @@ export const useSiteSearch = () => {
         demos: demoData,
       },
     });
-  }, [routes, demos, navData]);
+  }, [routes, demos, navData, filesMeta]);
 
   useEffect(() => {
+    if (!filesMeta) {
+      return;
+    }
+
     const str = keywords.trim();
 
     if (str) {
@@ -94,7 +113,7 @@ export const useSiteSearch = () => {
     } else {
       setResult([]);
     }
-  }, [keywords]);
+  }, [keywords, filesMeta]);
 
-  return { keywords, setKeywords: setter, result, loading };
+  return { keywords, setKeywords: setter, result, loading: mergedLoading };
 };

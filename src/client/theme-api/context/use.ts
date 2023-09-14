@@ -6,6 +6,9 @@ type ReactPromise<T> = Promise<T> & {
   reason?: any;
 };
 
+/**
+ * @private Internal usage. Safe to remove
+ */
 export default function use<T>(promise: ReactPromise<T>): T {
   if (promise.status === 'fulfilled') {
     return promise.value!;
