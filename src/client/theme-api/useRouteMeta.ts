@@ -38,14 +38,17 @@ export const useRouteMeta = () => {
     }
   }, [clientRoutes.length, pathname]);
 
-  const meta: IRouteMeta = useAsyncRouteMeta((curRoute as any)?.id) || {
+  let meta: IRouteMeta = useAsyncRouteMeta((curRoute as any)?.id) || {
     frontmatter: {},
     toc: [],
     texts: [],
   };
 
-  if (curRoute && 'meta' in curRoute && (curRoute.meta as any)._atom_route) {
-    meta._atom_route = true;
+  if (curRoute && 'meta' in curRoute) {
+    meta = {
+      ...(curRoute.meta as any),
+      ...meta,
+    };
   }
 
   return meta;

@@ -37,7 +37,7 @@ export const getRouteMetaById = async (id: string) => {
   return {
     texts: text?.texts,
     toc: text?.toc,
-    frontmatter: frontmatter?.frontmatter,
+    frontmatter,
     tabs: tabsMeta,
   };
 }
