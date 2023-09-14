@@ -1,9 +1,8 @@
-import { useNavData, useSiteData } from 'dumi';
+import { useNavData } from 'dumi';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useLocaleDocRoutes } from '../utils';
 // @ts-ignore
 import workerCode from '-!../../../../compiled/_internal/searchWorker.min?dumi-raw';
-import useFilesMeta from './useFilesMeta';
+import useSearchData from './useSearchData';
 
 export interface IHighlightText {
   highlighted?: boolean;
@@ -39,8 +38,8 @@ if (typeof window !== 'undefined') {
 
 export const useSiteSearch = () => {
   const debounceTimer = useRef<number>();
-  const routes = useLocaleDocRoutes();
-  const { demos } = useSiteData();
+  // const routes = useLocaleDocRoutes();
+  // const { demos } = useSiteData();
   const [loading, setLoading] = useState(false);
   const [keywords, setKeywords] = useState('');
   const [enabled, setEnabled] = useState(false);
@@ -55,8 +54,8 @@ export const useSiteSearch = () => {
     }
   }, []);
 
-  const filesMeta = useFilesMeta(enabled);
-  const mergedLoading = loading && filesMeta;
+  const [filledRoutes, demos] = useSearchData(enabled);
+  const mergedLoading = loading && filledRoutes;
 
   useEffect(() => {
     worker.onmessage = (e) => {
@@ -66,11 +65,9 @@ export const useSiteSearch = () => {
   }, []);
 
   useEffect(() => {
-    if (!filesMeta) {
+    if (!filledRoutes || !demos) {
       return;
     }
-
-    console.log('>>>', routes, filesMeta);
 
     // omit demo component for postmessage
     const demoData = Object.entries(demos).reduce<
@@ -86,15 +83,15 @@ export const useSiteSearch = () => {
     worker.postMessage({
       action: 'generate-metadata',
       args: {
-        routes: JSON.parse(JSON.stringify(routes)),
+        routes: JSON.parse(JSON.stringify(filledRoutes)),
         nav: navData,
         demos: demoData,
       },
     });
-  }, [routes, demos, navData, filesMeta]);
+  }, [demos, navData, filledRoutes]);
 
   useEffect(() => {
-    if (!filesMeta) {
+    if (!filledRoutes) {
       return;
     }
 
@@ -113,7 +110,7 @@ export const useSiteSearch = () => {
     } else {
       setResult([]);
     }
-  }, [keywords, filesMeta]);
+  }, [keywords, filledRoutes]);
 
   return { keywords, setKeywords: setter, result, loading: mergedLoading };
 };

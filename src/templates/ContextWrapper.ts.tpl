@@ -3,6 +3,7 @@ import { useOutlet, history } from 'dumi';
 import { warning } from 'rc-util';
 import { SiteContext, type ISiteContext } from '{{{contextPath}}}';
 import { components } from '../meta/atoms';
+import { tabs } from '../meta/tabs';
 import { getDemoById } from '../meta/demos';
 import { locales } from '../locales/config';
 {{{defaultExport}}}
@@ -47,6 +48,7 @@ export default function DumiContextWrapper() {
       entryExports,
       demos: null,
       components,
+      tabs,
       locales,
       loading,
       setLoading,
@@ -70,6 +72,7 @@ export default function DumiContextWrapper() {
     historyType,
     entryExports,
     components,
+    tabs,
     locales,
     loading,
     setLoading,
