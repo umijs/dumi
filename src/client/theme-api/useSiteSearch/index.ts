@@ -55,7 +55,7 @@ export const useSiteSearch = () => {
   }, []);
 
   const [filledRoutes, demos] = useSearchData(enabled);
-  const mergedLoading = loading && filledRoutes;
+  const mergedLoading = loading || !filledRoutes;
 
   useEffect(() => {
     worker.onmessage = (e) => {
