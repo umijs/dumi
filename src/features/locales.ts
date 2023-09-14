@@ -116,8 +116,7 @@ const LocalesContainer: FC<{ children: ReactNode }> = (props) => {
     let locale = matched ? matched.id : locales[0].id;
     // using query on demos
     if(history.location.pathname.startsWith('/${SP_ROUTE_PREFIX}demos')){
-        const [_, search] = history.location.search?.split('?');
-        const params = new URLSearchParams(search);
+        const params = new URLSearchParams(history.location.search);
         // match the locale of the query
         if (params.get('locale')){
           locale = params.get('locale');
