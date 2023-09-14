@@ -1,3 +1,4 @@
+import { SP_ROUTE_PREFIX } from '@/constants';
 import type { IApi } from '@/types';
 import path from 'path';
 import { winPath } from 'umi/plugin-utils';
@@ -113,13 +114,15 @@ const LocalesContainer: FC<{ children: ReactNode }> = (props) => {
           .startsWith("${api.config.base!.replace(/\/$/, '')}" + locale.base)
     ));
     let locale = matched ? matched.id : locales[0].id;
-    // match the locale of the query
-    const [_, search] = history.location.search?.split('?');
-    const params = new URLSearchParams(search);
-    if (params.get('locale')){
-      locale = params.get('locale');
+    // using query on demos
+    if(history.location.pathname.startsWith('/${SP_ROUTE_PREFIX}demos')){
+        const [_, search] = history.location.search?.split('?');
+        const params = new URLSearchParams(search);
+        // match the locale of the query
+        if (params.get('locale')){
+          locale = params.get('locale');
+        }
     }
-    
     const localeMessages = messages[locale] || {};
 
     // append internal message, for use intl as string template util
