@@ -49,21 +49,20 @@ export default (api: IApi) => {
       content: 'export const components = null;',
     });
 
-    // [legacy] generate meta entry
     const parsedMetaFiles: MetaFiles = await api.applyPlugins({
       type: api.ApplyPluginsType.modify,
       key: 'dumi.modifyMetaFiles',
       initialValue: JSON.parse(JSON.stringify(metaFiles)),
     });
 
-    // api.writeTmpFile({
-    //   noPluginDir: true,
-    //   path: 'dumi/meta/index.ts',
-    //   tplPath: winPath(join(TEMPLATES_DIR, 'meta.ts.tpl')),
-    //   context: {
-    //     metaFiles: parsedMetaFiles,
-    //   },
-    // });
+    api.writeTmpFile({
+      noPluginDir: true,
+      path: 'dumi/meta/search.ts',
+      tplPath: winPath(join(TEMPLATES_DIR, 'meta-search.ts.tpl')),
+      context: {
+        metaFiles: parsedMetaFiles,
+      },
+    });
 
     api.writeTmpFile({
       noPluginDir: true,

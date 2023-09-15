@@ -9,3 +9,6 @@ export * from './dist';
 export { defineConfig } from './dist';
 export * from './dist/client/theme-api';
 export { IApi } from './dist/types';
+export function getRouteMetaById(id: string): Promise<any>;
+/** @private Internal usage. Safe to remove */
+export function loadFilesMeta(): Promise<any>;

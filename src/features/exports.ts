@@ -18,7 +18,8 @@ export default (api: IApi) => {
       path: 'dumi/exports.ts',
       content: `export * from '../exports';
 export * from '${winPath(require.resolve('../client/theme-api'))}';
-export { getRouteMetaById } from './meta/route-meta';`,
+export { getRouteMetaById } from './meta/route-meta';
+export { loadFilesMeta } from './meta/search';`,
     });
   });
 };

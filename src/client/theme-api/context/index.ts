@@ -1,7 +1,12 @@
 import type { PICKED_PKG_FIELDS } from '@/constants';
 import type { AtomComponentAsset } from 'dumi-assets-types';
 import { createContext, useContext, type ComponentType } from 'react';
-import type { ILocalesConfig, IPreviewerProps, IThemeConfig } from '../types';
+import type {
+  ILocalesConfig,
+  IPreviewerProps,
+  IRouteMeta,
+  IThemeConfig,
+} from '../types';
 import use from './use';
 
 export type DemoInfo = {
@@ -16,6 +21,7 @@ interface ISiteContext {
   entryExports: Record<string, any>;
   demos: Record<string, DemoInfo>;
   components: Record<string, AtomComponentAsset>;
+  tabs: IRouteMeta['tabs'];
   locales: ILocalesConfig;
   themeConfig: IThemeConfig;
   hostname?: string;
@@ -44,6 +50,7 @@ export const SiteContext = createContext<ISiteContext>({
   setLoading: () => {},
   _2_level_nav_available: true,
   getDemoById: async () => null,
+  tabs: [],
 });
 
 export const useSiteData = () => {

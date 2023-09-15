@@ -38,5 +38,6 @@
   "content.footer.actions.previous": "PREV",
   "content.footer.actions.next": "NEXT",
   "search.not.found": "No content was found",
+  "search.loading": "Loading...",
   "layout.sidebar.btn": "Sidebar"
 }
