@@ -237,23 +237,3 @@ features:
     </li>
   </ul>
 </Tree>
-
-## Emoji 🚀
-
-dumi 默认不支持该功能，你可以通过安装 `remark-emoji` 插件以开启该功能。
-
-```bash
-npm install remark-emoji -D
-```
-
-配置中启用：
-
-<!-- prettier-ignore -->
-```ts {4} | pure
-// .dumirc.ts
-export default {
-  extraRemarkPlugins: [
-    ['remark-emoji', { /* options */}]
-  ],
-};
-```
