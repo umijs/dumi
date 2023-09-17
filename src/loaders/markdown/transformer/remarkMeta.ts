@@ -65,7 +65,6 @@ export default function remarkMeta(opts: IRemarkMetaOpts): Transformer<Root> {
       title: '',
       toc: 'menu',
       filename: winPath(path.relative(opts.cwd, opts.fileAbsPath)),
-      resourcePath: opts.fileAbsPath,
       ...(guessAtomId && { atomId: guessAtomId }),
     };
 
