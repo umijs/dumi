@@ -149,8 +149,10 @@ export default (api: IApi) => {
           `Please append ${expected
             .map((e) => `\`${e}\``)
             .join(
-              ' & ',
-            )} into \`include\` option of \`tsconfig.json\`, to make sure the types exported by framework works.`,
+              ', ',
+            )} into \`include\` option of \`tsconfig.json\`, to make sure the type prompt works for ${
+            expected.length > 1 ? 'them' : 'it'
+          }.`,
         );
       }
     } catch {}
