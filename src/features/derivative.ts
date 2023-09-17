@@ -112,16 +112,6 @@ export default (api: IApi) => {
       const configFileName = api.service.configManager?.mainConfigFile;
       const expected = [];
 
-      // remove wrong .dumi/**/* include from previous dumi version
-      if (tsconfig.include?.includes('.dumi/**/*')) {
-        tsconfig.include = tsconfig.include.filter((i) => i !== '.dumi/**/*');
-        fs.writeFileSync(
-          tsconfigPath,
-          JSON.stringify(tsconfig, null, 2),
-          'utf-8',
-        );
-      }
-
       // only .dumirc.ts need to be included, because the dot files will be excluded by default
       if (configFileName && /[\\/]\.[^\\/]+\.ts$/.test(configFileName)) {
         expected.push(winPath(path.relative(api.cwd, configFileName)));
@@ -144,13 +134,32 @@ export default (api: IApi) => {
         expected.push(`${LOCAL_THEME_DIR}/**/*`);
       }
 
-      if (!expected.every((f) => tsconfig.include?.includes(f))) {
+      // patch tsconfig.json automatically if the `.dumi/**/*` already included
+      // why auto patch?
+      // there are 2 situations when `.dumi/**/*` is already included:
+      //   1. create from the new boilerplate, so we should correct it automatically
+      //   2. user manually add it after saw the warning, so we should not let user modify it twice
+      if (tsconfig.include?.includes('.dumi/**/*')) {
+        tsconfig.include.splice(
+          tsconfig.include.indexOf('.dumi/**/*'),
+          1,
+          ...expected.filter((f) => !tsconfig.include!.includes(f)),
+        );
+        fs.writeFileSync(
+          tsconfigPath,
+          JSON.stringify(tsconfig, null, 2),
+          'utf-8',
+        );
+        logger.warn(
+          'tsconfig.json `include` option has been patched automatically, please check and commit it.',
+        );
+      } else if (!expected.every((f) => tsconfig.include?.includes(f))) {
         logger.warn(
           `Please append ${expected
             .map((e) => `\`${e}\``)
             .join(
               ', ',
-            )} into \`include\` option of \`tsconfig.json\`, to make sure the type prompt works for ${
+            )} into \`include\` option of tsconfig.json, to make sure the type prompt works for ${
             expected.length > 1 ? 'them' : 'it'
           }.`,
         );
