@@ -1,4 +1,8 @@
-import { LOCAL_PAGES_DIR, USELESS_TMP_FILES } from '@/constants';
+import {
+  LOCAL_PAGES_DIR,
+  LOCAL_THEME_DIR,
+  USELESS_TMP_FILES,
+} from '@/constants';
 import type { IApi } from '@/types';
 import assert from 'assert';
 import fs from 'fs';
@@ -103,24 +107,61 @@ export default (api: IApi) => {
 
     // check tsconfig.json
     try {
-      const tsconfig = require(path.join(api.cwd, 'tsconfig.json'));
-      const expected = ['.dumi/**/*'];
+      const tsconfigPath = path.join(api.cwd, 'tsconfig.json');
+      const tsconfig: { include?: string[] } = require(tsconfigPath);
+      const configFileName = api.service.configManager?.mainConfigFile;
+      const expected = [];
 
-      if (api.service.configManager?.mainConfigFile?.endsWith('.ts')) {
-        expected.push(
-          winPath(
-            path.relative(api.cwd, api.service.configManager.mainConfigFile),
-          ),
-        );
+      // only .dumirc.ts need to be included, because the dot files will be excluded by default
+      if (configFileName && /[\\/]\.[^\\/]+\.ts$/.test(configFileName)) {
+        expected.push(winPath(path.relative(api.cwd, configFileName)));
       }
 
-      if (!expected.every((f) => tsconfig.include?.includes(f))) {
+      // check conventional files
+      // ref: https://github.com/umijs/umi/blob/8a810e4c3b6abac958e6397d21bb6c65cd300b91/packages/preset-umi/src/features/appData/appData.ts#L50-L58
+      [
+        api.appData.globalJS?.[0],
+        api.appData.globalLoading,
+        api.appData.appJS?.path,
+      ].forEach((file) => {
+        if (file && /([\\/])\.dumi\1.*\.tsx?$/.test(file)) {
+          expected.push(winPath(path.relative(api.cwd, file)));
+        }
+      });
+
+      // check local theme dir
+      if (fs.existsSync(path.join(api.cwd, LOCAL_THEME_DIR))) {
+        expected.push(`${LOCAL_THEME_DIR}/**/*`);
+      }
+
+      // patch tsconfig.json automatically if the `.dumi/**/*` already included
+      // why auto patch?
+      // there are 2 situations when `.dumi/**/*` is already included:
+      //   1. create from the new boilerplate, so we should correct it automatically
+      //   2. user manually add it after saw the warning, so we should not let user modify it twice
+      if (tsconfig.include?.includes('.dumi/**/*')) {
+        tsconfig.include.splice(
+          tsconfig.include.indexOf('.dumi/**/*'),
+          1,
+          ...expected.filter((f) => !tsconfig.include!.includes(f)),
+        );
+        fs.writeFileSync(
+          tsconfigPath,
+          JSON.stringify(tsconfig, null, 2),
+          'utf-8',
+        );
+        logger.warn(
+          'tsconfig.json `include` option has been patched automatically, please check and commit it.',
+        );
+      } else if (!expected.every((f) => tsconfig.include?.includes(f))) {
         logger.warn(
           `Please append ${expected
             .map((e) => `\`${e}\``)
             .join(
-              ' & ',
-            )} into \`include\` option of \`tsconfig.json\`, to make sure the types exported by framework works.`,
+              ', ',
+            )} into \`include\` option of tsconfig.json, to make sure the type prompt works for ${
+            expected.length > 1 ? 'them' : 'it'
+          }.`,
         );
       }
     } catch {}
