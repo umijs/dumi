@@ -95,12 +95,19 @@ async function applyUnifiedPlugin(opts: {
     ? opts.plugin
     : [opts.plugin];
 
-  let mod = typeof plugin === 'function' ? plugin : undefined;
-  if (!mod && typeof plugin === 'string') {
-    mod = await import(plugin).then((module) => module.default);
+  let mod: Plugin | undefined;
+  switch (typeof plugin) {
+    case 'string':
+      mod = await import(plugin).then((module) => module.default);
+      break;
+    case 'function':
+      mod = plugin as Plugin;
+      break;
+    default:
+      break;
   }
 
-  opts.processor.use(mod as Plugin, options);
+  if (mod) opts.processor.use(mod, options);
 }
 
 export default async (raw: string, opts: IMdTransformerOptions) => {
