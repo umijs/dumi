@@ -112,6 +112,16 @@ export default (api: IApi) => {
       const configFileName = api.service.configManager?.mainConfigFile;
       const expected = [];
 
+      // remove wrong .dumi/**/* include from previous dumi version
+      if (tsconfig.include?.includes('.dumi/**/*')) {
+        tsconfig.include = tsconfig.include.filter((i) => i !== '.dumi/**/*');
+        fs.writeFileSync(
+          tsconfigPath,
+          JSON.stringify(tsconfig, null, 2),
+          'utf-8',
+        );
+      }
+
       // only .dumirc.ts need to be included, because the dot files will be excluded by default
       if (configFileName && /[\\/]\.[^\\/]+\.ts$/.test(configFileName)) {
         expected.push(winPath(path.relative(api.cwd, configFileName)));
