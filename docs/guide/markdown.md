@@ -248,16 +248,12 @@ npm install remark-emoji -D
 
 配置中启用：
 
+<!-- prettier-ignore -->
 ```ts {4} | pure
 // .dumirc.ts
 export default {
   extraRemarkPlugins: [
-    [
-      'remark-emoji',
-      {
-        /* options */
-      },
-    ],
+    ['remark-emoji', { /* options */}]
   ],
 };
 ```
