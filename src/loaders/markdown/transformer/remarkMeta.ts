@@ -64,7 +64,8 @@ export default function remarkMeta(opts: IRemarkMetaOpts): Transformer<Root> {
     vFile.data.frontmatter = {
       title: '',
       toc: 'menu',
-      filename: winPath(path.relative(opts.cwd, opts.fileAbsPath)),
+      filename: path.basename(opts.fileAbsPath),
+      resourcePath: opts.fileAbsPath,
       ...(guessAtomId && { atomId: guessAtomId }),
     };
 
