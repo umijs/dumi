@@ -1,4 +1,5 @@
 import {
+  LOCAL_DUMI_DIR,
   LOCAL_PAGES_DIR,
   LOCAL_THEME_DIR,
   USELESS_TMP_FILES,
@@ -7,7 +8,7 @@ import type { IApi } from '@/types';
 import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
-import { deepmerge, fsExtra, logger, winPath } from 'umi/plugin-utils';
+import { chalk, deepmerge, fsExtra, logger, winPath } from 'umi/plugin-utils';
 
 function isMFSUAvailable(api: IApi) {
   return (
@@ -109,59 +110,68 @@ export default (api: IApi) => {
     try {
       const tsconfigPath = path.join(api.cwd, 'tsconfig.json');
       const tsconfig: { include?: string[] } = require(tsconfigPath);
-      const configFileName = api.service.configManager?.mainConfigFile;
-      const expected = [];
 
-      // only .dumirc.ts need to be included, because the dot files will be excluded by default
-      if (configFileName && /[\\/]\.[^\\/]+\.ts$/.test(configFileName)) {
-        expected.push(winPath(path.relative(api.cwd, configFileName)));
-      }
-
-      // check conventional files
-      // ref: https://github.com/umijs/umi/blob/8a810e4c3b6abac958e6397d21bb6c65cd300b91/packages/preset-umi/src/features/appData/appData.ts#L50-L58
-      [
-        api.appData.globalJS?.[0],
-        api.appData.globalLoading,
-        api.appData.appJS?.path,
-      ].forEach((file) => {
-        if (file && /([\\/])\.dumi\1.*\.tsx?$/.test(file)) {
-          expected.push(winPath(path.relative(api.cwd, file)));
-        }
-      });
-
-      // check local theme dir
-      if (fs.existsSync(path.join(api.cwd, LOCAL_THEME_DIR))) {
-        expected.push(`${LOCAL_THEME_DIR}/**/*`);
-      }
-
-      // patch tsconfig.json automatically if the `.dumi/**/*` already included
-      // why auto patch?
-      // there are 2 situations when `.dumi/**/*` is already included:
-      //   1. create from the new boilerplate, so we should correct it automatically
-      //   2. user manually add it after saw the warning, so we should not let user modify it twice
-      if (tsconfig.include?.includes('.dumi/**/*')) {
-        tsconfig.include.splice(
-          tsconfig.include.indexOf('.dumi/**/*'),
-          1,
-          ...expected.filter((f) => !tsconfig.include!.includes(f)),
+      // auto remove wrong `.dumi/**/*` from previous dumi versions
+      const dotDumiWildcard = `${LOCAL_DUMI_DIR}/**/*`;
+      if (tsconfig.include?.includes(dotDumiWildcard)) {
+        tsconfig.include = tsconfig.include.filter(
+          (i) => i !== dotDumiWildcard,
         );
         fs.writeFileSync(
           tsconfigPath,
           JSON.stringify(tsconfig, null, 2),
           'utf-8',
         );
-        logger.warn(
-          'tsconfig.json `include` option has been patched automatically, please check and commit it.',
+        logger.info(
+          `tsconfig.json \`include\` option has been patched automatically, please check and commit it.
+          ${chalk.grey('see also: https://github.com/umijs/dumi/pull/1902')}`,
         );
-      } else if (!expected.every((f) => tsconfig.include?.includes(f))) {
+      }
+
+      // auto add tsconfig.json for .dumi dir
+      const dotDumiPath = path.join(api.cwd, LOCAL_DUMI_DIR);
+      const dotDumiTsconfigPath = path.join(dotDumiPath, 'tsconfig.json');
+      const hasDotDumiTsFiles =
+        fs.existsSync(dotDumiPath) &&
+        fs
+          .readdirSync(dotDumiPath)
+          .some(
+            (f) =>
+              LOCAL_PAGES_DIR.endsWith(`/${f}`) ||
+              LOCAL_THEME_DIR.endsWith(`/${f}`) ||
+              /\.tsx?$/.test(f),
+          );
+      if (
+        hasDotDumiTsFiles &&
+        !fs.existsSync(dotDumiTsconfigPath) &&
+        !tsconfig.include?.some((i) => /(\.\/)?.dumi\//.test(i))
+      ) {
+        fs.writeFileSync(
+          dotDumiTsconfigPath,
+          JSON.stringify(
+            { extends: '../tsconfig.json', include: ['**/*'] },
+            null,
+            2,
+          ),
+          'utf-8',
+        );
+        logger.info(
+          'In order to make type prompt works for theme files, .dumi/tsconfig.json has been created automatically, please check and commit it.',
+        );
+      }
+
+      // check type prompt for config file
+      const configFileName =
+        api.service.configManager?.mainConfigFile &&
+        path.basename(api.service.configManager?.mainConfigFile);
+      if (
+        configFileName &&
+        // only .dumirc.ts need to be included in the root tsconfig.json, because the dot files will be excluded by default
+        /^\..+\.ts$/.test(configFileName) &&
+        !tsconfig.include?.includes(configFileName)
+      ) {
         logger.warn(
-          `Please append ${expected
-            .map((e) => `\`${e}\``)
-            .join(
-              ', ',
-            )} into \`include\` option of tsconfig.json, to make sure the type prompt works for ${
-            expected.length > 1 ? 'them' : 'it'
-          }.`,
+          `Please append \`${configFileName}\` into \`include\` option of tsconfig.json, to make sure the type prompt works for it.`,
         );
       }
     } catch {}
