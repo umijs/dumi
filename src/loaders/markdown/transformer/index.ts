@@ -3,9 +3,8 @@ import type { ILocalesConfig, IRouteMeta } from '@/client/theme-api/types';
 import { VERSION_2_DEPRECATE_SOFT_BREAKS } from '@/constants';
 import type { IApi, IDumiConfig, IDumiTechStack } from '@/types';
 import enhancedResolve from 'enhanced-resolve';
-import path from 'path';
 import type { IRoute } from 'umi';
-import { semver, winPath } from 'umi/plugin-utils';
+import { semver } from 'umi/plugin-utils';
 import type { Plugin, Processor } from 'unified';
 import type { Data } from 'vfile';
 import rehypeDemo from './rehypeDemo';
@@ -197,13 +196,6 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
       cwd: opts.cwd,
     }),
   );
-
-  // information is stored in an object.
-  processor.data({
-    ...(processor.data() ?? {}),
-    filename: winPath(path.relative(opts.cwd, opts.fileAbsPath)),
-    fileAbsPath: opts.fileAbsPath,
-  });
 
   const result = await processor.use(rehypeJsxify).process(raw);
 
