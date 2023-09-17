@@ -95,17 +95,10 @@ async function applyUnifiedPlugin(opts: {
     ? opts.plugin
     : [opts.plugin];
 
-  let mod: Plugin | undefined;
-  switch (typeof plugin) {
-    case 'string':
-      mod = await import(plugin).then((module) => module.default);
-      break;
-    case 'function':
-      mod = plugin as Plugin;
-      break;
-    default:
-      break;
-  }
+  let mod: Plugin =
+    typeof plugin === 'function'
+      ? plugin
+      : await import(plugin).then((module) => module.default);
 
   if (mod) opts.processor.use(mod, options);
 }
