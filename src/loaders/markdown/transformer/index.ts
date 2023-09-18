@@ -197,6 +197,9 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     }),
   );
 
+  // info available to all plugins
+  processor.data('fileAbsPath', opts.fileAbsPath);
+
   const result = await processor.use(rehypeJsxify).process(raw);
 
   return {
