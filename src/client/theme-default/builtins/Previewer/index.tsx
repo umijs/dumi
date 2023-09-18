@@ -1,13 +1,34 @@
 import classnames from 'classnames';
-import { IPreviewerProps, useLocation } from 'dumi';
+import { IPreviewerProps, evalCode, useDemoScopes, useLocation } from 'dumi';
 import PreviewerActions from 'dumi/theme/slots/PreviewerActions';
-import React, { useRef, type FC } from 'react';
+import { highlight, languages } from 'prismjs';
+import React, { useRef, useState, type FC } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
+import Editor from 'react-simple-code-editor';
+import { transform } from 'sucrase';
 import './index.less';
+
+const LiveDemo: FC<{ code: string; scopes: any }> = ({ code, scopes }) => {
+  const Comp = evalCode(
+    transform(code, { transforms: ['typescript', 'jsx'] }).code,
+    scopes,
+  );
+
+  return <Comp />;
+};
 
 const Previewer: FC<IPreviewerProps> = (props) => {
   const demoContainer = useRef<HTMLDivElement>(null);
   const { hash } = useLocation();
   const link = `#${props.asset.id}`;
+
+  const scopes = useDemoScopes(props.asset.id);
+
+  const [code, setCode] = useState<string>(
+    Object.entries(props.asset.dependencies).filter(
+      ([, { type }]) => type === 'FILE',
+    )[0][1].value,
+  );
 
   return (
     <div
@@ -35,7 +56,10 @@ const Previewer: FC<IPreviewerProps> = (props) => {
             src={props.demoUrl}
           ></iframe>
         ) : (
-          props.children
+          // props.children
+          <ErrorBoundary fallback={<div>Compiling...</div>} resetKeys={[code]}>
+            <LiveDemo code={code} scopes={scopes} />
+          </ErrorBoundary>
         )}
       </div>
       <div className="dumi-default-previewer-meta">
@@ -61,6 +85,14 @@ const Previewer: FC<IPreviewerProps> = (props) => {
             props.iframe
               ? (demoContainer.current?.firstElementChild as HTMLIFrameElement)
               : demoContainer.current!
+          }
+          sourceCode={
+            <Editor
+              value={code}
+              onValueChange={(code) => setCode(code)}
+              highlight={(code) => highlight(code, languages.js)}
+              padding={10}
+            />
           }
         />
       </div>

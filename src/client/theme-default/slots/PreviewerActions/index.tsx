@@ -23,6 +23,7 @@ export interface IPreviewerActionsProps extends IPreviewerProps {
   extra?: ReactNode;
   forceShowCode?: boolean;
   demoContainer: HTMLDivElement | HTMLIFrameElement;
+  sourceCode?: ReactNode;
 }
 
 const IconCode: FC = () => (
@@ -185,7 +186,9 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
               />
             )}
           </div>
-          <SourceCode lang={lang}>{files[activeKey][1].value}</SourceCode>
+          {props.sourceCode || (
+            <SourceCode lang={lang}>{files[activeKey][1].value}</SourceCode>
+          )}
         </>
       )}
     </>
