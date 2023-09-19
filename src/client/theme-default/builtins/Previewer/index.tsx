@@ -1,20 +1,23 @@
 import classnames from 'classnames';
-import { IPreviewerProps, useLive, useLocation } from 'dumi';
+import {
+  IPreviewerProps,
+  LiveContext,
+  LiveDemo,
+  LiveEditor,
+  LiveError,
+  LiveProvider,
+  useLocation,
+} from 'dumi';
 import PreviewerActions from 'dumi/theme/slots/PreviewerActions';
-import React, { useRef, type FC } from 'react';
+import React, { useContext, useRef, type FC } from 'react';
 import './index.less';
 
-const Previewer: FC<IPreviewerProps> = (props) => {
+const InternalPreviewer: FC<IPreviewerProps> = (props) => {
   const demoContainer = useRef<HTMLDivElement>(null);
   const { hash } = useLocation();
   const link = `#${props.asset.id}`;
 
-  const { editor, liveDemo } = useLive(
-    props.asset.id,
-    Object.entries(props.asset.dependencies).filter(
-      ([, { type }]) => type === 'FILE',
-    )[0][1].value,
-  );
+  const { enabled } = useContext(LiveContext);
 
   return (
     <div
@@ -41,8 +44,10 @@ const Previewer: FC<IPreviewerProps> = (props) => {
             }
             src={props.demoUrl}
           ></iframe>
+        ) : enabled ? (
+          <LiveDemo />
         ) : (
-          liveDemo ?? props.children
+          props.children
         )}
       </div>
       <div className="dumi-default-previewer-meta">
@@ -69,10 +74,32 @@ const Previewer: FC<IPreviewerProps> = (props) => {
               ? (demoContainer.current?.firstElementChild as HTMLIFrameElement)
               : demoContainer.current!
           }
-          sourceCode={editor}
+          sourceCode={
+            enabled ? (
+              <div style={{ overflow: 'auto' }}>
+                <LiveEditor />
+                <LiveError />
+              </div>
+            ) : null
+          }
         />
       </div>
     </div>
+  );
+};
+
+const Previewer: FC<IPreviewerProps> = (props) => {
+  return (
+    <LiveProvider
+      initialCode={
+        Object.entries(props.asset.dependencies).filter(
+          ([, { type }]) => type === 'FILE',
+        )[0][1].value
+      }
+      demoId={props.asset.id}
+    >
+      <InternalPreviewer {...props} />
+    </LiveProvider>
   );
 };
 

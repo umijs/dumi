@@ -1,5 +1,5 @@
 import { getDemoScopesById } from 'dumi';
-import use from './context/use';
+import use from '../context/use';
 
 const cache = new Map<string, ReturnType<typeof getDemoScopesById>>();
 
