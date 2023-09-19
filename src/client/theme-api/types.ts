@@ -43,6 +43,10 @@ export interface IPreviewerProps {
    */
   background?: string;
   /**
+   * enable live demo
+   */
+  live?: boolean;
+  /**
    * asset metadata of current demo
    */
   asset: ExampleBlockAsset;

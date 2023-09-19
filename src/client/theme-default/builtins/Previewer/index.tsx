@@ -76,7 +76,7 @@ const InternalPreviewer: FC<IPreviewerProps> = (props) => {
           }
           sourceCode={
             enabled ? (
-              <div style={{ overflow: 'auto' }}>
+              <div>
                 <LiveEditor />
                 <LiveError />
               </div>
@@ -89,6 +89,13 @@ const InternalPreviewer: FC<IPreviewerProps> = (props) => {
 };
 
 const Previewer: FC<IPreviewerProps> = (props) => {
+  const children = <InternalPreviewer {...props} />;
+
+  // Only Single File
+  if (!props.live || Object.entries(props.asset.dependencies).length > 1) {
+    return children;
+  }
+
   return (
     <LiveProvider
       initialCode={
@@ -98,7 +105,7 @@ const Previewer: FC<IPreviewerProps> = (props) => {
       }
       demoId={props.asset.id}
     >
-      <InternalPreviewer {...props} />
+      {children}
     </LiveProvider>
   );
 };
