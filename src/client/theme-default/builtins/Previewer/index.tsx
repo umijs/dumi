@@ -92,7 +92,12 @@ const Previewer: FC<IPreviewerProps> = (props) => {
   const children = <InternalPreviewer {...props} />;
 
   // Only Single File
-  if (!props.live || Object.entries(props.asset.dependencies).length > 1) {
+  if (
+    props.live === false ||
+    Object.entries(props.asset.dependencies).filter(
+      ([, { type }]) => type === 'FILE',
+    ).length > 1
+  ) {
     return children;
   }
 
