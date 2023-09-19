@@ -203,6 +203,17 @@ export default () => (
 );
 ```
 
+### live<Badge>2.3.0+</Badge>
+
+- 类型：`boolean`
+- 默认值：`undefined`
+
+启用动态演示功能。开启后 Demo 的代码块会变为编辑器，代码的变化会实时反映到 Demo 中。
+
+:::Warning
+由于 Demo 的依赖在编译阶段收集并固定，所以不能够实时修改 `import` 部分的代码。
+:::
+
 ## 主题配置项
 
 通过 `themeConfig` 可配置传递给主题的配置项：
