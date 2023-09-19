@@ -29,6 +29,7 @@ export { openStackBlitz } from './openStackBlitz';
 export type { IPreviewerProps } from './types';
 export { useAtomAssets } from './useAtomAssets';
 export { useDemoScopes } from './useDemoScopes';
+export { useLive } from './useLive';
 export { useLocale } from './useLocale';
 export { useNavData } from './useNavData';
 export { usePrefersColor } from './usePrefersColor';

@@ -147,7 +147,7 @@ importers:
         specifier: ^6.4.4
         version: 6.4.4(react@18.2.0)(typescript@5.0.4)
       react-simple-code-editor:
-        specifier: latest
+        specifier: ^0.13.1
         version: 0.13.1(react-dom@17.0.2)(react@18.2.0)
       rehype-autolink-headings:
         specifier: ^6.1.1
@@ -180,7 +180,7 @@ importers:
         specifier: ^7.1.1
         version: 7.1.1
       sucrase:
-        specifier: latest
+        specifier: ^3.34.0
         version: 3.34.0
       umi:
         specifier: ^4.0.73
@@ -231,6 +231,9 @@ importers:
       '@types/pluralize':
         specifier: ^0.0.30
         version: 0.0.30
+      '@types/prismjs':
+        specifier: ^1.26.0
+        version: 1.26.0
       '@types/react':
         specifier: ^18.2.17
         version: 18.2.17
@@ -3274,6 +3277,10 @@ packages:
 
   /@types/pluralize@0.0.30:
     resolution: {integrity: sha512-kVww6xZrW/db5BR9OqiT71J9huRdQ+z/r+LbDuT7/EK50mCmj5FoaIARnVv0rvjUS/YpDox0cDU9lpQT011VBA==}
+    dev: true
+
+  /@types/prismjs@1.26.0:
+    resolution: {integrity: sha512-ZTaqn/qSqUuAq1YwvOFQfVW1AR/oQJlLSZVustdjwI+GZ8kr0MSHBj0tsXPW1EqHubx50gtBEjbPGsdZwQwCjQ==}
     dev: true
 
   /@types/prop-types@15.7.5:

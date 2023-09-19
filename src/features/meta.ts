@@ -96,15 +96,6 @@ export default (api: IApi) => {
       },
     });
 
-    api.writeTmpFile({
-      noPluginDir: true,
-      path: 'dumi/meta/scopes.ts',
-      tplPath: winPath(join(TEMPLATES_DIR, 'meta-scopes.ts.tpl')),
-      context: {
-        metaFiles: mdFiles,
-      },
-    });
-
     // generate runtime plugin, to append page meta to route object
     api.writeTmpFile({
       noPluginDir: true,

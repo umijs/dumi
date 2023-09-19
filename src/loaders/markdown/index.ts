@@ -308,7 +308,6 @@ export const scopes = {
                     }
                   }
 
-                  console.log(namedScope);
                   if (namedScope.length) {
                     for (const item of namedScope) {
                       if (!imports[dep].includes(item)) {

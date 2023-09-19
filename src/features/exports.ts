@@ -19,8 +19,8 @@ export default (api: IApi) => {
       content: `export * from '../exports';
 export * from '${winPath(require.resolve('../client/theme-api'))}';
 export { getRouteMetaById } from './meta/route-meta';
-export { getDemoScopesById } from './meta/scopes';
-export { loadFilesMeta } from './meta/search';`,
+export { loadFilesMeta } from './meta/search';
+export { getDemoScopesById } from './live/demo-scopes';`,
     });
   });
 };
