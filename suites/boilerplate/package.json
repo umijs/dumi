@@ -24,7 +24,7 @@
     "prepublishOnly": "father doctor && father build"
   },
   "dependencies": {
-    "@umijs/utils": "^4.0.29"
+    "@umijs/utils": "^4.0.83"
   },
   "publishConfig": {
     "access": "public"
