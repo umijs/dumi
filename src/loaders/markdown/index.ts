@@ -216,7 +216,7 @@ function emitDemoIndex(
 };`,
     {
       ids: JSON.stringify(demos?.map((demo) => demo.id)),
-      getter: `() => import(/* webpackChunkName: "${componentToChunkName(
+      getter: `() => import(/* webpackChunkName: "search__${componentToChunkName(
         this.resourcePath,
         opts.cwd,
       )}" */'${winPath(this.resourcePath)}?type=demo')`,

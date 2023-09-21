@@ -98,7 +98,7 @@ export default (api: IApi) => {
           if (!('file' in this)) {
             return '';
           }
-          return `/* webpackChunkName: "${componentToChunkName(
+          return `/* webpackChunkName: "search__${componentToChunkName(
             this.file,
             api.cwd,
           )}" */`;

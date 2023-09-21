@@ -2,6 +2,7 @@
 // which should only async load on search
 import { getRouteMetaById } from './route-meta';
 import { demoIndexes } from './demos';
+import { filesFrontmatter } from './frontmatter';
 
 // generate demos data in runtime, for reuse route.id to reduce bundle size
 export const demos = {};
@@ -16,7 +17,7 @@ export async function loadFilesMeta(idList: string[]) {
       const routeMeta = await getRouteMetaById('{{{id}}}');
       const demo = await demoIndexes['{{{id}}}']?.getter() || {};
       return {
-        frontmatter: routeMeta?.frontmatter ?? {},
+        frontmatter: filesFrontmatter['{{{id}}}'] ?? {},
         toc: routeMeta?.toc ?? [],
         texts: routeMeta?.texts ?? [],
         tabs: routeMeta?.tabs ?? [],

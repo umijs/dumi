@@ -254,9 +254,9 @@ export default function rehypeDemo(
             let component = '';
 
             if (codeType === 'external') {
-              const chunkName = componentToChunkName(
-                vFile.data.frontmatter!.filename!,
-              );
+              const chunkName =
+                'search__' +
+                componentToChunkName(vFile.data.frontmatter!.filename!);
 
               // external demo options
               parseOpts.fileAbsPath = winPath(
