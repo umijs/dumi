@@ -1,6 +1,6 @@
 import { TEMPLATES_DIR } from '@/constants';
 import type { IApi } from '@/types';
-import { componentToChunkName } from '@/utils';
+import { generateMetaChunkName } from '@/utils';
 import path, { join } from 'path';
 import type { IRoute } from 'umi';
 import { winPath } from 'umi/plugin-utils';
@@ -98,9 +98,10 @@ export default (api: IApi) => {
           if (!('file' in this)) {
             return '';
           }
-          return `/* webpackChunkName: "search__${componentToChunkName(
+          return `/* webpackChunkName: "${generateMetaChunkName(
             this.file,
             api.cwd,
+            api.config.locales?.map(({ id }) => id),
           )}" */`;
         },
       },

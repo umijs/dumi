@@ -193,3 +193,19 @@ export function componentToChunkName(
         .replace(/^pages__/, 'p__')
     : '';
 }
+
+export function generateMetaChunkName(
+  path: string,
+  cwd: string,
+  locales: string[] = [],
+): string {
+  const chunkName = componentToChunkName(path, cwd);
+
+  const dir = chunkName.replace(/^(.*?)_.*/, '$1');
+
+  const localeRegExp = new RegExp(`.*(${locales.join('|')}).*`);
+  const ifLocale = locales.length && localeRegExp.test(chunkName);
+  const locale = ifLocale ? `__${chunkName.replace(localeRegExp, '$1')}` : '';
+
+  return `meta__${dir}${locale}`;
+}

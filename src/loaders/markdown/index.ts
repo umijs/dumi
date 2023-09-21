@@ -1,6 +1,6 @@
 import { isTabRouteFile } from '@/features/tabs';
 import type { IThemeLoadResult } from '@/features/theme/loader';
-import { componentToChunkName, getCache } from '@/utils';
+import { generateMetaChunkName, getCache } from '@/utils';
 import fs from 'fs';
 import { Mustache, lodash, winPath } from 'umi/plugin-utils';
 import transform, {
@@ -160,7 +160,11 @@ function DumiMarkdownContent() {
 export default DumiMarkdownContent;`;
 }
 
-function emitDemo(opts: IMdLoaderDemoModeOptions, ret: IMdTransformerResult) {
+function emitDemo(
+  this: any,
+  opts: IMdLoaderDemoModeOptions,
+  ret: IMdTransformerResult,
+) {
   const { demos } = ret.meta;
 
   return Mustache.render(
@@ -216,9 +220,10 @@ function emitDemoIndex(
 };`,
     {
       ids: JSON.stringify(demos?.map((demo) => demo.id)),
-      getter: `() => import(/* webpackChunkName: "search__${componentToChunkName(
+      getter: `() => import(/* webpackChunkName: "${generateMetaChunkName(
         this.resourcePath,
         opts.cwd,
+        opts.locales.map(({ id }) => id),
       )}" */'${winPath(this.resourcePath)}?type=demo')`,
     },
   );
