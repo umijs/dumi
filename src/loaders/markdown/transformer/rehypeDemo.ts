@@ -1,6 +1,6 @@
 import parseBlockAsset from '@/assetParsers/block';
 import type { IDumiDemoProps } from '@/client/theme-api/DumiDemo';
-import { getFileIdFromFsPath } from '@/utils';
+import { componentToChunkName, getFileIdFromFsPath } from '@/utils';
 import type { sync } from 'enhanced-resolve';
 import type { Element, Root } from 'hast';
 import path from 'path';
@@ -254,9 +254,9 @@ export default function rehypeDemo(
             let component = '';
 
             if (codeType === 'external') {
-              const chunkName = [vFile.data.frontmatter!.atomId, 'demos']
-                .filter(Boolean)
-                .join('__');
+              const chunkName = componentToChunkName(
+                vFile.data.frontmatter!.filename!,
+              );
 
               // external demo options
               parseOpts.fileAbsPath = winPath(

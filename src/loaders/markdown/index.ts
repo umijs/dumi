@@ -1,8 +1,8 @@
 import { isTabRouteFile } from '@/features/tabs';
 import type { IThemeLoadResult } from '@/features/theme/loader';
-import { getCache } from '@/utils';
+import { componentToChunkName, getCache } from '@/utils';
 import fs from 'fs';
-import { lodash, Mustache, winPath } from 'umi/plugin-utils';
+import { Mustache, lodash, winPath } from 'umi/plugin-utils';
 import transform, {
   type IMdTransformerOptions,
   type IMdTransformerResult,
@@ -142,14 +142,18 @@ function emitDefault(
     .map((item) => `import ${item.specifier} from '${item.source}';`)
     .join('\n')}
 import React from 'react';
-${isTabContent ? `` : `import { DumiPage } from 'dumi';`}
-import { texts as ${CONTENT_TEXTS_OBJ_NAME} } from '${winPath(
-    this.resourcePath,
-  )}?type=text';
+${
+  isTabContent
+    ? `import { useTabMeta } from 'dumi';`
+    : `import { DumiPage, useRouteMeta } from 'dumi';`
+}
 
 // export named function for fastRefresh
 // ref: https://github.com/pmmmwh/react-refresh-webpack-plugin/blob/main/docs/TROUBLESHOOTING.md#edits-always-lead-to-full-reload
 function DumiMarkdownContent() {
+  const { texts: ${CONTENT_TEXTS_OBJ_NAME} } = use${
+    isTabContent ? 'TabMeta' : 'RouteMeta'
+  }();
   return ${isTabContent ? ret.content : `<DumiPage>${ret.content}</DumiPage>`};
 }
 
@@ -212,7 +216,10 @@ function emitDemoIndex(
 };`,
     {
       ids: JSON.stringify(demos?.map((demo) => demo.id)),
-      getter: `() => import('${winPath(this.resourcePath)}?type=demo')`,
+      getter: `() => import(/* webpackChunkName: "${componentToChunkName(
+        this.resourcePath,
+        opts.cwd,
+      )}" */'${winPath(this.resourcePath)}?type=demo')`,
     },
   );
 }

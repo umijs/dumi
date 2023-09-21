@@ -1,5 +1,6 @@
 import { TEMPLATES_DIR } from '@/constants';
 import type { IApi } from '@/types';
+import { componentToChunkName } from '@/utils';
 import path, { join } from 'path';
 import type { IRoute } from 'umi';
 import { winPath } from 'umi/plugin-utils';
@@ -93,6 +94,15 @@ export default (api: IApi) => {
       tplPath: winPath(join(TEMPLATES_DIR, 'meta-route.ts.tpl')),
       context: {
         metaFiles: mdFiles,
+        chunkName: function chunkName(this) {
+          if (!('file' in this)) {
+            return '';
+          }
+          return `/* webpackChunkName: "${componentToChunkName(
+            this.file,
+            api.cwd,
+          )}" */`;
+        },
       },
     });
 

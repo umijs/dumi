@@ -20,11 +20,11 @@ export default function useSearchData(enabled: boolean): ReturnData {
 
   React.useEffect(() => {
     if (enabled) {
-      loadFilesMeta().then((data) => {
+      loadFilesMeta(Object.keys(routes)).then((data) => {
         setFilesMeta(data);
       });
     }
-  }, [enabled]);
+  }, [enabled, routes]);
 
   return React.useMemo(() => {
     if (!filesMeta) {
@@ -62,11 +62,13 @@ export default function useSearchData(enabled: boolean): ReturnData {
     // Demos
     const demos: Demos = Object.entries(filesMeta).reduce((acc, [id, meta]) => {
       // append route id to demo
-      Object.values(meta.demos).forEach((demo) => {
-        demo.routeId = id;
-      });
+      if (meta.demos) {
+        Object.values(meta.demos).forEach((demo) => {
+          demo.routeId = id;
+        });
+        Object.assign(acc, meta.demos);
+      }
       // merge demos
-      Object.assign(acc, meta.demos);
 
       return acc;
     }, {});
