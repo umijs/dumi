@@ -62,13 +62,12 @@ export default function useSearchData(enabled: boolean): ReturnData {
     // Demos
     const demos: Demos = Object.entries(filesMeta).reduce((acc, [id, meta]) => {
       // append route id to demo
-      if (meta.demos) {
-        Object.values(meta.demos).forEach((demo) => {
-          demo.routeId = id;
-        });
-        Object.assign(acc, meta.demos);
-      }
+      Object.values(meta.demos).forEach((demo) => {
+        demo.routeId = id;
+      });
+
       // merge demos
+      Object.assign(acc, meta.demos);
 
       return acc;
     }, {});
