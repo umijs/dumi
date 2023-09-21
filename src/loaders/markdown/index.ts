@@ -65,59 +65,6 @@ function getDemoSourceFiles(demos: IMdTransformerResult['meta']['demos'] = []) {
   }, []);
 }
 
-function emitMeta(
-  this: any,
-  opts: IMdLoaderDemosModeOptions,
-  ret: IMdTransformerResult,
-) {
-  const { frontmatter, toc, texts, demos } = ret.meta;
-
-  return Mustache.render(
-    `import React from 'react';
-
-export const demos = {
-  {{#demos}}
-  '{{{id}}}': {
-    component: {{{component}}},
-    asset: {{{renderAsset}}}
-  },
-  {{/demos}}
-};
-export const frontmatter = {{{frontmatter}}};
-export const toc = {{{toc}}};
-export const texts = {{{texts}}};
-`,
-    {
-      demos,
-      frontmatter: JSON.stringify(frontmatter),
-      toc: JSON.stringify(toc),
-      texts: JSON.stringify(texts),
-      renderAsset: function renderAsset(this: NonNullable<typeof demos>[0]) {
-        // do not render asset for inline demo
-        if (!('asset' in this)) return 'null';
-
-        // render asset for normal demo
-        let { asset } = this;
-        const { sources } = this;
-
-        // use raw-loader to load all source files
-        Object.keys(this.sources).forEach((file: string) => {
-          // handle un-existed source file, e.g. custom tech-stack return custom dependencies
-          if (!asset.dependencies[file]) return;
-
-          // to avoid modify original asset object
-          asset = lodash.cloneDeep(asset);
-          asset.dependencies[
-            file
-          ].value = `{{{require('-!${sources[file]}?dumi-raw').default}}}`;
-        });
-
-        return JSON.stringify(asset, null, 2).replace(/"{{{|}}}"/g, '');
-      },
-    },
-  );
-}
-
 function emitDefault(
   this: any,
   opts: IMdLoaderDefaultModeOptions,
@@ -263,9 +210,6 @@ function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
   getDemoSourceFiles(demos).forEach((file) => this.addDependency(file));
 
   switch (opts.mode) {
-    // TODO: Should be removed
-    case 'meta':
-      return emitMeta.call(this, opts, ret);
     case 'demo':
       return emitDemo.call(this, opts, ret);
     case 'demo-index':

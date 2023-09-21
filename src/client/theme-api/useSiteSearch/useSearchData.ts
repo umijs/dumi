@@ -18,8 +18,6 @@ export default function useSearchData(enabled: boolean): ReturnData {
   const [filesMeta, setFilesMeta] = React.useState<RoutesData | null>(null);
   const { tabs } = useSiteData();
 
-  console.log(filesMeta);
-
   React.useEffect(() => {
     if (enabled) {
       loadFilesMeta(Object.keys(routes)).then((data) => {

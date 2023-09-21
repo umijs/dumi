@@ -24,7 +24,8 @@ const SearchBar: FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const modalInputRef = useRef<HTMLInputElement>(null);
   const [symbol, setSymbol] = useState('⌘');
-  const { keywords, setKeywords, result, loading } = useSiteSearch();
+  const { keywords, setKeywords, result, loading, loadSearchData } =
+    useSiteSearch();
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
@@ -77,7 +78,12 @@ const SearchBar: FC = () => {
     <div className="dumi-default-search-bar">
       <IconSearch className="dumi-default-search-bar-svg" />
       <Input
-        onFocus={() => setFocusing(true)}
+        onFocus={() => {
+          setFocusing(true);
+        }}
+        onMouseEnter={() => {
+          loadSearchData();
+        }}
         onBlur={() => {
           // wait for item click
           setTimeout(() => {
