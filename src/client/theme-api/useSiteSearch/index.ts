@@ -48,11 +48,9 @@ export const useSiteSearch = () => {
   const setter = useCallback((val: string) => {
     setLoading(true);
     setKeywords(val);
-
-    if (val) {
-      setEnabled(true);
-    }
   }, []);
+
+  const loadSearchData = () => setEnabled(true);
 
   const [filledRoutes, demos] = useSearchData(enabled);
   const mergedLoading = loading || !filledRoutes;
@@ -112,5 +110,11 @@ export const useSiteSearch = () => {
     }
   }, [keywords, filledRoutes]);
 
-  return { keywords, setKeywords: setter, result, loading: mergedLoading };
+  return {
+    keywords,
+    setKeywords: setter,
+    result,
+    loading: mergedLoading,
+    loadSearchData,
+  };
 };
