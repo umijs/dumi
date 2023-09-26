@@ -38,9 +38,7 @@ if (typeof window !== 'undefined') {
 
 export const useSiteSearch = () => {
   const debounceTimer = useRef<number>();
-  // const routes = useLocaleDocRoutes();
-  // const { demos } = useSiteData();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [keywords, setKeywords] = useState('');
   const [enabled, setEnabled] = useState(false);
   const navData = useNavData();

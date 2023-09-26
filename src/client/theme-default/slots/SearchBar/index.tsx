@@ -80,6 +80,7 @@ const SearchBar: FC = () => {
       <Input
         onFocus={() => {
           setFocusing(true);
+          loadSearchData();
         }}
         onMouseEnter={() => {
           loadSearchData();

@@ -119,6 +119,13 @@ const SearchResult: FC<{
 }> = (props) => {
   const [data, histsCount] = useFlatSearchData(props.data);
   const [activeIndex, setActiveIndex] = useState(-1);
+  const [loading, setLoading] = useState(props.loading);
+
+  useEffect(() => {
+    if (!props.loading) {
+      setLoading(false);
+    }
+  }, [props.loading]);
 
   useEffect(() => {
     const handler = (ev: KeyboardEvent) => {
@@ -149,7 +156,7 @@ const SearchResult: FC<{
 
   let returnNode: React.ReactNode = null;
 
-  if (props.loading) {
+  if (loading) {
     returnNode = (
       <div className="dumi-default-search-empty">
         <IconInbox />
