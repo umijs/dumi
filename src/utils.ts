@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import Cache from 'file-system-cache';
 import fs from 'fs';
 import yaml from 'js-yaml';
@@ -82,7 +83,7 @@ export function parseCodeFrontmatter(raw: string) {
  */
 const caches: Record<string, ReturnType<typeof Cache>> = {};
 const CACHE_PATH = 'node_modules/.cache/dumi';
-export function getCache(ns: string): typeof caches['0'] {
+export function getCache(ns: string): (typeof caches)['0'] {
   // return fake cache if cache disabled
   if (process.env.DUMI_CACHE === 'none') {
     return { set() {}, get() {}, setSync() {}, getSync() {} } as any;
@@ -155,4 +156,11 @@ export function getProjectRoot(cwd: string) {
   }
 
   return winPath(cwd);
+}
+
+/**
+ * generate hash for string
+ */
+export function getContentHash(content: string, length = 8) {
+  return createHash('md5').update(content).digest('hex').slice(0, length);
 }
