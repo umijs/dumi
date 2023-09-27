@@ -5,7 +5,7 @@ import type { IMdTransformerOptions } from '.';
 
 let raw: typeof import('hast-util-raw').raw;
 let visit: typeof import('unist-util-visit').visit;
-const COMPONENT_NAME_REGEX = /<[A-Z][a-zA-Z\d]*/g;
+const COMPONENT_NAME_REGEX = /(<)([A-Z][a-zA-Z\d]*)([\s|>])/g;
 const COMPONENT_PROP_REGEX = /\s[a-z][a-z\d]*[A-Z]+[a-zA-Z\d]*(=|\s|>)/g;
 const COMPONENT_STUB_ATTR = '$tag-name';
 const PROP_STUB_ATTR = '-$u';
@@ -29,11 +29,21 @@ export default function rehypeRaw(opts: IRehypeRawOptions): Transformer<Root> {
       if (node.type === 'raw' && COMPONENT_NAME_REGEX.test(node.value)) {
         // mark tagName for all custom react component
         // because the parse5 within hast-util-raw will lowercase all tag names
-        node.value = node.value.replace(COMPONENT_NAME_REGEX, (str) => {
-          const tagName = str.slice(1);
+        node.value = node.value.replace(
+          COMPONENT_NAME_REGEX,
+          (str, bracket, tagName, next, i, full) => {
+            const isWithinQuotes =
+              (/="[^"]*$/.test(full.slice(0, i)) &&
+                /^[^"]*"/.test(full.slice(i))) ||
+              (/='[^']*$/.test(full.slice(0, i)) &&
+                /^[^']*'/.test(full.slice(i)));
 
-          return `${str} ${COMPONENT_STUB_ATTR}="${tagName}"`;
-        });
+            // skip if tagName is part of attr value
+            return isWithinQuotes
+              ? str
+              : `${bracket}${tagName} ${COMPONENT_STUB_ATTR}="${tagName}"${next}`;
+          },
+        );
         // mark all camelCase props for all custom react component
         // because the parse5 within hast-util-raw will lowercase all attr names
         node.value = node.value.replace(COMPONENT_PROP_REGEX, (str) => {
@@ -55,7 +65,7 @@ File: ${opts.fileAbsPath}`);
       }
     });
 
-    const newTree = raw(tree, vFile) as Root;
+    const newTree = raw(tree, { file: vFile }) as Root;
 
     visit<Root, 'element'>(newTree, 'element', (node) => {
       if (node.properties?.[COMPONENT_STUB_ATTR]) {

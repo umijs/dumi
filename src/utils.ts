@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import Cache from 'file-system-cache';
 import fs from 'fs';
 import yaml from 'js-yaml';
@@ -208,4 +209,11 @@ export function generateMetaChunkName(
   const locale = ifLocale ? `__${chunkName.replace(localeRegExp, '$1')}` : '';
 
   return `meta__${dir}${locale}`;
+}
+
+/**
+ * generate hash for string
+ */
+export function getContentHash(content: string, length = 8) {
+  return createHash('md5').update(content).digest('hex').slice(0, length);
 }
