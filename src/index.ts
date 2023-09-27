@@ -1,4 +1,4 @@
-import type { IDumiUserConfig } from '@/types';
+import type { IDumiTechStack, IDumiUserConfig } from '@/types';
 
 let unistUtilVisit: typeof import('unist-util-visit');
 
@@ -8,5 +8,5 @@ let unistUtilVisit: typeof import('unist-util-visit');
 })();
 
 export * from 'umi';
-export { unistUtilVisit };
+export { unistUtilVisit, IDumiTechStack };
 export const defineConfig = (config: IDumiUserConfig) => config;

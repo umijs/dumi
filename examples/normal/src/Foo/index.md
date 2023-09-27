@@ -1,5 +1,6 @@
 组件路由测试
 
 ```jsx
-export default () => 'Hello Foo!';
+import { Foo } from '@examples/normal';
+export default () => <Foo title="hello" />;
 ```

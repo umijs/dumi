@@ -3,6 +3,7 @@ import type { IThemeLoadResult } from '@/features/theme/loader';
 import { getCache, getContentHash } from '@/utils';
 import fs from 'fs';
 import { Mustache, lodash, winPath } from 'umi/plugin-utils';
+import { IDumiConfig } from '../../types';
 import transform, {
   type IMdTransformerOptions,
   type IMdTransformerResult,
@@ -25,6 +26,7 @@ interface IMdLoaderDemosModeOptions
     atomId: string,
     meta: IMdTransformerResult['meta']['frontmatter'],
   ) => void;
+  resolveDemoModule: IDumiConfig['resolveDemoModule'];
 }
 
 export type IMdLoaderOptions =
@@ -62,7 +64,6 @@ function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
     if (frontmatter!.atomId && opts.onResolveAtomMeta) {
       opts.onResolveAtomMeta(frontmatter!.atomId, frontmatter);
     }
-
     return Mustache.render(
       `import React from 'react';
 
@@ -70,7 +71,10 @@ export const demos = {
   {{#demos}}
   '{{{id}}}': {
     component: {{{component}}},
-    asset: {{{renderAsset}}}
+    {{#techStack}}
+      techStack: "{{{techStack}}}",
+    {{/techStack}}
+    asset: {{{renderAsset}}},
   },
   {{/demos}}
 };

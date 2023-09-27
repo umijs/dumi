@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@exmaples/vue": ["./src"]
+    },
+    "jsx": "preserve",
+    "jsxImportSource": "vue"
+  },
+  "include": [".dumi/**/*", ".dumirc.ts", "src/**/*", "docs/**/*"]
+}

@@ -68,6 +68,7 @@ export interface IMdTransformerOptions {
   routes: Record<string, IRoute>;
   locales: ILocalesConfig;
   pkg: IApi['pkg'];
+  resolveDemoModule: IDumiConfig['resolveDemoModule'];
 }
 
 export interface IMdTransformerResult {
@@ -118,6 +119,9 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
   );
   const resolver = enhancedResolve.create.sync({
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    // Common conditionName needs to be configured,
+    // otherwise some common library paths cannot be parsed, such as vue, pinia, etc.
+    conditionNames: ['import', 'require', 'default', 'browser', 'node'],
     alias: opts.alias,
   });
   const fileLocale = opts.locales.find((locale) =>
@@ -174,6 +178,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
       fileLocale,
       resolve: opts.resolve,
       resolver,
+      resolveDemoModule: opts.resolveDemoModule,
     })
     .use(rehypeSlug)
     .use(rehypeLink, {

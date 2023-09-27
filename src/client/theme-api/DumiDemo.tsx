@@ -1,10 +1,11 @@
 import { SP_ROUTE_PREFIX } from '@/constants';
-import { useAppData, useSiteData } from 'dumi';
+import { useAppData, useSiteData, useTechStackRuntimeApi } from 'dumi';
 import Container from 'dumi/theme/builtins/Container';
 import Previewer from 'dumi/theme/builtins/Previewer';
 import React, { createElement, type FC, type ReactNode } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import type { IPreviewerProps } from './types';
+import { useRenderer } from './useRenderer';
 
 export interface IDumiDemoProps {
   demo: {
@@ -40,14 +41,26 @@ export const DumiDemo: FC<IDumiDemoProps> = React.memo(
   (props) => {
     const { demos, historyType } = useSiteData();
     const { basename } = useAppData();
-    const { component, asset } = demos[props.demo.id];
+    const demo = demos[props.demo.id];
+    Object.assign(demo, { id: props.demo.id });
+    const { component, asset } = demo;
+    const { renderToCanvas } = useTechStackRuntimeApi();
+    const canvasRef = useRenderer(demo);
 
     // hide debug demo in production
     if (process.env.NODE_ENV === 'production' && props.previewerProps.debug)
       return null;
 
     if (props.demo.inline) {
-      return <DemoErrorBoundary>{createElement(component)}</DemoErrorBoundary>;
+      return (
+        <DemoErrorBoundary>
+          {renderToCanvas ? (
+            <div ref={canvasRef}></div>
+          ) : (
+            createElement(component)
+          )}
+        </DemoErrorBoundary>
+      );
     }
 
     const isHashRoute = historyType === 'hash';
@@ -66,7 +79,13 @@ export const DumiDemo: FC<IDumiDemoProps> = React.memo(
         {...props.previewerProps}
       >
         {props.previewerProps.iframe ? null : (
-          <DemoErrorBoundary>{createElement(component)}</DemoErrorBoundary>
+          <DemoErrorBoundary>
+            {renderToCanvas ? (
+              <div ref={canvasRef}></div>
+            ) : (
+              createElement(component)
+            )}
+          </DemoErrorBoundary>
         )}
       </Previewer>
     );

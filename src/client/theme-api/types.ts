@@ -1,6 +1,8 @@
 import type { ExampleBlockAsset } from 'dumi-assets-types';
 import type { ComponentType, ReactNode } from 'react';
 
+export type PreviewerType = 'CSB' | 'CODEPEN' | 'STACKBLITZ' | 'EXTERNAL';
+
 export interface IPreviewerProps {
   /**
    * title of current demo
@@ -50,6 +52,11 @@ export interface IPreviewerProps {
    * react node of current demo
    */
   children: ReactNode;
+
+  /**
+   * demo previewer configuration data
+   */
+  previewerData?: Partial<Record<PreviewerType, any>>;
   [key: string]: any;
 }
 
@@ -236,3 +243,10 @@ export type IRoutesById = Record<
     [key: string]: any;
   }
 >;
+
+export interface ITechStackRuntimeApi {
+  techStackName: string;
+  openCodeSandbox?: (props: IPreviewerProps) => void;
+  openStackBlitz?: (props: IPreviewerProps) => void;
+  renderToCanvas?: (canvas: Element, component: any) => Promise<() => void>;
+}

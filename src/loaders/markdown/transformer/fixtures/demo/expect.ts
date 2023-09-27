@@ -22,5 +22,5 @@ export default (ret: IMdTransformerResult) => {
 
   // external demo to lazy import component
   expect(ret.meta.demos![1].id).toEqual('demo-demo');
-  expect(ret.meta.demos![1].component).toContain('React.lazy');
+  expect(ret.meta.demos![1].component).toContain('(async () =>');
 };

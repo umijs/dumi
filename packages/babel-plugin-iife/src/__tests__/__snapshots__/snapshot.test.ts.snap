@@ -1,0 +1,69 @@
+// Vitest Snapshot v1
+
+exports[`babel-plugin-iife > export default \`class\` 1`] = `
+"(function () {
+  ;
+  return {
+    default: class A {}
+  };
+})();"
+`;
+
+exports[`babel-plugin-iife > export default \`function\` 1`] = `
+"(function () {
+  return {
+    default: () => null
+  };
+})();"
+`;
+
+exports[`babel-plugin-iife > export default \`value\` 1`] = `
+"(function () {
+  return {
+    default: a
+  };
+})();"
+`;
+
+exports[`babel-plugin-iife > export named 1`] = `
+"(function () {
+  const name1 = 1,
+    name2 = 2;
+  ;
+  ;
+  return {
+    x: function x() {},
+    A: class A {}
+  };
+})();"
+`;
+
+exports[`babel-plugin-iife > should wrapped by iife 1`] = `
+"(function () {
+  const a = 1;
+})();"
+`;
+
+exports[`babel-plugin-iife > static import -> dynamic import 1`] = `
+"(async function () {
+  const {
+    default: a
+  } = await import('a');
+  const {
+    b
+  } = await import('b');
+  const {
+    c1: c
+  } = await import('c');
+  const d = await import('d');
+  const {
+    default: e,
+    e1,
+    e2: e3
+  } = await import('e');
+  const {
+    createVNode: _createVNode,
+    createTextVNode: _createTextVNode
+  } = await import(\\"vue\\");
+})();"
+`;

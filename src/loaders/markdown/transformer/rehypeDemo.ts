@@ -29,7 +29,7 @@ export const DUMI_DEMO_GRID_TAG = 'DumiDemoGrid';
 
 type IRehypeDemoOptions = Pick<
   IMdTransformerOptions,
-  'techStacks' | 'cwd' | 'fileAbsPath' | 'resolve'
+  'techStacks' | 'cwd' | 'fileAbsPath' | 'resolve' | 'resolveDemoModule'
 > & {
   resolver: typeof sync;
   fileLocaleLessPath: string;
@@ -247,8 +247,10 @@ export default function rehypeDemo(
                 ? [vFile.data.frontmatter!.atomId]
                 : [],
               fileAbsPath: '',
+              lang: (codeNode.data?.lang as string) || 'tsx',
               entryPointCode: codeType === 'external' ? undefined : codeValue,
               resolver: opts.resolver,
+              resolveDemoModule: opts.resolveDemoModule,
             };
             const previewerProps: IDumiDemoProps['previewerProps'] = {};
             let component = '';
@@ -275,9 +277,14 @@ export default function rehypeDemo(
                 localId,
                 vFile.data.frontmatter!.atomId,
               );
-              component = `React.memo(React.lazy(() => import( /* webpackChunkName: "${chunkName}" */ '${winPath(
+              const importChunk = `import( /* webpackChunkName: "${chunkName}" */ '${winPath(
                 parseOpts.fileAbsPath,
-              )}?techStack=${techStack.name}')))`;
+              )}?techStack=${techStack.name}')`;
+              // use IIFE when the tech stack can render at runtime
+              component =
+                techStack.name !== 'react'
+                  ? `(async () => ${importChunk})()`
+                  : `React.memo(React.lazy(() => ${importChunk}))`;
               // use code value as title
               // TODO: force checking
               if (codeValue) codeNode.properties!.title = codeValue;
@@ -291,7 +298,10 @@ export default function rehypeDemo(
 
               // pass a fake entry point for code block demo
               // and pass the real code via `entryPointCode` option
-              parseOpts.fileAbsPath = opts.fileAbsPath.replace('.md', '.tsx');
+              parseOpts.fileAbsPath = opts.fileAbsPath.replace(
+                '.md',
+                `.${parseOpts.lang}`,
+              );
               parseOpts.id = getCodeId(
                 opts.cwd,
                 opts.fileLocaleLessPath,
@@ -299,6 +309,7 @@ export default function rehypeDemo(
                 vFile.data.frontmatter!.atomId,
               );
               component = techStack.transformCode(codeValue, {
+                id: parseOpts.id,
                 type: 'code-block',
                 fileAbsPath: parseOpts.fileAbsPath,
               });

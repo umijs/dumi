@@ -6,11 +6,25 @@ import type { sync } from 'enhanced-resolve';
 import fs from 'fs';
 import path from 'path';
 import { pkgUp, winPath } from 'umi/plugin-utils';
+import { DEFAULT_DEMO_EXTENSIONS } from '../constants';
+import { IDumiConfig } from '../types';
 
 export interface IParsedBlockAsset {
   asset: ExampleBlockAsset;
   sources: Record<string, string>;
   frontmatter: ReturnType<typeof parseCodeFrontmatter>['frontmatter'];
+}
+
+// for frameworks like vue , we need to extract the JS fragments in their scripts
+function extraScript(htmlLike: string) {
+  const htmlScriptReg = /<script\b(?:\s[^>]*>|>)(.*?)<\/script>/gims;
+  let match = htmlScriptReg.exec(htmlLike);
+  let scripts = '';
+  while (match) {
+    scripts += match[1] + '\n';
+    match = htmlScriptReg.exec(htmlLike);
+  }
+  return scripts;
 }
 
 async function parseBlockAsset(opts: {
@@ -19,19 +33,21 @@ async function parseBlockAsset(opts: {
   refAtomIds: string[];
   entryPointCode?: string;
   resolver: typeof sync;
+  resolveDemoModule?: IDumiConfig['resolveDemoModule'];
 }) {
   const asset: IParsedBlockAsset['asset'] = {
     type: 'BLOCK',
     id: opts.id,
     refAtomIds: opts.refAtomIds,
     dependencies: {},
+    entry: '',
   };
   const result: IParsedBlockAsset = {
     asset,
     sources: {},
     frontmatter: null,
   };
-
+  // demo dependency analysis and asset processing
   const deferrer = build({
     // do not emit file
     write: false,
@@ -81,8 +97,11 @@ async function parseBlockAsset(opts: {
           });
 
           builder.onLoad({ filter: /.*/ }, (args) => {
+            const resolver = opts.resolveDemoModule ?? {};
+
             const ext = path.extname(args.path);
-            const isModule = ['.js', '.jsx', '.ts', '.tsx'].includes(ext);
+            const isModule =
+              DEFAULT_DEMO_EXTENSIONS.includes(ext) || !!resolver[ext];
             const isPlainText = [
               '.css',
               '.less',
@@ -92,13 +111,11 @@ async function parseBlockAsset(opts: {
               '.json',
             ].includes(ext);
             const isEntryPoint = args.pluginData.kind === 'entry-point';
-            const filename = isEntryPoint
-              ? `index${ext}`
-              : winPath(
-                  path.relative(path.dirname(opts.fileAbsPath), args.path),
-                )
-                  // discard leading ./ or ../
-                  .replace(/^(\.?\.\/)+/g, '');
+            const filename = winPath(
+              path.relative(path.dirname(opts.fileAbsPath), args.path),
+            )
+              // discard leading ./ or ../
+              .replace(/^(\.?\.\/)+/g, '');
 
             if (isModule || isPlainText) {
               asset.dependencies[filename] = {
@@ -112,6 +129,7 @@ async function parseBlockAsset(opts: {
                 const { code, frontmatter } = parseCodeFrontmatter(
                   asset.dependencies[filename].value,
                 );
+                asset.entry = filename;
 
                 if (frontmatter) {
                   // replace entry code when frontmatter available
@@ -134,9 +152,19 @@ async function parseBlockAsset(opts: {
                 result.sources[filename] = args.path;
               }
 
+              let contents = asset.dependencies[filename].value;
+
+              if (resolver[ext]) {
+                const { transform, loader } = resolver[ext];
+                contents =
+                  transform === 'html'
+                    ? extraScript(contents)
+                    : transform(contents);
+                return { contents, loader };
+              }
               return {
                 // only continue to load for module files
-                contents: isModule ? asset.dependencies[filename].value : '',
+                contents: isModule ? contents : '',
                 loader: isModule ? (ext.slice(1) as any) : 'text',
               };
             }

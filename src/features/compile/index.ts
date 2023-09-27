@@ -45,6 +45,7 @@ export default (api: IApi) => {
       routes: api.appData.routes,
       locales: api.config.locales,
       pkg: api.pkg,
+      resolveDemoModule: api.config.resolveDemoModule,
     };
 
     memo.module
@@ -132,7 +133,6 @@ export default (api: IApi) => {
         },
       ]);
     }
-
     return memo;
   });
 };

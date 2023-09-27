@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { useSiteData } from 'dumi';
 import Highlight, { defaultProps, type Language } from 'prism-react-renderer';
 import 'prism-themes/themes/prism-one-light.css';
-import React, { useRef, useState, useEffect, type FC } from 'react';
+import React, { useEffect, useRef, useState, type FC } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import './index.less';
 
@@ -14,6 +14,7 @@ import './index.less';
 const SIMILAR_DSL: Record<string, Language> = {
   acss: 'css',
   axml: 'markup',
+  vue: 'markup',
 };
 
 interface SourceCodeProps {
@@ -36,7 +37,7 @@ const SourceCode: FC<SourceCodeProps> = (props) => {
       setText(text);
     }
   }, [lang, children]);
-    
+
   return (
     <div className="dumi-default-source-code">
       <CopyToClipboard

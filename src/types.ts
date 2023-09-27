@@ -5,10 +5,11 @@ import type { IDumiDemoProps } from '@/client/theme-api/DumiDemo';
 import type { ILocalesConfig, IThemeConfig } from '@/client/theme-api/types';
 import type { IContentTab } from '@/features/tabs';
 import type { IThemeLoadResult } from '@/features/theme/loader';
+import { Loader } from '@umijs/bundler-utils/compiled/esbuild';
 import type { IModify } from '@umijs/core';
 import type { AssetsPackage, ExampleBlockAsset } from 'dumi-assets-types';
 import type { Element } from 'hast';
-import type { defineConfig as defineUmiConfig, IApi as IUmiApi } from 'umi';
+import type { IApi as IUmiApi, defineConfig as defineUmiConfig } from 'umi';
 
 // ref: https://grrr.tech/posts/2021/typescript-partial/
 type Subset<K> = {
@@ -49,6 +50,24 @@ interface IDumiExtendsConfig {
   themeConfig: IThemeConfig;
   autoAlias?: boolean;
   /**
+   * How to resolve demo modules when analyzing dependencies and handling assets
+   * `transform` can be a function or an `html` literal
+   * If it is specified as 'html', the program will extract the contents of all script tags internally.
+   * `loader` will specify the module type to process the content returned by the transformer.
+   * Taking Vue as an example, in order to perform dependency analysis on .vue files,
+   * we can configure it like this
+   * { '.vue': { transform: 'html', loader: 'tsx' } }
+   * This means that the vue file will be processed as html, and the content in the script will be extracted,
+   * and then these contents will be used as tsx files for dependency analysis
+   */
+  resolveDemoModule?: Record<
+    string,
+    {
+      transform: ((text: string) => string) | 'html';
+      loader: Loader;
+    }
+  >;
+  /**
    * extra unified plugins
    */
   extraRemarkPlugins?: (string | Function | [string | Function, object])[];
@@ -77,8 +96,9 @@ export abstract class IDumiTechStack {
    */
   abstract transformCode(
     raw: string,
-    opts: { type: 'external' | 'code-block'; fileAbsPath: string },
+    opts: { id?: string; type: 'external' | 'code-block'; fileAbsPath: string },
   ): string;
+
   /**
    * generator for return asset metadata
    */
