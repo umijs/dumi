@@ -15,10 +15,6 @@ export default function (api: IApi) {
     ];
   });
 
-  api.addRuntimePluginKey(() => {
-    return ['useTechStackRuntimeContext'];
-  });
-
   api.onGenerateFiles(() => {
     const runtimePath = join(__dirname, '../runtime');
     const files = fsExtra.readdirSync(runtimePath, {

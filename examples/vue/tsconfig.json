@@ -8,5 +8,5 @@
     "jsx": "preserve",
     "jsxImportSource": "vue"
   },
-  "include": [".dumi/**/*", ".dumirc.ts", "src/**/*", "docs/**/*"]
+  "include": [".dumirc.ts", "src/**/*", "docs/**/*"]
 }

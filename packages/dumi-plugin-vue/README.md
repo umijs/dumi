@@ -4,13 +4,10 @@ dumi Vue3 technology stack support
 
 ## Features
 
-[x] Supports both Single File Component and JSX/TSX
-
-[x] Inline demo and external demo support
-
-[x] Support CodeSandbox and StackBlitz preview
-
-[x] Webpack processing
+- [x] Supports both Single File Component and JSX/TSX
+- [x] Inline demo and external demo support
+- [x] Support CodeSandbox and StackBlitz preview
+- [x] Webpack processing
 
 ## Install
 
