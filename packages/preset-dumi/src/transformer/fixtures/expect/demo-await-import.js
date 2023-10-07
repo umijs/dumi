@@ -8,11 +8,11 @@ dynamic({
 
     await import("$CWD/packages/preset-dumi/src/transformer/fixtures/raw/index.less");
 
-    var _default = function _default() {
+    var _default;
+
+    return function _default() {
       return /*#__PURE__*/_react["default"].createElement(_antd.Button, null);
     };
-
-    return _default;
   },
   loading: () => null
 })
