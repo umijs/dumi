@@ -59,7 +59,7 @@ export default (raw: string, opts: IDemoOpts): IDemoTransformResult => {
         callPathNode.left.object.name === 'exports'
       ) {
         // remove original export expression
-        if (types.isIdentifier(callPathNode.right)) {
+        if (types.isIdentifier(callPathNode.right) || types.isFunctionExpression(callPathNode.right)) {
           // save export function as return statement arg
           if (isDynamicEnable()) {
             // for dynamic({ loader }), transform to return _default;
