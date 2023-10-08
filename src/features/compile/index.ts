@@ -2,6 +2,7 @@ import type { IDemoLoaderOptions } from '@/loaders/demo';
 import type { IMdLoaderOptions } from '@/loaders/markdown';
 import ReactTechStack from '@/techStacks/react';
 import type { IApi, IDumiTechStack } from '@/types';
+import { addAtomMeta, addExampleAssets } from '../assets';
 
 export default (api: IApi) => {
   api.describe({ key: 'dumi:compile' });
@@ -109,6 +110,18 @@ export default (api: IApi) => {
       .options({
         ...loaderBaseOpts,
         builtins: api.service.themeData.builtins,
+        onResolveDemos(demos) {
+          const assets = demos.reduce<Parameters<typeof addExampleAssets>[0]>(
+            (ret, demo) => {
+              if ('asset' in demo) ret.push(demo.asset);
+              return ret;
+            },
+            [],
+          );
+
+          addExampleAssets(assets);
+        },
+        onResolveAtomMeta: addAtomMeta,
       } as IMdLoaderOptions);
 
     // get meta for each page component
