@@ -7,4 +7,6 @@ export default {
   mfsu: false,
   apiParser: {},
   resolve: { entryFile: './src/index.ts' },
+  ssr: {},
+  exportStatic: {},
 };
