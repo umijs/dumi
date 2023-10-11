@@ -12,5 +12,5 @@
       "{{{ name }}}/*": ["src/*", "*"]
     }
   },
-  "include": [".dumi/**/*", ".dumirc.ts", "src/**/*"]
+  "include": [".dumirc.ts", "src/**/*"]
 }

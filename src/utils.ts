@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import Cache from 'file-system-cache';
 import fs from 'fs';
 import yaml from 'js-yaml';
@@ -82,7 +83,7 @@ export function parseCodeFrontmatter(raw: string) {
  */
 const caches: Record<string, ReturnType<typeof Cache>> = {};
 const CACHE_PATH = 'node_modules/.cache/dumi';
-export function getCache(ns: string): typeof caches['0'] {
+export function getCache(ns: string): (typeof caches)['0'] {
   // return fake cache if cache disabled
   if (process.env.DUMI_CACHE === 'none') {
     return { set() {}, get() {}, setSync() {}, getSync() {} } as any;
@@ -155,4 +156,64 @@ export function getProjectRoot(cwd: string) {
   }
 
   return winPath(cwd);
+}
+
+function lastSlash(str: string) {
+  return str[str.length - 1] === '/' ? str : `${str}/`;
+}
+
+/**
+ *
+ * transform component into webpack chunkName
+ * @export
+ * @param {string} component component path
+ * @param {string} [cwdPath] current root path
+ * @return {*}  {string}
+ */
+export function componentToChunkName(
+  component: string,
+  cwdPath: string = '/',
+): string {
+  const cwd = winPath(cwdPath);
+
+  return typeof component === 'string'
+    ? component
+        .replace(
+          new RegExp(
+            `^(${
+              // match app cwd first
+              lodash.escapeRegExp(lastSlash(cwd))
+            })`,
+          ),
+          '',
+        )
+        .replace(/^.(\/|\\)/, '')
+        .replace(/(\/|\\)/g, '__')
+        .replace(/^src__/, '')
+        .replace(/\.\.__/g, '')
+        .replace(/^pages__/, 'p__')
+    : '';
+}
+
+export function generateMetaChunkName(
+  path: string,
+  cwd: string,
+  locales: string[] = [],
+): string {
+  const chunkName = componentToChunkName(path, cwd);
+
+  const dir = chunkName.replace(/^(.*?)_.*/, '$1');
+
+  const localeRegExp = new RegExp(`.*(${locales.join('|')}).*`);
+  const ifLocale = locales.length && localeRegExp.test(chunkName);
+  const locale = ifLocale ? `__${chunkName.replace(localeRegExp, '$1')}` : '';
+
+  return `meta__${dir}${locale}`;
+}
+
+/**
+ * generate hash for string
+ */
+export function getContentHash(content: string, length = 8) {
+  return createHash('md5').update(content).digest('hex').slice(0, length);
 }

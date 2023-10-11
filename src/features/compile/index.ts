@@ -51,34 +51,6 @@ export default (api: IApi) => {
       .rule('dumi-md')
       .type('javascript/auto')
       .test(/\.md$/)
-      // get meta for each markdown file
-      // TODO: should be removed
-      .oneOf('md-meta')
-      .resourceQuery(/meta$/)
-      .use('babel-loader')
-      .loader(babelInUmi.loader)
-      .options(babelInUmi.options)
-      .end()
-      .use('md-meta-loader')
-      .loader(loaderPath)
-      .options({
-        ...loaderBaseOpts,
-        mode: 'meta',
-        onResolveDemos(demos) {
-          const assets = demos.reduce<Parameters<typeof addExampleAssets>[0]>(
-            (ret, demo) => {
-              if ('asset' in demo) ret.push(demo.asset);
-              return ret;
-            },
-            [],
-          );
-
-          addExampleAssets(assets);
-        },
-        onResolveAtomMeta: addAtomMeta,
-      } as IMdLoaderOptions)
-      .end()
-      .end()
       // get page demo for each markdown file
       .oneOf('md-demo')
       .resourceQuery(/demo$/)
@@ -164,6 +136,18 @@ export default (api: IApi) => {
       .options({
         ...loaderBaseOpts,
         builtins: api.service.themeData.builtins,
+        onResolveDemos(demos) {
+          const assets = demos.reduce<Parameters<typeof addExampleAssets>[0]>(
+            (ret, demo) => {
+              if ('asset' in demo) ret.push(demo.asset);
+              return ret;
+            },
+            [],
+          );
+
+          addExampleAssets(assets);
+        },
+        onResolveAtomMeta: addAtomMeta,
       } as IMdLoaderOptions);
 
     // get meta for each page component

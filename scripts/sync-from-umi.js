@@ -296,7 +296,7 @@ const FILE_LIST = [
       })),
       // replace umi to dumi
       { type: 'replace', value: [/UMI/g, 'DUMI'] },
-      { type: 'replace', value: [/('|"|\s|`)umi/gi, '$1dumi'] },
+      { type: 'replace', value: [/('|"|\s|`|&)umi/gi, '$1dumi'] },
       // replace BABEL_CACHE to DUMI_CACHE
       { type: 'replace', value: [/BABEL_CACHE/g, 'DUMI_CACHE'] },
       { type: 'replace', value: [/\sbabel\s/g, ' dumi '] },

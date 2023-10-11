@@ -2,7 +2,7 @@
 import { demoIndex as dmi{{{index}}} } from '{{{file}}}?type=demo-index';
 {{/metaFiles}}
 
-const demoIndexes: Record<string, { ids: string[], getter: () => Promise<any> }> = {
+export const demoIndexes: Record<string, { ids: string[], getter: () => Promise<any> }> = {
   {{#metaFiles}}
   '{{{id}}}': dmi{{{index}}},
   {{/metaFiles}}

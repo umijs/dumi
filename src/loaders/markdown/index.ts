@@ -1,8 +1,8 @@
 import { isTabRouteFile } from '@/features/tabs';
 import type { IThemeLoadResult } from '@/features/theme/loader';
-import { getCache } from '@/utils';
+import { generateMetaChunkName, getCache, getContentHash } from '@/utils';
 import fs from 'fs';
-import { lodash, Mustache, winPath } from 'umi/plugin-utils';
+import { Mustache, lodash, winPath } from 'umi/plugin-utils';
 import transform, {
   type IMdTransformerOptions,
   type IMdTransformerResult,
@@ -77,59 +77,6 @@ function getDemoSourceFiles(demos: IMdTransformerResult['meta']['demos'] = []) {
   }, []);
 }
 
-function emitMeta(
-  this: any,
-  opts: IMdLoaderDemosModeOptions,
-  ret: IMdTransformerResult,
-) {
-  const { frontmatter, toc, texts, demos } = ret.meta;
-
-  return Mustache.render(
-    `import React from 'react';
-
-export const demos = {
-  {{#demos}}
-  '{{{id}}}': {
-    component: {{{component}}},
-    asset: {{{renderAsset}}}
-  },
-  {{/demos}}
-};
-export const frontmatter = {{{frontmatter}}};
-export const toc = {{{toc}}};
-export const texts = {{{texts}}};
-`,
-    {
-      demos,
-      frontmatter: JSON.stringify(frontmatter),
-      toc: JSON.stringify(toc),
-      texts: JSON.stringify(texts),
-      renderAsset: function renderAsset(this: NonNullable<typeof demos>[0]) {
-        // do not render asset for inline demo
-        if (!('asset' in this)) return 'null';
-
-        // render asset for normal demo
-        let { asset } = this;
-        const { sources } = this;
-
-        // use raw-loader to load all source files
-        Object.keys(this.sources).forEach((file: string) => {
-          // handle un-existed source file, e.g. custom tech-stack return custom dependencies
-          if (!asset.dependencies[file]) return;
-
-          // to avoid modify original asset object
-          asset = lodash.cloneDeep(asset);
-          asset.dependencies[
-            file
-          ].value = `{{{require('-!${sources[file]}?dumi-raw').default}}}`;
-        });
-
-        return JSON.stringify(asset, null, 2).replace(/"{{{|}}}"/g, '');
-      },
-    },
-  );
-}
-
 function emitDefault(
   this: any,
   opts: IMdLoaderDefaultModeOptions,
@@ -154,21 +101,29 @@ function emitDefault(
     .map((item) => `import ${item.specifier} from '${item.source}';`)
     .join('\n')}
 import React from 'react';
-${isTabContent ? `` : `import { DumiPage } from 'dumi';`}
-import { texts as ${CONTENT_TEXTS_OBJ_NAME} } from '${winPath(
-    this.resourcePath,
-  )}?type=text';
+${
+  isTabContent
+    ? `import { useTabMeta } from 'dumi';`
+    : `import { DumiPage, useRouteMeta } from 'dumi';`
+}
 
 // export named function for fastRefresh
 // ref: https://github.com/pmmmwh/react-refresh-webpack-plugin/blob/main/docs/TROUBLESHOOTING.md#edits-always-lead-to-full-reload
 function DumiMarkdownContent() {
+  const { texts: ${CONTENT_TEXTS_OBJ_NAME} } = use${
+    isTabContent ? 'TabMeta' : 'RouteMeta'
+  }();
   return ${isTabContent ? ret.content : `<DumiPage>${ret.content}</DumiPage>`};
 }
 
 export default DumiMarkdownContent;`;
 }
 
-function emitDemo(opts: IMdLoaderDemoModeOptions, ret: IMdTransformerResult) {
+function emitDemo(
+  this: any,
+  opts: IMdLoaderDemoModeOptions,
+  ret: IMdTransformerResult,
+) {
   const { demos } = ret.meta;
 
   return Mustache.render(
@@ -224,7 +179,11 @@ function emitDemoIndex(
 };`,
     {
       ids: JSON.stringify(demos?.map((demo) => demo.id)),
-      getter: `() => import('${winPath(this.resourcePath)}?type=demo')`,
+      getter: `() => import(/* webpackChunkName: "${generateMetaChunkName(
+        this.resourcePath,
+        opts.cwd,
+        opts.locales.map(({ id }) => id),
+      )}" */'${winPath(this.resourcePath)}?type=demo')`,
     },
   );
 }
@@ -385,9 +344,6 @@ function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
   getDemoSourceFiles(demos).forEach((file) => this.addDependency(file));
 
   switch (opts.mode) {
-    // TODO: Should be removed
-    case 'meta':
-      return emitMeta.call(this, opts, ret);
     case 'demo':
       return emitDemo.call(this, opts, ret);
     case 'demo-index':
@@ -407,7 +363,9 @@ function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
 
 function getDepsCacheKey(deps: (typeof depsMapping)['0'] = []) {
   return JSON.stringify(
-    deps.map((file) => `${file}:${fs.statSync(file).mtimeMs}`),
+    deps.map(
+      (file) => `${file}:${getContentHash(fs.readFileSync(file, 'utf-8'))}`,
+    ),
   );
 }
 
@@ -419,13 +377,13 @@ export default function mdLoader(this: any, content: string) {
   const cb = this.async();
 
   const cache = getCache('md-loader');
-  // format: {path:mtime:loaderOpts}
+  // format: {path:contenthash:loaderOpts}
   const baseCacheKey = [
     this.resourcePath,
-    fs.statSync(this.resourcePath).mtimeMs,
+    getContentHash(content),
     JSON.stringify(lodash.omit(opts, ['mode', 'builtins', 'onResolveDemos'])),
   ].join(':');
-  // format: {baseCacheKey:{deps:mtime}[]}
+  // format: {baseCacheKey:{deps:contenthash}[]}
   const cacheKey = [
     baseCacheKey,
     getDepsCacheKey(depsMapping[this.resourcePath]),

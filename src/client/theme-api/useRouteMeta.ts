@@ -9,14 +9,14 @@ import { useMemo } from 'react';
 import use from './context/use';
 import type { IRouteMeta } from './types';
 
-const cache = new Map<string, ReturnType<typeof getRouteMetaById>>();
+const cache = new Map<string, any>();
 
 const useAsyncRouteMeta = (id: string) => {
   if (!cache.has(id)) {
     cache.set(id, getRouteMetaById(id));
   }
 
-  return use<ReturnType<typeof getRouteMetaById>>(cache.get(id)!);
+  return use<any>(cache.get(id)!);
 };
 
 const emptyMeta = {

@@ -4,7 +4,7 @@ import { filesFrontmatter } from './frontmatter';
 const files = {
 {{#metaFiles}}
   '{{{id}}}': {
-    textGetter: () => import('{{{file}}}?type=text'),
+    textGetter: () => import({{{chunkName}}}'{{{file}}}?type=text'),
     {{#tabs}}
     tabs: {{{tabs}}},
     {{/tabs}}

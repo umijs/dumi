@@ -113,6 +113,7 @@
       box-shadow: 0 4px 16px rgba(0, 0, 0, 10%);
       border-radius: 6px;
       transition: all 0.2s ease-in-out;
+      z-index: 1;
 
       @{dark-selector} & {
         background-color: lighten(@c-site-bg-dark, 6%);
@@ -126,6 +127,7 @@
           font-size: 15px;
           line-height: 1.6;
           text-align: left;
+          white-space: nowrap;
 
           @media @mobile {
             display: inline;

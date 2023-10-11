@@ -38,9 +38,7 @@ if (typeof window !== 'undefined') {
 
 export const useSiteSearch = () => {
   const debounceTimer = useRef<number>();
-  // const routes = useLocaleDocRoutes();
-  // const { demos } = useSiteData();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [keywords, setKeywords] = useState('');
   const [enabled, setEnabled] = useState(false);
   const navData = useNavData();
@@ -48,11 +46,9 @@ export const useSiteSearch = () => {
   const setter = useCallback((val: string) => {
     setLoading(true);
     setKeywords(val);
-
-    if (val) {
-      setEnabled(true);
-    }
   }, []);
+
+  const loadSearchData = () => setEnabled(true);
 
   const [filledRoutes, demos] = useSearchData(enabled);
   const mergedLoading = loading || !filledRoutes;
@@ -112,5 +108,11 @@ export const useSiteSearch = () => {
     }
   }, [keywords, filledRoutes]);
 
-  return { keywords, setKeywords: setter, result, loading: mergedLoading };
+  return {
+    keywords,
+    setKeywords: setter,
+    result,
+    loading: mergedLoading,
+    loadSearchData,
+  };
 };
