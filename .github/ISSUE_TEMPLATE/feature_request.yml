@@ -1,0 +1,36 @@
+name: Feature Request
+description: Request a new feature / 提出新功能请求
+title: 'feat: '
+labels: ['enhancement']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The issue list is reserved exclusively for bug reports and feature requests. That means we do not accept usage questions, for usage questions, please use the following resources:
+
+        - Read the [guide documentation](https://d.umijs.org/guide) or search documentation via issue keywords
+        - Make sure you have search your question in [FAQ](https://d.umijs.org/guide/faq) and [release notes](https://github.com/umijs/dumi/releases)
+        - Look for ask questions in [Discussions](https://github.com/umijs/dumi/discussions)
+
+        Also try to search for your issue - it may have already been answered or even fixed in the development branch. However, if you find that an old, closed issue still persists in the latest version, you should open a new issue using the form below instead of commenting on the old issue.
+
+        ---
+        dumi 的 issue 列表只接受 Bug 报告或是新功能请求 (Feature Request)。这意味着我们不接受用法问题（How to 类问题），对于使用中遇到的问题，请使用以下资源：
+
+        - 仔细阅读 [指南文档](https://d.umijs.org/guide) 或使用官网搜索问题关键字
+        - 提问前确保你在 [FAQ](https://d.umijs.org/guide/faq) 和 [发布日志](https://github.com/umijs/dumi/releases) 中搜索过
+        - 在 [Discussions](https://github.com/umijs/dumi/discussions) 搜索和提问
+
+        最后，在开 issue 前，可以先搜索一下以往的旧 issue - 你遇到的问题可能已经有人提了，也可能已经在最新版本中被修正。注意：如果你发现一个已经关闭的旧 issue 在最新版本中仍然存在，请不要在旧 issue 下面留言，而应该用下面的表单开一个新的 issue。
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What problem does this feature solve?
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Possible Solution (optional)
