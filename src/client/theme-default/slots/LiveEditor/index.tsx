@@ -1,7 +1,7 @@
+import { LiveContext } from 'dumi';
 import { highlight, languages } from 'prismjs';
 import React, { FC, useContext } from 'react';
 import Editor from 'react-simple-code-editor';
-import { LiveContext } from './LiveProvider';
 
 const LiveEditor: FC = () => {
   const { code, onCodeChange } = useContext(LiveContext);

@@ -27,6 +27,10 @@ export type LiveProviderProps = {
 };
 
 const transformCode = (code: string, scopes: any) => {
+  if (!scopes) {
+    return <></>;
+  }
+
   const Comp = evalCode(
     transform(code, { transforms: ['typescript', 'jsx'] }).code,
     scopes,

@@ -24,13 +24,7 @@ export { DumiDemoGrid } from './DumiDemoGrid';
 export { DumiPage } from './DumiPage';
 export { useDemoData, useSiteData } from './context';
 export { evalCode } from './evalCode';
-export {
-  LiveContext,
-  LiveDemo,
-  LiveEditor,
-  LiveError,
-  LiveProvider,
-} from './live';
+export { LiveContext, LiveProvider, isLiveEnabled } from './live';
 export { openCodeSandbox } from './openCodeSandbox';
 export { openStackBlitz } from './openStackBlitz';
 export type { IPreviewerProps } from './types';

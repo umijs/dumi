@@ -1,6 +1,6 @@
 import { ReactComponent as IconError } from '@ant-design/icons-svg/inline-svg/filled/close-circle.svg';
+import { LiveContext } from 'dumi';
 import React, { FC, useContext } from 'react';
-import { LiveContext } from './LiveProvider';
 import './index.less';
 
 const LiveError: FC = () => {

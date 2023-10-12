@@ -5,7 +5,6 @@ export default {
   ],
   themeConfig: { name: '示例' },
   mfsu: false,
-  live: true,
   apiParser: {},
   resolve: { entryFile: './src/index.ts' },
 };

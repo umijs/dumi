@@ -2,12 +2,13 @@ import classnames from 'classnames';
 import {
   IPreviewerProps,
   LiveContext,
-  LiveDemo,
-  LiveEditor,
-  LiveError,
   LiveProvider,
+  isLiveEnabled,
   useLocation,
 } from 'dumi';
+import LiveDemo from 'dumi/theme/slots/LiveDemo';
+import LiveEditor from 'dumi/theme/slots/LiveEditor';
+import LiveError from 'dumi/theme/slots/LiveError';
 import PreviewerActions from 'dumi/theme/slots/PreviewerActions';
 import React, { useContext, useRef, type FC } from 'react';
 import './index.less';
@@ -93,6 +94,7 @@ const Previewer: FC<IPreviewerProps> = (props) => {
 
   // Only Single File
   if (
+    isLiveEnabled() ||
     props.live === false ||
     Object.entries(props.asset.dependencies).filter(
       ([, { type }]) => type === 'FILE',

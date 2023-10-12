@@ -1,1 +1,1 @@
-export const getDemoScopesById = async () => null;
+export const getDemoScopesById = null;
