@@ -20,7 +20,7 @@ async function installWithNpmClient({
   npmClient,
   cwd,
 }: Parameters<typeof installDeps>[0]) {
-  if (npmClient === 'pnpm' && /8\.[0-6]\./.test(await getPnpmVersion())) {
+  if (npmClient === 'pnpm' && /^8\.[0-6]\./.test(await getPnpmVersion())) {
     // to avoid pnpm 8.0 ~ 8.6 install minimal version of deps
     await execa.execa('pnpm', ['up', '-L'], { cwd, stdio: 'inherit' });
   } else {
