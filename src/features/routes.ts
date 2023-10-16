@@ -1,4 +1,4 @@
-import { LOCAL_THEME_DIR, SP_ROUTE_PREFIX } from '@/constants';
+import { SP_ROUTE_PREFIX } from '@/constants';
 import type { IApi } from '@/types';
 import { getConventionRoutes } from '@umijs/core';
 import { createRouteId } from '@umijs/core/dist/route/utils';
@@ -8,9 +8,6 @@ import type { IRoute } from 'umi';
 import { glob, winPath } from 'umi/plugin-utils';
 
 const CTX_LAYOUT_ID = 'dumi-context-layout';
-const ALIAS_THEME_TMP = '@/dumi__theme';
-const ALIAS_LAYOUTS_LOCAL = '@/dumi__theme__layouts';
-const ALIAS_INTERNAL_PAGES = '@/dumi__pages';
 
 /**
  * normalize item of `resolve.docDirs` to object
@@ -50,7 +47,7 @@ function localizeUmiRoute(
     (locale) =>
       route.path.endsWith(`/${locale.id}`) &&
       // avoid locale id conflict with folder/file name
-      path.parse(route.file).name.endsWith(`.${locale.id}`),
+      path.parse(route.file!).name.endsWith(`.${locale.id}`),
   );
   const format = forceKebabCase ? kebabCaseRoutePath : (str: string) => str;
 
@@ -92,20 +89,6 @@ function flatRoute(route: IRoute, docLayoutId: string) {
   }
 }
 
-/**
- * get final layout file from alias
- */
-function getAliasLayoutFile({
-  source,
-  specifier,
-}: NonNullable<IApi['service']['themeData']['layouts']['DocLayout']>) {
-  const alias = source.includes('/.dumi/theme/layouts/')
-    ? ALIAS_LAYOUTS_LOCAL
-    : `${ALIAS_THEME_TMP}/layouts`;
-
-  return `${alias}/${specifier}`;
-}
-
 export default (api: IApi) => {
   api.describe({ key: 'dumi:routes' });
 
@@ -127,19 +110,6 @@ export default (api: IApi) => {
         if (api.userConfig.resolve![key]?.length === 0) memo.resolve[key] = [];
       });
     }
-
-    // set alias for internal pages and layouts rather than use absolute path
-    // to avoid umi generate chunk name with long path
-    // ref: https://github.com/umijs/umi/blob/30a11c60b1be9066ea0162fe279aaf62b70b0b14/packages/preset-umi/src/features/tmpFiles/routes.ts#L229
-    memo.alias[ALIAS_THEME_TMP] = winPath(
-      path.join(api.paths.absTmpPath!, 'dumi/theme'),
-    );
-    memo.alias[ALIAS_LAYOUTS_LOCAL] = winPath(
-      path.join(api.cwd, LOCAL_THEME_DIR, 'layouts'),
-    );
-    memo.alias[ALIAS_INTERNAL_PAGES] = winPath(
-      path.join(__dirname, '../client/pages'),
-    );
 
     return memo;
   });
@@ -176,10 +146,7 @@ export default (api: IApi) => {
       routes[DocLayout.specifier] = {
         id: DocLayout.specifier,
         path: '/',
-        // why not use DocLayout.source?
-        // because umi will generate chunk name from file path
-        // but source may too long in pnpm/monorepo project
-        file: getAliasLayoutFile(DocLayout),
+        file: DocLayout.source,
         parentId: lastLayoutId,
         absPath: '/',
         isLayout: true,
@@ -192,7 +159,7 @@ export default (api: IApi) => {
       routes[DemoLayout.specifier] = {
         id: DemoLayout.specifier,
         path: '/',
-        file: getAliasLayoutFile(DemoLayout),
+        file: DemoLayout.source,
         parentId: lastLayoutId,
         absPath: '/',
         isLayout: true,
@@ -206,7 +173,7 @@ export default (api: IApi) => {
         false | undefined
       >;
 
-      route.file = winPath(path.resolve(base!, route.file));
+      route.file = winPath(path.resolve(base!, route.file!));
 
       // save route
       routes[route.id] = route;
@@ -233,7 +200,7 @@ export default (api: IApi) => {
         }
 
         // use absolute path to avoid umi prefix with conventionRoutes.base
-        route.file = winPath(path.resolve(base, route.file));
+        route.file = winPath(path.resolve(base, route.file!));
 
         // save route
         routes[route.id] = route;
@@ -296,7 +263,7 @@ export default (api: IApi) => {
         path: '*',
         absPath: '/*',
         parentId: docLayoutId,
-        file: `${ALIAS_INTERNAL_PAGES}/404`,
+        file: require.resolve('../client/pages/404'),
       };
     }
 
@@ -306,7 +273,7 @@ export default (api: IApi) => {
       path: `${SP_ROUTE_PREFIX}demos/:id`,
       absPath: `/${SP_ROUTE_PREFIX}demos/:id`,
       parentId: demoLayoutId,
-      file: `${ALIAS_INTERNAL_PAGES}/Demo`,
+      file: require.resolve('../client/pages/Demo'),
     };
 
     return routes;
@@ -317,7 +284,7 @@ export default (api: IApi) => {
     const layouts = [
       {
         id: CTX_LAYOUT_ID,
-        file: `${ALIAS_THEME_TMP}/ContextWrapper`,
+        file: `${api.paths.absTmpPath!}/dumi/theme/ContextWrapper`,
       },
     ];
     const { GlobalLayout } = api.service.themeData.layouts;
@@ -325,7 +292,7 @@ export default (api: IApi) => {
     if (GlobalLayout) {
       layouts.unshift({
         id: GlobalLayout.specifier,
-        file: getAliasLayoutFile(GlobalLayout),
+        file: GlobalLayout.source,
       });
     }
 
