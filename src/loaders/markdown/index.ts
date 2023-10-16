@@ -215,7 +215,7 @@ export const texts = {{{texts}}};`,
 function emitScope(opts: IMdLoaderOptions, ret: IMdTransformerResult) {
   const { demos } = ret.meta;
 
-  const importReg = /import.*from.*;/g;
+  const importReg = /import(?!(\stype)).*from.*;/g;
 
   return Mustache.render(
     `{{#renderImport}}

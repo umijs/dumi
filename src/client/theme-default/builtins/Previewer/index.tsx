@@ -94,7 +94,7 @@ const Previewer: FC<IPreviewerProps> = (props) => {
 
   // Only Single File
   if (
-    isLiveEnabled() ||
+    !isLiveEnabled() ||
     props.live === false ||
     Object.entries(props.asset.dependencies).filter(
       ([, { type }]) => type === 'FILE',
