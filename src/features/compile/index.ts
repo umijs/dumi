@@ -99,6 +99,32 @@ export default (api: IApi) => {
       })
       .end()
       .end()
+      // get page scope for each markdown file
+      .oneOf('md-scope')
+      .resourceQuery(/scope$/)
+      .use('babel-loader')
+      .loader(babelInUmi.loader)
+      .options(babelInUmi.options)
+      .end()
+      .use('md-scope-loader')
+      .loader(loaderPath)
+      .options({
+        ...loaderBaseOpts,
+        mode: 'scope',
+      })
+      .end()
+      .end()
+      // get page scope-index for each markdown file
+      .oneOf('md-scope-index')
+      .resourceQuery(/scope-index$/)
+      .use('md-scope-index-loader')
+      .loader(loaderPath)
+      .options({
+        ...loaderBaseOpts,
+        mode: 'scope-index',
+      })
+      .end()
+      .end()
       // get page component for each markdown file
       .oneOf('md')
       .use('babel-loader')

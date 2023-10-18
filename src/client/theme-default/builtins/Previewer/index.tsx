@@ -1,13 +1,24 @@
 import classnames from 'classnames';
-import { IPreviewerProps, useLocation } from 'dumi';
+import {
+  IPreviewerProps,
+  LiveContext,
+  LiveProvider,
+  isLiveEnabled,
+  useLocation,
+} from 'dumi';
+import LiveDemo from 'dumi/theme/slots/LiveDemo';
+import LiveEditor from 'dumi/theme/slots/LiveEditor';
+import LiveError from 'dumi/theme/slots/LiveError';
 import PreviewerActions from 'dumi/theme/slots/PreviewerActions';
-import React, { useRef, type FC } from 'react';
+import React, { useContext, useRef, type FC } from 'react';
 import './index.less';
 
-const Previewer: FC<IPreviewerProps> = (props) => {
+const InternalPreviewer: FC<IPreviewerProps> = (props) => {
   const demoContainer = useRef<HTMLDivElement>(null);
   const { hash } = useLocation();
   const link = `#${props.asset.id}`;
+
+  const { enabled } = useContext(LiveContext);
 
   return (
     <div
@@ -34,6 +45,8 @@ const Previewer: FC<IPreviewerProps> = (props) => {
             }
             src={props.demoUrl}
           ></iframe>
+        ) : enabled ? (
+          <LiveDemo />
         ) : (
           props.children
         )}
@@ -62,9 +75,45 @@ const Previewer: FC<IPreviewerProps> = (props) => {
               ? (demoContainer.current?.firstElementChild as HTMLIFrameElement)
               : demoContainer.current!
           }
+          sourceCode={
+            enabled ? (
+              <div>
+                <LiveEditor />
+                <LiveError />
+              </div>
+            ) : null
+          }
         />
       </div>
     </div>
+  );
+};
+
+const Previewer: FC<IPreviewerProps> = (props) => {
+  const children = <InternalPreviewer {...props} />;
+
+  // Only Single File
+  if (
+    !isLiveEnabled() ||
+    props.live === false ||
+    Object.entries(props.asset.dependencies).filter(
+      ([, { type }]) => type === 'FILE',
+    ).length > 1
+  ) {
+    return children;
+  }
+
+  return (
+    <LiveProvider
+      initialCode={
+        Object.entries(props.asset.dependencies).filter(
+          ([, { type }]) => type === 'FILE',
+        )[0][1].value
+      }
+      demoId={props.asset.id}
+    >
+      {children}
+    </LiveProvider>
   );
 };
 
