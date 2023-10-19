@@ -215,7 +215,8 @@ export const texts = {{{texts}}};`,
 function emitScope(opts: IMdLoaderOptions, ret: IMdTransformerResult) {
   const { demos } = ret.meta;
 
-  const importReg = /import(?!(\stype)).*from.*;/g;
+  // ignore `import type` and `import 'xxx'`
+  const importReg = /import(?!(\stype|\s'))[\s\S]*?from.*;/g;
 
   return Mustache.render(
     `{{#renderImport}}
@@ -244,10 +245,14 @@ export const scopes = {
                   file.value.match(importReg) ||
                   ([] as unknown as RegExpMatchArray);
                 fileImports.forEach((item) => {
-                  const scope = item.replace(/import(.*)from.*;/, '$1').trim();
-                  const dep = item.replace(/import.*from(.*);/, '$1').trim();
+                  const scope = item
+                    .replace(/import([\s\S]*?)from.*;/, '$1')
+                    .trim();
+                  const dep = item
+                    .replace(/import[\s\S]*?from(.*);/, '$1')
+                    .trim();
 
-                  const namedReg = /.*\{(.*)}/g;
+                  const namedReg = /.*\{([\s\S]*?)}/g;
                   const namedScope = namedReg.test(scope)
                     ? scope
                         .replace(namedReg, '$1')
@@ -301,8 +306,15 @@ export const scopes = {
               file.value.match(importReg) ||
               ([] as unknown as RegExpMatchArray);
             const scopes = imports.reduce<string[]>((acc, item) => {
-              const scope = item.replace(/import(.*)from.*;/, '$1').trim();
-              const scopeList = scope.replace(/[{}]/g, '').trim();
+              const scope = item
+                .replace(/import([\s\S]*?)from.*;/, '$1')
+                .trim();
+              const scopeList = scope
+                .replace(/[{}]/g, '')
+                .trim()
+                .replace(/,$/g, '')
+                // A as B ==> B
+                .replace(/\S+\sas\s(.*?)/g, '$1');
               return [...acc, scopeList];
             }, []);
             demoScopes.push(...scopes);
