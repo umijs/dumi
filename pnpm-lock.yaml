@@ -4789,8 +4789,9 @@ packages:
       bn.js: 5.2.1
       randombytes: 2.1.0
 
-  /browserify-sign@4.2.1:
-    resolution: {integrity: sha512-/vrA5fguVAKKAVTNJjgSm1tRQDHUU6DbwO9IROu/0WAzC8PKhucDSh18J0RMvVeHAn5puMd+QHC2erPRNf8lmg==}
+  /browserify-sign@4.2.2:
+    resolution: {integrity: sha512-1rudGyeYY42Dk6texmv7c4VcQ0EsvVbLwZkA+AQB7SxvXxmcD93jcHie8bzecJ+ChDlmAm2Qyu0+Ccg5uhZXCg==}
+    engines: {node: '>= 4'}
     dependencies:
       bn.js: 5.2.1
       browserify-rsa: 4.1.0
@@ -4799,7 +4800,7 @@ packages:
       elliptic: 6.5.4
       inherits: 2.0.4
       parse-asn1: 5.1.6
-      readable-stream: 3.6.0
+      readable-stream: 3.6.2
       safe-buffer: 5.2.1
 
   /browserify-zlib@0.2.0:
@@ -5486,7 +5487,7 @@ packages:
     resolution: {integrity: sha512-fz4spIh+znjO2VjL+IdhEpRJ3YN6sMzITSBijk6FK2UvTqruSQW+/cCZTSNsMiZNvUeq0CqurF+dAbyiGOY6Wg==}
     dependencies:
       browserify-cipher: 1.0.1
-      browserify-sign: 4.2.1
+      browserify-sign: 4.2.2
       create-ecdh: 4.0.4
       create-hash: 1.2.0
       create-hmac: 1.1.7
@@ -6000,7 +6001,7 @@ packages:
     dependencies:
       end-of-stream: 1.4.4
       inherits: 2.0.4
-      readable-stream: 3.6.0
+      readable-stream: 3.6.2
       stream-shift: 1.0.1
 
   /dva-core@1.5.0-beta.2(redux@3.7.2):
@@ -7862,7 +7863,7 @@ packages:
     engines: {node: '>=4'}
     dependencies:
       inherits: 2.0.4
-      readable-stream: 3.6.0
+      readable-stream: 3.6.2
       safe-buffer: 5.2.1
 
   /hash.js@1.1.7:
@@ -12446,8 +12447,8 @@ packages:
       string_decoder: 1.1.1
       util-deprecate: 1.0.2
 
-  /readable-stream@3.6.0:
-    resolution: {integrity: sha512-BViHy7LKeTz4oNnkcLJ+lVSL6vpiFeX6/d3oSH8zCW7UxP2onchk+vTGB143xuFjHS3deTgkKoXXymXqymiIdA==}
+  /readable-stream@3.6.2:
+    resolution: {integrity: sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA==}
     engines: {node: '>= 6'}
     dependencies:
       inherits: 2.0.4
@@ -13231,7 +13232,7 @@ packages:
       detect-node: 2.1.0
       hpack.js: 2.1.6
       obuf: 1.1.2
-      readable-stream: 3.6.0
+      readable-stream: 3.6.2
       wbuf: 1.7.3
     transitivePeerDependencies:
       - supports-color
@@ -13256,7 +13257,7 @@ packages:
   /split2@3.2.2:
     resolution: {integrity: sha512-9NThjpgZnifTkJpzTZ7Eue85S49QwpNhZTq6GRJwObb6jnLFNGB7Qm73V5HewTROPyxD0C29xqmaI68bQtV+hg==}
     dependencies:
-      readable-stream: 3.6.0
+      readable-stream: 3.6.2
     dev: true
 
   /split2@4.1.0:
@@ -13827,7 +13828,7 @@ packages:
   /through2@4.0.2:
     resolution: {integrity: sha512-iOqSav00cVxEEICeD7TjLB1sueEL+81Wpzp2bY17uZjZN0pWZPuo4suZ/61VujxmqSGFfgOcNuTZ85QJwNZQpw==}
     dependencies:
-      readable-stream: 3.6.0
+      readable-stream: 3.6.2
     dev: true
 
   /through@2.3.8:
