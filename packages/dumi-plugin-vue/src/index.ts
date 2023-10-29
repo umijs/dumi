@@ -1,4 +1,5 @@
 import type { IApi } from 'dumi';
+import { createVueAtomAssetsParser, type VueParserOptions } from './atomParser';
 import genRuntimeApi from './genRuntimeApi';
 import './requireHook';
 import registerTechStack from './techStack';
@@ -18,6 +19,7 @@ export default (api: IApi) => {
               statements: joi.string().optional(),
             })
             .optional(),
+          parserOptions: joi.object().optional(),
         });
       },
     },
@@ -37,6 +39,16 @@ export default (api: IApi) => {
     memo.babelLoaderCustomize = require.resolve('./vueBabelLoaderCustomize');
     memo.resolveDemoModule = {
       '.vue': { loader: 'tsx', transform: 'html' },
+    };
+    const themeConfig = api.userConfig.themeConfig;
+    const options: VueParserOptions = themeConfig?.vue?.parserOptions || {};
+    memo.apiParser = {
+      customParser: function (opts: any) {
+        return createVueAtomAssetsParser({
+          ...opts,
+          ...options,
+        });
+      },
     };
     return memo;
   });

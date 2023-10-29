@@ -115,6 +115,21 @@ export interface ObjectPropertySchema extends BasePropertySchema {
   required?: string[];
 }
 
+export interface FunctionArgSchema {
+  key: string;
+  type: PropertySchema | string;
+  hasQuestionToken?: boolean;
+}
+
+export interface FunctionPropertySchema extends BasePropertySchema {
+  type: 'function';
+  signature: {
+    isAsync: boolean;
+    returnType: PropertySchema;
+    arguments: FunctionArgSchema[];
+  };
+}
+
 /**
  * prop definition
  */
@@ -122,6 +137,7 @@ export type PropertySchema =
   | BasePropertySchema
   | ObjectPropertySchema
   | ArrayPropertySchema
+  | FunctionPropertySchema
   | StringPropertySchema
   | NumberPropertySchema
   | BooleanPropertySchema;

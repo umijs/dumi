@@ -7,7 +7,7 @@
  * title: jsx
  */
 import { defineComponent } from 'vue';
-import { Button } from '@exmaples/vue';
+import { Button } from '@examples/vue';
 
 export default defineComponent({
   setup() {
@@ -22,7 +22,7 @@ export default defineComponent({
 ## Lightweight Inline Demo + Options API + JSX
 
 ```jsx | inline
-import { Button } from '@exmaples/vue';
+import { Button } from '@examples/vue';
 
 export default {
   data() {
@@ -78,6 +78,20 @@ Article.props = {
 export default Article;
 ```
 
-## The API table is not supported yet
+## Button API
 
-<API id="Button"></API>
+### Props
+
+<API id="Button" type="props"></API>
+
+### Slots
+
+<API id="Button" type="slots"></API>
+
+### Events
+
+<API id="Button" type="events"></API>
+
+### Methods
+
+<API id="Button" type="methods"></API>

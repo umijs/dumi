@@ -2,7 +2,11 @@
   "name": "dumi-plugin-vue",
   "version": "0.0.1",
   "description": "vue3 support plugin for dumi",
-  "keywords": [],
+  "keywords": [
+    "dumi",
+    "plugin",
+    "vue"
+  ],
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -22,9 +26,14 @@
     "@babel/plugin-syntax-typescript": "^7.22.5",
     "@babel/preset-env": "^7.21.4",
     "@babel/preset-typescript": "^7.21.4",
+    "@stackblitz/sdk": "^1.9.0",
+    "@types/babel__core": "^7.20.0",
+    "@types/hash-sum": "^1.0.0",
     "@umijs/bundler-webpack": "^4.0.81",
     "@vue/babel-plugin-jsx": "^1.1.1",
     "babel-plugin-iife": "workspace:*",
+    "codesandbox-import-utils": "^2.2.3",
+    "dumi-vue-meta": "workspace:*",
     "hash-sum": "^2.0.0",
     "sucrase": "^3.34.0",
     "vue": "^3.2.47",
@@ -32,15 +41,12 @@
     "vue-template-compiler": "^2.7.14"
   },
   "devDependencies": {
-    "@stackblitz/sdk": "^1.9.0",
-    "@types/babel__core": "^7.20.0",
-    "@types/hash-sum": "^1.0.0",
-    "codesandbox-import-utils": "^2.2.3",
     "dumi": "workspace:*",
     "father": "^4.1.9"
   },
   "peerDependencies": {
-    "dumi": "^2.0.0"
+    "dumi": "^2.0.0",
+    "vue": "^3.0.0"
   },
   "publishConfig": {
     "access": "public"

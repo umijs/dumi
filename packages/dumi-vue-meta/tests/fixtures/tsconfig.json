@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "baseUrl": "./",
+    "jsx": "preserve",
+    "jsxImportSource": "vue"
+  },
+  "include": ["**/*"]
+}

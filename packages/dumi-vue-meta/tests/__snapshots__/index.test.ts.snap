@@ -1,0 +1,456 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`sfc: single Vue component meta > emits/events > event signature meta should be same as normal methods 1`] = `
+{
+  "name": "change",
+  "schema": {
+    "kind": "function",
+    "schema": {
+      "arguments": [
+        {
+          "key": "payload",
+          "required": true,
+          "schema": {
+            "kind": "object",
+            "schema": {
+              "name": {
+                "description": "",
+                "global": false,
+                "name": "name",
+                "required": true,
+                "schema": {
+                  "kind": "basic",
+                  "type": "string",
+                },
+                "tags": {},
+                "type": "string",
+              },
+            },
+            "type": "{ name: string; }",
+          },
+          "type": "{ name: string; }",
+        },
+      ],
+      "isAsync": false,
+      "returnType": {
+        "kind": "basic",
+        "type": "void",
+      },
+    },
+    "type": "(payload: { name: string; }) => void",
+  },
+  "type": "(payload: { name: string; }) => void",
+}
+`;
+
+exports[`sfc: single Vue component meta > emits/events > events defined via defineEmits 1`] = `
+{
+  "name": "click",
+  "schema": {
+    "kind": "function",
+    "schema": {
+      "arguments": [
+        {
+          "key": "event",
+          "required": true,
+          "schema": {
+            "kind": "unknown",
+            "type": "MouseEvent",
+          },
+          "type": "MouseEvent",
+        },
+        {
+          "key": "extra",
+          "required": false,
+          "schema": {
+            "kind": "basic",
+            "type": "string",
+          },
+          "type": "string",
+        },
+      ],
+      "isAsync": false,
+      "returnType": {
+        "kind": "basic",
+        "type": "void",
+      },
+    },
+    "type": "(event: MouseEvent,extra?: string) => void",
+  },
+  "type": "(event: MouseEvent,extra?: string) => void",
+}
+`;
+
+exports[`sfc: single Vue component meta > expose api > ref api 1`] = `
+{
+  "description": "",
+  "name": "focus",
+  "schema": {
+    "kind": "function",
+    "schema": {
+      "arguments": [],
+      "isAsync": false,
+      "returnType": {
+        "kind": "basic",
+        "type": "void",
+      },
+    },
+    "type": "() => void",
+  },
+  "tags": {
+    "description": [
+      "The signature of the expose api should be obtained from here",
+    ],
+    "exposed": [
+      "",
+    ],
+  },
+  "type": "() => void",
+}
+`;
+
+exports[`sfc: single Vue component meta > slots > scoped slots 1`] = `
+{
+  "description": "item",
+  "name": "item",
+  "schema": {
+    "kind": "object",
+    "schema": {
+      "extra": {
+        "description": "",
+        "global": false,
+        "name": "extra",
+        "required": false,
+        "schema": {
+          "kind": "basic",
+          "type": "boolean",
+        },
+        "tags": {},
+        "type": "boolean",
+      },
+      "list": {
+        "description": "",
+        "global": false,
+        "name": "list",
+        "required": true,
+        "schema": {
+          "kind": "array",
+          "schema": [
+            {
+              "kind": "basic",
+              "type": "string",
+            },
+          ],
+          "type": "string[]",
+        },
+        "tags": {},
+        "type": "string[]",
+      },
+    },
+    "type": "{ list: string[]; extra?: boolean; }",
+  },
+  "tags": {},
+  "type": "{ list: string[]; extra?: boolean; }",
+}
+`;
+
+exports[`sfc-alias: single Vue component meta > emits/events > event signature meta should be same as normal methods 1`] = `
+{
+  "name": "change",
+  "schema": {
+    "kind": "function",
+    "schema": {
+      "arguments": [
+        {
+          "key": "payload",
+          "required": true,
+          "schema": {
+            "kind": "object",
+            "schema": {
+              "name": {
+                "description": "",
+                "global": false,
+                "name": "name",
+                "required": true,
+                "schema": {
+                  "kind": "basic",
+                  "type": "string",
+                },
+                "tags": {},
+                "type": "string",
+              },
+            },
+            "type": "{ name: string; }",
+          },
+          "type": "{ name: string; }",
+        },
+      ],
+      "isAsync": false,
+      "returnType": {
+        "kind": "basic",
+        "type": "void",
+      },
+    },
+    "type": "(payload: { name: string; }) => void",
+  },
+  "type": "(payload: { name: string; }) => void",
+}
+`;
+
+exports[`sfc-alias: single Vue component meta > emits/events > events defined via defineEmits 1`] = `
+{
+  "name": "click",
+  "schema": {
+    "kind": "function",
+    "schema": {
+      "arguments": [
+        {
+          "key": "event",
+          "required": true,
+          "schema": {
+            "kind": "unknown",
+            "type": "MouseEvent",
+          },
+          "type": "MouseEvent",
+        },
+        {
+          "key": "extra",
+          "required": false,
+          "schema": {
+            "kind": "basic",
+            "type": "string",
+          },
+          "type": "string",
+        },
+      ],
+      "isAsync": false,
+      "returnType": {
+        "kind": "basic",
+        "type": "void",
+      },
+    },
+    "type": "(event: MouseEvent,extra?: string) => void",
+  },
+  "type": "(event: MouseEvent,extra?: string) => void",
+}
+`;
+
+exports[`sfc-alias: single Vue component meta > expose api > ref api 1`] = `
+{
+  "description": "",
+  "name": "focus",
+  "schema": {
+    "kind": "function",
+    "schema": {
+      "arguments": [],
+      "isAsync": false,
+      "returnType": {
+        "kind": "basic",
+        "type": "void",
+      },
+    },
+    "type": "() => void",
+  },
+  "tags": {
+    "description": [
+      "The signature of the expose api should be obtained from here",
+    ],
+    "exposed": [
+      "",
+    ],
+  },
+  "type": "() => void",
+}
+`;
+
+exports[`sfc-alias: single Vue component meta > slots > scoped slots 1`] = `
+{
+  "description": "item",
+  "name": "item",
+  "schema": {
+    "kind": "object",
+    "schema": {
+      "extra": {
+        "description": "",
+        "global": false,
+        "name": "extra",
+        "required": false,
+        "schema": {
+          "kind": "basic",
+          "type": "boolean",
+        },
+        "tags": {},
+        "type": "boolean",
+      },
+      "list": {
+        "description": "",
+        "global": false,
+        "name": "list",
+        "required": true,
+        "schema": {
+          "kind": "array",
+          "schema": [
+            {
+              "kind": "basic",
+              "type": "string",
+            },
+          ],
+          "type": "string[]",
+        },
+        "tags": {},
+        "type": "string[]",
+      },
+    },
+    "type": "{ list: string[]; extra?: boolean; }",
+  },
+  "tags": {},
+  "type": "{ list: string[]; extra?: boolean; }",
+}
+`;
+
+exports[`tsx: single Vue component meta > emits/events > event signature meta should be same as normal methods 1`] = `
+{
+  "name": "change",
+  "schema": {
+    "kind": "function",
+    "schema": {
+      "arguments": [
+        {
+          "key": "payload",
+          "required": false,
+          "schema": {
+            "kind": "object",
+            "schema": {
+              "name": {
+                "description": "",
+                "global": false,
+                "name": "name",
+                "required": true,
+                "schema": {
+                  "kind": "basic",
+                  "type": "string",
+                },
+                "tags": {},
+                "type": "string",
+              },
+            },
+            "type": "{ name: string; }",
+          },
+          "type": "{ name: string; }",
+        },
+      ],
+      "isAsync": false,
+      "returnType": {
+        "kind": "basic",
+        "type": "void",
+      },
+    },
+    "type": "(payload?: { name: string; }) => void",
+  },
+  "type": "(payload?: { name: string; }) => void",
+}
+`;
+
+exports[`tsx: single Vue component meta > expose api > ref api 1`] = `
+{
+  "description": "The signature of the expose api should be obtained from here",
+  "name": "focus",
+  "schema": {
+    "kind": "function",
+    "schema": {
+      "arguments": [],
+      "isAsync": false,
+      "returnType": {
+        "kind": "basic",
+        "type": "void",
+      },
+    },
+    "type": "() => void",
+  },
+  "tags": {
+    "exposed": [
+      "",
+    ],
+  },
+  "type": "() => void",
+}
+`;
+
+exports[`tsx: single Vue component meta > props > events in props 1`] = `
+{
+  "kind": "function",
+  "schema": {
+    "arguments": [
+      {
+        "key": "e",
+        "required": true,
+        "schema": {
+          "kind": "unknown",
+          "type": "MouseEvent",
+        },
+        "type": "MouseEvent",
+      },
+      {
+        "key": "extra",
+        "required": false,
+        "schema": {
+          "kind": "basic",
+          "type": "string",
+        },
+        "type": "string",
+      },
+    ],
+    "isAsync": false,
+    "returnType": {
+      "kind": "basic",
+      "type": "void",
+    },
+  },
+  "type": "(e: MouseEvent, extra?: string) => void",
+}
+`;
+
+exports[`tsx: single Vue component meta > slots > scoped slots 1`] = `
+{
+  "description": "item",
+  "name": "item",
+  "schema": {
+    "kind": "object",
+    "schema": {
+      "extra": {
+        "description": "",
+        "global": false,
+        "name": "extra",
+        "required": false,
+        "schema": {
+          "kind": "basic",
+          "type": "boolean",
+        },
+        "tags": {},
+        "type": "boolean",
+      },
+      "list": {
+        "description": "",
+        "global": false,
+        "name": "list",
+        "required": true,
+        "schema": {
+          "kind": "array",
+          "schema": [
+            {
+              "kind": "basic",
+              "type": "string",
+            },
+          ],
+          "type": "string[]",
+        },
+        "tags": {},
+        "type": "string[]",
+      },
+    },
+    "type": "{ list: string[]; extra?: boolean; }",
+  },
+  "tags": {},
+  "type": "{ list: string[]; extra?: boolean; }",
+}
+`;

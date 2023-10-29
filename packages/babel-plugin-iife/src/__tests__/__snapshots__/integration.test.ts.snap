@@ -29,7 +29,7 @@ exports[`use with other plugins 1`] = `
   } = await import('vue');
   const {
     Button
-  } = await import('@exmaples/vue3');
+  } = await import('@examples/vue3');
   return {
     default: defineComponent({
       setup() {

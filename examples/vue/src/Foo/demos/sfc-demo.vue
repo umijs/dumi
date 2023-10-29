@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { Foo, Button } from '@exmaples/vue';
+import { Foo, Button } from '@examples/vue';
 const msg = 'Hello!';
 
 function handleClick() {

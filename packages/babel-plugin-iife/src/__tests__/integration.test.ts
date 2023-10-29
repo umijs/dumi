@@ -7,7 +7,7 @@ test('use with other plugins', async () => {
     await transpile(
       `
     import { defineComponent } from 'vue';
-    import { Button } from '@exmaples/vue3';
+    import { Button } from '@examples/vue3';
     export default defineComponent({
       setup() {
         return () => <Button>hello</Button>;

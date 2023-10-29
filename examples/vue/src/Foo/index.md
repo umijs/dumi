@@ -63,3 +63,13 @@ export default {
 ## External Demo
 
 <code src="./demos/sfc-demo.vue"></code>
+
+## Foo API
+
+### Props
+
+<API id="Foo" type="props"></API>
+
+### Events
+
+<API id="Foo" type="events"></API>

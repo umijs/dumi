@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import type AtomAssetsParser from '@/assetParsers/atom';
+// import type AtomAssetsParser from '@/assetParsers/atom';
 import type { IParsedBlockAsset } from '@/assetParsers/block';
 import type { IDumiDemoProps } from '@/client/theme-api/DumiDemo';
 import type { ILocalesConfig, IThemeConfig } from '@/client/theme-api/types';
@@ -7,7 +7,12 @@ import type { IContentTab } from '@/features/tabs';
 import type { IThemeLoadResult } from '@/features/theme/loader';
 import { Loader } from '@umijs/bundler-utils/compiled/esbuild';
 import type { IModify } from '@umijs/core';
-import type { AssetsPackage, ExampleBlockAsset } from 'dumi-assets-types';
+import type {
+  AssetsPackage,
+  AtomComponentAsset,
+  AtomFunctionAsset,
+  ExampleBlockAsset,
+} from 'dumi-assets-types';
 import type { Element } from 'hast';
 import type { IApi as IUmiApi, defineConfig as defineUmiConfig } from 'umi';
 
@@ -127,6 +132,33 @@ export abstract class IDumiTechStack {
     sources: IParsedBlockAsset['sources'],
     opts: Parameters<NonNullable<IDumiTechStack['generateMetadata']>>[1],
   ): Promise<IParsedBlockAsset['sources']> | IParsedBlockAsset['sources'];
+}
+
+export interface AtomAssetsParserResult {
+  components: Record<string, AtomComponentAsset>;
+  functions: Record<string, AtomFunctionAsset>;
+}
+
+export abstract class AtomAssetsParser {
+  /**
+   * parse component metadata
+   */
+  abstract parse(): Promise<AtomAssetsParserResult>;
+
+  /**
+   * monitor documents and codes, update component metadata at any time
+   */
+  abstract watch(cb: (data: AtomAssetsParserResult) => void): void;
+
+  /**
+   * cancel monitoring
+   */
+  abstract unwatch(cb: (data: AtomAssetsParserResult) => void): void;
+
+  /**
+   * cancel parsing
+   */
+  abstract destroyWorker(): void;
 }
 
 export type IApi = IUmiApi & {

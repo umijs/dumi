@@ -50,6 +50,7 @@
     "lint:es": "eslint \"{src,test}/**/*.{js,jsx,ts,tsx}\"",
     "prepare": "husky install && npm run build && npm run build:packages && npm run build:suites && node ./bin/dumi.js setup && npm run docs:sync",
     "prepublishOnly": "npm run build",
+    "pretest": "tsc --project ../../assetParsers/tsconfig.test.json",
     "test": "vitest",
     "vercel:build": "npm run docs:build",
     "vercel:install": "./scripts/vercel-install.sh"
@@ -92,6 +93,7 @@
     "animated-scroll-to": "^2.3.0",
     "classnames": "2.3.2",
     "codesandbox": "^2.2.3",
+    "comlink": "^4.4.1",
     "copy-to-clipboard": "^3.3.3",
     "deepmerge": "^4.3.1",
     "dumi-afx-deps": "^1.0.0-alpha.19",

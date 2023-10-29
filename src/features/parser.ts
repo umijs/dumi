@@ -1,6 +1,6 @@
-import type AtomAssetsParser from '@/assetParsers/atom';
-import type { IApi } from '@/types';
+import type { AtomAssetsParser, IApi } from '@/types';
 import assert from 'assert';
+import { BaseAtomAssetsParser } from '../assetParsers/BaseParser';
 import { ATOMS_META_PATH } from './meta';
 
 export default (api: IApi) => {
@@ -26,6 +26,7 @@ export default (api: IApi) => {
           unpkgHost: Joi.string().uri().optional(),
           resolveFilter: Joi.function().optional(),
           parseOptions: Joi.object().optional(),
+          customParser: Joi.function().optional(),
         }),
     },
   });
@@ -47,16 +48,32 @@ export default (api: IApi) => {
   // and `onCheckPkgJson` only be called in dev and build
   api.onCheckPkgJSON(async () => {
     const {
-      default: AtomAssetsParser,
+      default: ReactAtomAssetsParser,
     }: typeof import('@/assetParsers/atom') = require('@/assetParsers/atom');
+    const apiParser = api.config.apiParser || {};
 
-    api.service.atomParser = new AtomAssetsParser({
-      entryFile: api.config.resolve.entryFile!,
-      resolveDir: api.cwd,
-      unpkgHost: api.config.apiParser!.unpkgHost,
-      resolveFilter: api.config.apiParser!.resolveFilter,
-      parseOptions: api.config.apiParser!.parseOptions,
-    });
+    const customParse = apiParser.customParser as (args: {
+      entryFile: string;
+      resolveDir: string;
+    }) => AtomAssetsParser;
+
+    if (customParse) {
+      const parser = customParse({
+        entryFile: api.config.resolve.entryFile!,
+        resolveDir: api.cwd,
+      });
+      if (parser instanceof BaseAtomAssetsParser) {
+        api.service.atomParser = parser;
+      }
+    } else {
+      api.service.atomParser = new ReactAtomAssetsParser({
+        entryFile: api.config.resolve.entryFile!,
+        resolveDir: api.cwd,
+        unpkgHost: apiParser.unpkgHost,
+        resolveFilter: apiParser.resolveFilter,
+        parseOptions: apiParser.parseOptions,
+      });
+    }
   });
 
   // lazy parse & use watch mode in dev compiling

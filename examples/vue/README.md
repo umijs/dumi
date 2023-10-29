@@ -1,1 +1,1 @@
-# @exmaples/vue
+# @examples/vue

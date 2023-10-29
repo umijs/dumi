@@ -3,10 +3,12 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@exmaples/vue": ["./src"]
+      "@examples/vue": ["./src"]
     },
+    "allowJs": true,
     "jsx": "preserve",
-    "jsxImportSource": "vue"
+    "jsxImportSource": "vue",
+    "strictNullChecks": false
   },
   "include": [".dumirc.ts", "src/**/*", "docs/**/*"]
 }
