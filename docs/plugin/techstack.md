@@ -136,7 +136,7 @@ export const RemoteVueMetaParser = createRemoteClass(__filename, VueMetaParser);
 
 注意把这个语句和`LanguageMetaParser`实现放在一起，`__filename`表示将当前文件传入子线程中执行
 
-**主线程侧**，需要实现`watch`功能
+**主线程侧**，除了将子线程端的`Parser`传入，只需要处理文件更改
 
 ```ts
 import { BaseAtomAssetsParser } from 'dumi';
@@ -145,21 +145,20 @@ export function createVueAtomAssetsParser(opts: VueParserOptions) {
     ...opts,
     // 将子线程端的parser传入
     parser: new RemoteVueMetaParser(opts),
-    createWatcher({ parse, watchArgs }) {
-      return chokidar
-        .watch(watchArgs.paths, watchArgs.options)
-        .on('all', (ev, file) => {
-          if (
-            ['add', 'change'].includes(ev) &&
-            /((?<!\.d)\.ts|\.(jsx?|tsx|vue))$/.test(file) // 侦测jsx/tsx/ts/vue文件的添加或是修改
-          ) {
-            this.parser.patch({
-              event: ev,
-              fileName: path.join(watchArgs.options.cwd as string, file),
-            });
-            parse();
-          }
-        });
+    handleWatcher(watcher, { parse, patch, watchArgs }) {
+      return watcher.on('all', (ev, file) => {
+        if (
+          ['add', 'change', 'unlink'].includes(ev) && // 侦测js/jsx/tsx/ts/vue文件的添加或是修改
+          /((?<!\.d)\.ts|\.(jsx?|tsx|vue))$/.test(file)
+        ) {
+          const cwd = watchArgs.options.cwd!;
+          patch({
+            event: ev,
+            fileName: path.join(cwd, file),
+          });
+          parse();
+        }
+      });
     },
   });
 }

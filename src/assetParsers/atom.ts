@@ -1,7 +1,7 @@
 import { getProjectRoot } from '@/utils';
 import { SchemaParser, SchemaResolver } from 'dumi-afx-deps/compiled/parser';
 import path from 'path';
-import { chokidar, logger } from 'umi/plugin-utils';
+import { logger } from 'umi/plugin-utils';
 import { AtomAssetsParserResult } from '../types';
 import {
   BaseAtomAssetsParser,
@@ -131,21 +131,20 @@ class ReactAtomAssetsParser extends BaseAtomAssetsParser<ReactMetaParser> {
     super({
       ...opts,
       parser: new ReactMetaParser(opts),
-      createWatcher({ parse, watchArgs }) {
-        return chokidar
-          .watch(watchArgs.paths, watchArgs.options)
-          .on('all', (ev, file) => {
-            if (
-              ['add', 'change'].includes(ev) &&
-              /((?<!\.d)\.ts|\.(jsx?|tsx))$/.test(file)
-            ) {
-              this.parser.patch({
-                event: ev,
-                fileName: path.join(watchArgs.options.cwd as string, file),
-              });
-              parse();
-            }
-          });
+      handleWatcher: (watcher, { parse, patch, watchArgs }) => {
+        return watcher.on('all', (ev, file) => {
+          if (
+            ['add', 'change'].includes(ev) &&
+            /((?<!\.d)\.ts|\.(jsx?|tsx))$/.test(file)
+          ) {
+            const cwd = watchArgs.options.cwd!;
+            patch({
+              event: ev,
+              fileName: path.join(cwd, file),
+            });
+            parse();
+          }
+        });
       },
     });
   }

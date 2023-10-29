@@ -7,7 +7,7 @@ import {
 import type { MetaCheckerOptions } from 'dumi-vue-meta';
 import { createProject, dumiTransfomer } from 'dumi-vue-meta';
 import path from 'path';
-import { chokidar, fsExtra } from 'umi/plugin-utils';
+import { fsExtra } from 'umi/plugin-utils';
 
 export interface VueParserOptions {
   entryFile: string;
@@ -69,21 +69,20 @@ export function createVueAtomAssetsParser(opts: VueParserOptions) {
   return new BaseAtomAssetsParser<VueMetaParser>({
     ...opts,
     parser: new RemoteVueMetaParser(opts),
-    createWatcher({ parse, watchArgs }) {
-      return chokidar
-        .watch(watchArgs.paths, watchArgs.options)
-        .on('all', (ev, file) => {
-          if (
-            ['add', 'change'].includes(ev) &&
-            /((?<!\.d)\.ts|\.(jsx?|tsx|vue))$/.test(file)
-          ) {
-            this.parser.patch({
-              event: ev,
-              fileName: path.join(watchArgs.options.cwd as string, file),
-            });
-            parse();
-          }
-        });
+    handleWatcher(watcher, { parse, patch, watchArgs }) {
+      return watcher.on('all', (ev, file) => {
+        if (
+          ['add', 'change', 'unlink'].includes(ev) &&
+          /((?<!\.d)\.ts|\.(jsx?|tsx|vue))$/.test(file)
+        ) {
+          const cwd = watchArgs.options.cwd!;
+          patch({
+            event: ev,
+            fileName: path.join(cwd, file),
+          });
+          parse();
+        }
+      });
     },
   });
 }

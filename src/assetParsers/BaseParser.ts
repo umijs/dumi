@@ -16,7 +16,8 @@ export interface LanguageMetaParser {
   destroy(): Promise<void>;
 }
 
-export interface CreateWatcherOptions {
+export interface HandleWatcherArgs {
+  patch: LanguageMetaParser['patch'];
   parse: () => void;
   watchArgs: {
     paths: string | string[];
@@ -28,30 +29,31 @@ export interface BaseAtomAssetsParserParams<T> {
   entryFile: string;
   resolveDir: string;
   parser: T;
-  createWatcher?: (options: CreateWatcherOptions) => chokidar.FSWatcher;
+  handleWatcher?: (
+    watcher: chokidar.FSWatcher,
+    params: HandleWatcherArgs,
+  ) => chokidar.FSWatcher;
   watchOptions?: chokidar.WatchOptions;
 }
 
 export class BaseAtomAssetsParser<T extends LanguageMetaParser>
   implements AtomAssetsParser
 {
-  private watchArgs!: CreateWatcherOptions['watchArgs'];
+  private watchArgs!: HandleWatcherArgs['watchArgs'];
 
   private watcher: chokidar.FSWatcher | null = null;
-  private createWatcher!: BaseAtomAssetsParserParams<T>['createWatcher'];
+  private handleWatcher?: BaseAtomAssetsParserParams<T>['handleWatcher'];
 
-  protected entryFile!: string;
-  protected entryDir!: string;
-  protected resolveDir!: string;
+  private entryDir!: string;
+  private resolveDir!: string;
 
-  protected parser!: T;
-  protected isParsing = false;
+  private readonly parser!: T;
+  private isParsing = false;
   private parseDeferrer: Promise<AtomAssetsParserResult> | null = null;
   private cbs: Array<(data: AtomAssetsParserResult) => void> = [];
 
   constructor(opts: BaseAtomAssetsParserParams<T>) {
-    const { entryFile, resolveDir, watchOptions, parser, createWatcher } = opts;
-    this.entryFile = entryFile;
+    const { entryFile, resolveDir, watchOptions, parser, handleWatcher } = opts;
     this.resolveDir = resolveDir;
     const absEntryFile = path.resolve(resolveDir, entryFile);
     this.entryDir = path.relative(opts.resolveDir, path.dirname(absEntryFile));
@@ -71,9 +73,7 @@ export class BaseAtomAssetsParser<T extends LanguageMetaParser>
         ...watchOptions,
       },
     };
-    if (createWatcher) {
-      this.createWatcher = createWatcher;
-    }
+    this.handleWatcher = handleWatcher;
     this.parser = parser;
   }
 
@@ -91,7 +91,7 @@ export class BaseAtomAssetsParser<T extends LanguageMetaParser>
     // save watch callback
     this.cbs.push(cb);
     // initialize watcher
-    if (!this.watcher && this.createWatcher) {
+    if (!this.watcher && this.handleWatcher) {
       const lazyParse = lodash.debounce(() => {
         this.parse()
           .then((data) => this.cbs.forEach((cb) => cb(data)))
@@ -100,7 +100,12 @@ export class BaseAtomAssetsParser<T extends LanguageMetaParser>
           });
       }, 100);
 
-      this.watcher = this.createWatcher({
+      this.watcher = chokidar.watch(
+        this.watchArgs.paths,
+        this.watchArgs.options,
+      );
+
+      this.handleWatcher(this.watcher, {
         parse: () => {
           if (this.isParsing && this.parseDeferrer) {
             this.parseDeferrer.finally(() => {
@@ -113,7 +118,11 @@ export class BaseAtomAssetsParser<T extends LanguageMetaParser>
           }
         },
         watchArgs: this.watchArgs,
+        patch: (file: PatchFile) => {
+          this.parser.patch(file);
+        },
       });
+
       lazyParse();
     }
   }
