@@ -12,6 +12,7 @@ import { chokidar, fsExtra } from 'umi/plugin-utils';
 export interface VueParserOptions {
   entryFile: string;
   resolveDir: string;
+  tsconfigPath?: string;
   checkerOptions?: MetaCheckerOptions;
 }
 
@@ -21,13 +22,15 @@ class VueMetaParser implements LanguageMetaParser {
   private checkerOptions!: MetaCheckerOptions;
   private checker!: ReturnType<typeof createProject>;
   constructor(opts: VueParserOptions) {
-    const { checkerOptions, resolveDir, entryFile } = opts;
+    const { tsconfigPath, checkerOptions, resolveDir, entryFile } = opts;
     this.checkerOptions = Object.assign({}, checkerOptions);
     this.resolveDir = resolveDir;
     this.entryFile = path.resolve(this.resolveDir, entryFile);
-    const tsconfigPath = path.resolve(this.resolveDir, 'tsconfig.json');
+
+    const realTsConfigPath =
+      tsconfigPath ?? path.resolve(this.resolveDir, 'tsconfig.json');
     this.checker = createProject({
-      tsconfigPath,
+      tsconfigPath: realTsConfigPath,
       checkerOptions: this.checkerOptions,
     });
   }

@@ -28,7 +28,9 @@ For example, the following configuration can make the `InternalType` type skip p
 themeConfig: {
   vue: {
     parserOptions: {
-      schema: { ignore: ['InternalType'] },
+      checkerOptions: {
+        schema: { ignore: ['InternalType'] }
+      },
     },
   },
 },

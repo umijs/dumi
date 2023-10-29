@@ -40,7 +40,9 @@ export default {
   themeConfig: {
     vue: {
       parserOptions: {
-        schema: { ignore: ['InternalType'] },
+        checkerOptions: {
+          schema: { ignore: ['InternalType'] },
+        },
       },
     },
   },
@@ -56,7 +58,9 @@ export default {
   themeConfig: {
     vue: {
       parserOptions: {
-        schema: { exclude: [/node_modules/, /mylib/] },
+        checkerOptions: {
+          schema: { exclude: [/node_modules/, /mylib/] },
+        },
       },
     },
   },

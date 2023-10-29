@@ -35,6 +35,24 @@ Vue 组件的元信息提取主要使用 TypeScript 的 TypeChecker, 所以配�
 }
 ```
 
+如果项目中一定要使用`strictNullChecks`，你也可以为 Vue 解析专门配置一个`tsconfig.vue.json`文件
+
+```ts
+// .dumirc.ts
+import * as path from 'path';
+export default {
+  plugins: ['dumi-plugin-vue'],
+  themeConfig: {
+    vue: {
+      parserOptions: {
+        tsconfigPath: path.resolve(__dirname, './tsconfig.vue.json');
+      },
+    },
+  },
+};
+
+```
+
 ## JSDoc 编写
 
 :::warning
