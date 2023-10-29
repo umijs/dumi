@@ -6,7 +6,7 @@ order: 1
 
 # 添加技术栈
 
-为 dumi 开发添加一个技术栈插件，需要实现以下功能，我们以添加 Vue 框架支持为例
+为 dumi 开发添加一个技术栈插件，需要实现以下功能，以添加 Vue 框架支持为例
 
 ### 实现非外部 Demo 代码的编译转换
 
@@ -97,4 +97,93 @@ api.modifyConfig((memo) => {
 
 ### webpack 配置
 
-最后还需要添加对外部 Demo 的编译及打包支持，这需要我们对 webpack 进行配置，由于 dumi 本身是 react 框架，所以不能粗暴地移除对 react 的支持，而是需要将 react 相关配置限定在`.dumi`中。
+添加对外部 Demo 的编译及打包支持，这需要我们对 webpack 进行配置，由于 dumi 本身是 react 框架，所以不能粗暴地移除对 react 的支持，而是需要将 react 相关配置限定在`.dumi`中。
+
+### API Table 支持
+
+API Table 的支持主要在于对框架元信息信息的提取，例如针对 Vue 组件，dumi 就提供了`dumi-vue-meta`包来提取元数据。其他框架也要实现相关的元数据提取，主流框架基本都有相应的元数据提取包，但需要注意的是，开发者需要适配到 dumi 的元数据 schema。
+
+在实现元数据提取之后，还需要实现 dumi 的元数据解析架构，即将数据的提取放在子线程中。dumi 也提供了相关的 API 简化实现：
+
+**子线程侧**，我们需要实现一个元数据 Parser，这里需要实现`LanguageMetaParser`接口
+
+```ts
+import { LanguageMetaParser } from 'dumi';
+
+class VueMetaParser implements LanguageMetaParser {
+  async patch(file: PatchFile) {
+    // ...
+  }
+  async parse() {
+    // ...
+  }
+
+  async destroy() {
+    // ...
+  }
+}
+```
+
+`parse`负责数据的解析，`patch`则负责接收从主线程来的文件更新，`destroy`则负责完成子线程销毁前的解析器销毁工作。
+
+之后我们需要将该类转换为在子线程执行的类，dumi 同样提供了`createRemoteClass`方法
+
+```ts
+import { createRemoteClass } from 'dumi';
+
+export const RemoteVueMetaParser = createRemoteClass(__filename, VueMetaParser);
+```
+
+注意把这个语句和`LanguageMetaParser`实现放在一起，`__filename`表示将当前文件传入子线程中执行
+
+**主线程侧**，需要实现`watch`功能
+
+```ts
+import { BaseAtomAssetsParser } from 'dumi';
+export function createVueAtomAssetsParser(opts: VueParserOptions) {
+  return new BaseAtomAssetsParser<VueMetaParser>({
+    ...opts,
+    // 将子线程端的parser传入
+    parser: new RemoteVueMetaParser(opts),
+    createWatcher({ parse, watchArgs }) {
+      return chokidar
+        .watch(watchArgs.paths, watchArgs.options)
+        .on('all', (ev, file) => {
+          if (
+            ['add', 'change'].includes(ev) &&
+            /((?<!\.d)\.ts|\.(jsx?|tsx|vue))$/.test(file) // 侦测jsx/tsx/ts/vue文件的添加或是修改
+          ) {
+            this.parser.patch({
+              event: ev,
+              fileName: path.join(watchArgs.options.cwd as string, file),
+            });
+            parse();
+          }
+        });
+    },
+  });
+}
+```
+
+最终，需要一个返回`BaseAtomAssetsParser`实例的函数，或是一个扩展自`BaseAtomAssetsParser`的类
+
+```ts
+export class ReactAtomAssetsParser extends BaseAtomAssetsParser<ReactMetaParser> {
+  constructor() {}
+}
+```
+
+万事俱备，现在可以将自定义好的 Parser 交给 dumi，dumi 提供了`apiParser.customParser`选项来支持外部解析
+
+```ts
+memo.apiParser = {
+  customParser: function (opts: any) {
+    return createVueAtomAssetsParser({
+      ...opts,
+      ...options,
+    });
+  },
+};
+```
+
+这样在实现以上五大功能后，我们就实现了 Vue 框架在 dumi 中的完整支持。照此办法，开发者也可以实现对`svelte`, `Angular`,`lit-element`等框架的支持

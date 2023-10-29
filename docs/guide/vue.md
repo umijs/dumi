@@ -1,17 +1,19 @@
 ---
-title: 使用Vue.js
-group: 基础
-order: 7
+title: 安装插件
+group:
+  title: 使用vue
+  order: 1
+order: 1
 ---
 
-# 使用 Vue.js
+# 安装 Vue 支持插件
 
-本文介绍如何在 dumi 中使用 Vue.js
+dumi 中对 Vue 的支持主要通过`dumi-plugin-vue`插件实现, 目前只支持 Vue3
 
 ## 安装
 
 ```bash
-pnpm i dumi-plugin-vue
+pnpm i -D dumi-plugin-vue
 ```
 
 ## 配置
@@ -24,6 +26,42 @@ export default {
 ```
 
 ## 插件选项
+
+### parserOptions
+
+Vue 组件元数据解析选项
+
+例如，以下配置可以使得名称为`InternalType`的类型跳过检查
+
+```ts
+// .dumirc.ts
+export default {
+  plugins: ['dumi-plugin-vue'],
+  themeConfig: {
+    vue: {
+      parserOptions: {
+        schema: { ignore: ['InternalType'] },
+      },
+    },
+  },
+};
+```
+
+默认情况下，从`node_modules`中引入所有类型不会被解析，这样可以有效避免元信息冗余，你也可以通过配置`exclude`来定制化类型引入
+
+```ts
+// .dumirc.ts
+export default {
+  plugins: ['dumi-plugin-vue'],
+  themeConfig: {
+    vue: {
+      parserOptions: {
+        schema: { exclude: [/node_modules/, /mylib/] },
+      },
+    },
+  },
+};
+```
 
 ### globalInject
 

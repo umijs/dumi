@@ -34,7 +34,7 @@ themeConfig: {
 },
 ```
 
-For details, please refer to :point_right:`MetaCheckerSchemaOptions`
+For details, please refer to :point_right: [`MetaCheckerOptions`](../dumi-vue-meta/README.md#metacheckeroptions)
 
 ### globalInject
 
