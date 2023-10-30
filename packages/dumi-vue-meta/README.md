@@ -2,7 +2,7 @@
 
 Extracting the metadata of Vue components more effectively.
 
-This project is heavily inspired by [vue-component-meta](https://github.com/vuejs/language-tools/tree/master/packages/vue-component-meta), and reuses a significant amount of its code.
+This project is heavily inspired by [vue-component-meta](https://github.com/vuejs/language-tools/tree/master/packages/component-meta), and reuses a significant amount of its code.
 
 ## Install
 
