@@ -23,6 +23,11 @@ export type ComponentItemMeta =
   | SlotMeta
   | ExposeMeta;
 
+export interface SingleComponentMeta {
+  component: ComponentMeta;
+  types: Record<string, PropertyMetaSchema>;
+}
+
 /**
  * Component library metadata
  */

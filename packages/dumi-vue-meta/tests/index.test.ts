@@ -25,8 +25,12 @@ function testFeatures(kind: 'tsx' | 'sfc' | 'sfc-alias') {
   describe(`${kind}: single Vue component meta`, () => {
     const componentPath = path.resolve(__dirname, `fixtures/${kind}/index.ts`);
     describe('props', () => {
-      const meta = project.service.getComponentMeta(componentPath, 'Foo');
-      const propMap = toRecord(meta.props);
+      const { component } = project.service.getComponentMeta(
+        componentPath,
+        'Foo',
+      );
+      const propMap = toRecord(component.props);
+
       test('option props', () => {
         const titleProp = propMap['title'];
         expect(titleProp).toMatchObject({
@@ -144,8 +148,11 @@ function testFeatures(kind: 'tsx' | 'sfc' | 'sfc-alias') {
     });
 
     describe('emits/events', () => {
-      const meta = project.service.getComponentMeta(componentPath, 'Foo');
-      const eventMap = toRecord(meta.events);
+      const { component } = project.service.getComponentMeta(
+        componentPath,
+        'Foo',
+      );
+      const eventMap = toRecord(component.events);
       test('event signature meta should be same as normal methods', () => {
         expect(eventMap['change']).matchSnapshot();
       });
@@ -156,8 +163,11 @@ function testFeatures(kind: 'tsx' | 'sfc' | 'sfc-alias') {
     });
 
     describe('slots', () => {
-      const meta = project.service.getComponentMeta(componentPath, 'Foo');
-      const slotMap = toRecord(meta.slots);
+      const { component } = project.service.getComponentMeta(
+        componentPath,
+        'Foo',
+      );
+      const slotMap = toRecord(component.slots);
 
       test('normal slots', () => {
         expect(slotMap['icon'].type).toBe('any');
@@ -169,8 +179,11 @@ function testFeatures(kind: 'tsx' | 'sfc' | 'sfc-alias') {
     });
 
     describe('expose api', () => {
-      const meta = project.service.getComponentMeta(componentPath, 'Foo');
-      const exposed = toRecord(meta.exposed);
+      const { component } = project.service.getComponentMeta(
+        componentPath,
+        'Foo',
+      );
+      const exposed = toRecord(component.exposed);
       test('ref api', () => {
         expect(exposed['count']).toMatchObject({
           type: 'number',

@@ -15,7 +15,6 @@ exports[`sfc: single Vue component meta > emits/events > event signature meta sh
             "schema": {
               "name": {
                 "description": "",
-                "global": false,
                 "name": "name",
                 "required": true,
                 "schema": {
@@ -118,7 +117,6 @@ exports[`sfc: single Vue component meta > slots > scoped slots 1`] = `
     "schema": {
       "extra": {
         "description": "",
-        "global": false,
         "name": "extra",
         "required": false,
         "schema": {
@@ -130,7 +128,6 @@ exports[`sfc: single Vue component meta > slots > scoped slots 1`] = `
       },
       "list": {
         "description": "",
-        "global": false,
         "name": "list",
         "required": true,
         "schema": {
@@ -169,7 +166,6 @@ exports[`sfc-alias: single Vue component meta > emits/events > event signature m
             "schema": {
               "name": {
                 "description": "",
-                "global": false,
                 "name": "name",
                 "required": true,
                 "schema": {
@@ -272,7 +268,6 @@ exports[`sfc-alias: single Vue component meta > slots > scoped slots 1`] = `
     "schema": {
       "extra": {
         "description": "",
-        "global": false,
         "name": "extra",
         "required": false,
         "schema": {
@@ -284,7 +279,6 @@ exports[`sfc-alias: single Vue component meta > slots > scoped slots 1`] = `
       },
       "list": {
         "description": "",
-        "global": false,
         "name": "list",
         "required": true,
         "schema": {
@@ -323,7 +317,6 @@ exports[`tsx: single Vue component meta > emits/events > event signature meta sh
             "schema": {
               "name": {
                 "description": "",
-                "global": false,
                 "name": "name",
                 "required": true,
                 "schema": {
@@ -419,7 +412,6 @@ exports[`tsx: single Vue component meta > slots > scoped slots 1`] = `
     "schema": {
       "extra": {
         "description": "",
-        "global": false,
         "name": "extra",
         "required": false,
         "schema": {
@@ -431,7 +423,6 @@ exports[`tsx: single Vue component meta > slots > scoped slots 1`] = `
       },
       "list": {
         "description": "",
-        "global": false,
         "name": "list",
         "required": true,
         "schema": {

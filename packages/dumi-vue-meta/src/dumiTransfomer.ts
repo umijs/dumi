@@ -134,7 +134,7 @@ export const dumiTransfomer: MetaTransformer<
             arguments: functionSchema.arguments.map((arg) => ({
               key: arg.key,
               hasQuestionToken: !arg.required,
-              type: arg.schema ? transformSchema(arg.schema) : arg.type,
+              type: arg.type,
             })),
             returnType: transformSchema(functionSchema.returnType),
           },

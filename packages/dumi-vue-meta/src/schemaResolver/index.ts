@@ -154,7 +154,7 @@ export class SchemaResolver {
   }
 
   private resolveExactSchema(subtype: ts.Type): PropertyMetaSchema {
-    const { typeChecker, ts, resolveSchema, resolveNestedProperties } = this;
+    const { typeChecker, ts, resolveSchema } = this;
 
     const type = typeChecker.typeToString(subtype);
 
@@ -198,7 +198,7 @@ export class SchemaResolver {
         type,
         schema: subtype
           .getProperties()
-          .map(resolveNestedProperties.bind(this))
+          .map((prop) => this.resolveNestedProperties(prop, true))
           .reduce(reducer, {}),
       };
     } else if (subtype.getCallSignatures().length >= 1) {
@@ -285,10 +285,26 @@ export class SchemaResolver {
     return schema;
   }
 
-  public resolveNestedProperties(prop: ts.Symbol) {
+  // `normal` means whether it is a normal prop. If it is false, it is a prop of the vue instance.
+  public resolveNestedProperties(prop: ts.Symbol, normal = false) {
     const { ts, typeChecker, symbolNode } = this;
     const schemaOptions = this.schemaOptions!;
     const subtype = typeChecker.getTypeOfSymbolAtLocation(prop, symbolNode!);
+
+    const originalMeta = {
+      name: prop.getEscapedName().toString(),
+      description: ts.displayPartsToString(
+        prop.getDocumentationComment(typeChecker),
+      ),
+      required: !(prop.flags & ts.SymbolFlags.Optional),
+      tags: getJsDocTags(ts, typeChecker, prop),
+      type: typeChecker.typeToString(subtype),
+    } as Partial<PropertyMeta>;
+
+    if (normal) {
+      originalMeta.schema = this.resolveSchema(subtype);
+      return originalMeta as PropertyMeta;
+    }
 
     const { customResovlers } = schemaOptions;
 
@@ -300,7 +316,7 @@ export class SchemaResolver {
       resolvers.push(...customResovlers);
     }
 
-    let required = !(prop.flags & ts.SymbolFlags.Optional);
+    originalMeta.global = false;
 
     const targetNode = getNodeOfSymbol(prop);
     let targetType: ts.Type | undefined;
@@ -321,21 +337,9 @@ export class SchemaResolver {
       targetType,
     };
 
-    const meta = resolvers.reduce(
-      (originMeta, resolver) => {
-        return resolver(originMeta, options);
-      },
-      {
-        name: prop.getEscapedName().toString(),
-        global: false,
-        description: ts.displayPartsToString(
-          prop.getDocumentationComment(typeChecker),
-        ),
-        tags: getJsDocTags(ts, typeChecker, prop),
-        required,
-        type: typeChecker.typeToString(subtype),
-      } as Partial<PropertyMeta>,
-    );
+    const meta = resolvers.reduce((originMeta, resolver) => {
+      return resolver(originMeta, options);
+    }, originalMeta);
 
     meta.schema = this.resolveSchema(subtype);
     return meta as PropertyMeta;

@@ -11,6 +11,7 @@ import type {
   MetaCheckerOptions,
   MetaTransformer,
   PropertyMeta,
+  SingleComponentMeta,
 } from '../types';
 import { getJsDocTags } from '../utils';
 import { createVueLanguageService } from './createVueLanguageService';
@@ -112,7 +113,7 @@ export class TypeCheckService {
     if (componentPath !== globalComponentName) {
       this.globalPropNames ??= this.getComponentMeta(
         globalComponentName,
-      ).props.map((prop) => prop.name);
+      ).component.props.map((prop) => prop.name);
       if (options.filterGlobalProps) {
         result = result.filter(
           (prop) => !(this.globalPropNames as string[]).includes(prop.name),
@@ -434,7 +435,10 @@ export class TypeCheckService {
    * @param componentPath
    * @param exportName Component export name, the default is to get `export default`
    */
-  public getComponentMeta(componentPath: string, exportName = 'default') {
+  public getComponentMeta(
+    componentPath: string,
+    exportName = 'default',
+  ): SingleComponentMeta {
     const { langService, ts, options } = this;
     const program = langService.tsLs.getProgram()!;
     const typeChecker = program.getTypeChecker();
@@ -454,14 +458,17 @@ export class TypeCheckService {
 
     const resolver = new SchemaResolver(typeChecker, symbolNode!, options, ts);
 
-    return this.getSingleComponentMeta(
-      typeChecker,
-      symbolNode,
-      _export,
-      componentPath,
-      exportName,
-      resolver,
-    );
+    return {
+      component: this.getSingleComponentMeta(
+        typeChecker,
+        symbolNode,
+        _export,
+        componentPath,
+        exportName,
+        resolver,
+      ),
+      types: resolver.getTypes(),
+    };
   }
 
   /**

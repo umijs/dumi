@@ -12,20 +12,7 @@ exports[`dumi-assets-types transformer 1`] = `
               {
                 "hasQuestionToken": true,
                 "key": "payload",
-                "type": {
-                  "properties": {
-                    "name": {
-                      "description": "",
-                      "tags": {},
-                      "title": "name",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "name",
-                  ],
-                  "type": "object",
-                },
+                "type": "{ name: string; }",
               },
             ],
             "isAsync": false,
@@ -49,9 +36,7 @@ exports[`dumi-assets-types transformer 1`] = `
               {
                 "hasQuestionToken": true,
                 "key": "extra",
-                "type": {
-                  "type": "string",
-                },
+                "type": "string",
               },
             ],
             "isAsync": false,
@@ -70,23 +55,7 @@ exports[`dumi-assets-types transformer 1`] = `
               {
                 "hasQuestionToken": false,
                 "key": "output",
-                "type": {
-                  "properties": {
-                    "children": {
-                      "description": "",
-                      "items": {
-                        "type": "any",
-                      },
-                      "tags": {},
-                      "title": "children",
-                      "type": "array",
-                    },
-                  },
-                  "required": [
-                    "children",
-                  ],
-                  "type": "object",
-                },
+                "type": "{ children: any[]; }",
               },
             ],
             "isAsync": false,
@@ -260,23 +229,7 @@ exports[`dumi-assets-types transformer 1`] = `
               {
                 "hasQuestionToken": false,
                 "key": "args",
-                "type": {
-                  "properties": {
-                    "args": {
-                      "description": "",
-                      "items": {
-                        "type": "string",
-                      },
-                      "tags": {},
-                      "title": "args",
-                      "type": "array",
-                    },
-                  },
-                  "required": [
-                    "args",
-                  ],
-                  "type": "object",
-                },
+                "type": "PromiseArgs",
               },
             ],
             "isAsync": true,
@@ -374,20 +327,7 @@ exports[`dumi-assets-types transformer 1`] = `
               {
                 "hasQuestionToken": false,
                 "key": "payload",
-                "type": {
-                  "properties": {
-                    "name": {
-                      "description": "",
-                      "tags": {},
-                      "title": "name",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "name",
-                  ],
-                  "type": "object",
-                },
+                "type": "{ name: string; }",
               },
             ],
             "isAsync": false,
@@ -411,9 +351,7 @@ exports[`dumi-assets-types transformer 1`] = `
               {
                 "hasQuestionToken": true,
                 "key": "extra",
-                "type": {
-                  "type": "string",
-                },
+                "type": "string",
               },
             ],
             "isAsync": false,
@@ -432,23 +370,7 @@ exports[`dumi-assets-types transformer 1`] = `
               {
                 "hasQuestionToken": false,
                 "key": "output",
-                "type": {
-                  "properties": {
-                    "children": {
-                      "description": "",
-                      "items": {
-                        "type": "any",
-                      },
-                      "tags": {},
-                      "title": "children",
-                      "type": "array",
-                    },
-                  },
-                  "required": [
-                    "children",
-                  ],
-                  "type": "object",
-                },
+                "type": "{ children: any[]; }",
               },
             ],
             "isAsync": false,
@@ -625,23 +547,7 @@ exports[`dumi-assets-types transformer 1`] = `
               {
                 "hasQuestionToken": false,
                 "key": "args",
-                "type": {
-                  "properties": {
-                    "args": {
-                      "description": "",
-                      "items": {
-                        "type": "string",
-                      },
-                      "tags": {},
-                      "title": "args",
-                      "type": "array",
-                    },
-                  },
-                  "required": [
-                    "args",
-                  ],
-                  "type": "object",
-                },
+                "type": "PromiseArgs",
               },
             ],
             "isAsync": true,
