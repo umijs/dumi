@@ -14,14 +14,20 @@ export interface IContentTab {
 }
 
 export function isTabRouteFile(file: string) {
-  return file.includes('$tab-');
+  return file.includes('$tab-') || file.includes('CHANGELOG');
 }
 
 export function getTabKeyFromFile(file: string) {
+  if (file.includes('CHANGELOG')) {
+    return 'changelog';
+  }
   return file.match(/\$tab-([^.]+)/)![1];
 }
 
 export function getHostForTabRouteFile(file: string) {
+  if (file.includes('CHANGELOG')) {
+    return file.replace('CHANGELOG', 'README');
+  }
   return file.replace(/\$tab-[^.]+\./, '');
 }
 
@@ -71,7 +77,7 @@ export default (api: IApi) => {
         const rtlFile = winPath(path.relative(api.cwd, route.file));
         const routeId = createRouteId(rtlFile);
         const tabKey = getTabKeyFromFile(rtlFile);
-        const parentFile = route.file.replace(/\$tab-[^.]+\./, '');
+        const parentFile = getHostForTabRouteFile(route.file);
 
         tabs.push({
           index: tabs.length,
