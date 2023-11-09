@@ -1,5 +1,5 @@
-import type * as BabelCore from '@babel/core';
-import * as t from '@babel/types';
+import type * as BabelCore from '@umijs/bundler-utils/compiled/babel/core';
+import * as t from '@umijs/bundler-utils/compiled/babel/types';
 import {
   createDynamicImport,
   createExportObjectProperty,

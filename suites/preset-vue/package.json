@@ -20,19 +20,14 @@
     "build": "father build",
     "build:deps": "father prebundle",
     "dev": "father dev",
-    "prepublishOnly": "father doctor && npm run build"
+    "prepublishOnly": "father doctor && npm run build",
+    "test": "vitest"
   },
   "dependencies": {
-    "@babel/core": "^7.21.4",
-    "@babel/plugin-syntax-typescript": "^7.22.5",
-    "@babel/preset-env": "^7.21.4",
-    "@babel/preset-typescript": "^7.21.4",
     "@dumijs/vue-meta": "workspace:*",
     "@stackblitz/sdk": "^1.9.0",
-    "@types/babel__core": "^7.20.0",
     "@types/hash-sum": "^1.0.0",
     "@umijs/bundler-webpack": "^4.0.81",
-    "@vue/babel-plugin-jsx": "^1.1.1",
     "babel-plugin-iife": "workspace:*",
     "codesandbox-import-utils": "^2.2.3",
     "hash-sum": "^2.0.0",

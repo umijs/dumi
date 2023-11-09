@@ -32,13 +32,14 @@
     "theme-default",
     "index.d.ts",
     "plugin-utils.js",
-    "plugin-utils.d.ts"
+    "plugin-utils.d.ts",
+    "bundler-utils.js",
+    "bundler-utils.d.ts"
   ],
   "scripts": {
     "build": "father build && npm run build:crates",
     "build:crates": "cargo build --target wasm32-wasi -r --out-dir compiled/crates -Z unstable-options",
     "build:deps": "node scripts/pre-bundle-worker.js && father prebundle",
-    "build:packages": "pnpm run --filter=\"./packages/**\" build",
     "build:suites": "pnpm run --filter=\"./suites/**\" build",
     "dev": "father dev",
     "docs:build": "node ./bin/dumi.js build",
@@ -48,9 +49,8 @@
     "lint": "npm run lint:es && npm run lint:css",
     "lint:css": "stylelint \"{src,test}/**/*.{css,less}\"",
     "lint:es": "eslint \"{src,test}/**/*.{js,jsx,ts,tsx}\"",
-    "prepare": "husky install && npm run build && npm run build:packages && npm run build:suites && node ./bin/dumi.js setup && npm run docs:sync",
+    "prepare": "husky install && npm run build && npm run build:suites && node ./bin/dumi.js setup && npm run docs:sync",
     "prepublishOnly": "npm run build",
-    "pretest": "tsc --project ../../assetParsers/tsconfig.test.json",
     "test": "vitest",
     "vercel:build": "npm run docs:build",
     "vercel:install": "./scripts/vercel-install.sh"
@@ -79,9 +79,6 @@
   },
   "dependencies": {
     "@ant-design/icons-svg": "^4.2.1",
-    "@babel/plugin-transform-typescript": "^7.21.3",
-    "@babel/preset-env": "^7.21.4",
-    "@babel/preset-typescript": "^7.21.4",
     "@makotot/ghostui": "^2.0.0",
     "@stackblitz/sdk": "^1.9.0",
     "@swc/core": "1.3.72",
@@ -159,6 +156,7 @@
     "@types/react-copy-to-clipboard": "^5.0.4",
     "@umijs/lint": "^4.0.84",
     "@umijs/plugins": "4.0.32",
+    "@vue/babel-plugin-jsx": "^1.1.1",
     "codesandbox-import-utils": "^2.2.3",
     "dumi-theme-mobile": "workspace:*",
     "eslint": "^8.46.0",

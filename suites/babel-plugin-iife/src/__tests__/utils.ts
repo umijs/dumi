@@ -1,4 +1,7 @@
-import { transform, TransformOptions } from '@babel/core';
+import {
+  transform,
+  type TransformOptions,
+} from '@umijs/bundler-utils/compiled/babel/core';
 import plugin from '..';
 
 export const transpile = (source: string, options?: TransformOptions) =>

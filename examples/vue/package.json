@@ -10,8 +10,6 @@
     "start": "npm run dev"
   },
   "dependencies": {
-    "@babel/plugin-transform-typescript": "^7.21.3",
-    "@vue/babel-plugin-jsx": "^1.1.1",
     "dayjs": "^1.11.10",
     "element-plus": "^2.3.14",
     "pinia": "^2.1.6",

@@ -1,4 +1,5 @@
-import { TransformOptions, transformSync } from '@babel/core';
+import { type TransformOptions } from '@umijs/bundler-utils/compiled/@babel/core';
+import { transformSync } from '@umijs/bundler-utils/compiled/babel/core';
 import type { IDumiBlockHandler, IDumiTechStack } from 'dumi';
 import hashId from 'hash-sum';
 import type { Element } from 'hast';

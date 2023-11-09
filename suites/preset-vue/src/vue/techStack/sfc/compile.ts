@@ -1,5 +1,6 @@
-import type { PluginItem } from '@babel/core';
-import { transformSync } from '@babel/core';
+import type { PluginItem } from '@umijs/bundler-utils/compiled/@babel/core';
+import { transformSync } from '@umijs/bundler-utils/compiled/babel/core';
+import * as path from 'path';
 import {
   CompilerError,
   CompilerOptions,
@@ -11,19 +12,26 @@ import {
   rewriteDefault,
 } from 'vue/compiler-sfc';
 
-function transform(src: string, lang?: string) {
+function transform(src: string, filename: string, lang?: string) {
   const plugins: PluginItem[] = [];
+  const presets: PluginItem[] = [];
   if (lang === 'ts' || lang === 'tsx') {
     const isTSX = lang === 'tsx';
-    plugins.push([
-      '@babel/plugin-transform-typescript',
-      { isTSX, allExtensions: isTSX },
+    presets.push([
+      require.resolve('@umijs/bundler-utils/compiled/babel/preset-typescript'),
+      { isTSX, allExtensions: isTSX, onlyRemoveTypeImports: true },
     ]);
   }
   if (lang === 'tsx' || lang === 'jsx') {
-    plugins.push(require.resolve('@vue/babel-plugin-jsx'));
+    plugins.push(require.resolve('dumi/compiled/@vue/babel-plugin-jsx'));
   }
+
   const result = transformSync(src, {
+    filename: path.join(
+      path.dirname(filename),
+      path.basename(filename) + '.' + (lang || 'ts'),
+    ),
+    presets,
     plugins,
   });
   return result?.code || '';
@@ -73,6 +81,7 @@ function doCompileScript(
       });
       sfcCode = transform(
         rewriteDefault(content, COMP_IDENTIFIER, expressionPlugins),
+        filename,
         lang,
       );
     } catch (error) {
@@ -94,7 +103,7 @@ function doCompileScript(
       return errors;
     }
 
-    code = transform(code, lang);
+    code = transform(code, filename, lang);
     sfcCode += `\n${code.replace(
       /\nexport (function|const) render/,
       `$1 render`,

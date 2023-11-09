@@ -1,12 +1,12 @@
 import { defineConfig } from 'father';
 
 export default defineConfig({
-  extraBabelPlugins: [
+  extraBabelPresets: [
     [
-      '@babel/plugin-transform-typescript',
+      require.resolve('@umijs/bundler-utils/compiled/babel/preset-typescript'),
       { isTSX: true, allExtensions: true },
+      require.resolve('../../compiled/@vue/babel-plugin-jsx'),
     ],
-    '@vue/babel-plugin-jsx',
   ],
   esm: {
     transformer: 'babel',

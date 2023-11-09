@@ -18,21 +18,11 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@babel/template": "^7.22.15",
-    "@babel/traverse": "^7.23.3",
-    "@babel/types": "^7.23.3"
+    "@umijs/bundler-utils": "^4.0.84"
   },
   "devDependencies": {
-    "@babel/core": "^7.23.3",
-    "@babel/preset-env": "^7.23.3",
-    "@types/babel__core": "^7.20.4",
-    "@types/babel__template": "^7.4.4",
-    "@types/babel__traverse": "^7.20.4",
     "@vue/babel-plugin-jsx": "^1.1.1",
     "father": "^4.1.9"
-  },
-  "peerDependencies": {
-    "@babel/core": "^7.0.0-0"
   },
   "publishConfig": {
     "access": "public"
