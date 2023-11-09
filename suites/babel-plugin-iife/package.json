@@ -18,18 +18,16 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@babel/helper-plugin-utils": "^7.22.5",
     "@babel/template": "^7.22.15",
-    "@babel/traverse": "^7.22.20",
-    "@babel/types": "^7.22.19"
+    "@babel/traverse": "^7.23.3",
+    "@babel/types": "^7.23.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.21.4",
-    "@babel/preset-env": "^7.21.4",
-    "@types/babel__core": "^7.20.2",
-    "@types/babel__helper-plugin-utils": "^7.10.1",
-    "@types/babel__template": "^7.4.2",
-    "@types/babel__traverse": "^7.20.2",
+    "@babel/core": "^7.23.3",
+    "@babel/preset-env": "^7.23.3",
+    "@types/babel__core": "^7.20.4",
+    "@types/babel__template": "^7.4.4",
+    "@types/babel__traverse": "^7.20.4",
     "@vue/babel-plugin-jsx": "^1.1.1",
     "father": "^4.1.9"
   },

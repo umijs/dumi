@@ -1,4 +1,4 @@
-import { declare } from '@babel/helper-plugin-utils';
+import type * as BabelCore from '@babel/core';
 import * as t from '@babel/types';
 import {
   createDynamicImport,
@@ -22,7 +22,12 @@ export interface DemoTransformOptions {
 const ASYNC_KEY = 'async';
 const EXPORTS_KEY = 'exports';
 
-export default declare((_, opts: DemoTransformOptions) => {
+type PluginType = (
+  _: typeof BabelCore,
+  opts: DemoTransformOptions,
+) => BabelCore.PluginObj;
+
+const iifePlugin: PluginType = (_, opts) => {
   const { wrappedByIIFE = true, forceAsync } = opts;
   return {
     name: 'babel-plugin-iife',
@@ -77,4 +82,6 @@ export default declare((_, opts: DemoTransformOptions) => {
       },
     },
   };
-});
+};
+
+export default iifePlugin;
