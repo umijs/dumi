@@ -1,11 +1,11 @@
+import type { MetaCheckerOptions } from '@dumijs/vue-meta';
+import { createProject, dumiTransfomer } from '@dumijs/vue-meta';
 import {
   BaseAtomAssetsParser,
   createRemoteClass,
   LanguageMetaParser,
   PatchFile,
 } from 'dumi';
-import type { MetaCheckerOptions } from 'dumi-vue-meta';
-import { createProject, dumiTransfomer } from 'dumi-vue-meta';
 import path from 'path';
 import { fsExtra } from 'umi/plugin-utils';
 

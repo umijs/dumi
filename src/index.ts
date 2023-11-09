@@ -1,6 +1,7 @@
 import type {
   AtomAssetsParser,
   AtomAssetsParserResult,
+  IDumiBlockHandler,
   IDumiTechStack,
   IDumiUserConfig,
 } from '@/types';
@@ -18,6 +19,7 @@ export { getProjectRoot } from './utils';
 export {
   unistUtilVisit,
   IDumiTechStack,
+  IDumiBlockHandler,
   AtomAssetsParser,
   AtomAssetsParserResult,
 };

@@ -1,10 +1,11 @@
 {
-  "name": "dumi-plugin-vue",
+  "name": "@dumijs/preset-vue",
   "version": "0.0.1",
-  "description": "vue3 support plugin for dumi",
+  "description": "Vue support plugins for dumi",
   "keywords": [
     "dumi",
     "plugin",
+    "preset",
     "vue"
   ],
   "license": "MIT",
@@ -26,6 +27,7 @@
     "@babel/plugin-syntax-typescript": "^7.22.5",
     "@babel/preset-env": "^7.21.4",
     "@babel/preset-typescript": "^7.21.4",
+    "@dumijs/vue-meta": "workspace:*",
     "@stackblitz/sdk": "^1.9.0",
     "@types/babel__core": "^7.20.0",
     "@types/hash-sum": "^1.0.0",
@@ -33,9 +35,7 @@
     "@vue/babel-plugin-jsx": "^1.1.1",
     "babel-plugin-iife": "workspace:*",
     "codesandbox-import-utils": "^2.2.3",
-    "dumi-vue-meta": "workspace:*",
     "hash-sum": "^2.0.0",
-    "sucrase": "^3.34.0",
     "vue": "^3.2.47",
     "vue-loader": "^17.0.1",
     "vue-template-compiler": "^2.7.14"

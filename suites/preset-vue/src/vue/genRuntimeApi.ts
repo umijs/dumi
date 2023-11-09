@@ -16,7 +16,7 @@ export default function (api: IApi) {
   });
 
   api.onGenerateFiles(() => {
-    const runtimePath = join(__dirname, '../runtime');
+    const runtimePath = join(__dirname, '../../runtime');
     const files = fsExtra.readdirSync(runtimePath, {
       withFileTypes: true,
     });

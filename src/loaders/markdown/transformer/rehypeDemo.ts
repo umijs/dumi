@@ -29,7 +29,7 @@ export const DUMI_DEMO_GRID_TAG = 'DumiDemoGrid';
 
 type IRehypeDemoOptions = Pick<
   IMdTransformerOptions,
-  'techStacks' | 'cwd' | 'fileAbsPath' | 'resolve' | 'resolveDemoModule'
+  'techStacks' | 'cwd' | 'fileAbsPath' | 'resolve'
 > & {
   resolver: typeof sync;
   fileLocaleLessPath: string;
@@ -250,7 +250,7 @@ export default function rehypeDemo(
               lang: (codeNode.data?.lang as string) || 'tsx',
               entryPointCode: codeType === 'external' ? undefined : codeValue,
               resolver: opts.resolver,
-              resolveDemoModule: opts.resolveDemoModule,
+              techStack,
             };
             const previewerProps: IDumiDemoProps['previewerProps'] = {};
             let component = '';

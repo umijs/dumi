@@ -1,11 +1,12 @@
 import type { PluginItem } from '@babel/core';
 import { transformSync } from '@babel/core';
 import type { IDumiTechStack } from 'dumi';
+import type { Element } from 'hast';
 
 export default class VueJSXTechStack implements IDumiTechStack {
   name = 'vue3-tsx';
 
-  isSupported(...[, lang]: Parameters<IDumiTechStack['isSupported']>) {
+  isSupported(_: Element, lang: string) {
     return ['jsx', 'tsx'].includes(lang);
   }
 

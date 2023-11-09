@@ -1,6 +1,7 @@
 import StackBlitzSDK, { Project } from '@stackblitz/sdk';
 import { IFiles, getParameters } from 'codesandbox-import-utils/lib/api/define';
 import { IPreviewerProps } from 'dumi';
+import type { ExampleBlockAsset } from 'dumi-assets-types';
 
 const defaultTitle = 'vue demo';
 const defaultDesc = 'An auto-generated vue demo by dumi';
@@ -88,14 +89,20 @@ function resolve(filename: string) {
   return { name, ext };
 }
 
-//entryFileName can be index.tsx, index.vue, index.jsx
-//The configuration of index.vue is processed as a TypeScript project
+function getDefaultVueEntry(asset: ExampleBlockAsset) {
+  if (asset.entry) return asset.entry;
+  if (asset.dependencies['index.vue']) return 'index.vue';
+  return 'index.tsx';
+}
+
+// entryFileName can be index.tsx, index.vue, index.jsx
+// The configuration of index.vue is processed as a TypeScript project
 function getVueApp({
   asset,
   title = defaultTitle,
   description = defaultDesc,
 }: IPreviewerProps) {
-  let entryFileName = asset.entry;
+  let entryFileName = getDefaultVueEntry(asset);
   const result = resolve(entryFileName);
   if (!result) return {};
   const { name, ext } = result;

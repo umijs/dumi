@@ -7,7 +7,7 @@ import fs from 'fs';
 import path from 'path';
 import { pkgUp, winPath } from 'umi/plugin-utils';
 import { DEFAULT_DEMO_EXTENSIONS } from '../constants';
-import { IDumiConfig } from '../types';
+import { IDumiBlockHandler, IDumiTechStack } from '../types';
 
 export interface IParsedBlockAsset {
   asset: ExampleBlockAsset;
@@ -33,7 +33,7 @@ async function parseBlockAsset(opts: {
   refAtomIds: string[];
   entryPointCode?: string;
   resolver: typeof sync;
-  resolveDemoModule?: IDumiConfig['resolveDemoModule'];
+  techStack: IDumiTechStack;
 }) {
   const asset: IParsedBlockAsset['asset'] = {
     type: 'BLOCK',
@@ -97,11 +97,16 @@ async function parseBlockAsset(opts: {
           });
 
           builder.onLoad({ filter: /.*/ }, (args) => {
-            const resolver = opts.resolveDemoModule ?? {};
-
             const ext = path.extname(args.path);
-            const isModule =
-              DEFAULT_DEMO_EXTENSIONS.includes(ext) || !!resolver[ext];
+            const techStack = opts.techStack;
+            let blockHandler: IDumiBlockHandler | undefined;
+            if (techStack.getBlockHandler) {
+              blockHandler = techStack.getBlockHandler(args);
+            }
+
+            let isModule =
+              DEFAULT_DEMO_EXTENSIONS.includes(ext) || blockHandler?.isModule;
+
             const isPlainText = [
               '.css',
               '.less',
@@ -154,8 +159,8 @@ async function parseBlockAsset(opts: {
 
               let contents = asset.dependencies[filename].value;
 
-              if (resolver[ext]) {
-                const { transform, loader } = resolver[ext];
+              if (blockHandler) {
+                const { transform, loader } = blockHandler;
                 contents =
                   transform === 'html'
                     ? extraScript(contents)

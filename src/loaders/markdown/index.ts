@@ -3,7 +3,6 @@ import type { IThemeLoadResult } from '@/features/theme/loader';
 import { getCache, getContentHash } from '@/utils';
 import fs from 'fs';
 import { Mustache, lodash, winPath } from 'umi/plugin-utils';
-import { IDumiConfig } from '../../types';
 import transform, {
   type IMdTransformerOptions,
   type IMdTransformerResult,
@@ -26,7 +25,6 @@ interface IMdLoaderDemosModeOptions
     atomId: string,
     meta: IMdTransformerResult['meta']['frontmatter'],
   ) => void;
-  resolveDemoModule: IDumiConfig['resolveDemoModule'];
 }
 
 export type IMdLoaderOptions =

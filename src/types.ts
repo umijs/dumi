@@ -5,7 +5,7 @@ import type { IDumiDemoProps } from '@/client/theme-api/DumiDemo';
 import type { ILocalesConfig, IThemeConfig } from '@/client/theme-api/types';
 import type { IContentTab } from '@/features/tabs';
 import type { IThemeLoadResult } from '@/features/theme/loader';
-import { Loader } from '@umijs/bundler-utils/compiled/esbuild';
+import { Loader, OnLoadArgs } from '@umijs/bundler-utils/compiled/esbuild';
 import type { IModify } from '@umijs/core';
 import type {
   AssetsPackage,
@@ -55,24 +55,6 @@ interface IDumiExtendsConfig {
   themeConfig: IThemeConfig;
   autoAlias?: boolean;
   /**
-   * How to resolve demo modules when analyzing dependencies and handling assets
-   * `transform` can be a function or an `html` literal
-   * If it is specified as 'html', the program will extract the contents of all script tags internally.
-   * `loader` will specify the module type to process the content returned by the transformer.
-   * Taking Vue as an example, in order to perform dependency analysis on .vue files,
-   * we can configure it like this
-   * { '.vue': { transform: 'html', loader: 'tsx' } }
-   * This means that the vue file will be processed as html, and the content in the script will be extracted,
-   * and then these contents will be used as tsx files for dependency analysis
-   */
-  resolveDemoModule?: Record<
-    string,
-    {
-      transform: ((text: string) => string) | 'html';
-      loader: Loader;
-    }
-  >;
-  /**
    * extra unified plugins
    */
   extraRemarkPlugins?: (string | Function | [string | Function, object])[];
@@ -85,6 +67,12 @@ export type IDumiUserConfig = Subset<Omit<IDumiConfig, 'locales'>> & {
     | Exclude<IDumiConfig['locales'][0], { base: string }>[]
     | Omit<Exclude<IDumiConfig['locales'][0], { suffix: string }>, 'base'>[];
   [key: string]: any;
+};
+
+export type IDumiBlockHandler = {
+  isModule: boolean;
+  transform: ((text: string) => string) | 'html';
+  loader: Loader;
 };
 
 export abstract class IDumiTechStack {
@@ -132,6 +120,14 @@ export abstract class IDumiTechStack {
     sources: IParsedBlockAsset['sources'],
     opts: Parameters<NonNullable<IDumiTechStack['generateMetadata']>>[1],
   ): Promise<IParsedBlockAsset['sources']> | IParsedBlockAsset['sources'];
+
+  /**
+   * How to resolve demo modules's entry code when analyzing dependencies and handling assets
+   * `transform` can be a function or an `html` literal
+   * If it is specified as 'html', the program will extract the contents of all script tags internally.
+   * `loader` will specify the module type to process the content returned by the transformer.
+   */
+  abstract getBlockHandler?(args: OnLoadArgs): IDumiBlockHandler;
 }
 
 export interface AtomAssetsParserResult {

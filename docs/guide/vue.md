@@ -8,12 +8,12 @@ order: 1
 
 # 安装 Vue 支持插件
 
-dumi 中对 Vue 的支持主要通过`dumi-plugin-vue`插件实现, 目前只支持 Vue3
+dumi 中对 Vue 的支持主要通过`@dumijs/preset-vue`插件集实现, 目前只支持 Vue3
 
 ## 安装
 
 ```bash
-pnpm i -D dumi-plugin-vue
+pnpm i -D @dumijs/preset-vue
 ```
 
 ## 配置
@@ -21,7 +21,7 @@ pnpm i -D dumi-plugin-vue
 ```ts
 // .dumirc.ts
 export default {
-  plugins: ['dumi-plugin-vue'],
+  presets: ['@dumijs/preset-vue'],
 };
 ```
 
@@ -36,13 +36,11 @@ Vue 组件元数据解析选项
 ```ts
 // .dumirc.ts
 export default {
-  plugins: ['dumi-plugin-vue'],
-  themeConfig: {
-    vue: {
-      parserOptions: {
-        checkerOptions: {
-          schema: { ignore: ['InternalType'] },
-        },
+  presets: ['@dumijs/preset-vue'],
+  vue: {
+    parserOptions: {
+      checkerOptions: {
+        schema: { ignore: ['InternalType'] },
       },
     },
   },
@@ -54,37 +52,11 @@ export default {
 ```ts
 // .dumirc.ts
 export default {
-  plugins: ['dumi-plugin-vue'],
-  themeConfig: {
-    vue: {
-      parserOptions: {
-        checkerOptions: {
-          schema: { exclude: [/node_modules/, /mylib/] },
-        },
-      },
-    },
-  },
-};
-```
-
-### globalInject
-
-全局脚本注入
-
-Vue 的 UI 框架通常都有全局导入的功能，以 ElementPlus 为例，我们可以通过以下配置将 ElementPlus 全局导入
-
-```ts
-// .dumirc.ts
-export default {
-  plugins: ['dumi-plugin-vue'],
-  themeConfig: {
-    vue: {
-      globalInject: {
-        imports: `
-          import ElementPlus from 'element-plus';
-          import 'element-plus/dist/index.css';
-        `,
-        statements: `app.use(ElementPlus, { size: 'small', zIndex: 3000 });`,
+  presets: ['@dumijs/preset-vue'],
+  vue: {
+    parserOptions: {
+      checkerOptions: {
+        schema: { exclude: [/node_modules/, /mylib/] },
       },
     },
   },

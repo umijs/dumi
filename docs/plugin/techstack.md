@@ -49,8 +49,6 @@ export async function renderToCanvas(canvas: Element, component: any) {
   }
   const app = createApp(component);
 
-  globalInject(app);
-
   app.config.errorHandler = (e) => console.error(e);
   app.mount(canvas);
   return () => {
@@ -101,7 +99,7 @@ api.modifyConfig((memo) => {
 
 ### API Table 支持
 
-API Table 的支持主要在于对框架元信息信息的提取，例如针对 Vue 组件，dumi 就提供了`dumi-vue-meta`包来提取元数据。其他框架也要实现相关的元数据提取，主流框架基本都有相应的元数据提取包，但需要注意的是，开发者需要适配到 dumi 的元数据 schema。
+API Table 的支持主要在于对框架元信息信息的提取，例如针对 Vue 组件，dumi 就提供了`@dumijs/vue-meta`包来提取元数据。其他框架也要实现相关的元数据提取，主流框架基本都有相应的元数据提取包，但需要注意的是，开发者需要适配到 dumi 的元数据 schema。
 
 在实现元数据提取之后，还需要实现 dumi 的元数据解析架构，即将数据的提取放在子线程中。dumi 也提供了相关的 API 简化实现：
 
@@ -172,17 +170,32 @@ export class ReactAtomAssetsParser extends BaseAtomAssetsParser<ReactMetaParser>
 }
 ```
 
-万事俱备，现在可以将自定义好的 Parser 交给 dumi，dumi 提供了`apiParser.customParser`选项来支持外部解析
+万事俱备，现在只需修改`api.service.atomParser`即可
 
 ```ts
-memo.apiParser = {
-  customParser: function (opts: any) {
-    return createVueAtomAssetsParser({
-      ...opts,
-      ...options,
-    });
-  },
-};
+api.modifyConfig((memo) => {
+  const userConfig = api.userConfig;
+
+  const vueConfig = userConfig?.vue;
+  const parserOptions: Partial<VueParserOptions> =
+    vueConfig?.parserOptions || {};
+
+  const entryFile = userConfig?.resolve?.entryFile;
+  const resolveDir = api.cwd;
+
+  const options = {
+    entryFile,
+    resolveDir,
+  };
+  Object.assign(options, parserOptions);
+
+  if (!options.entryFile || !options.resolveDir) return memo;
+
+  api.service.atomParser = createVueAtomAssetsParser(
+    options as VueParserOptions,
+  );
+  return memo;
+});
 ```
 
 这样在实现以上五大功能后，我们就实现了 Vue 框架在 dumi 中的完整支持。照此办法，开发者也可以实现对`svelte`, `Angular`,`lit-element`等框架的支持

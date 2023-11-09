@@ -1,4 +1,4 @@
-# dumi-vue-meta
+# @dumijs/vue-meta
 
 Extracting the metadata of Vue components more effectively.
 
@@ -7,12 +7,12 @@ This project is heavily inspired by [vue-component-meta](https://github.com/vuej
 ## Install
 
 ```bash
-pnpm i dumi-vue-meta
+pnpm i @dumijs/vue-meta
 ```
 
 ## Usage
 
-`dumi-vue-meta` uses TypeScript's TypeChecker for metadata extraction.
+`@dumijs/vue-meta` uses TypeScript's TypeChecker for metadata extraction.
 
 > [!NOTE]
 > When configuring tsconfig.json, set strictNullCheck to false
@@ -26,7 +26,7 @@ pnpm i dumi-vue-meta
 > ```
 
 ```ts
-import { createProject } from 'dumi-vue-meta';
+import { createProject } from '@dumijs/vue-meta';
 import * as path from 'path';
 
 const projectRoot = '<project-root>';
@@ -86,7 +86,7 @@ Create a meta checker for Vue project
 **`Example`**
 
 ```ts
-import { createProject, vueTypesSchemaResolver } from 'dumi-vue-meta';
+import { createProject, vueTypesSchemaResolver } from '@dumijs/vue-meta';
 // Manually pass in the tsconfig.json path
 const project = createProject({
   tsconfigPath: '<project-root>/tsconfig.json',
@@ -103,7 +103,7 @@ In addition to the `vueTypesSchemaResolver` for [vue-types](https://github.com/d
 If no parameters are passed in, tsconfig.json in the current workspace will be read.
 
 ```ts
-import { createProject } from 'dumi-vue-meta';
+import { createProject } from '@dumijs/vue-meta';
 
 const project = createProject();
 ```
@@ -199,7 +199,7 @@ Get component metadata through the entry file, this method will automatically fi
 You can pass in a customized transformer to generate metadata that adapts to dumi. `dumiTransfomer` is the officially provided adapter.
 
 ```ts
-import { dumiTransfomer, createProject } from 'dumi-vue-meta';
+import { dumiTransfomer, createProject } from '@dumijs/vue-meta';
 const project = createProject({
   tsconfigPath: '<project-root>/tsconfig.json',
   checkerOptions,
@@ -225,7 +225,7 @@ If the component to be obtained is not a vue component, an error will be thrown
 **`Example`**
 
 ```ts
-import { dumiTransfomer, createProject } from 'dumi-vue-meta';
+import { dumiTransfomer, createProject } from '@dumijs/vue-meta';
 const project = createProject({
   tsconfigPath: '<project-root>/tsconfig.json',
   checkerOptions,

@@ -26,7 +26,6 @@ export default (api: IApi) => {
           unpkgHost: Joi.string().uri().optional(),
           resolveFilter: Joi.function().optional(),
           parseOptions: Joi.object().optional(),
-          customParser: Joi.function().optional(),
         }),
     },
   });
@@ -47,33 +46,20 @@ export default (api: IApi) => {
   // because `onStart` will be called before any commands
   // and `onCheckPkgJson` only be called in dev and build
   api.onCheckPkgJSON(async () => {
+    if (api.service.atomParser instanceof BaseAtomAssetsParser) return;
     const {
       default: ReactAtomAssetsParser,
     }: typeof import('@/assetParsers/atom') = require('@/assetParsers/atom');
+
     const apiParser = api.config.apiParser || {};
 
-    const customParse = apiParser.customParser as (args: {
-      entryFile: string;
-      resolveDir: string;
-    }) => AtomAssetsParser;
-
-    if (customParse) {
-      const parser = customParse({
-        entryFile: api.config.resolve.entryFile!,
-        resolveDir: api.cwd,
-      });
-      if (parser instanceof BaseAtomAssetsParser) {
-        api.service.atomParser = parser;
-      }
-    } else {
-      api.service.atomParser = new ReactAtomAssetsParser({
-        entryFile: api.config.resolve.entryFile!,
-        resolveDir: api.cwd,
-        unpkgHost: apiParser.unpkgHost,
-        resolveFilter: apiParser.resolveFilter,
-        parseOptions: apiParser.parseOptions,
-      });
-    }
+    api.service.atomParser = new ReactAtomAssetsParser({
+      entryFile: api.config.resolve.entryFile!,
+      resolveDir: api.cwd,
+      unpkgHost: apiParser.unpkgHost,
+      resolveFilter: apiParser.resolveFilter,
+      parseOptions: apiParser.parseOptions,
+    });
   });
 
   // lazy parse & use watch mode in dev compiling

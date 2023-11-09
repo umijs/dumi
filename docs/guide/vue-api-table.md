@@ -21,8 +21,6 @@ export default defineConfig({
 });
 ```
 
-不需要配置`apiParser`，因为`dumi-plugin-vue`已经自动配置了`customParser`。
-
 ## tsconfig 配置
 
 Vue 组件的元信息提取主要使用 TypeScript 的 TypeChecker, 所以配置`tsconfig.json`时请务必将`strictNullChecks`设为`false`
@@ -41,12 +39,10 @@ Vue 组件的元信息提取主要使用 TypeScript 的 TypeChecker, 所以配�
 // .dumirc.ts
 import * as path from 'path';
 export default {
-  plugins: ['dumi-plugin-vue'],
-  themeConfig: {
-    vue: {
-      parserOptions: {
-        tsconfigPath: path.resolve(__dirname, './tsconfig.vue.json');
-      },
+  plugins: ['@dumijs/preset-vue'],
+  vue: {
+    parserOptions: {
+      tsconfigPath: path.resolve(__dirname, './tsconfig.vue.json');
     },
   },
 };

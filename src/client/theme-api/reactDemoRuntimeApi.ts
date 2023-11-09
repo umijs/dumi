@@ -6,7 +6,7 @@ import { genReactRenderCode } from './utils';
 const CSB_API_ENDPOINT = 'https://codesandbox.io/api/v1/sandboxes/define';
 
 function getCSBData(opts: IPreviewerProps) {
-  const { entry, dependencies } = opts.asset;
+  const { entry = 'index.tsx', dependencies } = opts.asset;
   const match = /(.*)\.(js|ts|jsx|tsx)$/i.exec(entry);
   const [, , ext] = match ?? ['', 'index', 'tsx'];
   const isTSX = ext === 'tsx';
@@ -81,7 +81,7 @@ function getCSBData(opts: IPreviewerProps) {
 }
 
 function getStackBlitzData(data: IPreviewerProps) {
-  const { entry, dependencies } = data.asset;
+  const { entry = 'index.ts', dependencies } = data.asset;
   const match = /(.*)\.(js|ts|jsx|tsx)$/i.exec(entry);
   const [, , ext] = match ?? ['', 'index', 'tsx'];
   const isTSX = ext === 'tsx';

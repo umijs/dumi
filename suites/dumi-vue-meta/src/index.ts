@@ -73,7 +73,7 @@ const defaultTsConfig = {
  * @param optionsOrRootPath You can pass in the project root directory or specific configuration.
  * @example
  * ```ts
- * import { createProject } from 'dumi-vue-meta';
+ * import { createProject } from '@dumijs/vue-meta';
  * // Manually pass in the tsconfig.json path
  * createProject({
  *   tsconfigPath: '<project-root>/tsconfig.json',
@@ -82,7 +82,7 @@ const defaultTsConfig = {
  * ```
  * If no parameters are passed in, tsconfig.json in the current workspace will be read.
  * ```ts
- * import { createProject } from 'dumi-vue-meta';
+ * import { createProject } from '@dumijs/vue-meta';
  * createProject();
  * ```
  */

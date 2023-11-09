@@ -308,7 +308,7 @@ export class TypeCheckService {
    * @returns ComponentLibraryMeta
    * @example
    * ```ts
-   * import { dumiTransfomer, createProject } from 'dumi-vue-meta';
+   * import { dumiTransfomer, createProject } from '@dumijs/vue-meta';
    * const project = createProject({
    *   tsconfigPath: '<project-root>/tsconfig.json',
    *   checkerOptions,

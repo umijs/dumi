@@ -3,4 +3,3 @@ packages:
   - 'assets-types'
   - 'suites/*'
   - 'examples/*'
-  - 'packages/*'
