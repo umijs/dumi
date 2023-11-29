@@ -24,8 +24,13 @@ const SearchBar: FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const modalInputRef = useRef<HTMLInputElement>(null);
   const [symbol, setSymbol] = useState('⌘');
-  const { keywords, setKeywords, result, loading, loadSearchData } =
-    useSiteSearch();
+  const {
+    keywords,
+    setKeywords,
+    result,
+    loading,
+    load: loadSearchData,
+  } = useSiteSearch();
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {

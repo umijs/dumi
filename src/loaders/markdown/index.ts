@@ -192,24 +192,24 @@ function emitFrontmatter(
   opts: IMdLoaderFrontmatterModeOptions,
   ret: IMdTransformerResult,
 ) {
-  const { frontmatter } = ret.meta;
-
-  return Mustache.render(`export const frontmatter = {{{frontmatter}}};`, {
-    frontmatter: JSON.stringify(frontmatter),
-  });
-}
-
-function emitText(opts: IMdLoaderTextModeOptions, ret: IMdTransformerResult) {
-  const { texts, toc } = ret.meta;
+  const { frontmatter, toc } = ret.meta;
 
   return Mustache.render(
     `export const toc = {{{toc}}};
-export const texts = {{{texts}}};`,
+export const frontmatter = {{{frontmatter}}};`,
     {
       toc: JSON.stringify(toc),
-      texts: JSON.stringify(texts),
+      frontmatter: JSON.stringify(frontmatter),
     },
   );
+}
+
+function emitText(opts: IMdLoaderTextModeOptions, ret: IMdTransformerResult) {
+  const { texts } = ret.meta;
+
+  return Mustache.render(`export const texts = {{{texts}}};`, {
+    texts: JSON.stringify(texts),
+  });
 }
 
 function emitScope(opts: IMdLoaderOptions, ret: IMdTransformerResult) {

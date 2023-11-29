@@ -5,25 +5,62 @@ import {
   useLocation,
   useRouteData,
 } from 'dumi';
-import { useMemo } from 'react';
-import use from './context/use';
-import type { IRouteMeta } from './types';
+import { useCallback, useState } from 'react';
+import type { IRouteMeta, IRoutesById } from './types';
+import { use, useIsomorphicLayoutEffect } from './utils';
 
-const cache = new Map<string, any>();
-
-const useAsyncRouteMeta = (id: string) => {
-  if (!cache.has(id)) {
-    cache.set(id, getRouteMetaById(id));
-  }
-
-  return use<any>(cache.get(id)!);
-};
-
-const emptyMeta = {
+const cache = new Map<string, Promise<IRouteMeta | undefined>>();
+const EMPTY_META = {
   frontmatter: {},
   toc: [],
   texts: [],
-};
+} as any;
+const ASYNC_META_PROPS = ['texts'];
+
+function getCachedRouteMeta(route: IRoutesById[string]) {
+  const cacheKey = route.id;
+
+  if (!cache.get(cacheKey)) {
+    const merge = (meta: IRouteMeta = EMPTY_META) => {
+      if (route.meta) {
+        Object.keys(route.meta).forEach((key) => {
+          (meta as any)[key] ??= (route.meta as any)[key];
+        });
+      }
+
+      return meta;
+    };
+    const meta = merge(getRouteMetaById(route.id, { syncOnly: true }));
+    const ret: Parameters<typeof use<IRouteMeta>>[0] & {
+      _async_loading?: boolean;
+    } = Promise.resolve(meta);
+
+    // return sync meta by default
+    ret.status = 'fulfilled';
+    ret._async_loading = false;
+
+    // load async meta if property accessed
+    ret.value = new Proxy<IRouteMeta>(meta, {
+      get(target, prop: keyof IRouteMeta) {
+        if (ASYNC_META_PROPS.includes(prop) && !ret._async_loading) {
+          ret._async_loading = true;
+
+          // replace with async meta
+          cache.set(cacheKey, getRouteMetaById(route.id).then(merge));
+
+          // throw promise to trigger suspense
+          throw cache.get(cacheKey);
+        }
+
+        return target[prop];
+      },
+    });
+
+    cache.set(cacheKey, ret);
+  }
+
+  return cache.get(cacheKey)!;
+}
 
 /**
  * hook for get matched route meta
@@ -32,26 +69,26 @@ export const useRouteMeta = () => {
   const { route } = useRouteData();
   const { pathname } = useLocation();
   const { clientRoutes } = useAppData();
+  const getter = useCallback(() => {
+    let ret: IRoutesById[string];
 
-  const curRoute = useMemo(() => {
     if (route.path === pathname && !('isLayout' in route)) {
       // use `useRouteData` result if matched, for performance
-      return route;
+      ret = route as any;
     } else {
       // match manually for dynamic route & layout component
       const matched = matchRoutes(clientRoutes, pathname)?.pop();
-      return matched?.route;
+      ret = matched?.route as any;
     }
+
+    return ret;
+  }, [clientRoutes.length, pathname]);
+  const [matchedRoute, setMatchedRoute] = useState(getter);
+  const meta = use(getCachedRouteMeta(matchedRoute));
+
+  useIsomorphicLayoutEffect(() => {
+    setMatchedRoute(getter);
   }, [clientRoutes.length, pathname]);
 
-  const meta: IRouteMeta =
-    useAsyncRouteMeta((curRoute as any)?.id) || emptyMeta;
-
-  if (curRoute && 'meta' in curRoute && typeof curRoute.meta === 'object') {
-    Object.keys(curRoute.meta as IRouteMeta).forEach((key) => {
-      (meta as any)[key] ??= (curRoute as any).meta[key];
-    });
-  }
-
-  return meta;
+  return meta!;
 };

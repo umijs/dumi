@@ -38,20 +38,18 @@ if (typeof window !== 'undefined') {
 
 export const useSiteSearch = () => {
   const debounceTimer = useRef<number>();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [keywords, setKeywords] = useState('');
-  const [enabled, setEnabled] = useState(false);
   const navData = useNavData();
   const [result, setResult] = useState<ISearchResult>([]);
+  const [data, load] = useSearchData();
   const setter = useCallback((val: string) => {
+    load();
     setLoading(true);
     setKeywords(val);
   }, []);
-
-  const loadSearchData = () => setEnabled(true);
-
-  const [filledRoutes, demos] = useSearchData(enabled);
-  const mergedLoading = loading || !filledRoutes;
+  const routes = data?.[0];
+  const demos = data?.[1];
 
   useEffect(() => {
     worker.onmessage = (e) => {
@@ -61,35 +59,20 @@ export const useSiteSearch = () => {
   }, []);
 
   useEffect(() => {
-    if (!filledRoutes || !demos) {
-      return;
-    }
-
-    // omit demo component for postmessage
-    const demoData = Object.entries(demos).reduce<
-      Record<string, Partial<(typeof demos)[0]>>
-    >(
-      (acc, [key, { asset, routeId }]) => ({
-        ...acc,
-        [key]: { asset, routeId },
-      }),
-      {},
-    );
+    if (!routes || !demos) return;
 
     worker.postMessage({
       action: 'generate-metadata',
       args: {
-        routes: JSON.parse(JSON.stringify(filledRoutes)),
+        routes: JSON.parse(JSON.stringify(routes)),
         nav: navData,
-        demos: demoData,
+        demos: demos,
       },
     });
-  }, [demos, navData, filledRoutes]);
+  }, [routes, demos, navData]);
 
   useEffect(() => {
-    if (!filledRoutes) {
-      return;
-    }
+    if (!routes) return;
 
     const str = keywords.trim();
 
@@ -106,13 +89,13 @@ export const useSiteSearch = () => {
     } else {
       setResult([]);
     }
-  }, [keywords, filledRoutes]);
+  }, [keywords, routes]);
 
   return {
     keywords,
     setKeywords: setter,
     result,
-    loading: mergedLoading,
-    loadSearchData,
+    loading,
+    load,
   };
 };

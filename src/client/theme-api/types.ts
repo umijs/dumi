@@ -240,3 +240,9 @@ export type IRoutesById = Record<
     [key: string]: any;
   }
 >;
+
+export type IDemoData = {
+  component: ComponentType;
+  asset: IPreviewerProps['asset'];
+  routeId: string;
+};

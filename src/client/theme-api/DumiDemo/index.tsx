@@ -1,5 +1,5 @@
 import { SP_ROUTE_PREFIX } from '@/constants';
-import { useAppData, useDemoData, useSiteData } from 'dumi';
+import { useAppData, useDemo, useSiteData } from 'dumi';
 import React, { createElement, type FC } from 'react';
 import type { IPreviewerProps } from '../types';
 
@@ -17,13 +17,11 @@ export interface IDumiDemoProps {
 const InternalDumiDemo = (props: IDumiDemoProps) => {
   const { historyType } = useSiteData();
   const { basename } = useAppData();
-  const demoInfo = useDemoData(props.demo.id)!;
+  const { component, asset } = useDemo(props.demo.id)!;
 
   // hide debug demo in production
   if (process.env.NODE_ENV === 'production' && props.previewerProps.debug)
     return null;
-
-  const { component, asset } = demoInfo;
 
   const demoNode = (
     <DemoErrorBoundary>{createElement(component)}</DemoErrorBoundary>

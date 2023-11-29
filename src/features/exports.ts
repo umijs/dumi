@@ -1,4 +1,5 @@
 import type { IApi } from '@/types';
+import path from 'path';
 import { winPath } from 'umi/plugin-utils';
 
 export default (api: IApi) => {
@@ -7,6 +8,7 @@ export default (api: IApi) => {
   // allow import from dumi
   api.modifyConfig((memo) => {
     memo.alias['dumi$'] = '@@/dumi/exports';
+    memo.alias['dumi/dist'] = winPath(path.join(__dirname, '..'));
 
     return memo;
   });
@@ -18,8 +20,7 @@ export default (api: IApi) => {
       path: 'dumi/exports.ts',
       content: `export * from '../exports';
 export * from '${winPath(require.resolve('../client/theme-api'))}';
-export { getRouteMetaById } from './meta/route-meta';
-export { loadFilesMeta } from './meta/search';
+export * from './meta/exports';
 export { getDemoScopesById } from './live/demo-scopes';`,
     });
   });

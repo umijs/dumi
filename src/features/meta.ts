@@ -9,10 +9,15 @@ import { isTabRouteFile } from './tabs';
 export const TABS_META_PATH = 'dumi/meta/tabs.ts';
 export const ATOMS_META_PATH = 'dumi/meta/atoms.ts';
 
-type MetaFiles = { index: number; file: string; id: string }[];
+type IMetaFiles = {
+  index: number;
+  file: string;
+  id: string;
+  isMarkdown?: boolean;
+}[];
 
 export default (api: IApi) => {
-  const metaFiles: MetaFiles = [];
+  const metaFiles: IMetaFiles = [];
 
   api.register({
     key: 'modifyRoutes',
@@ -50,50 +55,23 @@ export default (api: IApi) => {
       content: 'export const components = null;',
     });
 
-    const parsedMetaFiles: MetaFiles = await api.applyPlugins({
+    const parsedMetaFiles: IMetaFiles = await api.applyPlugins({
       type: api.ApplyPluginsType.modify,
       key: 'dumi.modifyMetaFiles',
       initialValue: JSON.parse(JSON.stringify(metaFiles)),
     });
 
+    // mark isMarkdown flag
+    parsedMetaFiles.forEach((metaFile) => {
+      metaFile.isMarkdown = metaFile.file.endsWith('.md');
+    });
+
     api.writeTmpFile({
       noPluginDir: true,
-      path: 'dumi/meta/search.ts',
-      tplPath: winPath(join(TEMPLATES_DIR, 'meta-search.ts.tpl')),
+      path: 'dumi/meta/index.ts',
+      tplPath: winPath(join(TEMPLATES_DIR, 'meta/index.ts.tpl')),
       context: {
         metaFiles: parsedMetaFiles,
-      },
-    });
-
-    api.writeTmpFile({
-      noPluginDir: true,
-      path: 'dumi/meta/frontmatter.ts',
-      tplPath: winPath(join(TEMPLATES_DIR, 'meta-frontmatter.ts.tpl')),
-      context: {
-        metaFiles: parsedMetaFiles,
-      },
-    });
-
-    // generate meta lazy entry
-    const mdFiles = parsedMetaFiles.filter((metaFile) =>
-      metaFile.file.endsWith('.md'),
-    );
-
-    api.writeTmpFile({
-      noPluginDir: true,
-      path: 'dumi/meta/demos.ts',
-      tplPath: winPath(join(TEMPLATES_DIR, 'meta-demos.ts.tpl')),
-      context: {
-        metaFiles: mdFiles,
-      },
-    });
-
-    api.writeTmpFile({
-      noPluginDir: true,
-      path: 'dumi/meta/route-meta.ts',
-      tplPath: winPath(join(TEMPLATES_DIR, 'meta-route.ts.tpl')),
-      context: {
-        metaFiles: mdFiles,
         chunkName: function chunkName(this) {
           if (!('file' in this)) {
             return '';
@@ -111,10 +89,18 @@ export default (api: IApi) => {
     api.writeTmpFile({
       noPluginDir: true,
       path: 'dumi/meta/runtime.ts',
-      tplPath: winPath(join(TEMPLATES_DIR, 'meta-runtime.ts.tpl')),
+      tplPath: winPath(join(TEMPLATES_DIR, 'meta/runtime.ts.tpl')),
       context: {
         deepmerge: winPath(path.dirname(require.resolve('deepmerge/package'))),
       },
+    });
+
+    // generate exports api
+    api.writeTmpFile({
+      noPluginDir: true,
+      path: 'dumi/meta/exports.ts',
+      tplPath: winPath(join(TEMPLATES_DIR, 'meta/exports.ts.tpl')),
+      context: {},
     });
   });
 
