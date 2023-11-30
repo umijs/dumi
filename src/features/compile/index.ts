@@ -47,85 +47,45 @@ export default (api: IApi) => {
       pkg: api.pkg,
     };
 
-    memo.module
+    const mdRule = memo.module
       .rule('dumi-md')
       .type('javascript/auto')
-      .test(/\.md$/)
-      // get page demo for each markdown file
-      .oneOf('md-demo')
-      .resourceQuery(/demo$/)
-      .use('babel-loader')
-      .loader(babelInUmi.loader)
-      .options(babelInUmi.options)
-      .end()
-      .use('md-demo-loader')
-      .loader(loaderPath)
-      .options({
-        ...loaderBaseOpts,
-        mode: 'demo',
-      })
-      .end()
-      .end()
-      // get page demo-index for each markdown file
-      .oneOf('md-demo-index')
-      .resourceQuery(/demo-index$/)
-      .use('md-demo-index-loader')
-      .loader(loaderPath)
-      .options({
-        ...loaderBaseOpts,
-        mode: 'demo-index',
-      })
-      .end()
-      .end()
-      // get page frontmatter for each markdown file
-      .oneOf('md-frontmatter')
-      .resourceQuery(/frontmatter$/)
-      .use('md-frontmatter-loader')
-      .loader(loaderPath)
-      .options({
-        ...loaderBaseOpts,
-        mode: 'frontmatter',
-      })
-      .end()
-      .end()
-      // get page text for each markdown file
-      .oneOf('md-text')
-      .resourceQuery(/text$/)
-      .use('md-text-loader')
-      .loader(loaderPath)
-      .options({
-        ...loaderBaseOpts,
-        mode: 'text',
-      })
-      .end()
-      .end()
-      // get page scope for each markdown file
-      .oneOf('md-scope')
-      .resourceQuery(/scope$/)
-      .use('babel-loader')
-      .loader(babelInUmi.loader)
-      .options(babelInUmi.options)
-      .end()
-      .use('md-scope-loader')
-      .loader(loaderPath)
-      .options({
-        ...loaderBaseOpts,
-        mode: 'scope',
-      })
-      .end()
-      .end()
-      // get page scope-index for each markdown file
-      .oneOf('md-scope-index')
-      .resourceQuery(/scope-index$/)
-      .use('md-scope-index-loader')
-      .loader(loaderPath)
-      .options({
-        ...loaderBaseOpts,
-        mode: 'scope-index',
-      })
-      .end()
-      .end()
-      // get page component for each markdown file
+      .test(/\.md$/);
+
+    // generate independent oneOf rules
+    ['frontmatter', 'text', 'demo-index', 'scope-index'].forEach((type) => {
+      mdRule
+        .oneOf(`md-${type}`)
+        .resourceQuery(new RegExp(`${type}$`))
+        .use(`md-${type}-loader`)
+        .loader(loaderPath)
+        .options({
+          ...loaderBaseOpts,
+          mode: type,
+        });
+    });
+
+    // generate oneOf rules with babel loader
+    ['demo', 'scope'].forEach((type) => {
+      mdRule
+        .oneOf(`md-${type}`)
+        .resourceQuery(new RegExp(`${type}$`))
+        .use('babel-loader')
+        .loader(babelInUmi.loader)
+        .options(babelInUmi.options)
+        .end()
+        .use(`md-${type}-loader`)
+        .loader(loaderPath)
+        .options({
+          ...loaderBaseOpts,
+          mode: type,
+        })
+        .end()
+        .end();
+    });
+
+    // get page component for each markdown file
+    mdRule
       .oneOf('md')
       .use('babel-loader')
       .loader(babelInUmi.loader)
@@ -155,7 +115,7 @@ export default (api: IApi) => {
       .rule('dumi-page')
       .type('javascript/auto')
       .test(/\.(j|t)sx?$/)
-      .resourceQuery(/(meta|frontmatter)$/)
+      .resourceQuery(/frontmatter$/)
       .use('page-meta-loader')
       .loader(require.resolve('../../loaders/page'));
 
