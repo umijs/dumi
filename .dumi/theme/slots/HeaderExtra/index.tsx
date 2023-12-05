@@ -12,6 +12,9 @@ const HeaderExtra: FC = () => {
             window.open('https://v1.d.umijs.org/', '_blank');
           }
         }}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
       >
         <option value={process.env.DUMI_VERSION}>
           {process.env.DUMI_VERSION}
