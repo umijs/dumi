@@ -83,8 +83,9 @@ function emitDefault(
   ret: IMdTransformerResult,
 ) {
   const { frontmatter, demos } = ret.meta;
-  // do not wrap DumiPage for tab content
   const isTabContent = isTabRouteFile(this.resourcePath);
+  // do not wrap DumiPage for tab content
+  const wrapper = isTabContent ? '' : 'DumiPage';
 
   // apply demos resolve hook
   if (demos && opts.onResolveDemos) {
@@ -100,20 +101,22 @@ function emitDefault(
   return `${Object.values(opts.builtins)
     .map((item) => `import ${item.specifier} from '${item.source}';`)
     .join('\n')}
-import React from 'react';
-${
-  isTabContent
-    ? `import { useTabMeta } from 'dumi';`
-    : `import { DumiPage, useRouteMeta } from 'dumi';`
+import React, { Suspense } from 'react';
+import { DumiPage, useTabMeta, useRouteMeta } from 'dumi';
+
+function DumiMarkdownInner() {
+  const { texts: ${CONTENT_TEXTS_OBJ_NAME} } = use${
+    isTabContent ? 'TabMeta' : 'RouteMeta'
+  }();
+
+  return ${ret.content};
 }
 
 // export named function for fastRefresh
 // ref: https://github.com/pmmmwh/react-refresh-webpack-plugin/blob/main/docs/TROUBLESHOOTING.md#edits-always-lead-to-full-reload
 function DumiMarkdownContent() {
-  const { texts: ${CONTENT_TEXTS_OBJ_NAME} } = use${
-    isTabContent ? 'TabMeta' : 'RouteMeta'
-  }();
-  return ${isTabContent ? ret.content : `<DumiPage>${ret.content}</DumiPage>`};
+  // wrap suspense for catch async meta data
+  return <${wrapper}><Suspense><DumiMarkdownInner /></Suspense></${wrapper}>;
 }
 
 export default DumiMarkdownContent;`;

@@ -76,28 +76,22 @@ function genTab(id: string, meta?: ITab['meta']): ITab {
 /**
  * get route meta by id
  */
-export function getRouteMetaById(
+export function getRouteMetaById<T extends { syncOnly?: boolean }>(
   id: string,
-  opts: { syncOnly: true },
-): undefined | IRouteMeta;
-export function getRouteMetaById(
-  id: string,
-  opts?: { syncOnly?: false },
-): Promise<undefined | IRouteMeta>;
-export function getRouteMetaById(
-  id: string,
-  opts?: { syncOnly?: boolean },
-): Promise<undefined | IRouteMeta> | undefined | IRouteMeta {
+  opts?: T,
+): T extends { syncOnly: true }
+  ? undefined | IRouteMeta
+  : Promise<undefined | IRouteMeta> | undefined {
   if (filesMeta[id]) {
-    const { frontmatter, toc, textGetter, tabIds = [] } = filesMeta[id];
-    const routeMeta = {
+    const { frontmatter, toc, textGetter, tabs = [] } = filesMeta[id];
+    const routeMeta: IRouteMeta = {
       frontmatter,
       toc: toc,
       texts: [],
     };
 
     if (opts?.syncOnly) {
-      routeMeta.tabs = tabIds.map((tabId) =>
+      routeMeta.tabs = tabs.map((tabId) =>
         genTab(tabId, getRouteMetaById(tabId, opts)),
       );
     } else {
@@ -107,7 +101,7 @@ export function getRouteMetaById(
         }
 
         routeMeta.tabs = await Promise.all(
-          tabIds.map(async (tabId) =>
+          tabs.map(async (tabId) =>
             genTab(tabId, await getRouteMetaById(tabId, opts)),
           ),
         );

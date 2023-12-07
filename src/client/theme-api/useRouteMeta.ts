@@ -19,6 +19,7 @@ const ASYNC_META_PROPS = ['texts'];
 
 function getCachedRouteMeta(route: IRoutesById[string]) {
   const cacheKey = route.id;
+  const pendingCacheKey = `${cacheKey}:pending`;
 
   if (!cache.get(cacheKey)) {
     const merge = (meta: IRouteMeta = EMPTY_META) => {
@@ -31,29 +32,37 @@ function getCachedRouteMeta(route: IRoutesById[string]) {
       return meta;
     };
     const meta = merge(getRouteMetaById(route.id, { syncOnly: true }));
-    const ret: Parameters<typeof use<IRouteMeta>>[0] & {
-      _async_loading?: boolean;
-    } = Promise.resolve(meta);
+    const ret: Parameters<typeof use<IRouteMeta>>[0] = Promise.resolve(meta);
+    const proxyGetter = (target: any, prop: string) => {
+      if (ASYNC_META_PROPS.includes(prop)) {
+        if (!cache.get(pendingCacheKey)) {
+          // load async meta then replace cache
+          cache.set(
+            pendingCacheKey,
+            getRouteMetaById(route.id).then((full) =>
+              cache.set(cacheKey, Promise.resolve(merge(full))).get(cacheKey),
+            ),
+          );
+        }
+
+        // throw promise to trigger suspense
+        throw cache.get(pendingCacheKey);
+      }
+
+      return target[prop];
+    };
 
     // return sync meta by default
     ret.status = 'fulfilled';
-    ret._async_loading = false;
 
     // load async meta if property accessed
-    ret.value = new Proxy<IRouteMeta>(meta, {
-      get(target, prop: keyof IRouteMeta) {
-        if (ASYNC_META_PROPS.includes(prop) && !ret._async_loading) {
-          ret._async_loading = true;
-
-          // replace with async meta
-          cache.set(cacheKey, getRouteMetaById(route.id).then(merge));
-
-          // throw promise to trigger suspense
-          throw cache.get(cacheKey);
-        }
-
-        return target[prop];
-      },
+    meta.tabs?.forEach((tab) => {
+      tab.meta = new Proxy(tab.meta, {
+        get: proxyGetter,
+      });
+    });
+    ret.value = new Proxy(meta, {
+      get: proxyGetter,
     });
 
     cache.set(cacheKey, ret);
