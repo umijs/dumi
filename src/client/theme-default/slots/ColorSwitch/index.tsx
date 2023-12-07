@@ -48,6 +48,7 @@ const ColorSwitch: FC = () => {
       <select
         onChange={(ev) => setPrefersColor(ev.target.value as any)}
         value={prefersColor}
+        onClick={(e) => e.stopPropagation()}
       >
         {['light', 'dark', 'auto'].map((c) => (
           <option value={c} key={c}>
