@@ -46,6 +46,12 @@ const DocLayout: FC = () => {
           });
         }
       }, 1);
+    } else {
+      setTimeout(() => {
+        animateScrollTo(0, {
+          maxDuration: 300,
+        });
+      }, 1);
     }
   }, [loading, hash]);
 
