@@ -1,16 +1,47 @@
 import type AtomAssetsParser from '@/assetParsers/atom';
 import type { IApi } from '@/types';
+import { lodash } from '@umijs/utils';
 import assert from 'assert';
 import { ATOMS_META_PATH } from './meta';
 
+type IParsedAtomAssets = Awaited<ReturnType<AtomAssetsParser['parse']>>;
+
+function filterIgnoredProps(
+  props: IParsedAtomAssets['components'][string]['propsConfig']['properties'],
+) {
+  return lodash.pickBy(props, (prop) => {
+    let isHidden = false;
+
+    if (prop.type === 'array' && 'items' in prop) {
+      prop.items = filterIgnoredProps({ _: prop.items! })._;
+    } else if (prop.type === 'object' && 'properties' in prop) {
+      prop.properties = filterIgnoredProps(prop.properties!);
+    } else if (prop.oneOf) {
+      prop.oneOf = prop.oneOf.map((item) => filterIgnoredProps({ _: item })._);
+    } else if (prop.allOf) {
+      prop.allOf = prop.allOf.map((item) => filterIgnoredProps({ _: item })._);
+    } else if ('hidden' in prop) {
+      isHidden = true;
+    }
+
+    return !isHidden;
+  });
+}
+
 export default (api: IApi) => {
-  let prevData: Awaited<ReturnType<AtomAssetsParser['parse']>>;
+  let prevData: IParsedAtomAssets;
   const writeAtomsMetaFile = (data: typeof prevData) => {
+    // filter ignored properties
+    const components = lodash.mapValues(data.components, (component) => ({
+      ...component,
+      propsConfig: filterIgnoredProps({ _: component.propsConfig })._,
+    }));
+
     api.writeTmpFile({
       noPluginDir: true,
       path: ATOMS_META_PATH,
       content: `export const components = ${JSON.stringify(
-        data.components,
+        components,
         null,
         2,
       )};`,
