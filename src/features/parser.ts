@@ -17,9 +17,15 @@ function filterIgnoredProps(
     } else if (prop.type === 'object' && 'properties' in prop) {
       prop.properties = filterIgnoredProps(prop.properties!);
     } else if (prop.oneOf) {
-      prop.oneOf = prop.oneOf.map((item) => filterIgnoredProps({ _: item })._);
+      // oneOf may be [null] with unknown reason
+      prop.oneOf = prop.oneOf
+        .filter(Boolean)
+        .map((item) => filterIgnoredProps({ _: item })._);
     } else if (prop.allOf) {
-      prop.allOf = prop.allOf.map((item) => filterIgnoredProps({ _: item })._);
+      // allOf may be [null] with unknown reason
+      prop.allOf = prop.allOf
+        .filter(Boolean)
+        .map((item) => filterIgnoredProps({ _: item })._);
     } else if ('hidden' in prop) {
       isHidden = true;
     }
