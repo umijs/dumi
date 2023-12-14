@@ -146,3 +146,36 @@ export const pickRouteSortMeta = (
 export function getLocaleNav(nav: IUserNavValue | INav, locale: ILocale) {
   return Array.isArray(nav) ? nav : nav[locale.id];
 }
+
+// Copy from React official demo.
+type ReactPromise<T> = Promise<T> & {
+  status?: 'pending' | 'fulfilled' | 'rejected';
+  value?: T;
+  reason?: any;
+};
+
+/**
+ * @private Internal usage. Safe to remove
+ */
+export function use<T>(promise: ReactPromise<T>): T {
+  if (promise.status === 'fulfilled') {
+    return promise.value!;
+  } else if (promise.status === 'rejected') {
+    throw promise.reason;
+  } else if (promise.status === 'pending') {
+    throw promise;
+  } else {
+    promise.status = 'pending';
+    promise.then(
+      (result) => {
+        promise.status = 'fulfilled';
+        promise.value = result;
+      },
+      (reason) => {
+        promise.status = 'rejected';
+        promise.reason = reason;
+      },
+    );
+    throw promise;
+  }
+}

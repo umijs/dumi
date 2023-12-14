@@ -14,7 +14,5 @@ export default function pageMetaLoader(this: any, raw: string) {
   frontmatter.title ??= lodash.startCase(path.basename(pathWithoutIndex));
 
   return `export const frontmatter = ${JSON.stringify(frontmatter)};
-export const toc = [];
-export const texts = [];
-export const demos = {};`;
+export const toc = [];`;
 }

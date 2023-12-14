@@ -3,8 +3,6 @@ import { useOutlet, history } from 'dumi';
 import { warning } from 'rc-util';
 import { SiteContext, type ISiteContext } from '{{{contextPath}}}';
 import { components } from '../meta/atoms';
-import { tabs } from '../meta/tabs';
-import { getDemoById } from '../meta/demos';
 import { locales } from '../locales/config';
 {{{defaultExport}}}
 {{{namedExport}}}
@@ -48,20 +46,18 @@ export default function DumiContextWrapper() {
       entryExports,
       demos: null,
       components,
-      tabs,
       locales,
       loading,
       setLoading,
       hostname,
       themeConfig,
       _2_level_nav_available,
-      getDemoById,
     };
 
     // Proxy do not warning since `Object.keys` will get nothing to loop
     Object.defineProperty(ctx, 'demos', {
       get: () => {
-        warning(false, '`demos` return empty in latest version.');
+        warning(false, '`demos` return empty in latest version, please use `useDemo` instead.');
         return {};
       },
     });
@@ -72,17 +68,13 @@ export default function DumiContextWrapper() {
     historyType,
     entryExports,
     components,
-    tabs,
     locales,
     loading,
     setLoading,
     hostname,
     themeConfig,
     _2_level_nav_available,
-    getDemoById,
   ]);
-
-
 
   return (
     <SiteContext.Provider value={context}>
