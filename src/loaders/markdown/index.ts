@@ -101,6 +101,7 @@ function emitDefault(
   return `${Object.values(opts.builtins)
     .map((item) => `import ${item.specifier} from '${item.source}';`)
     .join('\n')}
+import LoadingComponent from '@@/dumi/theme/loading';
 import React, { Suspense } from 'react';
 import { DumiPage, useTabMeta, useRouteMeta } from 'dumi';
 
@@ -116,7 +117,7 @@ function DumiMarkdownInner() {
 // ref: https://github.com/pmmmwh/react-refresh-webpack-plugin/blob/main/docs/TROUBLESHOOTING.md#edits-always-lead-to-full-reload
 function DumiMarkdownContent() {
   // wrap suspense for catch async meta data
-  return <${wrapper}><Suspense><DumiMarkdownInner /></Suspense></${wrapper}>;
+  return <${wrapper}><Suspense fallback={<LoadingComponent />}><DumiMarkdownInner /></Suspense></${wrapper}>;
 }
 
 export default DumiMarkdownContent;`;
