@@ -16,9 +16,6 @@ import { safeExcludeInMFSU } from '../derivative';
 import loadTheme, { IThemeLoadResult } from './loader';
 
 const DEFAULT_THEME_PATH = path.join(__dirname, '../../../theme-default');
-const loadingComponentPath = winPath(
-  path.resolve(__dirname, '../../client/pages/Loading'),
-);
 
 /**
  * get pkg theme name
@@ -175,17 +172,8 @@ export default (api: IApi) => {
       return memo;
     },
   });
-  api.register({
-    key: 'onGenerateFiles',
-    stage: -Infinity,
-    fn() {
-      api.appData.globalLoading ??= loadingComponentPath;
-    },
-  });
 
   api.modifyAppData((memo) => {
-    memo.globalLoading ??= loadingComponentPath;
-
     // auto enable 2-level nav by declared dumi version, for existing projects compatibility
     // ref: https://github.com/umijs/dumi/discussions/1618
     memo._2LevelNavAvailable = checkMinor2ByPkg(api.pkg);
