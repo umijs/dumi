@@ -6,7 +6,7 @@ import {
   VERSION_2_LEVEL_NAV,
 } from '@/constants';
 import type { IApi } from '@/types';
-import { parseModuleSync } from '@umijs/bundler-utils';
+import { parseModule } from '@umijs/bundler-utils';
 import { execSync } from 'child_process';
 import fs from 'fs';
 import hostedGit from 'hosted-git-info';
@@ -70,11 +70,13 @@ function getPkgThemePath(api: IApi) {
 /**
  * get exports for module
  */
-function getModuleExports(modulePath: string) {
-  return parseModuleSync({
+async function getModuleExports(modulePath: string) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, exports] = await parseModule({
     path: modulePath,
     content: fs.readFileSync(modulePath, 'utf-8'),
-  })[1];
+  });
+  return exports || [];
 }
 
 /**
@@ -341,16 +343,17 @@ export default DumiLoading;
     },
   });
 
-  api.onGenerateFiles(() => {
+  api.onGenerateFiles(async () => {
     // write shadow theme files to tmp dir
-    themeMapKeys.forEach((key) => {
-      Object.values(originalThemeData[key] || {}).forEach((item) => {
+    const pAll = themeMapKeys.flatMap((key) =>
+      Object.values(originalThemeData[key] || {}).map(async (item) => {
         // skip write internal components
         if (item.source === 'dumi') return;
 
-        let contents = [];
         // parse exports for theme module
-        const exports = getModuleExports(item.source);
+        const exports = await getModuleExports(item.source);
+
+        const contents = [];
 
         // export default
         if (exports.includes('default')) {
@@ -367,13 +370,15 @@ export default DumiLoading;
           path: `dumi/theme/${key}/${item.specifier}.ts`,
           content: contents.join('\n'),
         });
-      });
-    });
+      }),
+    );
+
+    await Promise.all(pAll);
 
     const entryFile =
       api.config.resolve.entryFile &&
       [path.resolve(api.cwd, api.config.resolve.entryFile)].find(fs.existsSync);
-    const entryExports = entryFile ? getModuleExports(entryFile) : [];
+    const entryExports = entryFile ? await getModuleExports(entryFile) : [];
     const hasDefaultExport = entryExports.includes('default');
     const hasNamedExport = entryExports.some((exp) => exp !== 'default');
 

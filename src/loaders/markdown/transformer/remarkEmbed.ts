@@ -8,6 +8,7 @@ import { winPath } from 'umi/plugin-utils';
 import type { FrozenProcessor, Transformer } from 'unified';
 import url from 'url';
 import type { IMdTransformerOptions } from '.';
+import remarkContainer from './remarkContainer';
 
 const EMBED_OPEN_TAG = '<embed ';
 const EMBED_CLOSE_TAG = '</embed>';
@@ -150,6 +151,7 @@ export default function remarkEmbed(
             // because directive & gfm is affect on micromark core parser rather than ast
             // and if they are not applied, the embed ast will be wrong
             .use(remarkDirective)
+            .use(remarkContainer)
             .use(remarkGfm)
             // for update relative src path
             .use(remarkReplaceSrc, {

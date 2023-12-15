@@ -1,4 +1,3 @@
-import ContentFooter from '@/client/theme-default/slots/ContentFooter';
 import { ReactComponent as IconSidebar } from '@ant-design/icons-svg/inline-svg/outlined/align-left.svg';
 import animateScrollTo from 'animated-scroll-to';
 import {
@@ -11,6 +10,7 @@ import {
   useSiteData,
 } from 'dumi';
 import Content from 'dumi/theme/slots/Content';
+import ContentFooter from 'dumi/theme/slots/ContentFooter';
 import Features from 'dumi/theme/slots/Features';
 import Footer from 'dumi/theme/slots/Footer';
 import Header from 'dumi/theme/slots/Header';

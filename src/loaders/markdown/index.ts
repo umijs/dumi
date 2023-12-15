@@ -1,8 +1,8 @@
 import { isTabRouteFile } from '@/features/tabs';
 import type { IThemeLoadResult } from '@/features/theme/loader';
-import { getCache } from '@/utils';
+import { getCache, getContentHash } from '@/utils';
 import fs from 'fs';
-import { lodash, Mustache, winPath } from 'umi/plugin-utils';
+import { Mustache, lodash, winPath } from 'umi/plugin-utils';
 import transform, {
   type IMdTransformerOptions,
   type IMdTransformerResult,
@@ -135,9 +135,11 @@ export default DumiMarkdownContent;`;
   }
 }
 
-function getDepsCacheKey(deps: typeof depsMapping['0'] = []) {
+function getDepsCacheKey(deps: (typeof depsMapping)['0'] = []) {
   return JSON.stringify(
-    deps.map((file) => `${file}:${fs.statSync(file).mtimeMs}`),
+    deps.map(
+      (file) => `${file}:${getContentHash(fs.readFileSync(file, 'utf-8'))}`,
+    ),
   );
 }
 
@@ -149,13 +151,13 @@ export default function mdLoader(this: any, content: string) {
   const cb = this.async();
 
   const cache = getCache('md-loader');
-  // format: {path:mtime:loaderOpts}
+  // format: {path:contenthash:loaderOpts}
   const baseCacheKey = [
     this.resourcePath,
-    fs.statSync(this.resourcePath).mtimeMs,
+    getContentHash(content),
     JSON.stringify(lodash.omit(opts, ['mode', 'builtins', 'onResolveDemos'])),
   ].join(':');
-  // format: {baseCacheKey:{deps:mtime}[]}
+  // format: {baseCacheKey:{deps:contenthash}[]}
   const cacheKey = [
     baseCacheKey,
     getDepsCacheKey(depsMapping[this.resourcePath]),

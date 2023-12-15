@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Github Discussions
+    url: https://github.com/umijs/dumi/discussions
+    about: Ask or answer usage questions / 交流使用问题

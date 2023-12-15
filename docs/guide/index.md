@@ -29,5 +29,5 @@ dumi，中文发音**嘟米**，是一款为组件开发场景而生的静态站
 或加入讨论群：
 
 <div>
-  <img data-type="dingtalk" src="https://gw.alipayobjects.com/zos/bmw-prod/7362dab4-374e-42c6-9d52-85fd4b5e357b/lbesxxl3_w1004_h1346.jpeg" width="300" />
+  <img data-type="dingtalk" src="https://mdn.alipayobjects.com/huamei_i7qs1c/afts/img/A*T94jRZmW1fgAAAAAAAAAAAAADs-oAQ" width="300" />
 </div>

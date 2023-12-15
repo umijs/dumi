@@ -68,3 +68,7 @@ toc: null
         
   </ul>
 </ThemeCases>
+
+## 更多主题
+
+查找 [NPM 上所有可用的主题](https://www.npmjs.com/search?q=keywords%3Adumi-theme)。

@@ -24,6 +24,8 @@ const Foo: FC<{
   children: React.ReactNode;
   onConfirm: (output: { children: any[] }) => void;
   dom: HTMLElement;
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  func: Function;
 }> = (props) => {
   return <>{props.title}</>;
 };
