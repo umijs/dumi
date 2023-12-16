@@ -1,9 +1,12 @@
-import React, { type FC, type ReactNode } from 'react';
+import * as React from 'react';
 import './index.less';
 
-const Badge: FC<{
-  children: ReactNode;
+type BadgeProps = React.PropsWithChildren<{
   type: 'info' | 'warning' | 'error' | 'success';
-}> = (props) => <span className="dumi-default-badge" {...props} />;
+}>;
+
+const Badge = (props: BadgeProps) => (
+  <span className="dumi-default-badge" {...props} />
+);
 
 export default Badge;

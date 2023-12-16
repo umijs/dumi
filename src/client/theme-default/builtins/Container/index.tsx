@@ -2,7 +2,7 @@ import { ReactComponent as IconSuccess } from '@ant-design/icons-svg/inline-svg/
 import { ReactComponent as IconError } from '@ant-design/icons-svg/inline-svg/outlined/close-circle.svg';
 import { ReactComponent as IconInfo } from '@ant-design/icons-svg/inline-svg/outlined/info-circle.svg';
 import { ReactComponent as IconWarning } from '@ant-design/icons-svg/inline-svg/outlined/warning.svg';
-import React, { useState, type FC, type ReactNode } from 'react';
+import * as React from 'react';
 import './index.less';
 
 const ICONS = {
@@ -10,12 +10,15 @@ const ICONS = {
   warning: IconWarning,
   success: IconSuccess,
   error: IconError,
-};
+} as const;
 
-const Container: FC<{ type: string; title?: string; children: ReactNode }> = (
-  props,
-) => {
-  const [Icon] = useState(() => ICONS[props.type as keyof typeof ICONS]);
+type ContainerProps = React.PropsWithChildren<{
+  type: keyof typeof ICONS;
+  title?: string;
+}>;
+
+const Container = (props: ContainerProps) => {
+  const [Icon] = React.useState(() => ICONS[props.type]);
 
   return (
     <div className="dumi-default-container markdown" data-type={props.type}>

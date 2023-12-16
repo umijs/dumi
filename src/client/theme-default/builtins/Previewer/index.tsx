@@ -1,11 +1,11 @@
 import classnames from 'classnames';
 import { IPreviewerProps, useLocation } from 'dumi';
 import PreviewerActions from 'dumi/theme/slots/PreviewerActions';
-import React, { useRef, type FC } from 'react';
+import * as React from 'react';
 import './index.less';
 
-const Previewer: FC<IPreviewerProps> = (props) => {
-  const demoContainer = useRef<HTMLDivElement>(null);
+const Previewer = (props: IPreviewerProps) => {
+  const demoContainer = React.useRef<HTMLDivElement>(null);
   const { hash } = useLocation();
   const link = `#${props.asset.id}`;
 
