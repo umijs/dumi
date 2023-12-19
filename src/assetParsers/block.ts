@@ -9,7 +9,13 @@ import { pkgUp, winPath } from 'umi/plugin-utils';
 
 export interface IParsedBlockAsset {
   asset: ExampleBlockAsset;
-  sources: Record<string, string>;
+  /**
+   * resolveMap: {
+   *   '@/constants': '/path/to/constants.ts',
+   *   'antd/es/button': '/path/to/antd/es/button/index.jsx',
+   * }
+   */
+  resolveMap: Record<string, string>;
   frontmatter: ReturnType<typeof parseCodeFrontmatter>['frontmatter'];
 }
 
@@ -28,7 +34,7 @@ async function parseBlockAsset(opts: {
   };
   const result: IParsedBlockAsset = {
     asset,
-    sources: {},
+    resolveMap: {},
     frontmatter: null,
   };
 
@@ -65,6 +71,8 @@ async function parseBlockAsset(opts: {
                   type: 'NPM',
                   value: pkg.version,
                 };
+
+                result.resolveMap[args.path] = resolved;
               }
 
               // make all deps external
@@ -76,7 +84,11 @@ async function parseBlockAsset(opts: {
                 args.kind !== 'entry-point'
                   ? (opts.resolver(args.resolveDir, args.path) as string)
                   : path.join(args.resolveDir, args.path),
-              pluginData: { kind: args.kind, resolveDir: args.resolveDir },
+              pluginData: {
+                kind: args.kind,
+                resolveDir: args.resolveDir,
+                source: args.path,
+              },
             };
           });
 
@@ -92,13 +104,17 @@ async function parseBlockAsset(opts: {
               '.json',
             ].includes(ext);
             const isEntryPoint = args.pluginData.kind === 'entry-point';
-            const filename = isEntryPoint
-              ? `index${ext}`
-              : winPath(
-                  path.relative(path.dirname(opts.fileAbsPath), args.path),
-                )
-                  // discard leading ./ or ../
-                  .replace(/^(\.?\.\/)+/g, '');
+            // always add extname for highlight in runtime
+            const filename = `${
+              isEntryPoint
+                ? 'index'
+                : winPath(
+                    path.format({
+                      ...path.parse(args.pluginData.source),
+                      ext: '',
+                    }),
+                  )
+            }${ext}`;
 
             if (isModule || isPlainText) {
               asset.dependencies[filename] = {
@@ -131,7 +147,7 @@ async function parseBlockAsset(opts: {
               // save file absolute path for load file via raw-loader
               // to avoid bundle same file to save bundle size
               if (!isEntryPoint || !opts.entryPointCode) {
-                result.sources[filename] = args.path;
+                result.resolveMap[filename] = args.path;
               }
 
               return {

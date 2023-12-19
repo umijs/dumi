@@ -20,8 +20,7 @@ export default (api: IApi) => {
       path: 'dumi/exports.ts',
       content: `export * from '../exports';
 export * from '${winPath(require.resolve('../client/theme-api'))}';
-export * from './meta/exports';
-export { getDemoScopesById } from './live/demo-scopes';`,
+export * from './meta/exports';`,
     });
   });
 };

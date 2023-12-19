@@ -8,7 +8,7 @@ import type { IThemeLoadResult } from '@/features/theme/loader';
 import type { IModify } from '@umijs/core';
 import type { AssetsPackage, ExampleBlockAsset } from 'dumi-assets-types';
 import type { Element } from 'hast';
-import type { defineConfig as defineUmiConfig, IApi as IUmiApi } from 'umi';
+import type { IApi as IUmiApi, defineConfig as defineUmiConfig } from 'umi';
 
 // ref: https://grrr.tech/posts/2021/typescript-partial/
 type Subset<K> = {
@@ -104,9 +104,9 @@ export abstract class IDumiTechStack {
    * generator for return file path of demo sources
    */
   abstract generateSources?(
-    sources: IParsedBlockAsset['sources'],
+    sources: IParsedBlockAsset['resolveMap'],
     opts: Parameters<NonNullable<IDumiTechStack['generateMetadata']>>[1],
-  ): Promise<IParsedBlockAsset['sources']> | IParsedBlockAsset['sources'];
+  ): Promise<IParsedBlockAsset['resolveMap']> | IParsedBlockAsset['resolveMap'];
 }
 
 export type IApi = IUmiApi & {

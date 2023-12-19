@@ -57,8 +57,8 @@ export type IMdLoaderOptions =
 
 function getDemoSourceFiles(demos: IMdTransformerResult['meta']['demos'] = []) {
   return demos.reduce<string[]>((ret, demo) => {
-    if ('sources' in demo) {
-      ret.push(...Object.values(demo.sources));
+    if ('resolveMap' in demo) {
+      ret.push(...Object.values(demo.resolveMap));
     }
 
     return ret;
@@ -125,7 +125,8 @@ export const demos = {
   {{#demos}}
   '{{{id}}}': {
     component: {{{component}}},
-    asset: {{{renderAsset}}}
+    asset: {{{renderAsset}}},
+    context: {{{renderContext}}}
   },
   {{/demos}}
 };`,
@@ -137,10 +138,10 @@ export const demos = {
 
         // render asset for normal demo
         let { asset } = this;
-        const { sources } = this;
+        const { resolveMap } = this;
 
         // use raw-loader to load all source files
-        Object.keys(this.sources).forEach((file: string) => {
+        Object.keys(this.resolveMap).forEach((file: string) => {
           // handle un-existed source file, e.g. custom tech-stack return custom dependencies
           if (!asset.dependencies[file]) return;
 
@@ -148,10 +149,27 @@ export const demos = {
           asset = lodash.cloneDeep(asset);
           asset.dependencies[
             file
-          ].value = `{{{require('-!${sources[file]}?dumi-raw').default}}}`;
+          ].value = `{{{require('-!${resolveMap[file]}?dumi-raw').default}}}`;
         });
 
         return JSON.stringify(asset, null, 2).replace(/"{{{|}}}"/g, '');
+      },
+      renderContext: function renderContext(
+        this: NonNullable<typeof demos>[0],
+      ) {
+        // do not render context for inline demo
+        if (!('resolveMap' in this)) return 'undefined';
+
+        // render context for normal demo
+        const context = Object.entries(this.resolveMap).reduce(
+          (acc, [key, path]) => ({
+            ...acc,
+            [key]: `{{{require('${path}')}}}`,
+          }),
+          {},
+        );
+
+        return JSON.stringify(context, null, 2).replace(/"{{{|}}}"/g, '');
       },
     },
   );
