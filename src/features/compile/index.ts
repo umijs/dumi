@@ -53,7 +53,7 @@ export default (api: IApi) => {
       .test(/\.md$/);
 
     // generate independent oneOf rules
-    ['frontmatter', 'text', 'demo-index', 'scope-index'].forEach((type) => {
+    ['frontmatter', 'text', 'demo-index'].forEach((type) => {
       mdRule
         .oneOf(`md-${type}`)
         .resourceQuery(new RegExp(`${type}$`))
@@ -65,24 +65,22 @@ export default (api: IApi) => {
         });
     });
 
-    // generate oneOf rules with babel loader
-    ['demo', 'scope'].forEach((type) => {
-      mdRule
-        .oneOf(`md-${type}`)
-        .resourceQuery(new RegExp(`${type}$`))
-        .use('babel-loader')
-        .loader(babelInUmi.loader)
-        .options(babelInUmi.options)
-        .end()
-        .use(`md-${type}-loader`)
-        .loader(loaderPath)
-        .options({
-          ...loaderBaseOpts,
-          mode: type,
-        })
-        .end()
-        .end();
-    });
+    // get demo metadata for each markdown file
+    mdRule
+      .oneOf('md-demo')
+      .resourceQuery(/demo$/)
+      .use('babel-loader')
+      .loader(babelInUmi.loader)
+      .options(babelInUmi.options)
+      .end()
+      .use('md-demo-loader')
+      .loader(loaderPath)
+      .options({
+        ...loaderBaseOpts,
+        mode: 'demo',
+      })
+      .end()
+      .end();
 
     // get page component for each markdown file
     mdRule
