@@ -77,6 +77,15 @@ const Previewer: FC<IPreviewerProps> = (props) => {
             } else {
               setEditorError(null);
               setLiveDemoSources(sources);
+
+              if (props.iframe) {
+                demoContainer
+                  .current!.querySelector('iframe')!
+                  .contentWindow!.postMessage({
+                    type: 'dumi.liveDemo.setSources',
+                    value: sources,
+                  });
+              }
             }
           }}
           demoContainer={
