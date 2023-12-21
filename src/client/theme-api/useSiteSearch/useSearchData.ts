@@ -34,7 +34,7 @@ export default function useSearchData(): [
       });
 
       // omit demo component for postmessage
-      Object.entries(demos).forEach(([id, { component, ...demo }]) => {
+      Object.entries(demos).forEach(([id, { component, context, ...demo }]) => {
         demos[id] = demo;
       });
 

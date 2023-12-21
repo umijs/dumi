@@ -241,4 +241,5 @@ export type IDemoData = {
   component: ComponentType;
   asset: IPreviewerProps['asset'];
   routeId: string;
+  context?: Record<string, unknown>;
 };
