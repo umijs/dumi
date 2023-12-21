@@ -13,6 +13,8 @@
   "header.social.linkedin": "Linkedin",
   "previewer.actions.code.expand": "Show Code",
   "previewer.actions.code.shrink": "Hide Code",
+  "previewer.actions.code.editable": "Edit code with real-time preview",
+  "previewer.actions.code.readonly": "Only index file is editable",
   "previewer.actions.sketch": "Copy to Sketch app",
   "previewer.actions.sketch.group": "Copy as Sketch Group",
   "previewer.actions.sketch.symbol": "Copy as Sketch Symbol",
