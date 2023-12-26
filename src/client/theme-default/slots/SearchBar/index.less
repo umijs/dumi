@@ -56,7 +56,10 @@
         background-color: @c-site-bg-dark;
         box-shadow: 0 0 0 3px fade(@c-primary-dark, 10%);
       }
+    }
 
+    &:focus,
+    &:not(:placeholder-shown) {
       ~ .@{prefix}-search-shortcut {
         opacity: 0;
       }

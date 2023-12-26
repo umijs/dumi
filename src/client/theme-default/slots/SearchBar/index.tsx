@@ -7,6 +7,8 @@ import React, { useEffect, useRef, useState, type FC } from 'react';
 import { Input } from './Input';
 import { Mask } from './Mask';
 import './index.less';
+export { Input as SearchInput } from './Input';
+export { Mask as SearchMask } from './Mask';
 
 const isAppleDevice = /(mac|iphone|ipod|ipad)/i.test(
   typeof navigator !== 'undefined' ? navigator?.platform : '',
@@ -85,9 +87,7 @@ const SearchBar: FC = () => {
         onChange={(keywords) => setKeywords(keywords)}
         ref={inputRef}
       />
-      {!keywords && (
-        <span className="dumi-default-search-shortcut">{symbol} K</span>
-      )}
+      <span className="dumi-default-search-shortcut">{symbol} K</span>
       {keywords.trim() &&
         focusing &&
         (result.length || !loading) &&
@@ -162,8 +162,5 @@ const SearchBar: FC = () => {
     </div>
   );
 };
-
-export { Input as SearchInput } from './Input';
-export { Mask as SearchMask } from './Mask';
 
 export default SearchBar;
