@@ -7,7 +7,7 @@ const Loading: React.FC = () => (
   <div className="dumi-default-loading-skeleton">
     <Skeleton className="first-line" count={1} />
     <Skeleton count={Math.floor(Math.random() * 3) + 1} />
-    <Skeleton count={1} width="60%" />
+    <Skeleton count={1} width={`${Math.random() * 50 + 30}%`} />
   </div>
 );
 
