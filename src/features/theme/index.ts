@@ -295,7 +295,7 @@ export default (api: IApi) => {
 import './nprogress.css';`
             : ''
         }
-import UserLoading from ${JSON.stringify(globalLoading)};
+import UserLoading from '${globalLoading}';
 import React, { useLayoutEffect, type FC } from 'react';
 import { useSiteData } from 'dumi';
 
