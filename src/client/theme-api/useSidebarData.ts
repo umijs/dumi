@@ -27,18 +27,12 @@ export const getLocaleClearPath = (
 /**
  * get parent path from route path
  */
-export function getRouteParentPath(
+function getRouteParentPath(
   path: string,
-  {
-    meta,
-    is2LevelNav,
-    locale,
-  }: { meta?: IRouteMeta; is2LevelNav: boolean; locale: ILocalesConfig[0] },
+  { meta, is2LevelNav }: { meta: IRouteMeta; is2LevelNav: boolean },
 ) {
-  const indexDocRegex = new RegExp(`/index(\\.${locale.id})?.md$`);
   const isIndexDocRoute =
-    meta?.frontmatter.filename &&
-    indexDocRegex.test(meta.frontmatter.filename) &&
+    meta.frontmatter.filename?.endsWith('index.md') &&
     !meta._atom_route &&
     is2LevelNav;
   const paths = path
@@ -88,7 +82,7 @@ export const useFullSidebarData = () => {
         //   a/b => /a/b (if route file is a/b/index.md)
         //   a/b/c => /a/b
         const parentPath = `/${route.path!.replace(clearPath, (s) =>
-          getRouteParentPath(s, { is2LevelNav, meta: route.meta!, locale }),
+          getRouteParentPath(s, { is2LevelNav, meta: route.meta! }),
         )}`;
         const { title, order } = pickRouteSortMeta(
           { order: 0 },
@@ -230,7 +224,7 @@ export const useSidebarData = () => {
   // /en-US/a/b/ => /en-US/a (also strip trailing /)
   const parentPath = clearPath
     ? pathname.replace(clearPath, (s) =>
-        getRouteParentPath(s, { is2LevelNav, meta, locale }),
+        getRouteParentPath(s, { is2LevelNav, meta }),
       )
     : pathname;
 

@@ -1,12 +1,5 @@
 import { ReactComponent as IconInbox } from '@ant-design/icons-svg/inline-svg/outlined/inbox.svg';
-import animateScrollTo from 'animated-scroll-to';
-import {
-  FormattedMessage,
-  history,
-  Link,
-  useLocation,
-  type useSiteSearch,
-} from 'dumi';
+import { FormattedMessage, history, Link, type useSiteSearch } from 'dumi';
 import React, {
   Fragment,
   useCallback,
@@ -126,20 +119,6 @@ const SearchResult: FC<{
 }> = (props) => {
   const [data, histsCount] = useFlatSearchData(props.data);
   const [activeIndex, setActiveIndex] = useState(-1);
-  const { pathname } = useLocation();
-
-  const onItemSelect = (item: ISearchResult[0]['hints'][0]) => {
-    props.onItemSelect?.(item);
-
-    const url = new URL(item?.link, location.origin);
-    if (url?.pathname === pathname && !url.hash) {
-      setTimeout(() => {
-        animateScrollTo(0, {
-          maxDuration: 300,
-        });
-      }, 1);
-    }
-  };
 
   useEffect(() => {
     const handler = (ev: KeyboardEvent) => {
@@ -154,7 +133,7 @@ const SearchResult: FC<{
         )!.value as ISearchResult[0]['hints'][0];
 
         history.push(item.link);
-        onItemSelect?.(item);
+        props.onItemSelect?.(item);
         (document.activeElement as HTMLInputElement).blur();
       }
 

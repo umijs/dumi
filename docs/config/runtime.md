@@ -9,12 +9,12 @@ group: 框架配置
 
 ## 配置项
 
-### modifyCodeSandboxData
+### modifyCodeSandBoxData
 
 修改在 CodeSandbox 中打开 demo 的数据，比如修改依赖、增加文件等。
 
 ```js
-export function modifyCodeSandboxData(memo, props) {
+export function modifyCodeSandBoxData(memo, props) {
   // 根据需要修改 memo 并返回新值
   return memo;
 }

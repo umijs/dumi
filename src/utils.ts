@@ -4,7 +4,6 @@ import fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'path';
 import { lodash, logger, winPath } from 'umi/plugin-utils';
-import { FS_CACHE_DIR } from './constants';
 
 /**
  * get route path from file-system path
@@ -82,17 +81,14 @@ export function parseCodeFrontmatter(raw: string) {
 /**
  * get file-system cache for specific namespace
  */
-let cacheDir = FS_CACHE_DIR;
 const caches: Record<string, ReturnType<typeof Cache>> = {};
-export function _setFSCacheDir(dir: string) {
-  cacheDir = dir;
-}
+const CACHE_PATH = 'node_modules/.cache/dumi';
 export function getCache(ns: string): (typeof caches)['0'] {
   // return fake cache if cache disabled
   if (process.env.DUMI_CACHE === 'none') {
     return { set() {}, get() {}, setSync() {}, getSync() {} } as any;
   }
-  return (caches[ns] ??= Cache({ basePath: path.resolve(cacheDir, ns) }));
+  return (caches[ns] ??= Cache({ basePath: path.join(CACHE_PATH, ns) }));
 }
 
 /**

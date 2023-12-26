@@ -86,7 +86,7 @@ class ColorChanger {
    * listen color change
    * @param cb  callback
    */
-  listen(cb: (typeof this.callbacks)[number]) {
+  listen(cb: typeof this.callbacks[number]) {
     this.callbacks.push(cb);
   }
 
@@ -94,7 +94,7 @@ class ColorChanger {
    * unlisten color change
    * @param cb  callback
    */
-  unlisten(cb: (typeof this.callbacks)[number]) {
+  unlisten(cb: typeof this.callbacks[number]) {
     this.callbacks.splice(this.callbacks.indexOf(cb), 1);
   }
 

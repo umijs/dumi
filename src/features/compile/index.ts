@@ -2,8 +2,6 @@ import type { IDemoLoaderOptions } from '@/loaders/demo';
 import type { IMdLoaderOptions } from '@/loaders/markdown';
 import ReactTechStack from '@/techStacks/react';
 import type { IApi, IDumiTechStack } from '@/types';
-import { _setFSCacheDir } from '@/utils';
-import path from 'path';
 import { addAtomMeta, addExampleAssets } from '../assets';
 
 export default (api: IApi) => {
@@ -16,26 +14,17 @@ export default (api: IApi) => {
     fn: () => new ReactTechStack(),
   });
 
-  api.modifyConfig({
-    stage: Infinity,
-    fn: (memo) => {
-      // add customize option for babel-loader, to avoid collect wrong deps result in MFSU
-      if (memo.babelLoaderCustomize) {
-        api.logger.warn(
-          'Config `babelLoaderCustomize` will be override by dumi, please report issue if you need it.',
-        );
-      }
+  // add customize option for babel-loader, to avoid collect wrong deps result in MFSU
+  api.modifyConfig((memo) => {
+    if (memo.babelLoaderCustomize) {
+      api.logger.warn(
+        'Config `babelLoaderCustomize` will be override by dumi, please report issue if you need it.',
+      );
+    }
 
-      memo.babelLoaderCustomize = require.resolve('./babelLoaderCustomize');
+    memo.babelLoaderCustomize = require.resolve('./babelLoaderCustomize');
 
-      // configure dumi fs cache dir
-      const cacheDirPath =
-        api.userConfig.cacheDirectoryPath || memo.cacheDirectoryPath;
-
-      if (cacheDirPath) _setFSCacheDir(path.join(cacheDirPath, 'dumi'));
-
-      return memo;
-    },
+    return memo;
   });
 
   // configure loader to compile markdown
