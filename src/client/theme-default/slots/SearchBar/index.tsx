@@ -2,11 +2,11 @@ import { ReactComponent as IconArrowDown } from '@ant-design/icons-svg/inline-sv
 import { ReactComponent as IconArrowUp } from '@ant-design/icons-svg/inline-svg/outlined/arrow-up.svg';
 import { ReactComponent as IconSearch } from '@ant-design/icons-svg/inline-svg/outlined/search.svg';
 import { useSiteSearch } from 'dumi';
-import SearchResult from 'dumi/theme/slots/SearchResult';
 import React, { useEffect, useRef, useState, type FC } from 'react';
+import SearchResult from 'dumi/theme/slots/SearchResult';
+import './index.less';
 import { Input } from './Input';
 import { Mask } from './Mask';
-import './index.less';
 export { Input as SearchInput } from './Input';
 export { Mask as SearchMask } from './Mask';
 
