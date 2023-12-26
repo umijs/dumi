@@ -1,14 +1,23 @@
+import { TEMPLATES_DIR } from '@/constants';
 import type { IApi } from '@/types';
-import path from 'path';
+import { generateMetaChunkName } from '@/utils';
+import path, { join } from 'path';
 import type { IRoute } from 'umi';
-import { Mustache, winPath } from 'umi/plugin-utils';
+import { winPath } from 'umi/plugin-utils';
 import { isTabRouteFile } from './tabs';
 
 export const TABS_META_PATH = 'dumi/meta/tabs.ts';
 export const ATOMS_META_PATH = 'dumi/meta/atoms.ts';
 
+type IMetaFiles = {
+  index: number;
+  file: string;
+  id: string;
+  isMarkdown?: boolean;
+}[];
+
 export default (api: IApi) => {
-  const metaFiles: { index: number; file: string; id: string }[] = [];
+  const metaFiles: IMetaFiles = [];
 
   api.register({
     key: 'modifyRoutes',
@@ -46,92 +55,52 @@ export default (api: IApi) => {
       content: 'export const components = null;',
     });
 
-    // generate meta entry
+    const parsedMetaFiles: IMetaFiles = await api.applyPlugins({
+      type: api.ApplyPluginsType.modify,
+      key: 'dumi.modifyMetaFiles',
+      initialValue: JSON.parse(JSON.stringify(metaFiles)),
+    });
+
+    // mark isMarkdown flag
+    parsedMetaFiles.forEach((metaFile) => {
+      metaFile.isMarkdown = metaFile.file.endsWith('.md');
+    });
+
     api.writeTmpFile({
       noPluginDir: true,
       path: 'dumi/meta/index.ts',
-      content: Mustache.render(
-        `{{#metaFiles}}
-import { demos as dm{{{index}}}, frontmatter as fm{{{index}}}, toc as toc{{{index}}}, texts as txt{{{index}}} } from '{{{file}}}?type=meta';
-{{/metaFiles}}
-
-export { components } from './atoms';
-export { tabs } from './tabs';
-
-export const filesMeta = {
-  {{#metaFiles}}
-  '{{{id}}}': {
-    frontmatter: fm{{{index}}},
-    toc: toc{{{index}}},
-    texts: txt{{{index}}},
-    demos: dm{{{index}}},
-    {{#tabs}}
-    tabs: {{{tabs}}},
-    {{/tabs}}
-  },
-  {{/metaFiles}}
-}
-
-// generate demos data in runtime, for reuse route.id to reduce bundle size
-export const demos = Object.entries(filesMeta).reduce((acc, [id, meta]) => {
-  // append route id to demo
-  Object.values(meta.demos).forEach((demo) => {
-    demo.routeId = id;
-  });
-  // merge demos
-  Object.assign(acc, meta.demos);
-
-  // remove demos from meta, to avoid deep clone demos in umi routes/children compatible logic
-  delete meta.demos;
-
-  return acc;
-}, {});
-`,
-        {
-          metaFiles: await api.applyPlugins({
-            type: api.ApplyPluginsType.modify,
-            key: 'dumi.modifyMetaFiles',
-            initialValue: metaFiles,
-          }),
+      tplPath: winPath(join(TEMPLATES_DIR, 'meta/index.ts.tpl')),
+      context: {
+        metaFiles: parsedMetaFiles,
+        chunkName: function chunkName(this) {
+          if (!('file' in this)) {
+            return '';
+          }
+          return `/* webpackChunkName: "${generateMetaChunkName(
+            this.file,
+            api.cwd,
+            api.config.locales?.map(({ id }) => id),
+          )}" */`;
         },
-      ),
+      },
     });
 
     // generate runtime plugin, to append page meta to route object
     api.writeTmpFile({
       noPluginDir: true,
       path: 'dumi/meta/runtime.ts',
-      content: `import { filesMeta, tabs } from '.';
-import deepmerge from '${winPath(
-        path.dirname(require.resolve('deepmerge/package')),
-      )}';
-export const patchRoutes = ({ routes }) => {
-  Object.values(routes).forEach((route) => {
-    if (filesMeta[route.id]) {
-      if (process.env.NODE_ENV === 'production' && (route.meta?.frontmatter?.debug || filesMeta[route.id].frontmatter.debug)) {
-        // hide route in production which set hide frontmatter
-        delete routes[route.id];
-      } else {
-        // merge meta to route object
-        route.meta = deepmerge(route.meta, filesMeta[route.id]);
+      tplPath: winPath(join(TEMPLATES_DIR, 'meta/runtime.ts.tpl')),
+      context: {
+        deepmerge: winPath(path.dirname(require.resolve('deepmerge/package'))),
+      },
+    });
 
-        // apply real tab data from id
-        route.meta.tabs = route.meta.tabs?.map((id) => {
-          const meta = {
-            frontmatter: { title: tabs[id].title },
-            toc: [],
-            texts: [],
-          }
-          return {
-            ...tabs[id],
-            meta: filesMeta[id] || meta,
-          }
-        });
-      }
-    }
-  });
-}
-`,
+    // generate exports api
+    api.writeTmpFile({
+      noPluginDir: true,
+      path: 'dumi/meta/exports.ts',
+      tplPath: winPath(join(TEMPLATES_DIR, 'meta/exports.ts.tpl')),
+      context: {},
     });
   });
 

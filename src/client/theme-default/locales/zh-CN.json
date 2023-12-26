@@ -37,5 +37,6 @@
   "content.footer.actions.previous": "上一篇",
   "content.footer.actions.next": "下一篇",
   "search.not.found": "未找到相关内容",
+  "search.loading": "加载中...",
   "layout.sidebar.btn": "侧边菜单"
 }

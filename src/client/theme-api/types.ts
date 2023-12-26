@@ -43,6 +43,10 @@ export interface IPreviewerProps {
    */
   background?: string;
   /**
+   * enable live demo
+   */
+  live?: boolean;
+  /**
    * asset metadata of current demo
    */
   asset: ExampleBlockAsset;
@@ -236,3 +240,9 @@ export type IRoutesById = Record<
     [key: string]: any;
   }
 >;
+
+export type IDemoData = {
+  component: ComponentType;
+  asset: IPreviewerProps['asset'];
+  routeId: string;
+};

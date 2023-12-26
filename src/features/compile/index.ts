@@ -58,22 +58,55 @@ export default (api: IApi) => {
       pkg: api.pkg,
     };
 
-    memo.module
+    const mdRule = memo.module
       .rule('dumi-md')
       .type('javascript/auto')
-      .test(/\.md$/)
-      // get meta for each markdown file
-      .oneOf('md-meta')
-      .resourceQuery(/meta$/)
+      .test(/\.md$/);
+
+    // generate independent oneOf rules
+    ['frontmatter', 'text', 'demo-index', 'scope-index'].forEach((type) => {
+      mdRule
+        .oneOf(`md-${type}`)
+        .resourceQuery(new RegExp(`${type}$`))
+        .use(`md-${type}-loader`)
+        .loader(loaderPath)
+        .options({
+          ...loaderBaseOpts,
+          mode: type,
+        });
+    });
+
+    // generate oneOf rules with babel loader
+    ['demo', 'scope'].forEach((type) => {
+      mdRule
+        .oneOf(`md-${type}`)
+        .resourceQuery(new RegExp(`${type}$`))
+        .use('babel-loader')
+        .loader(babelInUmi.loader)
+        .options(babelInUmi.options)
+        .end()
+        .use(`md-${type}-loader`)
+        .loader(loaderPath)
+        .options({
+          ...loaderBaseOpts,
+          mode: type,
+        })
+        .end()
+        .end();
+    });
+
+    // get page component for each markdown file
+    mdRule
+      .oneOf('md')
       .use('babel-loader')
       .loader(babelInUmi.loader)
       .options(babelInUmi.options)
       .end()
-      .use('md-meta-loader')
+      .use('md-loader')
       .loader(loaderPath)
       .options({
         ...loaderBaseOpts,
-        mode: 'meta',
+        builtins: api.service.themeData.builtins,
         onResolveDemos(demos) {
           const assets = demos.reduce<Parameters<typeof addExampleAssets>[0]>(
             (ret, demo) => {
@@ -86,20 +119,6 @@ export default (api: IApi) => {
           addExampleAssets(assets);
         },
         onResolveAtomMeta: addAtomMeta,
-      } as IMdLoaderOptions)
-      .end()
-      .end()
-      // get page component for each markdown file
-      .oneOf('md')
-      .use('babel-loader')
-      .loader(babelInUmi.loader)
-      .options(babelInUmi.options)
-      .end()
-      .use('md-loader')
-      .loader(loaderPath)
-      .options({
-        ...loaderBaseOpts,
-        builtins: api.service.themeData.builtins,
       } as IMdLoaderOptions);
 
     // get meta for each page component
@@ -107,7 +126,7 @@ export default (api: IApi) => {
       .rule('dumi-page')
       .type('javascript/auto')
       .test(/\.(j|t)sx?$/)
-      .resourceQuery(/meta$/)
+      .resourceQuery(/frontmatter$/)
       .use('page-meta-loader')
       .loader(require.resolve('../../loaders/page'));
 
