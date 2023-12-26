@@ -6,7 +6,7 @@ import type {
   IUserNavItems,
   IUserNavMode,
 } from './types';
-import { getLocaleClearPath } from './useSidebarData';
+import { getLocaleClearPath, getRouteParentPath } from './useSidebarData';
 import {
   getLocaleNav,
   pickRouteSortMeta,
@@ -65,11 +65,11 @@ export const useNavData = () => {
         .sort(([a], [b]) => a.split('/').length - b.split('/').length)
         // convert sidebar data to nav data
         .reduce<Record<string, INavItems[0]>>((ret, [link, groups]) => {
-          const [, parentPath, restPath] = `/${getLocaleClearPath(
-            link.replace(/^\//, ''),
-            locale,
-          )}`.match(/^(\/[^/]+)([^]+)?$/)!;
-          const isNestedNav = Boolean(restPath) && is2LevelNav;
+          const clearPath = getLocaleClearPath(link.replace(/^\//, ''), locale);
+          const parentPath = link.replace(clearPath, (s) =>
+            getRouteParentPath(s, { is2LevelNav, locale }),
+          );
+          const isNestedNav = link.length > parentPath.length && is2LevelNav;
           const [firstMeta, secondMeta] = Object.values(routes).reduce<
             {
               title?: string;
@@ -96,7 +96,8 @@ export const useNavData = () => {
           if (isNestedNav) {
             // fallback to use parent path as 1-level nav title
             firstMeta.title ??= parentPath
-              .slice(1)
+              .split('/')
+              .pop()!
               .replace(/^[a-z]/, (s) => s.toUpperCase());
 
             // handle nested nav item as parent children
@@ -107,7 +108,7 @@ export const useNavData = () => {
             ));
 
             second.children ??= [];
-            ret[parentPath].children!.push(
+            second.children!.push(
               genNavItem(secondMeta, groups, link, groups[0].children[0].link),
             );
           } else {
