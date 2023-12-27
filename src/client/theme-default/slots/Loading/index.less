@@ -3,20 +3,18 @@
 @skeleton-cls: react-loading-skeleton;
 
 .@{prefix}-loading-skeleton {
-
   .@{skeleton-cls} {
+    margin-block-end: 0.38em;
 
-    // first-line indent
     &.first-line {
-      display: inline-block;
       width: calc(100% - 2em);
       margin-inline-start: 2em;
     }
 
     // ======== dark mode ========
     @{dark-selector} & {
-      --highlight-color: rgba(255, 255, 255, 0.12);
-      --base-color: #1f1f1f;
+      --highlight-color: fade(@c-text-dark, @dark-light-amount);
+      --base-color: @c-text;
     }
   }
 }
