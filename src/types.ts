@@ -6,7 +6,6 @@ import type { ILocalesConfig, IThemeConfig } from '@/client/theme-api/types';
 import type { IContentTab } from '@/features/tabs';
 import type { IThemeLoadResult } from '@/features/theme/loader';
 import {
-  Loader,
   OnLoadArgs,
   OnLoadResult,
 } from '@umijs/bundler-utils/compiled/esbuild';
@@ -73,15 +72,9 @@ export type IDumiUserConfig = Subset<Omit<IDumiConfig, 'locales'>> & {
   [key: string]: any;
 };
 
-export type IDumiBlockHandler = {
-  isModule: boolean;
-  transform: ((text: string) => string) | 'html';
-  loader: Loader;
-};
+export type IDumiTechStackOnBlockLoadResult = OnLoadResult;
 
-export type IDumiOnBlockLoadResult = OnLoadResult;
-
-export type IDumiOnBlockLoadArgs = OnLoadArgs & {
+export type IDumiTechStackOnBlockLoadArgs = OnLoadArgs & {
   entryPointCode: string;
 };
 
@@ -140,8 +133,8 @@ export abstract class IDumiTechStack {
    * so this method is provided to facilitate developers to convert codes.
    */
   abstract onBlockLoad?(
-    args: IDumiOnBlockLoadArgs,
-  ): IDumiOnBlockLoadResult | null;
+    args: IDumiTechStackOnBlockLoadArgs,
+  ): IDumiTechStackOnBlockLoadResult | null;
 }
 
 export interface AtomAssetsParserResult {

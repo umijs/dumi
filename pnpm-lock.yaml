@@ -356,19 +356,6 @@ importers:
         specifier: ^17.0.1
         version: 17.2.2(vue@3.3.4)(webpack@5.89.0)
 
-  suites/babel-plugin-iife:
-    dependencies:
-      '@umijs/bundler-utils':
-        specifier: ^4.0.84
-        version: 4.0.84
-    devDependencies:
-      '@vue/babel-plugin-jsx':
-        specifier: ^1.1.1
-        version: 1.1.5(@babel/core@7.23.3)
-      father:
-        specifier: ^4.1.9
-        version: 4.3.0(styled-components@6.1.1)(webpack@5.89.0)
-
   suites/boilerplate:
     dependencies:
       '@umijs/utils':
@@ -432,9 +419,6 @@ importers:
       '@umijs/bundler-webpack':
         specifier: ^4.0.81
         version: 4.0.81(styled-components@6.1.1)(typescript@5.2.2)(webpack@5.89.0)
-      babel-plugin-iife:
-        specifier: workspace:*
-        version: link:../babel-plugin-iife
       codesandbox-import-utils:
         specifier: ^2.2.3
         version: 2.2.3
@@ -2456,7 +2440,7 @@ packages:
     dependencies:
       '@babel/core': 7.23.3
       '@jest/types': 29.6.3
-      '@jridgewell/trace-mapping': 0.3.19
+      '@jridgewell/trace-mapping': 0.3.20
       babel-plugin-istanbul: 6.1.1
       chalk: 4.1.2
       convert-source-map: 2.0.0
@@ -2506,6 +2490,7 @@ packages:
   /@jridgewell/resolve-uri@3.1.0:
     resolution: {integrity: sha512-F2msla3tad+Mfht5cJq7LSXcdudKTWCVYUgw6pLFOOHSTtZlj6SWNYAp+AhuqLmWdBO2X5hPrLcu8cVP8fy28w==}
     engines: {node: '>=6.0.0'}
+    dev: true
 
   /@jridgewell/resolve-uri@3.1.1:
     resolution: {integrity: sha512-dSYZh7HhCDtCKm4QakX0xFpsRDqjjtZf/kjI/v3T3Nwt5r8/qz/M19F9ySyOqU94SXBmeG9ttTul+YnR4LOxFA==}
@@ -2523,13 +2508,6 @@ packages:
 
   /@jridgewell/sourcemap-codec@1.4.15:
     resolution: {integrity: sha512-eF2rxCRulEKXHTRiDrDy6erMYWqNw4LPdQ8UQA4huuxaQsVeRPFl2oM8oDGxMFhJUWZf9McpLtJasDDZb/Bpeg==}
-
-  /@jridgewell/trace-mapping@0.3.19:
-    resolution: {integrity: sha512-kf37QtfW+Hwx/buWGMPcR60iF9ziHa6r/CZJIHbmcm4+0qrXiVdxegAH0F6yddEVQ7zdkjcGCgCzUu+BcbhQxw==}
-    dependencies:
-      '@jridgewell/resolve-uri': 3.1.0
-      '@jridgewell/sourcemap-codec': 1.4.15
-    dev: false
 
   /@jridgewell/trace-mapping@0.3.20:
     resolution: {integrity: sha512-R8LcPeWZol2zR8mmH3JeKQ6QRCFb7XgUhV9ZlGhHLGyg4wpPiPZNQOOWhFZhxKw8u//yTbNGI42Bx/3paXEQ+Q==}
@@ -2577,42 +2555,12 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@microsoft/api-extractor-model@7.27.5:
-    resolution: {integrity: sha512-9/tBzYMJitR+o+zkPr1lQh2+e8ClcaTF6eZo7vZGDqRt2O5XmXWPbYJZmxyM3wb5at6lfJNEeGZrQXLjsQ0Nbw==}
-    dependencies:
-      '@microsoft/tsdoc': 0.14.2
-      '@microsoft/tsdoc-config': 0.16.2
-      '@rushstack/node-core-library': 3.59.6
-    transitivePeerDependencies:
-      - '@types/node'
-    dev: true
-
   /@microsoft/api-extractor-model@7.27.5(@types/node@18.17.1):
     resolution: {integrity: sha512-9/tBzYMJitR+o+zkPr1lQh2+e8ClcaTF6eZo7vZGDqRt2O5XmXWPbYJZmxyM3wb5at6lfJNEeGZrQXLjsQ0Nbw==}
     dependencies:
       '@microsoft/tsdoc': 0.14.2
       '@microsoft/tsdoc-config': 0.16.2
       '@rushstack/node-core-library': 3.59.6(@types/node@18.17.1)
-    transitivePeerDependencies:
-      - '@types/node'
-    dev: true
-
-  /@microsoft/api-extractor@7.36.3:
-    resolution: {integrity: sha512-u0H6362AQq+r55X8drHx4npgkrCfJnMzRRHfQo8PMNKB8TcBnrTLfXhXWi+xnTM6CzlU/netEN8c4bq581Rnrg==}
-    hasBin: true
-    dependencies:
-      '@microsoft/api-extractor-model': 7.27.5
-      '@microsoft/tsdoc': 0.14.2
-      '@microsoft/tsdoc-config': 0.16.2
-      '@rushstack/node-core-library': 3.59.6
-      '@rushstack/rig-package': 0.4.0
-      '@rushstack/ts-command-line': 4.15.1
-      colors: 1.2.5
-      lodash: 4.17.21
-      resolve: 1.22.6
-      semver: 7.5.4
-      source-map: 0.6.1
-      typescript: 5.0.4
     transitivePeerDependencies:
       - '@types/node'
     dev: true
@@ -2806,23 +2754,6 @@ packages:
       '@types/estree': 1.0.1
       estree-walker: 2.0.2
       picomatch: 2.3.1
-    dev: true
-
-  /@rushstack/node-core-library@3.59.6:
-    resolution: {integrity: sha512-bMYJwNFfWXRNUuHnsE9wMlW/mOB4jIwSUkRKtu02CwZhQdmzMsUbxE0s1xOLwTpNIwlzfW/YT7OnOHgDffLgYg==}
-    peerDependencies:
-      '@types/node': '*'
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-    dependencies:
-      colors: 1.2.5
-      fs-extra: 7.0.1
-      import-lazy: 4.0.0
-      jju: 1.4.0
-      resolve: 1.22.6
-      semver: 7.5.4
-      z-schema: 5.0.5
     dev: true
 
   /@rushstack/node-core-library@3.59.6(@types/node@18.17.1):
@@ -3360,6 +3291,7 @@ packages:
 
   /@types/node@20.4.7:
     resolution: {integrity: sha512-bUBrPjEry2QUTsnuEjzjbS7voGWCc30W0qzgMf90GPeDGFRakvrz47ju+oqDAKCXLUCe39u57/ORMl/O/04/9g==}
+    dev: true
 
   /@types/normalize-package-data@2.4.2:
     resolution: {integrity: sha512-lqa4UEhhv/2sjjIQgjX8B+RBjj47eo0mzGasklVJ78UKGQY1r0VpB9XHDaZZO9qzEFDdy4MrXLuEaSmPrPSe/A==}
@@ -4160,7 +4092,7 @@ packages:
       react-refresh: 0.14.0
       schema-utils: 3.3.0
       source-map: 0.7.4
-      webpack: 5.89.0
+      webpack: 5.89.0(@swc/core@1.3.72)
 
   /@umijs/renderer-react@4.0.84(react-dom@18.1.0)(react@18.1.0):
     resolution: {integrity: sha512-0SDMuLsBpXmdNzubwke0ihq1tvlhDumZn0BJ0JC7xavOmx9bx6jWo3BRrBn1BfkUoCJC8E4C8ZmDJMKrmQ7BUA==}
@@ -4375,7 +4307,7 @@ packages:
   /@vue/compiler-core@3.3.4:
     resolution: {integrity: sha512-cquyDNvZ6jTbf/+x+AgM2Arrp6G4Dzbb0R64jiG804HRMfRiFXWI6kqUVqZ6ZR0bQhIoQjB4+2bhNtVwndW15g==}
     dependencies:
-      '@babel/parser': 7.23.0
+      '@babel/parser': 7.23.3
       '@vue/shared': 3.3.4
       estree-walker: 2.0.2
       source-map-js: 1.0.2
@@ -4432,7 +4364,7 @@ packages:
   /@vue/reactivity-transform@3.3.4:
     resolution: {integrity: sha512-MXgwjako4nu5WFLAjpBnCj/ieqcjE2aJBINUNQzkZQfzIZA4xn+0fV1tIYBJvvva3N3OvKGofRLvQIwEQPpaXw==}
     dependencies:
-      '@babel/parser': 7.23.0
+      '@babel/parser': 7.23.3
       '@vue/compiler-core': 3.3.4
       '@vue/shared': 3.3.4
       estree-walker: 2.0.2
@@ -6071,7 +6003,7 @@ packages:
       postcss-modules-values: 4.0.0(postcss@8.4.29)
       postcss-value-parser: 4.2.0
       semver: 7.5.4
-      webpack: 5.89.0
+      webpack: 5.89.0(@swc/core@1.3.72)
 
   /css-prefers-color-scheme@6.0.3(postcss@8.4.29):
     resolution: {integrity: sha512-4BqMbZksRkJQx2zAjrokiGMd07RqOa2IxIrrN10lyBe9xhn9DEvjUK79J6jkeiv9D9hQFXKb6g1jwU62jziJZA==}
@@ -7599,43 +7531,6 @@ packages:
       - webpack-plugin-serve
     dev: true
 
-  /father@4.3.0(styled-components@6.1.1)(webpack@5.89.0):
-    resolution: {integrity: sha512-3y4vlJVFBJBRKEP7Yg+6Z3zQA9KGBwPdbndCWL2W1jVZg0D2bmSXq5nG/uxIUJs/10BgLvpjvM6kMnNsjIhDuQ==}
-    hasBin: true
-    dependencies:
-      '@microsoft/api-extractor': 7.36.3
-      '@umijs/babel-preset-umi': 4.0.84(styled-components@6.1.1)
-      '@umijs/bundler-utils': 4.0.84
-      '@umijs/bundler-webpack': 4.0.84(styled-components@6.1.1)(typescript@5.0.4)(webpack@5.89.0)
-      '@umijs/case-sensitive-paths-webpack-plugin': 1.0.1
-      '@umijs/core': 4.0.84
-      '@umijs/utils': 4.0.84
-      '@vercel/ncc': 0.33.3
-      babel-plugin-dynamic-import-node: 2.3.3
-      babel-plugin-module-resolver: 4.1.0
-      babel-plugin-transform-define: 2.0.1
-      enhanced-resolve: 5.9.3
-      fast-glob: 3.2.12
-      file-system-cache: 2.0.0
-      loader-runner: 4.2.0
-      minimatch: 3.1.2
-      tsconfig-paths: 4.0.0
-      typescript: 5.0.4
-      typescript-transform-paths: 3.4.6(typescript@5.0.4)
-      v8-compile-cache: 2.3.0
-    transitivePeerDependencies:
-      - '@types/node'
-      - '@types/webpack'
-      - sockjs-client
-      - styled-components
-      - supports-color
-      - type-fest
-      - webpack
-      - webpack-dev-server
-      - webpack-hot-middleware
-      - webpack-plugin-serve
-    dev: true
-
   /fault@2.0.1:
     resolution: {integrity: sha512-WtySTkS4OKev5JtpHXnib4Gxiurzh5NCGvWrFaZ34m6JehfTUhKZvn9njTfw48t6JumVQOmrKqpmGcdwxnhqBQ==}
     dependencies:
@@ -7817,7 +7712,7 @@ packages:
       semver: 7.5.4
       tapable: 2.2.1
       typescript: 5.0.4
-      webpack: 5.89.0
+      webpack: 5.89.0(@swc/core@1.3.72)
 
   /fork-ts-checker-webpack-plugin@8.0.0(typescript@5.2.2)(webpack@5.89.0):
     resolution: {integrity: sha512-mX3qW3idpueT2klaQXBzrIM/pHw+T0B/V9KHEvNrqijTq9NFnMZU6oreVxDYcf33P8a5cW+67PjodNHthGnNVg==}
@@ -9232,7 +9127,7 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       '@babel/core': 7.23.3
-      '@babel/parser': 7.23.0
+      '@babel/parser': 7.23.3
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-coverage: 3.2.0
       semver: 6.3.1
@@ -9296,7 +9191,7 @@ packages:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 20.4.7
+      '@types/node': 18.17.1
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -14606,29 +14501,6 @@ packages:
       terser: 5.24.0
       webpack: 5.89.0(@swc/core@1.3.72)
 
-  /terser-webpack-plugin@5.3.9(webpack@5.89.0):
-    resolution: {integrity: sha512-ZuXsqE07EcggTWQjXUj+Aot/OMcD0bMKGgF63f7UxYcu5/AJF53aIpK1YoP5xR9l6s/Hy2b+t1AM0bLNPRuhwA==}
-    engines: {node: '>= 10.13.0'}
-    peerDependencies:
-      '@swc/core': '*'
-      esbuild: '*'
-      uglify-js: '*'
-      webpack: ^5.1.0
-    peerDependenciesMeta:
-      '@swc/core':
-        optional: true
-      esbuild:
-        optional: true
-      uglify-js:
-        optional: true
-    dependencies:
-      '@jridgewell/trace-mapping': 0.3.20
-      jest-worker: 27.5.1
-      schema-utils: 3.3.0
-      serialize-javascript: 6.0.1
-      terser: 5.24.0
-      webpack: 5.89.0
-
   /terser@5.20.0:
     resolution: {integrity: sha512-e56ETryaQDyebBwJIWYB2TT6f2EZ0fL0sW/JRXNMN26zZdKi2u/E/5my5lG6jNxym6qsrVXfFRmOdV42zlAgLQ==}
     engines: {node: '>=10'}
@@ -15785,45 +15657,6 @@ packages:
   /webpack-virtual-modules@0.5.0:
     resolution: {integrity: sha512-kyDivFZ7ZM0BVOUteVbDFhlRt7Ah/CSPwJdi8hBpkK7QLumUqdLtVfm/PX/hkcnrvr0i77fO5+TjZ94Pe+C9iw==}
     dev: true
-
-  /webpack@5.89.0:
-    resolution: {integrity: sha512-qyfIC10pOr70V+jkmud8tMfajraGCZMBWJtrmuBymQKCrLTRejBI8STDp1MCyZu/QTdZSeacCQYpYNQVOzX5kw==}
-    engines: {node: '>=10.13.0'}
-    hasBin: true
-    peerDependencies:
-      webpack-cli: '*'
-    peerDependenciesMeta:
-      webpack-cli:
-        optional: true
-    dependencies:
-      '@types/eslint-scope': 3.7.7
-      '@types/estree': 1.0.5
-      '@webassemblyjs/ast': 1.11.6
-      '@webassemblyjs/wasm-edit': 1.11.6
-      '@webassemblyjs/wasm-parser': 1.11.6
-      acorn: 8.11.2
-      acorn-import-assertions: 1.9.0(acorn@8.11.2)
-      browserslist: 4.22.1
-      chrome-trace-event: 1.0.3
-      enhanced-resolve: 5.15.0
-      es-module-lexer: 1.3.1
-      eslint-scope: 5.1.1
-      events: 3.3.0
-      glob-to-regexp: 0.4.1
-      graceful-fs: 4.2.11
-      json-parse-even-better-errors: 2.3.1
-      loader-runner: 4.3.0
-      mime-types: 2.1.35
-      neo-async: 2.6.2
-      schema-utils: 3.3.0
-      tapable: 2.2.1
-      terser-webpack-plugin: 5.3.9(webpack@5.89.0)
-      watchpack: 2.4.0
-      webpack-sources: 3.2.3
-    transitivePeerDependencies:
-      - '@swc/core'
-      - esbuild
-      - uglify-js
 
   /webpack@5.89.0(@swc/core@1.3.72):
     resolution: {integrity: sha512-qyfIC10pOr70V+jkmud8tMfajraGCZMBWJtrmuBymQKCrLTRejBI8STDp1MCyZu/QTdZSeacCQYpYNQVOzX5kw==}

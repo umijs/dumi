@@ -1,6 +1,7 @@
 import type { PluginItem } from '@umijs/bundler-utils/compiled/@babel/core';
 import { transformSync } from '@umijs/bundler-utils/compiled/babel/core';
 import type { IDumiTechStack } from 'dumi';
+import { transformDemoCode } from 'dumi/tech-stack-utils';
 import type { Element } from 'hast';
 
 export default class VueJSXTechStack implements IDumiTechStack {
@@ -12,7 +13,8 @@ export default class VueJSXTechStack implements IDumiTechStack {
 
   transformCode(...[raw, opts]: Parameters<IDumiTechStack['transformCode']>) {
     if (opts.type === 'code-block') {
-      const isTSX = opts.fileAbsPath.endsWith('.tsx');
+      const filename = opts.fileAbsPath;
+      const isTSX = filename.endsWith('.tsx');
       const plugins: PluginItem[] = [];
       const presets: PluginItem[] = [];
       if (isTSX) {
@@ -23,16 +25,24 @@ export default class VueJSXTechStack implements IDumiTechStack {
           { isTSX, allExtensions: isTSX },
         ]);
       }
-      plugins.push(
-        require.resolve('dumi/compiled/@vue/babel-plugin-jsx'),
-        require.resolve('babel-plugin-iife'),
-      );
+      plugins.push(require.resolve('dumi/compiled/@vue/babel-plugin-jsx'));
       const result = transformSync(raw, {
-        filename: opts.fileAbsPath,
+        filename,
         plugins,
         presets,
       });
-      return (result?.code || '').replace(/;$/g, '');
+
+      if (result?.code) {
+        const { code } = transformDemoCode(result.code, {
+          filename,
+          parserConfig: {
+            syntax: 'ecmascript',
+          },
+        });
+        return `(async function() {
+          ${code}
+        })()`;
+      }
     }
     return raw;
   }

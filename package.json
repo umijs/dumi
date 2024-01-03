@@ -34,7 +34,9 @@
     "plugin-utils.js",
     "plugin-utils.d.ts",
     "bundler-utils.js",
-    "bundler-utils.d.ts"
+    "bundler-utils.d.ts",
+    "tech-stack-utils.js",
+    "tech-stack-utils.d.ts"
   ],
   "scripts": {
     "build": "father build && npm run build:crates",

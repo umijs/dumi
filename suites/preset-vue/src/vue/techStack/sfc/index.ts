@@ -1,24 +1,14 @@
-import { type TransformOptions } from '@umijs/bundler-utils/compiled/@babel/core';
-import { transformSync } from '@umijs/bundler-utils/compiled/babel/core';
 import type {
-  IDumiOnBlockLoadArgs,
-  IDumiOnBlockLoadResult,
   IDumiTechStack,
+  IDumiTechStackOnBlockLoadArgs,
+  IDumiTechStackOnBlockLoadResult,
 } from 'dumi';
-import { extraScript } from 'dumi/tech-stack-utils';
+import { extractScript, transformDemoCode } from 'dumi/tech-stack-utils';
 import hashId from 'hash-sum';
 import type { Element } from 'hast';
 import { dirname, resolve } from 'path';
 import { logger } from 'umi/plugin-utils';
 import { COMP_IDENTIFIER, compileSFC } from './compile';
-
-function transpile(source: string, opts?: TransformOptions) {
-  const result = transformSync(source, {
-    plugins: [require.resolve('babel-plugin-iife')],
-    ...opts,
-  });
-  return result?.code || '';
-}
 
 export default class VueSfcTechStack implements IDumiTechStack {
   name = 'vue3-sfc';
@@ -45,15 +35,26 @@ export default class VueSfcTechStack implements IDumiTechStack {
       }
       js += `\n${COMP_IDENTIFIER}.__id__ = "${id}";
         export default ${COMP_IDENTIFIER};`;
-      return transpile(js).replace(/;$/g, '');
+
+      const { code } = transformDemoCode(js, {
+        filename,
+        parserConfig: {
+          syntax: 'ecmascript',
+        },
+      });
+      return `(async function() {
+        ${code}
+      })()`;
     }
     return raw;
   }
 
-  onBlockLoad(args: IDumiOnBlockLoadArgs): IDumiOnBlockLoadResult {
+  onBlockLoad(
+    args: IDumiTechStackOnBlockLoadArgs,
+  ): IDumiTechStackOnBlockLoadResult {
     return {
       loader: 'tsx',
-      contents: extraScript(args.entryPointCode),
+      contents: extractScript(args.entryPointCode),
     };
   }
 }
