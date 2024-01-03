@@ -6,25 +6,16 @@ import type { sync } from 'enhanced-resolve';
 import fs from 'fs';
 import path from 'path';
 import { pkgUp, winPath } from 'umi/plugin-utils';
-import { DEFAULT_DEMO_EXTENSIONS } from '../constants';
-import { IDumiBlockHandler, IDumiTechStack } from '../types';
+import {
+  DEFAULT_DEMO_MODULE_EXTENSIONS,
+  DEFAULT_DEMO_PLAIN_TEXT_EXTENSIONS,
+} from '../constants';
+import { IDumiTechStack } from '../types';
 
 export interface IParsedBlockAsset {
   asset: ExampleBlockAsset;
   sources: Record<string, string>;
   frontmatter: ReturnType<typeof parseCodeFrontmatter>['frontmatter'];
-}
-
-// for frameworks like vue , we need to extract the JS fragments in their scripts
-function extraScript(htmlLike: string) {
-  const htmlScriptReg = /<script\b(?:\s[^>]*>|>)(.*?)<\/script>/gims;
-  let match = htmlScriptReg.exec(htmlLike);
-  let scripts = '';
-  while (match) {
-    scripts += match[1] + '\n';
-    match = htmlScriptReg.exec(htmlLike);
-  }
-  return scripts;
 }
 
 async function parseBlockAsset(opts: {
@@ -99,22 +90,10 @@ async function parseBlockAsset(opts: {
           builder.onLoad({ filter: /.*/ }, (args) => {
             const ext = path.extname(args.path);
             const techStack = opts.techStack;
-            let blockHandler: IDumiBlockHandler | undefined;
-            if (techStack.getBlockHandler) {
-              blockHandler = techStack.getBlockHandler(args);
-            }
 
-            let isModule =
-              DEFAULT_DEMO_EXTENSIONS.includes(ext) || blockHandler?.isModule;
+            let isModule = DEFAULT_DEMO_MODULE_EXTENSIONS.includes(ext);
+            let isPlainText = DEFAULT_DEMO_PLAIN_TEXT_EXTENSIONS.includes(ext);
 
-            const isPlainText = [
-              '.css',
-              '.less',
-              '.sass',
-              '.scss',
-              '.styl',
-              '.json',
-            ].includes(ext);
             const isEntryPoint = args.pluginData.kind === 'entry-point';
             const filename = winPath(
               path.relative(path.dirname(opts.fileAbsPath), args.path),
@@ -122,7 +101,7 @@ async function parseBlockAsset(opts: {
               // discard leading ./ or ../
               .replace(/^(\.?\.\/)+/g, '');
 
-            if (isModule || isPlainText) {
+            if (techStack.onBlockLoad || isModule || isPlainText) {
               asset.dependencies[filename] = {
                 type: 'FILE',
                 value:
@@ -159,14 +138,13 @@ async function parseBlockAsset(opts: {
 
               let contents = asset.dependencies[filename].value;
 
-              if (blockHandler) {
-                const { transform, loader } = blockHandler;
-                contents =
-                  transform === 'html'
-                    ? extraScript(contents)
-                    : transform(contents);
-                return { contents, loader };
+              if (techStack.onBlockLoad) {
+                return techStack.onBlockLoad({
+                  entryPointCode: contents,
+                  ...args,
+                });
               }
+
               return {
                 // only continue to load for module files
                 contents: isModule ? contents : '',

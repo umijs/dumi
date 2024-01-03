@@ -1,6 +1,11 @@
 import { type TransformOptions } from '@umijs/bundler-utils/compiled/@babel/core';
 import { transformSync } from '@umijs/bundler-utils/compiled/babel/core';
-import type { IDumiBlockHandler, IDumiTechStack } from 'dumi';
+import type {
+  IDumiOnBlockLoadArgs,
+  IDumiOnBlockLoadResult,
+  IDumiTechStack,
+} from 'dumi';
+import { extraScript } from 'dumi/tech-stack-utils';
 import hashId from 'hash-sum';
 import type { Element } from 'hast';
 import { dirname, resolve } from 'path';
@@ -14,10 +19,6 @@ function transpile(source: string, opts?: TransformOptions) {
   });
   return result?.code || '';
 }
-
-type GetBlockHandlerArgs = Parameters<
-  NonNullable<IDumiTechStack['getBlockHandler']>
->[0];
 
 export default class VueSfcTechStack implements IDumiTechStack {
   name = 'vue3-sfc';
@@ -49,11 +50,10 @@ export default class VueSfcTechStack implements IDumiTechStack {
     return raw;
   }
 
-  getBlockHandler(args: GetBlockHandlerArgs): IDumiBlockHandler {
+  onBlockLoad(args: IDumiOnBlockLoadArgs): IDumiOnBlockLoadResult {
     return {
       loader: 'tsx',
-      transform: 'html',
-      isModule: args.path.endsWith('.vue'),
+      contents: extraScript(args.entryPointCode),
     };
   }
 }

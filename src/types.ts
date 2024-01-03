@@ -5,7 +5,11 @@ import type { IDumiDemoProps } from '@/client/theme-api/DumiDemo';
 import type { ILocalesConfig, IThemeConfig } from '@/client/theme-api/types';
 import type { IContentTab } from '@/features/tabs';
 import type { IThemeLoadResult } from '@/features/theme/loader';
-import { Loader, OnLoadArgs } from '@umijs/bundler-utils/compiled/esbuild';
+import {
+  Loader,
+  OnLoadArgs,
+  OnLoadResult,
+} from '@umijs/bundler-utils/compiled/esbuild';
 import type { IModify } from '@umijs/core';
 import type {
   AssetsPackage,
@@ -75,6 +79,12 @@ export type IDumiBlockHandler = {
   loader: Loader;
 };
 
+export type IDumiOnBlockLoadResult = OnLoadResult;
+
+export type IDumiOnBlockLoadArgs = OnLoadArgs & {
+  entryPointCode: string;
+};
+
 export abstract class IDumiTechStack {
   /**
    * tech stack name, such as 'react'
@@ -122,12 +132,16 @@ export abstract class IDumiTechStack {
   ): Promise<IParsedBlockAsset['sources']> | IParsedBlockAsset['sources'];
 
   /**
-   * How to resolve demo modules's entry code when analyzing dependencies and handling assets
-   * `transform` can be a function or an `html` literal
-   * If it is specified as 'html', the program will extract the contents of all script tags internally.
-   * `loader` will specify the module type to process the content returned by the transformer.
+   * Use current function as onLoad CallBack(https://esbuild.github.io/plugins/#on-load)
+   * @description
+   * Why use this method?
+   * By default, dumi can only support the parsing of js/ts related code blocks,
+   * but many front-end frameworks have custom extensions,
+   * so this method is provided to facilitate developers to convert codes.
    */
-  abstract getBlockHandler?(args: OnLoadArgs): IDumiBlockHandler;
+  abstract onBlockLoad?(
+    args: IDumiOnBlockLoadArgs,
+  ): IDumiOnBlockLoadResult | null;
 }
 
 export interface AtomAssetsParserResult {
