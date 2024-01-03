@@ -1,5 +1,12 @@
 import { ReactComponent as IconInbox } from '@ant-design/icons-svg/inline-svg/outlined/inbox.svg';
-import { FormattedMessage, history, Link, type useSiteSearch } from 'dumi';
+import animateScrollTo from 'animated-scroll-to';
+import {
+  FormattedMessage,
+  history,
+  Link,
+  useLocation,
+  type useSiteSearch,
+} from 'dumi';
 import React, {
   Fragment,
   useCallback,
@@ -119,6 +126,20 @@ const SearchResult: FC<{
 }> = (props) => {
   const [data, histsCount] = useFlatSearchData(props.data);
   const [activeIndex, setActiveIndex] = useState(-1);
+  const { pathname } = useLocation();
+
+  const onItemSelect = (item: ISearchResult[0]['hints'][0]) => {
+    props.onItemSelect?.(item);
+
+    const url = new URL(item?.link, location.origin);
+    if (url?.pathname === pathname && !url.hash) {
+      setTimeout(() => {
+        animateScrollTo(0, {
+          maxDuration: 300,
+        });
+      }, 1);
+    }
+  };
 
   useEffect(() => {
     const handler = (ev: KeyboardEvent) => {
@@ -133,7 +154,7 @@ const SearchResult: FC<{
         )!.value as ISearchResult[0]['hints'][0];
 
         history.push(item.link);
-        props.onItemSelect?.(item);
+        onItemSelect?.(item);
         (document.activeElement as HTMLInputElement).blur();
       }
 
@@ -167,7 +188,7 @@ const SearchResult: FC<{
                 <Link
                   to={item.value.link}
                   data-active={activeIndex === item.activeIndex || undefined}
-                  onClick={() => props.onItemSelect?.(item.value)}
+                  onClick={() => onItemSelect?.(item.value)}
                 >
                   {React.createElement(ICONS_MAPPING[item.value.type])}
                   <h4>
