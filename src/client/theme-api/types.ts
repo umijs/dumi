@@ -243,10 +243,3 @@ export type IRoutesById = Record<
     [key: string]: any;
   }
 >;
-
-export interface ITechStackRuntimeApi {
-  techStackName: string;
-  openCodeSandbox?: (props: IPreviewerProps) => void;
-  openStackBlitz?: (props: IPreviewerProps) => void;
-  renderToCanvas?: (canvas: Element, component: any) => Promise<() => void>;
-}

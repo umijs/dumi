@@ -5,8 +5,9 @@ import { ReactComponent as IconStackBlitz } from '@ant-design/icons-svg/inline-s
 import copy from 'copy-to-clipboard';
 import {
   getSketchJSON,
+  openCodeSandbox,
+  openStackBlitz,
   useIntl,
-  useTechStackRuntimeApi,
   type IPreviewerProps,
 } from 'dumi';
 import SourceCode from 'dumi/theme/builtins/SourceCode';
@@ -57,12 +58,10 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
   const isSingleFile = files.length === 1;
   const lang = (files[activeKey][0].match(/\.([^.]+)$/)?.[1] || 'text') as any;
 
-  const { openCodeSandbox, openStackBlitz } = useTechStackRuntimeApi();
-
   return (
     <>
       <div className="dumi-default-previewer-actions">
-        {!props.disabledActions?.includes('CSB') && openCodeSandbox && (
+        {!props.disabledActions?.includes('CSB') && (
           <button
             className="dumi-default-previewer-action-btn"
             type="button"
@@ -74,7 +73,7 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
             <IconCodeSandbox />
           </button>
         )}
-        {!props.disabledActions?.includes('STACKBLITZ') && openStackBlitz && (
+        {!props.disabledActions?.includes('STACKBLITZ') && (
           <button
             className="dumi-default-previewer-action-btn"
             type="button"

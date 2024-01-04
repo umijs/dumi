@@ -1,19 +1,38 @@
+import { ApplyPluginsType } from 'dumi';
 import { useEffect, useRef } from 'react';
-import { useTechStackRuntimeApi, type ISiteContext } from './context';
+import { type ISiteContext } from './context';
+import { pluginManager } from './utils';
 
 // maintain all the mounted instance
 const map = new Map<string, any>();
 
-export const useRenderer = ({ id, component }: ISiteContext['demos'][1]) => {
+export const useRenderer = ({
+  id,
+  component,
+  render,
+}: ISiteContext['demos'][1]) => {
   const canvasRef = useRef<HTMLDivElement>(null);
   const tearDownRef = useRef(() => {});
 
-  const { renderToCanvas } = useTechStackRuntimeApi();
   useEffect(() => {
     async function resolveRender() {
-      if (!canvasRef.current || !renderToCanvas || !component) return;
+      if (!canvasRef.current || render?.type !== 'CANCELABLE' || !component)
+        return;
+
       let instance = map.get(id);
       if (instance) return;
+
+      const renderToCanvas = render.plugin
+        ? async (canvas: Element, component: any) => {
+            const result = pluginManager.applyPlugins({
+              type: ApplyPluginsType.modify,
+              key: render.plugin!,
+              initialValue: { canvas, component },
+            });
+            return await result;
+          }
+        : render.func!;
+
       instance = component instanceof Promise ? await component : component;
       instance = instance.default ?? instance;
       map.set(id, instance);
@@ -28,7 +47,7 @@ export const useRenderer = ({ id, component }: ISiteContext['demos'][1]) => {
       };
     }
     resolveRender();
-  }, [canvasRef, component, renderToCanvas]);
+  }, [canvasRef, component, render?.type]);
 
   useEffect(() => () => tearDownRef.current(), []);
 

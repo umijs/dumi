@@ -78,6 +78,31 @@ export type IDumiTechStackOnBlockLoadArgs = OnLoadArgs & {
   entryPointCode: string;
 };
 
+export interface IDumiTechStackRenderType {
+  /**
+   * There are two rendering methods of the tech stack:
+   * ’DEFAULT‘ - being rendered directly by React;
+   * ’CANCELABLE‘ - using React as the host.
+   * React is only responsible for managing instances,
+   * and the actual rendering is completed by the corresponding framework.
+   */
+  type: 'DEFAULT' | 'CANCELABLE';
+  /**
+   * Available when type is `CANCELABLE`, define a cancelable function (codgen) with the following type:
+   * ```ts
+   * (canvas: Element, component: any) => (Promise<() => void> | (() => void));
+   * ```
+   * Can be used when cancelable function is a small function
+   */
+  func?: string;
+  /**
+   * Available when type is `CANCELABLE`,
+   * define the cancelable function as a public function through dumi's plugin mechanism.
+   * Users can execute the cancelable function through `applyPlugins`.
+   */
+  plugin?: string;
+}
+
 export abstract class IDumiTechStack {
   /**
    * tech stack name, such as 'react'
@@ -94,6 +119,11 @@ export abstract class IDumiTechStack {
     raw: string,
     opts: { id?: string; type: 'external' | 'code-block'; fileAbsPath: string },
   ): string;
+
+  /**
+   * Component rendering type
+   */
+  abstract render?: IDumiTechStackRenderType;
 
   /**
    * generator for return asset metadata

@@ -14,7 +14,7 @@
   "files": [
     "dist",
     "compiled",
-    "runtime"
+    "templates"
   ],
   "scripts": {
     "build": "father build",
@@ -25,7 +25,6 @@
   },
   "dependencies": {
     "@dumijs/vue-meta": "workspace:*",
-    "@stackblitz/sdk": "^1.9.0",
     "@types/hash-sum": "^1.0.0",
     "@umijs/bundler-webpack": "^4.0.81",
     "codesandbox-import-utils": "^2.2.3",

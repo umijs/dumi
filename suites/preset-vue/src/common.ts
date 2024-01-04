@@ -15,8 +15,6 @@ export default (api: IApi) => {
   });
 
   api.modifyConfig((memo) => {
-    memo.babelLoaderCustomize = require.resolve('./vueBabelLoaderCustomize');
-
     const userConfig = api.userConfig;
 
     const vueConfig = userConfig?.vue;

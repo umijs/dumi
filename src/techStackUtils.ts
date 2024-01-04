@@ -3,8 +3,8 @@ import { transformSync } from '@swc/core';
 
 /**
  * for frameworks like vue , we need to extract the JS fragments in their scripts
- * @param htmlLike
- * @returns js or ts
+ * @param htmlLike HTML, vue and other html-like files are available
+ * @returns js/ts code
  */
 export function extractScript(htmlLike: string) {
   const htmlScriptReg = /<script\b(?:\s[^>]*>|>)(.*?)<\/script>/gims;
@@ -22,6 +22,11 @@ export interface TransformDemoCodeOptions {
   parserConfig: ParserConfig;
 }
 
+/**
+ * Use swc to convert es module into statements inside the function body.
+ * More transform process detail, refer to:
+ * https://github.com/umijs/dumi/blob/master/crates/swc_plugin_react_demo/src/lib.rs#L126
+ */
 export function transformDemoCode(
   code: string,
   opts: TransformDemoCodeOptions,

@@ -4,6 +4,7 @@ import type {
   IDumiTechStack,
   IDumiTechStackOnBlockLoadArgs,
   IDumiTechStackOnBlockLoadResult,
+  IDumiTechStackRenderType,
   IDumiUserConfig,
 } from '@/types';
 let unistUtilVisit: typeof import('unist-util-visit');
@@ -22,6 +23,7 @@ export {
   IDumiTechStack,
   IDumiTechStackOnBlockLoadArgs,
   IDumiTechStackOnBlockLoadResult,
+  IDumiTechStackRenderType,
   AtomAssetsParser,
   AtomAssetsParserResult,
 };

@@ -410,9 +410,6 @@ importers:
       '@dumijs/vue-meta':
         specifier: workspace:*
         version: link:../dumi-vue-meta
-      '@stackblitz/sdk':
-        specifier: ^1.9.0
-        version: 1.9.0
       '@types/hash-sum':
         specifier: ^1.0.0
         version: 1.0.0

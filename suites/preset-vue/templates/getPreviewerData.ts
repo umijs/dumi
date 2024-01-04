@@ -1,12 +1,9 @@
-import StackBlitzSDK, { Project } from '@stackblitz/sdk';
-import { IFiles, getParameters } from 'codesandbox-import-utils/lib/api/define';
+import type { IFiles } from 'codesandbox-import-utils/lib/api/define';
 import { IPreviewerProps } from 'dumi';
 import type { ExampleBlockAsset } from 'dumi-assets-types';
 
-const defaultTitle = 'vue demo';
-const defaultDesc = 'An auto-generated vue demo by dumi';
-
-const CSB_API_ENDPOINT = 'https://codesandbox.io/api/v1/sandboxes/define';
+export const defaultTitle = 'vue demo';
+export const defaultDesc = 'An auto-generated vue demo by dumi';
 
 const genIndexHtml = (
   title: string,
@@ -97,7 +94,7 @@ function getDefaultVueEntry(asset: ExampleBlockAsset) {
 
 // entryFileName can be index.tsx, index.vue, index.jsx
 // The configuration of index.vue is processed as a TypeScript project
-function getVueApp({
+export function getVueApp({
   asset,
   title = defaultTitle,
   description = defaultDesc,
@@ -203,43 +200,4 @@ function getVueApp({
   };
 
   return files;
-}
-
-export function openCodeSandbox(props: IPreviewerProps) {
-  const form = document.createElement('form');
-  const input = document.createElement('input');
-  const CSBData = { files: getVueApp(props) };
-  form.method = 'POST';
-  form.target = '_blank';
-  form.style.display = 'none';
-  form.action = props?.api || CSB_API_ENDPOINT;
-  form.appendChild(input);
-  form.setAttribute('data-demo', props.assets?.id || '');
-
-  input.name = 'parameters';
-  input.value = getParameters(CSBData);
-
-  document.body.appendChild(form);
-
-  form.submit();
-  form.remove();
-}
-
-export function openStackBlitz(props: IPreviewerProps) {
-  const { title, description } = props;
-  const config: Project = {
-    title: title || defaultTitle,
-    description,
-    template: 'node',
-    files: {},
-    dependencies: {},
-  };
-
-  const files = getVueApp(props);
-
-  config.files = Object.entries(files).reduce((acc, [k, v]) => {
-    acc[k] = v.content;
-    return acc;
-  }, {} as Record<string, string>);
-  StackBlitzSDK.openProject(config);
 }

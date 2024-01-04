@@ -2,12 +2,14 @@ import type {
   IDumiTechStack,
   IDumiTechStackOnBlockLoadArgs,
   IDumiTechStackOnBlockLoadResult,
+  IDumiTechStackRenderType,
 } from 'dumi';
 import { extractScript, transformDemoCode } from 'dumi/tech-stack-utils';
 import hashId from 'hash-sum';
 import type { Element } from 'hast';
 import { dirname, resolve } from 'path';
 import { logger } from 'umi/plugin-utils';
+import { VUE_RENDERER_KEY } from '../../constants';
 import { COMP_IDENTIFIER, compileSFC } from './compile';
 
 export default class VueSfcTechStack implements IDumiTechStack {
@@ -16,6 +18,20 @@ export default class VueSfcTechStack implements IDumiTechStack {
   isSupported(_: Element, lang: string) {
     return ['vue'].includes(lang);
   }
+
+  onBlockLoad(
+    args: IDumiTechStackOnBlockLoadArgs,
+  ): IDumiTechStackOnBlockLoadResult {
+    return {
+      loader: 'tsx',
+      contents: extractScript(args.entryPointCode),
+    };
+  }
+
+  render: IDumiTechStackRenderType = {
+    type: 'CANCELABLE',
+    plugin: VUE_RENDERER_KEY,
+  };
 
   transformCode(...[raw, opts]: Parameters<IDumiTechStack['transformCode']>) {
     if (opts.type === 'code-block') {
@@ -47,14 +63,5 @@ export default class VueSfcTechStack implements IDumiTechStack {
       })()`;
     }
     return raw;
-  }
-
-  onBlockLoad(
-    args: IDumiTechStackOnBlockLoadArgs,
-  ): IDumiTechStackOnBlockLoadResult {
-    return {
-      loader: 'tsx',
-      contents: extractScript(args.entryPointCode),
-    };
   }
 }

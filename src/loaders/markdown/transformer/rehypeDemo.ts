@@ -280,11 +280,13 @@ export default function rehypeDemo(
               const importChunk = `import( /* webpackChunkName: "${chunkName}" */ '${winPath(
                 parseOpts.fileAbsPath,
               )}?techStack=${techStack.name}')`;
-              // use IIFE when the tech stack can render at runtime
-              component =
-                techStack.name !== 'react'
-                  ? `(async () => ${importChunk})()`
-                  : `React.memo(React.lazy(() => ${importChunk}))`;
+
+              if (techStack.render?.type === 'CANCELABLE') {
+                component = `(async () => ${importChunk})()`;
+              } else {
+                component = `React.memo(React.lazy(() => ${importChunk}))`;
+              }
+
               // use code value as title
               // TODO: force checking
               if (codeValue) codeNode.properties!.title = codeValue;
@@ -382,6 +384,7 @@ export default function rehypeDemo(
                     return {
                       // TODO: special id for inline demo
                       id: asset.id,
+                      render: techStack.render,
                       component,
                     };
                   }
@@ -427,6 +430,7 @@ export default function rehypeDemo(
                   return {
                     id: asset.id,
                     component,
+                    render: techStack.render,
                     asset: techStack.generateMetadata
                       ? await techStack.generateMetadata(asset, techStackOpts)
                       : asset,

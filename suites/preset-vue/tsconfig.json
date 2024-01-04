@@ -7,5 +7,5 @@
     "esModuleInterop": true,
     "baseUrl": "./"
   },
-  "exclude": ["runtime/**"]
+  "exclude": ["templates/**"]
 }

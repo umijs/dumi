@@ -1,5 +1,5 @@
 import { SP_ROUTE_PREFIX } from '@/constants';
-import { useAppData, useSiteData, useTechStackRuntimeApi } from 'dumi';
+import { useAppData, useSiteData } from 'dumi';
 import Container from 'dumi/theme/builtins/Container';
 import Previewer from 'dumi/theme/builtins/Previewer';
 import React, { createElement, type FC, type ReactNode } from 'react';
@@ -42,10 +42,10 @@ export const DumiDemo: FC<IDumiDemoProps> = React.memo(
     const { demos, historyType } = useSiteData();
     const { basename } = useAppData();
     const demo = demos[props.demo.id];
-    Object.assign(demo, { id: props.demo.id });
-    const { component, asset } = demo;
-    const { renderToCanvas } = useTechStackRuntimeApi();
+    const { component, asset, render } = demo;
     const canvasRef = useRenderer(demo);
+
+    const cancelable = render?.type === 'CANCELABLE';
 
     // hide debug demo in production
     if (process.env.NODE_ENV === 'production' && props.previewerProps.debug)
@@ -54,11 +54,7 @@ export const DumiDemo: FC<IDumiDemoProps> = React.memo(
     if (props.demo.inline) {
       return (
         <DemoErrorBoundary>
-          {renderToCanvas ? (
-            <div ref={canvasRef}></div>
-          ) : (
-            createElement(component)
-          )}
+          {cancelable ? <div ref={canvasRef}></div> : createElement(component)}
         </DemoErrorBoundary>
       );
     }
@@ -80,7 +76,7 @@ export const DumiDemo: FC<IDumiDemoProps> = React.memo(
       >
         {props.previewerProps.iframe ? null : (
           <DemoErrorBoundary>
-            {renderToCanvas ? (
+            {cancelable ? (
               <div ref={canvasRef}></div>
             ) : (
               createElement(component)

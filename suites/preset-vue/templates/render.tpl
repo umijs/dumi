@@ -1,6 +1,6 @@
 import { createApp } from 'vue';
 
-export async function renderToCanvas(canvas: Element, component: any) {
+export async function {{{pluginKey}}}({ canvas, component }) {
   if (component.__css__) {
     setTimeout(() => {
       document

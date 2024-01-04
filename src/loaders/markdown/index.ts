@@ -68,10 +68,19 @@ function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
 export const demos = {
   {{#demos}}
   '{{{id}}}': {
+    id: "{{{id}}}",
     component: {{{component}}},
-    {{#techStack}}
-      techStack: "{{{techStack}}}",
-    {{/techStack}}
+    {{#render}}
+      render: {
+        type: "{{{render.type}}}",
+        {{#render.func}}
+        func: {{{render.func}}},
+        {{/render.func}}
+        {{#render.plugin}}
+        plugin: "{{{render.plugin}}}",
+        {{/render.plugin}}
+      },
+    {{/render}}
     asset: {{{renderAsset}}},
   },
   {{/demos}}

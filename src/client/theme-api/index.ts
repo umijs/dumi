@@ -22,18 +22,10 @@ export { AtomRenderer } from './AtomRenderer';
 export { DumiDemo } from './DumiDemo';
 export { DumiDemoGrid } from './DumiDemoGrid';
 export { DumiPage } from './DumiPage';
-export {
-  TechStackRuntimeContext,
-  useSiteData,
-  useTechStackRuntimeApi,
-} from './context';
+export { useSiteData } from './context';
 export { openCodeSandbox } from './openCodeSandbox';
 export { openStackBlitz } from './openStackBlitz';
-export type {
-  IPreviewerProps,
-  ITechStackRuntimeApi,
-  PreviewerType,
-} from './types';
+export type { IPreviewerProps, PreviewerType } from './types';
 export { useAtomAssets } from './useAtomAssets';
 export { useLocale } from './useLocale';
 export { useNavData } from './useNavData';
