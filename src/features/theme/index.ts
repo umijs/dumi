@@ -17,6 +17,9 @@ import { safeExcludeInMFSU } from '../derivative';
 import loadTheme, { IThemeLoadResult } from './loader';
 
 const DEFAULT_THEME_PATH = path.join(__dirname, '../../../theme-default');
+const DEFAULT_LOADING_PATH = winPath(
+  path.resolve(__dirname, '../../client/pages/Loading'),
+);
 
 /**
  * get pkg theme name
@@ -273,7 +276,7 @@ export default (api: IApi) => {
     // execute before umi tmpFiles plugin
     stage: -Infinity,
     fn() {
-      const { globalLoading } = api.appData;
+      const { globalLoading = DEFAULT_LOADING_PATH } = api.appData;
       const enableNProgress = !!api.config.themeConfig.nprogress;
 
       // replace original loading component data
@@ -291,12 +294,8 @@ export default (api: IApi) => {
               )}';
 import './nprogress.css';`
             : ''
-        }${
-          globalLoading
-            ? `
-import UserLoading from '${globalLoading}';`
-            : ''
         }
+import UserLoading from '${globalLoading}';
 import React, { useLayoutEffect, type FC } from 'react';
 import { useSiteData } from 'dumi';
 
@@ -321,7 +320,7 @@ const DumiLoading: FC = () => {
     }
   }, []);
 
-  return ${globalLoading ? '<UserLoading />' : 'null'};
+  return <UserLoading />
 }
 
 export default DumiLoading;
