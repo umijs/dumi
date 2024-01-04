@@ -34,8 +34,7 @@ yarn add dumi cross-env -D
   },
 ```
 
-3. 增加配置，新建 `.dumirc.js`。
-
+3. 增加配置，新建 `.dumirc.js|ts` 到 `APP_ROOT` 指定的根目录中。dumi 会根据 `APP_ROOT` 来消费配置文件，如果不指定 `APP_ROOT`，则在项目根目录创建即可。
 ```js
 export default {
   chainWebpack(memo) {
