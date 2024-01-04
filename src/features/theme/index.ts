@@ -2,7 +2,6 @@ import {
   LOCAL_THEME_DIR,
   PICKED_PKG_FIELDS,
   PREFERS_COLOR_ATTR,
-  TEMPLATES_DIR,
   THEME_PREFIX,
   VERSION_2_LEVEL_NAV,
 } from '@/constants';
@@ -11,7 +10,7 @@ import { parseModuleSync } from '@umijs/bundler-utils';
 import { execSync } from 'child_process';
 import fs from 'fs';
 import hostedGit from 'hosted-git-info';
-import path, { join } from 'path';
+import path from 'path';
 import { deepmerge, lodash, resolve, semver, winPath } from 'umi/plugin-utils';
 import { safeExcludeInMFSU } from '../derivative';
 import loadTheme, { IThemeLoadResult } from './loader';
@@ -369,7 +368,7 @@ export default DumiLoading;
     api.writeTmpFile({
       noPluginDir: true,
       path: 'dumi/theme/ContextWrapper.tsx',
-      tplPath: winPath(join(TEMPLATES_DIR, 'ContextWrapper.ts.tpl')),
+      tplPath: require.resolve('../../templates/ContextWrapper.ts.tpl'),
       context: {
         contextPath: winPath(require.resolve('../../client/theme-api/context')),
         defaultExport: hasDefaultExport

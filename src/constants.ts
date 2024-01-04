@@ -1,5 +1,3 @@
-import { join } from 'path';
-
 export const LOCAL_DUMI_DIR = '.dumi';
 
 export const LOCAL_THEME_DIR = `${LOCAL_DUMI_DIR}/theme`;
@@ -29,5 +27,3 @@ export const USELESS_TMP_FILES = ['tsconfig.json', 'typings.d.ts'];
 export const VERSION_2_LEVEL_NAV = '^2.2.0';
 
 export const VERSION_2_DEPRECATE_SOFT_BREAKS = '^2.2.0';
-
-export const TEMPLATES_DIR = join(__dirname, './templates');

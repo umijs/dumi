@@ -1,24 +1,21 @@
+import { ReactComponent as IconError } from '@ant-design/icons-svg/inline-svg/filled/close-circle.svg';
 import classnames from 'classnames';
-import {
-  IPreviewerProps,
-  LiveContext,
-  LiveProvider,
-  isLiveEnabled,
-  useLocation,
-} from 'dumi';
-import LiveDemo from 'dumi/theme/slots/LiveDemo';
-import LiveEditor from 'dumi/theme/slots/LiveEditor';
-import LiveError from 'dumi/theme/slots/LiveError';
+import { useLiveDemo, useLocation, type IPreviewerProps } from 'dumi';
 import PreviewerActions from 'dumi/theme/slots/PreviewerActions';
-import React, { useContext, useRef, type FC } from 'react';
+import React, { useRef, useState, type FC } from 'react';
 import './index.less';
 
-const InternalPreviewer: FC<IPreviewerProps> = (props) => {
+const Previewer: FC<IPreviewerProps> = (props) => {
   const demoContainer = useRef<HTMLDivElement>(null);
   const { hash } = useLocation();
   const link = `#${props.asset.id}`;
-
-  const { enabled } = useContext(LiveContext);
+  const {
+    node: liveDemoNode,
+    error: liveDemoError,
+    setSources: setLiveDemoSources,
+  } = useLiveDemo(props.asset.id);
+  const [editorError, setEditorError] = useState<Error | null>(null);
+  const combineError = liveDemoError || editorError;
 
   return (
     <div
@@ -45,12 +42,16 @@ const InternalPreviewer: FC<IPreviewerProps> = (props) => {
             }
             src={props.demoUrl}
           ></iframe>
-        ) : enabled ? (
-          <LiveDemo />
         ) : (
-          props.children
+          liveDemoNode || props.children
         )}
       </div>
+      {combineError && (
+        <div className="dumi-default-previewer-demo-error">
+          <IconError />
+          {combineError.toString()}
+        </div>
+      )}
       <div className="dumi-default-previewer-meta">
         {(props.title || props.debug) && (
           <div className="dumi-default-previewer-desc">
@@ -70,50 +71,31 @@ const InternalPreviewer: FC<IPreviewerProps> = (props) => {
         )}
         <PreviewerActions
           {...props}
+          onSourcesTranspile={({ err, sources }) => {
+            if (err) {
+              setEditorError(err);
+            } else {
+              setEditorError(null);
+              setLiveDemoSources(sources);
+
+              if (props.iframe) {
+                demoContainer
+                  .current!.querySelector('iframe')!
+                  .contentWindow!.postMessage({
+                    type: 'dumi.liveDemo.setSources',
+                    value: sources,
+                  });
+              }
+            }
+          }}
           demoContainer={
             props.iframe
               ? (demoContainer.current?.firstElementChild as HTMLIFrameElement)
               : demoContainer.current!
           }
-          sourceCode={
-            enabled ? (
-              <div>
-                <LiveEditor />
-                <LiveError />
-              </div>
-            ) : null
-          }
         />
       </div>
     </div>
-  );
-};
-
-const Previewer: FC<IPreviewerProps> = (props) => {
-  const children = <InternalPreviewer {...props} />;
-
-  // Only Single File
-  if (
-    !isLiveEnabled() ||
-    props.live === false ||
-    Object.entries(props.asset.dependencies).filter(
-      ([, { type }]) => type === 'FILE',
-    ).length > 1
-  ) {
-    return children;
-  }
-
-  return (
-    <LiveProvider
-      initialCode={
-        Object.entries(props.asset.dependencies).filter(
-          ([, { type }]) => type === 'FILE',
-        )[0][1].value
-      }
-      demoId={props.asset.id}
-    >
-      {children}
-    </LiveProvider>
   );
 };
 

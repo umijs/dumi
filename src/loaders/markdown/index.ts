@@ -47,30 +47,18 @@ interface IMdLoaderTextModeOptions
   mode: 'text';
 }
 
-interface IMdLoaderScopeModeOptions
-  extends Omit<IMdLoaderDefaultModeOptions, 'builtins' | 'mode'> {
-  mode: 'scope';
-}
-
-interface IMdLoaderScopeIndexModeOptions
-  extends Omit<IMdLoaderDefaultModeOptions, 'builtins' | 'mode'> {
-  mode: 'scope-index';
-}
-
 export type IMdLoaderOptions =
   | IMdLoaderDefaultModeOptions
   | IMdLoaderDemosModeOptions
   | IMdLoaderDemoModeOptions
   | IMdLoaderFrontmatterModeOptions
   | IMdLoaderTextModeOptions
-  | IMdLoaderDemoIndexModeOptions
-  | IMdLoaderScopeModeOptions
-  | IMdLoaderScopeIndexModeOptions;
+  | IMdLoaderDemoIndexModeOptions;
 
 function getDemoSourceFiles(demos: IMdTransformerResult['meta']['demos'] = []) {
   return demos.reduce<string[]>((ret, demo) => {
-    if ('sources' in demo) {
-      ret.push(...Object.values(demo.sources));
+    if ('resolveMap' in demo) {
+      ret.push(...Object.values(demo.resolveMap));
     }
 
     return ret;
@@ -137,7 +125,8 @@ export const demos = {
   {{#demos}}
   '{{{id}}}': {
     component: {{{component}}},
-    asset: {{{renderAsset}}}
+    asset: {{{renderAsset}}},
+    context: {{{renderContext}}}
   },
   {{/demos}}
 };`,
@@ -149,10 +138,10 @@ export const demos = {
 
         // render asset for normal demo
         let { asset } = this;
-        const { sources } = this;
+        const { resolveMap } = this;
 
         // use raw-loader to load all source files
-        Object.keys(this.sources).forEach((file: string) => {
+        Object.keys(this.resolveMap).forEach((file: string) => {
           // handle un-existed source file, e.g. custom tech-stack return custom dependencies
           if (!asset.dependencies[file]) return;
 
@@ -160,10 +149,27 @@ export const demos = {
           asset = lodash.cloneDeep(asset);
           asset.dependencies[
             file
-          ].value = `{{{require('-!${sources[file]}?dumi-raw').default}}}`;
+          ].value = `{{{require('-!${resolveMap[file]}?dumi-raw').default}}}`;
         });
 
         return JSON.stringify(asset, null, 2).replace(/"{{{|}}}"/g, '');
+      },
+      renderContext: function renderContext(
+        this: NonNullable<typeof demos>[0],
+      ) {
+        // do not render context for inline demo
+        if (!('resolveMap' in this)) return 'undefined';
+
+        // render context for normal demo
+        const context = Object.entries(this.resolveMap).reduce(
+          (acc, [key, path]) => ({
+            ...acc,
+            [key]: `{{{require('${path}')}}}`,
+          }),
+          {},
+        );
+
+        return JSON.stringify(context, null, 2).replace(/"{{{|}}}"/g, '');
       },
     },
   );
@@ -216,140 +222,6 @@ function emitText(opts: IMdLoaderTextModeOptions, ret: IMdTransformerResult) {
   });
 }
 
-function emitScope(opts: IMdLoaderOptions, ret: IMdTransformerResult) {
-  const { demos } = ret.meta;
-
-  // ignore `import type` and `import 'xxx'`
-  const importReg = /import(?!(\stype|\s'))[\s\S]*?from.*;/g;
-
-  return Mustache.render(
-    `{{#renderImport}}
-{{{.}}}
-{{/renderImport}}
-
-export const scopes = {
-{{#demos}}
-  '{{{id}}}': { {{{renderScope}}} },
-{{/demos}}
-}`,
-    {
-      demos,
-      renderImport: function renderImport() {
-        // do not render asset for inline demo
-        if (!demos) return [];
-
-        // render scope for normal demo
-        const imports: Record<string, string[]> = {};
-        for (const demo of demos) {
-          if ('asset' in demo) {
-            const { asset } = demo;
-            Object.entries(asset.dependencies).forEach(([filename, file]) => {
-              if (filename.endsWith('.tsx')) {
-                const fileImports =
-                  file.value.match(importReg) ||
-                  ([] as unknown as RegExpMatchArray);
-                fileImports.forEach((item) => {
-                  const scope = item
-                    .replace(/import([\s\S]*?)from.*;/, '$1')
-                    .trim();
-                  const dep = item
-                    .replace(/import[\s\S]*?from(.*);/, '$1')
-                    .trim();
-
-                  const namedReg = /.*\{([\s\S]*?)}/g;
-                  const namedScope = namedReg.test(scope)
-                    ? scope
-                        .replace(namedReg, '$1')
-                        .split(',')
-                        .map((item) => item.trim())
-                        .filter(Boolean)
-                    : [];
-
-                  const defaultReg = /(?:(?![,{]).)*/;
-                  const defaultScope = scope.match(defaultReg)?.[0].trim();
-
-                  imports[dep] ??= [];
-                  if (defaultScope) {
-                    const defaultImport = `default as ${defaultScope}`;
-                    if (!imports[dep].includes(defaultImport)) {
-                      imports[dep].push(defaultImport);
-                    }
-                  }
-
-                  if (namedScope.length) {
-                    for (const item of namedScope) {
-                      if (!imports[dep].includes(item)) {
-                        imports[dep].push(item);
-                      }
-                    }
-                  }
-                });
-              }
-            });
-          }
-        }
-
-        return Object.entries(imports)
-          .map(([key, value]) => {
-            return value.length
-              ? `import { ${value.join(', ')} } from ${key};`
-              : '';
-          })
-          .filter(Boolean);
-      },
-      renderScope: function renderScope(this: NonNullable<typeof demos>[0]) {
-        // do not render asset for inline demo
-        if (!('asset' in this)) return '';
-
-        // render asset for normal demo
-        const { asset } = this;
-        const demoScopes: string[] = [];
-        Object.entries(asset.dependencies).forEach(([filename, file]) => {
-          if (filename.endsWith('.tsx')) {
-            const imports =
-              file.value.match(importReg) ||
-              ([] as unknown as RegExpMatchArray);
-            const scopes = imports.reduce<string[]>((acc, item) => {
-              const scope = item
-                .replace(/import([\s\S]*?)from.*;/, '$1')
-                .trim();
-              const scopeList = scope
-                .replace(/[{}]/g, '')
-                .trim()
-                .replace(/,$/g, '')
-                // A as B ==> B
-                .replace(/\S+\sas\s(.*?)/g, '$1');
-              return [...acc, scopeList];
-            }, []);
-            demoScopes.push(...scopes);
-          }
-        });
-        return demoScopes.join(', ');
-      },
-    },
-  );
-}
-
-function emitScopeIndex(
-  this: any,
-  opts: IMdLoaderScopeIndexModeOptions,
-  ret: IMdTransformerResult,
-) {
-  const { demos } = ret.meta;
-
-  return Mustache.render(
-    `export const scopeIndex = {
-{{#demos}}
-  '{{{id}}}': {{{getter}}},
-{{/demos}}
-};`,
-    {
-      demos,
-      getter: `() => import('${winPath(this.resourcePath)}?type=scope')`,
-    },
-  );
-}
-
 function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
   const { demos, embeds } = ret.meta;
 
@@ -368,10 +240,6 @@ function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
       return emitFrontmatter.call(this, opts, ret);
     case 'text':
       return emitText.call(this, opts, ret);
-    case 'scope':
-      return emitScope.call(this, opts, ret);
-    case 'scope-index':
-      return emitScopeIndex.call(this, opts, ret);
     default:
       return emitDefault.call(this, opts, ret);
   }

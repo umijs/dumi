@@ -17,13 +17,35 @@ const demoIdMap = Object.keys(filesMeta).reduce((total, current) => {
 const demosCache = new Map<string, Promise<IDemoData | undefined>>();
 
 /**
+ * expand context for source omit extension
+ * why not do this in compile-time?
+ * asset metadata also has extension and for reduce bundle size
+ */
+function expandDemoContext(context?: IDemoData['context']) {
+  if (context) {
+    Object.keys(context).forEach((src) => {
+      const withoutExt = src.match(/^(.+)\.(js|jsx|ts|tsx|json)$/)?.[1];
+
+      if (withoutExt && !context[withoutExt]) {
+        context[withoutExt] = context[src];
+      }
+    });
+  }
+}
+
+/**
  * use demo data by id
  */
 export function useDemo(id: string): IDemoData | undefined {
   if (!demosCache.get(id)) {
     demosCache.set(
       id,
-      demoIdMap[id]?.().then(({ demos }) => demos[id]),
+      demoIdMap[id]?.().then(({ demos }) => {
+        // expand context for omit ext
+        expandDemoContext(demos[id].context);
+
+        return demos[id];
+      }),
     );
   }
 
@@ -46,7 +68,11 @@ export async function getFullDemos() {
   ).then((ret) =>
     ret.reduce<Record<string, IDemoData>>((total, { id, demos }) => {
       Object.values(demos).forEach((demo) => {
+        // set route id in runtime for reduce bundle size
         demo.routeId = id;
+
+        // expand context for omit ext
+        expandDemoContext(demo.context);
       });
 
       return {

@@ -1,7 +1,6 @@
-import { TEMPLATES_DIR } from '@/constants';
 import type { IApi } from '@/types';
 import { generateMetaChunkName } from '@/utils';
-import path, { join } from 'path';
+import path from 'path';
 import type { IRoute } from 'umi';
 import { winPath } from 'umi/plugin-utils';
 import { isTabRouteFile } from './tabs';
@@ -69,7 +68,7 @@ export default (api: IApi) => {
     api.writeTmpFile({
       noPluginDir: true,
       path: 'dumi/meta/index.ts',
-      tplPath: winPath(join(TEMPLATES_DIR, 'meta/index.ts.tpl')),
+      tplPath: require.resolve('../templates/meta/index.ts.tpl'),
       context: {
         metaFiles: parsedMetaFiles,
         chunkName: function chunkName(this) {
@@ -89,7 +88,7 @@ export default (api: IApi) => {
     api.writeTmpFile({
       noPluginDir: true,
       path: 'dumi/meta/runtime.ts',
-      tplPath: winPath(join(TEMPLATES_DIR, 'meta/runtime.ts.tpl')),
+      tplPath: require.resolve('../templates/meta/runtime.ts.tpl'),
       context: {
         deepmerge: winPath(path.dirname(require.resolve('deepmerge/package'))),
       },
@@ -99,7 +98,7 @@ export default (api: IApi) => {
     api.writeTmpFile({
       noPluginDir: true,
       path: 'dumi/meta/exports.ts',
-      tplPath: winPath(join(TEMPLATES_DIR, 'meta/exports.ts.tpl')),
+      tplPath: require.resolve('../templates/meta/exports.ts.tpl'),
       context: {},
     });
   });
