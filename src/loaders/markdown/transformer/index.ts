@@ -83,7 +83,9 @@ function keepSoftBreak(pkg: IApi['pkg']) {
   if (pkg?.name?.startsWith('@examples/') || pkg?.name === 'dumi') return false;
 
   const ver = pkg?.devDependencies?.dumi ?? pkg?.dependencies?.dumi ?? '^2.0.0';
-  return !semver.subset(ver, VERSION_2_DEPRECATE_SOFT_BREAKS);
+  return !semver.subset(ver, VERSION_2_DEPRECATE_SOFT_BREAKS, {
+    includePrerelease: true,
+  });
 }
 
 async function applyUnifiedPlugin(opts: {

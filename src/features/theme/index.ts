@@ -87,7 +87,7 @@ function checkMinor2ByPkg(pkg: IApi['pkg']) {
   const ver =
     pkg.peerDependencies?.dumi || pkg.devDependencies?.dumi || '^2.0.0';
 
-  return semver.subset(ver, VERSION_2_LEVEL_NAV);
+  return semver.subset(ver, VERSION_2_LEVEL_NAV, { includePrerelease: true });
 }
 
 export default (api: IApi) => {
