@@ -36,8 +36,9 @@ export interface BaseAtomAssetsParserParams<T> {
   watchOptions?: chokidar.WatchOptions;
 }
 
-export class BaseAtomAssetsParser<T extends LanguageMetaParser>
-  implements AtomAssetsParser
+export class BaseAtomAssetsParser<
+  T extends LanguageMetaParser = LanguageMetaParser,
+> implements AtomAssetsParser
 {
   private watchArgs!: HandleWatcherArgs['watchArgs'];
 

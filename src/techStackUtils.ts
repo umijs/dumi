@@ -1,6 +1,13 @@
 import type { ParserConfig } from '@swc/core';
 import { transformSync } from '@swc/core';
 
+export {
+  IDumiTechStack,
+  IDumiTechStackOnBlockLoadArgs,
+  IDumiTechStackOnBlockLoadResult,
+  IDumiTechStackRenderType,
+} from './types';
+
 /**
  * for frameworks like vue , we need to extract the JS fragments in their scripts
  * @param htmlLike HTML, vue and other html-like files are available

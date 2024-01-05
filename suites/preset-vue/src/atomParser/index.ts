@@ -1,17 +1,15 @@
 import type { MetaCheckerOptions } from '@dumijs/vue-meta';
 import { createProject, dumiTransfomer } from '@dumijs/vue-meta';
 import {
-  BaseAtomAssetsParser,
-  createRemoteClass,
+  BaseApiParserOptions,
   LanguageMetaParser,
   PatchFile,
+  createApiParser,
 } from 'dumi';
 import path from 'path';
 import { fsExtra } from 'umi/plugin-utils';
 
-export interface VueParserOptions {
-  entryFile: string;
-  resolveDir: string;
+export interface VueParserOptions extends BaseApiParserOptions {
   tsconfigPath?: string;
   checkerOptions?: MetaCheckerOptions;
 }
@@ -39,9 +37,9 @@ class VueMetaParser implements LanguageMetaParser {
     switch (event) {
       case 'add':
       case 'change': {
-        const fileContent = await fsExtra.readFile(file.fileName, 'utf8');
+        const fileContent = await fsExtra.readFile(fileName, 'utf8');
         this.checker.patchFiles([
-          { action: event, fileName: fileName, text: fileContent },
+          { action: event, fileName, text: fileContent },
         ]);
         return;
       }
@@ -63,12 +61,10 @@ class VueMetaParser implements LanguageMetaParser {
   }
 }
 
-const RemoteVueMetaParser = createRemoteClass(__filename, VueMetaParser);
-
-export function createVueAtomAssetsParser(opts: VueParserOptions) {
-  return new BaseAtomAssetsParser<VueMetaParser>({
-    ...opts,
-    parser: new RemoteVueMetaParser(opts),
+export const VueApiParser = createApiParser({
+  filename: __filename,
+  worker: VueMetaParser,
+  parseOptions: {
     handleWatcher(watcher, { parse, patch, watchArgs }) {
       return watcher.on('all', (ev, file) => {
         if (
@@ -84,5 +80,5 @@ export function createVueAtomAssetsParser(opts: VueParserOptions) {
         }
       });
     },
-  });
-}
+  },
+});

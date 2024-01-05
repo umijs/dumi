@@ -1,5 +1,5 @@
 import type { IApi } from 'dumi';
-import { createVueAtomAssetsParser, type VueParserOptions } from './atomParser';
+import { VueApiParser, type VueParserOptions } from './atomParser';
 
 export default (api: IApi) => {
   api.describe({
@@ -32,9 +32,7 @@ export default (api: IApi) => {
 
     if (!options.entryFile || !options.resolveDir) return memo;
 
-    api.service.atomParser = createVueAtomAssetsParser(
-      options as VueParserOptions,
-    );
+    api.service.atomParser = VueApiParser(options as VueParserOptions);
     return memo;
   });
 };

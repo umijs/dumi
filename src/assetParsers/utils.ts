@@ -2,6 +2,11 @@ import * as Comlink from 'comlink';
 import nodeEndPoint from 'comlink/dist/umd/node-adapter';
 import { lodash } from 'umi/plugin-utils';
 import { Worker, isMainThread, parentPort } from 'worker_threads';
+import {
+  BaseAtomAssetsParser,
+  BaseAtomAssetsParserParams,
+  LanguageMetaParser,
+} from './BaseParser';
 
 /**
  * Only expose these methods to avoid all properties being proxied
@@ -87,4 +92,73 @@ export function createRemoteClass<
       });
     }
   } as unknown as T;
+}
+
+export interface CreateApiParserOptions<S, C> {
+  /**
+   * The full file name (absolute path) of the file where `parseWorker` is located
+   */
+  filename: string;
+  /**
+   * Parsing class working in worker_thead
+   */
+  worker: S;
+  /**
+   * Main thread side work, mainly to detect file changes
+   */
+  parseOptions?: C;
+}
+
+export interface BaseApiParserOptions {
+  entryFile: string;
+  resolveDir: string;
+}
+
+/**
+ * Can be used to override apiParser
+ * @param options
+ * @returns A function that returns a Parser instance
+ * @example
+ * ```ts
+ * interface ParserOptions extends BaseApiParserOptions  {
+ *    // other props...
+ * }
+ * const Parser = createApiParser({
+ *    filename: __filename,
+ *    worker: (class {
+ *      constructor(opts: ParserOptions) {}
+ *      patch () {}
+ *      async parse () {
+ *        return {
+ *          components: {},
+ *          functions: {}
+ *        };
+ *      }
+ *      async destroy () {}
+ *    }),
+ *    parserOptions: {
+ *      handleWatcher(watcher, { parse, patch }) {
+ *        return watcher.on('all', (ev, file) => {
+ *          // You can perform patch and parse operations based on file changes.
+ *          // patch will transfer the corresponding file to the parseWorker,
+ *          // and parse will instruct the parseWorker to parse according to updated files.
+ *        });
+ *      },
+ *    },
+ * });
+ * ```
+ */
+export function createApiParser<
+  P extends new (...args: ConstructorParameters<P>) => InstanceType<P> &
+    LanguageMetaParser,
+>(options: CreateApiParserOptions<P, Partial<BaseAtomAssetsParserParams<P>>>) {
+  const { filename, worker, parseOptions } = options;
+  const ParserClass = createRemoteClass(filename, worker);
+  return (...opts: ConstructorParameters<P>) =>
+    new BaseAtomAssetsParser({
+      ...opts,
+      // @ts-ignore
+      parser: new ParserClass(...opts),
+      ...parseOptions,
+    });
 }
