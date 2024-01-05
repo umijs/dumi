@@ -154,11 +154,10 @@ export function createApiParser<
 >(options: CreateApiParserOptions<P, Partial<BaseAtomAssetsParserParams<P>>>) {
   const { filename, worker, parseOptions } = options;
   const ParserClass = createRemoteClass(filename, worker);
-  return (...opts: ConstructorParameters<P>) =>
+  return (...args: ConstructorParameters<P>) =>
     new BaseAtomAssetsParser({
-      ...opts,
-      // @ts-ignore
-      parser: new ParserClass(...opts),
+      ...(args as any[])?.[0],
+      parser: new ParserClass(...args),
       ...parseOptions,
     });
 }
