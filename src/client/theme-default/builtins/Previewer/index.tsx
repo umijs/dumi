@@ -12,7 +12,7 @@ const Previewer: FC<IPreviewerProps> = (props) => {
   const {
     node: liveDemoNode,
     error: liveDemoError,
-    setSources: setLiveDemoSources,
+    setSource: setLiveDemoSource,
   } = useLiveDemo(props.asset.id);
   const [editorError, setEditorError] = useState<Error | null>(null);
   const combineError = liveDemoError || editorError;
@@ -71,19 +71,19 @@ const Previewer: FC<IPreviewerProps> = (props) => {
         )}
         <PreviewerActions
           {...props}
-          onSourcesTranspile={({ err, sources }) => {
+          onSourceTranspile={({ err, source }) => {
             if (err) {
               setEditorError(err);
             } else {
               setEditorError(null);
-              setLiveDemoSources(sources);
+              setLiveDemoSource(source);
 
               if (props.iframe) {
                 demoContainer
                   .current!.querySelector('iframe')!
                   .contentWindow!.postMessage({
-                    type: 'dumi.liveDemo.setSources',
-                    value: sources,
+                    type: 'dumi.liveDemo.setSource',
+                    value: source,
                   });
               }
             }

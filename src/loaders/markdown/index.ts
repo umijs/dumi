@@ -304,7 +304,7 @@ export default function mdLoader(this: any, content: string) {
         getDemoSourceFiles(ret.meta.demos),
       );
 
-      // re-generate cache key with latest embeds & sources data
+      // re-generate cache key with latest embeds & source data
       const finalCacheKey = [
         baseCacheKey,
         getDepsCacheKey(depsMapping[this.resourcePath]),
