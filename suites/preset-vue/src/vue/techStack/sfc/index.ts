@@ -3,7 +3,7 @@ import type {
   IDumiTechStackOnBlockLoadArgs,
   IDumiTechStackOnBlockLoadResult,
   IDumiTechStackRenderType,
-} from 'dumi';
+} from 'dumi/tech-stack-utils';
 import { extractScript, transformDemoCode } from 'dumi/tech-stack-utils';
 import hashId from 'hash-sum';
 import type { Element } from 'hast';

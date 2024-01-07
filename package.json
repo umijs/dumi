@@ -158,7 +158,6 @@
     "@types/react-copy-to-clipboard": "^5.0.4",
     "@umijs/lint": "^4.0.84",
     "@umijs/plugins": "4.0.32",
-    "@vue/babel-plugin-jsx": "^1.1.1",
     "codesandbox-import-utils": "^2.2.3",
     "dumi-theme-mobile": "workspace:*",
     "eslint": "^8.46.0",

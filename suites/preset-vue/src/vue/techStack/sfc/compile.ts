@@ -1,5 +1,5 @@
-import type { PluginItem } from '@umijs/bundler-utils/compiled/@babel/core';
-import { transformSync } from '@umijs/bundler-utils/compiled/babel/core';
+import type { BabelCore } from 'dumi/bundler-utils';
+import { babelCore, babelPresetTypeScript } from 'dumi/bundler-utils';
 import * as path from 'path';
 import {
   CompilerError,
@@ -11,19 +11,22 @@ import {
   parse,
   rewriteDefault,
 } from 'vue/compiler-sfc';
+import { VueBabelJsxPlugin } from '../../constants';
+
+const { transformSync } = babelCore();
 
 function transform(src: string, filename: string, lang?: string) {
-  const plugins: PluginItem[] = [];
-  const presets: PluginItem[] = [];
+  const plugins: BabelCore.PluginItem[] = [];
+  const presets: BabelCore.PluginItem[] = [];
   if (lang === 'ts' || lang === 'tsx') {
     const isTSX = lang === 'tsx';
     presets.push([
-      require.resolve('@umijs/bundler-utils/compiled/babel/preset-typescript'),
+      babelPresetTypeScript(),
       { isTSX, allExtensions: isTSX, onlyRemoveTypeImports: true },
     ]);
   }
   if (lang === 'tsx' || lang === 'jsx') {
-    plugins.push(require.resolve('dumi/compiled/@vue/babel-plugin-jsx'));
+    plugins.push(VueBabelJsxPlugin);
   }
 
   const result = transformSync(src, {

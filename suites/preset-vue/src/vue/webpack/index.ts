@@ -1,4 +1,4 @@
-import Config from '@umijs/bundler-webpack/compiled/webpack-5-chain';
+import type Config from '@umijs/bundler-webpack/compiled/webpack-5-chain';
 import type { IApi } from 'umi';
 import { getConfig } from './config';
 
