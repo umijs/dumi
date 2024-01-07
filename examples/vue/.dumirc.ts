@@ -8,6 +8,7 @@ export default {
   resolve: {
     entryFile: './src/index.ts',
   },
+  html2sketch: {},
   presets: [require.resolve('@dumijs/preset-vue')],
   vue: {
     parserOptions: {

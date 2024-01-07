@@ -1,11 +1,23 @@
 import classnames from 'classnames';
 import { IPreviewerProps, useLocation } from 'dumi';
 import PreviewerActions from 'dumi/theme/slots/PreviewerActions';
-import React, { useRef, type FC } from 'react';
+import React, { useCallback, useState, type FC } from 'react';
 import './index.less';
 
 const Previewer: FC<IPreviewerProps> = (props) => {
-  const demoContainer = useRef<HTMLDivElement>(null);
+  const [demoContainer, setDemoContainer] = useState<
+    HTMLDivElement | HTMLIFrameElement | null
+  >(null);
+
+  const handleContainerRef = useCallback((node: HTMLDivElement) => {
+    if (!node) return;
+    if (props.iframe) {
+      setDemoContainer(node.firstElementChild as HTMLIFrameElement);
+    } else {
+      setDemoContainer(node);
+    }
+  }, []);
+
   const { hash } = useLocation();
   const link = `#${props.asset.id}`;
 
@@ -23,7 +35,7 @@ const Previewer: FC<IPreviewerProps> = (props) => {
         data-compact={props.compact || undefined}
         data-transform={props.transform || undefined}
         data-iframe={props.iframe || undefined}
-        ref={demoContainer}
+        ref={handleContainerRef}
       >
         {props.iframe ? (
           <iframe
@@ -55,14 +67,9 @@ const Previewer: FC<IPreviewerProps> = (props) => {
             )}
           </div>
         )}
-        <PreviewerActions
-          {...props}
-          demoContainer={
-            props.iframe
-              ? (demoContainer.current?.firstElementChild as HTMLIFrameElement)
-              : demoContainer.current!
-          }
-        />
+        {demoContainer && (
+          <PreviewerActions {...props} demoContainer={demoContainer} />
+        )}
       </div>
     </div>
   );
