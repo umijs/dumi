@@ -203,27 +203,6 @@ export default () => (
 );
 ```
 
-### resolveDemoModule
-
-- 类型：`Record<string, { transform: ((text: string) => string) | 'html', loader: Loader }>`
-- 默认值：`undefined`
-
-在分析依赖和处理资源时如何解析 Demo 模块
-
-`transform`可以是一个函数或一个`html`字面量。如果指定为`html`，程序将在内部提取所有`script`标签中内容。
-
-`loader` 将指定模块类型来处理`transform`返回的内容。
-
-以 Vue 为例，为了对.vue 文件进行依赖分析，可以这样配置：
-
-```ts
-export default {
-  resolveDemoModule: {
-    '.vue': { transform: 'html', loader: 'tsx' },
-  },
-};
-```
-
 这意味着 vue 文件将被处理为 html，并且脚本中的内容将被提取出来，然后这些内容将作为 tsx 文件进行依赖分析。
 
 ## 主题配置项

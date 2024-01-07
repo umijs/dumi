@@ -6,36 +6,106 @@ order: 1
 
 # 添加技术栈
 
-为 dumi 开发添加一个技术栈插件，需要实现以下功能，以添加 Vue 框架支持为例
+## IDumiTechStack 接口的实现
 
-### 实现非外部 Demo 代码的编译转换
-
-该功能主要通过插件 API `api.registerTechStack` 实现，在 Vue 框架支持中，主要利用该 API 实现对 JSX/SFC 两种组件代码的转换，这里主要讲单文件组件(SFC)的转换：
-
-对于一个`.vue`文件，可以采用官方的`@vue/compiler-sfc`进行编译，除了对于`template`及`script`的处理，还有对`style`的处理，最终我们需要将代码和样式统统整合为一段 JS 代码，并通过 dumi 提供的`babel-plugin-iife`插件，将模块代码包装成一个 IIFE 执行表达式交给 dumi。
-
-### 生成运行时执行代码
-
-不同框架在浏览器中运行时也各有不同，所以需要实现一下 API 供 dumi 在运行时调用
+为 dumi 开发添加一个技术栈插件，其核心是实现`IDumiTechStack`接口，我们以实现 Vue SFC 支持为例：
 
 ```ts
-export interface ITechStackRuntimeApi {
-  techStackName: string;
-  // CodeSandbox 预览实现
-  openCodeSandbox?: (props: IPreviewerProps) => void;
-  // StackBlitz 预览实现
-  openStackBlitz?: (props: IPreviewerProps) => void;
-  // 组件挂载DOM节点实现
-  renderToCanvas?: (canvas: Element, component: any) => Promise<() => void>;
+import type {
+  IDumiTechStack,
+  IDumiTechStackOnBlockLoadArgs,
+  IDumiTechStackOnBlockLoadResult,
+  IDumiTechStackRenderType,
+} from 'dumi/tech-stack-utils';
+import { extractScript, transformDemoCode } from 'dumi/tech-stack-utils';
+import hashId from 'hash-sum';
+import type { Element } from 'hast';
+import { dirname, resolve } from 'path';
+import { logger } from 'umi/plugin-utils';
+import { VUE_RENDERER_KEY } from '../../constants';
+import { COMP_IDENTIFIER, compileSFC } from './compile';
+
+export default class VueSfcTechStack implements IDumiTechStack {
+  name = 'vue3-sfc';
+
+  isSupported(_: Element, lang: string) {
+    return ['vue'].includes(lang);
+  }
+
+  onBlockLoad(
+    args: IDumiTechStackOnBlockLoadArgs,
+  ): IDumiTechStackOnBlockLoadResult {
+    return {
+      loader: 'tsx',
+      contents: extractScript(args.entryPointCode),
+    };
+  }
+
+  render: IDumiTechStackRenderType = {
+    type: 'CANCELABLE',
+    plugin: VUE_RENDERER_KEY,
+  };
+
+  transformCode(...[raw, opts]: Parameters<IDumiTechStack['transformCode']>) {
+    if (opts.type === 'code-block') {
+      const filename = !!opts.id
+        ? resolve(dirname(opts.fileAbsPath), opts.id, '.vue')
+        : opts.fileAbsPath;
+      const id = hashId(filename);
+
+      const compiled = compileSFC({ id, filename, code: raw });
+      if (Array.isArray(compiled)) {
+        logger.error(compiled);
+        return '';
+      }
+      let { js, css } = compiled;
+      if (css) {
+        js += `\n${COMP_IDENTIFIER}.__css__ = ${JSON.stringify(css)};`;
+      }
+      js += `\n${COMP_IDENTIFIER}.__id__ = "${id}";
+        export default ${COMP_IDENTIFIER};`;
+
+      // 将代码和样式整合为一段 JS 代码
+
+      const { code } = transformDemoCode(js, {
+        filename,
+        parserConfig: {
+          syntax: 'ecmascript',
+        },
+      });
+      return `(async function() {
+        ${code}
+      })()`;
+    }
+    return raw;
+  }
 }
 ```
 
-dumi 内部会通过`useTechStackRuntimeApi`去调用相关代码，但对于插件开发者则需要对这些方法进行实现：
+其实现分成三个部分：
 
-以`renderToCanvas`为例，`component`其实就是 SFC 转换好的 JS 代码，我们不仅需要挂载样式，Vue 应用实例，还需要在最后提供一个应用销毁的方法
+### transformCode: 编译转换 Internal Demo
+
+主要采用官方的`@vue/compiler-sfc`进行编译，`.vue`文件会被转换为 JS 和 CSS 代码，我们将两者封装为一个完整的 ES module。最后利用 `dumi/tech-stack-utils` 提供的`transformDemo`函数，将 ES module 转换成一个 IIFE 表达式（**代码在 dumi 编译中必须以一个 JS 表达式的方式存在**）。
+
+### render: 确定组件在 React 中的渲染方式
 
 ```ts
-export async function renderToCanvas(canvas: Element, component: any) {
+render: IDumiTechStackRenderType = {
+  type: 'CANCELABLE',
+  plugin: VUE_RENDERER_KEY,
+};
+```
+
+这里指定了 Vue 组件需要实现`cancelable`函数，而该函数则需要通过 Dumi RuntimePlugin 将其注入到 React 框架中。
+
+一个典型的`cancelable`函数如下：
+
+```ts
+// render.tpl
+import { createApp } from 'vue';
+
+export async function {{{pluginKey}}} ({ canvas, component }) {
   if (component.__css__) {
     setTimeout(() => {
       document
@@ -57,47 +127,65 @@ export async function renderToCanvas(canvas: Element, component: any) {
 }
 ```
 
-在实现这些方法之后，则可以利用`api.addRuntimePlugin`, `onGenerateFiles` 将方法注入到 dumi 运行时中
+其主要实现 Vue 应用的创建及挂载，并返回 Vue 应用的销毁方法。
+
+之后将该代码注入运行时：
 
 ```ts
-// runtime.tsx
-import { TechStackRuntimeContext } from 'dumi';
-const vueTechStackRuntimeApi = {
-  techStackName: 'vue3',
-  openCodeSandbox,
-  openStackBlitz,
-  renderToCanvas,
-};
+// generate vue render code
+api.onGenerateFiles(() => {
+  api.writeTmpFile({
+    path: 'index.ts',
+    tplPath: join(tplPath, 'render.tpl'),
+    context: {
+      pluginKey: VUE_RENDERER_KEY,
+    },
+  });
+});
 
-export function rootContainer(container: React.ReactNode) {
-  return (
-    <TechStackRuntimeContext.Provider value={vueTechStackRuntimeApi}>
-      {container}
-    </TechStackRuntimeContext.Provider>
-  );
-}
+api.addRuntimePluginKey(() => [VUE_RENDERER_KEY]);
+api.addRuntimePlugin(() =>
+  winPath(join(api.paths.absTmpPath, `plugin-${api.plugin.key}`, 'index.ts')),
+);
 ```
 
-### 模块的解析
+dumi 运行时就会通过`VUE_RENDERER_KEY`执行相应的`cancelable`函数。
 
-dumi 默认只能对`js`,`jsx`,`ts`,`tsx`文件进行依赖分析并生成相关 asset，对于`.vue`文件则束手无策。不过 dumi 提供`resolveDemoModule`选项来对文件进行处理，以`.vue`为例，可以这样配置
+### onBlockLoad: 模块加载
+
+dumi 默认只能对`js`,`jsx`,`ts`,`tsx`文件进行依赖分析并生成相关 asset，对于`.vue`文件则束手无策。我们可以通过`onBlockLoad`来接管默认的加载方式，主要目标是将`.vue`文件中的 script 代码提取出来方便 dumi 进行依赖分析：
 
 ```ts
-api.modifyConfig((memo) => {
-  memo.resolveDemoModule = {
-    '.vue': { loader: 'tsx', transform: 'html' },
-  };
-  return memo;
+onBlockLoad(
+    args: IDumiTechStackOnBlockLoadArgs,
+  ): IDumiTechStackOnBlockLoadResult {
+    return {
+      loader: 'tsx', // 将提取出的内容视为tsx模块
+      contents: extractScript(args.entryPointCode),
+    };
+  }
+
+```
+
+其中`extractScript`是`dumi/tech-stack-utils`提供的函数用以提取类 html 文件中的所有 script 代码。
+
+`IDumiTechStack`接口实现之后，我们还需要通过 registerTechStack 注册 Vue SFC
+
+```ts
+api.register({
+  key: 'registerTechStack',
+  stage: 1,
+  fn: () => new VueSfcTechStack(),
 });
 ```
 
-我们将`.vue`文件当做 html 处理，dumi 会抽取其所有 script 标签里的 js 代码，最后将其作为`tsx`进行依赖分析。
+之后就要考虑 External Demo 的编译及 API Table 的支持了：
 
-### webpack 配置
+## External Demo 编译支持
 
-添加对外部 Demo 的编译及打包支持，这需要我们对 webpack 进行配置，由于 dumi 本身是 react 框架，所以不能粗暴地移除对 react 的支持，而是需要将 react 相关配置限定在`.dumi`中。
+添加对 External Demo 的编译及打包支持，这需要我们对 Webpack 进行配置，由于 dumi 本身是 react 框架，所以不能粗暴地移除对 react 的支持，而是需要将 react 相关配置限定在`.dumi`中。
 
-### API Table 支持
+## API Table 支持
 
 API Table 的支持主要在于对框架元信息信息的提取，例如针对 Vue 组件，dumi 就提供了`@dumijs/vue-meta`包来提取元数据。其他框架也要实现相关的元数据提取，主流框架基本都有相应的元数据提取包，但需要注意的是，开发者需要适配到 dumi 的元数据 schema。
 
@@ -106,7 +194,7 @@ API Table 的支持主要在于对框架元信息信息的提取，例如针对 
 **子线程侧**，我们需要实现一个元数据 Parser，这里需要实现`LanguageMetaParser`接口
 
 ```ts
-import { LanguageMetaParser } from 'dumi';
+import { LanguageMetaParser, PatchFile } from 'dumi';
 
 class VueMetaParser implements LanguageMetaParser {
   async patch(file: PatchFile) {
@@ -124,29 +212,25 @@ class VueMetaParser implements LanguageMetaParser {
 
 `parse`负责数据的解析，`patch`则负责接收从主线程来的文件更新，`destroy`则负责完成子线程销毁前的解析器销毁工作。
 
-之后我们需要将该类转换为在子线程执行的类，dumi 同样提供了`createRemoteClass`方法
+之后我们只需要通过`createApiParser`导出相应的 VueApiParser
 
 ```ts
-import { createRemoteClass } from 'dumi';
+import {
+  BaseApiParserOptions,
+  LanguageMetaParser,
+  PatchFile,
+  createApiParser,
+} from 'dumi';
 
-export const RemoteVueMetaParser = createRemoteClass(__filename, VueMetaParser);
-```
-
-注意把这个语句和`LanguageMetaParser`实现放在一起，`__filename`表示将当前文件传入子线程中执行
-
-**主线程侧**，除了将子线程端的`Parser`传入，只需要处理文件更改
-
-```ts
-import { BaseAtomAssetsParser } from 'dumi';
-export function createVueAtomAssetsParser(opts: VueParserOptions) {
-  return new BaseAtomAssetsParser<VueMetaParser>({
-    ...opts,
-    // 将子线程端的parser传入
-    parser: new RemoteVueMetaParser(opts),
+export const VueApiParser = createApiParser({
+  filename: __filename,
+  worker: VueMetaParser,
+  parseOptions: {
+    // 主线程侧，只需要处理文件更改
     handleWatcher(watcher, { parse, patch, watchArgs }) {
       return watcher.on('all', (ev, file) => {
         if (
-          ['add', 'change', 'unlink'].includes(ev) && // 侦测js/jsx/tsx/ts/vue文件的添加或是修改
+          ['add', 'change', 'unlink'].includes(ev) &&
           /((?<!\.d)\.ts|\.(jsx?|tsx|vue))$/.test(file)
         ) {
           const cwd = watchArgs.options.cwd!;
@@ -158,16 +242,8 @@ export function createVueAtomAssetsParser(opts: VueParserOptions) {
         }
       });
     },
-  });
-}
-```
-
-最终，需要一个返回`BaseAtomAssetsParser`实例的函数，或是一个扩展自`BaseAtomAssetsParser`的类
-
-```ts
-export class ReactAtomAssetsParser extends BaseAtomAssetsParser<ReactMetaParser> {
-  constructor() {}
-}
+  },
+});
 ```
 
 万事俱备，现在只需修改`api.service.atomParser`即可
@@ -191,11 +267,9 @@ api.modifyConfig((memo) => {
 
   if (!options.entryFile || !options.resolveDir) return memo;
 
-  api.service.atomParser = createVueAtomAssetsParser(
-    options as VueParserOptions,
-  );
+  api.service.atomParser = VueApiParser(options as VueParserOptions);
   return memo;
 });
 ```
 
-这样在实现以上五大功能后，我们就实现了 Vue 框架在 dumi 中的完整支持。照此办法，开发者也可以实现对`svelte`, `Angular`,`lit-element`等框架的支持
+这样在实现功能后，我们就实现了 Vue 框架在 dumi 中的完整支持。照此办法，开发者也可以实现对`svelte`, `Angular`,`lit-element`等框架的支持

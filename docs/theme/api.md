@@ -283,28 +283,6 @@ const Example = () => {
 };
 ```
 
-### useTechStackRuntimeApi
-
-- 作用：不同技术栈执行这些 API 的效果不同
-- 场景：openCodeSandbox，openStackBlitz， renderToCanvas
-- 用法：
-
-```ts
-import DumiPreviewerActions from 'dumi/theme-default/slots/PreviewerActions';
-import React from 'react';
-
-const PreviewerActions: typeof DumiPreviewerActions = (props) => {
-  const { openCodeSandbox, openStackBlitz } = useTechStackRuntimeApi();
-  return (
-    openCodeSandbox && (
-      <button type="button" onClick={() => openCodeSandbox(props)}>
-        点我在 CodeSandbox 里打开 demo
-      </button>
-    )
-  );
-};
-```
-
 ## 基础配置项
 
 <embed src="../.upstream/api.md"></embed>
