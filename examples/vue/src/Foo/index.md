@@ -3,6 +3,9 @@
 ## Script Setup (Composition) + Scoped
 
 ```vue
+<!--
+  background: '#f6f7f9'
+-->
 <script setup lang="ts">
 import { ref } from 'vue';
 
@@ -34,6 +37,9 @@ const color = ref('chartreuse');
 ## Options API
 
 ```vue
+<!--
+compact: true
+-->
 <script>
 export default {
   data() {

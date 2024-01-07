@@ -72,7 +72,10 @@ export type IDumiUserConfig = Subset<Omit<IDumiConfig, 'locales'>> & {
   [key: string]: any;
 };
 
-export type IDumiTechStackOnBlockLoadResult = OnLoadResult;
+export type IDumiTechStackOnBlockLoadResult = {
+  contents: string;
+  loader: OnLoadResult['loader'];
+};
 
 export type IDumiTechStackOnBlockLoadArgs = OnLoadArgs & {
   entryPointCode: string;

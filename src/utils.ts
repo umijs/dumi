@@ -56,18 +56,19 @@ Error: ${err}`);
 };
 
 /**
- * parse frontmatter from code string
+ * parse frontmatter from code string,
+ * also supports html/xml comments
  */
 export function parseCodeFrontmatter(raw: string) {
   const [, comment = '', code = ''] = raw
     // clear head break lines
     .replace(/^\n\s*/, '')
     // split head comments & remaining code
-    .match(/^(\/\*\*[^]*?\n\s*\*\/)?(?:\s|\n)*([^]+)?$/)!;
+    .match(/^(\/\*\*[^]*?\n\s*\*\/|<!--[^]*?\n\s*-->)?(?:\s|\n)*([^]+)?$/)!;
 
   const yamlComment = comment
     // clear / from head & foot for comment
-    .replace(/^\/|\/$/g, '')
+    .replace(/^(\/|<!--)|(\/|-->)$/g, '')
     // remove * from comments
     .replace(/(^|\n)\s*\*+/g, '$1');
   let frontmatter: Record<string, any> | null = null;

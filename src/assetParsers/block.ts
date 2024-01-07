@@ -108,16 +108,18 @@ async function parseBlockAsset(opts: {
                   opts.entryPointCode ?? fs.readFileSync(args.path, 'utf-8'),
               };
 
+              const entryFile = asset.dependencies[filename];
+
               // extract entry point frontmatter as asset metadata
               if (isEntryPoint) {
                 const { code, frontmatter } = parseCodeFrontmatter(
-                  asset.dependencies[filename].value,
+                  entryFile.value,
                 );
                 asset.entry = filename;
 
                 if (frontmatter) {
                   // replace entry code when frontmatter available
-                  asset.dependencies[filename].value = code;
+                  entryFile.value = code;
                   result.frontmatter = frontmatter;
 
                   // TODO: locale for title & description
@@ -136,18 +138,16 @@ async function parseBlockAsset(opts: {
                 result.sources[filename] = args.path;
               }
 
-              let contents = asset.dependencies[filename].value;
-
               if (techStack.onBlockLoad) {
                 return techStack.onBlockLoad({
-                  entryPointCode: contents,
+                  entryPointCode: entryFile.value,
                   ...args,
                 });
               }
 
               return {
                 // only continue to load for module files
-                contents: isModule ? contents : '',
+                contents: isModule ? entryFile.value : '',
                 loader: isModule ? (ext.slice(1) as any) : 'text',
               };
             }
