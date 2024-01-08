@@ -31,6 +31,7 @@ const Previewer: FC<IPreviewerProps> = (props) => {
         data-compact={props.compact || undefined}
         data-transform={props.transform || undefined}
         data-iframe={props.iframe || undefined}
+        data-error={Boolean(combineError) || undefined}
         ref={demoContainer}
       >
         {props.iframe ? (
