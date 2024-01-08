@@ -101,10 +101,10 @@ export abstract class IDumiTechStack {
     | Promise<IDumiDemoProps['previewerProps']>
     | IDumiDemoProps['previewerProps'];
   /**
-   * generator for return file path of demo sources
+   * generator for return file path of demo source
    */
   abstract generateSources?(
-    sources: IParsedBlockAsset['resolveMap'],
+    source: IParsedBlockAsset['resolveMap'],
     opts: Parameters<NonNullable<IDumiTechStack['generateMetadata']>>[1],
   ): Promise<IParsedBlockAsset['resolveMap']> | IParsedBlockAsset['resolveMap'];
 }

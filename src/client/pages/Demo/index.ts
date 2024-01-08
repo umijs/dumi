@@ -5,25 +5,25 @@ import './index.less';
 const DemoRenderPage: FC = () => {
   const { id } = useParams();
   const { component } = useDemo(id!) || {};
-  const { node: liveDemoNode, setSources } = useLiveDemo(id!);
+  const { node: liveDemoNode, setSource } = useLiveDemo(id!);
   const finalNode = liveDemoNode || (component && createElement(component));
 
   useEffect(() => {
     const handler = (
       ev: MessageEvent<{
         type: string;
-        value: Parameters<typeof setSources>[0];
+        value: Parameters<typeof setSource>[0];
       }>,
     ) => {
-      if (ev.data.type === 'dumi.liveDemo.setSources') {
-        setSources(ev.data.value);
+      if (ev.data.type === 'dumi.liveDemo.setSource') {
+        setSource(ev.data.value);
       }
     };
 
     window.addEventListener('message', handler);
 
     return () => window.removeEventListener('message', handler);
-  }, [setSources]);
+  }, [setSource]);
 
   return finalNode;
 };

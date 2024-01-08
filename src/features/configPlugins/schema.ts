@@ -47,5 +47,7 @@ export function getSchemas(): Record<string, (Joi: JoiRoot) => any> {
     extraRehypePlugins: getUnifiedPluginSchema,
     themeConfig: (Joi) => Joi.object().optional(),
     logo: (Joi) => Joi.string(),
+    // FIXME: remove before 2.3.0
+    live: (Joi) => Joi.bool().optional(),
   };
 }

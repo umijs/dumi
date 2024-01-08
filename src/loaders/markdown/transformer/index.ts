@@ -117,6 +117,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     'rehype-remove-comments'
   );
   const resolver = enhancedResolve.create.sync({
+    mainFields: ['browser', 'module', 'main'],
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
     alias: opts.alias,
   });

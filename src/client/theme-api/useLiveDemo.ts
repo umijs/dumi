@@ -12,14 +12,14 @@ export const useLiveDemo = (id: string) => {
   const { context, asset } = useDemo(id)!;
   const [demoNode, setDemoNode] = useState<ReactNode>();
   const [error, setError] = useState<Error | null>(null);
-  const setSources = useCallback(
-    (sources: Record<string, string>) => {
+  const setSource = useCallback(
+    (source: Record<string, string>) => {
       const entryFileName = Object.keys(asset.dependencies).find(
         (k) => asset.dependencies[k].type === 'FILE',
       )!;
-      const entryFileCode = sources[entryFileName];
+      const entryFileCode = source[entryFileName];
       const require = (v: string) => {
-        if (v in context) return context[v];
+        if (v in context!) return context![v];
         throw new Error(`Cannot find module: ${v}`);
       };
       const exports: { default?: ComponentType } = {};
@@ -50,7 +50,7 @@ export const useLiveDemo = (id: string) => {
           renderToStaticMarkup(newDemoNode);
           console.error = oError;
 
-          // set new demo node with passing sources
+          // set new demo node with passing source
           setDemoNode(newDemoNode);
           setError(null);
         } catch (err: any) {
@@ -61,5 +61,5 @@ export const useLiveDemo = (id: string) => {
     [context],
   );
 
-  return { node: demoNode, error, setSources };
+  return { node: demoNode, error, setSource };
 };

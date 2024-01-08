@@ -1,6 +1,8 @@
 @import (reference) '../../styles/variables.less';
 
 .@{prefix}-previewer {
+  @error-bar-height: 30px;
+
   margin: 24px 0 32px;
   border: 1px solid @c-border-light;
   border-radius: 4px;
@@ -76,16 +78,26 @@
     &[data-compact] {
       padding: 0;
     }
+
+    // error status
+    &[data-error][data-compact] {
+      min-height: @error-bar-height;
+
+      + .@{prefix}-previewer-demo-error {
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+      }
+    }
   }
 
   &-demo-error {
-    @height: 30px;
     @color: darken(desaturate(@c-error, 20%), 1%);
 
-    margin-top: -@height;
-    height: @height;
+    position: relative;
+    margin-top: -@error-bar-height;
+    height: @error-bar-height;
     padding: 0 24px;
-    line-height: @height;
+    line-height: @error-bar-height;
     color: @color;
     font-size: 13px;
     white-space: nowrap;
