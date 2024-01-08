@@ -13,6 +13,8 @@
   "header.social.linkedin": "Linkedin",
   "previewer.actions.code.expand": "展开代码",
   "previewer.actions.code.shrink": "收起代码",
+  "previewer.actions.code.editable": "编辑代码可实时预览",
+  "previewer.actions.code.readonly": "仅 index 可编辑",
   "previewer.actions.codesandbox": "在 CodeSandbox 中打开",
   "previewer.actions.sketch": "拷贝到 Sketch",
   "previewer.actions.sketch.group": "拷贝为 Sketch Group",
@@ -37,5 +39,6 @@
   "content.footer.actions.previous": "上一篇",
   "content.footer.actions.next": "下一篇",
   "search.not.found": "未找到相关内容",
+  "search.loading": "加载中...",
   "layout.sidebar.btn": "侧边菜单"
 }

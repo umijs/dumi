@@ -1,6 +1,5 @@
-import { ApplyPluginsType } from 'dumi';
+import { ApplyPluginsType, IDemoData } from 'dumi';
 import { useEffect, useRef } from 'react';
-import { type ISiteContext } from './context';
 import { pluginManager } from './utils';
 
 // maintain all the mounted instance
@@ -10,7 +9,7 @@ export const useRenderer = ({
   id,
   component,
   render,
-}: ISiteContext['demos'][1]) => {
+}: IDemoData | Record<string, never>) => {
   const canvasRef = useRef<HTMLDivElement>(null);
   const tearDownRef = useRef(() => {});
 

@@ -4,7 +4,13 @@ import classNames from 'classnames';
 import { useSiteData } from 'dumi';
 import Highlight, { defaultProps, type Language } from 'prism-react-renderer';
 import 'prism-themes/themes/prism-one-light.css';
-import React, { useEffect, useRef, useState, type FC } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  type FC,
+  type ReactNode,
+} from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import './index.less';
 
@@ -21,6 +27,7 @@ interface SourceCodeProps {
   children: string;
   lang: Language;
   highlightLines?: number[];
+  extra?: ReactNode;
 }
 
 const SourceCode: FC<SourceCodeProps> = (props) => {
@@ -58,7 +65,7 @@ const SourceCode: FC<SourceCodeProps> = (props) => {
       </CopyToClipboard>
       <Highlight
         {...defaultProps}
-        code={children.trim()}
+        code={children}
         language={SIMILAR_DSL[lang] || lang}
         theme={undefined}
       >
@@ -95,6 +102,7 @@ const SourceCode: FC<SourceCodeProps> = (props) => {
           </pre>
         )}
       </Highlight>
+      {props.extra}
     </div>
   );
 };

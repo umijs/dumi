@@ -66,8 +66,64 @@
     }
   }
 
-  &-tabs {
+  // hide tabs when only one tab pane
+  &-tabs-single .@{prefix}-tabs-nav {
+    display: none;
+  }
+
+  &-editor-tip-btn {
+    position: absolute;
+    appearance: none;
+    z-index: 2;
+    right: 42px;
+    top: 9px;
+    padding: 8px 12px;
+    cursor: help;
+    background: transparent;
+    border: 0;
+    transition: all 0.2s;
+
+    > svg {
+      width: 16px;
+      fill: darken(@c-border, 20%);
+
+      @{dark-selector} & {
+        fill: lighten(@c-border-dark, 20%);
+      }
+    }
+
+    &[data-readonly] {
+      > span {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        display: block;
+        width: 16px;
+        height: 2px;
+        background: darken(@c-border, 20%);
+        transform: rotate(45deg) translate(-50%, 120%);
+      }
+    }
+
+    .@{prefix}-tabs-tabpane:not(:hover) & {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+}
+
+.@{prefix}-tabs {
+  &-top {
+    flex-direction: column;
+
+    .@{prefix}-tabs-ink-bar {
+      bottom: 0;
+    }
+  }
+
+  &-nav {
     position: relative;
+    display: flex;
     padding: 0 12px;
 
     &::after {
@@ -83,22 +139,6 @@
         border-bottom-color: @c-border-less-dark;
       }
     }
-  }
-}
-
-.@{prefix}-tabs {
-  overflow: hidden;
-
-  &-top {
-    flex-direction: column;
-
-    .@{prefix}-tabs-ink-bar {
-      bottom: 0;
-    }
-  }
-
-  &-nav {
-    display: flex;
 
     &-wrap {
       display: flex;
@@ -222,5 +262,9 @@
     &-hidden {
       display: none;
     }
+  }
+
+  &-tabpane-hidden {
+    display: none;
   }
 }

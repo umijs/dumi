@@ -1,5 +1,6 @@
+import { ReactComponent as IconError } from '@ant-design/icons-svg/inline-svg/filled/close-circle.svg';
 import classnames from 'classnames';
-import { IPreviewerProps, useLocation } from 'dumi';
+import { useLiveDemo, useLocation, type IPreviewerProps } from 'dumi';
 import PreviewerActions from 'dumi/theme/slots/PreviewerActions';
 import React, { useCallback, useState, type FC } from 'react';
 import './index.less';
@@ -20,6 +21,13 @@ const Previewer: FC<IPreviewerProps> = (props) => {
 
   const { hash } = useLocation();
   const link = `#${props.asset.id}`;
+  const {
+    node: liveDemoNode,
+    error: liveDemoError,
+    setSources: setLiveDemoSources,
+  } = useLiveDemo(props.asset.id);
+  const [editorError, setEditorError] = useState<Error | null>(null);
+  const combineError = liveDemoError || editorError;
 
   return (
     <div
@@ -47,9 +55,15 @@ const Previewer: FC<IPreviewerProps> = (props) => {
             src={props.demoUrl}
           ></iframe>
         ) : (
-          props.children
+          liveDemoNode || props.children
         )}
       </div>
+      {combineError && (
+        <div className="dumi-default-previewer-demo-error">
+          <IconError />
+          {combineError.toString()}
+        </div>
+      )}
       <div className="dumi-default-previewer-meta">
         {(props.title || props.debug) && (
           <div className="dumi-default-previewer-desc">
@@ -68,7 +82,27 @@ const Previewer: FC<IPreviewerProps> = (props) => {
           </div>
         )}
         {demoContainer && (
-          <PreviewerActions {...props} demoContainer={demoContainer} />
+          <PreviewerActions
+            {...props}
+            onSourcesTranspile={({ err, sources }) => {
+              if (err) {
+                setEditorError(err);
+              } else {
+                setEditorError(null);
+                setLiveDemoSources(sources);
+
+                if (props.iframe) {
+                  demoContainer
+                    .querySelector('iframe')!
+                    .contentWindow!.postMessage({
+                      type: 'dumi.liveDemo.setSources',
+                      value: sources,
+                    });
+                }
+              }
+            }}
+            demoContainer={demoContainer}
+          />
         )}
       </div>
     </div>

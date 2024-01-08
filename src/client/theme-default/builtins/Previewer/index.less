@@ -78,6 +78,40 @@
     }
   }
 
+  &-demo-error {
+    @height: 30px;
+    @color: darken(desaturate(@c-error, 20%), 1%);
+
+    margin-top: -@height;
+    height: @height;
+    padding: 0 24px;
+    line-height: @height;
+    color: @color;
+    font-size: 13px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    background: lighten(@c-error, 51%);
+    box-sizing: border-box;
+
+    @{dark-selector} & {
+      @color: lighten(desaturate(@c-error, 20%), 5%);
+
+      color: @color;
+      background: darken(@c-error-dark, 22%);
+
+      > svg {
+        fill: @color;
+      }
+    }
+
+    > svg {
+      width: 14px;
+      padding-right: 4px;
+      fill: @c-error;
+      vertical-align: -0.14em;
+    }
+  }
+
   &-meta {
     border-top: 1px solid @c-border-light;
 

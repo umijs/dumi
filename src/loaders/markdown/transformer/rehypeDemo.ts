@@ -323,7 +323,7 @@ export default function rehypeDemo(
             // generate asset data for demo
             deferrers.push(
               parseBlockAsset(parseOpts).then(
-                async ({ asset, sources, frontmatter }) => {
+                async ({ asset, resolveMap, frontmatter }) => {
                   // repeat id to give warning
                   if (
                     demoIds.indexOf(parseOpts.id) !==
@@ -434,9 +434,15 @@ export default function rehypeDemo(
                     asset: techStack.generateMetadata
                       ? await techStack.generateMetadata(asset, techStackOpts)
                       : asset,
-                    sources: techStack.generateSources
-                      ? await techStack.generateSources(sources, techStackOpts)
-                      : sources,
+                    /**
+                     * keep `generateSources` rather than `generateResolveMap` for compatibility
+                     */
+                    resolveMap: techStack.generateSources
+                      ? await techStack.generateSources(
+                          resolveMap,
+                          techStackOpts,
+                        )
+                      : resolveMap,
                   };
                 },
               ),

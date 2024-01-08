@@ -153,9 +153,9 @@ export abstract class IDumiTechStack {
    * generator for return file path of demo sources
    */
   abstract generateSources?(
-    sources: IParsedBlockAsset['sources'],
+    sources: IParsedBlockAsset['resolveMap'],
     opts: Parameters<NonNullable<IDumiTechStack['generateMetadata']>>[1],
-  ): Promise<IParsedBlockAsset['sources']> | IParsedBlockAsset['sources'];
+  ): Promise<IParsedBlockAsset['resolveMap']> | IParsedBlockAsset['resolveMap'];
 
   /**
    * Use current function as onLoad CallBack(https://esbuild.github.io/plugins/#on-load)

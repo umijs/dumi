@@ -14,6 +14,8 @@ let unistUtilVisit: typeof import('unist-util-visit');
   unistUtilVisit = await import('unist-util-visit');
 })();
 
+export type { IDemoData } from '@/client/theme-api/types';
+export { useRenderer } from '@/client/theme-api/useRenderer';
 export * from 'umi';
 export * from './assetParsers/BaseParser';
 export * from './assetParsers/utils';

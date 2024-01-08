@@ -8,6 +8,7 @@
       "@/*": ["src/*"],
       "@@/*": [".dumi/tmp/*"],
       "dumi": ["."],
+      "dumi/dist/*": ["src/*"],
       "dumi/theme/*": ["src/client/theme-default/*"]
     }
   }

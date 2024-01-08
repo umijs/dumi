@@ -1,3 +1,4 @@
+import type { IDumiTechStackRenderType } from 'dumi';
 import type { ExampleBlockAsset } from 'dumi-assets-types';
 import type { ComponentType, ReactNode } from 'react';
 
@@ -243,3 +244,19 @@ export type IRoutesById = Record<
     [key: string]: any;
   }
 >;
+
+export type IDemoData = {
+  id: string;
+  component: ComponentType;
+  asset: IPreviewerProps['asset'];
+  routeId: string;
+  context?: Record<string, unknown>;
+  render?: {
+    type: IDumiTechStackRenderType['type'];
+    func?: (
+      canvas: Element,
+      component: any,
+    ) => Promise<() => void> | (() => void);
+    plugin?: string;
+  };
+};

@@ -1,7 +1,9 @@
 import { ReactComponent as IconCheck } from '@ant-design/icons-svg/inline-svg/outlined/check.svg';
 import { ReactComponent as IconCodeSandbox } from '@ant-design/icons-svg/inline-svg/outlined/code-sandbox.svg';
+import { ReactComponent as IconEdit } from '@ant-design/icons-svg/inline-svg/outlined/edit.svg';
 import { ReactComponent as IconSketch } from '@ant-design/icons-svg/inline-svg/outlined/sketch.svg';
 import { ReactComponent as IconStackBlitz } from '@ant-design/icons-svg/inline-svg/outlined/thunderbolt.svg';
+import classNames from 'classnames';
 import copy from 'copy-to-clipboard';
 import {
   getSketchJSON,
@@ -12,6 +14,7 @@ import {
 } from 'dumi';
 import SourceCode from 'dumi/theme/builtins/SourceCode';
 import PreviewerActionsExtra from 'dumi/theme/slots/PreviewerActionsExtra';
+import SourceCodeEditor from 'dumi/theme/slots/SourceCodeEditor';
 import Tabs from 'rc-tabs';
 import React, { useRef, useState, type FC, type ReactNode } from 'react';
 import './index.less';
@@ -23,6 +26,11 @@ export interface IPreviewerActionsProps extends IPreviewerProps {
   extra?: ReactNode;
   forceShowCode?: boolean;
   demoContainer: HTMLDivElement | HTMLIFrameElement;
+  onSourcesTranspile?: (
+    args:
+      | { err: Error; sources?: null }
+      | { err?: null; sources: Record<string, string> },
+  ) => void;
 }
 
 const IconCode: FC = () => (
@@ -171,21 +179,69 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
       {showCode && (
         <>
           <div className="dumi-default-previewer-sources">
-            {!isSingleFile && (
-              <Tabs
-                className="dumi-default-previewer-tabs"
-                prefixCls="dumi-default-tabs"
-                moreIcon="···"
-                defaultActiveKey={String(activeKey)}
-                onChange={(key) => setActiveKey(Number(key))}
-                items={files.map(([filename], i) => ({
-                  key: String(i),
-                  label: filename,
-                }))}
-              />
-            )}
+            <Tabs
+              className={classNames(
+                'dumi-default-previewer-tabs',
+                isSingleFile && 'dumi-default-previewer-tabs-single',
+              )}
+              prefixCls="dumi-default-tabs"
+              moreIcon="···"
+              defaultActiveKey={String(activeKey)}
+              onChange={(key) => setActiveKey(Number(key))}
+              items={files.map(([filename], i) => ({
+                key: String(i),
+                // remove leading ./ prefix
+                label: filename.replace(/^\.\//, ''),
+                // only support to edit entry file currently
+                children:
+                  i === 0 ? (
+                    <SourceCodeEditor
+                      lang={lang}
+                      initialValue={files[i][1].value.trim()}
+                      onTranspile={({ err, code }) => {
+                        if (err) {
+                          props.onSourcesTranspile?.({ err });
+                        } else {
+                          props.onSourcesTranspile?.({
+                            sources: { [files[i][0]]: code },
+                          });
+                        }
+                      }}
+                      extra={
+                        <button
+                          type="button"
+                          className="dumi-default-previewer-editor-tip-btn"
+                          data-dumi-tooltip={intl.formatMessage({
+                            id: 'previewer.actions.code.editable',
+                          })}
+                        >
+                          <IconEdit />
+                        </button>
+                      }
+                    />
+                  ) : (
+                    <SourceCode
+                      lang={lang}
+                      extra={
+                        <button
+                          type="button"
+                          className="dumi-default-previewer-editor-tip-btn"
+                          data-dumi-tooltip={intl.formatMessage({
+                            id: 'previewer.actions.code.readonly',
+                          })}
+                          data-readonly
+                        >
+                          <span></span>
+                          <IconEdit />
+                        </button>
+                      }
+                    >
+                      {files[activeKey][1].value.trim()}
+                    </SourceCode>
+                  ),
+              }))}
+            />
           </div>
-          <SourceCode lang={lang}>{files[activeKey][1].value}</SourceCode>
         </>
       )}
     </>

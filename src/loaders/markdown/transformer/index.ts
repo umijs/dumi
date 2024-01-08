@@ -42,7 +42,7 @@ declare module 'vfile' {
           id: string;
           component: string;
           asset: IParsedBlockAsset['asset'];
-          sources: IParsedBlockAsset['sources'];
+          resolveMap: IParsedBlockAsset['resolveMap'];
         }
       | {
           id: string;
