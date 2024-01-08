@@ -109,7 +109,7 @@ export function getRouteMetaById<T extends { syncOnly?: boolean }>(
   ? undefined | IRouteMeta
   : Promise<undefined | IRouteMeta> | undefined {
   if (filesMeta[id]) {
-    const { frontmatter, toc, textGetter, tabs = [] } = filesMeta[id];
+    const { frontmatter, toc, textGetter, tabs } = filesMeta[id];
     const routeMeta: IRouteMeta = {
       frontmatter,
       toc: toc,
@@ -117,25 +117,30 @@ export function getRouteMetaById<T extends { syncOnly?: boolean }>(
     };
 
     if (opts?.syncOnly) {
-      routeMeta.tabs = tabs.map((tabId) =>
-        genTab(tabId, getRouteMetaById(tabId, opts)),
-      );
+      if (tabs) {
+        routeMeta.tabs = tabs.map((tabId) =>
+          genTab(tabId, getRouteMetaById(tabId, opts)),
+        );
+      }
+
+      return routeMeta;
     } else {
       return new Promise(async (resolve) => {
         if (textGetter) {
           ({ texts: routeMeta.texts } = await textGetter());
         }
 
-        routeMeta.tabs = await Promise.all(
-          tabs.map(async (tabId) =>
-            genTab(tabId, await getRouteMetaById(tabId, opts)),
-          ),
-        );
+        if (tabs) {
+          routeMeta.tabs = await Promise.all(
+            tabs.map(async (tabId) =>
+              genTab(tabId, await getRouteMetaById(tabId, opts)),
+            ),
+          );
+        }
+
         resolve(routeMeta);
       });
     }
-
-    return routeMeta;
   }
 }
 
