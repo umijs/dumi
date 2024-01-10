@@ -35,6 +35,7 @@ yarn add dumi cross-env -D
 ```
 
 3. 增加配置，新建 `.dumirc.js|ts` 到 `APP_ROOT` 指定的根目录中。dumi 会根据 `APP_ROOT` 来消费配置文件，如果不指定 `APP_ROOT`，则在项目根目录创建即可。
+
 ```js
 export default {
   chainWebpack(memo) {
@@ -123,7 +124,7 @@ npm run deploy
 
 #### 自动部署
 
-利用 [Github Action](https://github.com/features/actions) 在每次 `master` 分支更新后自动部署
+利用 [Github Action](https://github.com/features/actions) 在每次 `main` 分支更新后自动部署
 
 新建 `.github/workflows/gh-pages.yml` 文件
 
@@ -133,7 +134,7 @@ name: github pages
 on:
   push:
     branches:
-      - master # default branch
+      - main # default branch
 
 jobs:
   deploy:
