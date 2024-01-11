@@ -162,14 +162,15 @@ export const demos = {
 
         // use raw-loader to load all source files
         Object.keys(this.resolveMap).forEach((file: string) => {
-          // handle un-existed source file, e.g. custom tech-stack return custom dependencies
-          if (!asset.dependencies[file]) return;
-
-          // to avoid modify original asset object
-          asset = lodash.cloneDeep(asset);
-          asset.dependencies[
-            file
-          ].value = `{{{require('-!${resolveMap[file]}?dumi-raw').default}}}`;
+          // skip un-existed source file, e.g. custom tech-stack return custom dependencies
+          // skip non-file asset because resolveMap will contains all dependencies since 2.3.0
+          if (asset.dependencies[file]?.type === 'FILE') {
+            // to avoid modify original asset object
+            asset = lodash.cloneDeep(asset);
+            asset.dependencies[
+              file
+            ].value = `{{{require('-!${resolveMap[file]}?dumi-raw').default}}}`;
+          }
         });
 
         return JSON.stringify(asset, null, 2).replace(/"{{{|}}}"/g, '');
@@ -323,7 +324,7 @@ export default function mdLoader(this: any, content: string) {
         getDemoSourceFiles(ret.meta.demos),
       );
 
-      // re-generate cache key with latest embeds & sources data
+      // re-generate cache key with latest embeds & source data
       const finalCacheKey = [
         baseCacheKey,
         getDepsCacheKey(depsMapping[this.resourcePath]),

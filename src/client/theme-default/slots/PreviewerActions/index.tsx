@@ -26,10 +26,10 @@ export interface IPreviewerActionsProps extends IPreviewerProps {
   extra?: ReactNode;
   forceShowCode?: boolean;
   demoContainer: HTMLDivElement | HTMLIFrameElement;
-  onSourcesTranspile?: (
+  onSourceTranspile?: (
     args:
-      | { err: Error; sources?: null }
-      | { err?: null; sources: Record<string, string> },
+      | { err: Error; source?: null }
+      | { err?: null; source: Record<string, string> },
   ) => void;
 }
 
@@ -200,10 +200,10 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
                       initialValue={files[i][1].value.trim()}
                       onTranspile={({ err, code }) => {
                         if (err) {
-                          props.onSourcesTranspile?.({ err });
+                          props.onSourceTranspile?.({ err });
                         } else {
-                          props.onSourcesTranspile?.({
-                            sources: { [files[i][0]]: code },
+                          props.onSourceTranspile?.({
+                            source: { [files[i][0]]: code },
                           });
                         }
                       }}

@@ -83,7 +83,9 @@ function keepSoftBreak(pkg: IApi['pkg']) {
   if (pkg?.name?.startsWith('@examples/') || pkg?.name === 'dumi') return false;
 
   const ver = pkg?.devDependencies?.dumi ?? pkg?.dependencies?.dumi ?? '^2.0.0';
-  return !semver.subset(ver, VERSION_2_DEPRECATE_SOFT_BREAKS);
+  return !semver.subset(ver, VERSION_2_DEPRECATE_SOFT_BREAKS, {
+    includePrerelease: true,
+  });
 }
 
 async function applyUnifiedPlugin(opts: {
@@ -117,6 +119,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     'rehype-remove-comments'
   );
   const resolver = enhancedResolve.create.sync({
+    mainFields: ['browser', 'module', 'main'],
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
     // Common conditionName needs to be configured,
     // otherwise some common library paths cannot be parsed, such as vue, pinia, etc.

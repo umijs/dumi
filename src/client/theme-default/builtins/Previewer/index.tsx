@@ -19,7 +19,7 @@ const Previewer: FC<IPreviewerProps> = (props) => {
     }
   }, []);
 
-  const { combineError, setEditorError, setLiveDemoSources } =
+  const { demoError, setEditorError, setLiveDemoSource } =
     useContext(DumiDemoContext);
 
   const { hash } = useLocation();
@@ -54,10 +54,10 @@ const Previewer: FC<IPreviewerProps> = (props) => {
           props.children
         )}
       </div>
-      {combineError && (
+      {demoError && (
         <div className="dumi-default-previewer-demo-error">
           <IconError />
-          {combineError.toString()}
+          {demoError.toString()}
         </div>
       )}
       <div className="dumi-default-previewer-meta">
@@ -80,19 +80,19 @@ const Previewer: FC<IPreviewerProps> = (props) => {
         {demoContainer && (
           <PreviewerActions
             {...props}
-            onSourcesTranspile={({ err, sources }) => {
+            onSourceTranspile={({ err, source }) => {
               if (err) {
                 setEditorError!(err);
               } else {
                 setEditorError!(null);
-                setLiveDemoSources!(sources);
+                setLiveDemoSource!(source);
 
                 if (props.iframe) {
                   demoContainer
                     .querySelector('iframe')!
                     .contentWindow!.postMessage({
                       type: 'dumi.liveDemo.setSources',
-                      value: sources,
+                      value: source,
                     });
                 }
               }

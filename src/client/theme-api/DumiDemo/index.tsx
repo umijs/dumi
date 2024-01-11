@@ -17,9 +17,9 @@ export interface IDumiDemoProps {
 
 export const DumiDemoContext = createContext<{
   demo?: IDemoData;
-  combineError?: Error | null;
+  demoError?: Error | null;
   setEditorError?: (err: Error | null) => void;
-  setLiveDemoSources?: (sources: Record<string, string>) => void;
+  setLiveDemoSource?: (sources: Record<string, string>) => void;
 }>({});
 
 const InternalDumiDemo = (props: IDumiDemoProps) => {
@@ -32,7 +32,7 @@ const InternalDumiDemo = (props: IDumiDemoProps) => {
   const {
     node: newDemoNode,
     error: liveDemoError,
-    setSources: setLiveDemoSources,
+    setSource: setLiveDemoSource,
   } = useLiveDemo(id);
 
   const [editorError, setEditorError] = useState<Error | null>(null);
@@ -57,9 +57,9 @@ const InternalDumiDemo = (props: IDumiDemoProps) => {
     <DumiDemoContext.Provider
       value={{
         demo,
-        setLiveDemoSources,
+        setLiveDemoSource,
         setEditorError,
-        combineError: liveDemoError || editorError,
+        demoError: liveDemoError || editorError,
       }}
     >
       <Previewer
