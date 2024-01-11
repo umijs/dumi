@@ -1,11 +1,14 @@
 {
   "compilerOptions": {
-    "jsx": "react",
     "strict": true,
     "declaration": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "module": "NodeNext",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
   "exclude": ["templates/**"]
 }

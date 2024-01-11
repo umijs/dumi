@@ -1,15 +1,16 @@
+import { ApplyPluginsType, DumiDemoContext, useAppData } from 'dumi';
 import SourceCode from 'dumi/theme/builtins/SourceCode';
 import throttle from 'lodash.throttle';
 import React, {
   CSSProperties,
   useCallback,
+  useContext,
   useEffect,
   useRef,
   useState,
   type ComponentProps,
   type FC,
 } from 'react';
-import type { transform } from 'sucrase';
 import './index.less';
 
 interface ISourceCodeEditorProps
@@ -25,23 +26,26 @@ interface ISourceCodeEditorProps
  */
 const SourceCodeEditor: FC<ISourceCodeEditorProps> = (props) => {
   const elm = useRef<HTMLDivElement>(null);
+  const { pluginManager } = useAppData();
+  const { demo } = useContext(DumiDemoContext);
   const [style, setStyle] = useState<CSSProperties>();
   const [code, setCode] = useState(props.initialValue);
-  const sucraseDefer = useRef<Promise<typeof transform>>();
+
+  const runtimePlugin = demo?.runtime?.plugin;
+
+  const compilerDefer = useRef<Promise<(...args: any) => string>>();
+
   const transpile = useCallback(
     throttle((value: string) => {
-      // transform code when change
-      sucraseDefer.current!.then((transform) => {
-        try {
+      compilerDefer.current
+        ?.then((transform) => {
           props.onTranspile?.({
-            code: transform(value, {
-              transforms: ['typescript', 'jsx', 'imports'],
-            }).code,
+            code: transform(value, demo),
           });
-        } catch (err: any) {
+        })
+        .catch((err: any) => {
           props.onTranspile?.({ err });
-        }
-      });
+        });
     }, 500),
     [props.onTranspile],
   );
@@ -80,10 +84,21 @@ const SourceCodeEditor: FC<ISourceCodeEditorProps> = (props) => {
                 value={code}
                 onFocus={() => {
                   // load sucrase when focus on editor
-                  if (!sucraseDefer.current) {
-                    sucraseDefer.current = import('sucrase').then(
-                      ({ transform }) => transform,
-                    );
+                  if (!compilerDefer.current) {
+                    if (runtimePlugin?.loadCompiler) {
+                      compilerDefer.current = pluginManager.applyPlugins({
+                        type: ApplyPluginsType.modify,
+                        key: runtimePlugin.loadCompiler,
+                      });
+                    } else {
+                      compilerDefer.current = import('sucrase').then(
+                        ({ transform }) =>
+                          (code: string) =>
+                            transform(code, {
+                              transforms: ['typescript', 'jsx', 'imports'],
+                            }).code,
+                      );
+                    }
                   }
                 }}
                 onChange={(ev) => {

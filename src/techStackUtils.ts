@@ -5,7 +5,7 @@ export {
   IDumiTechStack,
   IDumiTechStackOnBlockLoadArgs,
   IDumiTechStackOnBlockLoadResult,
-  IDumiTechStackRenderType,
+  IDumiTechStackRuntimeOptions,
 } from './types';
 
 /**

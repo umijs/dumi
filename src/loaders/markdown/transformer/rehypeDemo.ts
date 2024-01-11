@@ -281,7 +281,7 @@ export default function rehypeDemo(
                 parseOpts.fileAbsPath,
               )}?techStack=${techStack.name}')`;
 
-              if (techStack.render?.type === 'CANCELABLE') {
+              if (techStack?.runtime?.renderType === 'CANCELABLE') {
                 component = `(async () => ${importChunk})()`;
               } else {
                 component = `React.memo(React.lazy(() => ${importChunk}))`;
@@ -384,7 +384,7 @@ export default function rehypeDemo(
                     return {
                       // TODO: special id for inline demo
                       id: asset.id,
-                      render: techStack.render,
+                      runtime: techStack.runtime,
                       component,
                     };
                   }
@@ -430,7 +430,7 @@ export default function rehypeDemo(
                   return {
                     id: asset.id,
                     component,
-                    render: techStack.render,
+                    runtime: techStack.runtime,
                     asset: techStack.generateMetadata
                       ? await techStack.generateMetadata(asset, techStackOpts)
                       : asset,

@@ -14,6 +14,11 @@ export default (api: IApi) => {
               checkerOptions: zod.object({}).optional(),
             })
             .optional(),
+          compiler: zod
+            .object({
+              babelStandaloneCDN: zod.string().optional(),
+            })
+            .optional(),
         });
       },
     },

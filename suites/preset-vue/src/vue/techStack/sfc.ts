@@ -1,16 +1,15 @@
+import { compile, compiler } from '@/compiler/node';
+import { VueRuntimeOptions } from '@/shared';
 import type {
   IDumiTechStack,
   IDumiTechStackOnBlockLoadArgs,
   IDumiTechStackOnBlockLoadResult,
-  IDumiTechStackRenderType,
 } from 'dumi/tech-stack-utils';
-import { extractScript, transformDemoCode } from 'dumi/tech-stack-utils';
+import { transformDemoCode } from 'dumi/tech-stack-utils';
 import hashId from 'hash-sum';
 import type { Element } from 'hast';
 import { dirname, resolve } from 'path';
 import { logger } from 'umi/plugin-utils';
-import { VUE_RENDERER_KEY } from '../../constants';
-import { COMP_IDENTIFIER, compileSFC } from './compile';
 
 export default class VueSfcTechStack implements IDumiTechStack {
   name = 'vue3-sfc';
@@ -22,16 +21,18 @@ export default class VueSfcTechStack implements IDumiTechStack {
   onBlockLoad(
     args: IDumiTechStackOnBlockLoadArgs,
   ): IDumiTechStackOnBlockLoadResult {
+    const result = compiler.compileSFC({
+      id: args.path,
+      code: args.entryPointCode,
+      filename: args.filename,
+    });
     return {
       loader: 'tsx',
-      contents: extractScript(args.entryPointCode),
+      contents: Array.isArray(result) ? '' : result.js,
     };
   }
 
-  render: IDumiTechStackRenderType = {
-    type: 'CANCELABLE',
-    plugin: VUE_RENDERER_KEY,
-  };
+  runtime = VueRuntimeOptions;
 
   transformCode(...[raw, opts]: Parameters<IDumiTechStack['transformCode']>) {
     if (opts.type === 'code-block') {
@@ -40,17 +41,11 @@ export default class VueSfcTechStack implements IDumiTechStack {
         : opts.fileAbsPath;
       const id = hashId(filename);
 
-      const compiled = compileSFC({ id, filename, code: raw });
-      if (Array.isArray(compiled)) {
-        logger.error(compiled);
+      const js = compile({ id, filename, code: raw });
+      if (Array.isArray(js)) {
+        logger.error(js);
         return '';
       }
-      let { js, css } = compiled;
-      if (css) {
-        js += `\n${COMP_IDENTIFIER}.__css__ = ${JSON.stringify(css)};`;
-      }
-      js += `\n${COMP_IDENTIFIER}.__id__ = "${id}";
-        export default ${COMP_IDENTIFIER};`;
 
       const { code } = transformDemoCode(js, {
         filename,

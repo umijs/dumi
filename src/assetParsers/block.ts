@@ -151,10 +151,12 @@ async function parseBlockAsset(opts: {
               }
 
               if (techStack.onBlockLoad) {
-                return techStack.onBlockLoad({
+                const result = techStack.onBlockLoad({
+                  filename,
                   entryPointCode: entryFile.value,
                   ...args,
                 });
+                if (result) return result;
               }
 
               return {

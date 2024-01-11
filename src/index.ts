@@ -4,7 +4,7 @@ import type {
   IDumiTechStack,
   IDumiTechStackOnBlockLoadArgs,
   IDumiTechStackOnBlockLoadResult,
-  IDumiTechStackRenderType,
+  IDumiTechStackRuntimeOptions,
   IDumiUserConfig,
 } from '@/types';
 let unistUtilVisit: typeof import('unist-util-visit');
@@ -14,8 +14,6 @@ let unistUtilVisit: typeof import('unist-util-visit');
   unistUtilVisit = await import('unist-util-visit');
 })();
 
-export type { IDemoData } from '@/client/theme-api/types';
-export { useRenderer } from '@/client/theme-api/useRenderer';
 export * from 'umi';
 export * from './assetParsers/BaseParser';
 export * from './assetParsers/utils';
@@ -25,7 +23,7 @@ export {
   IDumiTechStack,
   IDumiTechStackOnBlockLoadArgs,
   IDumiTechStackOnBlockLoadResult,
-  IDumiTechStackRenderType,
+  IDumiTechStackRuntimeOptions,
   AtomAssetsParser,
   AtomAssetsParserResult,
 };

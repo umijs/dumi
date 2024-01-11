@@ -79,9 +79,10 @@ export type IDumiTechStackOnBlockLoadResult = {
 
 export type IDumiTechStackOnBlockLoadArgs = OnLoadArgs & {
   entryPointCode: string;
+  filename: string;
 };
 
-export interface IDumiTechStackRenderType {
+export interface IDumiTechStackRuntimeOptions {
   /**
    * There are two rendering methods of the tech stack:
    * ’DEFAULT‘ - being rendered directly by React;
@@ -89,21 +90,32 @@ export interface IDumiTechStackRenderType {
    * React is only responsible for managing instances,
    * and the actual rendering is completed by the corresponding framework.
    */
-  type: 'DEFAULT' | 'CANCELABLE';
+  renderType?: 'DEFAULT' | 'CANCELABLE';
   /**
-   * Available when type is `CANCELABLE`, define a cancelable function (codgen) with the following type:
-   * ```ts
-   * (canvas: Element, component: any) => (Promise<() => void> | (() => void));
-   * ```
-   * Can be used when cancelable function is a small function
+   * Plugins to implement the runtime functions of the techstack
    */
-  func?: string;
-  /**
-   * Available when type is `CANCELABLE`,
-   * define the cancelable function as a public function through dumi's plugin mechanism.
-   * Users can execute the cancelable function through `applyPlugins`.
-   */
-  plugin?: string;
+  plugin?: {
+    /**
+     * Available when type is `CANCELABLE`,
+     * define the cancelable function as a public function through dumi's plugin mechanism.
+     * Users can execute the cancelable function through `applyPlugins`.
+     */
+    render?: string;
+    /**
+     * Load the language compiler plugin to implement the live demo function
+     *
+     * @description
+     * If techstack developers want to implement live demo,
+     * they must provide the browser version of the language compiler,
+     * and then use the loadCompiler plugin to implement lazy loading of the compiler:
+     * ```ts
+     *  export async function loadCompiler() {
+     *    return import('./compiler').then(({ compile }) =>  compile);
+     * }
+     * ```
+     */
+    loadCompiler?: string;
+  };
 }
 
 export abstract class IDumiTechStack {
@@ -112,11 +124,11 @@ export abstract class IDumiTechStack {
    */
   abstract name: string;
   /**
-   * transform code
+   * used to determine whether to use this tech stack
    */
   abstract isSupported(node: Element, lang: string): boolean;
   /**
-   * transform for parse demo source to react component
+   * transform for parse demo source to expression/function/class
    */
   abstract transformCode(
     raw: string,
@@ -124,9 +136,9 @@ export abstract class IDumiTechStack {
   ): string;
 
   /**
-   * Component rendering type
+   * Runtime related configuration
    */
-  abstract render?: IDumiTechStackRenderType;
+  abstract runtime?: IDumiTechStackRuntimeOptions;
 
   /**
    * generator for return asset metadata

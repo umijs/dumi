@@ -1,5 +1,7 @@
 import { describe, expect, test } from 'vitest';
-import { compileSFC } from '../compile';
+import { compiler } from '../node';
+
+const { compileSFC } = compiler;
 
 describe('Vue SFC compilation test', () => {
   test('script setup', () => {

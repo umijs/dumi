@@ -1,4 +1,4 @@
-import { useDemo } from 'dumi';
+import { useDemo, useRenderer } from 'dumi';
 import {
   createElement,
   useCallback,
@@ -8,10 +8,44 @@ import {
 } from 'react';
 import DemoErrorBoundary from './DumiDemo/DemoErrorBoundary';
 
+type CommonJSContext = {
+  module: any;
+  exports: {
+    default?: any;
+  };
+  require: any;
+};
+
+function evalCommonJS(
+  js: string,
+  { module, exports, require }: CommonJSContext,
+) {
+  new Function('module', 'exports', 'require', js)(module, exports, require);
+}
+
 export const useLiveDemo = (id: string) => {
-  const { context, asset } = useDemo(id)!;
-  const [demoNode, setDemoNode] = useState<ReactNode>();
+  const demo = useDemo(id)!;
+  const { context = {}, asset, runtime } = demo;
+
+  const [component, setComponent] = useState<any>();
+  const ref = useRenderer(
+    component
+      ? {
+          ...demo,
+          component,
+        }
+      : demo,
+  );
+
+  const runtimePlugin = runtime?.plugin;
+
+  const [demoNode, setDemoNode] = useState<ReactNode>(
+    runtime?.renderType === 'CANCELABLE'
+      ? createElement('div', { ref })
+      : undefined,
+  );
   const [error, setError] = useState<Error | null>(null);
+
   const setSources = useCallback(
     (sources: Record<string, string>) => {
       const entryFileName = Object.keys(asset.dependencies).find(
@@ -25,15 +59,31 @@ export const useLiveDemo = (id: string) => {
       const exports: { default?: ComponentType } = {};
       const module = { exports };
 
+      if (runtimePlugin?.loadCompiler) {
+        try {
+          evalCommonJS(entryFileCode, {
+            exports,
+            module,
+            require,
+          });
+          setComponent(exports.default!);
+          setDemoNode(createElement('div', { ref }));
+          setError(null);
+        } catch (err: any) {
+          setError(err);
+        }
+        return;
+      }
+
       // lazy load react-dom/server
       import('react-dom/server').then(({ renderToStaticMarkup }) => {
         try {
           // initial component with fake runtime
-          new Function('module', 'exports', 'require', entryFileCode)(
-            module,
+          evalCommonJS(entryFileCode, {
             exports,
+            module,
             require,
-          );
+          });
           const newDemoNode = createElement(
             DemoErrorBoundary,
             null,

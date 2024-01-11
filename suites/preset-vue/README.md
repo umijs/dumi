@@ -1,6 +1,6 @@
 # @dumijs/preset-vue
 
-dumi Vue3 technology stack support
+dumi Vue3 tech stack support
 
 ## Features
 
@@ -9,6 +9,7 @@ dumi Vue3 technology stack support
 - [x] Support CodeSandbox and StackBlitz preview
 - [x] Webpack processing
 - [x] API Table support
+- [x] Support live demo
 
 ## Install
 
@@ -35,3 +36,16 @@ vue: {
 ```
 
 For details, please refer to :point_right: [`MetaCheckerOptions`](../dumi-vue-meta/README.md#metacheckeroptions)
+
+### compiler
+
+The live demo requires a browser-side compiler, so @babel/standalone needs to be loaded. We provide the `babelStandaloneCDN` option to change its loading address. The default url is
+`https://unpkg.com/browse/@babel/standalone@7/babel.min.js`
+
+```js
+vue: {
+  compiler: {
+    babelStandaloneCDN: 'your cdn'
+  },
+},
+```

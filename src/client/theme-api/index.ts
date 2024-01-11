@@ -19,7 +19,7 @@ export {
   useIntl,
 } from 'react-intl';
 export { AtomRenderer } from './AtomRenderer';
-export { DumiDemo } from './DumiDemo';
+export { DumiDemo, DumiDemoContext } from './DumiDemo';
 export { DumiDemoGrid } from './DumiDemoGrid';
 export { DumiPage } from './DumiPage';
 export { useSiteData } from './context';
@@ -31,6 +31,7 @@ export { useLiveDemo } from './useLiveDemo';
 export { useLocale } from './useLocale';
 export { useNavData } from './useNavData';
 export { usePrefersColor } from './usePrefersColor';
+export { useRenderer } from './useRenderer';
 export { useRouteMeta } from './useRouteMeta';
 export { useFullSidebarData, useSidebarData } from './useSidebarData';
 export { useSiteSearch } from './useSiteSearch';

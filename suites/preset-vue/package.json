@@ -19,6 +19,7 @@
   "scripts": {
     "build": "father build",
     "build:deps": "father prebundle",
+    "build:lib": "tsup",
     "dev": "father dev",
     "prepublishOnly": "father doctor && npm run build",
     "test": "vitest"
@@ -34,8 +35,13 @@
     "vue-template-compiler": "^2.7.14"
   },
   "devDependencies": {
+    "@types/babel__core": "^7.20.5",
+    "@types/babel__standalone": "^7.1.7",
+    "@vue/babel-plugin-jsx": "^1.1.5",
     "dumi": "workspace:*",
-    "father": "^4.1.9"
+    "father": "^4.1.9",
+    "tsup": "^8.0.1",
+    "unbuild": "^2.0.0"
   },
   "peerDependencies": {
     "dumi": "^2.0.0",

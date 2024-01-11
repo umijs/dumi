@@ -2,8 +2,6 @@ import type Config from '@umijs/bundler-webpack/compiled/webpack-5-chain';
 import { babelPresetTypeScript } from 'dumi/bundler-utils';
 import type { IApi } from 'umi';
 import VueLoaderPlugin from 'vue-loader/dist/pluginWebpack5.js';
-import { VueBabelJsxPlugin } from '../constants';
-
 // Webpack configuration mainly refers to @umijs/preset-vue
 
 export function getConfig(config: Config, api: IApi) {
@@ -24,7 +22,7 @@ export function getConfig(config: Config, api: IApi) {
     .options({
       ...babelInUmi.options,
       presets: [...babelInUmi.options.presets, babelPresetTypeScript()],
-      plugins: [VueBabelJsxPlugin],
+      plugins: [require.resolve('../../../compiled/@vue/babel-plugin-jsx')],
     });
 
   config.module.noParse(/^(vue|vue-router|vuex|vuex-router-sync)$/);

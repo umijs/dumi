@@ -1,8 +1,8 @@
 import { ReactComponent as IconError } from '@ant-design/icons-svg/inline-svg/filled/close-circle.svg';
 import classnames from 'classnames';
-import { useLiveDemo, useLocation, type IPreviewerProps } from 'dumi';
+import { DumiDemoContext, useLocation, type IPreviewerProps } from 'dumi';
 import PreviewerActions from 'dumi/theme/slots/PreviewerActions';
-import React, { useCallback, useState, type FC } from 'react';
+import React, { useCallback, useContext, useState, type FC } from 'react';
 import './index.less';
 
 const Previewer: FC<IPreviewerProps> = (props) => {
@@ -19,15 +19,11 @@ const Previewer: FC<IPreviewerProps> = (props) => {
     }
   }, []);
 
+  const { combineError, setEditorError, setLiveDemoSources } =
+    useContext(DumiDemoContext);
+
   const { hash } = useLocation();
   const link = `#${props.asset.id}`;
-  const {
-    node: liveDemoNode,
-    error: liveDemoError,
-    setSources: setLiveDemoSources,
-  } = useLiveDemo(props.asset.id);
-  const [editorError, setEditorError] = useState<Error | null>(null);
-  const combineError = liveDemoError || editorError;
 
   return (
     <div
@@ -55,7 +51,7 @@ const Previewer: FC<IPreviewerProps> = (props) => {
             src={props.demoUrl}
           ></iframe>
         ) : (
-          liveDemoNode || props.children
+          props.children
         )}
       </div>
       {combineError && (
@@ -86,10 +82,10 @@ const Previewer: FC<IPreviewerProps> = (props) => {
             {...props}
             onSourcesTranspile={({ err, sources }) => {
               if (err) {
-                setEditorError(err);
+                setEditorError!(err);
               } else {
-                setEditorError(null);
-                setLiveDemoSources(sources);
+                setEditorError!(null);
+                setLiveDemoSources!(sources);
 
                 if (props.iframe) {
                   demoContainer

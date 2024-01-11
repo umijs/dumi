@@ -125,19 +125,28 @@ export const demos = {
   {{#demos}}
   '{{{id}}}': {
     id: "{{{id}}}",
+    {{#component}}
     component: {{{component}}},
-    {{#render}}
-      render: {
-        type: "{{{render.type}}}",
-        {{#render.func}}
-        func: {{{render.func}}},
-        {{/render.func}}
-        {{#render.plugin}}
-        plugin: "{{{render.plugin}}}",
-        {{/render.plugin}}
+    {{/component}}
+    {{#runtime}}
+    runtime: {
+      {{#renderType}}
+      renderType: "{{{renderType}}}",
+      {{/renderType}}
+      {{#plugin}}
+      plugin: {
+        {{#render}}
+        render: "{{{render}}}",
+        {{/render}}
+        {{#loadCompiler}}
+        loadCompiler: "{{{loadCompiler}}}",
+        {{/loadCompiler}}
       },
-    {{/render}}
+      {{/plugin}}
+    },
+    {{/runtime}}
     asset: {{{renderAsset}}},
+    context: {{{renderContext}}}
   },
   {{/demos}}
 };`,
@@ -170,7 +179,6 @@ export const demos = {
       ) {
         // do not render context for inline demo
         if (!('resolveMap' in this)) return 'undefined';
-
         // render context for normal demo
         const context = Object.entries(this.resolveMap).reduce(
           (acc, [key, path]) => ({
@@ -252,7 +260,7 @@ function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
     case 'text':
       return emitText.call(this, opts, ret);
     default:
-      return emitDefault.call(this, opts, ret);
+      return emitDefault.call(this, opts as IMdLoaderDefaultModeOptions, ret);
   }
 }
 

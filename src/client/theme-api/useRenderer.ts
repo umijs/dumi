@@ -1,5 +1,6 @@
-import { ApplyPluginsType, IDemoData } from 'dumi';
+import { ApplyPluginsType } from 'dumi';
 import { useEffect, useRef } from 'react';
+import type { IDemoData } from './types';
 import { pluginManager } from './utils';
 
 // maintain all the mounted instance
@@ -8,29 +9,36 @@ const map = new Map<string, any>();
 export const useRenderer = ({
   id,
   component,
-  render,
+  runtime,
 }: IDemoData | Record<string, never>) => {
   const canvasRef = useRef<HTMLDivElement>(null);
   const tearDownRef = useRef(() => {});
 
+  const prevComponent = useRef(component);
+
+  // forcibly destroyed
+  if (prevComponent.current !== component) {
+    tearDownRef?.current();
+    prevComponent.current = component;
+  }
+
+  const renderPlugin = runtime?.plugin?.render;
+
   useEffect(() => {
     async function resolveRender() {
-      if (!canvasRef.current || render?.type !== 'CANCELABLE' || !component)
-        return;
+      if (!canvasRef.current || !renderPlugin || !component) return;
 
       let instance = map.get(id);
       if (instance) return;
 
-      const renderToCanvas = render.plugin
-        ? async (canvas: Element, component: any) => {
-            const result = pluginManager.applyPlugins({
-              type: ApplyPluginsType.modify,
-              key: render.plugin!,
-              initialValue: { canvas, component },
-            });
-            return await result;
-          }
-        : render.func!;
+      const renderToCanvas = async (canvas: Element, component: any) => {
+        const result = pluginManager.applyPlugins({
+          type: ApplyPluginsType.modify,
+          key: renderPlugin!,
+          initialValue: { canvas, component },
+        });
+        return await result;
+      };
 
       instance = component instanceof Promise ? await component : component;
       instance = instance.default ?? instance;
@@ -46,7 +54,7 @@ export const useRenderer = ({
       };
     }
     resolveRender();
-  }, [canvasRef, component, render?.type]);
+  }, [canvasRef, component, renderPlugin]);
 
   useEffect(() => () => tearDownRef.current(), []);
 
