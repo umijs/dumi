@@ -88,12 +88,12 @@ const Previewer: FC<IPreviewerProps> = (props) => {
                 setLiveDemoSource!(source);
 
                 if (props.iframe) {
-                  demoContainer
-                    .querySelector('iframe')!
-                    .contentWindow!.postMessage({
-                      type: 'dumi.liveDemo.setSources',
-                      value: source,
-                    });
+                  (
+                    demoContainer as HTMLIFrameElement
+                  ).contentWindow!.postMessage({
+                    type: 'dumi.liveDemo.setSource',
+                    value: source,
+                  });
                 }
               }
             }}

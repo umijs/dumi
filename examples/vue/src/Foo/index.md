@@ -70,6 +70,24 @@ export default {
 
 <code src="./demos/sfc-demo.vue"></code>
 
+## iframe
+
+```vue
+<!--
+  iframe: true
+-->
+
+<script setup>
+import { Button, Badge } from '@examples/vue';
+</script>
+
+<template>
+  <Button>
+    <Badge icon="iframe" />
+  </Button>
+</template>
+```
+
 ## Foo API
 
 ### Props
@@ -79,3 +97,9 @@ export default {
 ### Events
 
 <API id="Foo" type="events"></API>
+
+## Badge API
+
+### Props
+
+<API id="Badge" type="props"></API>
