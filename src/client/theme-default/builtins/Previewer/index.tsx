@@ -12,6 +12,7 @@ const Previewer: FC<IPreviewerProps> = (props) => {
   const {
     node: liveDemoNode,
     error: liveDemoError,
+    loading: liveDemoLoading,
     setSource: setLiveDemoSource,
   } = useLiveDemo(props.asset.id);
 
@@ -30,6 +31,7 @@ const Previewer: FC<IPreviewerProps> = (props) => {
         data-transform={props.transform || undefined}
         data-iframe={props.iframe || undefined}
         data-error={Boolean(liveDemoError) || undefined}
+        data-loading={liveDemoLoading || undefined}
         ref={demoContainer}
       >
         {props.iframe ? (
