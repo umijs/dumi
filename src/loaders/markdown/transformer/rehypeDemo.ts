@@ -428,6 +428,9 @@ export default function rehypeDemo(
                           techStackOpts,
                         )
                       : resolveMap,
+                    renderOpts: {
+                      compilePath: techStack.runtimeOpts?.compilePath,
+                    },
                   };
                 },
               ),

@@ -2,7 +2,7 @@ import { ReactComponent as IconError } from '@ant-design/icons-svg/inline-svg/fi
 import classnames from 'classnames';
 import { useLiveDemo, useLocation, type IPreviewerProps } from 'dumi';
 import PreviewerActions from 'dumi/theme/slots/PreviewerActions';
-import React, { useRef, useState, type FC } from 'react';
+import React, { useRef, type FC } from 'react';
 import './index.less';
 
 const Previewer: FC<IPreviewerProps> = (props) => {
@@ -14,8 +14,6 @@ const Previewer: FC<IPreviewerProps> = (props) => {
     error: liveDemoError,
     setSource: setLiveDemoSource,
   } = useLiveDemo(props.asset.id);
-  const [editorError, setEditorError] = useState<Error | null>(null);
-  const combineError = liveDemoError || editorError;
 
   return (
     <div
@@ -31,7 +29,7 @@ const Previewer: FC<IPreviewerProps> = (props) => {
         data-compact={props.compact || undefined}
         data-transform={props.transform || undefined}
         data-iframe={props.iframe || undefined}
-        data-error={Boolean(combineError) || undefined}
+        data-error={Boolean(liveDemoError) || undefined}
         ref={demoContainer}
       >
         {props.iframe ? (
@@ -47,10 +45,10 @@ const Previewer: FC<IPreviewerProps> = (props) => {
           liveDemoNode || props.children
         )}
       </div>
-      {combineError && (
+      {liveDemoError && (
         <div className="dumi-default-previewer-demo-error">
           <IconError />
-          {combineError.toString()}
+          {liveDemoError.toString()}
         </div>
       )}
       <div className="dumi-default-previewer-meta">
@@ -72,21 +70,16 @@ const Previewer: FC<IPreviewerProps> = (props) => {
         )}
         <PreviewerActions
           {...props}
-          onSourceTranspile={({ err, source }) => {
-            if (err) {
-              setEditorError(err);
-            } else {
-              setEditorError(null);
-              setLiveDemoSource(source);
+          onSourceChange={(source) => {
+            setLiveDemoSource(source);
 
-              if (props.iframe) {
-                demoContainer
-                  .current!.querySelector('iframe')!
-                  .contentWindow!.postMessage({
-                    type: 'dumi.liveDemo.setSource',
-                    value: source,
-                  });
-              }
+            if (props.iframe) {
+              demoContainer
+                .current!.querySelector('iframe')!
+                .contentWindow!.postMessage({
+                  type: 'dumi.liveDemo.setSource',
+                  value: source,
+                });
             }
           }}
           demoContainer={

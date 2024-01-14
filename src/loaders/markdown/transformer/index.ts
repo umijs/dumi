@@ -1,7 +1,12 @@
 import type { IParsedBlockAsset } from '@/assetParsers/block';
 import type { ILocalesConfig, IRouteMeta } from '@/client/theme-api/types';
 import { VERSION_2_DEPRECATE_SOFT_BREAKS } from '@/constants';
-import type { IApi, IDumiConfig, IDumiTechStack } from '@/types';
+import type {
+  IApi,
+  IDumiConfig,
+  IDumiTechStack,
+  IDumiTechStackRuntimeOpts,
+} from '@/types';
 import enhancedResolve from 'enhanced-resolve';
 import type { IRoute } from 'umi';
 import { semver } from 'umi/plugin-utils';
@@ -43,6 +48,7 @@ declare module 'vfile' {
           component: string;
           asset: IParsedBlockAsset['asset'];
           resolveMap: IParsedBlockAsset['resolveMap'];
+          renderOpts: Pick<IDumiTechStackRuntimeOpts, 'compilePath'>;
         }
       | {
           id: string;

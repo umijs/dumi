@@ -1,15 +1,12 @@
 import SourceCode from 'dumi/theme/builtins/SourceCode';
-import throttle from 'lodash.throttle';
 import React, {
   CSSProperties,
-  useCallback,
   useEffect,
   useRef,
   useState,
   type ComponentProps,
   type FC,
 } from 'react';
-import type { transform } from 'sucrase';
 import './index.less';
 
 interface ISourceCodeEditorProps
@@ -18,6 +15,7 @@ interface ISourceCodeEditorProps
   onTranspile?: (
     args: { err: Error; code?: null } | { err?: null; code: string },
   ) => void;
+  onChange?: (code: string) => void;
 }
 
 /**
@@ -27,24 +25,6 @@ const SourceCodeEditor: FC<ISourceCodeEditorProps> = (props) => {
   const elm = useRef<HTMLDivElement>(null);
   const [style, setStyle] = useState<CSSProperties>();
   const [code, setCode] = useState(props.initialValue);
-  const sucraseDefer = useRef<Promise<typeof transform>>();
-  const transpile = useCallback(
-    throttle((value: string) => {
-      // transform code when change
-      sucraseDefer.current!.then((transform) => {
-        try {
-          props.onTranspile?.({
-            code: transform(value, {
-              transforms: ['typescript', 'jsx', 'imports'],
-            }).code,
-          });
-        } catch (err: any) {
-          props.onTranspile?.({ err });
-        }
-      });
-    }, 500),
-    [props.onTranspile],
-  );
 
   // generate style from pre element, for adapting to the custom theme
   useEffect(() => {
@@ -78,17 +58,11 @@ const SourceCodeEditor: FC<ISourceCodeEditorProps> = (props) => {
                 className="dumi-default-source-code-editor-textarea"
                 style={style}
                 value={code}
-                onFocus={() => {
-                  // load sucrase when focus on editor
-                  if (!sucraseDefer.current) {
-                    sucraseDefer.current = import('sucrase').then(
-                      ({ transform }) => transform,
-                    );
-                  }
-                }}
                 onChange={(ev) => {
                   setCode(ev.target.value);
-                  transpile(ev.target.value);
+                  props.onChange?.(ev.target.value);
+                  // FIXME: remove before publish
+                  props.onTranspile?.({ err: null, code: ev.target.value });
                 }}
                 onKeyDown={(ev) => {
                   // support tab to space

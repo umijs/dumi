@@ -9,6 +9,7 @@ import {
   getSketchJSON,
   openCodeSandbox,
   openStackBlitz,
+  useDemo,
   useIntl,
   type IPreviewerProps,
 } from 'dumi';
@@ -31,6 +32,7 @@ export interface IPreviewerActionsProps extends IPreviewerProps {
       | { err: Error; source?: null }
       | { err?: null; source: Record<string, string> },
   ) => void;
+  onSourceChange?: (source: Record<string, string>) => void;
 }
 
 const IconCode: FC = () => (
@@ -57,6 +59,7 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
   const files = Object.entries(props.asset.dependencies).filter(
     ([, { type }]) => type === 'FILE',
   );
+  const { renderOpts } = useDemo(props.asset.id)!;
   const [activeKey, setActiveKey] = useState(0);
   const [showCode, setShowCode] = useState(
     props.forceShowCode || props.defaultShowCode,
@@ -194,18 +197,16 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
                 label: filename.replace(/^\.\//, ''),
                 // only support to edit entry file currently
                 children:
-                  i === 0 ? (
+                  i === 0 && renderOpts?.compile ? (
                     <SourceCodeEditor
                       lang={lang}
                       initialValue={files[i][1].value.trim()}
-                      onTranspile={({ err, code }) => {
-                        if (err) {
-                          props.onSourceTranspile?.({ err });
-                        } else {
-                          props.onSourceTranspile?.({
-                            source: { [files[i][0]]: code },
-                          });
-                        }
+                      onChange={(code) => {
+                        props.onSourceChange?.({ [files[i][0]]: code });
+                        // FIXME: remove before publish
+                        props.onSourceTranspile?.({
+                          source: { [files[i][0]]: code },
+                        });
                       }}
                       extra={
                         <button
@@ -223,17 +224,21 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
                     <SourceCode
                       lang={lang}
                       extra={
-                        <button
-                          type="button"
-                          className="dumi-default-previewer-editor-tip-btn"
-                          data-dumi-tooltip={intl.formatMessage({
-                            id: 'previewer.actions.code.readonly',
-                          })}
-                          data-readonly
-                        >
-                          <span></span>
-                          <IconEdit />
-                        </button>
+                        // only show readonly tip for non-entry files
+                        // because readonly entry file means live compile is not available for this demo tech stack
+                        i !== 0 && (
+                          <button
+                            type="button"
+                            className="dumi-default-previewer-editor-tip-btn"
+                            data-dumi-tooltip={intl.formatMessage({
+                              id: 'previewer.actions.code.readonly',
+                            })}
+                            data-readonly
+                          >
+                            <span></span>
+                            <IconEdit />
+                          </button>
+                        )
                       }
                     >
                       {files[activeKey][1].value.trim()}
