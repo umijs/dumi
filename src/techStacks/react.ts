@@ -4,6 +4,10 @@ import { transformSync } from '@swc/core';
 export default class ReactTechStack implements IDumiTechStack {
   name = 'react';
 
+  runtimeOpts?: IDumiTechStack['runtimeOpts'] = {
+    compilePath: require.resolve('../client/misc/reactDemoCompiler'),
+  };
+
   isSupported(...[, lang]: Parameters<IDumiTechStack['isSupported']>) {
     return ['jsx', 'tsx'].includes(lang);
   }

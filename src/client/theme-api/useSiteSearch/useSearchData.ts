@@ -34,9 +34,11 @@ export default function useSearchData(): [
       });
 
       // omit demo component for postmessage
-      Object.entries(demos).forEach(([id, { component, context, ...demo }]) => {
-        demos[id] = demo;
-      });
+      Object.entries(demos).forEach(
+        ([id, { renderOpts, component, context, ...demo }]) => {
+          demos[id] = demo;
+        },
+      );
 
       setData([mergedRoutes, demos]);
       loading.current = false;

@@ -126,7 +126,8 @@ export const demos = {
   '{{{id}}}': {
     component: {{{component}}},
     asset: {{{renderAsset}}},
-    context: {{{renderContext}}}
+    context: {{{renderContext}}},
+    renderOpts: {{{renderRenderOpts}}},
   },
   {{/demos}}
 };`,
@@ -171,6 +172,21 @@ export const demos = {
         );
 
         return JSON.stringify(context, null, 2).replace(/"{{{|}}}"/g, '');
+      },
+      renderRenderOpts: function renderRenderOpts(
+        this: NonNullable<typeof demos>[0],
+      ) {
+        if (!('renderOpts' in this) || !this.renderOpts.compilePath) {
+          return 'undefined';
+        }
+
+        return `{
+          compile: async (...args) => {
+            return (await import('${winPath(
+              this.renderOpts.compilePath,
+            )}')).default(...args);
+          },
+        }`;
       },
     },
   );

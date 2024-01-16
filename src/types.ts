@@ -63,11 +63,22 @@ export type IDumiUserConfig = Subset<Omit<IDumiConfig, 'locales'>> & {
   [key: string]: any;
 };
 
+export interface IDumiTechStackRuntimeOpts {
+  /**
+   * path to runtime compile function module
+   */
+  compilePath?: string;
+}
+
 export abstract class IDumiTechStack {
   /**
    * tech stack name, such as 'react'
    */
   abstract name: string;
+  /**
+   * runtime options
+   */
+  abstract runtimeOpts?: IDumiTechStackRuntimeOpts;
   /**
    * transform code
    */

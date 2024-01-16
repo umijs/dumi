@@ -237,9 +237,20 @@ export type IRoutesById = Record<
   }
 >;
 
+export type IDemoCompileFn = (
+  code: string,
+  opts: { filename: string },
+) => Promise<string>;
+
 export type IDemoData = {
   component: ComponentType;
   asset: IPreviewerProps['asset'];
   routeId: string;
   context?: Record<string, unknown>;
+  renderOpts?: {
+    /**
+     * provide a runtime compile function for compile demo code for live preview
+     */
+    compile?: IDemoCompileFn;
+  };
 };
