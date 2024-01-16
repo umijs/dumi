@@ -20,6 +20,7 @@ export const useLiveDemo = (
   const { context, asset, renderOpts } = useDemo(id)!;
   const [loading, setLoading] = useState(false);
   const loadingTimer = useRef<number>();
+  const taskToken = useRef<number>();
   const [demoNode, setDemoNode] = useState<ReactNode>();
   const [error, setError] = useState<Error | null>(null);
   const setSource = useCallback(
@@ -68,6 +69,7 @@ export const useLiveDemo = (
           };
           const exports: { default?: ComponentType } = {};
           const module = { exports };
+          const token = (taskToken.current = Math.random());
           let entryFileCode = source[entryFileName];
 
           try {
@@ -80,6 +82,9 @@ export const useLiveDemo = (
             entryFileCode = await renderOpts!.compile!(entryFileCode, {
               filename: entryFileName,
             });
+
+            // skip current task if another task is running
+            if (token !== taskToken.current) return;
 
             // initial component with fake runtime
             new Function('module', 'exports', 'require', entryFileCode)(
