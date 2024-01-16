@@ -13,8 +13,6 @@
     height: 100%;
     color: transparent;
     caret-color: @c-text;
-    overflow-wrap: normal;
-    white-space: pre;
     box-sizing: border-box;
     background: transparent;
     opacity: 1;
@@ -24,6 +22,9 @@
     overflow: hidden;
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
+    white-space: pre-wrap;
+    word-break: keep-all;
+    overflow-wrap: break-word;
 
     @{dark-selector} & {
       caret-color: @c-text-dark;
