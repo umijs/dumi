@@ -150,6 +150,15 @@ export default function mdLoader(this: any, content: string) {
   const opts: IMdLoaderOptions = this.getOptions();
   const cb = this.async();
 
+  // disable cache for avoid assets metadata lost
+  // because the onResolveDemos and onResolveAtomMeta hook does not be fired when cache hit
+  if (
+    process.env.NODE_ENV === 'production' &&
+    ['onResolveDemos', 'onResolveAtomMeta'].some((k) => k in opts)
+  ) {
+    this.cacheable(false);
+  }
+
   const cache = getCache('md-loader');
   // format: {path:contenthash:loaderOpts}
   const baseCacheKey = [
