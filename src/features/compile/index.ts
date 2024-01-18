@@ -71,22 +71,28 @@ export default (api: IApi) => {
       .end()
       .use('md-meta-loader')
       .loader(loaderPath)
-      .options({
-        ...loaderBaseOpts,
-        mode: 'meta',
-        onResolveDemos(demos) {
-          const assets = demos.reduce<Parameters<typeof addExampleAssets>[0]>(
-            (ret, demo) => {
-              if ('asset' in demo) ret.push(demo.asset);
-              return ret;
-            },
-            [],
-          );
+      .options(
+        (api.isPluginEnable('assets') || api.isPluginEnable('exportStatic')
+          ? {
+              ...loaderBaseOpts,
+              mode: 'meta',
+              onResolveDemos(demos) {
+                const assets = demos.reduce<
+                  Parameters<typeof addExampleAssets>[0]
+                >((ret, demo) => {
+                  if ('asset' in demo) ret.push(demo.asset);
+                  return ret;
+                }, []);
 
-          addExampleAssets(assets);
-        },
-        onResolveAtomMeta: addAtomMeta,
-      } as IMdLoaderOptions)
+                addExampleAssets(assets);
+              },
+              onResolveAtomMeta: addAtomMeta,
+            }
+          : {
+              ...loaderBaseOpts,
+              mode: 'meta',
+            }) as IMdLoaderOptions,
+      )
       .end()
       .end()
       // get page component for each markdown file
