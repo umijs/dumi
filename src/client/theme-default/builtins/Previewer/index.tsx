@@ -14,7 +14,10 @@ const Previewer: FC<IPreviewerProps> = (props) => {
     error: liveDemoError,
     loading: liveDemoLoading,
     setSource: setLiveDemoSource,
-  } = useLiveDemo(props.asset.id);
+  } = useLiveDemo(props.asset.id, {
+    iframe: Boolean(props.iframe),
+    containerRef: demoContainer,
+  });
 
   return (
     <div
@@ -72,18 +75,7 @@ const Previewer: FC<IPreviewerProps> = (props) => {
         )}
         <PreviewerActions
           {...props}
-          onSourceChange={(source) => {
-            setLiveDemoSource(source);
-
-            if (props.iframe) {
-              demoContainer
-                .current!.querySelector('iframe')!
-                .contentWindow!.postMessage({
-                  type: 'dumi.liveDemo.setSource',
-                  value: source,
-                });
-            }
-          }}
+          onSourceChange={setLiveDemoSource}
           demoContainer={
             props.iframe
               ? (demoContainer.current?.firstElementChild as HTMLIFrameElement)
