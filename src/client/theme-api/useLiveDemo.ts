@@ -65,6 +65,11 @@ export const useLiveDemo = (
           THROTTLE_WAIT - 1,
         );
 
+        function resetLoadingStatus() {
+          clearTimeout(loadingTimer.current);
+          setLoading(false);
+        }
+
         if (opts?.iframe && opts?.containerRef?.current) {
           const iframeWindow =
             opts.containerRef.current.querySelector('iframe')!.contentWindow!;
@@ -98,6 +103,7 @@ export const useLiveDemo = (
             throw new Error(`Cannot find module: ${v}`);
           };
 
+          const token = (taskToken.current = Math.random());
           let entryFileCode = source[entryFileName];
 
           if (renderOpts?.compile) {
@@ -125,10 +131,9 @@ export const useLiveDemo = (
             } catch (err: any) {
               setError(err);
             }
+            resetLoadingStatus();
             return;
           }
-
-          const token = (taskToken.current = Math.random());
 
           try {
             // load renderToStaticMarkup in async way
@@ -172,10 +177,7 @@ export const useLiveDemo = (
             setError(err);
           }
         }
-
-        // reset loading status
-        clearTimeout(loadingTimer.current);
-        setLoading(false);
+        resetLoadingStatus();
       },
       THROTTLE_WAIT,
       { leading: true },
