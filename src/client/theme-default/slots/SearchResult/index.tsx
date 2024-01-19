@@ -188,7 +188,7 @@ const SearchResult: FC<{
               <Link
                 to={item.value.link}
                 data-active={activeIndex === item.activeIndex || undefined}
-                onClick={() => props.onItemSelect?.(item.value)}
+                onClick={() => onItemSelect?.(item.value)}
               >
                 {React.createElement(ICONS_MAPPING[item.value.type])}
                 <h4>

@@ -264,6 +264,6 @@ export type IDemoData = {
      * provide a runtime compile function for compile demo code for live preview
      */
     compile?: IDemoCompileFn;
-    renderer: IDemoCancelableFn;
+    renderer?: IDemoCancelableFn;
   };
 };

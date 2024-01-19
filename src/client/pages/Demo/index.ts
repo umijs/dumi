@@ -10,14 +10,19 @@ const DemoRenderPage: FC = () => {
 
   const { component, renderOpts } = demo || {};
 
-  const { node: liveDemoNode, setSource } = useLiveDemo(id!);
+  const {
+    node: liveDemoNode,
+    setSource,
+    error: liveDemoError,
+  } = useLiveDemo(id!);
 
   const finalNode =
     liveDemoNode ||
     (renderOpts?.renderer
       ? createElement('div', { ref: canvasRef })
-      : createElement(component as ComponentType));
+      : component && createElement(component as ComponentType));
 
+  // listen message event for setSource
   useEffect(() => {
     const handler = (
       ev: MessageEvent<{
@@ -34,6 +39,16 @@ const DemoRenderPage: FC = () => {
 
     return () => window.removeEventListener('message', handler);
   }, [setSource]);
+
+  // notify parent window that compile done
+  useEffect(() => {
+    if (liveDemoNode || liveDemoError) {
+      window.postMessage({
+        type: 'dumi.liveDemo.compileDone',
+        value: { err: liveDemoError },
+      });
+    }
+  }, [liveDemoNode, liveDemoError]);
 
   return finalNode;
 };

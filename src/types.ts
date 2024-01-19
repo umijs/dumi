@@ -104,7 +104,11 @@ export abstract class IDumiTechStack {
    */
   abstract name: string;
   /**
-   * used to determine whether to use this tech stack
+   * runtime options
+   */
+  abstract runtimeOpts?: IDumiTechStackRuntimeOpts;
+  /**
+   * transform code
    */
   abstract isSupported(node: Element, lang: string): boolean;
   /**
@@ -114,11 +118,6 @@ export abstract class IDumiTechStack {
     raw: string,
     opts: { id?: string; type: 'external' | 'code-block'; fileAbsPath: string },
   ): string;
-
-  /**
-   * runtime options
-   */
-  abstract runtimeOpts?: IDumiTechStackRuntimeOpts;
 
   /**
    * generator for return asset metadata

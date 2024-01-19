@@ -130,7 +130,8 @@ export const demos = {
     {{/component}}
     renderOpts: {{{renderRenderOpts}}},
     asset: {{{renderAsset}}},
-    context: {{{renderContext}}}
+    context: {{{renderContext}}},
+    renderOpts: {{{renderRenderOpts}}},
   },
   {{/demos}}
 };`,
@@ -163,12 +164,20 @@ export const demos = {
         this: NonNullable<typeof demos>[0],
       ) {
         // do not render context for inline demo
-        if (!('resolveMap' in this)) return 'undefined';
+        if (!('resolveMap' in this) || !('asset' in this)) return 'undefined';
+
+        const entryFileName = Object.keys(this.asset.dependencies)[0];
+
         // render context for normal demo
         const context = Object.entries(this.resolveMap).reduce(
           (acc, [key, path]) => ({
             ...acc,
-            [key]: `{{{require('${path}')}}}`,
+            // omit entry file
+            ...(key !== entryFileName
+              ? {
+                  [key]: `{{{require('${path}')}}}`,
+                }
+              : {}),
           }),
           {},
         );
