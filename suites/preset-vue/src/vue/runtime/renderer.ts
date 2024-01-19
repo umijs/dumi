@@ -1,6 +1,7 @@
+import type { IDemoCancelableFn } from 'dumi/dist/client/theme-api';
 import { createApp } from 'vue';
 
-export async function {{{pluginKey}}}({ canvas, component }) {
+const renderer: IDemoCancelableFn = function (canvas, component) {
   if (component.__css__) {
     setTimeout(() => {
       document
@@ -19,4 +20,6 @@ export async function {{{pluginKey}}}({ canvas, component }) {
   return () => {
     app.unmount();
   };
-}
+};
+
+export default renderer;

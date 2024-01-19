@@ -1,11 +1,11 @@
 import { compile, compiler } from '@/compiler/node';
-import { VueRuntimeOptions } from '@/shared';
+import { createVueRuntimeOpts } from '@/shared';
 import type {
   IDumiTechStack,
   IDumiTechStackOnBlockLoadArgs,
   IDumiTechStackOnBlockLoadResult,
 } from 'dumi/tech-stack-utils';
-import { transformDemoCode } from 'dumi/tech-stack-utils';
+import { wrapDemoWithFn } from 'dumi/tech-stack-utils';
 import hashId from 'hash-sum';
 import type { Element } from 'hast';
 import { dirname, resolve } from 'path';
@@ -20,19 +20,20 @@ export default class VueSfcTechStack implements IDumiTechStack {
 
   onBlockLoad(
     args: IDumiTechStackOnBlockLoadArgs,
-  ): IDumiTechStackOnBlockLoadResult {
+  ): IDumiTechStackOnBlockLoadResult | null {
+    if (!args.path.endsWith('.vue')) return null;
     const result = compiler.compileSFC({
       id: args.path,
       code: args.entryPointCode,
       filename: args.filename,
     });
     return {
-      loader: 'tsx',
-      contents: Array.isArray(result) ? '' : result.js,
+      type: 'tsx',
+      content: Array.isArray(result) ? '' : result.js,
     };
   }
 
-  runtime = VueRuntimeOptions;
+  runtimeOpts = createVueRuntimeOpts();
 
   transformCode(...[raw, opts]: Parameters<IDumiTechStack['transformCode']>) {
     if (opts.type === 'code-block') {
@@ -47,15 +48,13 @@ export default class VueSfcTechStack implements IDumiTechStack {
         return '';
       }
 
-      const { code } = transformDemoCode(js, {
+      const code = wrapDemoWithFn(js, {
         filename,
         parserConfig: {
           syntax: 'ecmascript',
         },
       });
-      return `(async function() {
-        ${code}
-      })()`;
+      return `(${code})()`;
     }
     return raw;
   }

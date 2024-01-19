@@ -1,12 +1,22 @@
-import { useDemo, useLiveDemo, useParams } from 'dumi';
-import { createElement, useEffect, type FC } from 'react';
+import { useDemo, useLiveDemo, useParams, useRenderer } from 'dumi';
+import { ComponentType, createElement, useEffect, type FC } from 'react';
 import './index.less';
 
 const DemoRenderPage: FC = () => {
   const { id } = useParams();
-  const { component } = useDemo(id!) || {};
+  const demo = useDemo(id!);
+
+  const canvasRef = useRenderer(demo!);
+
+  const { component, renderOpts } = demo || {};
+
   const { node: liveDemoNode, setSource } = useLiveDemo(id!);
-  const finalNode = liveDemoNode || (component && createElement(component));
+
+  const finalNode =
+    liveDemoNode ||
+    (renderOpts?.renderer
+      ? createElement('div', { ref: canvasRef })
+      : createElement(component as ComponentType));
 
   useEffect(() => {
     const handler = (

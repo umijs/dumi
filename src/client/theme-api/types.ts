@@ -1,8 +1,5 @@
-import type { IDumiTechStackRuntimeOptions } from 'dumi';
 import type { ExampleBlockAsset } from 'dumi-assets-types';
-import type { ComponentType, ReactNode } from 'react';
-
-export type PreviewerType = 'CSB' | 'CODEPEN' | 'STACKBLITZ' | 'EXTERNAL';
+import type { ComponentType as ReactComponentType, ReactNode } from 'react';
 
 export interface IPreviewerProps {
   /**
@@ -53,11 +50,6 @@ export interface IPreviewerProps {
    * react node of current demo
    */
   children: ReactNode;
-
-  /**
-   * demo previewer configuration data
-   */
-  previewerData?: Partial<Record<PreviewerType, any>>;
   [key: string]: any;
 }
 
@@ -137,9 +129,9 @@ export interface IRouteMeta {
     title?: string;
     titleIntlId?: string;
     components: {
-      default: ComponentType;
-      Extra: ComponentType;
-      Action: ComponentType;
+      default: ReactComponentType;
+      Extra: ReactComponentType;
+      Action: ReactComponentType;
     };
     meta: {
       frontmatter: Omit<
@@ -245,11 +237,33 @@ export type IRoutesById = Record<
   }
 >;
 
+export type AgnosticComponentModule = { default?: any; [key: string]: any };
+
+export type AgnosticComponentType =
+  | Promise<AgnosticComponentModule>
+  | AgnosticComponentModule;
+
+export type IDemoCompileFn = (
+  code: string,
+  opts: { filename: string },
+) => Promise<string>;
+
+export type IDemoCancelableFn = (
+  canvas: HTMLElement,
+  component: AgnosticComponentModule,
+) => (() => void) | Promise<() => void>;
+
 export type IDemoData = {
   id: string;
-  component: ComponentType;
+  component: ReactComponentType | AgnosticComponentType;
   asset: IPreviewerProps['asset'];
   routeId: string;
   context?: Record<string, unknown>;
-  runtime?: IDumiTechStackRuntimeOptions;
+  renderOpts?: {
+    /**
+     * provide a runtime compile function for compile demo code for live preview
+     */
+    compile?: IDemoCompileFn;
+    renderer: IDemoCancelableFn;
+  };
 };

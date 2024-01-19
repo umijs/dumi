@@ -1,1 +1,1 @@
-module.exports = require('./dist/techStackUtils');
+module.exports = require('./dist/techStacks/utils');

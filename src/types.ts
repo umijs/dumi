@@ -72,50 +72,30 @@ export type IDumiUserConfig = Subset<Omit<IDumiConfig, 'locales'>> & {
   [key: string]: any;
 };
 
-export type IDumiTechStackOnBlockLoadResult = {
-  contents: string;
-  loader: OnLoadResult['loader'];
-};
+export interface IDumiTechStackOnBlockLoadResult {
+  content: string;
+  type: Required<OnLoadResult>['loader'];
+}
 
 export type IDumiTechStackOnBlockLoadArgs = OnLoadArgs & {
   entryPointCode: string;
   filename: string;
 };
 
-export interface IDumiTechStackRuntimeOptions {
+export interface IDumiTechStackRuntimeOpts {
   /**
-   * There are two rendering methods of the tech stack:
-   * ’DEFAULT‘ - being rendered directly by React;
-   * ’CANCELABLE‘ - using React as the host.
-   * React is only responsible for managing instances,
-   * and the actual rendering is completed by the corresponding framework.
+   * Available when type is `CANCELABLE`,
+   * define the cancelable function as a public function through dumi's plugin mechanism.
+   * Users can execute the cancelable function through `applyPlugins`.
    */
-  renderType?: 'DEFAULT' | 'CANCELABLE';
+  rendererPath?: string;
+
+  pluginPath?: string;
+
   /**
-   * Plugins to implement the runtime functions of the techstack
+   * path to runtime compile function module
    */
-  plugin?: {
-    /**
-     * Available when type is `CANCELABLE`,
-     * define the cancelable function as a public function through dumi's plugin mechanism.
-     * Users can execute the cancelable function through `applyPlugins`.
-     */
-    render?: string;
-    /**
-     * Load the language compiler plugin to implement the live demo function
-     *
-     * @description
-     * If techstack developers want to implement live demo,
-     * they must provide the browser version of the language compiler,
-     * and then use the loadCompiler plugin to implement lazy loading of the compiler:
-     * ```ts
-     *  export async function loadCompiler() {
-     *    return import('./compiler').then(({ compile }) =>  compile);
-     * }
-     * ```
-     */
-    loadCompiler?: string;
-  };
+  compilePath?: string;
 }
 
 export abstract class IDumiTechStack {
@@ -136,9 +116,9 @@ export abstract class IDumiTechStack {
   ): string;
 
   /**
-   * Runtime related configuration
+   * runtime options
    */
-  abstract runtime?: IDumiTechStackRuntimeOptions;
+  abstract runtimeOpts?: IDumiTechStackRuntimeOpts;
 
   /**
    * generator for return asset metadata

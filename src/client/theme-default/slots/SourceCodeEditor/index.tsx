@@ -1,10 +1,6 @@
-import { ApplyPluginsType, DumiDemoContext, useAppData } from 'dumi';
 import SourceCode from 'dumi/theme/builtins/SourceCode';
-import throttle from 'lodash.throttle';
 import React, {
   CSSProperties,
-  useCallback,
-  useContext,
   useEffect,
   useRef,
   useState,
@@ -19,6 +15,7 @@ interface ISourceCodeEditorProps
   onTranspile?: (
     args: { err: Error; code?: null } | { err?: null; code: string },
   ) => void;
+  onChange?: (code: string) => void;
 }
 
 /**
@@ -26,29 +23,8 @@ interface ISourceCodeEditorProps
  */
 const SourceCodeEditor: FC<ISourceCodeEditorProps> = (props) => {
   const elm = useRef<HTMLDivElement>(null);
-  const { pluginManager } = useAppData();
-  const { demo } = useContext(DumiDemoContext);
   const [style, setStyle] = useState<CSSProperties>();
   const [code, setCode] = useState(props.initialValue);
-
-  const runtimePlugin = demo?.runtime?.plugin;
-
-  const compilerDefer = useRef<Promise<(...args: any) => string>>();
-
-  const transpile = useCallback(
-    throttle((value: string) => {
-      compilerDefer.current
-        ?.then((transform) => {
-          props.onTranspile?.({
-            code: transform(value, demo),
-          });
-        })
-        .catch((err: any) => {
-          props.onTranspile?.({ err });
-        });
-    }, 500),
-    [props.onTranspile],
-  );
 
   // generate style from pre element, for adapting to the custom theme
   useEffect(() => {
@@ -82,28 +58,11 @@ const SourceCodeEditor: FC<ISourceCodeEditorProps> = (props) => {
                 className="dumi-default-source-code-editor-textarea"
                 style={style}
                 value={code}
-                onFocus={() => {
-                  // load sucrase when focus on editor
-                  if (!compilerDefer.current) {
-                    if (runtimePlugin?.loadCompiler) {
-                      compilerDefer.current = pluginManager.applyPlugins({
-                        type: ApplyPluginsType.modify,
-                        key: runtimePlugin.loadCompiler,
-                      });
-                    } else {
-                      compilerDefer.current = import('sucrase').then(
-                        ({ transform }) =>
-                          (code: string) =>
-                            transform(code, {
-                              transforms: ['typescript', 'jsx', 'imports'],
-                            }).code,
-                      );
-                    }
-                  }
-                }}
                 onChange={(ev) => {
                   setCode(ev.target.value);
-                  transpile(ev.target.value);
+                  props.onChange?.(ev.target.value);
+                  // FIXME: remove before publish
+                  props.onTranspile?.({ err: null, code: ev.target.value });
                 }}
                 onKeyDown={(ev) => {
                   // support tab to space

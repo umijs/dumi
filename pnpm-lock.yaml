@@ -457,8 +457,8 @@ importers:
         specifier: ^7.1.7
         version: 7.1.7
       '@vue/babel-plugin-jsx':
-        specifier: ^1.1.5
-        version: 1.1.5(@babel/core@7.23.7)
+        specifier: ^1.1.6
+        version: 1.1.6(@babel/core@7.23.7)
       dumi:
         specifier: workspace:*
         version: link:../..
@@ -1032,7 +1032,7 @@ packages:
     resolution: {integrity: sha512-0pYVBnDKZO2fnSPCrgM/6WMc7eS20Fbok+0r88fp+YtWVLZrp4CkafFGIp+W0VKw4a22sgebPT99y+FDNMdP4w==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/types': 7.23.3
+      '@babel/types': 7.23.6
 
   /@babel/helper-module-transforms@7.23.3(@babel/core@7.21.0):
     resolution: {integrity: sha512-7bBs4ED9OmswdfDzpz4MpWgSrV7FXlc3zIagvLFjS5H+Mk7Snr21vQ6QwrsoCGMfNC4e4LQPdoULEt4ykz0SRQ==}
@@ -1327,14 +1327,14 @@ packages:
     resolution: {integrity: sha512-+K0yF1/9yR0oHdE0StHuEj3uTPzwwbrLGfNOndVJVV2TqA5+j3oljJUb4nmB954FLGjNem976+B+eDuLIjesiQ==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/code-frame': 7.22.13
-      '@babel/generator': 7.23.3
+      '@babel/code-frame': 7.23.5
+      '@babel/generator': 7.23.6
       '@babel/helper-environment-visitor': 7.22.20
       '@babel/helper-function-name': 7.23.0
       '@babel/helper-hoist-variables': 7.22.5
       '@babel/helper-split-export-declaration': 7.22.6
-      '@babel/parser': 7.23.3
-      '@babel/types': 7.23.3
+      '@babel/parser': 7.23.6
+      '@babel/types': 7.23.6
       debug: 4.3.4
       globals: 11.12.0
     transitivePeerDependencies:
@@ -4899,22 +4899,25 @@ packages:
       '@volar/language-core': 1.10.4
     dev: false
 
-  /@vue/babel-helper-vue-transform-on@1.1.5:
-    resolution: {integrity: sha512-SgUymFpMoAyWeYWLAY+MkCK3QEROsiUnfaw5zxOVD/M64KQs8D/4oK6Q5omVA2hnvEOE0SCkH2TZxs/jnnUj7w==}
+  /@vue/babel-helper-vue-transform-on@1.1.6:
+    resolution: {integrity: sha512-XxM2tZHjYHTd9yiKHHt7fKCN0e2BK2z78UxU5rpjH3YCstEV/tcrW29CaOdrxIdeD0c/9mHHebvXWwDxlphjKA==}
     dev: true
 
-  /@vue/babel-plugin-jsx@1.1.5(@babel/core@7.23.7):
-    resolution: {integrity: sha512-nKs1/Bg9U1n3qSWnsHhCVQtAzI6aQXqua8j/bZrau8ywT1ilXQbK4FwEJGmU8fV7tcpuFvWmmN7TMmV1OBma1g==}
+  /@vue/babel-plugin-jsx@1.1.6(@babel/core@7.23.7):
+    resolution: {integrity: sha512-s2pK8Wwg0LiR25lyCKWGJePt8aXF0DsXOmTHYJnlKNdT3yTKfdvkKmsWjaHBctFvwWmetedObrAoINc9BeYZlA==}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.23.7
       '@babel/helper-module-imports': 7.22.15
       '@babel/plugin-syntax-jsx': 7.23.3(@babel/core@7.23.7)
       '@babel/template': 7.22.15
-      '@babel/traverse': 7.23.3
-      '@babel/types': 7.23.3
-      '@vue/babel-helper-vue-transform-on': 1.1.5
+      '@babel/traverse': 7.23.7
+      '@babel/types': 7.23.6
+      '@vue/babel-helper-vue-transform-on': 1.1.6
       camelcase: 6.3.0
       html-tags: 3.3.1
       svg-tags: 1.0.0

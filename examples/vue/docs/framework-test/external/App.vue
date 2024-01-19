@@ -20,7 +20,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { ElCascader } from 'element-plus'
+import { ElCascader, type CascaderValue } from 'element-plus'
 
 const value = ref([])
 
@@ -28,7 +28,7 @@ const props = {
   expandTrigger: 'hover' as const,
 }
 
-const handleChange = (value) => {
+const handleChange = (value: CascaderValue) => {
   console.log(value)
 }
 

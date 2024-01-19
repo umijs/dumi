@@ -1,6 +1,6 @@
 import { defaultTitle, getVueApp } from './getPreviewerData';
 
-export function modifyStackBlitzData(memo, props) {
+export function modifyStackBlitzData(memo: any, props: any) {
   const { title, description } = props;
   const config = {
     title: title || defaultTitle,
@@ -17,5 +17,10 @@ export function modifyStackBlitzData(memo, props) {
     return acc;
   }, {} as Record<string, string>);
   Object.assign(memo, config);
+  return memo;
+}
+
+export function modifyCodeSandboxData(memo: any, props: any) {
+  Object.assign(memo, { files: getVueApp(props) });
   return memo;
 }

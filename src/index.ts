@@ -2,9 +2,7 @@ import type {
   AtomAssetsParser,
   AtomAssetsParserResult,
   IDumiTechStack,
-  IDumiTechStackOnBlockLoadArgs,
-  IDumiTechStackOnBlockLoadResult,
-  IDumiTechStackRuntimeOptions,
+  IDumiTechStackRuntimeOpts,
   IDumiUserConfig,
 } from '@/types';
 let unistUtilVisit: typeof import('unist-util-visit');
@@ -21,9 +19,7 @@ export { getProjectRoot } from './utils';
 export {
   unistUtilVisit,
   IDumiTechStack,
-  IDumiTechStackOnBlockLoadArgs,
-  IDumiTechStackOnBlockLoadResult,
-  IDumiTechStackRuntimeOptions,
+  IDumiTechStackRuntimeOpts,
   AtomAssetsParser,
   AtomAssetsParserResult,
 };

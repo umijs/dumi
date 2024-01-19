@@ -1,1 +1,1 @@
-export * from './dist/techStackUtils';
+export * from './dist/techStacks/utils';

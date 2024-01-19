@@ -100,38 +100,62 @@ async function parseBlockAsset(opts: {
           });
 
           builder.onLoad({ filter: /.*/ }, (args) => {
-            const ext = path.extname(args.path);
+            let ext = path.extname(args.path);
             const techStack = opts.techStack;
+
+            const isEntryPoint = args.pluginData.kind === 'entry-point';
+
+            // always add extname for highlight in runtime
+            const filename = `${
+              isEntryPoint
+                ? 'index'
+                : winPath(
+                    path.format({
+                      ...path.parse(args.pluginData.source),
+                      base: '',
+                      ext: '',
+                    }),
+                  )
+            }${ext}`;
+
+            let entryPointCode = opts.entryPointCode;
+            let contents: string | undefined = undefined;
+
+            if (techStack.onBlockLoad) {
+              const result = techStack.onBlockLoad({
+                filename,
+                entryPointCode: (entryPointCode ??= fs.readFileSync(
+                  args.path,
+                  'utf-8',
+                )),
+                ...args,
+              });
+              if (result) {
+                ext = `.${result.type}`;
+                contents = result.content;
+              }
+            }
 
             let isModule = DEFAULT_DEMO_MODULE_EXTENSIONS.includes(ext);
             let isPlainText = DEFAULT_DEMO_PLAIN_TEXT_EXTENSIONS.includes(ext);
 
-            const isEntryPoint = args.pluginData.kind === 'entry-point';
-            const filename = winPath(
-              path.relative(path.dirname(opts.fileAbsPath), args.path),
-            )
-              // discard leading ./ or ../
-              .replace(/^(\.?\.\/)+/g, '');
-
-            if (techStack.onBlockLoad || isModule || isPlainText) {
+            if (isModule || isPlainText) {
               asset.dependencies[filename] = {
                 type: 'FILE',
                 value:
                   opts.entryPointCode ?? fs.readFileSync(args.path, 'utf-8'),
               };
 
-              const entryFile = asset.dependencies[filename];
+              const file = asset.dependencies[filename];
 
               // extract entry point frontmatter as asset metadata
               if (isEntryPoint) {
-                const { code, frontmatter } = parseCodeFrontmatter(
-                  entryFile.value,
-                );
+                const { code, frontmatter } = parseCodeFrontmatter(file.value);
                 asset.entry = filename;
 
                 if (frontmatter) {
                   // replace entry code when frontmatter available
-                  entryFile.value = code;
+                  file.value = code;
                   result.frontmatter = frontmatter;
 
                   // TODO: locale for title & description
@@ -150,18 +174,9 @@ async function parseBlockAsset(opts: {
                 result.resolveMap[filename] = args.path;
               }
 
-              if (techStack.onBlockLoad) {
-                const result = techStack.onBlockLoad({
-                  filename,
-                  entryPointCode: entryFile.value,
-                  ...args,
-                });
-                if (result) return result;
-              }
-
               return {
                 // only continue to load for module files
-                contents: isModule ? entryFile.value : '',
+                contents: isModule ? contents ?? file.value : '',
                 loader: isModule ? (ext.slice(1) as any) : 'text',
               };
             }

@@ -1,29 +1,20 @@
 import { ReactComponent as IconError } from '@ant-design/icons-svg/inline-svg/filled/close-circle.svg';
 import classnames from 'classnames';
-import { DumiDemoContext, useLocation, type IPreviewerProps } from 'dumi';
+import { useLiveDemo, useLocation, type IPreviewerProps } from 'dumi';
 import PreviewerActions from 'dumi/theme/slots/PreviewerActions';
-import React, { useCallback, useContext, useState, type FC } from 'react';
+import React, { useRef, type FC } from 'react';
 import './index.less';
 
 const Previewer: FC<IPreviewerProps> = (props) => {
-  const [demoContainer, setDemoContainer] = useState<
-    HTMLDivElement | HTMLIFrameElement | null
-  >(null);
-
-  const handleContainerRef = useCallback((node: HTMLDivElement) => {
-    if (!node) return;
-    if (props.iframe) {
-      setDemoContainer(node.firstElementChild as HTMLIFrameElement);
-    } else {
-      setDemoContainer(node);
-    }
-  }, []);
-
-  const { demoError, setEditorError, setLiveDemoSource } =
-    useContext(DumiDemoContext);
-
+  const demoContainer = useRef<HTMLDivElement>(null);
   const { hash } = useLocation();
   const link = `#${props.asset.id}`;
+
+  const {
+    node: liveDemoNode,
+    error: liveDemoError,
+    setSource: setLiveDemoSource,
+  } = useLiveDemo(props.asset.id);
 
   return (
     <div
@@ -39,7 +30,7 @@ const Previewer: FC<IPreviewerProps> = (props) => {
         data-compact={props.compact || undefined}
         data-transform={props.transform || undefined}
         data-iframe={props.iframe || undefined}
-        ref={handleContainerRef}
+        ref={demoContainer}
       >
         {props.iframe ? (
           <iframe
@@ -51,13 +42,13 @@ const Previewer: FC<IPreviewerProps> = (props) => {
             src={props.demoUrl}
           ></iframe>
         ) : (
-          props.children
+          liveDemoNode || props.children
         )}
       </div>
-      {demoError && (
+      {liveDemoError && (
         <div className="dumi-default-previewer-demo-error">
           <IconError />
-          {demoError.toString()}
+          {liveDemoError.toString()}
         </div>
       )}
       <div className="dumi-default-previewer-meta">
@@ -77,29 +68,15 @@ const Previewer: FC<IPreviewerProps> = (props) => {
             )}
           </div>
         )}
-        {demoContainer && (
-          <PreviewerActions
-            {...props}
-            onSourceTranspile={({ err, source }) => {
-              if (err) {
-                setEditorError!(err);
-              } else {
-                setEditorError!(null);
-                setLiveDemoSource!(source);
-
-                if (props.iframe) {
-                  (
-                    demoContainer as HTMLIFrameElement
-                  ).contentWindow!.postMessage({
-                    type: 'dumi.liveDemo.setSource',
-                    value: source,
-                  });
-                }
-              }
-            }}
-            demoContainer={demoContainer}
-          />
-        )}
+        <PreviewerActions
+          {...props}
+          onSourceChange={setLiveDemoSource}
+          demoContainer={
+            props.iframe
+              ? (demoContainer.current?.firstElementChild as HTMLIFrameElement)
+              : demoContainer.current!
+          }
+        />
       </div>
     </div>
   );

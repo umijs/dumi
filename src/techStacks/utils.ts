@@ -5,8 +5,8 @@ export {
   IDumiTechStack,
   IDumiTechStackOnBlockLoadArgs,
   IDumiTechStackOnBlockLoadResult,
-  IDumiTechStackRuntimeOptions,
-} from './types';
+  IDumiTechStackRuntimeOpts,
+} from '../types';
 
 /**
  * for frameworks like vue , we need to extract the JS fragments in their scripts
@@ -24,22 +24,19 @@ export function extractScript(htmlLike: string) {
   return scripts;
 }
 
-export interface TransformDemoCodeOptions {
+export interface IWrapDemoWithFnOptions {
   filename: string;
   parserConfig: ParserConfig;
 }
 
 /**
- * Use swc to convert es module into statements inside the function body.
+ * Use swc to convert es module into async function.
  * More transform process detail, refer to:
  * https://github.com/umijs/dumi/blob/master/crates/swc_plugin_react_demo/src/lib.rs#L126
  */
-export function transformDemoCode(
-  code: string,
-  opts: TransformDemoCodeOptions,
-) {
+export function wrapDemoWithFn(code: string, opts: IWrapDemoWithFnOptions) {
   const { filename, parserConfig } = opts;
-  return transformSync(code, {
+  const result = transformSync(code, {
     filename: filename,
     jsc: {
       parser: parserConfig,
@@ -48,7 +45,7 @@ export function transformDemoCode(
         cacheRoot: 'node_modules/.cache/swc',
         plugins: [
           [
-            require.resolve('../compiled/crates/swc_plugin_react_demo.wasm'),
+            require.resolve('../../compiled/crates/swc_plugin_react_demo.wasm'),
             {},
           ],
         ],
@@ -58,4 +55,7 @@ export function transformDemoCode(
       type: 'es6',
     },
   });
+  return `async function() {
+  ${result.code}
+}`;
 }

@@ -1,10 +1,10 @@
 import { SP_ROUTE_PREFIX } from '@/constants';
 import { useAppData, useDemo, useSiteData } from 'dumi';
-import React, { createContext, createElement, useState, type FC } from 'react';
-import type { IDemoData, IPreviewerProps } from '../types';
+import React, { ComponentType, createElement, type FC } from 'react';
+import type { IPreviewerProps } from '../types';
 
 import Previewer from 'dumi/theme/builtins/Previewer';
-import { useLiveDemo } from '../useLiveDemo';
+import { useRenderer } from '../useRenderer';
 import DemoErrorBoundary from './DemoErrorBoundary';
 
 export interface IDumiDemoProps {
@@ -15,27 +15,14 @@ export interface IDumiDemoProps {
   previewerProps: Omit<IPreviewerProps, 'asset' | 'children'>;
 }
 
-export const DumiDemoContext = createContext<{
-  demo?: IDemoData;
-  demoError?: Error | null;
-  setEditorError?: (err: Error | null) => void;
-  setLiveDemoSource?: (sources: Record<string, string>) => void;
-}>({});
-
 const InternalDumiDemo = (props: IDumiDemoProps) => {
   const { historyType } = useSiteData();
   const { basename } = useAppData();
   const id = props.demo.id;
   const demo = useDemo(id)!;
-  const { component, asset } = demo;
+  const { component, asset, renderOpts } = demo;
 
-  const {
-    node: newDemoNode,
-    error: liveDemoError,
-    setSource: setLiveDemoSource,
-  } = useLiveDemo(id);
-
-  const [editorError, setEditorError] = useState<Error | null>(null);
+  const canvasRef = useRenderer(demo);
 
   // hide debug demo in production
   if (process.env.NODE_ENV === 'production' && props.previewerProps.debug)
@@ -43,7 +30,11 @@ const InternalDumiDemo = (props: IDumiDemoProps) => {
 
   const demoNode = (
     <DemoErrorBoundary>
-      {newDemoNode || createElement(component)}
+      {renderOpts?.renderer ? (
+        <div ref={canvasRef}></div>
+      ) : (
+        createElement(component as ComponentType)
+      )}
     </DemoErrorBoundary>
   );
 
@@ -54,29 +45,20 @@ const InternalDumiDemo = (props: IDumiDemoProps) => {
   const isHashRoute = historyType === 'hash';
 
   return (
-    <DumiDemoContext.Provider
-      value={{
-        demo,
-        setLiveDemoSource,
-        setEditorError,
-        demoError: liveDemoError || editorError,
-      }}
+    <Previewer
+      asset={asset}
+      demoUrl={
+        // allow user override demoUrl by frontmatter
+        props.previewerProps.demoUrl ||
+        // when use hash route, browser can automatically handle relative paths starting with #
+        `${isHashRoute ? `#` : ''}${basename}${SP_ROUTE_PREFIX}demos/${
+          props.demo.id
+        }`
+      }
+      {...props.previewerProps}
     >
-      <Previewer
-        asset={asset}
-        demoUrl={
-          // allow user override demoUrl by frontmatter
-          props.previewerProps.demoUrl ||
-          // when use hash route, browser can automatically handle relative paths starting with #
-          `${isHashRoute ? `#` : ''}${basename}${SP_ROUTE_PREFIX}demos/${
-            props.demo.id
-          }`
-        }
-        {...props.previewerProps}
-      >
-        {props.previewerProps.iframe ? null : demoNode}
-      </Previewer>
-    </DumiDemoContext.Provider>
+      {props.previewerProps.iframe ? null : demoNode}
+    </Previewer>
   );
 };
 

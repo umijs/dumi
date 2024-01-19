@@ -252,6 +252,9 @@ export default function rehypeDemo(
               resolver: opts.resolver,
               techStack,
             };
+
+            const runtimeOpts = techStack.runtimeOpts;
+
             const previewerProps: IDumiDemoProps['previewerProps'] = {};
             let component = '';
 
@@ -281,7 +284,7 @@ export default function rehypeDemo(
                 parseOpts.fileAbsPath,
               )}?techStack=${techStack.name}')`;
 
-              if (techStack?.runtime?.renderType === 'CANCELABLE') {
+              if (runtimeOpts?.rendererPath) {
                 component = `(async () => ${importChunk})()`;
               } else {
                 component = `React.memo(React.lazy(() => ${importChunk}))`;
@@ -384,8 +387,10 @@ export default function rehypeDemo(
                     return {
                       // TODO: special id for inline demo
                       id: asset.id,
-                      runtime: techStack.runtime,
                       component,
+                      renderOpts: {
+                        rendererPath: runtimeOpts?.rendererPath,
+                      },
                     };
                   }
 
@@ -430,7 +435,6 @@ export default function rehypeDemo(
                   return {
                     id: asset.id,
                     component,
-                    runtime: techStack.runtime,
                     asset: techStack.generateMetadata
                       ? await techStack.generateMetadata(asset, techStackOpts)
                       : asset,
@@ -443,6 +447,10 @@ export default function rehypeDemo(
                           techStackOpts,
                         )
                       : resolveMap,
+                    renderOpts: {
+                      rendererPath: runtimeOpts?.rendererPath,
+                      compilePath: runtimeOpts?.compilePath,
+                    },
                   };
                 },
               ),

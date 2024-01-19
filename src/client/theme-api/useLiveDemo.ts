@@ -1,4 +1,4 @@
-import { useDemo, useRenderer } from 'dumi';
+import { useDemo } from 'dumi';
 import {
   createElement,
   useCallback,
@@ -7,6 +7,8 @@ import {
   type ReactNode,
 } from 'react';
 import DemoErrorBoundary from './DumiDemo/DemoErrorBoundary';
+import type { AgnosticComponentType } from './types';
+import { useRenderer } from './useRenderer';
 
 type CommonJSContext = {
   module: any;
@@ -25,9 +27,8 @@ function evalCommonJS(
 
 export const useLiveDemo = (id: string) => {
   const demo = useDemo(id)!;
-  const { context = {}, asset, runtime } = demo;
-
-  const [component, setComponent] = useState<any>();
+  const { context = {}, asset, renderOpts } = demo;
+  const [component, setComponent] = useState<AgnosticComponentType>();
   const ref = useRenderer(
     component
       ? {
@@ -37,35 +38,40 @@ export const useLiveDemo = (id: string) => {
       : demo,
   );
 
-  const runtimePlugin = runtime?.plugin;
+  const [demoNode, setDemoNode] = useState<ReactNode>();
 
-  const [demoNode, setDemoNode] = useState<ReactNode>(
-    runtime?.renderType === 'CANCELABLE'
-      ? createElement('div', { ref })
-      : undefined,
-  );
   const [error, setError] = useState<Error | null>(null);
   const setSource = useCallback(
-    (source: Record<string, string>) => {
+    async (source: Record<string, string>) => {
       const entryFileName = Object.keys(asset.dependencies).find(
         (k) => asset.dependencies[k].type === 'FILE',
       )!;
-      const entryFileCode = source[entryFileName];
+      let entryFileCode = source[entryFileName];
       const require = (v: string) => {
         if (v in context!) return context![v];
         throw new Error(`Cannot find module: ${v}`);
       };
-      const exports: { default?: ComponentType } = {};
-      const module = { exports };
 
-      if (runtimePlugin?.loadCompiler) {
+      if (renderOpts?.compile) {
         try {
+          entryFileCode = await renderOpts.compile(entryFileCode, {
+            filename: entryFileName,
+          });
+        } catch (error: any) {
+          setError(error);
+        }
+      }
+
+      if (renderOpts?.renderer) {
+        try {
+          const exports: AgnosticComponentType = {};
+          const module = { exports };
           evalCommonJS(entryFileCode, {
             exports,
             module,
             require,
           });
-          setComponent(exports.default!);
+          setComponent(exports);
           setDemoNode(createElement('div', { ref }));
           setError(null);
         } catch (err: any) {
@@ -77,6 +83,8 @@ export const useLiveDemo = (id: string) => {
       // lazy load react-dom/server
       import('react-dom/server').then(({ renderToStaticMarkup }) => {
         try {
+          const exports: { default?: ComponentType } = {};
+          const module = { exports };
           // initial component with fake runtime
           evalCommonJS(entryFileCode, {
             exports,

@@ -12,9 +12,9 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
+    "lib",
     "dist",
-    "compiled",
-    "templates"
+    "compiled"
   ],
   "scripts": {
     "build": "father build",
@@ -37,7 +37,7 @@
   "devDependencies": {
     "@types/babel__core": "^7.20.5",
     "@types/babel__standalone": "^7.1.7",
-    "@vue/babel-plugin-jsx": "^1.1.5",
+    "@vue/babel-plugin-jsx": "^1.1.6",
     "dumi": "workspace:*",
     "father": "^4.1.9",
     "tsup": "^8.0.1",

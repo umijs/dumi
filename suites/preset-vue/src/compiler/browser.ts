@@ -1,3 +1,4 @@
+import * as Babel from '@babel/standalone';
 import jsx from '@vue/babel-plugin-jsx';
 import hashId from 'hash-sum';
 import { COMP_IDENTIFIER, createCompiler, resolveFilename } from './index';
@@ -10,7 +11,7 @@ const { compileSFC, transformTS, toCommonJS } = createCompiler({
         // @ts-ignore
         return Babel.transform(...args);
       }
-      console.error('@babel/standablone failed to load!');
+      console.error('@babel/standablone is loading!');
       return null;
     },
   },
@@ -19,9 +20,10 @@ const { compileSFC, transformTS, toCommonJS } = createCompiler({
   },
 });
 
-export function compile(code: string, demo: any) {
-  let { id, asset } = demo;
-  const filename = asset.entry!;
+export default function compile(
+  code: string,
+  { filename }: { filename: string },
+) {
   const { lang } = resolveFilename(filename);
   if (['js', 'jsx', 'ts', 'tsx'].includes(lang)) {
     return transformTS(code, filename, {
@@ -29,7 +31,7 @@ export function compile(code: string, demo: any) {
       presets: [['env', { modules: 'cjs' }]],
     });
   }
-  id = hashId(id);
+  const id = hashId(code);
   const compiled = compileSFC({ id, filename, code });
 
   if (Array.isArray(compiled)) {

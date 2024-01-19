@@ -19,13 +19,13 @@ export {
   useIntl,
 } from 'react-intl';
 export { AtomRenderer } from './AtomRenderer';
-export { DumiDemo, DumiDemoContext } from './DumiDemo';
+export { DumiDemo } from './DumiDemo';
 export { DumiDemoGrid } from './DumiDemoGrid';
 export { DumiPage } from './DumiPage';
 export { useSiteData } from './context';
 export { openCodeSandbox } from './openCodeSandbox';
 export { openStackBlitz } from './openStackBlitz';
-export type { IPreviewerProps, PreviewerType } from './types';
+export type { IDemoCancelableFn, IPreviewerProps } from './types';
 export { useAtomAssets } from './useAtomAssets';
 export { useLiveDemo } from './useLiveDemo';
 export { useLocale } from './useLocale';

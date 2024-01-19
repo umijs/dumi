@@ -1,5 +1,4 @@
 import type { IApi } from 'dumi';
-import previewer from './previewer';
 import registerTechStack from './techStack';
 import modifyWebpackConfig from './webpack';
 
@@ -19,8 +18,6 @@ export default (api: IApi) => {
     };
     return config;
   });
-
-  previewer(api);
 
   registerTechStack(api);
 };

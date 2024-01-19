@@ -43,10 +43,20 @@ declare module 'vfile' {
           component: string;
           asset: IParsedBlockAsset['asset'];
           resolveMap: IParsedBlockAsset['resolveMap'];
+          renderOpts: {
+            type?: string;
+            rendererPath?: string;
+            compilePath?: string;
+          };
         }
       | {
           id: string;
           component: string;
+          renderOpts: {
+            type?: string;
+            rendererPath?: string;
+            compilePath?: string; // only for fix type
+          };
         }
     )[];
     texts: IRouteMeta['texts'];

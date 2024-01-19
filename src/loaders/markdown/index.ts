@@ -128,23 +128,7 @@ export const demos = {
     {{#component}}
     component: {{{component}}},
     {{/component}}
-    {{#runtime}}
-    runtime: {
-      {{#renderType}}
-      renderType: "{{{renderType}}}",
-      {{/renderType}}
-      {{#plugin}}
-      plugin: {
-        {{#render}}
-        render: "{{{render}}}",
-        {{/render}}
-        {{#loadCompiler}}
-        loadCompiler: "{{{loadCompiler}}}",
-        {{/loadCompiler}}
-      },
-      {{/plugin}}
-    },
-    {{/runtime}}
+    renderOpts: {{{renderRenderOpts}}},
     asset: {{{renderAsset}}},
     context: {{{renderContext}}}
   },
@@ -190,6 +174,37 @@ export const demos = {
         );
 
         return JSON.stringify(context, null, 2).replace(/"{{{|}}}"/g, '');
+      },
+      renderRenderOpts: function renderRenderOpts(
+        this: NonNullable<typeof demos>[0],
+      ) {
+        if (!('renderOpts' in this)) {
+          return 'undefined';
+        }
+        const renderOpts = this.renderOpts;
+        const propertyArray: string[] = [];
+
+        if (renderOpts.compilePath) {
+          propertyArray.push(`
+          compile: async (...args) => {
+            return (await import('${winPath(
+              renderOpts.compilePath,
+            )}')).default(...args);
+          },`);
+        }
+
+        if (renderOpts.rendererPath) {
+          propertyArray.push(`
+            renderer: (await import('${winPath(
+              renderOpts.rendererPath,
+            )}')).default,`);
+        }
+
+        if (propertyArray.length === 0) return 'undefined';
+
+        return `{
+          ${propertyArray.join('\n')}
+        }`;
       },
     },
   );

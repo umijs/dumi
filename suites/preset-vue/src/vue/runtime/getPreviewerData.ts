@@ -1,6 +1,6 @@
 import type { IFiles } from 'codesandbox-import-utils/lib/api/define';
-import type { IPreviewerProps } from 'dumi';
 import type { ExampleBlockAsset } from 'dumi-assets-types';
+import type { IPreviewerProps } from 'dumi/dist/client/theme-api';
 
 export const defaultTitle = 'vue demo';
 export const defaultDesc = 'An auto-generated vue demo by dumi';
