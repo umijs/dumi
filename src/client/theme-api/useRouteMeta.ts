@@ -9,7 +9,7 @@ import { useCallback, useState } from 'react';
 import type { IRouteMeta, IRoutesById } from './types';
 import { use, useIsomorphicLayoutEffect } from './utils';
 
-const cache = new Map<string, Promise<IRouteMeta | undefined>>();
+const cache = new Map<string, IRouteMeta | Promise<IRouteMeta>>();
 const EMPTY_META = {
   frontmatter: {},
   toc: [],
@@ -32,7 +32,6 @@ function getCachedRouteMeta(route: IRoutesById[string]) {
       return meta;
     };
     const meta = merge(getRouteMetaById(route.id, { syncOnly: true }));
-    const ret: Parameters<typeof use<IRouteMeta>>[0] = Promise.resolve(meta);
     const proxyGetter = (target: any, prop: string) => {
       if (ASYNC_META_PROPS.includes(prop)) {
         if (!cache.get(pendingCacheKey)) {
@@ -40,7 +39,7 @@ function getCachedRouteMeta(route: IRoutesById[string]) {
           cache.set(
             pendingCacheKey,
             getRouteMetaById(route.id).then((full) =>
-              cache.set(cacheKey, Promise.resolve(merge(full))).get(cacheKey),
+              cache.set(cacheKey, merge(full)).get(cacheKey),
             ),
           );
         }
@@ -52,16 +51,13 @@ function getCachedRouteMeta(route: IRoutesById[string]) {
       return target[prop];
     };
 
-    // return sync meta by default
-    ret.status = 'fulfilled';
-
     // load async meta if property accessed
     meta.tabs?.forEach((tab) => {
       tab.meta = new Proxy(tab.meta, {
         get: proxyGetter,
       });
     });
-    ret.value = new Proxy(meta, {
+    const ret = new Proxy(meta, {
       get: proxyGetter,
     });
 
@@ -93,11 +89,11 @@ export const useRouteMeta = () => {
     return ret;
   }, [clientRoutes.length, pathname]);
   const [matchedRoute, setMatchedRoute] = useState(getter);
-  const meta = use(getCachedRouteMeta(matchedRoute));
+  const meta = getCachedRouteMeta(matchedRoute);
 
   useIsomorphicLayoutEffect(() => {
     setMatchedRoute(getter);
   }, [clientRoutes.length, pathname]);
 
-  return meta!;
+  return meta instanceof Promise ? use(meta) : meta;
 };
