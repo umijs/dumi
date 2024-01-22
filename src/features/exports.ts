@@ -1,5 +1,4 @@
 import type { IApi } from '@/types';
-import path from 'path';
 import { winPath } from 'umi/plugin-utils';
 
 export default (api: IApi) => {
@@ -8,7 +7,6 @@ export default (api: IApi) => {
   // allow import from dumi
   api.modifyConfig((memo) => {
     memo.alias['dumi$'] = '@@/dumi/exports';
-    memo.alias['dumi/dist'] = winPath(path.join(__dirname, '..'));
 
     return memo;
   });

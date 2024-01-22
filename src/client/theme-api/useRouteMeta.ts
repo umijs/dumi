@@ -7,7 +7,7 @@ import {
 } from 'dumi';
 import { useCallback, useState } from 'react';
 import type { IRouteMeta, IRoutesById } from './types';
-import { use, useIsomorphicLayoutEffect } from './utils';
+import { useIsomorphicLayoutEffect } from './utils';
 
 const cache = new Map<string, IRouteMeta | Promise<IRouteMeta>>();
 const EMPTY_META = {
@@ -95,5 +95,5 @@ export const useRouteMeta = () => {
     setMatchedRoute(getter);
   }, [clientRoutes.length, pathname]);
 
-  return meta instanceof Promise ? use(meta) : meta;
+  return meta;
 };
