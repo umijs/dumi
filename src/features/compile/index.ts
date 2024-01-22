@@ -7,6 +7,8 @@ import path from 'path';
 import { addAtomMeta, addExampleAssets } from '../assets';
 
 export default (api: IApi) => {
+  const techStacks: IDumiTechStack[] = [];
+
   api.describe({ key: 'dumi:compile' });
 
   // register react tech stack by default
@@ -38,13 +40,36 @@ export default (api: IApi) => {
     },
   });
 
+  api.onGenerateFiles({
+    // make sure called before `addRuntimePlugin` key
+    // why not use `before: 'tmpFiles'`?
+    // because @umijs/preset-umi/.../tmpFiles has two `onGenerateFiles` key
+    // and `before` only insert before the last one
+    stage: -Infinity,
+    async fn() {
+      techStacks.push(
+        ...(await api.applyPlugins({
+          key: 'registerTechStack',
+          type: api.ApplyPluginsType.add,
+        })),
+      );
+    },
+  });
+
+  // auto register runtime plugin for each tech stack
+  api.addRuntimePlugin(() =>
+    techStacks.reduce<string[]>((acc, techStack) => {
+      if (techStack.runtimeOpts?.pluginPath) {
+        acc.push(techStack.runtimeOpts.pluginPath);
+      }
+
+      return acc;
+    }, []),
+  );
+
   // configure loader to compile markdown
   api.chainWebpack(async (memo) => {
     const babelInUmi = memo.module.rule('src').use('babel-loader').entries();
-    const techStacks: IDumiTechStack[] = await api.applyPlugins({
-      key: 'registerTechStack',
-      type: api.ApplyPluginsType.add,
-    });
     const loaderPath = require.resolve('../../loaders/markdown');
     const loaderBaseOpts: Partial<IMdLoaderOptions> = {
       techStacks,
