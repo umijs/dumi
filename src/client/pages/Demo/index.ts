@@ -5,9 +5,14 @@ import './index.less';
 const DemoRenderPage: FC = () => {
   const { id } = useParams();
   const { component } = useDemo(id!) || {};
-  const { node: liveDemoNode, setSource } = useLiveDemo(id!);
+  const {
+    node: liveDemoNode,
+    error: liveDemoError,
+    setSource,
+  } = useLiveDemo(id!);
   const finalNode = liveDemoNode || (component && createElement(component));
 
+  // listen message event for setSource
   useEffect(() => {
     const handler = (
       ev: MessageEvent<{
@@ -24,6 +29,16 @@ const DemoRenderPage: FC = () => {
 
     return () => window.removeEventListener('message', handler);
   }, [setSource]);
+
+  // notify parent window that compile done
+  useEffect(() => {
+    if (liveDemoNode || liveDemoError) {
+      window.postMessage({
+        type: 'dumi.liveDemo.compileDone',
+        value: { err: liveDemoError },
+      });
+    }
+  }, [liveDemoNode, liveDemoError]);
 
   return finalNode;
 };
