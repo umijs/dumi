@@ -96,6 +96,10 @@ export interface IDumiTechStackRuntimeOpts {
    * path to runtime compile function module
    */
   compilePath?: string;
+  /**
+   * path to runtime plugin for this tech stack
+   */
+  pluginPath?: string;
 }
 
 export abstract class IDumiTechStack {
