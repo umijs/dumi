@@ -39,17 +39,20 @@
     }
   }
 
+  &::after {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+  }
+
   &:focus-within {
     &::after {
-      content: '';
-      position: absolute;
-      z-index: 0;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border-bottom-left-radius: 3px;
-      border-bottom-right-radius: 3px;
       box-shadow: 0 0 0 1px @c-primary inset;
 
       @{dark-selector} & {
