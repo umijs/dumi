@@ -30,15 +30,33 @@
     }
 
     &:focus {
-      box-shadow: 0 0 0 1px lighten(@c-primary, 20%) inset;
-
       @{dark-selector} & {
-        box-shadow: 0 0 0 1px darken(@c-primary-dark, 20%) inset;
-
         // for firefox because its selection color is not translucent when color-scheme is dark
         &::selection {
           background-color: fade(@c-primary-dark, 30%);
         }
+      }
+    }
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+  }
+
+  &:focus-within {
+    &::after {
+      box-shadow: 0 0 0 1px @c-primary inset;
+
+      @{dark-selector} & {
+        box-shadow: 0 0 0 1px @c-primary-dark inset;
       }
     }
   }
