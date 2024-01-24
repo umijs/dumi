@@ -37,6 +37,16 @@
     height: max-content;
     min-width: 100%;
     min-height: 100%;
+
+    > pre.prism-code {
+      width: max-content;
+      position: relative;
+      overflow: visible;
+    }
+  }
+
+  > pre.prism-code {
+    overflow: auto;
   }
 
   > pre.prism-code,
@@ -47,9 +57,6 @@
     line-height: 1.58;
     direction: ltr;
     background: transparent;
-    overflow: visible;
-    width: max-content;
-    position: relative;
 
     // remove shadow from coy theme
     &::before,
