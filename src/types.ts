@@ -84,9 +84,8 @@ export type IDumiTechStackOnBlockLoadArgs = OnLoadArgs & {
 
 export interface IDumiTechStackRuntimeOpts {
   /**
-   * Available when type is `CANCELABLE`,
-   * define the cancelable function as a public function through dumi's plugin mechanism.
-   * Users can execute the cancelable function through `applyPlugins`.
+   * path of the cancelable{@link IDemoCancelableFn} function
+   * that manipulate(mount/unmount) third-party framework component
    */
   rendererPath?: string;
   /**

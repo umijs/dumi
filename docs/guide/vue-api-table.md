@@ -41,12 +41,9 @@ import * as path from 'path';
 export default {
   plugins: ['@dumijs/preset-vue'],
   vue: {
-    parserOptions: {
-      tsconfigPath: path.resolve(__dirname, './tsconfig.vue.json');
-    },
+    tsconfigPath: path.resolve(__dirname, './tsconfig.vue.json'),
   },
 };
-
 ```
 
 ## JSDoc 编写

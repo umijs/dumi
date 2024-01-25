@@ -99,7 +99,7 @@ api.modifyTheme((memo) => {
 // CustomTechStack.ts
 import type {
   IDumiTechStack,
-  IDumiTechStackRenderType,
+  IDumiTechStackRuntimeOpts,
 } from 'dumi/tech-stack-utils';
 
 class CustomTechStack implements IDumiTechStack {
@@ -118,9 +118,11 @@ class CustomTechStack implements IDumiTechStack {
    * 默认情况下， dumi 只支持js/jsx/ts/tsx模块的依赖分析，
    * 所以对于无法识别的文件类型需要通过此方法将文件转换为js模块
    */
-  abstract onBlockLoad?(
+  onBlockLoad?(
     args: IDumiTechStackOnBlockLoadArgs,
-  ): IDumiTechStackOnBlockLoadResult | null;
+  ): IDumiTechStackOnBlockLoadResult {
+    // do something
+  }
 
   /**
    * 代码转换函数
@@ -132,11 +134,22 @@ class CustomTechStack implements IDumiTechStack {
   }
 
   /**
-   * 组件在React中的渲染方式
+   * 运行时选项
    */
-  render: IDumiTechStackRenderType = {
-    type: 'CANCELABLE',
-    plugin: VUE_RENDERER_KEY,
+  runtimeOpts: IDumiTechStackRuntimeOpts = {
+    /**
+     * IDemoCancelableFn函数所在的模块路径
+     * 操作（挂载/卸载）第三方框架组件
+     */
+    rendererPath: '',
+    /**
+     * 运行时编译功能模块的路径
+     */
+    compilePath: '',
+    /**
+     * 该技术堆栈的运行时插件的路径
+     */
+    pluginPath: '',
   };
 
   /**
