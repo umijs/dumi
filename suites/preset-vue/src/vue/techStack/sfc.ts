@@ -8,7 +8,6 @@ import type {
 import { wrapDemoWithFn } from 'dumi/tech-stack-utils';
 import hashId from 'hash-sum';
 import type { Element } from 'hast';
-import { dirname, resolve } from 'path';
 import { logger } from 'umi/plugin-utils';
 
 export default class VueSfcTechStack implements IDumiTechStack {
@@ -40,10 +39,8 @@ export default class VueSfcTechStack implements IDumiTechStack {
 
   transformCode(...[raw, opts]: Parameters<IDumiTechStack['transformCode']>) {
     if (opts.type === 'code-block') {
-      const filename = !!opts.id
-        ? resolve(dirname(opts.fileAbsPath), opts.id, '.vue')
-        : opts.fileAbsPath;
-      const id = hashId(filename);
+      const filename = opts.fileAbsPath;
+      const id = hashId(raw);
 
       const js = compile({ id, filename, code: raw });
       if (Array.isArray(js)) {

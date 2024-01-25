@@ -314,7 +314,6 @@ export default function rehypeDemo(
                 vFile.data.frontmatter!.atomId,
               );
               component = techStack.transformCode(codeValue, {
-                id: parseOpts.id,
                 type: 'code-block',
                 fileAbsPath: parseOpts.fileAbsPath,
               });

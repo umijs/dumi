@@ -89,9 +89,6 @@ export interface IDumiTechStackRuntimeOpts {
    * Users can execute the cancelable function through `applyPlugins`.
    */
   rendererPath?: string;
-
-  pluginPath?: string;
-
   /**
    * path to runtime compile function module
    */
@@ -120,7 +117,7 @@ export abstract class IDumiTechStack {
    */
   abstract transformCode(
     raw: string,
-    opts: { id?: string; type: 'external' | 'code-block'; fileAbsPath: string },
+    opts: { type: 'external' | 'code-block'; fileAbsPath: string },
   ): string;
 
   /**

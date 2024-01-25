@@ -42,7 +42,7 @@ export default class VueJSXTechStack implements IDumiTechStack {
       const filename = opts.fileAbsPath;
 
       const result = compile({
-        id: hashId(filename),
+        id: hashId(raw),
         filename,
         code: raw,
       }) as string;
