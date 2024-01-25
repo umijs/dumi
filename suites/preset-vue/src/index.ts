@@ -8,12 +8,8 @@ export default (api: IApi) => {
     config: {
       schema({ zod }) {
         return zod.object({
-          parserOptions: zod
-            .object({
-              tsconfigPath: zod.string().optional(),
-              checkerOptions: zod.object({}).optional(),
-            })
-            .optional(),
+          tsconfigPath: zod.string().optional(),
+          checkerOptions: zod.object({}).optional(),
           compiler: zod
             .object({
               babelStandaloneCDN: zod.string().optional(),

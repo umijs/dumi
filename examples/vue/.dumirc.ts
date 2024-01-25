@@ -11,9 +11,7 @@ export default {
   html2sketch: {},
   presets: [require.resolve('@dumijs/preset-vue')],
   vue: {
-    parserOptions: {
-      tsconfigPath: path.resolve(__dirname, './tsconfig.vue.json'),
-    },
+    tsconfigPath: path.resolve(__dirname, './tsconfig.vue.json'),
   },
   themeConfig: {
     nav: [

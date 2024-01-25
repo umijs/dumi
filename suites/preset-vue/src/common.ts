@@ -18,8 +18,11 @@ export default (api: IApi) => {
     const userConfig = api.userConfig;
 
     const vueConfig = userConfig?.vue;
-    const parserOptions: Partial<VueParserOptions> =
-      vueConfig?.parserOptions || {};
+
+    const parserOptions: Partial<VueParserOptions> = {
+      tsconfigPath: vueConfig?.tsconfigPath,
+      checkerOptions: vueConfig?.checkerOptions,
+    };
 
     const entryFile = userConfig?.resolve?.entryFile;
     const resolveDir = api.cwd;
