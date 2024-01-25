@@ -4,7 +4,11 @@ import type { AgnosticComponentModule, IDemoData } from './types';
 // maintain all the mounted instance
 const map = new Map<string, any>();
 
-export const useRenderer = ({ id, component, renderOpts }: IDemoData) => {
+export const useRenderer = ({
+  id,
+  component,
+  renderOpts,
+}: IDemoData & { id: string }) => {
   const canvasRef = useRef<HTMLDivElement>(null);
   const teardownRef = useRef(() => {});
 

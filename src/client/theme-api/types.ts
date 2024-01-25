@@ -254,7 +254,6 @@ export type IDemoCancelableFn = (
 ) => (() => void) | Promise<() => void>;
 
 export type IDemoData = {
-  id: string;
   component: ReactComponentType | AgnosticComponentType;
   asset: IPreviewerProps['asset'];
   routeId: string;

@@ -44,10 +44,11 @@ export const useLiveDemo = (
   const ref = useRenderer(
     component
       ? {
+          id,
           ...demo,
           component,
         }
-      : demo,
+      : Object.assign(demo, { id }),
   );
 
   const [demoNode, setDemoNode] = useState<ReactNode>();
