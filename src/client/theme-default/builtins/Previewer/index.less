@@ -136,6 +136,7 @@
     text-overflow: ellipsis;
     background: lighten(@c-error, 51%);
     box-sizing: border-box;
+    overflow: hidden;
 
     @{dark-selector} & {
       @color: lighten(desaturate(@c-error, 20%), 5%);

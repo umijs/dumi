@@ -114,6 +114,8 @@ export const useLiveDemo = (
               });
             } catch (error: any) {
               setError(error);
+              resetLoadingStatus();
+              return;
             }
           }
 
