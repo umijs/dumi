@@ -28,6 +28,7 @@ interface SourceCodeProps {
   lang: Language;
   highlightLines?: number[];
   extra?: ReactNode;
+  textarea?: ReactNode;
 }
 
 const SourceCode: FC<SourceCodeProps> = (props) => {
@@ -44,6 +45,48 @@ const SourceCode: FC<SourceCodeProps> = (props) => {
       setText(text);
     }
   }, [lang, children]);
+
+  const code = (
+    <Highlight
+      {...defaultProps}
+      code={children}
+      language={SIMILAR_DSL[lang] || lang}
+      theme={undefined}
+    >
+      {({ className, style, tokens, getLineProps, getTokenProps }) => (
+        <pre className={className} style={style}>
+          {tokens.map((line, i) => (
+            <div
+              key={String(i)}
+              className={classNames({
+                highlighted: highlightLines.includes(i + 1),
+                wrap: themeConfig.showLineNum,
+              })}
+            >
+              {themeConfig.showLineNum && (
+                <span className="token-line-num">{i + 1}</span>
+              )}
+              <div
+                {...getLineProps({
+                  line,
+                  key: i,
+                })}
+                className={classNames({
+                  'line-cell': themeConfig.showLineNum,
+                })}
+              >
+                {line.map((token, key) => (
+                  // getTokenProps 返回值包含 key
+                  // eslint-disable-next-line react/jsx-key
+                  <span {...getTokenProps({ token, key })} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </pre>
+      )}
+    </Highlight>
+  );
 
   return (
     <div className="dumi-default-source-code">
@@ -63,45 +106,16 @@ const SourceCode: FC<SourceCodeProps> = (props) => {
           {isCopied ? <IconCheck /> : <IconCopy />}
         </button>
       </CopyToClipboard>
-      <Highlight
-        {...defaultProps}
-        code={children}
-        language={SIMILAR_DSL[lang] || lang}
-        theme={undefined}
-      >
-        {({ className, style, tokens, getLineProps, getTokenProps }) => (
-          <pre className={className} style={style}>
-            {tokens.map((line, i) => (
-              <div
-                key={String(i)}
-                className={classNames({
-                  highlighted: highlightLines.includes(i + 1),
-                  wrap: themeConfig.showLineNum,
-                })}
-              >
-                {themeConfig.showLineNum && (
-                  <span className="token-line-num">{i + 1}</span>
-                )}
-                <div
-                  {...getLineProps({
-                    line,
-                    key: i,
-                  })}
-                  className={classNames({
-                    'line-cell': themeConfig.showLineNum,
-                  })}
-                >
-                  {line.map((token, key) => (
-                    // getTokenProps 返回值包含 key
-                    // eslint-disable-next-line react/jsx-key
-                    <span {...getTokenProps({ token, key })} />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </pre>
-        )}
-      </Highlight>
+      {props.textarea ? (
+        <div className="dumi-default-source-code-scroll-container">
+          <div className="dumi-default-source-code-scroll-content">
+            {code}
+            {props.textarea}
+          </div>
+        </div>
+      ) : (
+        code
+      )}
       {props.extra}
     </div>
   );

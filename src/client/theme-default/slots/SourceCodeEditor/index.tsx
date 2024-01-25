@@ -51,45 +51,43 @@ const SourceCodeEditor: FC<ISourceCodeEditorProps> = (props) => {
     <div className="dumi-default-source-code-editor" ref={elm}>
       <SourceCode
         {...props}
-        extra={
+        textarea={
           style && (
-            <>
-              <textarea
-                className="dumi-default-source-code-editor-textarea"
-                style={style}
-                value={code}
-                onChange={(ev) => {
-                  setCode(ev.target.value);
-                  props.onChange?.(ev.target.value);
-                  // FIXME: remove before publish
-                  props.onTranspile?.({ err: null, code: ev.target.value });
-                }}
-                onKeyDown={(ev) => {
-                  // support tab to space
-                  if (ev.key === 'Tab') {
-                    ev.preventDefault();
+            <textarea
+              className="dumi-default-source-code-editor-textarea"
+              style={style}
+              value={code}
+              onChange={(ev) => {
+                setCode(ev.target.value);
+                props.onChange?.(ev.target.value);
+                // FIXME: remove before publish
+                props.onTranspile?.({ err: null, code: ev.target.value });
+              }}
+              onKeyDown={(ev) => {
+                // support tab to space
+                if (ev.key === 'Tab') {
+                  ev.preventDefault();
 
-                    const elm = ev.currentTarget;
-                    const { selectionStart: start, selectionEnd: end } = elm;
-                    const before = elm.value.substring(0, start);
-                    const after = elm.value.substring(end);
-                    const spaces = '  ';
-                    const pos = spaces.length + start;
+                  const elm = ev.currentTarget;
+                  const { selectionStart: start, selectionEnd: end } = elm;
+                  const before = elm.value.substring(0, start);
+                  const after = elm.value.substring(end);
+                  const spaces = '  ';
+                  const pos = spaces.length + start;
 
-                    setCode(`${before}${spaces}${after}`);
-                    setTimeout(() => {
-                      elm.setSelectionRange(pos, pos);
-                    });
-                  }
-                }}
-                autoComplete="off"
-                autoCorrect="off"
-                autoSave="off"
-              />
-              {props.extra}
-            </>
+                  setCode(`${before}${spaces}${after}`);
+                  setTimeout(() => {
+                    elm.setSelectionRange(pos, pos);
+                  });
+                }
+              }}
+              autoComplete="off"
+              autoCorrect="off"
+              autoSave="off"
+            />
           )
         }
+        extra={style && props.extra}
       >
         {code}
       </SourceCode>
