@@ -29,10 +29,10 @@
     "@types/hash-sum": "^1.0.0",
     "@umijs/bundler-webpack": "^4.0.81",
     "codesandbox-import-utils": "^2.2.3",
+    "compare-versions": "^6.1.0",
     "hash-sum": "^2.0.0",
-    "vue": "^3.2.47",
-    "vue-loader": "^17.0.1",
-    "vue-template-compiler": "^2.7.14"
+    "vue": "^3.3.4",
+    "vue-loader": "^17.0.1"
   },
   "devDependencies": {
     "@types/babel__core": "^7.20.5",
@@ -40,8 +40,7 @@
     "@vue/babel-plugin-jsx": "^1.1.6",
     "dumi": "workspace:*",
     "father": "^4.1.9",
-    "tsup": "^8.0.1",
-    "unbuild": "^2.0.0"
+    "tsup": "^8.0.1"
   },
   "peerDependencies": {
     "dumi": "^2.0.0",

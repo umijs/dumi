@@ -22,7 +22,6 @@ const color = ref('chartreuse');
 <template>
   <h1 class="msg">{{ msg }}</h1>
   <div>
-    <img style="width: 100px;height: 100px;" src="../test.svg" />
     <input v-model="msg" />
   </div>
 </template>
