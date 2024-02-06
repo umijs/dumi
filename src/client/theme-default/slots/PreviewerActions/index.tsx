@@ -16,8 +16,8 @@ import {
 import SourceCode from 'dumi/theme/builtins/SourceCode';
 import PreviewerActionsExtra from 'dumi/theme/slots/PreviewerActionsExtra';
 import SourceCodeEditor from 'dumi/theme/slots/SourceCodeEditor';
+import Tooltip from 'dumi/theme/slots/Tooltip';
 import Tabs from 'rc-tabs';
-import Tooltip from 'rc-tooltip';
 import React, { useRef, useState, type FC, type ReactNode } from 'react';
 import './index.less';
 export interface IPreviewerActionsProps extends IPreviewerProps {
@@ -211,9 +211,7 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
                       }}
                       extra={
                         <Tooltip
-                          prefixCls="dumi-theme-default-tooltip"
-                          placement="top"
-                          overlay={intl.formatMessage({
+                          title={intl.formatMessage({
                             id: 'previewer.actions.code.editable',
                           })}
                         >
@@ -234,9 +232,7 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
                         // because readonly entry file means live compile is not available for this demo tech stack
                         i !== 0 && (
                           <Tooltip
-                            prefixCls="dumi-theme-default-tooltip"
-                            placement="top"
-                            overlay={intl.formatMessage({
+                            title={intl.formatMessage({
                               id: 'previewer.actions.code.readonly',
                             })}
                           >
