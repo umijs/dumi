@@ -49,6 +49,23 @@
         }
       }
 
+      &-sources {
+        flex: 1;
+        height: 0;
+      }
+
+      &-tabs {
+        height: 100%;
+
+        .dumi-default-tabs {
+          &-content,
+          &-tabpane,
+          &-content-holder {
+            height: 100%;
+          }
+        }
+      }
+
       &-action-btn > svg {
         width: 17px;
       }
@@ -73,10 +90,15 @@
     }
 
     .dumi-default-source-code {
+      height: 100%;
       flex: 1;
       min-height: 0;
       overflow: auto;
       border-bottom-right-radius: 0;
+
+      &-editor {
+        height: 100%;
+      }
     }
   }
 }

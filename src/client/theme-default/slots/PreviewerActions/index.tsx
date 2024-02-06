@@ -17,6 +17,7 @@ import SourceCode from 'dumi/theme/builtins/SourceCode';
 import PreviewerActionsExtra from 'dumi/theme/slots/PreviewerActionsExtra';
 import SourceCodeEditor from 'dumi/theme/slots/SourceCodeEditor';
 import Tabs from 'rc-tabs';
+import Tooltip from 'rc-tooltip';
 import React, { useRef, useState, type FC, type ReactNode } from 'react';
 import './index.less';
 export interface IPreviewerActionsProps extends IPreviewerProps {
@@ -209,15 +210,20 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
                         });
                       }}
                       extra={
-                        <button
-                          type="button"
-                          className="dumi-default-previewer-editor-tip-btn"
-                          data-dumi-tooltip={intl.formatMessage({
+                        <Tooltip
+                          prefixCls="dumi-theme-default-tooltip"
+                          placement="top"
+                          overlay={intl.formatMessage({
                             id: 'previewer.actions.code.editable',
                           })}
                         >
-                          <IconEdit />
-                        </button>
+                          <button
+                            type="button"
+                            className="dumi-default-previewer-editor-tip-btn"
+                          >
+                            <IconEdit />
+                          </button>
+                        </Tooltip>
                       }
                     />
                   ) : (
@@ -227,17 +233,22 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
                         // only show readonly tip for non-entry files
                         // because readonly entry file means live compile is not available for this demo tech stack
                         i !== 0 && (
-                          <button
-                            type="button"
-                            className="dumi-default-previewer-editor-tip-btn"
-                            data-dumi-tooltip={intl.formatMessage({
+                          <Tooltip
+                            prefixCls="dumi-theme-default-tooltip"
+                            placement="top"
+                            overlay={intl.formatMessage({
                               id: 'previewer.actions.code.readonly',
                             })}
-                            data-readonly
                           >
-                            <span></span>
-                            <IconEdit />
-                          </button>
+                            <button
+                              type="button"
+                              className="dumi-default-previewer-editor-tip-btn"
+                              data-readonly
+                            >
+                              <span></span>
+                              <IconEdit />
+                            </button>
+                          </Tooltip>
                         )
                       }
                     >
