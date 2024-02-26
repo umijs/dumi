@@ -48,7 +48,7 @@ const SourceCode: FC<SourceCodeProps> = (props) => {
   const code = (
     <Highlight
       {...defaultProps}
-      code={children}
+      code={children.trim()}
       language={SIMILAR_DSL[lang] || lang}
       theme={undefined}
     >
