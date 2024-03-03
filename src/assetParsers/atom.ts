@@ -2,9 +2,9 @@ import { getProjectRoot } from '@/utils';
 import { SchemaParser, SchemaResolver } from 'dumi-afx-deps/compiled/parser';
 import path from 'path';
 import { logger } from 'umi/plugin-utils';
-import { AtomAssetsParserResult } from '../types';
 import {
   BaseAtomAssetsParser,
+  IAtomAssetsParserResult,
   LanguageMetaParser,
   PatchFile,
 } from './BaseParser';
@@ -53,7 +53,7 @@ class ReactMetaParser implements LanguageMetaParser {
     });
 
     // parse atoms from resolver
-    const result: AtomAssetsParserResult = {
+    const result: IAtomAssetsParserResult = {
       components: {},
       functions: {},
     };

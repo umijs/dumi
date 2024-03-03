@@ -1,10 +1,13 @@
-import type { AtomAssetsParser, IApi } from '@/types';
+import type { IApi } from '@/types';
 import { lodash } from '@umijs/utils';
 import assert from 'assert';
-import { BaseAtomAssetsParser } from '../assetParsers/BaseParser';
+import {
+  BaseAtomAssetsParser,
+  type IAtomAssetsParser,
+} from '../assetParsers/BaseParser';
 import { ATOMS_META_PATH } from './meta';
 
-type IParsedAtomAssets = Awaited<ReturnType<AtomAssetsParser['parse']>>;
+type IParsedAtomAssets = Awaited<ReturnType<IAtomAssetsParser['parse']>>;
 
 function filterIgnoredProps(
   props: IParsedAtomAssets['components'][string]['propsConfig']['properties'],
@@ -88,7 +91,10 @@ export default (api: IApi) => {
       default: ReactAtomAssetsParser,
     }: typeof import('@/assetParsers/atom') = require('@/assetParsers/atom');
 
-    const apiParser = api.config.apiParser || {};
+    const apiParser = api.config.apiParser as Exclude<
+      IApi['config']['apiParser'],
+      false | undefined
+    >;
 
     api.service.atomParser = new ReactAtomAssetsParser({
       entryFile: api.config.resolve.entryFile!,

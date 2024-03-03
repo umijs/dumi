@@ -1,11 +1,12 @@
-import { AtomAssetsParserResult, createApiParser } from '../../../dist';
+import { createApiParser } from '../../../dist';
+import type { IAtomAssetsParserResult } from '../BaseParser';
 
 export const FakeParser = createApiParser({
   filename: __filename,
   worker: class {
     patch() {}
     parse() {
-      return new Promise<AtomAssetsParserResult>((resolve) => {
+      return new Promise<IAtomAssetsParserResult>((resolve) => {
         setTimeout(() => {
           resolve({
             components: {},

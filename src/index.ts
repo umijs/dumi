@@ -1,6 +1,4 @@
 import type {
-  AtomAssetsParser,
-  AtomAssetsParserResult,
   IDumiTechStack,
   IDumiTechStackRuntimeOpts,
   IDumiUserConfig,
@@ -16,11 +14,5 @@ export * from 'umi';
 export * from './assetParsers/BaseParser';
 export * from './assetParsers/utils';
 export { getProjectRoot } from './utils';
-export {
-  unistUtilVisit,
-  IDumiTechStack,
-  IDumiTechStackRuntimeOpts,
-  AtomAssetsParser,
-  AtomAssetsParserResult,
-};
+export { unistUtilVisit, IDumiTechStack, IDumiTechStackRuntimeOpts };
 export const defineConfig = (config: IDumiUserConfig) => config;
