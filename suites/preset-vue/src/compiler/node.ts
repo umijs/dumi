@@ -2,7 +2,7 @@ import {
   babelCore,
   babelPresetEnv,
   babelPresetTypeScript,
-} from 'dumi/bundler-utils';
+} from 'dumi/tech-stack-utils';
 import { COMP_IDENTIFIER, createCompiler, type CompileOptions } from './index';
 
 const babel = babelCore();
