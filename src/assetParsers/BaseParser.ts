@@ -2,7 +2,7 @@ import type { AtomComponentAsset, AtomFunctionAsset } from 'dumi-assets-types';
 import path from 'path';
 import { chokidar, lodash, logger } from 'umi/plugin-utils';
 
-export interface PatchFile {
+export interface IPatchFile {
   event: 'add' | 'addDir' | 'change' | 'unlink' | 'unlinkDir';
   fileName: string;
 }
@@ -15,14 +15,14 @@ export interface IAtomAssetsParserResult {
 /**
  * The parsing and extraction of language metadata should be implemented separately
  */
-export interface LanguageMetaParser {
-  patch(file: PatchFile): void;
+export interface ILanguageMetaParser {
+  patch(file: IPatchFile): void;
   parse(): Promise<IAtomAssetsParserResult>;
   destroy(): Promise<void>;
 }
 
-export interface HandleWatcherArgs {
-  patch: LanguageMetaParser['patch'];
+export interface IHandleWatcherArgs {
+  patch: ILanguageMetaParser['patch'];
   parse: () => void;
   watchArgs: {
     paths: string | string[];
@@ -30,24 +30,24 @@ export interface HandleWatcherArgs {
   };
 }
 
-export interface BaseAtomAssetsParserParams<T> {
+export interface IBaseAtomAssetsParserParams<T> {
   entryFile: string;
   resolveDir: string;
   parser: T;
   handleWatcher?: (
     watcher: chokidar.FSWatcher,
-    params: HandleWatcherArgs,
+    params: IHandleWatcherArgs,
   ) => chokidar.FSWatcher;
   watchOptions?: chokidar.WatchOptions;
 }
 
 export class BaseAtomAssetsParser<
-  T extends LanguageMetaParser = LanguageMetaParser,
+  T extends ILanguageMetaParser = ILanguageMetaParser,
 > {
-  private watchArgs!: HandleWatcherArgs['watchArgs'];
+  private watchArgs!: IHandleWatcherArgs['watchArgs'];
 
   private watcher: chokidar.FSWatcher | null = null;
-  private handleWatcher?: BaseAtomAssetsParserParams<T>['handleWatcher'];
+  private handleWatcher?: IBaseAtomAssetsParserParams<T>['handleWatcher'];
 
   private entryDir!: string;
   private resolveDir!: string;
@@ -57,7 +57,7 @@ export class BaseAtomAssetsParser<
   private parseDeferrer: Promise<IAtomAssetsParserResult> | null = null;
   private cbs: Array<(data: IAtomAssetsParserResult) => void> = [];
 
-  constructor(opts: BaseAtomAssetsParserParams<T>) {
+  constructor(opts: IBaseAtomAssetsParserParams<T>) {
     const { entryFile, resolveDir, watchOptions, parser, handleWatcher } = opts;
     this.resolveDir = resolveDir;
     const absEntryFile = path.resolve(resolveDir, entryFile);
@@ -123,7 +123,7 @@ export class BaseAtomAssetsParser<
           }
         },
         watchArgs: this.watchArgs,
-        patch: (file: PatchFile) => {
+        patch: (file: IPatchFile) => {
           this.parser.patch(file);
         },
       });

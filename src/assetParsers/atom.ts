@@ -5,8 +5,8 @@ import { logger } from 'umi/plugin-utils';
 import {
   BaseAtomAssetsParser,
   IAtomAssetsParserResult,
-  LanguageMetaParser,
-  PatchFile,
+  ILanguageMetaParser,
+  IPatchFile,
 } from './BaseParser';
 
 // maximum support 512kb for each atoms
@@ -20,7 +20,7 @@ interface ParserParams {
   parseOptions?: object;
 }
 
-class ReactMetaParser implements LanguageMetaParser {
+class ReactMetaParser implements ILanguageMetaParser {
   private parser: SchemaParser;
   private resolveFilter: (args: {
     type: 'COMPONENT' | 'FUNCTION';
@@ -121,7 +121,7 @@ class ReactMetaParser implements LanguageMetaParser {
     return this.parser.$$destroyWorker();
   }
 
-  public patch(file: PatchFile): void {
+  public patch(file: IPatchFile): void {
     this.unresolvedFiles.push(file.fileName);
   }
 }
