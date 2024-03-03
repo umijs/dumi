@@ -1,4 +1,4 @@
-import { createApiParser } from '../../../dist';
+import { createApiParser } from '../../../tech-stack-utils';
 import type { IAtomAssetsParserResult } from '../BaseParser';
 
 export const FakeParser = createApiParser({
