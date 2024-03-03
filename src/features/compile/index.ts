@@ -185,7 +185,6 @@ export default (api: IApi) => {
         },
       ]);
     }
-
     return memo;
   });
 };

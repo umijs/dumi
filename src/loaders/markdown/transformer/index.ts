@@ -1,13 +1,8 @@
 import type { IParsedBlockAsset } from '@/assetParsers/block';
 import type { ILocalesConfig, IRouteMeta } from '@/client/theme-api/types';
 import { VERSION_2_DEPRECATE_SOFT_BREAKS } from '@/constants';
-import type {
-  IApi,
-  IDumiConfig,
-  IDumiTechStack,
-  IDumiTechStackRuntimeOpts,
-} from '@/types';
-import enhancedResolve from 'enhanced-resolve';
+import type { IApi, IDumiConfig, IDumiTechStack } from '@/types';
+import enhancedResolve, { type ResolveOptions } from 'enhanced-resolve';
 import type { IRoute } from 'umi';
 import { semver } from 'umi/plugin-utils';
 import type { Plugin, Processor } from 'unified';
@@ -48,11 +43,20 @@ declare module 'vfile' {
           component: string;
           asset: IParsedBlockAsset['asset'];
           resolveMap: IParsedBlockAsset['resolveMap'];
-          renderOpts: Pick<IDumiTechStackRuntimeOpts, 'compilePath'>;
+          renderOpts: {
+            type?: string;
+            rendererPath?: string;
+            compilePath?: string;
+          };
         }
       | {
           id: string;
           component: string;
+          renderOpts: {
+            type?: string;
+            rendererPath?: string;
+            compilePath?: string; // only for fix type
+          };
         }
     )[];
     texts: IRouteMeta['texts'];
@@ -127,7 +131,10 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
   const resolver = enhancedResolve.create.sync({
     mainFields: ['browser', 'module', 'main'],
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
-    alias: opts.alias,
+    // Common conditionName needs to be configured,
+    // otherwise some common library paths cannot be parsed, such as vue, pinia, etc.
+    conditionNames: ['import', 'require', 'default', 'browser', 'node'],
+    alias: opts.alias as ResolveOptions['alias'],
   });
   const fileLocale = opts.locales.find((locale) =>
     opts.fileAbsPath.endsWith(`.${locale.id}.md`),

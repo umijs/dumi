@@ -32,7 +32,11 @@
     "theme-default",
     "index.d.ts",
     "plugin-utils.js",
-    "plugin-utils.d.ts"
+    "plugin-utils.d.ts",
+    "bundler-utils.js",
+    "bundler-utils.d.ts",
+    "tech-stack-utils.js",
+    "tech-stack-utils.d.ts"
   ],
   "scripts": {
     "build": "father build && npm run build:crates",
@@ -88,6 +92,7 @@
     "animated-scroll-to": "^2.3.0",
     "classnames": "2.3.2",
     "codesandbox": "^2.2.3",
+    "comlink": "^4.4.1",
     "copy-to-clipboard": "^3.3.3",
     "deepmerge": "^4.3.1",
     "dumi-afx-deps": "^1.0.0-alpha.19",
@@ -159,6 +164,7 @@
     "@types/react-dom": "^18.2.7",
     "@umijs/lint": "^4.0.84",
     "@umijs/plugins": "4.0.32",
+    "codesandbox-import-utils": "^2.2.3",
     "dumi-theme-mobile": "workspace:*",
     "eslint": "^8.46.0",
     "fast-glob": "^3.3.1",

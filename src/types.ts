@@ -1,12 +1,21 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import type AtomAssetsParser from '@/assetParsers/atom';
+// import type AtomAssetsParser from '@/assetParsers/atom';
 import type { IParsedBlockAsset } from '@/assetParsers/block';
 import type { IDumiDemoProps } from '@/client/theme-api/DumiDemo';
 import type { ILocalesConfig, IThemeConfig } from '@/client/theme-api/types';
 import type { IContentTab } from '@/features/tabs';
 import type { IThemeLoadResult } from '@/features/theme/loader';
+import {
+  OnLoadArgs,
+  OnLoadResult,
+} from '@umijs/bundler-utils/compiled/esbuild';
 import type { IModify } from '@umijs/core';
-import type { AssetsPackage, ExampleBlockAsset } from 'dumi-assets-types';
+import type {
+  AssetsPackage,
+  AtomComponentAsset,
+  AtomFunctionAsset,
+  ExampleBlockAsset,
+} from 'dumi-assets-types';
 import type { Element } from 'hast';
 import type { IApi as IUmiApi, defineConfig as defineUmiConfig } from 'umi';
 
@@ -63,7 +72,22 @@ export type IDumiUserConfig = Subset<Omit<IDumiConfig, 'locales'>> & {
   [key: string]: any;
 };
 
+export interface IDumiTechStackOnBlockLoadResult {
+  content: string;
+  type: Required<OnLoadResult>['loader'];
+}
+
+export type IDumiTechStackOnBlockLoadArgs = OnLoadArgs & {
+  entryPointCode: string;
+  filename: string;
+};
+
 export interface IDumiTechStackRuntimeOpts {
+  /**
+   * path of the cancelable{@link IDemoCancelableFn} function
+   * that manipulate(mount/unmount) third-party framework component
+   */
+  rendererPath?: string;
   /**
    * path to runtime compile function module
    */
@@ -88,12 +112,13 @@ export abstract class IDumiTechStack {
    */
   abstract isSupported(node: Element, lang: string): boolean;
   /**
-   * transform for parse demo source to react component
+   * transform for parse demo source to expression/function/class
    */
   abstract transformCode(
     raw: string,
     opts: { type: 'external' | 'code-block'; fileAbsPath: string },
   ): string;
+
   /**
    * generator for return asset metadata
    */
@@ -122,6 +147,45 @@ export abstract class IDumiTechStack {
     source: IParsedBlockAsset['resolveMap'],
     opts: Parameters<NonNullable<IDumiTechStack['generateMetadata']>>[1],
   ): Promise<IParsedBlockAsset['resolveMap']> | IParsedBlockAsset['resolveMap'];
+
+  /**
+   * Use current function as onLoad CallBack(https://esbuild.github.io/plugins/#on-load)
+   * @description
+   * Why use this method?
+   * By default, dumi can only support the parsing of js/ts related code blocks,
+   * but many front-end frameworks have custom extensions,
+   * so this method is provided to facilitate developers to convert codes.
+   */
+  abstract onBlockLoad?(
+    args: IDumiTechStackOnBlockLoadArgs,
+  ): IDumiTechStackOnBlockLoadResult | null;
+}
+
+export interface AtomAssetsParserResult {
+  components: Record<string, AtomComponentAsset>;
+  functions: Record<string, AtomFunctionAsset>;
+}
+
+export abstract class AtomAssetsParser {
+  /**
+   * parse component metadata
+   */
+  abstract parse(): Promise<AtomAssetsParserResult>;
+
+  /**
+   * monitor documents and codes, update component metadata at any time
+   */
+  abstract watch(cb: (data: AtomAssetsParserResult) => void): void;
+
+  /**
+   * cancel monitoring
+   */
+  abstract unwatch(cb: (data: AtomAssetsParserResult) => void): void;
+
+  /**
+   * cancel parsing
+   */
+  abstract destroyWorker(): void;
 }
 
 export type IApi = IUmiApi & {

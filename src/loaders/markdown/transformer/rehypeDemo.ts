@@ -247,9 +247,14 @@ export default function rehypeDemo(
                 ? [vFile.data.frontmatter!.atomId]
                 : [],
               fileAbsPath: '',
+              lang: (codeNode.data?.lang as string) || 'tsx',
               entryPointCode: codeType === 'external' ? undefined : codeValue,
               resolver: opts.resolver,
+              techStack,
             };
+
+            const runtimeOpts = techStack.runtimeOpts;
+
             const previewerProps: IDumiDemoProps['previewerProps'] = {};
             let component = '';
 
@@ -275,9 +280,16 @@ export default function rehypeDemo(
                 localId,
                 vFile.data.frontmatter!.atomId,
               );
-              component = `React.memo(React.lazy(() => import( /* webpackChunkName: "${chunkName}" */ '${winPath(
+              const importChunk = `import( /* webpackChunkName: "${chunkName}" */ '${winPath(
                 parseOpts.fileAbsPath,
-              )}?techStack=${techStack.name}')))`;
+              )}?techStack=${techStack.name}')`;
+
+              if (runtimeOpts?.rendererPath) {
+                component = `(async () => ${importChunk})()`;
+              } else {
+                component = `React.memo(React.lazy(() => ${importChunk}))`;
+              }
+
               // use code value as title
               // TODO: force checking
               if (codeValue) codeNode.properties!.title = codeValue;
@@ -291,7 +303,10 @@ export default function rehypeDemo(
 
               // pass a fake entry point for code block demo
               // and pass the real code via `entryPointCode` option
-              parseOpts.fileAbsPath = opts.fileAbsPath.replace('.md', '.tsx');
+              parseOpts.fileAbsPath = opts.fileAbsPath.replace(
+                '.md',
+                `.${parseOpts.lang}`,
+              );
               parseOpts.id = getCodeId(
                 opts.cwd,
                 opts.fileLocaleLessPath,
@@ -372,6 +387,9 @@ export default function rehypeDemo(
                       // TODO: special id for inline demo
                       id: asset.id,
                       component,
+                      renderOpts: {
+                        rendererPath: runtimeOpts?.rendererPath,
+                      },
                     };
                   }
 
@@ -429,7 +447,8 @@ export default function rehypeDemo(
                         )
                       : resolveMap,
                     renderOpts: {
-                      compilePath: techStack.runtimeOpts?.compilePath,
+                      rendererPath: runtimeOpts?.rendererPath,
+                      compilePath: runtimeOpts?.compilePath,
                     },
                   };
                 },

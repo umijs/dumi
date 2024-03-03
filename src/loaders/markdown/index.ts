@@ -124,7 +124,11 @@ function emitDemo(
 export const demos = {
   {{#demos}}
   '{{{id}}}': {
+    id: "{{{id}}}",
+    {{#component}}
     component: {{{component}}},
+    {{/component}}
+    renderOpts: {{{renderRenderOpts}}},
     asset: {{{renderAsset}}},
     context: {{{renderContext}}},
     renderOpts: {{{renderRenderOpts}}},
@@ -183,16 +187,32 @@ export const demos = {
       renderRenderOpts: function renderRenderOpts(
         this: NonNullable<typeof demos>[0],
       ) {
-        if (!('renderOpts' in this) || !this.renderOpts.compilePath) {
+        if (!('renderOpts' in this)) {
           return 'undefined';
         }
+        const renderOpts = this.renderOpts;
+        const propertyArray: string[] = [];
 
-        return `{
+        if (renderOpts.compilePath) {
+          propertyArray.push(`
           compile: async (...args) => {
             return (await import('${winPath(
-              this.renderOpts.compilePath,
+              renderOpts.compilePath,
             )}')).default(...args);
-          },
+          },`);
+        }
+
+        if (renderOpts.rendererPath) {
+          propertyArray.push(`
+            renderer: (await import('${winPath(
+              renderOpts.rendererPath,
+            )}')).default,`);
+        }
+
+        if (propertyArray.length === 0) return 'undefined';
+
+        return `{
+          ${propertyArray.join('\n')}
         }`;
       },
     },
@@ -265,7 +285,7 @@ function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
     case 'text':
       return emitText.call(this, opts, ret);
     default:
-      return emitDefault.call(this, opts, ret);
+      return emitDefault.call(this, opts as IMdLoaderDefaultModeOptions, ret);
   }
 }
 
