@@ -1,7 +1,7 @@
 use crate::utils::create_return_with_default;
 use swc_core::{
-  common::{Spanned, DUMMY_SP},
-  ecma::{ast::*, transforms::testing::test, visit::*},
+  common::{util::take::Take, Spanned, DUMMY_SP},
+  ecma::{ast::*, transforms::testing::test_inline, visit::*},
   plugin::{plugin_transform, proxies::TransformPluginProgramMetadata},
 };
 
@@ -78,7 +78,7 @@ impl VisitMut for ReactDemoVisitor {
                   span: DUMMY_SP,
                   arg: CallExpr {
                     span: DUMMY_SP,
-                    callee: Callee::Import(Import { span: DUMMY_SP }),
+                    callee: Callee::Import(Import::dummy()),
                     args: vec![ExprOrSpread {
                       spread: None,
                       expr: Box::new(Expr::Lit(Lit::Str(*import_decl.src))),
@@ -123,7 +123,7 @@ pub fn process_transform(program: Program, _metadata: TransformPluginProgramMeta
   program.fold_with(&mut as_folder(ReactDemoVisitor))
 }
 
-test!(
+test_inline!(
   Default::default(),
   |_| as_folder(ReactDemoVisitor),
   imports,
@@ -141,7 +141,7 @@ const d = await import('d');
 const { default: e , e1: e1 , e2: e3  } = await import('e');"#
 );
 
-test!(
+test_inline!(
   Default::default(),
   |_| as_folder(ReactDemoVisitor),
   exports,
