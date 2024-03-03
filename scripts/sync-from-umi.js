@@ -264,7 +264,7 @@ const FILE_LIST = [
       // mark runtime config core
       {
         type: 'replace',
-        value: [/(\s### onRouteChange\()/, '<!-- runtime config core -->$1'],
+        value: [/(\s### onRouteChange)/, '<!-- runtime config core -->$1'],
       },
       {
         type: 'replace',
