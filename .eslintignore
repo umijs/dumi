@@ -1,6 +1,5 @@
 /dist
 /compiled
 /theme-default
-/runtime
 /suites/*/compiled
 /suites/preset-vue/lib
