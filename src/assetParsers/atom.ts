@@ -2,11 +2,11 @@ import { getProjectRoot } from '@/utils';
 import { SchemaParser, SchemaResolver } from 'dumi-afx-deps/compiled/parser';
 import path from 'path';
 import { logger } from 'umi/plugin-utils';
-import { AtomAssetsParserResult } from '../types';
 import {
   BaseAtomAssetsParser,
-  LanguageMetaParser,
-  PatchFile,
+  IAtomAssetsParserResult,
+  ILanguageMetaParser,
+  IPatchFile,
 } from './BaseParser';
 
 // maximum support 512kb for each atoms
@@ -20,7 +20,7 @@ interface ParserParams {
   parseOptions?: object;
 }
 
-class ReactMetaParser implements LanguageMetaParser {
+class ReactMetaParser implements ILanguageMetaParser {
   private parser: SchemaParser;
   private resolveFilter: (args: {
     type: 'COMPONENT' | 'FUNCTION';
@@ -53,7 +53,7 @@ class ReactMetaParser implements LanguageMetaParser {
     });
 
     // parse atoms from resolver
-    const result: AtomAssetsParserResult = {
+    const result: IAtomAssetsParserResult = {
       components: {},
       functions: {},
     };
@@ -121,7 +121,7 @@ class ReactMetaParser implements LanguageMetaParser {
     return this.parser.$$destroyWorker();
   }
 
-  public patch(file: PatchFile): void {
+  public patch(file: IPatchFile): void {
     this.unresolvedFiles.push(file.fileName);
   }
 }

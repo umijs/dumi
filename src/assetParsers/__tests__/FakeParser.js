@@ -1,8 +1,6 @@
-'use strict';
-Object.defineProperty(exports, '__esModule', { value: true });
-exports.FakeParser = void 0;
-const dist_1 = require('../../../dist');
-exports.FakeParser = (0, dist_1.createApiParser)({
+const { createApiParser } = require('../../../tech-stack-utils');
+
+module.exports.FakeParser = createApiParser({
   filename: __filename,
   worker: class {
     patch() {}

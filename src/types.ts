@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
-// import type AtomAssetsParser from '@/assetParsers/atom';
+import type { BaseAtomAssetsParser as IAtomAssetsParser } from '@/assetParsers/BaseParser';
 import type { IParsedBlockAsset } from '@/assetParsers/block';
 import type { IDumiDemoProps } from '@/client/theme-api/DumiDemo';
 import type { ILocalesConfig, IThemeConfig } from '@/client/theme-api/types';
@@ -10,12 +10,7 @@ import {
   OnLoadResult,
 } from '@umijs/bundler-utils/compiled/esbuild';
 import type { IModify } from '@umijs/core';
-import type {
-  AssetsPackage,
-  AtomComponentAsset,
-  AtomFunctionAsset,
-  ExampleBlockAsset,
-} from 'dumi-assets-types';
+import type { AssetsPackage, ExampleBlockAsset } from 'dumi-assets-types';
 import type { Element } from 'hast';
 import type { IApi as IUmiApi, defineConfig as defineUmiConfig } from 'umi';
 
@@ -161,39 +156,12 @@ export abstract class IDumiTechStack {
   ): IDumiTechStackOnBlockLoadResult | null;
 }
 
-export interface AtomAssetsParserResult {
-  components: Record<string, AtomComponentAsset>;
-  functions: Record<string, AtomFunctionAsset>;
-}
-
-export abstract class AtomAssetsParser {
-  /**
-   * parse component metadata
-   */
-  abstract parse(): Promise<AtomAssetsParserResult>;
-
-  /**
-   * monitor documents and codes, update component metadata at any time
-   */
-  abstract watch(cb: (data: AtomAssetsParserResult) => void): void;
-
-  /**
-   * cancel monitoring
-   */
-  abstract unwatch(cb: (data: AtomAssetsParserResult) => void): void;
-
-  /**
-   * cancel parsing
-   */
-  abstract destroyWorker(): void;
-}
-
 export type IApi = IUmiApi & {
   config: IDumiConfig & { [key: string]: any };
   userConfig: IDumiUserConfig;
   service: IUmiApi['service'] & {
     themeData: IThemeLoadResult;
-    atomParser: AtomAssetsParser;
+    atomParser: IAtomAssetsParser;
   };
   /**
    * register a new tech stack

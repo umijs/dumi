@@ -1,4 +1,4 @@
-import type { BabelCore, babelCore } from 'dumi/bundler-utils';
+import type { BabelCore, babelCore } from 'dumi/tech-stack-utils';
 import {
   CompilerError,
   CompilerOptions,

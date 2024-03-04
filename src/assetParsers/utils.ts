@@ -4,8 +4,8 @@ import { lodash } from 'umi/plugin-utils';
 import { Worker, isMainThread, parentPort } from 'worker_threads';
 import {
   BaseAtomAssetsParser,
-  BaseAtomAssetsParserParams,
-  LanguageMetaParser,
+  IBaseAtomAssetsParserParams,
+  ILanguageMetaParser,
 } from './BaseParser';
 
 /**
@@ -94,7 +94,7 @@ export function createRemoteClass<
   } as unknown as T;
 }
 
-export interface CreateApiParserOptions<S, C> {
+interface ICreateApiParserOptions<S, C> {
   /**
    * The full file name (absolute path) of the file where `parseWorker` is located
    */
@@ -109,7 +109,7 @@ export interface CreateApiParserOptions<S, C> {
   parseOptions?: C;
 }
 
-export interface BaseApiParserOptions {
+export interface IBaseApiParserOptions {
   entryFile: string;
   resolveDir: string;
 }
@@ -150,8 +150,10 @@ export interface BaseApiParserOptions {
  */
 export function createApiParser<
   P extends new (...args: ConstructorParameters<P>) => InstanceType<P> &
-    LanguageMetaParser,
->(options: CreateApiParserOptions<P, Partial<BaseAtomAssetsParserParams<P>>>) {
+    ILanguageMetaParser,
+>(
+  options: ICreateApiParserOptions<P, Partial<IBaseAtomAssetsParserParams<P>>>,
+) {
   const { filename, worker, parseOptions } = options;
   const ParserClass = createRemoteClass(filename, worker);
   return (...args: ConstructorParameters<P>) =>
