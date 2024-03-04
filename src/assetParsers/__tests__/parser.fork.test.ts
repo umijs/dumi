@@ -1,10 +1,11 @@
 import { expect, test } from 'vitest';
-import { FakeParser } from './FakeParser.js';
+// @ts-ignore
+import { FakeParser } from './FakeParser';
 
 test('AtomAssetsParser: create worker mode', async () => {
   const parser = FakeParser();
   const now = performance.now();
-  parser.parse().then((result) => {
+  parser.parse().then((result: any) => {
     expect(result).toStrictEqual({
       components: {},
       functions: {},
