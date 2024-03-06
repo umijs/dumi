@@ -15,6 +15,7 @@ export interface IParsedBlockAsset {
 
 async function parseBlockAsset(opts: {
   fileAbsPath: string;
+  fileLocale?: string;
   id: string;
   refAtomIds: string[];
   entryPointCode?: string;
@@ -118,13 +119,17 @@ async function parseBlockAsset(opts: {
                   asset.dependencies[filename].value = code;
                   result.frontmatter = frontmatter;
 
-                  // TODO: locale for title & description
                   ['description', 'title', 'snapshot', 'keywords'].forEach(
                     (key) => {
                       asset[key as keyof IParsedBlockAsset['asset']] =
                         frontmatter?.[key];
                     },
                   );
+                  ['description', 'title'].forEach((key) => {
+                    result.frontmatter![key] =
+                      frontmatter[`${key}.${opts.fileLocale}`] ||
+                      frontmatter[key];
+                  });
                 }
               }
 
