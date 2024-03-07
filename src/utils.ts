@@ -136,11 +136,11 @@ export async function tryFatherBuildConfigs(cwd: string) {
  * get root dir for monorepo project
  */
 export function getProjectRoot(cwd: string) {
-  const splittedCwd = winPath(cwd).split('/');
+  const splittedCwd = cwd.split(path.sep);
 
-  // try to find root cwd for monorepo project, only support >= 3 level depth
+  // try to find root cwd for monorepo project, only support <= 3 level depth
   for (let level = -1; level >= -3; level -= 1) {
-    const rootCwd = splittedCwd.slice(0, level).join('/');
+    const rootCwd = splittedCwd.slice(0, level).join(path.sep);
 
     // break if no parent dir
     if (!rootCwd) break;
@@ -155,11 +155,11 @@ export function getProjectRoot(cwd: string) {
       ) ||
         require(pkgPath).workspace)
     ) {
-      return winPath(rootCwd);
+      return rootCwd;
     }
   }
 
-  return winPath(cwd);
+  return cwd;
 }
 
 /**
