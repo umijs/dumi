@@ -117,19 +117,23 @@ async function parseBlockAsset(opts: {
                 if (frontmatter) {
                   // replace entry code when frontmatter available
                   asset.dependencies[filename].value = code;
-                  result.frontmatter = frontmatter;
 
+                  // TODO: locale for title & description
                   ['description', 'title', 'snapshot', 'keywords'].forEach(
                     (key) => {
                       asset[key as keyof IParsedBlockAsset['asset']] =
                         frontmatter?.[key];
                     },
                   );
+
+                  // support locale prefix for title & description
                   ['description', 'title'].forEach((key) => {
-                    result.frontmatter![key] =
+                    frontmatter[key] =
                       frontmatter[`${key}.${opts.fileLocale}`] ||
                       frontmatter[key];
                   });
+
+                  result.frontmatter = frontmatter;
                 }
               }
 
