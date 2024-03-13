@@ -1,6 +1,6 @@
 import type { IDemoLoaderOptions } from '@/loaders/demo';
 import type { IMdLoaderOptions } from '@/loaders/markdown';
-import ReactTechStack from '@/techStacks/react';
+import { ReactTechStack } from '@/techStacks/react';
 import type { IApi, IDumiTechStack } from '@/types';
 import { _setFSCacheDir } from '@/utils';
 import path from 'path';
@@ -15,7 +15,7 @@ export default (api: IApi) => {
   api.register({
     key: 'registerTechStack',
     stage: Infinity,
-    fn: () => new ReactTechStack(),
+    fn: ReactTechStack,
   });
 
   api.modifyConfig({

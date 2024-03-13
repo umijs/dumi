@@ -1,5 +1,7 @@
 import type { ParserConfig } from '@swc/core';
 import { transformSync } from '@swc/core';
+import type { Element } from 'hast';
+import { IDumiTechStack } from '../types';
 
 export {
   IDumiTechStack,
@@ -58,4 +60,43 @@ export function wrapDemoWithFn(code: string, opts: IWrapDemoWithFnOptions) {
   return `async function() {
   ${result.code}
 }`;
+}
+
+export interface ICreateTechStackOptions
+  extends Omit<IDumiTechStack, 'isSupported'> {
+  /**
+   * Is the lang supported by the current tech stack?
+   * @param lang
+   * @param node hast Element https://github.com/syntax-tree/hast?tab=readme-ov-file#element
+   */
+  isSupported: (lang: string, node?: Element) => boolean;
+}
+
+/**
+ * Create a tech stack
+ * @param options techstack options
+ * @returns function that returns {@link IDumiTechStack}, can be used to register a techstack
+ *
+ * @example
+ * const ReactTechStack = createTechStack({
+ *   name: 'jsx',
+ *   isSupported(lang) {
+ *     return ['jsx', 'tsx'].includes(lang);
+ *   },
+ *   transformCode() {
+ *     // ...
+ *     return '';
+ *   },
+ * });
+ *
+ * api.registerTechStack(ReactTechStack);
+ */
+export function createTechStack(options: ICreateTechStackOptions) {
+  const isSupported = options.isSupported;
+  return () =>
+    ({
+      ...options,
+      isSupported: (...args: Parameters<IDumiTechStack['isSupported']>) =>
+        isSupported(args[1], args[0]),
+    } satisfies IDumiTechStack);
 }
