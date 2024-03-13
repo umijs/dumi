@@ -247,6 +247,7 @@ export default function rehypeDemo(
                 ? [vFile.data.frontmatter!.atomId]
                 : [],
               fileAbsPath: '',
+              fileLocale: opts.fileLocale,
               entryPointCode: codeType === 'external' ? undefined : codeValue,
               resolver: opts.resolver,
             };
