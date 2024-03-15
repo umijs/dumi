@@ -387,8 +387,8 @@ export default DumiLoading;
         pkg: JSON.stringify(
           lodash.pick(api.pkg, ...Object.keys(PICKED_PKG_FIELDS)),
         ),
-        historyType: api.config.history?.type || 'browser',
-        hostname: String(JSON.stringify(api.config.sitemap?.hostname)),
+        historyType: (api.config.history || {}).type || 'browser',
+        hostname: String(JSON.stringify((api.config.sitemap || {}).hostname)),
         themeConfig: JSON.stringify(
           Object.assign(
             lodash.pick(api.config, 'logo', 'description', 'title'),

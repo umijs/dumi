@@ -52,6 +52,7 @@
     "prepare": "husky install && npm run build && npm run build:suites && node ./bin/dumi.js setup && npm run docs:sync",
     "prepublishOnly": "npm run build",
     "test": "vitest",
+    "typecheck": "tsc --project src/client/tsconfig.json --noEmit && tsc --project tsconfig.check.json",
     "vercel:build": "npm run docs:build",
     "vercel:install": "./scripts/vercel-install.sh"
   },

@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "paths": {
+      "@/*": ["src/*"],
+      "@@/*": [".dumi/tmp/*"],
+      "dumi/dist/*": ["src/*"],
+      "dumi": ["."],
+      "dumi/theme/*": ["src/client/theme-default/*"]
+    }
+  },
+  "exclude": ["src/client/{theme-api,theme-default}/**/*"]
+}

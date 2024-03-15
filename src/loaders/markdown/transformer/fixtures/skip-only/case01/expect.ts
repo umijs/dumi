@@ -1,4 +1,4 @@
-import type { IMdTransformerResult } from '../..';
+import type { IMdTransformerResult } from '../../..';
 
 export default (ret: IMdTransformerResult) => {
   expect(ret.content).toEqual(`<><DumiDemo {...{

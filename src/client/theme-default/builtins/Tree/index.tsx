@@ -12,17 +12,26 @@ import type { MotionEvent } from 'rc-motion/lib/interface';
 import type { TreeNodeProps, TreeProps } from 'rc-tree';
 import Tree from 'rc-tree';
 import type { DataNode, EventDataNode } from 'rc-tree/lib/interface';
-import type { ComponentProps, ReactNode } from 'react';
+import type {
+  ComponentProps,
+  ReactElement,
+  ReactNode,
+  ReactPortal,
+} from 'react';
 import React, { createRef, useEffect, useState } from 'react';
 import './index.less';
+
+function isReactElement(node: ReactNode): node is ReactElement | ReactPortal {
+  return typeof node === 'object' && node !== null;
+}
 
 function getTreeFromList(nodes: ReactNode, prefix = '') {
   const data: TreeProps['treeData'] = [];
 
   ([] as ReactNode[]).concat(nodes).forEach((node, i) => {
     const key = `${prefix ? `${prefix}-` : ''}${i}`;
-
-    switch (node?.type) {
+    if (!isReactElement(node)) return;
+    switch (node.type) {
       case 'ul': {
         const parent = data[data.length - 1]?.children || data;
         const ulLeafs = getTreeFromList(node.props.children || [], key);
@@ -35,7 +44,7 @@ function getTreeFromList(nodes: ReactNode, prefix = '') {
         const liLeafs = getTreeFromList(node.props.children, key);
 
         data.push({
-          title: ([] as ReactNode[])
+          title: ([] as ReactElement[])
             .concat(node.props.children)
             .filter((child) => child.type !== 'ul'),
           key,

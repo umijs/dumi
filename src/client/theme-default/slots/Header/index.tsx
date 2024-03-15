@@ -25,7 +25,7 @@ const Header: FC = () => {
             .slice(0, 5)
             .map((key) => ({
               icon: key as SocialTypes,
-              link: themeConfig.socialLinks[key as SocialTypes],
+              link: themeConfig.socialLinks![key as SocialTypes],
             }))
         : [],
     [themeConfig.socialLinks],

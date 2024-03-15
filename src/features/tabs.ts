@@ -88,6 +88,7 @@ export default (api: IApi) => {
         tabsFromPlugins.forEach((tab) => {
           if (
             (!tab.test || route.absPath.match(tab.test)) &&
+            route.file &&
             !routesTabMapping[route.file]?.includes(tab.id!)
           ) {
             routesTabMapping[route.file] ??= [];
