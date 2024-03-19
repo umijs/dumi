@@ -6,6 +6,7 @@ import { VueFile } from '@vue/language-core';
 import type ts from 'typescript/lib/tsserverlibrary';
 import { SchemaResolver } from '../schemaResolver/index';
 import {
+  CommentMeta,
   TypeMeta,
   type ComponentLibraryMeta,
   type ComponentMeta,
@@ -14,7 +15,7 @@ import {
   type PropertyMeta,
   type SingleComponentMeta,
 } from '../types';
-import { getJsDocTags } from '../utils';
+import { getComment, getTag } from '../utils';
 import { createVueLanguageService } from './createVueLanguageService';
 import {
   getExports,
@@ -102,8 +103,8 @@ export class TypeCheckService {
     if ($props) {
       const type = typeChecker.getTypeOfSymbolAtLocation($props, symbolNode!);
       const properties = type.getProperties().filter((slot) => {
-        const tags = getJsDocTags(ts, typeChecker, slot);
-        return !tags['ignore'];
+        const tags = getComment(ts, typeChecker, slot);
+        return !this.shouldIgnore(tags);
       });
 
       result = properties.map((prop) => {
@@ -211,8 +212,8 @@ export class TypeCheckService {
     if ($slots) {
       const type = typeChecker.getTypeOfSymbolAtLocation($slots, symbolNode!);
       const properties = type.getProperties().filter((slot) => {
-        const tags = getJsDocTags(ts, typeChecker, slot);
-        return !tags['ignore'];
+        const comment = getComment(ts, typeChecker, slot);
+        return !this.shouldIgnore(comment);
       });
 
       return properties.map((prop) => {
@@ -223,12 +224,35 @@ export class TypeCheckService {
     return [];
   }
 
-  private shouldPublic(tags: Record<string, string[]>) {
-    return !!tags['public'] || !!tags['exposed'] || !!tags['expose'];
+  private shouldPublic({ modifierTags, blockTags }: CommentMeta) {
+    if (modifierTags) {
+      for (let index = 0; index < modifierTags.length; index++) {
+        const tag = modifierTags[index];
+        switch (tag) {
+          case 'public':
+          case 'experimental':
+          case 'alpha':
+          case 'beta':
+            return true;
+          default:
+            continue;
+        }
+      }
+    }
+    if (blockTags) {
+      for (let index = 0; index < blockTags.length; index++) {
+        const { tag } = blockTags[index];
+        if (tag === 'deprecated') return true;
+        continue;
+      }
+    }
+    return false;
   }
 
-  private shouldIgnore(tags: Record<string, string[]>) {
-    return !!tags['ignore'] || !!tags['internal'];
+  private shouldIgnore(comment: CommentMeta) {
+    return !!comment.modifierTags?.find(
+      (tag) => tag === 'ignore' || tag === 'internal',
+    );
   }
 
   private getExposed(
@@ -248,15 +272,15 @@ export class TypeCheckService {
         throw 'This is not a vue component';
       }
       const properties = type.getProperties().filter((prop) => {
-        const tags = getJsDocTags(ts, typeChecker, prop);
+        const comment = getComment(ts, typeChecker, prop);
 
-        if (this.shouldIgnore(tags)) return false;
+        if (this.shouldIgnore(comment)) return false;
 
         if (options.filterExposed) {
-          return this.shouldPublic(tags);
+          return this.shouldPublic(comment);
         }
         // It can also be entered if it is marked as public.
-        if (prop.valueDeclaration && this.shouldPublic(tags)) {
+        if (prop.valueDeclaration && this.shouldPublic(comment)) {
           return true;
         }
         // only exposed props will not have a valueDeclaration
@@ -359,12 +383,12 @@ export class TypeCheckService {
 
     exports.reduce((acc, _export) => {
       const exportedName = _export.getName();
-      const jsdoc = getJsDocTags(ts, typeChecker, _export);
+      const comment = getComment(ts, typeChecker, _export);
       // can be identified by jsdoc
       // sometimes some composition functions or generic component may be similar to functional components,
       // they can be distinguished by @component
       if (
-        !jsdoc['component'] &&
+        !getTag(comment, 'component', 'block') &&
         !isFunctionalVueComponent(typeChecker, _export)
       ) {
         const functionMeta = this.getFunctionMeta(
@@ -514,18 +538,17 @@ export class TypeCheckService {
     if (!_export) {
       throw `Could not find export ${exportName}`;
     }
-
     const resolver = new SchemaResolver(typeChecker, symbolNode!, options, ts);
-
+    const component = this.getSingleComponentMeta(
+      typeChecker,
+      symbolNode,
+      _export,
+      componentPath,
+      exportName,
+      resolver,
+    );
     return {
-      component: this.getSingleComponentMeta(
-        typeChecker,
-        symbolNode,
-        _export,
-        componentPath,
-        exportName,
-        resolver,
-      ),
+      component,
       types: resolver.getTypes(),
     };
   }

@@ -13,7 +13,7 @@ import {
 import {
   BasicTypes,
   createRef,
-  getJsDocTags,
+  getComment,
   getNodeOfSymbol,
   getNodeOfType,
   getSignatureArgsMeta,
@@ -325,7 +325,7 @@ export class SchemaResolver {
         prop.getDocumentationComment(typeChecker),
       ),
       required: !(prop.flags & ts.SymbolFlags.Optional),
-      tags: getJsDocTags(ts, typeChecker, prop),
+      comment: getComment(ts, typeChecker, prop),
       type: typeChecker.typeToString(subtype),
     } as Partial<PropertyMeta>;
 
@@ -389,7 +389,7 @@ export class SchemaResolver {
     return {
       name: prop.getName(),
       type: typeChecker.typeToString(subtype),
-      tags: getJsDocTags(ts, typeChecker, prop),
+      comment: getComment(ts, typeChecker, prop),
       description: ts.displayPartsToString(
         prop.getDocumentationComment(typeChecker),
       ),
@@ -398,7 +398,7 @@ export class SchemaResolver {
   }
 
   public resolveEventSignature(call: ts.Signature): EventMeta {
-    const { symbolNode, typeChecker } = this;
+    const { symbolNode, typeChecker, ts } = this;
     const subtype = typeChecker.getTypeOfSymbolAtLocation(
       call.parameters[1],
       symbolNode!,
@@ -418,6 +418,7 @@ export class SchemaResolver {
         ) as ts.StringLiteralType
       ).value,
       type: typeString,
+      comment: getComment(ts, typeChecker, call),
       schema: {
         kind: PropertyMetaKind.FUNC,
         type: typeString,
@@ -438,7 +439,7 @@ export class SchemaResolver {
     return {
       name: expose.getName(),
       type: typeChecker.typeToString(subtype),
-      tags: getJsDocTags(ts, typeChecker, expose),
+      comment: getComment(ts, typeChecker, expose),
       description: ts.displayPartsToString(
         expose.getDocumentationComment(typeChecker),
       ),

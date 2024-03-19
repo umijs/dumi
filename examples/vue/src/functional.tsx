@@ -2,17 +2,20 @@ import { FunctionalComponent as FC } from 'vue';
 export interface ArticleProps {
   /**
    * 文章标题
+   * @beta
    * @default "Functional Component Demo"
    */
   title?: string;
   /**
    * 文章描述
+   * @since 0.0.1
    * @default "No Desc here"
    */
   desc?: string;
 
   /**
    * 点击事件
+   * @since 0.0.1
    */
   onClick?: (e: Event) => void;
 }

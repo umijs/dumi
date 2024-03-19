@@ -308,25 +308,6 @@ defineComponent({
 });
 ```
 
-### @public/@exposed/@expose
-
-For methods on the component instance itself, use `@public` to expose
-
-```ts
-defineExpose({
-  /**
-   * @public
-   */
-  focus() {},
-});
-```
-
-If you set `filterExposed` in MetaCheckerOptions to false, this flag will become invalid.
-
-### @internal/@ignore
-
-Properties marked with `@ignore` or `@internal` will not be checked.
-
 ### @component
 
 This is used to distinguish between ordinary functions and function components.
@@ -335,7 +316,7 @@ Currently, there are two situations that cannot be automatically recognized as c
 
 ```ts
 /**
- *@component
+ * @component
  */
 function InternalComponent(props: { a: string }) {
   return h('div', props.a);
@@ -344,7 +325,7 @@ function InternalComponent(props: { a: string }) {
 
 ```tsx
 /**
- *@component
+ * @component
  */
 export const GenericComponent = defineComponent(
   <T>(props: { item: T }) => {
@@ -355,21 +336,50 @@ export const GenericComponent = defineComponent(
 
 It needs to be annotated with @component, otherwise it will be recognized as a function
 
-### @version, @deprecated/@experimental/@alpha/@beta, @since
+---
 
-### @alias
+### Release related
 
-### @event/@slot
+#### @public
 
-### @see/@link
+#### @deprecated
 
-### @group/@category
+#### @experimental/@beta
 
-### @typeParam
+#### @alpha
+
+> [!NOTE]
+> These release tags cannot take effect in defineEmits
+
+For methods on the component instance itself, use release tags like `@public` to expose
+
+```ts
+defineExpose({
+  /**
+   * @public
+   */
+  focus() {},
+});
+```
+
+If you set `filterExposed` in MetaCheckerOptions to false, those release tags will become invalid.
+
+---
+
+### @ignore/@internal
+
+Properties marked with `@ignore` or `@internal` will not be checked.
+
+### Version control related
+
+#### @version
+
+#### @since
+
+---
 
 ## TODO
 
-- [ ] withDefaults
 - [ ] externalSymbolLinkMap support
 - [x] resolve Functional component
 - [ ] ~~resolve Vue class component~~

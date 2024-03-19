@@ -16,7 +16,7 @@ import type {
   SlotMeta,
 } from './types';
 import { PropertyMetaKind } from './types';
-import { BasicTypes } from './utils';
+import { BasicTypes, getTag } from './utils';
 
 function getPropertySchema(schema: PropertySchema | string) {
   if (typeof schema === 'string') {
@@ -42,12 +42,12 @@ export const dumiTransformer: MetaTransformer<DumiTransformResult> = (
     const partialProp: Partial<PropertySchema> = {
       title: prop.name,
       description: prop.description,
-      tags: prop.tags,
+      tags: prop.comment,
     };
-    let tagDef = prop?.tags?.default;
+    let tagDef = getTag(prop.comment, 'default', 'block');
     let def: string | undefined;
-    if (tagDef?.length) {
-      def = tagDef[0];
+    if (tagDef?.content) {
+      def = tagDef.content[0]?.text;
     } else if (prop.default !== undefined) {
       def = prop.default;
     }
@@ -58,9 +58,11 @@ export const dumiTransformer: MetaTransformer<DumiTransformResult> = (
       } catch (error) {}
     }
 
-    const desc = prop?.tags?.['description'];
-    if (desc?.length) {
-      partialProp.description = desc.join('\n');
+    const desc = getTag(prop.comment, 'description', 'block');
+    if (desc?.content) {
+      partialProp.description = desc.content
+        .map((item) => item.text)
+        .join('\n');
     }
     return {
       ...partialProp,

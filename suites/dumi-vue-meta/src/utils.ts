@@ -1,7 +1,13 @@
 import { createHash } from 'crypto';
 import * as path from 'typesafe-path/posix';
 import type ts from 'typescript/lib/tsserverlibrary';
-import { PropertyMetaSchema, SignatureMetaSchema } from './types';
+import {
+  BlockTagContentTextMeta,
+  BlockTagMeta,
+  CommentMeta,
+  PropertyMetaSchema,
+  SignatureMetaSchema,
+} from './types';
 
 export function createNodeVisitor(
   ts: typeof import('typescript/lib/tsserverlibrary'),
@@ -30,20 +36,60 @@ export function getNodeOfType(type: ts.Type) {
   return getNodeOfSymbol(symbol);
 }
 
-export function getJsDocTags(
+const modiferTags = [
+  'public',
+  'alpha',
+  'beta',
+  'experimental',
+  'internal',
+  'expose',
+  'exposed',
+  'ignore',
+];
+
+export function getComment(
   ts: typeof import('typescript/lib/tsserverlibrary'),
   typeChecker: ts.TypeChecker,
   prop: ts.Symbol | ts.Signature,
 ) {
   return prop.getJsDocTags(typeChecker).reduce((doc, tag) => {
-    if (!doc[tag.name]) {
-      doc[tag.name] = [];
+    if (modiferTags.includes(tag.name)) {
+      if (!doc.modifierTags?.length) {
+        doc.modifierTags = [];
+      }
+      doc.modifierTags.push(tag.name);
+    } else {
+      if (!doc.blockTags?.length) {
+        doc.blockTags = [];
+      }
+      const content: BlockTagContentTextMeta[] = [];
+      if (tag.text) {
+        content.push({
+          kind: 'text',
+          text: ts.displayPartsToString(tag.text),
+        });
+      }
+      doc.blockTags.push({ tag: tag.name, content });
     }
-    doc[tag.name].push(
-      tag.text !== undefined ? ts.displayPartsToString(tag.text) : '',
-    );
     return doc;
-  }, {} as Record<string, string[]>);
+  }, {} as CommentMeta);
+}
+
+type GetTagResult<T> = T extends 'block' ? BlockTagMeta : string;
+
+export function getTag<T extends 'block' | 'modifer'>(
+  comment: CommentMeta,
+  tag: string,
+  kind?: T,
+): GetTagResult<T> | undefined {
+  if (kind === 'modifer') {
+    return comment.modifierTags?.find((t) => t === tag) as GetTagResult<T>;
+  } else if (kind === 'block') {
+    return comment.blockTags?.find((t) => t.tag === tag) as GetTagResult<T>;
+  } else {
+    return (getTag(comment, tag, 'modifer') ??
+      getTag(comment, tag, 'block')) as GetTagResult<T>;
+  }
 }
 
 export function reducer(acc: any, cur: any) {

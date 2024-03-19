@@ -40,7 +40,10 @@ function testFeatures(kind: 'tsx' | 'sfc' | 'sfc-alias') {
           required: true,
           default: "'标题'",
           type: 'string',
-          tags: { default: ["''"] },
+        });
+        expect(titleProp.comment.blockTags).toContainEqual({
+          tag: 'default',
+          content: [{ kind: 'text', text: "''" }],
         });
       });
 
@@ -148,6 +151,20 @@ function testFeatures(kind: 'tsx' | 'sfc' | 'sfc-alias') {
           default: 'null',
         });
       });
+
+      test('jsdoc', () => {
+        expect(propMap['func'].comment.modifierTags).toContain('alpha');
+        expect(propMap['c'].comment.modifierTags).toContain('experimental');
+        expect(propMap['e'].comment.modifierTags).toContain('beta');
+        expect(propMap['d'].comment.blockTags).toContainEqual({
+          tag: 'deprecated',
+          content: [],
+        });
+        expect(propMap['dom'].comment.blockTags).toContainEqual({
+          tag: 'since',
+          content: [{ kind: 'text', text: '0.0.1' }],
+        });
+      });
     });
 
     describe('emits/events', () => {
@@ -179,6 +196,13 @@ function testFeatures(kind: 'tsx' | 'sfc' | 'sfc-alias') {
       test('scoped slots', () => {
         expect(slotMap['item']).matchSnapshot();
       });
+      test('jsdoc', () => {
+        expect(slotMap['item'].comment?.blockTags).toContainEqual({
+          tag: 'deprecated',
+          content: [],
+        });
+        expect(slotMap['icon'].comment?.modifierTags).toContain('experimental');
+      });
     });
 
     describe('expose api', () => {
@@ -192,6 +216,14 @@ function testFeatures(kind: 'tsx' | 'sfc' | 'sfc-alias') {
           type: 'number',
         });
         expect(exposed['focus']).matchSnapshot();
+      });
+
+      test('jsdoc', () => {
+        expect(exposed['count'].comment?.blockTags).toContainEqual({
+          tag: 'deprecated',
+          content: [{ kind: 'text', text: 'will be released in 0.0.1' }],
+        });
+        expect(exposed['focus'].comment?.modifierTags).toContain('alpha');
       });
     });
   });

@@ -54,11 +54,11 @@ export default Foo as JSXComponent<
   {
     /**
      * The signature of the expose api should be obtained from here
-     * @public
+     * @alpha
      */
     focus: () => void;
     /**
-     * @public
+     * @deprecated will be released in 0.0.1
      */
     count: number;
   }

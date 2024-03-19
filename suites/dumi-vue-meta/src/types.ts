@@ -10,7 +10,6 @@ export interface Declaration {
  */
 export interface ComponentMeta {
   name: string;
-  tags: JsDocTagMeta;
   type: TypeMeta;
   typeParams?: PropertyMetaSchema[];
   props: PropertyMeta[];
@@ -76,7 +75,28 @@ export enum TypeMeta {
   Function = 2,
 }
 
-export type JsDocTagMeta = Record<string, string[]>;
+export interface BlockTagContentTextMeta {
+  kind: string;
+  text: string;
+}
+
+export interface BlockTagMeta {
+  tag: string;
+  content: BlockTagContentTextMeta[];
+}
+
+export interface CommentMeta {
+  /**
+   * @example
+   * [{ tag: 'version', content: [{ kind: 'text', text: '0.0.1' }] }]
+   */
+  blockTags?: BlockTagMeta[];
+  /**
+   * @example
+   * ['alpha', 'deprecated']
+   */
+  modifierTags?: string[];
+}
 
 export interface PropertyMeta {
   type: string;
@@ -85,7 +105,7 @@ export interface PropertyMeta {
   description: string;
   global: boolean;
   required: boolean;
-  tags: JsDocTagMeta;
+  comment: CommentMeta;
   schema: PropertyMetaSchema;
 }
 
@@ -94,7 +114,7 @@ export interface EventMeta {
   type: string;
   description?: string;
   default?: string;
-  tags?: JsDocTagMeta;
+  comment: CommentMeta;
   schema: PropertyMetaSchema;
 }
 
@@ -103,7 +123,7 @@ export interface SlotMeta {
   name: string;
   default?: string;
   description: string;
-  tags: JsDocTagMeta;
+  comment: CommentMeta;
   schema: PropertyMetaSchema;
 }
 
@@ -111,7 +131,7 @@ export interface ExposeMeta {
   type: string;
   name: string;
   description: string;
-  tags: JsDocTagMeta;
+  comment: CommentMeta;
   schema: PropertyMetaSchema;
 }
 
@@ -278,12 +298,14 @@ export interface MetaCheckerOptions {
   printer?: ts.PrinterOptions;
   /**
    * Whether to filter global props, the default is true
+   *
    * If it is true, global props in vue, such as key and ref, will be filtered out
    */
   filterGlobalProps?: boolean;
   /**
-   * Whether to enable filtering for exposed attributes, the default is true
-   * If true, only methods or properties identified by `@public/@exposed/@expose` will be exposed in jsx
+   * Whether to enable filtering for exposed attributes, the default is true.
+   *
+   * If true, only methods or properties identified by release tags like `@public` will be exposed in jsx
    */
   filterExposed?: boolean;
 }

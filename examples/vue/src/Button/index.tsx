@@ -15,6 +15,7 @@ export const buttonProps = {
 
   /**
    * 按钮
+   * @deprecated 0.2.0版本将会移除
    */
   size: {
     type: String as PropType<'sm' | 'md' | 'lg'>,
@@ -38,6 +39,7 @@ export interface ButtonMethods {
   /**
    * 失焦
    * @public
+   * @version 0.0.2
    */
   blur: () => void;
 }

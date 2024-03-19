@@ -23,12 +23,12 @@ const focus = () => {
 };
 defineExpose({
   /**
-   * @exposed
+   * @alpha
    * @description The signature of the expose api should be obtained from here
    */
   focus,
   /**
-   * @exposed
+   * @deprecated will be released in 0.0.1
    */
   count: publicCount.value,
 });
@@ -56,11 +56,13 @@ function handleChange() {
 const slots = defineSlots<{
   /**
    * icon
+   * @experimental
    * @description icon
    */
   icon: any,
   /**
    * item
+   * @deprecated
    */
   item(options: { list: string[], extra?: boolean }): any,
 }>();

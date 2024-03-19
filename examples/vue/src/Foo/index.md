@@ -82,7 +82,7 @@ import { Button, Badge } from '@examples/vue';
 
 <template>
   <Button>
-    <Badge icon="iframe" />
+    <Badge icon="🆙">iframe</Badge>
   </Button>
 </template>
 ```
@@ -102,3 +102,11 @@ import { Button, Badge } from '@examples/vue';
 ### Props
 
 <API id="Badge" type="props"></API>
+
+### Slots
+
+<API id="Badge" type="slots"></API>
+
+### Events
+
+<API id="Badge" type="events"></API>

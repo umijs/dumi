@@ -16,6 +16,7 @@ export interface ListProps<Item extends BaseItem> {
   source: () => Promise<Array<Item>> | Array<Item>;
   /**
    * trigger when data have been loaded
+   * @deprecated
    */
   onLoaded?: (data: Array<Item>) => void;
 }

@@ -1,0 +1,24 @@
+@import (reference) '../../styles/variables.less';
+.@{prefix}-api {
+  &-release {
+    [data-release] + [data-release] {
+      margin-left: 0.5em;
+    }
+    .@{prefix}-badge {
+      transform: scale(0.9);
+    }
+  }
+
+  &-release-name {
+    &[data-release='deprecated'] {
+      text-decoration: line-through;
+    }
+  }
+
+  &-release-modifer {
+    &[data-release='deprecated'] {
+      cursor: help;
+      border-bottom: 1px dotted @c-text-secondary;
+    }
+  }
+}
