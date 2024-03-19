@@ -1,14 +1,15 @@
-import { AtomComponentAsset } from 'dumi-assets-types';
-import {
+import type { AtomComponentAsset, AtomFunctionAsset } from 'dumi-assets-types';
+import type {
   FunctionPropertySchema,
   ObjectPropertySchema,
   PropertySchema,
 } from 'dumi-assets-types/typings/atom/props';
-import { TypeMap } from 'dumi-assets-types/typings/atom/props/types';
+import type { TypeMap } from 'dumi-assets-types/typings/atom/props/types';
 import type {
   ComponentLibraryMeta,
   ComponentMeta,
   EventMeta,
+  FuncPropertyMetaSchema,
   MetaTransformer,
   PropertyMeta,
   PropertyMetaSchema,
@@ -26,9 +27,14 @@ function getPropertySchema(schema: PropertySchema | string) {
   return schema;
 }
 
-export const dumiTransfomer: MetaTransformer<
-  Record<string, AtomComponentAsset>
-> = (meta: ComponentLibraryMeta) => {
+export interface DumiTransformResult {
+  components: Record<string, AtomComponentAsset>;
+  functions: Record<string, AtomFunctionAsset>;
+}
+
+export const dumiTransformer: MetaTransformer<DumiTransformResult> = (
+  meta: ComponentLibraryMeta,
+) => {
   const referencedTypes = meta.types;
   const cachedTypes: Record<string, PropertySchema | string> = {};
 
@@ -140,9 +146,21 @@ export const dumiTransfomer: MetaTransformer<
           },
         } as FunctionPropertySchema;
       }
+      case PropertyMetaKind.TYPE_PARAM:
       case PropertyMetaKind.UNKNOWN:
         return schema.type;
     }
+  }
+
+  function transformFunction(name: string, func: FuncPropertyMetaSchema) {
+    const { signature } = transformSchema(func) as FunctionPropertySchema;
+    const asset: AtomFunctionAsset = {
+      type: 'FUNCTION',
+      signature,
+      id: name,
+      title: name,
+    };
+    return asset;
   }
 
   function transformComponent(component: ComponentMeta) {
@@ -190,7 +208,7 @@ export const dumiTransfomer: MetaTransformer<
           return acc;
         }, eventsFromProps),
       },
-      methodsConfig: {
+      imperativeConfig: {
         type: 'object',
         properties: exposed.reduce((acc, method) => {
           acc[method.name] = createPropertySchema(method);
@@ -204,8 +222,19 @@ export const dumiTransfomer: MetaTransformer<
     return asset;
   }
 
-  return Object.entries(meta.components).reduce((result, [name, component]) => {
-    result[name] = transformComponent(component);
-    return result;
-  }, {} as Record<string, AtomComponentAsset>);
+  const result: DumiTransformResult = {
+    functions: {},
+    components: {},
+  };
+
+  Object.entries(meta.functions).reduce((acc, [name, func]) => {
+    acc[name] = transformFunction(name, func);
+    return acc;
+  }, result.functions);
+  Object.entries(meta.components).reduce((acc, [name, component]) => {
+    acc[name] = transformComponent(component);
+    return acc;
+  }, result.components);
+
+  return result;
 };

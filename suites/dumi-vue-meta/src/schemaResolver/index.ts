@@ -3,10 +3,12 @@ import {
   CustomSchemaResolver,
   EventMeta,
   ExposeMeta,
+  FuncPropertyMetaSchema,
   MetaCheckerOptions,
   PropertyMeta,
   PropertyMetaKind,
   PropertyMetaSchema,
+  TypeParamPropertyMetaSchema,
 } from '../types';
 import {
   BasicTypes,
@@ -20,6 +22,7 @@ import {
   isPromiseLike,
   reducer,
   signatureTypeToString,
+  typeParameterToString,
 } from '../utils';
 import { vueOptionSchemaResolver } from './custom';
 
@@ -123,14 +126,31 @@ export class SchemaResolver {
     return false;
   }
 
-  private createSignatureMetaSchema(
-    call: ts.Signature,
-    subtype?: ts.Type,
-  ): PropertyMetaSchema {
+  public createTypeParamMetaSchema(param: ts.TypeParameter) {
+    const { typeChecker } = this;
+    const extendType = param.getConstraint();
+    const defaultType = param.getDefault();
+    const schema: TypeParamPropertyMetaSchema = {
+      kind: PropertyMetaKind.TYPE_PARAM,
+      type: typeParameterToString(typeChecker, param, extendType, defaultType),
+    };
+    if (extendType || defaultType) {
+      schema.schema = {};
+      if (extendType) {
+        schema.schema.type = this.resolveSchema(extendType);
+      }
+      if (defaultType) {
+        schema.schema.default = this.resolveSchema(defaultType);
+      }
+    }
+    return schema;
+  }
+
+  public createSignatureMetaSchema(call: ts.Signature, subtype?: ts.Type) {
     const { typeChecker, ts } = this;
     const returnType = call.getReturnType();
-    call.getDeclaration();
-    return {
+    const typeParams = call.getTypeParameters();
+    const schema: FuncPropertyMetaSchema = {
       kind: PropertyMetaKind.FUNC,
       type: typeChecker.typeToString(
         subtype || getTypeOfSignature(typeChecker, call),
@@ -151,6 +171,12 @@ export class SchemaResolver {
         }),
       },
     };
+    if (typeParams) {
+      schema.schema!.typeParams = typeParams.map((typeParam) =>
+        this.resolveSchema(typeParam),
+      );
+    }
+    return schema;
   }
 
   private resolveExactSchema(subtype: ts.Type): PropertyMetaSchema {
@@ -205,6 +231,8 @@ export class SchemaResolver {
       // There may be multiple signatures, but we only take the first one
       const signature = subtype.getCallSignatures()[0];
       return this.createSignatureMetaSchema(signature);
+    } else if (subtype.isTypeParameter()) {
+      return this.createTypeParamMetaSchema(subtype);
     }
 
     return {

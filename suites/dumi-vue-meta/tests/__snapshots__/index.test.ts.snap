@@ -302,6 +302,130 @@ exports[`sfc-alias: single Vue component meta > slots > scoped slots 1`] = `
 }
 `;
 
+exports[`tsx: functional component > anonymous 1`] = `
+{
+  "events": [
+    {
+      "name": "sendMessage",
+      "schema": {
+        "kind": "function",
+        "schema": {
+          "arguments": [
+            {
+              "key": "message",
+              "required": true,
+              "schema": {
+                "kind": "basic",
+                "type": "string",
+              },
+              "type": "string",
+            },
+          ],
+          "isAsync": false,
+          "returnType": {
+            "kind": "basic",
+            "type": "void",
+          },
+        },
+        "type": "(message: string) => void",
+      },
+      "type": "(message: string) => void",
+    },
+  ],
+  "exposed": [],
+  "name": "AnonymousFComponent",
+  "props": [
+    {
+      "description": "",
+      "global": false,
+      "name": "message",
+      "required": true,
+      "schema": {
+        "kind": "basic",
+        "type": "string",
+      },
+      "tags": {},
+      "type": "string",
+    },
+  ],
+  "slots": [
+    {
+      "description": "",
+      "name": "default",
+      "schema": {
+        "kind": "basic",
+        "type": "any",
+      },
+      "tags": {},
+      "type": "any",
+    },
+  ],
+  "type": 2,
+}
+`;
+
+exports[`tsx: functional component > named 1`] = `
+{
+  "events": [
+    {
+      "name": "sendMessage",
+      "schema": {
+        "kind": "function",
+        "schema": {
+          "arguments": [
+            {
+              "key": "message",
+              "required": true,
+              "schema": {
+                "kind": "basic",
+                "type": "string",
+              },
+              "type": "string",
+            },
+          ],
+          "isAsync": false,
+          "returnType": {
+            "kind": "basic",
+            "type": "void",
+          },
+        },
+        "type": "(message: string) => void",
+      },
+      "type": "(message: string) => void",
+    },
+  ],
+  "exposed": [],
+  "name": "NamedFComponent",
+  "props": [
+    {
+      "description": "",
+      "global": false,
+      "name": "message",
+      "required": true,
+      "schema": {
+        "kind": "basic",
+        "type": "string",
+      },
+      "tags": {},
+      "type": "string",
+    },
+  ],
+  "slots": [
+    {
+      "description": "",
+      "name": "default",
+      "schema": {
+        "kind": "basic",
+        "type": "any",
+      },
+      "tags": {},
+      "type": "any",
+    },
+  ],
+  "type": 2,
+}
+`;
+
 exports[`tsx: single Vue component meta > emits/events > event signature meta should be same as normal methods 1`] = `
 {
   "name": "change",
@@ -361,7 +485,7 @@ exports[`tsx: single Vue component meta > expose api > ref api 1`] = `
     "type": "() => void",
   },
   "tags": {
-    "exposed": [
+    "public": [
       "",
     ],
   },

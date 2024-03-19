@@ -123,6 +123,22 @@ export function signatureTypeToString(
   )}`;
 }
 
+export function typeParameterToString(
+  typeChecker: ts.TypeChecker,
+  type: ts.TypeParameter,
+  extendType?: ts.Type,
+  defaultType?: ts.Type,
+) {
+  let name = typeChecker.typeToString(type);
+  if (extendType) {
+    name += ` extend ${typeChecker.typeToString(extendType)}`;
+  }
+  if (defaultType) {
+    name += ` = ${typeChecker.typeToString(defaultType)}`;
+  }
+  return name;
+}
+
 export const BasicTypes: Record<string, string> = {
   string: 'string',
   number: 'number',

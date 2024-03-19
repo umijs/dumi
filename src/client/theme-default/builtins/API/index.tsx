@@ -128,7 +128,7 @@ const APIType: FC<PropertySchema> = (prop) => {
 
 const API: FC<{
   id?: string;
-  type?: 'props' | 'events' | 'slots' | 'methods';
+  type?: 'props' | 'events' | 'slots' | 'imperative';
 }> = (props) => {
   const { frontmatter } = useRouteMeta();
   const { components } = useAtomAssets();

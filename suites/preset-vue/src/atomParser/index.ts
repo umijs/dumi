@@ -1,5 +1,5 @@
 import type { MetaCheckerOptions } from '@dumijs/vue-meta';
-import { createProject, dumiTransfomer } from '@dumijs/vue-meta';
+import { createProject, dumiTransformer } from '@dumijs/vue-meta';
 import {
   IBaseApiParserOptions,
   ILanguageMetaParser,
@@ -49,11 +49,10 @@ class VueMetaParser implements ILanguageMetaParser {
     }
   }
   async parse() {
-    const components = this.checker.service.getComponentLibraryMeta(
+    return this.checker.service.getComponentLibraryMeta(
       this.entryFile,
-      dumiTransfomer,
+      dumiTransformer,
     );
-    return { components, functions: {} };
   }
 
   async destroy() {

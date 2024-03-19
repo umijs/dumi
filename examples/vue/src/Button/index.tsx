@@ -32,12 +32,12 @@ export const buttonProps = {
 export interface ButtonMethods {
   /**
    * 聚焦
-   * @exposed
+   * @public
    */
   focus: () => void;
   /**
    * 失焦
-   * @exposed
+   * @public
    */
   blur: () => void;
 }

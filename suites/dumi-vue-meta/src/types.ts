@@ -10,7 +10,9 @@ export interface Declaration {
  */
 export interface ComponentMeta {
   name: string;
+  tags: JsDocTagMeta;
   type: TypeMeta;
+  typeParams?: PropertyMetaSchema[];
   props: PropertyMeta[];
   events: EventMeta[];
   slots: SlotMeta[];
@@ -36,6 +38,10 @@ export interface ComponentLibraryMeta {
    * Metadata of all components
    */
   components: Record<string, ComponentMeta>;
+  /**
+   * Metadata of functions
+   */
+  functions: Record<string, FuncPropertyMetaSchema>;
   /**
    * All exported common types will be stored here to facilitate reference by other types.
    */
@@ -116,8 +122,19 @@ export enum PropertyMetaKind {
   ARRAY = 'array',
   FUNC = 'function',
   OBJECT = 'object',
+  TYPE_PARAM = 'type_param',
   UNKNOWN = 'unknown',
   REF = 'ref',
+}
+
+/**
+ * Type parameter metadata description
+ */
+export interface TypeParamMetaSchema {
+  // extend Type
+  type?: PropertyMetaSchema;
+  // = Type
+  default?: PropertyMetaSchema;
 }
 
 /**
@@ -132,6 +149,10 @@ export interface SignatureMetaSchema {
    * Return type meta
    */
   returnType: PropertyMetaSchema;
+  /**
+   * type parameters
+   */
+  typeParams?: PropertyMetaSchema[];
   /**
    * Function parameter meta
    */
@@ -176,6 +197,12 @@ export type ObjectPropertyMetaSchema = {
   schema?: Record<string, PropertyMeta>;
   ref?: string;
 };
+export type TypeParamPropertyMetaSchema = {
+  kind: PropertyMetaKind.TYPE_PARAM;
+  type: string;
+  schema?: TypeParamMetaSchema;
+  ref?: string;
+};
 /**
  * Note: The unknown type is mainly used to carry types that are not parsed themselves,
  * but whose type parameters need to be checked.
@@ -204,6 +231,7 @@ export type PropertyMetaSchema =
   | ArrayPropertyMetaSchema
   | FuncPropertyMetaSchema
   | ObjectPropertyMetaSchema
+  | TypeParamPropertyMetaSchema
   | UnknownPropertyMetaSchema
   | RefPropertyMetaSchema;
 
@@ -255,7 +283,7 @@ export interface MetaCheckerOptions {
   filterGlobalProps?: boolean;
   /**
    * Whether to enable filtering for exposed attributes, the default is true
-   * If true, only methods or properties identified by `@exposed/@expose` will be exposed in jsx
+   * If true, only methods or properties identified by `@public/@exposed/@expose` will be exposed in jsx
    */
   filterExposed?: boolean;
 }

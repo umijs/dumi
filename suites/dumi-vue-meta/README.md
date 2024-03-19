@@ -308,14 +308,14 @@ defineComponent({
 });
 ```
 
-### @exposed/@expose
+### @public/@exposed/@expose
 
-For methods on the component instance itself, use `@exposed` to expose
+For methods on the component instance itself, use `@public` to expose
 
 ```ts
 defineExpose({
   /**
-   * @exposed
+   * @public
    */
   focus() {},
 });
@@ -323,13 +323,53 @@ defineExpose({
 
 If you set `filterExposed` in MetaCheckerOptions to false, this flag will become invalid.
 
-### @ignore
+### @internal/@ignore
 
-Properties marked with `@ignore` will not be checked.
+Properties marked with `@ignore` or `@internal` will not be checked.
+
+### @component
+
+This is used to distinguish between ordinary functions and function components.
+
+Currently, there are two situations that cannot be automatically recognized as components:
+
+```ts
+/**
+ *@component
+ */
+function InternalComponent(props: { a: string }) {
+  return h('div', props.a);
+}
+```
+
+```tsx
+/**
+ *@component
+ */
+export const GenericComponent = defineComponent(
+  <T>(props: { item: T }) => {
+    return () => (<div>{item}</div>);
+  },
+);
+```
+
+It needs to be annotated with @component, otherwise it will be recognized as a function
+
+### @version, @deprecated/@experimental/@alpha/@beta, @since
+
+### @alias
+
+### @event/@slot
+
+### @see/@link
+
+### @group/@category
+
+### @typeParam
 
 ## TODO
 
 - [ ] withDefaults
 - [ ] externalSymbolLinkMap support
-- [ ] resolve Functional component
-- [ ] resolve Vue class component
+- [x] resolve Functional component
+- [ ] ~~resolve Vue class component~~

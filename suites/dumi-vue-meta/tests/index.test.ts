@@ -3,7 +3,10 @@ import { afterAll, describe, expect, test } from 'vitest';
 import type {
   EnumPropertyMetaSchema,
   MetaCheckerOptions,
+  ObjectPropertyMetaSchema,
   PropertyMeta,
+  RefPropertyMetaSchema,
+  TypeParamPropertyMetaSchema,
 } from '../src/index';
 import { createProject, vueTypesSchemaResolver } from '../src/index';
 import { toRecord } from './utils';
@@ -22,8 +25,8 @@ const project = createProject({
 });
 
 function testFeatures(kind: 'tsx' | 'sfc' | 'sfc-alias') {
+  const componentPath = path.resolve(__dirname, `fixtures/${kind}/index.ts`);
   describe(`${kind}: single Vue component meta`, () => {
-    const componentPath = path.resolve(__dirname, `fixtures/${kind}/index.ts`);
     describe('props', () => {
       const { component } = project.service.getComponentMeta(
         componentPath,
@@ -191,6 +194,72 @@ function testFeatures(kind: 'tsx' | 'sfc' | 'sfc-alias') {
         expect(exposed['focus']).matchSnapshot();
       });
     });
+  });
+
+  describe.skipIf(kind !== 'tsx')('tsx: functional component', () => {
+    const { components } =
+      project.service.getComponentLibraryMeta(componentPath);
+    test('anonymous', () => {
+      expect(components['AnonymousFComponent']).toMatchSnapshot();
+    });
+    test('named', () => {
+      expect(components['NamedFComponent']).toMatchSnapshot();
+    });
+  });
+
+  describe.skipIf(kind !== 'tsx')('tsx: composition function', () => {
+    const { components, functions } =
+      project.service.getComponentLibraryMeta(componentPath);
+    test('composition functions', () => {
+      const funcNames = Object.keys(functions);
+      expect(funcNames).toStrictEqual(['useInternalValue', 'useVNode']);
+      expect(functions['useInternalValue']).toMatchObject({
+        kind: 'function',
+        schema: {
+          arguments: [
+            { key: 'upstreamValue', type: '() => T' },
+            { key: 'updator', type: '(upstreamValue: T, oldValue?: T) => T' },
+            {
+              key: 'equal',
+              type: '(internalValue: T, newValue: T) => boolean',
+            },
+          ],
+        },
+      });
+      expect(functions['useVNode'].type).toContain('() => VNode');
+    });
+    test('use @component to identify functional component', () => {
+      const schema = components['InternalComponent'];
+      expect(schema.props[0]).toContain({
+        name: 'a',
+        required: true,
+        type: 'string',
+      });
+    });
+  });
+
+  test.skipIf(kind !== 'tsx')('generic component', () => {
+    const { component, types } = project.service.getComponentMeta(
+      componentPath,
+      'List',
+    );
+    const typeParam = component.typeParams?.[0] as TypeParamPropertyMetaSchema;
+    expect(typeParam.type).toBe('Item extend BaseItem = BaseItem');
+    const defaultRef = typeParam.schema?.default as RefPropertyMetaSchema;
+    const defaultType = types[defaultRef.ref] as ObjectPropertyMetaSchema;
+    const extendRef = typeParam.schema?.type as RefPropertyMetaSchema;
+    const extendType = types[extendRef.ref] as ObjectPropertyMetaSchema;
+    const baseItemObj = {
+      id: { name: 'id', type: 'string | number' },
+      text: { name: 'text' },
+    };
+    expect(defaultType.schema).toMatchObject(baseItemObj);
+    expect(extendType.schema).toMatchObject(baseItemObj);
+    // Only props of generic components can be automatically recognized
+    expect(component.props).toMatchObject([
+      { type: '() => BaseItem[] | Promise<BaseItem[]>', name: 'source' },
+      { type: '(data: BaseItem[]) => void', name: 'onLoaded' },
+    ]);
   });
 }
 

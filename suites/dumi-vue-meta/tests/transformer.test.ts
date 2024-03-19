@@ -3,7 +3,7 @@ import { afterAll, expect, test } from 'vitest';
 import type { MetaCheckerOptions } from '../src/index';
 import {
   createProject,
-  dumiTransfomer,
+  dumiTransformer,
   vueTypesSchemaResolver,
 } from '../src/index';
 
@@ -20,7 +20,7 @@ const project = createProject({
 
 test('dumi-assets-types transformer', () => {
   const entry = path.resolve(__dirname, 'fixtures/index.ts');
-  const meta = project.service.getComponentLibraryMeta(entry, dumiTransfomer);
+  const meta = project.service.getComponentLibraryMeta(entry, dumiTransformer);
   expect(meta).toMatchSnapshot();
 });
 
