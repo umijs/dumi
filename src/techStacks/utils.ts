@@ -62,7 +62,7 @@ export function wrapDemoWithFn(code: string, opts: IWrapDemoWithFnOptions) {
 }`;
 }
 
-export interface ICreateTechStackOptions
+export interface IDefineTechStackOptions
   extends Omit<IDumiTechStack, 'isSupported'> {
   /**
    * Is the lang supported by the current tech stack?
@@ -73,12 +73,12 @@ export interface ICreateTechStackOptions
 }
 
 /**
- * Create a tech stack
+ * Define a tech stack
  * @param options techstack options
  * @returns function that returns {@link IDumiTechStack}, can be used to register a techstack
  *
  * @example
- * const ReactTechStack = createTechStack({
+ * const ReactTechStack = defineTechStack({
  *   name: 'jsx',
  *   isSupported(lang) {
  *     return ['jsx', 'tsx'].includes(lang);
@@ -91,7 +91,7 @@ export interface ICreateTechStackOptions
  *
  * api.registerTechStack(ReactTechStack);
  */
-export function createTechStack(options: ICreateTechStackOptions) {
+export function defineTechStack(options: IDefineTechStackOptions) {
   const isSupported = options.isSupported;
   return () =>
     ({

@@ -1,10 +1,10 @@
 import { compile } from '@/compiler/node';
 import type { IDumiTechStackRuntimeOpts } from 'dumi/tech-stack-utils';
-import { createTechStack, wrapDemoWithFn } from 'dumi/tech-stack-utils';
+import { defineTechStack, wrapDemoWithFn } from 'dumi/tech-stack-utils';
 import hashId from 'hash-sum';
 
 export const VueJSXTechStack = (runtimeOpts: IDumiTechStackRuntimeOpts) =>
-  createTechStack({
+  defineTechStack({
     name: 'vue3-tsx',
     runtimeOpts,
     isSupported(lang: string) {

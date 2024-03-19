@@ -1,11 +1,11 @@
 import { compile, compiler } from '@/compiler/node';
 import type { IDumiTechStackRuntimeOpts } from 'dumi/tech-stack-utils';
-import { createTechStack, wrapDemoWithFn } from 'dumi/tech-stack-utils';
+import { defineTechStack, wrapDemoWithFn } from 'dumi/tech-stack-utils';
 import hashId from 'hash-sum';
 import { logger } from 'umi/plugin-utils';
 
 export const VueSfcTechStack = (runtimeOpts: IDumiTechStackRuntimeOpts) =>
-  createTechStack({
+  defineTechStack({
     name: 'vue3-sfc',
     runtimeOpts,
     isSupported(lang: string) {

@@ -1,17 +1,18 @@
-import { createTechStack, wrapDemoWithFn } from './utils';
+import type { IDumiTechStack } from '@/types';
+import { wrapDemoWithFn } from './utils';
 
-export const ReactTechStack = createTechStack({
-  name: 'react',
+export default class ReactTechStack implements IDumiTechStack {
+  name = 'react';
 
-  runtimeOpts: {
+  runtimeOpts?: IDumiTechStack['runtimeOpts'] = {
     compilePath: require.resolve('../client/misc/reactDemoCompiler'),
-  },
+  };
 
-  isSupported(lang) {
+  isSupported(...[, lang]: Parameters<IDumiTechStack['isSupported']>) {
     return ['jsx', 'tsx'].includes(lang);
-  },
+  }
 
-  transformCode(raw, opts) {
+  transformCode(...[raw, opts]: Parameters<IDumiTechStack['transformCode']>) {
     if (opts.type === 'code-block') {
       const isTSX = opts.fileAbsPath.endsWith('.tsx');
       const code = wrapDemoWithFn(raw, {
@@ -24,5 +25,5 @@ export const ReactTechStack = createTechStack({
       return `React.memo(React.lazy(${code}))`;
     }
     return raw;
-  },
-});
+  }
+}
