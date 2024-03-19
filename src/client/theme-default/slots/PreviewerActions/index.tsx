@@ -16,10 +16,30 @@ import {
 import SourceCode from 'dumi/theme/builtins/SourceCode';
 import PreviewerActionsExtra from 'dumi/theme/slots/PreviewerActionsExtra';
 import SourceCodeEditor from 'dumi/theme/slots/SourceCodeEditor';
-import Tooltip from 'dumi/theme/slots/Tooltip';
 import Tabs from 'rc-tabs';
 import React, { useRef, useState, type FC, type ReactNode } from 'react';
 import './index.less';
+
+import RcTooltip from 'rc-tooltip';
+import type { TooltipProps as RcTooltipProps } from 'rc-tooltip/lib/Tooltip';
+
+export interface TooltipProps extends Omit<RcTooltipProps, 'overlay'> {
+  placement?: 'top' | 'bottom';
+  title?: React.ReactNode;
+}
+
+const Tooltip: FC<TooltipProps> = (props) => {
+  const { title, placement = 'top', ...rest } = props;
+  return (
+    <RcTooltip
+      prefixCls="dumi-theme-default-tooltip"
+      placement={placement}
+      {...rest}
+      overlay={title}
+    />
+  );
+};
+
 export interface IPreviewerActionsProps extends IPreviewerProps {
   /**
    * disabled actions
