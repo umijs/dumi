@@ -10,18 +10,49 @@ import {
   type RefObject,
 } from 'react';
 import DemoErrorBoundary from './DumiDemo/DemoErrorBoundary';
+import type { AgnosticComponentType } from './types';
+import { useRenderer } from './useRenderer';
 
 const THROTTLE_WAIT = 500;
+
+type CommonJSContext = {
+  module: any;
+  exports: {
+    default?: any;
+  };
+  require: any;
+};
+
+function evalCommonJS(
+  js: string,
+  { module, exports, require }: CommonJSContext,
+) {
+  new Function('module', 'exports', 'require', js)(module, exports, require);
+}
 
 export const useLiveDemo = (
   id: string,
   opts?: { containerRef?: RefObject<HTMLElement>; iframe?: boolean },
 ) => {
-  const { context, asset, renderOpts } = useDemo(id)!;
+  const demo = useDemo(id)!;
   const [loading, setLoading] = useState(false);
   const loadingTimer = useRef<number>();
   const taskToken = useRef<number>();
+
+  const { context = {}, asset, renderOpts } = demo;
+  const [component, setComponent] = useState<AgnosticComponentType>();
+  const ref = useRenderer(
+    component
+      ? {
+          id,
+          ...demo,
+          component,
+        }
+      : Object.assign(demo, { id }),
+  );
+
   const [demoNode, setDemoNode] = useState<ReactNode>();
+
   const [error, setError] = useState<Error | null>(null);
   const setSource = useCallback(
     throttle(
@@ -34,6 +65,11 @@ export const useLiveDemo = (
           // make sure timer be fired before next throttle
           THROTTLE_WAIT - 1,
         );
+
+        function resetLoadingStatus() {
+          clearTimeout(loadingTimer.current);
+          setLoading(false);
+        }
 
         if (opts?.iframe && opts?.containerRef?.current) {
           const iframeWindow =
@@ -67,10 +103,40 @@ export const useLiveDemo = (
             if (v in context!) return context![v];
             throw new Error(`Cannot find module: ${v}`);
           };
-          const exports: { default?: ComponentType } = {};
-          const module = { exports };
+
           const token = (taskToken.current = Math.random());
           let entryFileCode = source[entryFileName];
+
+          if (renderOpts?.compile) {
+            try {
+              entryFileCode = await renderOpts.compile(entryFileCode, {
+                filename: entryFileName,
+              });
+            } catch (error: any) {
+              setError(error);
+              resetLoadingStatus();
+              return;
+            }
+          }
+
+          if (renderOpts?.renderer && renderOpts?.compile) {
+            try {
+              const exports: AgnosticComponentType = {};
+              const module = { exports };
+              evalCommonJS(entryFileCode, {
+                exports,
+                module,
+                require,
+              });
+              setComponent(exports);
+              setDemoNode(createElement('div', { ref }));
+              setError(null);
+            } catch (err: any) {
+              setError(err);
+            }
+            resetLoadingStatus();
+            return;
+          }
 
           try {
             // load renderToStaticMarkup in async way
@@ -78,20 +144,18 @@ export const useLiveDemo = (
               'react-dom/server'
             ).then(({ renderToStaticMarkup }) => renderToStaticMarkup);
 
-            // compile entry file code
-            entryFileCode = await renderOpts!.compile!(entryFileCode, {
-              filename: entryFileName,
-            });
-
             // skip current task if another task is running
             if (token !== taskToken.current) return;
 
+            const exports: { default?: ComponentType } = {};
+            const module = { exports };
+
             // initial component with fake runtime
-            new Function('module', 'exports', 'require', entryFileCode)(
-              module,
+            evalCommonJS(entryFileCode, {
               exports,
+              module,
               require,
-            );
+            });
 
             const newDemoNode = createElement(
               DemoErrorBoundary,
@@ -116,10 +180,7 @@ export const useLiveDemo = (
             setError(err);
           }
         }
-
-        // reset loading status
-        clearTimeout(loadingTimer.current);
-        setLoading(false);
+        resetLoadingStatus();
       },
       THROTTLE_WAIT,
       { leading: true },

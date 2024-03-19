@@ -41,6 +41,18 @@ export interface AtomComponentAsset extends AtomBaseAsset {
    * props definition of component
    */
   propsConfig: ObjectPropertySchema;
+  /**
+   * slots definition of component
+   */
+  slotsConfig?: ObjectPropertySchema;
+  /**
+   * events definition of component
+   */
+  eventsConfig?: ObjectPropertySchema;
+  /**
+   * methods definition of component
+   */
+  methodsConfig?: ObjectPropertySchema;
 
   /**
    * available parent components of component

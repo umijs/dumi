@@ -25,7 +25,7 @@ export { DumiPage } from './DumiPage';
 export { useSiteData } from './context';
 export { openCodeSandbox } from './openCodeSandbox';
 export { openStackBlitz } from './openStackBlitz';
-export type { IPreviewerProps } from './types';
+export type { IDemoCancelableFn, IPreviewerProps } from './types';
 export { useAtomAssets } from './useAtomAssets';
 export { useLiveDemo } from './useLiveDemo';
 export { useLocale } from './useLocale';

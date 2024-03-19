@@ -1,6 +1,6 @@
 {
   "name": "dumi",
-  "version": "2.2.16",
+  "version": "2.2.17",
   "description": "📖 Documentation Generator of React Component",
   "keywords": [
     "generator",
@@ -32,7 +32,9 @@
     "theme-default",
     "index.d.ts",
     "plugin-utils.js",
-    "plugin-utils.d.ts"
+    "plugin-utils.d.ts",
+    "tech-stack-utils.js",
+    "tech-stack-utils.d.ts"
   ],
   "scripts": {
     "build": "father build && npm run build:crates",
@@ -79,7 +81,7 @@
     "@ant-design/icons-svg": "^4.2.1",
     "@makotot/ghostui": "^2.0.0",
     "@stackblitz/sdk": "^1.9.0",
-    "@swc/core": "1.3.72",
+    "@swc/core": "1.4.2",
     "@types/hast": "^2.3.5",
     "@types/mdast": "^3.0.12",
     "@umijs/bundler-utils": "^4.0.84",
@@ -88,6 +90,7 @@
     "animated-scroll-to": "^2.3.0",
     "classnames": "2.3.2",
     "codesandbox": "^2.2.3",
+    "comlink": "^4.4.1",
     "copy-to-clipboard": "^3.3.3",
     "deepmerge": "^4.3.1",
     "dumi-afx-deps": "^1.0.0-alpha.19",
@@ -160,6 +163,7 @@
     "@types/react-dom": "^18.2.7",
     "@umijs/lint": "^4.0.84",
     "@umijs/plugins": "4.0.32",
+    "codesandbox-import-utils": "^2.2.3",
     "dumi-theme-mobile": "workspace:*",
     "eslint": "^8.46.0",
     "fast-glob": "^3.3.1",

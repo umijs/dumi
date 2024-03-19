@@ -9,7 +9,8 @@ import { useCallback, useState } from 'react';
 import type { IRouteMeta, IRoutesById } from './types';
 import { useIsomorphicLayoutEffect } from './utils';
 
-const cache = new Map<string, IRouteMeta | Promise<IRouteMeta>>();
+const cache = new Map<string, IRouteMeta>();
+const asyncCache = new Map<string, Promise<IRouteMeta>>();
 const EMPTY_META = {
   frontmatter: {},
   toc: [],
@@ -19,7 +20,6 @@ const ASYNC_META_PROPS = ['texts'];
 
 function getCachedRouteMeta(route: IRoutesById[string]) {
   const cacheKey = route.id;
-  const pendingCacheKey = `${cacheKey}:pending`;
 
   if (!cache.get(cacheKey)) {
     const merge = (meta: IRouteMeta = EMPTY_META) => {
@@ -34,18 +34,18 @@ function getCachedRouteMeta(route: IRoutesById[string]) {
     const meta = merge(getRouteMetaById(route.id, { syncOnly: true }));
     const proxyGetter = (target: any, prop: string) => {
       if (ASYNC_META_PROPS.includes(prop)) {
-        if (!cache.get(pendingCacheKey)) {
+        if (!asyncCache.get(cacheKey)) {
           // load async meta then replace cache
-          cache.set(
-            pendingCacheKey,
-            getRouteMetaById(route.id).then((full) =>
-              cache.set(cacheKey, merge(full)).get(cacheKey),
+          asyncCache.set(
+            cacheKey,
+            getRouteMetaById(route.id)!.then(
+              (full) => cache.set(cacheKey, merge(full)).get(cacheKey)!,
             ),
           );
         }
 
         // throw promise to trigger suspense
-        throw cache.get(pendingCacheKey);
+        throw asyncCache.get(cacheKey);
       }
 
       return target[prop];

@@ -127,22 +127,28 @@ export default (api: IApi) => {
       .end()
       .use('md-loader')
       .loader(loaderPath)
-      .options({
-        ...loaderBaseOpts,
-        builtins: api.service.themeData.builtins,
-        onResolveDemos(demos) {
-          const assets = demos.reduce<Parameters<typeof addExampleAssets>[0]>(
-            (ret, demo) => {
-              if ('asset' in demo) ret.push(demo.asset);
-              return ret;
-            },
-            [],
-          );
+      .options(
+        (api.isPluginEnable('assets') || api.isPluginEnable('exportStatic')
+          ? {
+              ...loaderBaseOpts,
+              builtins: api.service.themeData.builtins,
+              onResolveDemos(demos) {
+                const assets = demos.reduce<
+                  Parameters<typeof addExampleAssets>[0]
+                >((ret, demo) => {
+                  if ('asset' in demo) ret.push(demo.asset);
+                  return ret;
+                }, []);
 
-          addExampleAssets(assets);
-        },
-        onResolveAtomMeta: addAtomMeta,
-      } as IMdLoaderOptions);
+                addExampleAssets(assets);
+              },
+              onResolveAtomMeta: addAtomMeta,
+            }
+          : {
+              ...loaderBaseOpts,
+              builtins: api.service.themeData.builtins,
+            }) as IMdLoaderOptions,
+      );
 
     // get meta for each page component
     memo.module
@@ -185,7 +191,6 @@ export default (api: IApi) => {
         },
       ]);
     }
-
     return memo;
   });
 };

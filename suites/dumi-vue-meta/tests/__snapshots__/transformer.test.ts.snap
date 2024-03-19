@@ -1,0 +1,639 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`dumi-assets-types transformer 1`] = `
+{
+  "Foo": {
+    "eventsConfig": {
+      "properties": {
+        "change": {
+          "description": undefined,
+          "signature": {
+            "arguments": [
+              {
+                "hasQuestionToken": true,
+                "key": "payload",
+                "type": "{ name: string; }",
+              },
+            ],
+            "isAsync": false,
+            "returnType": {
+              "type": "void",
+            },
+          },
+          "tags": undefined,
+          "title": "change",
+          "type": "function",
+        },
+        "click": {
+          "description": "click event",
+          "signature": {
+            "arguments": [
+              {
+                "hasQuestionToken": false,
+                "key": "e",
+                "type": "MouseEvent",
+              },
+              {
+                "hasQuestionToken": true,
+                "key": "extra",
+                "type": "string",
+              },
+            ],
+            "isAsync": false,
+            "returnType": {
+              "type": "void",
+            },
+          },
+          "tags": {},
+          "title": "click",
+          "type": "function",
+        },
+        "confirm": {
+          "description": "",
+          "signature": {
+            "arguments": [
+              {
+                "hasQuestionToken": false,
+                "key": "output",
+                "type": "{ children: any[]; }",
+              },
+            ],
+            "isAsync": false,
+            "returnType": {
+              "type": "void",
+            },
+          },
+          "tags": {},
+          "title": "confirm",
+          "type": "function",
+        },
+      },
+      "type": "object",
+    },
+    "id": "Foo",
+    "methodsConfig": {
+      "properties": {
+        "count": {
+          "description": "",
+          "tags": {
+            "exposed": [
+              "",
+            ],
+          },
+          "title": "count",
+          "type": "number",
+        },
+        "focus": {
+          "description": "The signature of the expose api should be obtained from here",
+          "signature": {
+            "arguments": [],
+            "isAsync": false,
+            "returnType": {
+              "type": "void",
+            },
+          },
+          "tags": {
+            "exposed": [
+              "",
+            ],
+          },
+          "title": "focus",
+          "type": "function",
+        },
+      },
+      "type": "object",
+    },
+    "propsConfig": {
+      "properties": {
+        "a": {
+          "default": [],
+          "description": "",
+          "items": {
+            "properties": {
+              "a": {
+                "description": "",
+                "properties": {
+                  "id": {
+                    "description": "",
+                    "tags": {},
+                    "title": "id",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "id",
+                ],
+                "tags": {},
+                "title": "a",
+                "type": "object",
+              },
+            },
+            "required": [
+              "a",
+            ],
+            "type": "object",
+          },
+          "tags": {},
+          "title": "a",
+          "type": "array",
+        },
+        "b": {
+          "default": {},
+          "description": "",
+          "properties": {
+            "c": {
+              "description": "",
+              "tags": {},
+              "title": "c",
+              "type": "string",
+            },
+          },
+          "required": [],
+          "tags": {
+            "default": [
+              "{}",
+            ],
+          },
+          "title": "b",
+          "type": "object",
+        },
+        "c": {
+          "description": "",
+          "oneOf": [
+            {
+              "const": "\\"1\\"",
+            },
+            {
+              "const": "\\"2\\"",
+            },
+            {
+              "const": "\\"3\\"",
+            },
+          ],
+          "tags": {},
+          "title": "c",
+        },
+        "d": {
+          "default": 1,
+          "description": "",
+          "tags": {},
+          "title": "d",
+          "type": "number",
+        },
+        "dom": {
+          "default": null,
+          "description": "",
+          "tags": {},
+          "title": "dom",
+          "type": "HTMLElement",
+        },
+        "e": {
+          "description": "",
+          "oneOf": [
+            {
+              "properties": {
+                "a": {
+                  "description": "",
+                  "properties": {
+                    "id": {
+                      "description": "",
+                      "tags": {},
+                      "title": "id",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "id",
+                  ],
+                  "tags": {},
+                  "title": "a",
+                  "type": "object",
+                },
+              },
+              "required": [
+                "a",
+              ],
+              "type": "object",
+            },
+            {
+              "const": "1",
+            },
+          ],
+          "tags": {},
+          "title": "e",
+        },
+        "func": {
+          "description": "",
+          "signature": {
+            "arguments": [
+              {
+                "hasQuestionToken": false,
+                "key": "args",
+                "type": "PromiseArgs",
+              },
+            ],
+            "isAsync": true,
+            "returnType": "Promise<{ type?: string; }>",
+          },
+          "tags": {},
+          "title": "func",
+          "type": "function",
+        },
+        "order": {
+          "default": 0,
+          "description": "顺序",
+          "tags": {
+            "description": [
+              "顺序",
+            ],
+          },
+          "title": "order",
+          "type": "number",
+        },
+        "title": {
+          "default": "",
+          "description": "标题",
+          "tags": {
+            "default": [
+              "''",
+            ],
+            "description": [
+              "标题",
+            ],
+          },
+          "title": "title",
+          "type": "string",
+        },
+      },
+      "required": [
+        "b",
+        "title",
+        "order",
+        "a",
+      ],
+      "type": "object",
+    },
+    "slotsConfig": {
+      "properties": {
+        "icon": {
+          "description": "icon",
+          "tags": {
+            "description": [
+              "icon",
+            ],
+          },
+          "title": "icon",
+          "type": "any",
+        },
+        "item": {
+          "description": "item",
+          "properties": {
+            "extra": {
+              "description": "",
+              "tags": {},
+              "title": "extra",
+              "type": "boolean",
+            },
+            "list": {
+              "description": "",
+              "items": {
+                "type": "string",
+              },
+              "tags": {},
+              "title": "list",
+              "type": "array",
+            },
+          },
+          "required": [
+            "list",
+          ],
+          "tags": {},
+          "title": "item",
+          "type": "object",
+        },
+      },
+      "type": "object",
+    },
+    "title": "Foo",
+    "type": "COMPONENT",
+  },
+  "FooSfc": {
+    "eventsConfig": {
+      "properties": {
+        "change": {
+          "description": undefined,
+          "signature": {
+            "arguments": [
+              {
+                "hasQuestionToken": false,
+                "key": "payload",
+                "type": "{ name: string; }",
+              },
+            ],
+            "isAsync": false,
+            "returnType": {
+              "type": "void",
+            },
+          },
+          "tags": undefined,
+          "title": "change",
+          "type": "function",
+        },
+        "click": {
+          "description": undefined,
+          "signature": {
+            "arguments": [
+              {
+                "hasQuestionToken": false,
+                "key": "event",
+                "type": "MouseEvent",
+              },
+              {
+                "hasQuestionToken": true,
+                "key": "extra",
+                "type": "string",
+              },
+            ],
+            "isAsync": false,
+            "returnType": {
+              "type": "void",
+            },
+          },
+          "tags": undefined,
+          "title": "click",
+          "type": "function",
+        },
+        "confirm": {
+          "description": "",
+          "signature": {
+            "arguments": [
+              {
+                "hasQuestionToken": false,
+                "key": "output",
+                "type": "{ children: any[]; }",
+              },
+            ],
+            "isAsync": false,
+            "returnType": {
+              "type": "void",
+            },
+          },
+          "tags": {},
+          "title": "confirm",
+          "type": "function",
+        },
+      },
+      "type": "object",
+    },
+    "id": "FooSfc",
+    "methodsConfig": {
+      "properties": {
+        "count": {
+          "description": "",
+          "tags": {
+            "exposed": [
+              "",
+            ],
+          },
+          "title": "count",
+          "type": "number",
+        },
+        "focus": {
+          "description": "The signature of the expose api should be obtained from here",
+          "signature": {
+            "arguments": [],
+            "isAsync": false,
+            "returnType": {
+              "type": "void",
+            },
+          },
+          "tags": {
+            "description": [
+              "The signature of the expose api should be obtained from here",
+            ],
+            "exposed": [
+              "",
+            ],
+          },
+          "title": "focus",
+          "type": "function",
+        },
+      },
+      "type": "object",
+    },
+    "propsConfig": {
+      "properties": {
+        "a": {
+          "default": [],
+          "description": "",
+          "items": {
+            "properties": {
+              "a": {
+                "description": "",
+                "properties": {
+                  "id": {
+                    "description": "",
+                    "tags": {},
+                    "title": "id",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "id",
+                ],
+                "tags": {},
+                "title": "a",
+                "type": "object",
+              },
+            },
+            "required": [
+              "a",
+            ],
+            "type": "object",
+          },
+          "tags": {},
+          "title": "a",
+          "type": "array",
+        },
+        "b": {
+          "default": {},
+          "description": "",
+          "properties": {
+            "c": {
+              "description": "",
+              "tags": {},
+              "title": "c",
+              "type": "string",
+            },
+          },
+          "required": [],
+          "tags": {
+            "default": [
+              "{}",
+            ],
+          },
+          "title": "b",
+          "type": "object",
+        },
+        "c": {
+          "description": "",
+          "oneOf": [
+            {
+              "const": "\\"1\\"",
+            },
+            {
+              "const": "\\"2\\"",
+            },
+            {
+              "const": "\\"3\\"",
+            },
+          ],
+          "tags": {},
+          "title": "c",
+        },
+        "d": {
+          "default": 1,
+          "description": "",
+          "tags": {},
+          "title": "d",
+          "type": "number",
+        },
+        "dom": {
+          "default": null,
+          "description": "",
+          "tags": {},
+          "title": "dom",
+          "type": "HTMLElement",
+        },
+        "e": {
+          "description": "",
+          "oneOf": [
+            {
+              "properties": {
+                "a": {
+                  "description": "",
+                  "properties": {
+                    "id": {
+                      "description": "",
+                      "tags": {},
+                      "title": "id",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "id",
+                  ],
+                  "tags": {},
+                  "title": "a",
+                  "type": "object",
+                },
+              },
+              "required": [
+                "a",
+              ],
+              "type": "object",
+            },
+            {
+              "const": "1",
+            },
+          ],
+          "tags": {},
+          "title": "e",
+        },
+        "func": {
+          "description": "",
+          "signature": {
+            "arguments": [
+              {
+                "hasQuestionToken": false,
+                "key": "args",
+                "type": "PromiseArgs",
+              },
+            ],
+            "isAsync": true,
+            "returnType": "Promise<{ type?: string; }>",
+          },
+          "tags": {},
+          "title": "func",
+          "type": "function",
+        },
+        "order": {
+          "default": 0,
+          "description": "顺序",
+          "tags": {
+            "description": [
+              "顺序",
+            ],
+          },
+          "title": "order",
+          "type": "number",
+        },
+        "title": {
+          "default": "",
+          "description": "标题",
+          "tags": {
+            "default": [
+              "''",
+            ],
+            "description": [
+              "标题",
+            ],
+          },
+          "title": "title",
+          "type": "string",
+        },
+      },
+      "required": [
+        "b",
+        "title",
+        "order",
+        "a",
+      ],
+      "type": "object",
+    },
+    "slotsConfig": {
+      "properties": {
+        "icon": {
+          "description": "icon",
+          "tags": {
+            "description": [
+              "icon",
+            ],
+          },
+          "title": "icon",
+          "type": "any",
+        },
+        "item": {
+          "description": "item",
+          "properties": {
+            "extra": {
+              "description": "",
+              "tags": {},
+              "title": "extra",
+              "type": "boolean",
+            },
+            "list": {
+              "description": "",
+              "items": {
+                "type": "string",
+              },
+              "tags": {},
+              "title": "list",
+              "type": "array",
+            },
+          },
+          "required": [
+            "list",
+          ],
+          "tags": {},
+          "title": "item",
+          "type": "object",
+        },
+      },
+      "type": "object",
+    },
+    "title": "FooSfc",
+    "type": "COMPONENT",
+  },
+}
+`;

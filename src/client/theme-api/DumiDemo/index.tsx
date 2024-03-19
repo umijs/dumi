@@ -1,9 +1,10 @@
 import { SP_ROUTE_PREFIX } from '@/constants';
 import { useAppData, useDemo, useSiteData } from 'dumi';
-import React, { createElement, type FC } from 'react';
+import React, { ComponentType, createElement, type FC } from 'react';
 import type { IPreviewerProps } from '../types';
 
 import Previewer from 'dumi/theme/builtins/Previewer';
+import { useRenderer } from '../useRenderer';
 import DemoErrorBoundary from './DemoErrorBoundary';
 
 export interface IDumiDemoProps {
@@ -17,14 +18,24 @@ export interface IDumiDemoProps {
 const InternalDumiDemo = (props: IDumiDemoProps) => {
   const { historyType } = useSiteData();
   const { basename } = useAppData();
-  const { component, asset } = useDemo(props.demo.id)!;
+  const id = props.demo.id;
+  const demo = useDemo(id)!;
+  const { component, asset, renderOpts } = demo;
+
+  const canvasRef = useRenderer(Object.assign(demo, { id }));
 
   // hide debug demo in production
   if (process.env.NODE_ENV === 'production' && props.previewerProps.debug)
     return null;
 
   const demoNode = (
-    <DemoErrorBoundary>{createElement(component)}</DemoErrorBoundary>
+    <DemoErrorBoundary>
+      {renderOpts?.renderer ? (
+        <div ref={canvasRef}></div>
+      ) : (
+        createElement(component as ComponentType)
+      )}
+    </DemoErrorBoundary>
   );
 
   if (props.demo.inline) {

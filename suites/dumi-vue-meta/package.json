@@ -1,0 +1,52 @@
+{
+  "name": "@dumijs/vue-meta",
+  "version": "0.0.1",
+  "description": "Extracting the metadata of Vue components more effectively",
+  "keywords": [
+    "vue",
+    "metadata",
+    "component"
+  ],
+  "license": "MIT",
+  "main": "dist/cjs/index.js",
+  "types": "dist/cjs/index.d.ts",
+  "files": [
+    "dist",
+    "compiled"
+  ],
+  "scripts": {
+    "build": "father build",
+    "build:deps": "father prebundle",
+    "dev": "father dev",
+    "prepublishOnly": "father doctor && npm run build"
+  },
+  "dependencies": {
+    "@volar/typescript": "^1.10.4",
+    "@vue/language-core": "^1.8.19",
+    "dumi-assets-types": "workspace:*",
+    "ts-morph": "^20.0.0",
+    "typesafe-path": "^0.2.2",
+    "vue-component-type-helpers": "^1.8.19"
+  },
+  "devDependencies": {
+    "eslint-plugin-vue": "^9.17.0",
+    "father": "^4.1.9",
+    "typescript": "^5.2.2",
+    "vue": "^3.3.4",
+    "vue-types": "^5.1.1"
+  },
+  "peerDependencies": {
+    "typescript": "*"
+  },
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": true
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "authors": [
+    "jeffwcx@icloud.com"
+  ]
+}

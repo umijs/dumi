@@ -97,7 +97,10 @@ api.modifyTheme((memo) => {
 
 ```ts
 // CustomTechStack.ts
-import type { ITechStack } from 'dumi';
+import type {
+  IDumiTechStack,
+  IDumiTechStackRuntimeOpts,
+} from 'dumi/tech-stack-utils';
 
 class CustomTechStack implements IDumiTechStack {
   /**
@@ -110,14 +113,45 @@ class CustomTechStack implements IDumiTechStack {
   isSupported(node: hastElement, lang: string) {
     return lang === 'jsx';
   }
+
   /**
-   * 代码转换函数，返回值必须是 React 组件代码字符串
+   * 默认情况下， dumi 只支持js/jsx/ts/tsx模块的依赖分析，
+   * 所以对于无法识别的文件类型需要通过此方法将文件转换为js模块
+   */
+  onBlockLoad?(
+    args: IDumiTechStackOnBlockLoadArgs,
+  ): IDumiTechStackOnBlockLoadResult {
+    // do something
+  }
+
+  /**
+   * 代码转换函数
    * @note  https://github.com/umijs/dumi/tree/master/src/types.ts#L57
    */
   transformCode(raw: string, opts) {
     // do something
     return 'function Demo() { return ... }';
   }
+
+  /**
+   * 运行时选项
+   */
+  runtimeOpts: IDumiTechStackRuntimeOpts = {
+    /**
+     * IDemoCancelableFn函数所在的模块路径
+     * 操作（挂载/卸载）第三方框架组件
+     */
+    rendererPath: '',
+    /**
+     * 运行时编译功能模块的路径
+     */
+    compilePath: '',
+    /**
+     * 该技术堆栈的运行时插件的路径
+     */
+    pluginPath: '',
+  };
+
   /**
    * 生成 demo 资产元数据（可选，通常仅在 dumi 无法分析出元数据时使用，例如非 JS 模块）
    * @note  https://github.com/umijs/dumi/tree/master/src/types.ts#L64
