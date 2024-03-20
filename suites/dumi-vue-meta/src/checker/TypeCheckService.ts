@@ -271,13 +271,26 @@ export class TypeCheckService {
       if (!type.getProperty('$props')) {
         throw 'This is not a vue component';
       }
+      let outsideProps: string[] = [];
+      if (options.filterExposed) {
+        const $props = symbolProperties.find(
+          (prop) => prop.escapedName === 'props',
+        );
+        if ($props) {
+          const type = typeChecker.getTypeOfSymbolAtLocation(
+            $props,
+            symbolNode!,
+          );
+          outsideProps = type.getProperties().map((s) => s.getName());
+        }
+      }
       const properties = type.getProperties().filter((prop) => {
         const comment = getComment(ts, typeChecker, prop);
-
         if (this.shouldIgnore(comment)) return false;
-
         if (options.filterExposed) {
-          return this.shouldPublic(comment);
+          return (
+            this.shouldPublic(comment) && !outsideProps.includes(prop.getName())
+          );
         }
         // It can also be entered if it is marked as public.
         if (prop.valueDeclaration && this.shouldPublic(comment)) {

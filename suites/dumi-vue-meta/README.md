@@ -364,11 +364,15 @@ defineExpose({
 
 If you set `filterExposed` in MetaCheckerOptions to false, those release tags will become invalid.
 
+> The component instance of vue will not only expose the properties and methods exposed through `expose`, but also expose the props passed in from the outside.
+
 ---
 
 ### @ignore/@internal
 
 Properties marked with `@ignore` or `@internal` will not be checked.
+
+---
 
 ### Version control related
 

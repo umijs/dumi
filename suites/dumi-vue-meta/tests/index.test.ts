@@ -212,6 +212,7 @@ function testFeatures(kind: 'tsx' | 'sfc' | 'sfc-alias') {
       );
       const exposed = toRecord(component.exposed);
       test('ref api', () => {
+        expect(Object.keys(exposed)).toStrictEqual(['focus', 'count']);
         expect(exposed['count']).toMatchObject({
           type: 'number',
         });

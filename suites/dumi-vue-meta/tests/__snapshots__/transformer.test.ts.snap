@@ -132,26 +132,6 @@ exports[`dumi-assets-types transformer 1`] = `
       "id": "Foo",
       "imperativeConfig": {
         "properties": {
-          "c": {
-            "description": "",
-            "oneOf": [
-              {
-                "const": "\\"1\\"",
-              },
-              {
-                "const": "\\"2\\"",
-              },
-              {
-                "const": "\\"3\\"",
-              },
-            ],
-            "tags": {
-              "modifierTags": [
-                "experimental",
-              ],
-            },
-            "title": "c",
-          },
           "count": {
             "description": "",
             "tags": {
@@ -170,58 +150,6 @@ exports[`dumi-assets-types transformer 1`] = `
             "title": "count",
             "type": "number",
           },
-          "d": {
-            "description": "",
-            "tags": {
-              "blockTags": [
-                {
-                  "content": [],
-                  "tag": "deprecated",
-                },
-              ],
-            },
-            "title": "d",
-            "type": "number",
-          },
-          "e": {
-            "description": "",
-            "oneOf": [
-              {
-                "properties": {
-                  "a": {
-                    "description": "",
-                    "properties": {
-                      "id": {
-                        "description": "",
-                        "tags": {},
-                        "title": "id",
-                        "type": "string",
-                      },
-                    },
-                    "required": [
-                      "id",
-                    ],
-                    "tags": {},
-                    "title": "a",
-                    "type": "object",
-                  },
-                },
-                "required": [
-                  "a",
-                ],
-                "type": "object",
-              },
-              {
-                "const": "1",
-              },
-            ],
-            "tags": {
-              "modifierTags": [
-                "beta",
-              ],
-            },
-            "title": "e",
-          },
           "focus": {
             "description": "The signature of the expose api should be obtained from here",
             "signature": {
@@ -237,33 +165,6 @@ exports[`dumi-assets-types transformer 1`] = `
               ],
             },
             "title": "focus",
-            "type": "function",
-          },
-          "func": {
-            "description": "",
-            "signature": {
-              "arguments": [
-                {
-                  "hasQuestionToken": false,
-                  "key": "args",
-                  "type": "PromiseArgs",
-                },
-              ],
-              "isAsync": true,
-              "returnType": "Promise<{ type?: string; }>",
-            },
-            "tags": {
-              "blockTags": [
-                {
-                  "content": [],
-                  "tag": "description",
-                },
-              ],
-              "modifierTags": [
-                "alpha",
-              ],
-            },
-            "title": "func",
             "type": "function",
           },
         },
@@ -639,26 +540,6 @@ exports[`dumi-assets-types transformer 1`] = `
       "id": "FooSfc",
       "imperativeConfig": {
         "properties": {
-          "c": {
-            "description": "",
-            "oneOf": [
-              {
-                "const": "\\"1\\"",
-              },
-              {
-                "const": "\\"2\\"",
-              },
-              {
-                "const": "\\"3\\"",
-              },
-            ],
-            "tags": {
-              "modifierTags": [
-                "experimental",
-              ],
-            },
-            "title": "c",
-          },
           "count": {
             "description": "",
             "tags": {
@@ -676,58 +557,6 @@ exports[`dumi-assets-types transformer 1`] = `
             },
             "title": "count",
             "type": "number",
-          },
-          "d": {
-            "description": "",
-            "tags": {
-              "blockTags": [
-                {
-                  "content": [],
-                  "tag": "deprecated",
-                },
-              ],
-            },
-            "title": "d",
-            "type": "number",
-          },
-          "e": {
-            "description": "",
-            "oneOf": [
-              {
-                "properties": {
-                  "a": {
-                    "description": "",
-                    "properties": {
-                      "id": {
-                        "description": "",
-                        "tags": {},
-                        "title": "id",
-                        "type": "string",
-                      },
-                    },
-                    "required": [
-                      "id",
-                    ],
-                    "tags": {},
-                    "title": "a",
-                    "type": "object",
-                  },
-                },
-                "required": [
-                  "a",
-                ],
-                "type": "object",
-              },
-              {
-                "const": "1",
-              },
-            ],
-            "tags": {
-              "modifierTags": [
-                "beta",
-              ],
-            },
-            "title": "e",
           },
           "focus": {
             "description": "The signature of the expose api should be obtained from here",
@@ -755,33 +584,6 @@ exports[`dumi-assets-types transformer 1`] = `
               ],
             },
             "title": "focus",
-            "type": "function",
-          },
-          "func": {
-            "description": "",
-            "signature": {
-              "arguments": [
-                {
-                  "hasQuestionToken": false,
-                  "key": "args",
-                  "type": "PromiseArgs",
-                },
-              ],
-              "isAsync": true,
-              "returnType": "Promise<{ type?: string; }>",
-            },
-            "tags": {
-              "blockTags": [
-                {
-                  "content": [],
-                  "tag": "description",
-                },
-              ],
-              "modifierTags": [
-                "alpha",
-              ],
-            },
-            "title": "func",
             "type": "function",
           },
         },
