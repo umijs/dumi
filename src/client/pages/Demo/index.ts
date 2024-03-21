@@ -1,16 +1,27 @@
 import { useDemo, useLiveDemo, useParams } from 'dumi';
-import { createElement, useEffect, type FC } from 'react';
+import { ComponentType, createElement, useEffect, type FC } from 'react';
+import { useRenderer } from '../../theme-api/useRenderer';
 import './index.less';
 
 const DemoRenderPage: FC = () => {
   const { id } = useParams();
-  const { component } = useDemo(id!) || {};
+  const demo = useDemo(id!);
+
+  const canvasRef = useRenderer(demo!);
+
+  const { component, renderOpts } = demo || {};
+
   const {
     node: liveDemoNode,
-    error: liveDemoError,
     setSource,
+    error: liveDemoError,
   } = useLiveDemo(id!);
-  const finalNode = liveDemoNode || (component && createElement(component));
+
+  const finalNode =
+    liveDemoNode ||
+    (renderOpts?.renderer
+      ? createElement('div', { ref: canvasRef })
+      : component && createElement(component as ComponentType));
 
   // listen message event for setSource
   useEffect(() => {

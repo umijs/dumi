@@ -1,5 +1,5 @@
 import type { IDumiTechStack } from '@/types';
-import { transformSync } from '@swc/core';
+import { wrapDemoWithFn } from './utils';
 
 export default class ReactTechStack implements IDumiTechStack {
   name = 'react';
@@ -15,36 +15,15 @@ export default class ReactTechStack implements IDumiTechStack {
   transformCode(...[raw, opts]: Parameters<IDumiTechStack['transformCode']>) {
     if (opts.type === 'code-block') {
       const isTSX = opts.fileAbsPath.endsWith('.tsx');
-      const { code } = transformSync(raw, {
+      const code = wrapDemoWithFn(raw, {
         filename: opts.fileAbsPath,
-        jsc: {
-          parser: {
-            syntax: isTSX ? 'typescript' : 'ecmascript',
-            [isTSX ? 'tsx' : 'jsx']: true,
-          },
-          target: 'es2022',
-          experimental: {
-            cacheRoot: 'node_modules/.cache/swc',
-            plugins: [
-              [
-                require.resolve(
-                  '../../compiled/crates/swc_plugin_react_demo.wasm',
-                ),
-                {},
-              ],
-            ],
-          },
-        },
-        module: {
-          type: 'es6',
+        parserConfig: {
+          syntax: isTSX ? 'typescript' : 'ecmascript',
+          [isTSX ? 'tsx' : 'jsx']: true,
         },
       });
-
-      return `React.memo(React.lazy(async () => {
-${code}
-}))`;
+      return `React.memo(React.lazy(${code}))`;
     }
-
     return raw;
   }
 }

@@ -138,8 +138,8 @@ export function getRouteMetaById<T extends { syncOnly?: boolean }>(
   id: string,
   opts?: T,
 ): T extends { syncOnly: true }
-  ? undefined | IRouteMeta
-  : Promise<undefined | IRouteMeta> | undefined {
+  ? IRouteMeta | undefined
+  : Promise<IRouteMeta> | undefined {
   if (filesMeta[id]) {
     const { frontmatter, toc, textGetter, tabs } = filesMeta[id];
     const routeMeta: IRouteMeta = {

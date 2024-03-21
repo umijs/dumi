@@ -3,7 +3,7 @@ import type { AtomComponentAsset } from 'dumi-assets-types';
 import { createContext, useContext } from 'react';
 import type { IDemoData, ILocalesConfig, IThemeConfig } from './types';
 
-interface ISiteContext {
+export interface ISiteContext {
   pkg: Partial<Record<keyof typeof PICKED_PKG_FIELDS, any>>;
   historyType: 'browser' | 'hash' | 'memory';
   entryExports: Record<string, any>;

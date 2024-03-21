@@ -6,6 +6,11 @@ import type { sync } from 'enhanced-resolve';
 import fs from 'fs';
 import path from 'path';
 import { pkgUp, winPath } from 'umi/plugin-utils';
+import {
+  DEFAULT_DEMO_MODULE_EXTENSIONS,
+  DEFAULT_DEMO_PLAIN_TEXT_EXTENSIONS,
+} from '../constants';
+import { IDumiTechStack } from '../types';
 
 export interface IParsedBlockAsset {
   asset: ExampleBlockAsset;
@@ -25,19 +30,21 @@ async function parseBlockAsset(opts: {
   refAtomIds: string[];
   entryPointCode?: string;
   resolver: typeof sync;
+  techStack: IDumiTechStack;
 }) {
   const asset: IParsedBlockAsset['asset'] = {
     type: 'BLOCK',
     id: opts.id,
     refAtomIds: opts.refAtomIds,
     dependencies: {},
+    entry: '',
   };
   const result: IParsedBlockAsset = {
     asset,
     resolveMap: {},
     frontmatter: null,
   };
-
+  // demo dependency analysis and asset processing
   const deferrer = build({
     // do not emit file
     write: false,
@@ -93,17 +100,11 @@ async function parseBlockAsset(opts: {
           });
 
           builder.onLoad({ filter: /.*/ }, (args) => {
-            const ext = path.extname(args.path);
-            const isModule = ['.js', '.jsx', '.ts', '.tsx'].includes(ext);
-            const isPlainText = [
-              '.css',
-              '.less',
-              '.sass',
-              '.scss',
-              '.styl',
-              '.json',
-            ].includes(ext);
+            let ext = path.extname(args.path);
+            const techStack = opts.techStack;
+
             const isEntryPoint = args.pluginData.kind === 'entry-point';
+
             // always add extname for highlight in runtime
             const filename = `${
               isEntryPoint
@@ -111,10 +112,32 @@ async function parseBlockAsset(opts: {
                 : winPath(
                     path.format({
                       ...path.parse(args.pluginData.source),
+                      base: '',
                       ext: '',
                     }),
                   )
             }${ext}`;
+
+            let entryPointCode = opts.entryPointCode;
+            let contents: string | undefined = undefined;
+
+            if (techStack.onBlockLoad) {
+              const result = techStack.onBlockLoad({
+                filename,
+                entryPointCode: (entryPointCode ??= fs.readFileSync(
+                  args.path,
+                  'utf-8',
+                )),
+                ...args,
+              });
+              if (result) {
+                ext = `.${result.type}`;
+                contents = result.content;
+              }
+            }
+
+            let isModule = DEFAULT_DEMO_MODULE_EXTENSIONS.includes(ext);
+            let isPlainText = DEFAULT_DEMO_PLAIN_TEXT_EXTENSIONS.includes(ext);
 
             if (isModule || isPlainText) {
               asset.dependencies[filename] = {
@@ -123,15 +146,16 @@ async function parseBlockAsset(opts: {
                   opts.entryPointCode ?? fs.readFileSync(args.path, 'utf-8'),
               };
 
+              const file = asset.dependencies[filename];
+
               // extract entry point frontmatter as asset metadata
               if (isEntryPoint) {
-                const { code, frontmatter } = parseCodeFrontmatter(
-                  asset.dependencies[filename].value,
-                );
+                const { code, frontmatter } = parseCodeFrontmatter(file.value);
+                asset.entry = filename;
 
                 if (frontmatter) {
                   // replace entry code when frontmatter available
-                  asset.dependencies[filename].value = code;
+                  file.value = code;
                   result.frontmatter = frontmatter;
 
                   // TODO: locale for title & description
@@ -152,7 +176,7 @@ async function parseBlockAsset(opts: {
 
               return {
                 // only continue to load for module files
-                contents: isModule ? asset.dependencies[filename].value : '',
+                contents: isModule ? contents ?? file.value : '',
                 loader: isModule ? (ext.slice(1) as any) : 'text',
               };
             }

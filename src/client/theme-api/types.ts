@@ -1,5 +1,5 @@
 import type { ExampleBlockAsset } from 'dumi-assets-types';
-import type { ComponentType, ReactNode } from 'react';
+import type { ComponentType as ReactComponentType, ReactNode } from 'react';
 
 export interface IPreviewerProps {
   /**
@@ -129,9 +129,9 @@ export interface IRouteMeta {
     title?: string;
     titleIntlId?: string;
     components: {
-      default: ComponentType;
-      Extra: ComponentType;
-      Action: ComponentType;
+      default: ReactComponentType;
+      Extra: ReactComponentType;
+      Action: ReactComponentType;
     };
     meta: {
       frontmatter: Omit<
@@ -237,13 +237,24 @@ export type IRoutesById = Record<
   }
 >;
 
+export type AgnosticComponentModule = { default?: any; [key: string]: any };
+
+export type AgnosticComponentType =
+  | Promise<AgnosticComponentModule>
+  | AgnosticComponentModule;
+
 export type IDemoCompileFn = (
   code: string,
   opts: { filename: string },
 ) => Promise<string>;
 
+export type IDemoCancelableFn = (
+  canvas: HTMLElement,
+  component: AgnosticComponentModule,
+) => (() => void) | Promise<() => void>;
+
 export type IDemoData = {
-  component: ComponentType;
+  component: ReactComponentType | AgnosticComponentType;
   asset: IPreviewerProps['asset'];
   routeId: string;
   context?: Record<string, unknown>;
@@ -252,5 +263,6 @@ export type IDemoData = {
      * provide a runtime compile function for compile demo code for live preview
      */
     compile?: IDemoCompileFn;
+    renderer?: IDemoCancelableFn;
   };
 };

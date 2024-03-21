@@ -1,10 +1,13 @@
-import type AtomAssetsParser from '@/assetParsers/atom';
 import type { IApi } from '@/types';
 import { lodash } from '@umijs/utils';
 import assert from 'assert';
+import {
+  BaseAtomAssetsParser,
+  type IAtomAssetsParser,
+} from '../assetParsers/BaseParser';
 import { ATOMS_META_PATH } from './meta';
 
-type IParsedAtomAssets = Awaited<ReturnType<AtomAssetsParser['parse']>>;
+type IParsedAtomAssets = Awaited<ReturnType<IAtomAssetsParser['parse']>>;
 
 function filterIgnoredProps(
   props: IParsedAtomAssets['components'][string]['propsConfig']['properties'],
@@ -83,16 +86,22 @@ export default (api: IApi) => {
   // because `onStart` will be called before any commands
   // and `onCheckPkgJson` only be called in dev and build
   api.onCheckPkgJSON(async () => {
+    if (api.service.atomParser instanceof BaseAtomAssetsParser) return;
     const {
-      default: AtomAssetsParser,
+      default: ReactAtomAssetsParser,
     }: typeof import('@/assetParsers/atom') = require('@/assetParsers/atom');
 
-    api.service.atomParser = new AtomAssetsParser({
+    const apiParser = api.config.apiParser as Exclude<
+      IApi['config']['apiParser'],
+      false | undefined
+    >;
+
+    api.service.atomParser = new ReactAtomAssetsParser({
       entryFile: api.config.resolve.entryFile!,
       resolveDir: api.cwd,
-      unpkgHost: api.config.apiParser!.unpkgHost,
-      resolveFilter: api.config.apiParser!.resolveFilter,
-      parseOptions: api.config.apiParser!.parseOptions,
+      unpkgHost: apiParser.unpkgHost,
+      resolveFilter: apiParser.resolveFilter,
+      parseOptions: apiParser.parseOptions,
     });
   });
 

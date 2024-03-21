@@ -124,7 +124,9 @@ function emitDemo(
 export const demos = {
   {{#demos}}
   '{{{id}}}': {
+    {{#component}}
     component: {{{component}}},
+    {{/component}}
     asset: {{{renderAsset}}},
     context: {{{renderContext}}},
     renderOpts: {{{renderRenderOpts}}},
@@ -183,16 +185,32 @@ export const demos = {
       renderRenderOpts: function renderRenderOpts(
         this: NonNullable<typeof demos>[0],
       ) {
-        if (!('renderOpts' in this) || !this.renderOpts.compilePath) {
+        if (!('renderOpts' in this)) {
           return 'undefined';
         }
+        const renderOpts = this.renderOpts;
+        const propertyArray: string[] = [];
 
-        return `{
+        if (renderOpts.compilePath) {
+          propertyArray.push(`
           compile: async (...args) => {
             return (await import('${winPath(
-              this.renderOpts.compilePath,
+              renderOpts.compilePath,
             )}')).default(...args);
-          },
+          },`);
+        }
+
+        if (renderOpts.rendererPath) {
+          propertyArray.push(`
+            renderer: (await import('${winPath(
+              renderOpts.rendererPath,
+            )}')).default,`);
+        }
+
+        if (propertyArray.length === 0) return 'undefined';
+
+        return `{
+          ${propertyArray.join('\n')}
         }`;
       },
     },
@@ -265,7 +283,7 @@ function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
     case 'text':
       return emitText.call(this, opts, ret);
     default:
-      return emitDefault.call(this, opts, ret);
+      return emitDefault.call(this, opts as IMdLoaderDefaultModeOptions, ret);
   }
 }
 
@@ -283,6 +301,15 @@ const depsMapping: Record<string, string[]> = {};
 export default function mdLoader(this: any, content: string) {
   const opts: IMdLoaderOptions = this.getOptions();
   const cb = this.async();
+
+  // disable cache for avoid assets metadata lost
+  // because the onResolveDemos and onResolveAtomMeta hook does not be fired when cache hit
+  if (
+    process.env.NODE_ENV === 'production' &&
+    ['onResolveDemos', 'onResolveAtomMeta'].some((k) => k in opts)
+  ) {
+    this.cacheable(false);
+  }
 
   const cache = getCache('md-loader');
   // format: {path:contenthash:loaderOpts}

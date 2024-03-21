@@ -9,6 +9,7 @@ const Previewer: FC<IPreviewerProps> = (props) => {
   const demoContainer = useRef<HTMLDivElement>(null);
   const { hash } = useLocation();
   const link = `#${props.asset.id}`;
+
   const {
     node: liveDemoNode,
     error: liveDemoError,

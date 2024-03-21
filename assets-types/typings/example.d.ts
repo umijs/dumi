@@ -64,6 +64,10 @@ export interface ExampleBlockAsset extends ExampleBaseAsset {
       value: string;
     }
   >;
+  /**
+   * Entry file name, you can find the relevant entry file content from `dependencies`
+   */
+  entry?: string;
 }
 
 /**

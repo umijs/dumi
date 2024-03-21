@@ -20,6 +20,7 @@ import './index.less';
 const SIMILAR_DSL: Record<string, Language> = {
   acss: 'css',
   axml: 'markup',
+  vue: 'markup',
 };
 
 interface SourceCodeProps {
