@@ -1,6 +1,5 @@
 import type ts from 'typescript/lib/tsserverlibrary';
 import {
-  CustomSchemaResolver,
   EventMeta,
   ExposeMeta,
   FuncPropertyMetaSchema,
@@ -8,10 +7,13 @@ import {
   PropertyMeta,
   PropertyMetaKind,
   PropertyMetaSchema,
+  PropertySchemaResolver,
   TypeParamPropertyMetaSchema,
+  UnknownSymbolResolver,
 } from '../types';
 import {
   BasicTypes,
+  createCachedResolver,
   createRef,
   getComment,
   getNodeOfSymbol,
@@ -24,11 +26,16 @@ import {
   signatureTypeToString,
   typeParameterToString,
 } from '../utils';
-import { vueOptionSchemaResolver } from './custom';
+import {
+  externalSymbolResolver as esResolver,
+  vueOptionSchemaResolver,
+} from './custom';
+
+const externalSymbolResolver = createCachedResolver(esResolver);
 
 export class SchemaResolver {
   private schemaCache = new WeakMap<ts.Type, PropertyMetaSchema>();
-  private schemaOptions!: MetaCheckerOptions['schema'];
+  private schemaOptions!: NonNullable<MetaCheckerOptions['schema']>;
 
   /**
    * Used to store all declared interfaces or types
@@ -46,6 +53,7 @@ export class SchemaResolver {
       {
         exclude: /node_modules/,
         ignoreTypeArgs: false,
+        disableExternalLinkAutoDectect: false,
       },
       options.schema,
     );
@@ -132,6 +140,7 @@ export class SchemaResolver {
     const defaultType = param.getDefault();
     const schema: TypeParamPropertyMetaSchema = {
       kind: PropertyMetaKind.TYPE_PARAM,
+      name: typeChecker.typeToString(param),
       type: typeParameterToString(typeChecker, param, extendType, defaultType),
     };
     if (extendType || defaultType) {
@@ -241,36 +250,66 @@ export class SchemaResolver {
     };
   }
 
+  private getNodeAndSymbolOfUnknownType(subtype: ts.Type) {
+    const targetSymbol = subtype.getSymbol() || subtype.aliasSymbol;
+    if (!targetSymbol) return null;
+    const targetNode = getNodeOfSymbol(targetSymbol);
+    if (!targetNode) return null;
+    return { targetNode, targetSymbol };
+  }
+
   private resolveUnknownSchema(subtype: ts.Type): PropertyMetaSchema {
-    const { typeChecker, resolveSchema, schemaOptions } = this;
+    const { typeChecker, resolveSchema, schemaOptions, ts } = this;
     const type = typeChecker.typeToString(subtype);
+    const schema: any = {
+      kind: PropertyMetaKind.UNKNOWN,
+      type,
+    };
+    const typeInfo = this.getNodeAndSymbolOfUnknownType(subtype);
+    if (typeInfo) {
+      const options = {
+        ts,
+        typeChecker,
+        schemaOptions,
+        ...typeInfo,
+      };
+      const { unknownSymbolResolvers = [] } = schemaOptions;
+      const resolvers: UnknownSymbolResolver<PropertyMetaSchema>[] = [
+        externalSymbolResolver,
+        ...unknownSymbolResolvers,
+      ];
+      resolvers.reduce((targetSchema, resolver) => {
+        const partialSchema = resolver(options);
+        Object.assign(targetSchema, partialSchema);
+        if (partialSchema.kind === PropertyMetaKind.REF) {
+          delete targetSchema.type;
+        }
+        return targetSchema;
+      }, schema);
+    }
+
     if (!schemaOptions?.ignoreTypeArgs) {
       // Obtaining type parameters
       // Although some types do not need to be check themselves,
       // their type parameters still need to be checked.
       let typeArgs = typeChecker.getTypeArguments(subtype as ts.TypeReference);
       if (typeArgs.length) {
-        return {
-          kind: typeChecker.isArrayLikeType(subtype)
-            ? PropertyMetaKind.ARRAY
-            : PropertyMetaKind.UNKNOWN,
-          type,
-          schema: typeArgs.map(resolveSchema.bind(this)),
-        };
+        if (typeChecker.isArrayLikeType(subtype)) {
+          schema.kind = PropertyMetaKind.ARRAY;
+          schema.schema = typeArgs.map(resolveSchema.bind(this));
+        } else {
+          schema.typeParams = typeArgs.map(resolveSchema.bind(this));
+        }
       }
     }
 
-    if (BasicTypes[type]) {
+    if (BasicTypes[type] && schema.kind === PropertyMetaKind.UNKNOWN) {
       return {
         kind: PropertyMetaKind.BASIC,
         type,
       };
     }
-
-    return {
-      kind: PropertyMetaKind.UNKNOWN,
-      type,
-    };
+    return schema;
   }
 
   public resolveSchema(subtype: ts.Type): PropertyMetaSchema {
@@ -334,14 +373,14 @@ export class SchemaResolver {
       return originalMeta as PropertyMeta;
     }
 
-    const { customResovlers } = schemaOptions;
+    const { propertyResovlers } = schemaOptions;
 
-    const resolvers: CustomSchemaResolver<PropertyMeta>[] = [
+    const resolvers: PropertySchemaResolver<PropertyMeta>[] = [
       vueOptionSchemaResolver,
     ];
 
-    if (customResovlers?.length) {
-      resolvers.push(...customResovlers);
+    if (propertyResovlers?.length) {
+      resolvers.push(...propertyResovlers);
     }
 
     originalMeta.global = false;

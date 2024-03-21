@@ -26,6 +26,7 @@ export interface CheckerProjectJsonOptions {
 
 /**
  * Create component metadata checker through json configuration
+ * @group project
  */
 export function createProjectByJson(options: CheckerProjectJsonOptions) {
   const {
@@ -70,6 +71,7 @@ const defaultTsConfig = {
 
 /**
  * Create a meta checker for Vue project
+ * @group project
  * @param optionsOrRootPath You can pass in the project root directory or specific configuration.
  * @example
  * ```ts

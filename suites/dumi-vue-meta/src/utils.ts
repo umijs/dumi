@@ -5,8 +5,12 @@ import {
   BlockTagContentTextMeta,
   BlockTagMeta,
   CommentMeta,
+  ExternalRefPropertyMetaSchema,
+  LocalRefPropertyMetaSchema,
   PropertyMetaSchema,
+  RefPropertyMetaSchema,
   SignatureMetaSchema,
+  UnknownSymbolResolver,
 } from './types';
 
 export function createNodeVisitor(
@@ -25,6 +29,9 @@ export function createNodeVisitor(
   };
 }
 
+/**
+ * Will return the first declaration node among all declarations of the symbol
+ */
 export function getNodeOfSymbol(symbol?: ts.Symbol) {
   if (symbol?.declarations?.length) {
     return symbol.declarations[0];
@@ -212,4 +219,30 @@ export function getPosixPath(anyPath: string) {
     windowsPathReg,
     '/',
   ) as path.PosixPath;
+}
+
+export function isExternalRefSchema(
+  schema: RefPropertyMetaSchema,
+): schema is ExternalRefPropertyMetaSchema {
+  if ((schema as LocalRefPropertyMetaSchema).ref) return false;
+  return true;
+}
+
+export function createCachedResolver<T extends UnknownSymbolResolver>(
+  resolver: T,
+) {
+  const schemaCache = new WeakMap<
+    ts.Declaration,
+    Partial<PropertyMetaSchema>
+  >();
+  return (...args: Parameters<T>) => {
+    const targetNode = args[0].targetNode;
+    const cache = schemaCache.get(targetNode);
+    if (cache) {
+      return cache;
+    }
+    const result = resolver(args[0]);
+    schemaCache.set(targetNode, result);
+    return result;
+  };
 }

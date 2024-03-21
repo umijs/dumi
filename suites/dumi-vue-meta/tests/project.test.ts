@@ -1,9 +1,11 @@
 import path from 'path';
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
 import { Project, createProject } from '../src/index';
+import { toRecord } from './utils';
 
 const fixturesPath = path.resolve(__dirname, './fixtures');
 const entry = path.resolve(__dirname, 'fixtures/index.ts');
+const tsconfigPath = path.resolve(__dirname, 'fixtures/tsconfig.json');
 
 describe('project file manipulation', () => {
   // TODO: should use vitual filesystem, and should mock partial filesystem
@@ -62,6 +64,51 @@ describe('create project api', () => {
     expect(project.service.getExportNames(entry)).toContain('Foo');
   });
 
+  afterEach(() => {
+    project.close();
+  });
+});
+
+describe('schema config', () => {
+  let project!: Project;
+  test('externalSymbolLinkMappings', () => {
+    const elementUrl = 'https://devdocs.io/dom/htmlelement';
+    project = createProject({
+      tsconfigPath,
+      checkerOptions: {
+        schema: {
+          externalSymbolLinkMappings: {
+            typescript: {
+              HTMLElement: elementUrl,
+            },
+          },
+        },
+      },
+    });
+
+    const { component } = project.service.getComponentMeta(entry, 'Foo');
+    const props = toRecord(component.props);
+    expect(props['dom'].schema).toMatchObject({
+      kind: 'ref',
+      externalUrl: elementUrl,
+    });
+  });
+  test('disableExternalLinkAutoDectect', () => {
+    project = createProject({
+      tsconfigPath,
+      checkerOptions: {
+        schema: {
+          disableExternalLinkAutoDectect: true,
+        },
+      },
+    });
+
+    const { component } = project.service.getComponentMeta(entry, 'Foo');
+    const props = toRecord(component.props);
+    expect(props['dom'].schema).toMatchObject({
+      kind: 'unknown',
+    });
+  });
   afterEach(() => {
     project.close();
   });

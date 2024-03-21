@@ -29,9 +29,6 @@ export interface SingleComponentMeta {
   types: Record<string, PropertyMetaSchema>;
 }
 
-/**
- * Component library metadata
- */
 export interface ComponentLibraryMeta {
   /**
    * Metadata of all components
@@ -49,25 +46,40 @@ export interface ComponentLibraryMeta {
 
 /**
  * Meta information transformer
+ * @remarks
  * used to transform standard component library metadata into another format of metadata
  */
 export type MetaTransformer<T> = (meta: ComponentLibraryMeta) => T;
 
 /**
- * custom schema resolver
+ * property schema resolver
+ * @group options
  */
-export type CustomSchemaResolver<T extends ComponentItemMeta> = (
+export type PropertySchemaResolver<T extends ComponentItemMeta> = (
   originMeta: Partial<T>,
   options: {
     ts: typeof import('typescript/lib/tsserverlibrary');
     typeChecker: ts.TypeChecker;
+    schemaOptions: MetaCheckerSchemaOptions;
     symbolNode: ts.Expression;
     prop: ts.Symbol;
     targetNode?: ts.Declaration;
     targetType?: ts.Type;
-    schemaOptions: MetaCheckerSchemaOptions;
   },
 ) => Partial<T>;
+
+/**
+ * @group options
+ */
+export type UnknownSymbolResolver<
+  T extends PropertyMetaSchema = PropertyMetaSchema,
+> = (options: {
+  ts: typeof import('typescript/lib/tsserverlibrary');
+  typeChecker: ts.TypeChecker;
+  targetSymbol: ts.Symbol;
+  schemaOptions: MetaCheckerSchemaOptions;
+  targetNode: ts.Declaration;
+}) => Partial<T>;
 
 export enum TypeMeta {
   Unknown = 0,
@@ -146,10 +158,25 @@ export enum PropertyMetaKind {
   UNKNOWN = 'unknown',
   REF = 'ref',
 }
+export interface PropertySourceReference {
+  /**
+   * fileName of the source file
+   */
+  fileName: string;
+  /**
+   * The one based number of the line that emitted the declaration
+   */
+  line: number;
+  /**
+   * The index of the character that emitted the declaration
+   */
+  character: number;
+  /**
+   * URL for displaying source file, usually the git repo file URL
+   */
+  url?: string;
+}
 
-/**
- * Type parameter metadata description
- */
 export interface TypeParamMetaSchema {
   // extend Type
   type?: PropertyMetaSchema;
@@ -157,9 +184,6 @@ export interface TypeParamMetaSchema {
   default?: PropertyMetaSchema;
 }
 
-/**
- * Signature metadata description
- */
 export interface SignatureMetaSchema {
   /**
    * Indicates that the method can be awaited
@@ -188,39 +212,53 @@ export type LiteralPropertyMetaSchema = {
   kind: PropertyMetaKind.LITERAL;
   type: string;
   value: string;
+  source?: PropertySourceReference[];
 };
+
 export type BasicPropertyMetaSchema = {
   kind: PropertyMetaKind.BASIC;
+  source?: PropertySourceReference[];
   type: string;
 };
+
 export type EnumPropertyMetaSchema = {
   kind: PropertyMetaKind.ENUM;
   type: string;
   schema?: PropertyMetaSchema[];
+  source?: PropertySourceReference[];
   ref?: string;
 };
+
 export type ArrayPropertyMetaSchema = {
   kind: PropertyMetaKind.ARRAY;
   type: string;
   schema?: PropertyMetaSchema[];
+  source?: PropertySourceReference[];
   ref?: string;
 };
+
 export type FuncPropertyMetaSchema = {
   kind: PropertyMetaKind.FUNC;
   type: string;
   schema?: SignatureMetaSchema;
+  source?: PropertySourceReference[];
   ref?: string;
 };
+
 export type ObjectPropertyMetaSchema = {
   kind: PropertyMetaKind.OBJECT;
   type: string;
   schema?: Record<string, PropertyMeta>;
+  source?: PropertySourceReference[];
   ref?: string;
 };
+
 export type TypeParamPropertyMetaSchema = {
   kind: PropertyMetaKind.TYPE_PARAM;
   type: string;
+  name: string;
   schema?: TypeParamMetaSchema;
+  source?: PropertySourceReference[];
   ref?: string;
 };
 /**
@@ -230,13 +268,30 @@ export type TypeParamPropertyMetaSchema = {
 export type UnknownPropertyMetaSchema = {
   kind: PropertyMetaKind.UNKNOWN;
   type: string;
-  schema?: PropertyMetaSchema[];
+  typeParams?: PropertyMetaSchema[];
   ref?: string;
+};
+
+export type ExternalRefPropertyMetaSchema = {
+  kind: PropertyMetaKind.REF;
+  typeParams?: PropertyMetaSchema[];
+  name: string;
+  /**
+   * If it is not a local type, you can use this external url
+   */
+  externalUrl: string;
+};
+
+export type LocalRefPropertyMetaSchema = {
+  kind: PropertyMetaKind.REF;
+  ref: string;
 };
 /**
  * This type is just a placeholder, it points to other types
  */
-export type RefPropertyMetaSchema = { kind: PropertyMetaKind.REF; ref: string };
+export type RefPropertyMetaSchema =
+  | ExternalRefPropertyMetaSchema
+  | LocalRefPropertyMetaSchema;
 
 /**
  * Note: The `ref` prop is designed for schema flattening.
@@ -257,8 +312,9 @@ export type PropertyMetaSchema =
 
 /**
  * Schema resolver options
+ * @group options
  */
-export type MetaCheckerSchemaOptions = {
+export interface MetaCheckerSchemaOptions {
   /**
    * By default, type resolution in node_module will be abandoned.
    */
@@ -284,13 +340,42 @@ export type MetaCheckerSchemaOptions = {
   ignoreTypeArgs?: boolean;
 
   /**
-   * Customized schema resolvers for some special props definition methods, such as `vue-types`
+   * Property schema resolvers for some special props definition methods, such as `vue-types`
    */
-  customResovlers?: CustomSchemaResolver<PropertyMeta>[];
-};
+  propertyResovlers?: PropertySchemaResolver<PropertyMeta>[];
+
+  /**
+   * unknownSymbol resolver
+   */
+  unknownSymbolResolvers?: UnknownSymbolResolver[];
+
+  /**
+   * By default, this option is false,
+   * the resolver will automatically capture the MDN links
+   * contained in the comments of all declaration files under node_modules/typescript/lib.
+   * Users do not need to configure externalSymbolLinkMappings themselves.
+   *
+   * Of course, you can also overwrite the captured links through externalSymbolLinkMappings
+   */
+  disableExternalLinkAutoDectect?: boolean;
+  /**
+   * The types/interfaces mapping method is provided as follows:
+   * ```js
+   * {
+   *   typescript: {
+   *     Promise:
+   *       'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise',
+   *   },
+   * },
+   * ```
+   * For more complex mapping methods, please use `unknownSymbolResolvers`
+   */
+  externalSymbolLinkMappings?: Record<string, Record<string, string>>;
+}
 
 /**
  * Checker Options
+ * @group options
  */
 export interface MetaCheckerOptions {
   schema?: MetaCheckerSchemaOptions;

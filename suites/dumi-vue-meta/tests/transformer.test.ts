@@ -9,7 +9,13 @@ import {
 
 const checkerOptions: MetaCheckerOptions = {
   schema: {
-    customResovlers: [vueTypesSchemaResolver],
+    propertyResovlers: [vueTypesSchemaResolver],
+    externalSymbolLinkMappings: {
+      typescript: {
+        Promise:
+          'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise',
+      },
+    },
   },
 };
 

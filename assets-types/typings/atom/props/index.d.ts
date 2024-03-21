@@ -26,6 +26,10 @@ export interface BasePropertySchema<T extends keyof TypeMap = keyof TypeMap> {
    */
   type?: T;
   /**
+   * the full name of the type
+   */
+  className?: string;
+  /**
    * const value of prop
    */
   const?: TypeMap[T];
@@ -115,9 +119,16 @@ export interface ObjectPropertySchema extends BasePropertySchema {
   required?: string[];
 }
 
+export interface ReferencePropertySchema extends BasePropertySchema {
+  type: 'reference';
+  name: string;
+  typeParameters?: PropertySchema[];
+  externalUrl: string;
+}
+
 export interface FunctionArgSchema {
   key: string;
-  type: PropertySchema | string;
+  schema: PropertySchema;
   hasQuestionToken?: boolean;
 }
 
@@ -140,4 +151,5 @@ export type PropertySchema =
   | FunctionPropertySchema
   | StringPropertySchema
   | NumberPropertySchema
-  | BooleanPropertySchema;
+  | BooleanPropertySchema
+  | ReferencePropertySchema;

@@ -7,7 +7,7 @@ import {
   type SlotsType,
 } from 'vue';
 
-type BaseItem = { id: string | number; text: string };
+export type BaseItem = { id: string | number; text: string };
 
 export interface ListProps<Item extends BaseItem> {
   /**

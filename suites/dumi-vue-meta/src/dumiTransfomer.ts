@@ -1,8 +1,10 @@
 import type { AtomComponentAsset, AtomFunctionAsset } from 'dumi-assets-types';
 import type {
+  BasePropertySchema,
   FunctionPropertySchema,
   ObjectPropertySchema,
   PropertySchema,
+  ReferencePropertySchema,
 } from 'dumi-assets-types/typings/atom/props';
 import type { TypeMap } from 'dumi-assets-types/typings/atom/props/types';
 import type {
@@ -14,9 +16,10 @@ import type {
   PropertyMeta,
   PropertyMetaSchema,
   SlotMeta,
+  TypeParamPropertyMetaSchema,
 } from './types';
 import { PropertyMetaKind } from './types';
-import { BasicTypes, getTag } from './utils';
+import { BasicTypes, getTag, isExternalRefSchema } from './utils';
 
 function getPropertySchema(schema: PropertySchema | string) {
   if (typeof schema === 'string') {
@@ -36,7 +39,7 @@ export const dumiTransformer: MetaTransformer<DumiTransformResult> = (
   meta: ComponentLibraryMeta,
 ) => {
   const referencedTypes = meta.types;
-  const cachedTypes: Record<string, PropertySchema | string> = {};
+  const cachedTypes: Record<string, PropertySchema> = {};
 
   function createPropertySchema(prop: PropertyMeta | EventMeta | SlotMeta) {
     const partialProp: Partial<PropertySchema> = {
@@ -68,12 +71,10 @@ export const dumiTransformer: MetaTransformer<DumiTransformResult> = (
       ...partialProp,
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
       ...getPropertySchema(transformSchema(prop.schema)),
-    };
+    } as PropertySchema;
   }
 
-  function transformSchema(
-    schema: PropertyMetaSchema,
-  ): PropertySchema | string {
+  function transformSchema(schema: PropertyMetaSchema): PropertySchema {
     // It may not need to be checked, or it may be a basic type
     if (typeof schema === 'string') {
       const basicType = BasicTypes[schema];
@@ -86,11 +87,35 @@ export const dumiTransformer: MetaTransformer<DumiTransformResult> = (
     }
     switch (schema.kind) {
       case PropertyMetaKind.REF: {
+        if (isExternalRefSchema(schema)) {
+          const referenceSchema: ReferencePropertySchema = {
+            type: 'reference',
+            name: schema.name,
+            externalUrl: schema.externalUrl,
+          };
+          if (schema.typeParams) {
+            referenceSchema.typeParameters = schema.typeParams.map((param) =>
+              transformSchema(param),
+            );
+          }
+          return referenceSchema;
+        }
         const cachedType = cachedTypes[schema.ref];
         if (cachedType) {
           return cachedType;
         }
-        const type = transformSchema(referencedTypes[schema.ref]);
+        const referenceType = referencedTypes[schema.ref];
+        const type = [
+          PropertyMetaKind.ARRAY,
+          PropertyMetaKind.OBJECT,
+          PropertyMetaKind.FUNC,
+          PropertyMetaKind.ENUM,
+        ].includes(referenceType.kind)
+          ? ({
+              type: 'any',
+              className: (referenceType as ObjectPropertySchema).type,
+            } as BasePropertySchema<'any'>)
+          : transformSchema(referencedTypes[schema.ref]);
         cachedTypes[schema.ref] = type;
         return type;
       }
@@ -139,18 +164,30 @@ export const dumiTransformer: MetaTransformer<DumiTransformResult> = (
           type: 'function',
           signature: {
             isAsync: functionSchema.isAsync,
-            arguments: functionSchema.arguments.map((arg) => ({
-              key: arg.key,
-              hasQuestionToken: !arg.required,
-              type: arg.type,
-            })),
+            arguments: functionSchema.arguments.map((arg) => {
+              const argSchema = {
+                key: arg.key,
+                hasQuestionToken: !arg.required,
+                schema: arg.schema
+                  ? transformSchema(arg.schema)
+                  : { type: 'any', className: arg.type },
+              };
+              return argSchema;
+            }),
             returnType: transformSchema(functionSchema.returnType),
           },
         } as FunctionPropertySchema;
       }
       case PropertyMetaKind.TYPE_PARAM:
+        return {
+          type: 'any',
+          className: (schema as TypeParamPropertyMetaSchema).name,
+        };
       case PropertyMetaKind.UNKNOWN:
-        return schema.type;
+        return {
+          type: 'any',
+          className: schema.type,
+        };
     }
   }
 

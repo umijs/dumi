@@ -13,7 +13,9 @@ exports[`dumi-assets-types transformer 1`] = `
                 {
                   "hasQuestionToken": false,
                   "key": "message",
-                  "type": "string",
+                  "schema": {
+                    "type": "string",
+                  },
                 },
               ],
               "isAsync": false,
@@ -71,7 +73,20 @@ exports[`dumi-assets-types transformer 1`] = `
                 {
                   "hasQuestionToken": true,
                   "key": "payload",
-                  "type": "{ name: string; }",
+                  "schema": {
+                    "properties": {
+                      "name": {
+                        "description": "",
+                        "tags": {},
+                        "title": "name",
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "name",
+                    ],
+                    "type": "object",
+                  },
                 },
               ],
               "isAsync": false,
@@ -90,12 +105,18 @@ exports[`dumi-assets-types transformer 1`] = `
                 {
                   "hasQuestionToken": false,
                   "key": "e",
-                  "type": "MouseEvent",
+                  "schema": {
+                    "externalUrl": "https://developer.mozilla.org/docs/Web/API/MouseEvent",
+                    "name": "MouseEvent",
+                    "type": "reference",
+                  },
                 },
                 {
                   "hasQuestionToken": true,
                   "key": "extra",
-                  "type": "string",
+                  "schema": {
+                    "type": "string",
+                  },
                 },
               ],
               "isAsync": false,
@@ -114,7 +135,23 @@ exports[`dumi-assets-types transformer 1`] = `
                 {
                   "hasQuestionToken": false,
                   "key": "output",
-                  "type": "{ children: any[]; }",
+                  "schema": {
+                    "properties": {
+                      "children": {
+                        "description": "",
+                        "items": {
+                          "type": "any",
+                        },
+                        "tags": {},
+                        "title": "children",
+                        "type": "array",
+                      },
+                    },
+                    "required": [
+                      "children",
+                    ],
+                    "type": "object",
+                  },
                 },
               ],
               "isAsync": false,
@@ -176,29 +213,8 @@ exports[`dumi-assets-types transformer 1`] = `
             "default": [],
             "description": "",
             "items": {
-              "properties": {
-                "a": {
-                  "description": "",
-                  "properties": {
-                    "id": {
-                      "description": "",
-                      "tags": {},
-                      "title": "id",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "id",
-                  ],
-                  "tags": {},
-                  "title": "a",
-                  "type": "object",
-                },
-              },
-              "required": [
-                "a",
-              ],
-              "type": "object",
+              "className": "A",
+              "type": "any",
             },
             "tags": {},
             "title": "a",
@@ -269,6 +285,8 @@ exports[`dumi-assets-types transformer 1`] = `
           "dom": {
             "default": null,
             "description": "",
+            "externalUrl": "https://developer.mozilla.org/docs/Web/API/HTMLElement",
+            "name": "HTMLElement",
             "tags": {
               "blockTags": [
                 {
@@ -283,35 +301,14 @@ exports[`dumi-assets-types transformer 1`] = `
               ],
             },
             "title": "dom",
-            "type": "HTMLElement",
+            "type": "reference",
           },
           "e": {
             "description": "",
             "oneOf": [
               {
-                "properties": {
-                  "a": {
-                    "description": "",
-                    "properties": {
-                      "id": {
-                        "description": "",
-                        "tags": {},
-                        "title": "id",
-                        "type": "string",
-                      },
-                    },
-                    "required": [
-                      "id",
-                    ],
-                    "tags": {},
-                    "title": "a",
-                    "type": "object",
-                  },
-                },
-                "required": [
-                  "a",
-                ],
-                "type": "object",
+                "className": "A",
+                "type": "any",
               },
               {
                 "const": "1",
@@ -331,11 +328,32 @@ exports[`dumi-assets-types transformer 1`] = `
                 {
                   "hasQuestionToken": false,
                   "key": "args",
-                  "type": "PromiseArgs",
+                  "schema": {
+                    "className": "PromiseArgs",
+                    "type": "any",
+                  },
                 },
               ],
               "isAsync": true,
-              "returnType": "Promise<{ type?: string; }>",
+              "returnType": {
+                "externalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
+                "name": "Promise",
+                "type": "reference",
+                "typeParameters": [
+                  {
+                    "properties": {
+                      "type": {
+                        "description": "",
+                        "tags": {},
+                        "title": "type",
+                        "type": "string",
+                      },
+                    },
+                    "required": [],
+                    "type": "object",
+                  },
+                ],
+              },
             },
             "tags": {
               "blockTags": [
@@ -479,7 +497,20 @@ exports[`dumi-assets-types transformer 1`] = `
                 {
                   "hasQuestionToken": false,
                   "key": "payload",
-                  "type": "{ name: string; }",
+                  "schema": {
+                    "properties": {
+                      "name": {
+                        "description": "",
+                        "tags": {},
+                        "title": "name",
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "name",
+                    ],
+                    "type": "object",
+                  },
                 },
               ],
               "isAsync": false,
@@ -498,12 +529,18 @@ exports[`dumi-assets-types transformer 1`] = `
                 {
                   "hasQuestionToken": false,
                   "key": "event",
-                  "type": "MouseEvent",
+                  "schema": {
+                    "externalUrl": "https://developer.mozilla.org/docs/Web/API/MouseEvent",
+                    "name": "MouseEvent",
+                    "type": "reference",
+                  },
                 },
                 {
                   "hasQuestionToken": true,
                   "key": "extra",
-                  "type": "string",
+                  "schema": {
+                    "type": "string",
+                  },
                 },
               ],
               "isAsync": false,
@@ -522,7 +559,23 @@ exports[`dumi-assets-types transformer 1`] = `
                 {
                   "hasQuestionToken": false,
                   "key": "output",
-                  "type": "{ children: any[]; }",
+                  "schema": {
+                    "properties": {
+                      "children": {
+                        "description": "",
+                        "items": {
+                          "type": "any",
+                        },
+                        "tags": {},
+                        "title": "children",
+                        "type": "array",
+                      },
+                    },
+                    "required": [
+                      "children",
+                    ],
+                    "type": "object",
+                  },
                 },
               ],
               "isAsync": false,
@@ -595,29 +648,8 @@ exports[`dumi-assets-types transformer 1`] = `
             "default": [],
             "description": "",
             "items": {
-              "properties": {
-                "a": {
-                  "description": "",
-                  "properties": {
-                    "id": {
-                      "description": "",
-                      "tags": {},
-                      "title": "id",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "id",
-                  ],
-                  "tags": {},
-                  "title": "a",
-                  "type": "object",
-                },
-              },
-              "required": [
-                "a",
-              ],
-              "type": "object",
+              "className": "A",
+              "type": "any",
             },
             "tags": {},
             "title": "a",
@@ -688,6 +720,8 @@ exports[`dumi-assets-types transformer 1`] = `
           "dom": {
             "default": null,
             "description": "",
+            "externalUrl": "https://developer.mozilla.org/docs/Web/API/HTMLElement",
+            "name": "HTMLElement",
             "tags": {
               "blockTags": [
                 {
@@ -702,35 +736,14 @@ exports[`dumi-assets-types transformer 1`] = `
               ],
             },
             "title": "dom",
-            "type": "HTMLElement",
+            "type": "reference",
           },
           "e": {
             "description": "",
             "oneOf": [
               {
-                "properties": {
-                  "a": {
-                    "description": "",
-                    "properties": {
-                      "id": {
-                        "description": "",
-                        "tags": {},
-                        "title": "id",
-                        "type": "string",
-                      },
-                    },
-                    "required": [
-                      "id",
-                    ],
-                    "tags": {},
-                    "title": "a",
-                    "type": "object",
-                  },
-                },
-                "required": [
-                  "a",
-                ],
-                "type": "object",
+                "className": "A",
+                "type": "any",
               },
               {
                 "const": "1",
@@ -750,11 +763,32 @@ exports[`dumi-assets-types transformer 1`] = `
                 {
                   "hasQuestionToken": false,
                   "key": "args",
-                  "type": "PromiseArgs",
+                  "schema": {
+                    "className": "PromiseArgs",
+                    "type": "any",
+                  },
                 },
               ],
               "isAsync": true,
-              "returnType": "Promise<{ type?: string; }>",
+              "returnType": {
+                "externalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
+                "name": "Promise",
+                "type": "reference",
+                "typeParameters": [
+                  {
+                    "properties": {
+                      "type": {
+                        "description": "",
+                        "tags": {},
+                        "title": "type",
+                        "type": "string",
+                      },
+                    },
+                    "required": [],
+                    "type": "object",
+                  },
+                ],
+              },
             },
             "tags": {
               "blockTags": [
@@ -929,7 +963,13 @@ exports[`dumi-assets-types transformer 1`] = `
                 {
                   "hasQuestionToken": false,
                   "key": "data",
-                  "type": "Item[]",
+                  "schema": {
+                    "items": {
+                      "className": "Item",
+                      "type": "any",
+                    },
+                    "type": "array",
+                  },
                 },
               ],
               "isAsync": false,
@@ -960,37 +1000,24 @@ exports[`dumi-assets-types transformer 1`] = `
                 "oneOf": [
                   {
                     "items": {
-                      "properties": {
-                        "id": {
-                          "description": "",
-                          "oneOf": [
-                            {
-                              "type": "string",
-                            },
-                            {
-                              "type": "number",
-                            },
-                          ],
-                          "tags": {},
-                          "title": "id",
-                        },
-                        "text": {
-                          "description": "",
-                          "tags": {},
-                          "title": "text",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "id",
-                        "text",
-                      ],
-                      "type": "object",
+                      "className": "BaseItem",
+                      "type": "any",
                     },
                     "type": "array",
                   },
                   {
-                    "type": "Promise<BaseItem[]>",
+                    "externalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
+                    "name": "Promise",
+                    "type": "reference",
+                    "typeParameters": [
+                      {
+                        "items": {
+                          "className": "BaseItem",
+                          "type": "any",
+                        },
+                        "type": "array",
+                      },
+                    ],
                   },
                 ],
               },
@@ -1022,7 +1049,9 @@ exports[`dumi-assets-types transformer 1`] = `
                 {
                   "hasQuestionToken": false,
                   "key": "message",
-                  "type": "string",
+                  "schema": {
+                    "type": "string",
+                  },
                 },
               ],
               "isAsync": false,
@@ -1079,7 +1108,9 @@ exports[`dumi-assets-types transformer 1`] = `
           {
             "hasQuestionToken": false,
             "key": "a",
-            "type": "string",
+            "schema": {
+              "type": "string",
+            },
           },
         ],
         "isAsync": false,
@@ -1097,21 +1128,87 @@ exports[`dumi-assets-types transformer 1`] = `
           {
             "hasQuestionToken": false,
             "key": "upstreamValue",
-            "type": "() => T",
+            "schema": {
+              "signature": {
+                "arguments": [],
+                "isAsync": false,
+                "returnType": {
+                  "className": "T",
+                  "type": "any",
+                },
+              },
+              "type": "function",
+            },
           },
           {
             "hasQuestionToken": false,
             "key": "updator",
-            "type": "(upstreamValue: T, oldValue?: T) => T",
+            "schema": {
+              "signature": {
+                "arguments": [
+                  {
+                    "hasQuestionToken": false,
+                    "key": "upstreamValue",
+                    "schema": {
+                      "className": "T",
+                      "type": "any",
+                    },
+                  },
+                  {
+                    "hasQuestionToken": true,
+                    "key": "oldValue",
+                    "schema": {
+                      "className": "T",
+                      "type": "any",
+                    },
+                  },
+                ],
+                "isAsync": false,
+                "returnType": {
+                  "className": "T",
+                  "type": "any",
+                },
+              },
+              "type": "function",
+            },
           },
           {
             "hasQuestionToken": false,
             "key": "equal",
-            "type": "(internalValue: T, newValue: T) => boolean",
+            "schema": {
+              "signature": {
+                "arguments": [
+                  {
+                    "hasQuestionToken": false,
+                    "key": "internalValue",
+                    "schema": {
+                      "className": "T",
+                      "type": "any",
+                    },
+                  },
+                  {
+                    "hasQuestionToken": false,
+                    "key": "newValue",
+                    "schema": {
+                      "className": "T",
+                      "type": "any",
+                    },
+                  },
+                ],
+                "isAsync": false,
+                "returnType": {
+                  "type": "boolean",
+                },
+              },
+              "type": "function",
+            },
           },
         ],
         "isAsync": false,
-        "returnType": "ShallowRef<T>",
+        "returnType": {
+          "className": "ShallowRef<T>",
+          "type": "any",
+        },
       },
       "title": "useInternalValue",
       "type": "FUNCTION",
@@ -1121,7 +1218,10 @@ exports[`dumi-assets-types transformer 1`] = `
       "signature": {
         "arguments": [],
         "isAsync": false,
-        "returnType": "VNode<RendererNode, RendererElement, { [key: string]: any; }>",
+        "returnType": {
+          "className": "VNode<RendererNode, RendererElement, { [key: string]: any; }>",
+          "type": "any",
+        },
       },
       "title": "useVNode",
       "type": "FUNCTION",

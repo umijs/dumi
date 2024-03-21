@@ -110,3 +110,7 @@ import { Button, Badge } from '@examples/vue';
 ### Events
 
 <API id="Badge" type="events"></API>
+
+## useVNode
+
+<API id="useVNode"></API>

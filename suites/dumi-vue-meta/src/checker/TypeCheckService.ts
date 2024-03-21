@@ -27,6 +27,7 @@ import {
 
 /**
  * Provide component metadata checker services
+ * @group project.service
  */
 export class TypeCheckService {
   private langService!: ReturnType<typeof createVueLanguageService>;

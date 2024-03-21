@@ -67,218 +67,235 @@ const meta = project.service.getComponentLibraryMeta(entry);
 
 ## API
 
-## project
+<!-- start {API} -->
 
-The following API is used to create Checker Project
+### project
 
-### createProject
-
-▸ **createProject**(`options?`): Project
+#### createProject() <img style="display: inline-block; vertical-align: top;" alt="Function" src="https://img.shields.io/badge/Function-666eff?style=flat">
 
 Create a meta checker for Vue project
 
-#### Parameters
+##### Type
 
-| Name       | Type                                                   |
-| :--------- | :----------------------------------------------------- |
-| `options?` | string \| [CheckerProjectOptions](#metacheckeroptions) |
-
-**`Example`**
-
-```ts
-import { createProject, vueTypesSchemaResolver } from '@dumijs/vue-meta';
-// Manually pass in the tsconfig.json path
-const project = createProject({
-  tsconfigPath: '<project-root>/tsconfig.json',
-  checkerOptions: {
-    schema: {
-      customResovlers: [vueTypesSchemaResolver],
-    },
-  },
-});
+```typescript
+export declare function createProject(
+  options?: CheckerProjectOptions | string,
+): Project;
 ```
 
-In addition to the `vueTypesSchemaResolver` for [vue-types](https://github.com/dwightjack/vue-types), users can also write their own schema resolvers for any prop definition paradigm.
+##### Examples
+
+```ts
+import { createProject } from '@dumijs/vue-meta';
+// Manually pass in the tsconfig.json path
+createProject({
+  tsconfigPath: '<project-root>/tsconfig.json',
+  checkerOptions: {},
+});
+```
 
 If no parameters are passed in, tsconfig.json in the current workspace will be read.
 
 ```ts
 import { createProject } from '@dumijs/vue-meta';
-
-const project = createProject();
+createProject();
 ```
 
-### createProjectByJson
+##### Parameters
 
-▸ **createProjectByJson**(`options`): Project
+- `options` [**_CheckerProjectOptions_**](#) **_| string_** <img style="display: inline-block; vertical-align: top;" alt="optional" src="https://img.shields.io/badge/optional-8e96aa?style=flat">
+
+##### Returns [`Project`](#)
+
+#### createProjectByJson() <img style="display: inline-block; vertical-align: top;" alt="Function" src="https://img.shields.io/badge/Function-666eff?style=flat">
 
 Create component metadata checker through json configuration
 
-#### Parameters
+##### Type
 
-| Name      | Type                      |
-| :-------- | :------------------------ |
-| `options` | CheckerProjectJsonOptions |
-
----
-
-The following APIs are mainly used to update files in memory
-
-### addFile
-
-▸ **addFile**(`fileName`, `text`): `void`
-
-#### Parameters
-
-| Name       | Type     |
-| :--------- | :------- |
-| `fileName` | `string` |
-| `text`     | `string` |
-
-### updateFile
-
-▸ **updateFile**(`fileName`, `text`): `void`
-
-#### Parameters
-
-| Name       | Type     |
-| :--------- | :------- |
-| `fileName` | `string` |
-| `text`     | `string` |
-
-### deleteFile
-
-▸ **deleteFile**(`fileName`): `void`
-
-#### Parameters
-
-| Name       | Type     |
-| :--------- | :------- |
-| `fileName` | `string` |
-
-### patchFiles
-
-▸ **patchFiles**(`files`): `void`
-
-#### Parameters
-
-| Name    | Type                                                                     |
-| :------ | :----------------------------------------------------------------------- |
-| `files` | { `action`: `PatchAction` ; `fileName`: `string` ; `text?`: `string` }[] |
-
----
-
-### close
-
-▸ **close**(): `void`
-
-Close the project, the checker service will be unavailable,
-and the file cache will be cleared.
-
----
-
-## project.service
-
-The following API is the checker service provided by the `project`.
-
-### getComponentLibraryMeta
-
-▸ **getComponentLibraryMeta**<`T`\>(`entry`, `transformer?`): `T`
-
-Get component metadata through the entry file, this method will automatically filter vue components
-
-#### Parameters
-
-| Name           | Type                  | Description                                 |
-| :------------- | :-------------------- | :------------------------------------------ |
-| `entry`        | `string`              | Entry file, export all components and types |
-| `transformer?` | MetaTransformer<`T`\> | -                                           |
-
-**`Example`**
-
-You can pass in a customized transformer to generate metadata that adapts to dumi. `dumiTransfomer` is the officially provided adapter.
-
-```ts
-import { dumiTransfomer, createProject } from '@dumijs/vue-meta';
-const project = createProject({
-  tsconfigPath: '<project-root>/tsconfig.json',
-  checkerOptions,
-});
-
-project.service.getComponentLibraryMeta(entry, dumiTransfomer);
+```typescript
+export declare function createProjectByJson(
+  options: CheckerProjectJsonOptions,
+): Project;
 ```
 
-### getComponentMeta
+##### Parameters
 
-▸ **getComponentMeta**(`componentPath`, `exportName?`): ComponentMeta
+- `options` [**_CheckerProjectJsonOptions_**](#)
 
-Get metadata of single component
-If the component to be obtained is not a vue component, an error will be thrown
+##### Returns [`Project`](#)
 
-#### Parameters
+### options
 
-| Name            | Type     | Default value | Description                                                   |
-| :-------------- | :------- | :------------ | :------------------------------------------------------------ |
-| `componentPath` | `string` | `undefined`   |                                                               |
-| `exportName`    | `string` | `'default'`   | Component export name, the default is to get `export default` |
+#### MetaCheckerOptions <img style="display: inline-block; vertical-align: top;" alt="Interface" src="https://img.shields.io/badge/Interface-666eff?style=flat">
 
-**`Example`**
+Checker Options
 
-```ts
-import { dumiTransfomer, createProject } from '@dumijs/vue-meta';
-const project = createProject({
-  tsconfigPath: '<project-root>/tsconfig.json',
-  checkerOptions,
-});
-const meta = project.service.getComponentMeta(componentPath, 'Foo');
+##### Type
+
+```typescript
+export interface MetaCheckerOptions
 ```
 
-## Options
+##### Properties
 
-### MetaCheckerOptions
+- [`filterExposed`](#) **_boolean_** <img style="display: inline-block; vertical-align: top;" alt="optional" src="https://img.shields.io/badge/optional-666eff?style=flat">
 
-#### filterExposed
+  Whether to enable filtering for exposed attributes, the default is true.
 
-• `Optional` **filterExposed**: `boolean`
+  If true, only methods or properties identified by release tags like `@public` will be exposed in jsx
 
-Whether to enable filtering for exposed attributes, the default is true
-If true, only methods or properties identified by `@exposed/@expose` will be exposed in jsx
+- [`filterGlobalProps`](#) **_boolean_** <img style="display: inline-block; vertical-align: top;" alt="optional" src="https://img.shields.io/badge/optional-666eff?style=flat">
 
-#### filterGlobalProps
+  Whether to filter global props, the default is true
 
-• `Optional` **filterGlobalProps**: `boolean`
+  If it is true, global props in vue, such as key and ref, will be filtered out
 
-Whether to filter global props, the default is true
-If it is true, global props in vue, such as key and ref, will be filtered out
+- [`forceUseTs`](#) **_boolean_** <img style="display: inline-block; vertical-align: top;" alt="optional" src="https://img.shields.io/badge/optional-666eff?style=flat">
 
-#### forceUseTs
+- [`printer`](#) **_ts.PrinterOptions_** <img style="display: inline-block; vertical-align: top;" alt="optional" src="https://img.shields.io/badge/optional-666eff?style=flat">
 
-• `Optional` **forceUseTs**: `boolean`
+- [`schema`](#) [**_MetaCheckerSchemaOptions_**](#metacheckerschemaoptions) <img style="display: inline-block; vertical-align: top;" alt="optional" src="https://img.shields.io/badge/optional-666eff?style=flat">
 
-The default is true
-
-#### printer
-
-• `Optional` **printer**: `PrinterOptions`
-
-#### schema
-
-• `Optional` **schema**: [`MetaCheckerSchemaOptions`](#metacheckerschemaoptions)
-
-### MetaCheckerSchemaOptions
-
-Ƭ **MetaCheckerSchemaOptions**: `Object`
+#### MetaCheckerSchemaOptions <img style="display: inline-block; vertical-align: top;" alt="Interface" src="https://img.shields.io/badge/Interface-666eff?style=flat">
 
 Schema resolver options
 
-#### Type declaration
+##### Type
 
-| Name               | Type                                                                                                                                   | Description                                                                                                                                                                                                                                                                                               |
-| :----------------- | :------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `customResovlers?` | `CustomSchemaResolver`[]                                                                                                               | Customized schema resolvers for some special props definition methods, such as `vue-types`                                                                                                                                                                                                                |
-| `exclude?`         | `string` \| `RegExp` \| (`string` \| `RegExp`)[] \| (`name`: `string`) => `boolean`                                                    | By default, type resolution in node_module will be abandoned.                                                                                                                                                                                                                                             |
-| `ignore?`          | (`string` \| (`name`: `string`, `type`: `ts.Type`, `typeChecker`: `ts.TypeChecker`) => `boolean` \| `void` \| `undefined` \| `null`)[] | A list of type names to be ignored in expending in schema. Can be functions to ignore types dynamically.                                                                                                                                                                                                  |
-| `ignoreTypeArgs?`  | `boolean`                                                                                                                              | In addition to ignoring the type itself, whether to ignore the type parameters it carries. By default, the type parameters it carries will be parsed. For example, `Promise<{ a: string }>`, if you use option`exclude` or `ignore` to ignore `Promise`, `{ a: string }` will still be parsed by default. |
+```typescript
+export interface MetaCheckerSchemaOptions
+```
+
+##### Properties
+
+- [`disableExternalLinkAutoDectect`](#) **_boolean_** <img style="display: inline-block; vertical-align: top;" alt="optional" src="https://img.shields.io/badge/optional-666eff?style=flat">
+
+  By default, this option is false, the resolver will automatically capture the MDN links contained in the comments of all declaration files under node_modules/typescript/lib. Users do not need to configure externalSymbolLinkMappings themselves.
+
+  Of course, you can also overwrite the captured links through externalSymbolLinkMappings
+
+- [`exclude`](#) **_string |_** **_RegExp_** **_| (string |_** **_RegExp_**<!-- -->**_)\[] | ((name: string) => boolean)_** <img style="display: inline-block; vertical-align: top;" alt="optional" src="https://img.shields.io/badge/optional-666eff?style=flat">
+
+  By default, type resolution in node_module will be abandoned.
+
+- [`externalSymbolLinkMappings`](#) **_Record_**<!-- -->**_\<string,_** **_Record_**<!-- -->**_\<string, string>>_** <img style="display: inline-block; vertical-align: top;" alt="optional" src="https://img.shields.io/badge/optional-666eff?style=flat">
+
+  The types/interfaces mapping method is provided as follows:
+
+  ```js
+  {
+    typescript: {
+      Promise:
+        'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise',
+    },
+  },
+  ```
+
+  For more complex mapping methods, please use `unknownSymbolResolvers`
+
+- [`ignore`](#) **_(string | ((name: string, type:_** **_ts.Type_**<!-- -->**_, typeChecker:_** **_ts.TypeChecker_**<!-- -->**_) => boolean | void | undefined | null))\[]_** <img style="display: inline-block; vertical-align: top;" alt="optional" src="https://img.shields.io/badge/optional-666eff?style=flat">
+
+  A list of type names to be ignored in expending in schema. Can be functions to ignore types dynamically.
+
+- [`ignoreTypeArgs`](#) **_boolean_** <img style="display: inline-block; vertical-align: top;" alt="optional" src="https://img.shields.io/badge/optional-666eff?style=flat">
+
+  In addition to ignoring the type itself, whether to ignore the type parameters it carries. By default, the type parameters it carries will be parsed. For example, `Promise<{ a: string }>`<!-- -->, if you use option`exclude` or `ignore` to ignore `Promise`<!-- -->, `{ a: string }` will still be parsed by default.
+
+- [`propertyResovlers`](#) [**_PropertySchemaResolver_**](#propertyschemaresolver)<!-- -->**_<_**[**_PropertyMeta_**](#)<!-- -->**_>\[]_** <img style="display: inline-block; vertical-align: top;" alt="optional" src="https://img.shields.io/badge/optional-666eff?style=flat">
+
+  Property schema resolvers for some special props definition methods, such as `vue-types`
+
+- [`unknownSymbolResolvers`](#) [**_UnknownSymbolResolver_**](#unknownsymbolresolver)<!-- -->**_\[]_** <img style="display: inline-block; vertical-align: top;" alt="optional" src="https://img.shields.io/badge/optional-666eff?style=flat">
+
+  unknownSymbol resolver
+
+#### PropertySchemaResolver <img style="display: inline-block; vertical-align: top;" alt="TypeAlias" src="https://img.shields.io/badge/TypeAlias-666eff?style=flat">
+
+property schema resolver
+
+##### Type
+
+```typescript
+export type PropertySchemaResolver<T extends ComponentItemMeta> = (
+  originMeta: Partial<T>,
+  options: {
+    ts: typeof import('typescript/lib/tsserverlibrary');
+    typeChecker: ts.TypeChecker;
+    schemaOptions: MetaCheckerSchemaOptions;
+    symbolNode: ts.Expression;
+    prop: ts.Symbol;
+    targetNode?: ts.Declaration;
+    targetType?: ts.Type;
+  },
+) => Partial<T>;
+```
+
+**References:** [**_ComponentItemMeta_**](#)<!-- -->, [**_MetaCheckerSchemaOptions_**](#metacheckerschemaoptions)
+
+#### UnknownSymbolResolver <img style="display: inline-block; vertical-align: top;" alt="TypeAlias" src="https://img.shields.io/badge/TypeAlias-666eff?style=flat">
+
+##### Type
+
+```typescript
+export type UnknownSymbolResolver<
+  T extends PropertyMetaSchema = PropertyMetaSchema,
+> = (options: {
+  ts: typeof import('typescript/lib/tsserverlibrary');
+  typeChecker: ts.TypeChecker;
+  targetSymbol: ts.Symbol;
+  schemaOptions: MetaCheckerSchemaOptions;
+  targetNode: ts.Declaration;
+}) => Partial<T>;
+```
+
+**References:** [**_PropertyMetaSchema_**](#)<!-- -->, [**_MetaCheckerSchemaOptions_**](#metacheckerschemaoptions)
+
+### project.service
+
+#### TypeCheckService <img style="display: inline-block; vertical-align: top;" alt="Class" src="https://img.shields.io/badge/Class-666eff?style=flat">
+
+Provide component metadata checker services
+
+##### Type
+
+```typescript
+export declare class TypeCheckService
+```
+
+##### Constructors
+
+- [`(constructor)`](#)
+
+  Constructs a new instance of the `TypeCheckService` class
+
+##### Methods
+
+- [`(constructor)`](#)
+
+  Constructs a new instance of the `TypeCheckService` class
+
+- [`close`](#)
+
+  Close the Type checker service
+
+- [`getComponentLibraryMeta`](#)
+
+  Get component metadata through the entry file, this method will automatically filter vue components
+
+- [`getComponentMeta`](#)
+
+  Get metadata of single component If the component to be obtained is not a vue component, an error will be thrown
+
+- [`getExported`](#)
+
+  Get the export
+
+- [`getExportNames`](#)
+
+  only get value export
+
+<!-- end -->
 
 ## Supported JSDoc tags
 
@@ -348,7 +365,7 @@ It needs to be annotated with @component, otherwise it will be recognized as a f
 
 #### @alpha
 
-> [!NOTE]
+> \[!NOTE]
 > These release tags cannot take effect in defineEmits
 
 For methods on the component instance itself, use release tags like `@public` to expose
@@ -384,6 +401,6 @@ Properties marked with `@ignore` or `@internal` will not be checked.
 
 ## TODO
 
-- [ ] externalSymbolLinkMap support
+- [x] externalSymbolLinkMap support
 - [x] resolve Functional component
 - [ ] ~~resolve Vue class component~~

@@ -2,10 +2,10 @@ import path from 'path';
 import { afterAll, describe, expect, test } from 'vitest';
 import type {
   EnumPropertyMetaSchema,
+  LocalRefPropertyMetaSchema,
   MetaCheckerOptions,
   ObjectPropertyMetaSchema,
   PropertyMeta,
-  RefPropertyMetaSchema,
   TypeParamPropertyMetaSchema,
 } from '../src/index';
 import { createProject, vueTypesSchemaResolver } from '../src/index';
@@ -15,7 +15,13 @@ const checkerOptions: MetaCheckerOptions = {
   forceUseTs: true,
   printer: { newLine: 1 },
   schema: {
-    customResovlers: [vueTypesSchemaResolver],
+    propertyResovlers: [vueTypesSchemaResolver],
+    externalSymbolLinkMappings: {
+      typescript: {
+        Promise:
+          'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise',
+      },
+    },
   },
 };
 
@@ -145,8 +151,10 @@ function testFeatures(kind: 'tsx' | 'sfc' | 'sfc-alias') {
         const dom = propMap['dom'];
         expect(dom).toMatchObject({
           schema: {
-            kind: 'unknown',
-            type: 'HTMLElement',
+            kind: 'ref',
+            externalUrl:
+              'https://developer.mozilla.org/docs/Web/API/HTMLElement',
+            name: 'HTMLElement',
           },
           default: 'null',
         });
@@ -278,9 +286,9 @@ function testFeatures(kind: 'tsx' | 'sfc' | 'sfc-alias') {
     );
     const typeParam = component.typeParams?.[0] as TypeParamPropertyMetaSchema;
     expect(typeParam.type).toBe('Item extend BaseItem = BaseItem');
-    const defaultRef = typeParam.schema?.default as RefPropertyMetaSchema;
+    const defaultRef = typeParam.schema?.default as LocalRefPropertyMetaSchema;
     const defaultType = types[defaultRef.ref] as ObjectPropertyMetaSchema;
-    const extendRef = typeParam.schema?.type as RefPropertyMetaSchema;
+    const extendRef = typeParam.schema?.type as LocalRefPropertyMetaSchema;
     const extendType = types[extendRef.ref] as ObjectPropertyMetaSchema;
     const baseItemObj = {
       id: { name: 'id', type: 'string | number' },

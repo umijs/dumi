@@ -64,6 +64,13 @@ export class Project {
     );
   }
 
+  /**
+   * Get type checker service {@link TypeCheckService}
+   */
+  public getService() {
+    return this.service;
+  }
+
   public updateFile(fileName: string, text: string) {
     const { ts } = this;
     const posixFileName = getPosixPath(fileName);

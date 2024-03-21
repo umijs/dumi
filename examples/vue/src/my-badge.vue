@@ -7,6 +7,7 @@
   </span>
 </template>
 <script setup lang="ts">
+import { VNodeChild } from 'vue';
 defineProps<{
   icon?: string;
 }>();
@@ -14,8 +15,8 @@ defineSlots<{
   /**
    * @alpha
    */
-  icon?: any;
-  default: any,
+  icon?: VNodeChild;
+  default: VNodeChild,
 }>();
 const emit = defineEmits<{
   /**
