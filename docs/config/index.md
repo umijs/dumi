@@ -98,6 +98,8 @@ export default () => '我会被编译，展示为组件';
 
 `resolveFilter` 配置项用于跳过指定原子资产的解析以提升性能。部分组件属性或函数签名存在多层嵌套，甚至是循环引用时，会导致解析结果巨大，此时可以通过该配置项跳过解析。
 
+上述配置是默认 React 解析器的配置， dumi 也提供方法覆盖原有解析器，具体可查看[API Table 支持](../plugin/techstack.md#api-table-支持)。
+
 ### autoAlias
 
 - 类型：`boolean`
