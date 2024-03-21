@@ -71,9 +71,9 @@ const meta = project.service.getComponentLibraryMeta(entry);
 
 ### project
 
-#### createProject() <img style="display: inline-block; vertical-align: top;" alt="Function" src="https://img.shields.io/badge/Function-666eff?style=flat">
+#### createProject()
 
-Create a meta checker for Vue project
+<img style="display: inline-block; vertical-align: top;" alt="Function" src="https://img.shields.io/badge/Function-666eff?style=flat"> Create a meta checker for Vue project
 
 ##### Type
 
@@ -107,9 +107,9 @@ createProject();
 
 ##### Returns [`Project`](#)
 
-#### createProjectByJson() <img style="display: inline-block; vertical-align: top;" alt="Function" src="https://img.shields.io/badge/Function-666eff?style=flat">
+#### createProjectByJson()
 
-Create component metadata checker through json configuration
+<img style="display: inline-block; vertical-align: top;" alt="Function" src="https://img.shields.io/badge/Function-666eff?style=flat"> Create component metadata checker through json configuration
 
 ##### Type
 
@@ -127,9 +127,9 @@ export declare function createProjectByJson(
 
 ### options
 
-#### MetaCheckerOptions <img style="display: inline-block; vertical-align: top;" alt="Interface" src="https://img.shields.io/badge/Interface-666eff?style=flat">
+#### MetaCheckerOptions
 
-Checker Options
+<img style="display: inline-block; vertical-align: top;" alt="Interface" src="https://img.shields.io/badge/Interface-666eff?style=flat"> Checker Options
 
 ##### Type
 
@@ -157,9 +157,9 @@ export interface MetaCheckerOptions
 
 - [`schema`](#) [**_MetaCheckerSchemaOptions_**](#metacheckerschemaoptions) <img style="display: inline-block; vertical-align: top;" alt="optional" src="https://img.shields.io/badge/optional-666eff?style=flat">
 
-#### MetaCheckerSchemaOptions <img style="display: inline-block; vertical-align: top;" alt="Interface" src="https://img.shields.io/badge/Interface-666eff?style=flat">
+#### MetaCheckerSchemaOptions
 
-Schema resolver options
+<img style="display: inline-block; vertical-align: top;" alt="Interface" src="https://img.shields.io/badge/Interface-666eff?style=flat"> Schema resolver options
 
 ##### Type
 
@@ -210,9 +210,9 @@ export interface MetaCheckerSchemaOptions
 
   unknownSymbol resolver
 
-#### PropertySchemaResolver <img style="display: inline-block; vertical-align: top;" alt="TypeAlias" src="https://img.shields.io/badge/TypeAlias-666eff?style=flat">
+#### PropertySchemaResolver
 
-property schema resolver
+<img style="display: inline-block; vertical-align: top;" alt="TypeAlias" src="https://img.shields.io/badge/TypeAlias-666eff?style=flat"> property schema resolver
 
 ##### Type
 
@@ -233,7 +233,9 @@ export type PropertySchemaResolver<T extends ComponentItemMeta> = (
 
 **References:** [**_ComponentItemMeta_**](#)<!-- -->, [**_MetaCheckerSchemaOptions_**](#metacheckerschemaoptions)
 
-#### UnknownSymbolResolver <img style="display: inline-block; vertical-align: top;" alt="TypeAlias" src="https://img.shields.io/badge/TypeAlias-666eff?style=flat">
+#### UnknownSymbolResolver
+
+ <img style="display: inline-block; vertical-align: top;" alt="TypeAlias" src="https://img.shields.io/badge/TypeAlias-666eff?style=flat">
 
 ##### Type
 
@@ -253,9 +255,9 @@ export type UnknownSymbolResolver<
 
 ### project.service
 
-#### TypeCheckService <img style="display: inline-block; vertical-align: top;" alt="Class" src="https://img.shields.io/badge/Class-666eff?style=flat">
+#### TypeCheckService
 
-Provide component metadata checker services
+<img style="display: inline-block; vertical-align: top;" alt="Class" src="https://img.shields.io/badge/Class-666eff?style=flat"> Provide component metadata checker services
 
 ##### Type
 
@@ -299,7 +301,7 @@ export declare class TypeCheckService
 
 ## Supported JSDoc tags
 
-> [!NOTE]
+> \[!NOTE]
 > It is recommended to define events in props so that you can get complete JSDoc support
 
 ### @description
@@ -365,7 +367,7 @@ It needs to be annotated with @component, otherwise it will be recognized as a f
 
 #### @alpha
 
-> \[!NOTE]
+> [!NOTE]
 > These release tags cannot take effect in defineEmits
 
 For methods on the component instance itself, use release tags like `@public` to expose
