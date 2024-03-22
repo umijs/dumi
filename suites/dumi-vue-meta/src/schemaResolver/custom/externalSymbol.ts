@@ -15,11 +15,15 @@ export const externalSymbolResolver: UnknownSymbolResolver<
 
   let externalUrl: string = '';
   const tsLibPath = path.normalize('/node_modules/typescript/lib/');
-  if (!disableExternalLinkAutoDectect && fileName.indexOf(tsLibPath) >= 0) {
+  const normalizeFileName = path.normalize(fileName);
+  if (
+    !disableExternalLinkAutoDectect &&
+    normalizeFileName.indexOf(tsLibPath) >= 0
+  ) {
     const jsdoc = ts.getJSDocCommentsAndTags(targetNode);
     const comment = jsdoc?.[0]?.comment;
     if (comment && typeof comment === 'string') {
-      const [, url] = comment.match(/\[MDN Reference\]\(([^()]+)\)/i) || [];
+      const [, url] = comment.match(/\[MDN\s*Reference\]\(([^()]+)\)/i) || [];
       if (url) {
         externalUrl = url;
       }
@@ -34,7 +38,7 @@ export const externalSymbolResolver: UnknownSymbolResolver<
 
   Object.entries(externalSymbolLinkMappings).some(([lib, types]) => {
     const libPath = path.normalize(`/node_modules/${lib}/`);
-    if (fileName.indexOf(libPath) >= 0) {
+    if (normalizeFileName.indexOf(libPath) >= 0) {
       const url = types[name];
       if (url) {
         externalUrl = url;
