@@ -17,11 +17,10 @@ import SourceCode from 'dumi/theme/builtins/SourceCode';
 import PreviewerActionsExtra from 'dumi/theme/slots/PreviewerActionsExtra';
 import SourceCodeEditor from 'dumi/theme/slots/SourceCodeEditor';
 import Tabs from 'rc-tabs';
-import React, { useRef, useState, type FC, type ReactNode } from 'react';
-import './index.less';
-
 import RcTooltip from 'rc-tooltip';
 import type { TooltipProps as RcTooltipProps } from 'rc-tooltip/lib/Tooltip';
+import React, { useRef, useState, type FC, type ReactNode } from 'react';
+import './index.less';
 
 export interface TooltipProps extends Omit<RcTooltipProps, 'overlay'> {
   placement?: 'top' | 'bottom';
