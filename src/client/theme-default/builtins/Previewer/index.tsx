@@ -16,7 +16,7 @@ const Previewer: FC<IPreviewerProps> = (props) => {
     loading: liveDemoLoading,
     setSource: setLiveDemoSource,
   } = useLiveDemo(props.asset.id, {
-    iframe: Boolean(props.iframe),
+    iframe: Boolean(props.iframe || props._live_in_iframe),
     containerRef: demoContainer,
   });
 
