@@ -248,6 +248,7 @@ export default function rehypeDemo(
                 : [],
               fileAbsPath: '',
               lang: codeNode.data!.lang,
+              fileLocale: opts.fileLocale,
               entryPointCode: codeType === 'external' ? undefined : codeValue,
               resolver: opts.resolver,
               techStack,
