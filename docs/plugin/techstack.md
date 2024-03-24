@@ -18,7 +18,7 @@ import { logger } from 'dumi/plugin-utils';
 export const VueSfcTechStack = defineTechStack({
   name: 'vue3-sfc',
   runtimeOpts: {},
-  isSupported(lang: string) {
+  isSupported(_, lang: string) {
     return ['vue'].includes(lang);
   },
   onBlockLoad(args) {
@@ -36,6 +36,8 @@ export const VueSfcTechStack = defineTechStack({
     return raw;
   },
 });
+
+api.registerTechStack(() => VueSfcTechStack);
 ```
 
 完整实现请查看[vue/techStack/sfc.ts](https://github.com/umijs/dumi/tree/master/suites/preset-vue/src/vue/techStack/sfc.ts)
