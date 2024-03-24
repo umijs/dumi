@@ -120,7 +120,7 @@ export interface IBaseApiParserOptions {
  * @returns A function that returns a Parser instance
  * @example
  * ```ts
- * interface ParserOptions extends BaseApiParserOptions  {
+ * interface ParserOptions extends IBaseApiParserOptions  {
  *    // other props...
  * }
  * const Parser = createApiParser({

@@ -1,13 +1,15 @@
 import { useDemo, useLiveDemo, useParams } from 'dumi';
-import { ComponentType, createElement, useEffect, type FC } from 'react';
+import { createElement, useEffect, type ComponentType } from 'react';
 import { useRenderer } from '../../theme-api/useRenderer';
 import './index.less';
 
-const DemoRenderPage: FC = () => {
-  const { id } = useParams();
-  const demo = useDemo(id!);
+const DemoRenderPage = () => {
+  const params = useParams();
+  const id = params.id!;
 
-  const canvasRef = useRenderer(demo!);
+  const demo = useDemo(id)!;
+
+  const canvasRef = useRenderer(Object.assign(demo, { id }));
 
   const { component, renderOpts } = demo || {};
 
@@ -15,7 +17,7 @@ const DemoRenderPage: FC = () => {
     node: liveDemoNode,
     setSource,
     error: liveDemoError,
-  } = useLiveDemo(id!);
+  } = useLiveDemo(id);
 
   const finalNode =
     liveDemoNode ||

@@ -1,5 +1,7 @@
 import { getFileContentByRegExp, getFileRangeLines } from '@/utils';
-import enhancedResolve from 'enhanced-resolve';
+import enhancedResolve, {
+  type ResolveOptionsOptionalFS,
+} from 'enhanced-resolve';
 import fs from 'fs';
 import type { Paragraph, Root } from 'mdast';
 import path from 'path';
@@ -104,7 +106,7 @@ export default function remarkEmbed(
 ): Transformer<Root> {
   const resolver = enhancedResolve.create.sync({
     extensions: ['.md'],
-    alias: opts.alias,
+    alias: opts.alias as ResolveOptionsOptionalFS['alias'],
   });
 
   return (tree, vFile) => {

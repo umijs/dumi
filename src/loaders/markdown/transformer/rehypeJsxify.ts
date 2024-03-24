@@ -1,11 +1,11 @@
 import type { JSXElement } from '@umijs/bundler-utils/compiled/@babel/types';
 import * as parser from '@umijs/bundler-utils/compiled/babel/parser';
-import type { JSXExpressionContainer } from 'estree-util-to-js/lib/jsx';
-import type { Element, Root, Text } from 'hast';
 import type {
-  EstreeJsxAttribute,
-  EstreeJsxSpreadAttribute,
-} from 'hast-util-to-estree/lib';
+  JSXAttribute,
+  JSXExpressionContainer,
+  JSXSpreadAttribute,
+} from 'estree-util-to-js/lib/jsx';
+import type { Element, Root, Text } from 'hast';
 import type { FrozenProcessor } from 'unified';
 
 let visitUnist: typeof import('unist-util-visit').visit;
@@ -29,16 +29,16 @@ function getJSXAttrAST(
     NonNullable<Element['JSXAttributes']>[0],
     { type: 'JSXAttribute' }
   >,
-): EstreeJsxAttribute;
+): JSXAttribute;
 function getJSXAttrAST(
   node: Extract<
     NonNullable<Element['JSXAttributes']>[0],
     { type: 'JSXSpreadAttribute' }
   >,
-): EstreeJsxSpreadAttribute;
+): JSXSpreadAttribute;
 function getJSXAttrAST(
   node: NonNullable<Element['JSXAttributes']>[0],
-): EstreeJsxAttribute | EstreeJsxSpreadAttribute {
+): JSXAttribute | JSXSpreadAttribute {
   const tmpCode = `<a ${
     node.type === 'JSXAttribute'
       ? `${node.name}={${node.value}}`

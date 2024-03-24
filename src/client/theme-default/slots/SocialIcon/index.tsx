@@ -13,7 +13,7 @@ import './index.less';
 
 export type SocialIconProps = {
   icon: SocialTypes;
-  link: string;
+  link?: string;
 };
 
 export type PresetSocialIcon = {

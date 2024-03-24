@@ -60,7 +60,9 @@ export default (api: IApi) => {
       const { components } = api.service.atomParser
         ? await api.service.atomParser.parse()
         : // allow generate assets.json without atoms when parser is not available
-          { components: {} };
+          ({ components: {} } as Awaited<
+            ReturnType<IApi['service']['atomParser']['parse']>
+          >);
 
       return await api.applyPlugins({
         key: 'modifyAssetsMetadata',
