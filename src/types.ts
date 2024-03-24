@@ -103,7 +103,9 @@ export abstract class IDumiTechStack {
    */
   abstract runtimeOpts?: IDumiTechStackRuntimeOpts;
   /**
-   * transform code
+   * Is the lang supported by the current tech stack?
+   * @param lang
+   * @param node hast Element https://github.com/syntax-tree/hast?tab=readme-ov-file#element
    */
   abstract isSupported(node: Element, lang: string): boolean;
   /**
