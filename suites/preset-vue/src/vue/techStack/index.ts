@@ -54,12 +54,12 @@ export default function registerTechStack(api: IApi) {
   api.register({
     key: 'registerTechStack',
     stage: 0,
-    fn: VueJSXTechStack(runtimeOpts),
+    fn: () => VueJSXTechStack(runtimeOpts),
   });
 
   api.register({
     key: 'registerTechStack',
     stage: 1,
-    fn: VueSfcTechStack(runtimeOpts),
+    fn: () => VueSfcTechStack(runtimeOpts),
   });
 }

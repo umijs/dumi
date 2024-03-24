@@ -1,6 +1,5 @@
 import type { ParserConfig } from '@swc/core';
 import { transformSync } from '@swc/core';
-import type { Element } from 'hast';
 import { IDumiTechStack } from '../types';
 
 export {
@@ -62,15 +61,7 @@ export function wrapDemoWithFn(code: string, opts: IWrapDemoWithFnOptions) {
 }`;
 }
 
-export interface IDefineTechStackOptions
-  extends Omit<IDumiTechStack, 'isSupported'> {
-  /**
-   * Is the lang supported by the current tech stack?
-   * @param lang
-   * @param node hast Element https://github.com/syntax-tree/hast?tab=readme-ov-file#element
-   */
-  isSupported: (lang: string, node?: Element) => boolean;
-}
+export type IDefineTechStackOptions = IDumiTechStack;
 
 /**
  * Define a tech stack
@@ -80,7 +71,7 @@ export interface IDefineTechStackOptions
  * @example
  * const ReactTechStack = defineTechStack({
  *   name: 'jsx',
- *   isSupported(lang) {
+ *   isSupported(_, lang) {
  *     return ['jsx', 'tsx'].includes(lang);
  *   },
  *   transformCode() {
@@ -89,14 +80,8 @@ export interface IDefineTechStackOptions
  *   },
  * });
  *
- * api.registerTechStack(ReactTechStack);
+ * api.registerTechStack(() => ReactTechStack);
  */
 export function defineTechStack(options: IDefineTechStackOptions) {
-  const isSupported = options.isSupported;
-  return () =>
-    ({
-      ...options,
-      isSupported: (...args: Parameters<IDumiTechStack['isSupported']>) =>
-        isSupported(args[1], args[0]),
-    } satisfies IDumiTechStack);
+  return options;
 }

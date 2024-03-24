@@ -7,7 +7,7 @@ export const VueJSXTechStack = (runtimeOpts: IDumiTechStackRuntimeOpts) =>
   defineTechStack({
     name: 'vue3-tsx',
     runtimeOpts,
-    isSupported(lang: string) {
+    isSupported(_, lang: string) {
       return ['jsx', 'tsx'].includes(lang);
     },
     onBlockLoad(args) {

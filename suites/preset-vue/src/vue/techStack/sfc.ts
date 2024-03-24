@@ -8,7 +8,7 @@ export const VueSfcTechStack = (runtimeOpts: IDumiTechStackRuntimeOpts) =>
   defineTechStack({
     name: 'vue3-sfc',
     runtimeOpts,
-    isSupported(lang: string) {
+    isSupported(_, lang: string) {
       return ['vue'].includes(lang);
     },
     onBlockLoad(args) {
