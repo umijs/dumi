@@ -93,7 +93,36 @@ api.modifyTheme((memo) => {
 
 ### registerTechStack
 
-注册其他技术栈，用于扩展 Vue.js、小程序等技术栈的 demo 编译能力，可参考内置的 [React 技术栈](https://github.com/umijs/dumi/tree/master/src/techStacks/react.ts) 实现。dumi 官方的 Vue.js 编译方案正在研发中，敬请期待。
+注册其他技术栈，用于扩展 Vue.js、小程序等技术栈的 demo 编译能力。如何添加一个完整的技术栈支持，可查看[添加技术栈](../plugin/techstack.md)。
+
+目前提供两种 API 实现技术栈：
+
+1. `defineTechStack` <Badge>推荐</Badge>
+
+```ts
+import { defineTechStack } from 'dumi/tech-stack-utils';
+const CustomTechStack = defineTechStack({
+  name: 'custom',
+  runtimeOpts: {
+    compilePath: '...',
+    rendererPath: '...',
+    pluginPath: '...',
+  },
+  isSupported(node, lang) {
+    return ['vue'].includes(lang);
+  },
+  onBlockLoad(args) {
+    // ...
+  },
+  transformCode(raw, opts) {
+    // ...
+  },
+});
+
+api.registerTechStack(() => CustomTechStack);
+```
+
+2. 直接实现 `IDumiTechStack`抽象类
 
 ```ts
 // CustomTechStack.ts
