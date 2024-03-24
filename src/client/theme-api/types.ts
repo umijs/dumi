@@ -50,6 +50,10 @@ export interface IPreviewerProps {
    * react node of current demo
    */
   children: ReactNode;
+  /**
+   * private field, do not use it in your code
+   */
+  _live_in_iframe: boolean;
   [key: string]: any;
 }
 
