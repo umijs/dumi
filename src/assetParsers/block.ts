@@ -15,6 +15,7 @@ export interface IParsedBlockAsset {
 
 async function parseBlockAsset(opts: {
   fileAbsPath: string;
+  fileLocale?: string;
   id: string;
   refAtomIds: string[];
   entryPointCode?: string;
@@ -116,7 +117,6 @@ async function parseBlockAsset(opts: {
                 if (frontmatter) {
                   // replace entry code when frontmatter available
                   asset.dependencies[filename].value = code;
-                  result.frontmatter = frontmatter;
 
                   // TODO: locale for title & description
                   ['description', 'title', 'snapshot', 'keywords'].forEach(
@@ -125,6 +125,14 @@ async function parseBlockAsset(opts: {
                         frontmatter?.[key];
                     },
                   );
+
+                  // support locale prefix for title & description
+                  ['description', 'title'].forEach((key) => {
+                    frontmatter[key] ||=
+                      frontmatter[`${key}.${opts.fileLocale}`];
+                  });
+
+                  result.frontmatter = frontmatter;
                 }
               }
 
