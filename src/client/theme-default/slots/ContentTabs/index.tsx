@@ -26,19 +26,24 @@ const ContentTabs: FC<IContentTabsProps> = ({
           {intl.formatMessage({ id: 'content.tabs.default' })}
         </button>
       </li>
-      {tabs!.map((tab) => (
-        <li
-          key={tab.key}
-          onClick={() => onChange(tab)}
-          data-active={key === tab.key || undefined}
-        >
-          <button type="button">
-            {tab.titleIntlId
-              ? intl.formatMessage({ id: tab.titleIntlId })
-              : tab.meta.frontmatter.title}
-          </button>
-        </li>
-      ))}
+      {tabs!
+        .sort(
+          (a, b) =>
+            (b.meta.frontmatter.order || 0) - (a.meta.frontmatter.order || 0),
+        )
+        .map((tab) => (
+          <li
+            key={tab.key}
+            onClick={() => onChange(tab)}
+            data-active={key === tab.key || undefined}
+          >
+            <button type="button">
+              {tab.titleIntlId
+                ? intl.formatMessage({ id: tab.titleIntlId })
+                : tab.meta.frontmatter.title}
+            </button>
+          </li>
+        ))}
     </ul>
   ) : null;
 };
