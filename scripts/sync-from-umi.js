@@ -329,7 +329,6 @@ FILE_LIST.forEach((file) => {
   const localPath = path.join(UMI_DOC_DIR, file.localname);
 
   const protocol = file.upstream.startsWith('https') ? https : http;
-  console.log('sync', file.upstream, 'to', localPath);
 
   // get file from upstream
   protocol.get(file.upstream, (res) => {
@@ -360,7 +359,12 @@ FILE_LIST.forEach((file) => {
 
       // write back to file
       fs.writeFileSync(localPath, content);
-      console.log('sync', file.localname, 'from upstream successfully!');
+      console.log(
+        '🔁',
+        file.upstream,
+        '->',
+        path.relative(process.cwd(), localPath),
+      );
     });
   });
 });
