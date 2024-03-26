@@ -20,6 +20,7 @@ interface SourceCodeProps {
   children: string;
   lang: Language;
   highlightLines?: number[];
+  title?: string;
 }
 
 const SourceCode: FC<SourceCodeProps> = (props) => {
