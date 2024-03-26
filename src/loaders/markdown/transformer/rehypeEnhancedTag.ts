@@ -24,7 +24,6 @@ export default function rehypeEnhancedTag(): Transformer<Root> {
         const lang = className.join('').match(/language-(\w+)(?:$| )/)?.[1];
         const highlightLines = node.children[0].data
           ?.highlightLines as number[];
-
         parent!.children.splice(i!, 1, {
           type: 'element',
           tagName: 'SourceCode',
@@ -36,6 +35,11 @@ export default function rehypeEnhancedTag(): Transformer<Root> {
               name: 'highlightLines',
               value: JSON.stringify(highlightLines),
             },
+            {
+              type: 'JSXAttribute',
+              name: 'label',
+              value: JSON.stringify(node.children[0].data?.meta),
+            },
           ],
           children: [
             {
@@ -43,6 +47,34 @@ export default function rehypeEnhancedTag(): Transformer<Root> {
               value: toString(node.children[0]),
             },
           ],
+        });
+      } else if (
+        node.tagName === 'code-group' &&
+        isElement(node.children?.[0]) &&
+        node.children[0].tagName === 'pre'
+      ) {
+        const items = node.children.map((codeTags, index) => {
+          //@ts-ignore
+          const codeTag = codeTags?.children?.[0];
+          return {
+            label: codeTag.data?.meta,
+            key: index,
+            lang: codeTag.properties.className[0].split('-')[1],
+            codeValue: codeTag.children[0].value,
+          };
+        });
+
+        parent!.children.splice(i!, 1, {
+          type: 'element',
+          tagName: 'CodeGroup',
+          JSXAttributes: [
+            {
+              type: 'JSXAttribute',
+              name: 'items',
+              value: JSON.stringify(items),
+            },
+          ],
+          children: [],
         });
       } else if (node.tagName === 'table') {
         // use enhanced Table component
