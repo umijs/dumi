@@ -360,10 +360,9 @@ FILE_LIST.forEach((file) => {
       // write back to file
       fs.writeFileSync(localPath, content);
       console.log(
-        '🔁',
-        file.upstream,
-        '->',
-        path.relative(process.cwd(), localPath),
+        `🔁 ${file.upstream} -> ${path.relative(process.cwd(), localPath)} [${(
+          content.length / 1024
+        ).toFixed(2)}KB]`,
       );
     });
   });
