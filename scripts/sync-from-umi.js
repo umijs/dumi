@@ -180,7 +180,7 @@ const FILE_LIST = [
   },
   {
     localname: 'plugin.md',
-    repoPath: 'docs/docs/docs/api/plugin.md',
+    repoPath: 'docs/docs/docs/guides/plugins.md',
     actions: [
       RM_FM_ACTION,
       // remove head content
