@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
+const http = require('http');
 
 const UMI_DOC_DIR = path.join(__dirname, '..', 'docs', '.upstream');
 const RM_FM_ACTION = {
@@ -308,17 +309,16 @@ const FILE_LIST = [
       { type: 'replace', value: [/config\./g, '.dumirc.'] },
     ],
   },
-].map((file) => ({
-  ...file,
-
-  upstream: [
-    // 可以完全自定义(也许是一个本地启动的服务)
+].map((file) => {
+  const urlPrefix = [
+    // 可以完全自定义(也许是一个本地启动的服务) `SYNC_CUSTOM_UPSTREAM=http://127.0.0.1:8080/ npm run docs:sync`
     process.env.SYNC_CUSTOM_UPSTREAM,
     // 同步遇到 443 失败时, 可以尝试 `SYNC_USE_GITHUB=1 npm run docs:sync` 使用 GitHub 作为源
     process.env.SYNC_USE_GITHUB && GITHUB_RAW_PREFIX,
     JSDELIVR_PREFIX,
-  ].find(Boolean),
-}));
+  ].find(Boolean);
+  return { ...file, upstream: `${urlPrefix}${file.repoPath}` };
+});
 
 if (!fs.existsSync(UMI_DOC_DIR)) {
   fs.mkdirSync(UMI_DOC_DIR);
@@ -328,8 +328,11 @@ if (!fs.existsSync(UMI_DOC_DIR)) {
 FILE_LIST.forEach((file) => {
   const localPath = path.join(UMI_DOC_DIR, file.localname);
 
+  const protocol = file.upstream.startsWith('https') ? https : http;
+  console.log('sync', file.upstream, 'to', localPath);
+
   // get file from upstream
-  https.get(file.upstream, (res) => {
+  protocol.get(file.upstream, (res) => {
     let content = '';
 
     res.setEncoding('utf8');
