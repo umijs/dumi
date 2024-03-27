@@ -14,12 +14,4 @@ yarn add -D dumi
 pnpm add -D dumi
 ```
 
-```ts [.dumirc.ts]
-import { defineConfig } from 'dumi';
-
-export default defineConfig({
-  // ...
-});
-```
-
 :::
