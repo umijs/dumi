@@ -281,7 +281,10 @@ const FILE_LIST = [
       { type: 'replace', value: [/(#+\s\w+)\([^)]+\)/g, '$1'] },
       // remove HashAnchorCompat
       // ref: https://github.com/umijs/umi/blob/8bfd4c761b3cc6209b9203c705842568c3ccbe62/docs/docs/docs/api/runtime-config.md#L183
-      { type: 'replace', value: [/<HashAnchorCompat.+?<\/HashAnchorCompat>\n/g, ''] },
+      {
+        type: 'replace',
+        value: [/<HashAnchorCompat.+?<\/HashAnchorCompat>\n/g, ''],
+      },
     ],
   },
   {

@@ -63,3 +63,7 @@ export const DumiDemoGrid: FC<IDumiDemoGridProps> = (props) => {
     </div>
   );
 };
+
+if (process.env.NODE_ENV !== 'production') {
+  DumiDemoGrid.displayName = 'DumiDemoGrid';
+}

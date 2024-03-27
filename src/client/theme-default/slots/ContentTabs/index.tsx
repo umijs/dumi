@@ -18,7 +18,6 @@ const ContentTabs: FC<IContentTabsProps> = ({
   const intl = useIntl();
 
   // TODO: tab.Extra & tab.Action render
-
   return Boolean(tabs?.length) ? (
     <ul className="dumi-default-content-tabs">
       <li onClick={() => onChange()} data-active={!key || undefined}>

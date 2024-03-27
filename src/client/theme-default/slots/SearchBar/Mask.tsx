@@ -11,7 +11,7 @@ export const Mask: FC<MaskProps> = (props) => {
   useEffect(() => {
     if (props.visible) {
       document.body.style.overflow = 'hidden';
-    } else {
+    } else if (document.body.style.overflow) {
       document.body.style.overflow = '';
       props.onClose?.();
     }

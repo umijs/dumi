@@ -2,11 +2,11 @@ import { ReactComponent as IconArrowDown } from '@ant-design/icons-svg/inline-sv
 import { ReactComponent as IconArrowUp } from '@ant-design/icons-svg/inline-svg/outlined/arrow-up.svg';
 import { ReactComponent as IconSearch } from '@ant-design/icons-svg/inline-svg/outlined/search.svg';
 import { useSiteSearch } from 'dumi';
-import React, { useEffect, useRef, useState, type FC } from 'react';
 import SearchResult from 'dumi/theme/slots/SearchResult';
-import './index.less';
+import React, { useEffect, useRef, useState, type FC } from 'react';
 import { Input } from './Input';
 import { Mask } from './Mask';
+import './index.less';
 export { Input as SearchInput } from './Input';
 export { Mask as SearchMask } from './Mask';
 
@@ -24,7 +24,13 @@ const SearchBar: FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const modalInputRef = useRef<HTMLInputElement>(null);
   const [symbol, setSymbol] = useState('⌘');
-  const { keywords, setKeywords, result, loading } = useSiteSearch();
+  const {
+    keywords,
+    setKeywords,
+    result,
+    loading,
+    load: loadSearchData,
+  } = useSiteSearch();
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
@@ -77,7 +83,13 @@ const SearchBar: FC = () => {
     <div className="dumi-default-search-bar">
       <IconSearch className="dumi-default-search-bar-svg" />
       <Input
-        onFocus={() => setFocusing(true)}
+        onFocus={() => {
+          setFocusing(true);
+          loadSearchData();
+        }}
+        onMouseEnter={() => {
+          loadSearchData();
+        }}
         onBlur={() => {
           // wait for item click
           setTimeout(() => {
@@ -88,16 +100,13 @@ const SearchBar: FC = () => {
         ref={inputRef}
       />
       <span className="dumi-default-search-shortcut">{symbol} K</span>
-      {keywords.trim() &&
-        focusing &&
-        (result.length || !loading) &&
-        !modalVisible && (
-          <div className="dumi-default-search-popover">
-            <section>
-              <SearchResult data={result} loading={loading} />
-            </section>
-          </div>
-        )}
+      {keywords.trim() && focusing && !modalVisible && (
+        <div className="dumi-default-search-popover">
+          <section>
+            <SearchResult data={result} loading={loading} />
+          </section>
+        </div>
+      )}
 
       <Mask
         visible={modalVisible}

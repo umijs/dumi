@@ -258,10 +258,15 @@ export default function rehypeDemo(
                 ? [vFile.data.frontmatter!.atomId]
                 : [],
               fileAbsPath: '',
+              lang: codeNode.data!.lang,
               fileLocale: opts.fileLocale,
               entryPointCode: codeType === 'external' ? undefined : codeValue,
               resolver: opts.resolver,
+              techStack,
             };
+
+            const runtimeOpts = techStack.runtimeOpts;
+
             const previewerProps: IDumiDemoProps['previewerProps'] = {};
             let component = '';
 
@@ -287,9 +292,16 @@ export default function rehypeDemo(
                 localId,
                 vFile.data.frontmatter!.atomId,
               );
-              component = `React.memo(React.lazy(() => import( /* webpackChunkName: "${chunkName}" */ '${winPath(
+              const importChunk = `import( /* webpackChunkName: "${chunkName}" */ '${winPath(
                 parseOpts.fileAbsPath,
-              )}?techStack=${techStack.name}')))`;
+              )}?techStack=${techStack.name}')`;
+
+              if (runtimeOpts?.rendererPath) {
+                component = `(async () => ${importChunk})()`;
+              } else {
+                component = `React.memo(React.lazy(() => ${importChunk}))`;
+              }
+
               // use code value as title
               // TODO: force checking
               if (codeValue) codeNode.properties!.title = codeValue;
@@ -303,7 +315,10 @@ export default function rehypeDemo(
 
               // pass a fake entry point for code block demo
               // and pass the real code via `entryPointCode` option
-              parseOpts.fileAbsPath = opts.fileAbsPath.replace('.md', '.tsx');
+              parseOpts.fileAbsPath = opts.fileAbsPath.replace(
+                '.md',
+                `.${parseOpts.lang}`,
+              );
               parseOpts.id = getCodeId(
                 opts.cwd,
                 opts.fileLocaleLessPath,
@@ -322,7 +337,7 @@ export default function rehypeDemo(
             // generate asset data for demo
             deferrers.push(
               parseBlockAsset(parseOpts).then(
-                async ({ asset, sources, frontmatter }) => {
+                async ({ asset, resolveMap, frontmatter }) => {
                   // repeat id to give warning
                   if (
                     demoIds.indexOf(parseOpts.id) !==
@@ -384,6 +399,9 @@ export default function rehypeDemo(
                       // TODO: special id for inline demo
                       id: asset.id,
                       component,
+                      renderOpts: {
+                        rendererPath: runtimeOpts?.rendererPath,
+                      },
                     };
                   }
 
@@ -431,9 +449,19 @@ export default function rehypeDemo(
                     asset: techStack.generateMetadata
                       ? await techStack.generateMetadata(asset, techStackOpts)
                       : asset,
-                    sources: techStack.generateSources
-                      ? await techStack.generateSources(sources, techStackOpts)
-                      : sources,
+                    /**
+                     * keep `generateSources` rather than `generateResolveMap` for compatibility
+                     */
+                    resolveMap: techStack.generateSources
+                      ? await techStack.generateSources(
+                          resolveMap,
+                          techStackOpts,
+                        )
+                      : resolveMap,
+                    renderOpts: {
+                      rendererPath: runtimeOpts?.rendererPath,
+                      compilePath: runtimeOpts?.compilePath,
+                    },
                   };
                 },
               ),

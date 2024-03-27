@@ -9,7 +9,8 @@
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"],
-      "@@/*": [".dumi/tmp/*"]
+      "@@/*": [".dumi/tmp/*"],
+      "dumi/dist/*": ["src/*"]
     },
     "types": ["vitest/globals"]
   },

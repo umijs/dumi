@@ -17,7 +17,8 @@ export default (api: IApi) => {
       noPluginDir: true,
       path: 'dumi/exports.ts',
       content: `export * from '../exports';
-export * from '${winPath(require.resolve('../client/theme-api'))}';`,
+export * from '${winPath(require.resolve('../client/theme-api'))}';
+export * from './meta/exports';`,
     });
   });
 };

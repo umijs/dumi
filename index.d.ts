@@ -1,3 +1,4 @@
+export * from '@@/dumi/exports';
 export { Root as HastRoot } from 'hast';
 export * from 'umi';
 export {
@@ -7,5 +8,4 @@ export {
 export * from './dist';
 // override umi exported defineConfig
 export { defineConfig } from './dist';
-export * from './dist/client/theme-api';
 export { IApi } from './dist/types';

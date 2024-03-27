@@ -17,3 +17,4 @@
 /target
 /compiled/crates
 .swc
+/server

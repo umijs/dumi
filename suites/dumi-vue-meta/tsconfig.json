@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ES2021",
+    "module": "NodeNext",
+    "strict": true,
+    "declaration": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "baseUrl": "./"
+  },
+  "include": ["**/*"],
+  "exclude": ["tests/fixtures"]
+}

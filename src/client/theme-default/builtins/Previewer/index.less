@@ -1,6 +1,8 @@
 @import (reference) '../../styles/variables.less';
 
 .@{prefix}-previewer {
+  @error-bar-height: 30px;
+
   margin: 24px 0 32px;
   border: 1px solid @c-border-light;
   border-radius: 4px;
@@ -38,17 +40,11 @@
     &[data-iframe] {
       position: relative;
       padding: 0;
-      overflow: hidden;
+      border-top: 24px solid @c-border-light;
+      box-sizing: border-box;
 
-      &::before {
-        content: '';
-        display: block;
-        height: 24px;
-        background-color: @c-border-light;
-
-        @{dark-selector} & {
-          background-color: @c-border-less-dark;
-        }
+      @{dark-selector} & {
+        border-top-color: @c-border-less-dark;
       }
 
       &::after {
@@ -57,7 +53,7 @@
 
         content: '';
         position: absolute;
-        top: 5px;
+        top: -19px;
         left: @btn-gap;
         display: inline-block;
         width: @btn-width;
@@ -75,6 +71,89 @@
 
     &[data-compact] {
       padding: 0;
+    }
+
+    // error status
+    &[data-error][data-compact] {
+      min-height: @error-bar-height;
+
+      + .@{prefix}-previewer-demo-error {
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+      }
+    }
+
+    // loading status
+    &[data-loading] {
+      position: relative;
+
+      &::before {
+        @size: 28px;
+
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        content: '';
+        display: block;
+        height: @size;
+        max-height: 90%;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        border: (@size / 10) solid;
+        border-color: @c-primary transparent;
+        box-sizing: border-box;
+        animation: dumi-previewer-loading 1s infinite;
+        transform: translate(-50%, -50%);
+
+        @{dark-selector} & {
+          border-color: @c-primary-dark transparent;
+        }
+
+        @keyframes dumi-previewer-loading {
+          to {
+            transform: translate(-50%, -50%) rotate(0.5turn);
+          }
+        }
+      }
+
+      > * {
+        opacity: 0.3 !important;
+      }
+    }
+  }
+
+  &-demo-error {
+    @color: darken(desaturate(@c-error, 20%), 1%);
+
+    position: relative;
+    margin-top: -@error-bar-height;
+    height: @error-bar-height;
+    padding: 0 24px;
+    line-height: @error-bar-height;
+    color: @color;
+    font-size: 13px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    background: lighten(@c-error, 51%);
+    box-sizing: border-box;
+    overflow: hidden;
+
+    @{dark-selector} & {
+      @color: lighten(desaturate(@c-error, 20%), 5%);
+
+      color: @color;
+      background: darken(@c-error-dark, 22%);
+
+      > svg {
+        fill: @color;
+      }
+    }
+
+    > svg {
+      width: 14px;
+      padding-right: 4px;
+      fill: @c-error;
+      vertical-align: -0.14em;
     }
   }
 

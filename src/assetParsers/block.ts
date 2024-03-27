@@ -6,10 +6,21 @@ import type { sync } from 'enhanced-resolve';
 import fs from 'fs';
 import path from 'path';
 import { pkgUp, winPath } from 'umi/plugin-utils';
+import {
+  DEFAULT_DEMO_MODULE_EXTENSIONS,
+  DEFAULT_DEMO_PLAIN_TEXT_EXTENSIONS,
+} from '../constants';
+import { IDumiTechStack } from '../types';
 
 export interface IParsedBlockAsset {
   asset: ExampleBlockAsset;
-  sources: Record<string, string>;
+  /**
+   * resolveMap: {
+   *   '@/constants': '/path/to/constants.ts',
+   *   'antd/es/button': '/path/to/antd/es/button/index.jsx',
+   * }
+   */
+  resolveMap: Record<string, string>;
   frontmatter: ReturnType<typeof parseCodeFrontmatter>['frontmatter'];
 }
 
@@ -20,19 +31,21 @@ async function parseBlockAsset(opts: {
   refAtomIds: string[];
   entryPointCode?: string;
   resolver: typeof sync;
+  techStack: IDumiTechStack;
 }) {
   const asset: IParsedBlockAsset['asset'] = {
     type: 'BLOCK',
     id: opts.id,
     refAtomIds: opts.refAtomIds,
     dependencies: {},
+    entry: '',
   };
   const result: IParsedBlockAsset = {
     asset,
-    sources: {},
+    resolveMap: {},
     frontmatter: null,
   };
-
+  // demo dependency analysis and asset processing
   const deferrer = build({
     // do not emit file
     write: false,
@@ -66,6 +79,8 @@ async function parseBlockAsset(opts: {
                   type: 'NPM',
                   value: pkg.version,
                 };
+
+                result.resolveMap[args.path] = resolved;
               }
 
               // make all deps external
@@ -77,29 +92,53 @@ async function parseBlockAsset(opts: {
                 args.kind !== 'entry-point'
                   ? (opts.resolver(args.resolveDir, args.path) as string)
                   : path.join(args.resolveDir, args.path),
-              pluginData: { kind: args.kind, resolveDir: args.resolveDir },
+              pluginData: {
+                kind: args.kind,
+                resolveDir: args.resolveDir,
+                source: args.path,
+              },
             };
           });
 
           builder.onLoad({ filter: /.*/ }, (args) => {
-            const ext = path.extname(args.path);
-            const isModule = ['.js', '.jsx', '.ts', '.tsx'].includes(ext);
-            const isPlainText = [
-              '.css',
-              '.less',
-              '.sass',
-              '.scss',
-              '.styl',
-              '.json',
-            ].includes(ext);
+            let ext = path.extname(args.path);
+            const techStack = opts.techStack;
+
             const isEntryPoint = args.pluginData.kind === 'entry-point';
-            const filename = isEntryPoint
-              ? `index${ext}`
-              : winPath(
-                  path.relative(path.dirname(opts.fileAbsPath), args.path),
-                )
-                  // discard leading ./ or ../
-                  .replace(/^(\.?\.\/)+/g, '');
+
+            // always add extname for highlight in runtime
+            const filename = `${
+              isEntryPoint
+                ? 'index'
+                : winPath(
+                    path.format({
+                      ...path.parse(args.pluginData.source),
+                      base: '',
+                      ext: '',
+                    }),
+                  )
+            }${ext}`;
+
+            let entryPointCode = opts.entryPointCode;
+            let contents: string | undefined = undefined;
+
+            if (techStack.onBlockLoad) {
+              const result = techStack.onBlockLoad({
+                filename,
+                entryPointCode: (entryPointCode ??= fs.readFileSync(
+                  args.path,
+                  'utf-8',
+                )),
+                ...args,
+              });
+              if (result) {
+                ext = `.${result.type}`;
+                contents = result.content;
+              }
+            }
+
+            let isModule = DEFAULT_DEMO_MODULE_EXTENSIONS.includes(ext);
+            let isPlainText = DEFAULT_DEMO_PLAIN_TEXT_EXTENSIONS.includes(ext);
 
             if (isModule || isPlainText) {
               asset.dependencies[filename] = {
@@ -108,14 +147,16 @@ async function parseBlockAsset(opts: {
                   opts.entryPointCode ?? fs.readFileSync(args.path, 'utf-8'),
               };
 
+              const file = asset.dependencies[filename];
+
               // extract entry point frontmatter as asset metadata
               if (isEntryPoint) {
-                const { code, frontmatter } = parseCodeFrontmatter(
-                  asset.dependencies[filename].value,
-                );
+                const { code, frontmatter } = parseCodeFrontmatter(file.value);
+                asset.entry = filename;
 
                 if (frontmatter) {
                   // replace entry code when frontmatter available
+                  file.value = code;
                   asset.dependencies[filename].value = code;
 
                   // TODO: locale for title & description
@@ -139,12 +180,12 @@ async function parseBlockAsset(opts: {
               // save file absolute path for load file via raw-loader
               // to avoid bundle same file to save bundle size
               if (!isEntryPoint || !opts.entryPointCode) {
-                result.sources[filename] = args.path;
+                result.resolveMap[filename] = args.path;
               }
 
               return {
                 // only continue to load for module files
-                contents: isModule ? asset.dependencies[filename].value : '',
+                contents: isModule ? contents ?? file.value : '',
                 loader: isModule ? (ext.slice(1) as any) : 'text',
               };
             }

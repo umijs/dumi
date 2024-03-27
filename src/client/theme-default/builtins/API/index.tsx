@@ -81,7 +81,12 @@ const HANDLERS = {
       .map(
         (signature: any) =>
           `${signature.isAsync ? 'async ' : ''}(${signature.arguments
-            .map((arg: any) => `${arg.key}: ${this.toString(arg)}`)
+            .map(
+              (arg: any) =>
+                `${arg.key}${arg.hasQuestionToken ? '?' : ''}: ${this.toString(
+                  arg,
+                )}`,
+            )
             .join(', ')}) => ${this.toString(signature.returnType)}`,
       )
       .join(' | ');
@@ -121,7 +126,10 @@ const APIType: FC<PropertySchema> = (prop) => {
   return <code>{type}</code>;
 };
 
-const API: FC<{ id?: string }> = (props) => {
+const API: FC<{
+  id?: string;
+  type?: 'props' | 'events' | 'slots' | 'methods';
+}> = (props) => {
   const { frontmatter } = useRouteMeta();
   const { components } = useAtomAssets();
   const id = props.id || frontmatter.atomId;
@@ -131,6 +139,15 @@ const API: FC<{ id?: string }> = (props) => {
 
   const definition = components?.[id];
 
+  let properties: Record<string, PropertySchema> = {};
+
+  let type = (props.type || 'props').toLowerCase();
+
+  if (definition) {
+    let key = `${type}Config` as 'propsConfig';
+    properties = definition[key]?.properties || {};
+  }
+
   return (
     <div className="markdown">
       <Table>
@@ -139,19 +156,21 @@ const API: FC<{ id?: string }> = (props) => {
             <th>{intl.formatMessage({ id: 'api.component.name' })}</th>
             <th>{intl.formatMessage({ id: 'api.component.description' })}</th>
             <th>{intl.formatMessage({ id: 'api.component.type' })}</th>
-            <th>{intl.formatMessage({ id: 'api.component.default' })}</th>
+            {props.type === 'props' && (
+              <th>{intl.formatMessage({ id: 'api.component.default' })}</th>
+            )}
           </tr>
         </thead>
         <tbody>
-          {definition && definition.propsConfig?.properties ? (
-            Object.entries(definition.propsConfig.properties).map(
-              ([name, prop]) => (
-                <tr key={name}>
-                  <td>{name}</td>
-                  <td>{prop.description || '--'}</td>
-                  <td>
-                    <APIType {...prop} />
-                  </td>
+          {Object.keys(properties).length ? (
+            Object.entries(properties).map(([name, prop]) => (
+              <tr key={name}>
+                <td>{name}</td>
+                <td>{prop.description || '--'}</td>
+                <td>
+                  <APIType {...prop} />
+                </td>
+                {props.type === 'props' && (
                   <td>
                     <code>
                       {definition.propsConfig.required?.includes(name)
@@ -159,9 +178,9 @@ const API: FC<{ id?: string }> = (props) => {
                         : JSON.stringify(prop.default) || '--'}
                     </code>
                   </td>
-                </tr>
-              ),
-            )
+                )}
+              </tr>
+            ))
           ) : (
             <tr>
               <td colSpan={4}>
