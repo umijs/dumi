@@ -1,5 +1,6 @@
 @import (reference) '../../styles/variables.less';
-@rcTabsPrefixCls: ~'rc-tabs';
+@import '../../styles/mixins/tabs.less';
 
-// todo: 添加样式
-@import 'rc-tabs/assets/index.css';
+.@{prefix}-code-group {
+  .default-tabs();
+}

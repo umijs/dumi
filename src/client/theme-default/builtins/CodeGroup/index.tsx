@@ -28,7 +28,14 @@ function CodeGroup(props: React.PropsWithChildren) {
     };
   });
 
-  return <Tabs className="dumi-default-code-group" items={items} />;
+  return (
+    <Tabs
+      className="dumi-default-code-group"
+      prefixCls="dumi-default-tabs"
+      moreIcon="···"
+      items={items}
+    />
+  );
 }
 
 export default CodeGroup;
