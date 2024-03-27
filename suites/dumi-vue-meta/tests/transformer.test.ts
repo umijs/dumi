@@ -10,6 +10,7 @@ import { rootPath, tsconfigPath } from './utils';
 
 const checkerOptions: MetaCheckerOptions = {
   propertyResovlers: [vueTypesSchemaResolver],
+  gitRevision: 'main', // pin to the main branch
   externalSymbolLinkMappings: {
     typescript: {
       Promise:
