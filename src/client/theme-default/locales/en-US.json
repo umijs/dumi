@@ -31,7 +31,6 @@
   "api.component.type": "Type",
   "api.component.default": "Default",
   "api.component.required": "(required)",
-  "api.component.version": "Version",
   "api.component.release.alpha": "Alpha",
   "api.component.release.beta": "Beta",
   "api.component.release.experimental": "Experimental",

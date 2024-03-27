@@ -30,7 +30,6 @@
   "api.component.type": "类型",
   "api.component.default": "默认值",
   "api.component.required": "(必选)",
-  "api.component.version": "版本",
   "api.component.release.alpha": "Alpha",
   "api.component.release.beta": "Beta",
   "api.component.release.experimental": "实验性",

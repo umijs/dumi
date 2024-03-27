@@ -227,13 +227,9 @@ const APIType: FC<PropertySchema> = (prop) => {
 };
 
 type ReleaseInfo = Record<string, string[]>;
-type VersionInfo = Record<string, string>;
 
-function getReleaseAndVersionInfo(
-  props: Record<string, PropertySchema>,
-): [ReleaseInfo, VersionInfo] {
+function getReleaseAndVersionInfo(props: Record<string, PropertySchema>) {
   const releaseInfo: ReleaseInfo = {};
-  const versionInfo: VersionInfo = {};
 
   Object.entries(props).forEach(([prop, schema]) => {
     const modiferTags: string[] = schema.tags?.modifierTags;
@@ -247,17 +243,13 @@ function getReleaseAndVersionInfo(
       }
     });
     blockTags?.forEach(({ tag, content }) => {
-      if (tag === 'deprecated' || tag === 'version' || tag === 'since') {
+      if (tag === 'deprecated' || tag === 'since') {
         const textContent = content.map((item) => item.text).join('');
-        if (tag === 'version') {
-          versionInfo[prop] = textContent;
-        } else {
-          releaseInfo[prop] = [tag, textContent];
-        }
+        releaseInfo[prop] = [tag, textContent];
       }
     });
   });
-  return [releaseInfo, versionInfo];
+  return releaseInfo;
 }
 
 const APIRelease: FC<{ name: string; info: string[] }> = ({ name, info }) => {
@@ -312,7 +304,7 @@ const API: FC<{
     properties = definition[key]?.properties || {};
   }
 
-  const [releaseInfo, versionInfo] = useMemo(() => {
+  const releaseInfo = useMemo(() => {
     return getReleaseAndVersionInfo(properties);
   }, [properties]);
 
@@ -326,9 +318,6 @@ const API: FC<{
             <th>{intl.formatMessage({ id: 'api.component.type' })}</th>
             {props.type === 'props' && (
               <th>{intl.formatMessage({ id: 'api.component.default' })}</th>
-            )}
-            {Object.keys(versionInfo).length > 0 && (
-              <th>{intl.formatMessage({ id: 'api.component.version' })}</th>
             )}
           </tr>
         </thead>
@@ -354,11 +343,6 @@ const API: FC<{
                         ? intl.formatMessage({ id: 'api.component.required' })
                         : JSON.stringify(prop.default) || '--'}
                     </code>
-                  </td>
-                )}
-                {versionInfo[name] && (
-                  <td>
-                    {versionInfo[name] && <span>{versionInfo[name]}</span>}
                   </td>
                 )}
               </tr>
