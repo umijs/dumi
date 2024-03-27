@@ -9,24 +9,22 @@ import type {
   TypeParamPropertyMetaSchema,
 } from '../src/index';
 import { createProject, vueTypesSchemaResolver } from '../src/index';
-import { toRecord } from './utils';
+import { toRecord, tsconfigPath } from './utils';
 
 const checkerOptions: MetaCheckerOptions = {
   forceUseTs: true,
   printer: { newLine: 1 },
-  schema: {
-    propertyResovlers: [vueTypesSchemaResolver],
-    externalSymbolLinkMappings: {
-      typescript: {
-        Promise:
-          'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise',
-      },
+  propertyResovlers: [vueTypesSchemaResolver],
+  externalSymbolLinkMappings: {
+    typescript: {
+      Promise:
+        'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise',
     },
   },
 };
 
 const project = createProject({
-  tsconfigPath: path.resolve(__dirname, 'fixtures/tsconfig.json'),
+  tsconfigPath,
   checkerOptions,
 });
 
@@ -284,7 +282,9 @@ function testFeatures(kind: 'tsx' | 'sfc' | 'sfc-alias') {
       componentPath,
       'List',
     );
-    const typeParam = component.typeParams?.[0] as TypeParamPropertyMetaSchema;
+    const typeParamRef = component
+      .typeParams?.[0] as LocalRefPropertyMetaSchema;
+    const typeParam = types[typeParamRef.ref] as TypeParamPropertyMetaSchema;
     expect(typeParam.type).toBe('Item extend BaseItem = BaseItem');
     const defaultRef = typeParam.schema?.default as LocalRefPropertyMetaSchema;
     const defaultType = types[defaultRef.ref] as ObjectPropertyMetaSchema;

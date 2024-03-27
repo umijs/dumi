@@ -6,21 +6,21 @@ import {
   dumiTransformer,
   vueTypesSchemaResolver,
 } from '../src/index';
+import { rootPath, tsconfigPath } from './utils';
 
 const checkerOptions: MetaCheckerOptions = {
-  schema: {
-    propertyResovlers: [vueTypesSchemaResolver],
-    externalSymbolLinkMappings: {
-      typescript: {
-        Promise:
-          'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise',
-      },
+  propertyResovlers: [vueTypesSchemaResolver],
+  externalSymbolLinkMappings: {
+    typescript: {
+      Promise:
+        'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise',
     },
   },
 };
 
 const project = createProject({
-  tsconfigPath: path.resolve(__dirname, 'fixtures/tsconfig.json'),
+  rootPath,
+  tsconfigPath,
   checkerOptions,
 });
 

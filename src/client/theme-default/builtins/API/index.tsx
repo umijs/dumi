@@ -200,7 +200,18 @@ const HANDLERS = {
     return 'className' in prop &&
       typeof prop.className === 'string' &&
       prop.className !== '__type' ? (
-      <span>{prop.className}</span>
+      prop.source?.[0] ? (
+        <a
+          className="dumi-default-api-link"
+          href={prop.source[0]?.url}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {prop.className}
+        </a>
+      ) : (
+        prop.className
+      )
     ) : null;
   },
 };

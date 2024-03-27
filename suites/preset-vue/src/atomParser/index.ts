@@ -1,5 +1,7 @@
 import type { MetaCheckerOptions } from '@dumijs/vue-meta';
 import { createProject, dumiTransformer } from '@dumijs/vue-meta';
+import { getProjectRoot } from 'dumi';
+import { fsExtra } from 'dumi/plugin-utils';
 import {
   IBaseApiParserOptions,
   ILanguageMetaParser,
@@ -7,7 +9,6 @@ import {
   createApiParser,
 } from 'dumi/tech-stack-utils';
 import path from 'path';
-import { fsExtra } from 'umi/plugin-utils';
 
 export interface VueParserOptions extends IBaseApiParserOptions {
   tsconfigPath?: string;
@@ -24,11 +25,9 @@ class VueMetaParser implements ILanguageMetaParser {
     this.checkerOptions = Object.assign({}, checkerOptions);
     this.resolveDir = resolveDir;
     this.entryFile = path.resolve(this.resolveDir, entryFile);
-
-    const realTsConfigPath =
-      tsconfigPath ?? path.resolve(this.resolveDir, 'tsconfig.json');
     this.checker = createProject({
-      tsconfigPath: realTsConfigPath,
+      rootPath: getProjectRoot(resolveDir),
+      tsconfigPath,
       checkerOptions: this.checkerOptions,
     });
   }

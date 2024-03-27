@@ -1,4 +1,5 @@
 import { compile, compiler } from '@/compiler/node';
+import { logger } from 'dumi/plugin-utils';
 import type {
   IDumiTechStack,
   IDumiTechStackOnBlockLoadArgs,
@@ -8,7 +9,6 @@ import type {
 import { wrapDemoWithFn } from 'dumi/tech-stack-utils';
 import hashId from 'hash-sum';
 import type { Element } from 'hast';
-import { logger } from 'umi/plugin-utils';
 
 export default class VueSfcTechStack implements IDumiTechStack {
   name = 'vue3-sfc';

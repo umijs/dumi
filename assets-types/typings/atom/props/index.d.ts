@@ -1,6 +1,25 @@
 import type { BuiltinTags } from './jsdoc';
 import type { TypeMap } from './types';
 
+export interface PropertySourceReference {
+  /**
+   * fileName of the source file
+   */
+  fileName: string;
+  /**
+   * The one based number of the line that emitted the declaration
+   */
+  line: number;
+  /**
+   * The index of the character that emitted the declaration
+   */
+  character: number;
+  /**
+   * URL for displaying source file, usually the git repo file URL
+   */
+  url?: string;
+}
+
 /**
  * base props definition
  */
@@ -54,6 +73,10 @@ export interface BasePropertySchema<T extends keyof TypeMap = keyof TypeMap> {
    * extra jsdoc tags
    */
   tags?: BuiltinTags & Record<string, any>;
+  /**
+   * source of prop
+   */
+  source?: PropertySourceReference[];
 }
 
 /**

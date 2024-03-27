@@ -14,7 +14,7 @@ pnpm i @dumijs/vue-meta
 
 `@dumijs/vue-meta` uses TypeScript's TypeChecker for metadata extraction.
 
-> [!NOTE]
+> \[!NOTE]
 > When configuring tsconfig.json, set strictNullCheck to false
 >
 > ```json
@@ -31,6 +31,8 @@ import * as path from 'path';
 
 const projectRoot = '<project-root>';
 const project = createProject({
+  rootPath: projectRoot,
+  // If tsconfigPath is not set, tsconfig will be <rootPath>/tsconfig.json
   tsconfigPath: path.resolve(projectRoot, './tsconfig.json');
 });
 
@@ -73,28 +75,17 @@ const meta = project.service.getComponentLibraryMeta(entry);
 
 #### createProject()
 
-<img style="display: inline-block; vertical-align: top;" alt="Function" src="https://img.shields.io/badge/Function-666eff?style=flat"> Create a meta checker for Vue project
+<img style="display: inline-block; vertical-align: top;" alt="Function" src="https://img.shields.io/badge/Function-666eff?style=flat"> Create a meta checker for Vue project with rootPath
+
+If no parameters are passed in, tsconfig.json in the current workspace will be read.
 
 ##### Type
 
 ```typescript
-export declare function createProject(
-  options?: CheckerProjectOptions | string,
-): Project;
+export declare function createProject(rootPath?: string): Project;
 ```
 
 ##### Examples
-
-```ts
-import { createProject } from '@dumijs/vue-meta';
-// Manually pass in the tsconfig.json path
-createProject({
-  tsconfigPath: '<project-root>/tsconfig.json',
-  checkerOptions: {},
-});
-```
-
-If no parameters are passed in, tsconfig.json in the current workspace will be read.
 
 ```ts
 import { createProject } from '@dumijs/vue-meta';
@@ -103,7 +94,37 @@ createProject();
 
 ##### Parameters
 
-- `options` [**_CheckerProjectOptions_**](#) **_| string_** <img style="display: inline-block; vertical-align: top;" alt="optional" src="https://img.shields.io/badge/optional-8e96aa?style=flat">
+- `rootPath` **_string_** <img style="display: inline-block; vertical-align: top;" alt="optional" src="https://img.shields.io/badge/optional-8e96aa?style=flat">
+
+##### Returns [`Project`](#)
+
+#### createProject()
+
+<img style="display: inline-block; vertical-align: top;" alt="Function" src="https://img.shields.io/badge/Function-666eff?style=flat"> Create a meta checker for Vue project by options
+
+##### Type
+
+```typescript
+export declare function createProject(options: CheckerProjectOptions): Project;
+```
+
+##### Examples
+
+```ts
+import { createProject } from '@dumijs/vue-meta';
+// Manually pass in the tsconfig.json path
+createProject({
+  // If neither rootPath nor tsconfigPath is set, rootPath will be process.cwd()
+  rootPath: '<project-root>',
+  // If tsconfigPath is not set, tsconfig will be <rootPath>/tsconfig.json
+  tsconfigPath: '<project-root>/tsconfig.json',
+  checkerOptions: {},
+});
+```
+
+##### Parameters
+
+- `options` [**_CheckerProjectOptions_**](#)
 
 ##### Returns [`Project`](#)
 
@@ -134,10 +155,20 @@ export declare function createProjectByJson(
 ##### Type
 
 ```typescript
-export interface MetaCheckerOptions
+export interface MetaCheckerOptions extends MetaCheckerSchemaOptions
 ```
 
+**Extends:** [**_MetaCheckerSchemaOptions_**](#metacheckerschemaoptions)
+
 ##### Properties
+
+- [`disableGit`](#) **_boolean_** <img style="display: inline-block; vertical-align: top;" alt="optional" src="https://img.shields.io/badge/optional-666eff?style=flat">
+
+  Prohibit obtaining git repo URL, git revision, and other information through git commands, the default is false
+
+- [`disableSources`](#) **_boolean_** <img style="display: inline-block; vertical-align: top;" alt="optional" src="https://img.shields.io/badge/optional-666eff?style=flat">
+
+  Disable production of source links, the default is false
 
 - [`filterExposed`](#) **_boolean_** <img style="display: inline-block; vertical-align: top;" alt="optional" src="https://img.shields.io/badge/optional-666eff?style=flat">
 
@@ -153,9 +184,23 @@ export interface MetaCheckerOptions
 
 - [`forceUseTs`](#) **_boolean_** <img style="display: inline-block; vertical-align: top;" alt="optional" src="https://img.shields.io/badge/optional-666eff?style=flat">
 
+- [`gitRemote`](#) **_string_** <img style="display: inline-block; vertical-align: top;" alt="optional" src="https://img.shields.io/badge/optional-666eff?style=flat">
+
+  Default is "origin"
+
+- [`gitRevision`](#) **_string_** <img style="display: inline-block; vertical-align: top;" alt="optional" src="https://img.shields.io/badge/optional-666eff?style=flat">
+
+  <https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection>
+
 - [`printer`](#) **_ts.PrinterOptions_** <img style="display: inline-block; vertical-align: top;" alt="optional" src="https://img.shields.io/badge/optional-666eff?style=flat">
 
-- [`schema`](#) [**_MetaCheckerSchemaOptions_**](#metacheckerschemaoptions) <img style="display: inline-block; vertical-align: top;" alt="optional" src="https://img.shields.io/badge/optional-666eff?style=flat">
+- [`sourceLinkTemplate`](#) **_string_** <img style="display: inline-block; vertical-align: top;" alt="optional" src="https://img.shields.io/badge/optional-666eff?style=flat">
+
+  source link template, must be set when you set `disableGit`<!-- -->.
+
+  A typical template looks like this: `https://github.com/umijs/dumi/{gitRevision}/{path}#L{line}`<!-- -->.
+
+  The parser will replace the parts `{gitRevision|path|line}`
 
 #### MetaCheckerSchemaOptions
 
@@ -367,7 +412,7 @@ It needs to be annotated with @component, otherwise it will be recognized as a f
 
 #### @alpha
 
-> [!NOTE]
+> \[!NOTE]
 > These release tags cannot take effect in defineEmits
 
 For methods on the component instance itself, use release tags like `@public` to expose

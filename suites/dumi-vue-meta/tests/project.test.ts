@@ -1,11 +1,7 @@
 import path from 'path';
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
 import { Project, createProject } from '../src/index';
-import { toRecord } from './utils';
-
-const fixturesPath = path.resolve(__dirname, './fixtures');
-const entry = path.resolve(__dirname, 'fixtures/index.ts');
-const tsconfigPath = path.resolve(__dirname, 'fixtures/tsconfig.json');
+import { entry, fixturesPath, rootPath, toRecord, tsconfigPath } from './utils';
 
 describe('project file manipulation', () => {
   // TODO: should use vitual filesystem, and should mock partial filesystem
@@ -59,13 +55,45 @@ export const Button = defineComponent({
 describe('create project api', () => {
   let project!: Project;
 
-  test('create with RootPath', () => {
+  test('create without parameters', () => {
+    project = createProject();
+    expect((project as any).rootPath).toBe(process.cwd());
+  });
+
+  test('create with rootPath', () => {
     project = createProject(fixturesPath);
-    expect(project.service.getExportNames(entry)).toContain('Foo');
+    expect(project.getService().getExportNames(entry)).toContain('Foo');
+  });
+
+  test('create with tsconfigPath', () => {
+    project = createProject({
+      tsconfigPath,
+    });
+    expect((project as any).rootPath).toBe(path.dirname(tsconfigPath));
+  });
+
+  test('create with tsconfigPath and rootPath', () => {
+    project = createProject({
+      rootPath,
+      tsconfigPath,
+    });
+    expect((project as any).rootPath).toBe(rootPath);
+    expect((project as any).globalComponentName).toBe(
+      tsconfigPath + '.global.vue',
+    );
+  });
+
+  test('ensure correct tsconfig path', () => {
+    expect(() =>
+      createProject({
+        rootPath,
+        tsconfigPath: path.join(rootPath, 'tsconfig.vue.json'),
+      }),
+    ).toThrowError(/no such file or directory/);
   });
 
   afterEach(() => {
-    project.close();
+    project && project.close();
   });
 });
 
@@ -76,11 +104,9 @@ describe('schema config', () => {
     project = createProject({
       tsconfigPath,
       checkerOptions: {
-        schema: {
-          externalSymbolLinkMappings: {
-            typescript: {
-              HTMLElement: elementUrl,
-            },
+        externalSymbolLinkMappings: {
+          typescript: {
+            HTMLElement: elementUrl,
           },
         },
       },
@@ -97,9 +123,7 @@ describe('schema config', () => {
     project = createProject({
       tsconfigPath,
       checkerOptions: {
-        schema: {
-          disableExternalLinkAutoDectect: true,
-        },
+        disableExternalLinkAutoDectect: true,
       },
     });
 

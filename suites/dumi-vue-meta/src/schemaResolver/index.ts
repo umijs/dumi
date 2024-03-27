@@ -1,4 +1,7 @@
+import path from 'typesafe-path';
 import type ts from 'typescript/lib/tsserverlibrary';
+import type { Repo } from '../checker';
+import { VueLanguageService } from '../checker';
 import {
   EventMeta,
   ExposeMeta,
@@ -8,6 +11,7 @@ import {
   PropertyMetaKind,
   PropertyMetaSchema,
   PropertySchemaResolver,
+  PropertySourceReference,
   TypeParamPropertyMetaSchema,
   UnknownSymbolResolver,
 } from '../types';
@@ -35,7 +39,7 @@ const externalSymbolResolver = createCachedResolver(esResolver);
 
 export class SchemaResolver {
   private schemaCache = new WeakMap<ts.Type, PropertyMetaSchema>();
-  private schemaOptions!: NonNullable<MetaCheckerOptions['schema']>;
+  private schemaOptions!: NonNullable<MetaCheckerOptions>;
 
   /**
    * Used to store all declared interfaces or types
@@ -44,10 +48,12 @@ export class SchemaResolver {
   private readonly typeCache = new WeakMap<ts.Type, string>();
 
   constructor(
-    private typeChecker: ts.TypeChecker,
-    private symbolNode: ts.Expression,
-    options: MetaCheckerOptions,
     private ts: typeof import('typescript/lib/tsserverlibrary'),
+    private typeChecker: ts.TypeChecker,
+    private langService: VueLanguageService,
+    private symbolNode: ts.Expression,
+    private repo: Repo,
+    options: MetaCheckerOptions,
   ) {
     this.schemaOptions = Object.assign(
       {
@@ -55,7 +61,7 @@ export class SchemaResolver {
         ignoreTypeArgs: false,
         disableExternalLinkAutoDectect: false,
       },
-      options.schema,
+      options,
     );
   }
 
@@ -312,6 +318,33 @@ export class SchemaResolver {
     return schema;
   }
 
+  private getSource(
+    node:
+      | ts.TypeAliasDeclaration
+      | ts.TypeOnlyAliasDeclaration
+      | ts.InterfaceDeclaration
+      | ts.TypeParameterDeclaration,
+  ): PropertySourceReference {
+    const { ts, langService } = this;
+    const sourceFile = node.getSourceFile();
+    const { line, character } = ts.getLineAndCharacterOfPosition(
+      sourceFile,
+      node.getStart(),
+    );
+    const fullFileName = sourceFile.fileName;
+    const fileName = path.relative(
+      langService.host.rootPath as path.PosixPath,
+      fullFileName as path.PosixPath,
+    );
+    const line1Based = line + 1;
+    return {
+      fileName,
+      line: line1Based,
+      character,
+      url: this.repo?.getURL(fullFileName, line1Based),
+    };
+  }
+
   public resolveSchema(subtype: ts.Type): PropertyMetaSchema {
     const ref = this.getRefByType(subtype);
     if (ref) return { ref, kind: PropertyMetaKind.REF };
@@ -338,11 +371,12 @@ export class SchemaResolver {
         schema.kind !== PropertyMetaKind.UNKNOWN &&
         (ts.isTypeOnlyImportOrExportDeclaration(node) ||
           ts.isTypeAliasDeclaration(node) ||
-          ts.isInterfaceDeclaration(node))
+          ts.isInterfaceDeclaration(node) ||
+          ts.isTypeParameterDeclaration(node))
       ) {
-        const fileName = node.getSourceFile().fileName;
-        Object.assign(schema, { fileName });
-        const ref = this.setType(type, fileName, subtype, schema);
+        const source = this.getSource(node);
+        Object.assign(schema, { source: [source] });
+        const ref = this.setType(type, source.fileName, subtype, schema);
         return { ref, kind: PropertyMetaKind.REF };
       }
     }

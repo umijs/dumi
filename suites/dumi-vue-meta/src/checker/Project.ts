@@ -1,10 +1,14 @@
-import type { ParsedCommandLine } from '@vue/language-core';
+import type {
+  ParsedCommandLine,
+  TypeScriptLanguageHost,
+} from '@vue/language-core';
 import { resolveVueCompilerOptions } from '@vue/language-core';
 import * as path from 'typesafe-path/posix';
 import type ts from 'typescript/lib/tsserverlibrary';
 import type { MetaCheckerOptions } from '../types';
 import { getPosixPath } from '../utils';
 import { TypeCheckService } from './TypeCheckService';
+import { createRepo } from './repo';
 
 type PatchAction = 'add' | 'update' | 'change' | 'unlink' | 'remove';
 
@@ -14,7 +18,7 @@ type PatchAction = 'add' | 'update' | 'change' | 'unlink' | 'remove';
  */
 export class Project {
   private parsedCommandLine!: ParsedCommandLine;
-  private fileNames!: path.PosixPath[];
+  private fileNames!: Set<path.PosixPath>;
   private projectVersion = 0;
   private scriptSnapshots = new Map<string, ts.IScriptSnapshot>();
 
@@ -27,40 +31,39 @@ export class Project {
     private loadParsedCommandLine: () => ParsedCommandLine,
     private ts: typeof import('typescript/lib/tsserverlibrary'),
     checkerOptions: MetaCheckerOptions,
-    rootPath: string,
-    globalComponentName: string,
+    private rootPath: string,
+    private globalComponentName: string,
   ) {
-    this.parsedCommandLine = loadParsedCommandLine();
-    this.fileNames = (
-      this.parsedCommandLine.fileNames as path.OsPath[]
-    ).map<path.PosixPath>((path) => getPosixPath(path));
-
+    this.loadFileNames();
+    const _host: TypeScriptLanguageHost = {
+      workspacePath: rootPath,
+      rootPath,
+      getProjectVersion: () => this.projectVersion.toString(),
+      // @ts-ignore
+      getCompilationSettings: () => this.parsedCommandLine.options,
+      getScriptFileNames: () => [...this.fileNames],
+      getProjectReferences: () => this.parsedCommandLine.projectReferences,
+      getScriptSnapshot: (fileName) => {
+        if (!this.scriptSnapshots.has(fileName)) {
+          const fileText = ts.sys.readFile(fileName);
+          if (fileText !== undefined) {
+            this.scriptSnapshots.set(
+              fileName,
+              ts.ScriptSnapshot.fromString(fileText),
+            );
+          }
+        }
+        return this.scriptSnapshots.get(fileName);
+      },
+    };
+    const repo = createRepo(rootPath, this.fileNames, checkerOptions);
     this.service = new TypeCheckService(
       ts,
       checkerOptions,
       resolveVueCompilerOptions(this.parsedCommandLine.vueOptions),
       globalComponentName,
-      {
-        workspacePath: rootPath,
-        rootPath: rootPath,
-        getProjectVersion: () => this.projectVersion.toString(),
-        // @ts-ignore
-        getCompilationSettings: () => this.parsedCommandLine.options,
-        getScriptFileNames: () => this.fileNames,
-        getProjectReferences: () => this.parsedCommandLine.projectReferences,
-        getScriptSnapshot: (fileName) => {
-          if (!this.scriptSnapshots.has(fileName)) {
-            const fileText = ts.sys.readFile(fileName);
-            if (fileText !== undefined) {
-              this.scriptSnapshots.set(
-                fileName,
-                ts.ScriptSnapshot.fromString(fileText),
-              );
-            }
-          }
-          return this.scriptSnapshots.get(fileName);
-        },
-      },
+      _host,
+      repo,
     );
   }
 
@@ -79,12 +82,14 @@ export class Project {
   }
 
   public addFile(fileName: string, text: string) {
+    const posixFileName = getPosixPath(fileName);
+    this.fileNames.add(posixFileName);
     this.updateFile(fileName, text);
   }
 
   public deleteFile(fileName: string) {
     const posixFileName = getPosixPath(fileName);
-    this.fileNames = this.fileNames.filter((f) => f !== posixFileName);
+    this.fileNames.delete(posixFileName);
     this.projectVersion++;
   }
 
@@ -108,11 +113,19 @@ export class Project {
     });
   }
 
-  public reload() {
+  private loadFileNames() {
     this.parsedCommandLine = this.loadParsedCommandLine();
-    this.fileNames = (
-      this.parsedCommandLine.fileNames as path.OsPath[]
-    ).map<path.PosixPath>((path) => getPosixPath(path));
+    this.fileNames = (this.parsedCommandLine.fileNames as path.OsPath[]).reduce(
+      (names, fileName) => {
+        names.add(getPosixPath(fileName));
+        return names;
+      },
+      new Set<path.PosixPath>(),
+    );
+  }
+
+  public reload() {
+    this.loadFileNames();
     this.clearCache();
   }
 
@@ -121,6 +134,7 @@ export class Project {
    */
   clearCache() {
     this.scriptSnapshots.clear();
+    this.fileNames.clear();
     this.projectVersion++;
   }
 

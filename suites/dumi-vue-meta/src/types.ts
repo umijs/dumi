@@ -208,71 +208,72 @@ export interface SignatureMetaSchema {
   }[];
 }
 
-export type LiteralPropertyMetaSchema = {
+export interface BasePropertyMetaSchema {
+  kind: PropertyMetaKind;
+  /**
+   * interface, type alias, type parameter
+   */
+  source?: PropertySourceReference[];
+}
+
+export interface LiteralPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.LITERAL;
   type: string;
   value: string;
-  source?: PropertySourceReference[];
-};
+}
 
-export type BasicPropertyMetaSchema = {
+export interface BasicPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.BASIC;
-  source?: PropertySourceReference[];
   type: string;
-};
+}
 
-export type EnumPropertyMetaSchema = {
+export interface EnumPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.ENUM;
   type: string;
   schema?: PropertyMetaSchema[];
-  source?: PropertySourceReference[];
   ref?: string;
-};
+}
 
-export type ArrayPropertyMetaSchema = {
+export interface ArrayPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.ARRAY;
   type: string;
   schema?: PropertyMetaSchema[];
-  source?: PropertySourceReference[];
   ref?: string;
-};
+}
 
-export type FuncPropertyMetaSchema = {
+export interface FuncPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.FUNC;
   type: string;
   schema?: SignatureMetaSchema;
-  source?: PropertySourceReference[];
   ref?: string;
-};
+}
 
-export type ObjectPropertyMetaSchema = {
+export interface ObjectPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.OBJECT;
   type: string;
   schema?: Record<string, PropertyMeta>;
-  source?: PropertySourceReference[];
   ref?: string;
-};
+}
 
-export type TypeParamPropertyMetaSchema = {
+export interface TypeParamPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.TYPE_PARAM;
   type: string;
   name: string;
   schema?: TypeParamMetaSchema;
-  source?: PropertySourceReference[];
   ref?: string;
-};
+}
 /**
  * Note: The unknown type is mainly used to carry types that are not parsed themselves,
  * but whose type parameters need to be checked.
  */
-export type UnknownPropertyMetaSchema = {
+export interface UnknownPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.UNKNOWN;
   type: string;
   typeParams?: PropertyMetaSchema[];
   ref?: string;
-};
+}
 
-export type ExternalRefPropertyMetaSchema = {
+export interface ExternalRefPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.REF;
   typeParams?: PropertyMetaSchema[];
   name: string;
@@ -280,12 +281,12 @@ export type ExternalRefPropertyMetaSchema = {
    * If it is not a local type, you can use this external url
    */
   externalUrl: string;
-};
+}
 
-export type LocalRefPropertyMetaSchema = {
+export interface LocalRefPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.REF;
   ref: string;
-};
+}
 /**
  * This type is just a placeholder, it points to other types
  */
@@ -377,10 +378,34 @@ export interface MetaCheckerSchemaOptions {
  * Checker Options
  * @group options
  */
-export interface MetaCheckerOptions {
-  schema?: MetaCheckerSchemaOptions;
+export interface MetaCheckerOptions extends MetaCheckerSchemaOptions {
   forceUseTs?: boolean;
   printer?: ts.PrinterOptions;
+  /**
+   * Disable production of source links, the default is false
+   */
+  disableSources?: boolean;
+  /**
+   * Prohibit obtaining git repo URL, git revision, and other information through git commands,
+   * the default is false
+   */
+  disableGit?: boolean;
+  /**
+   * source link template, must be set when you set `disableGit`.
+   *
+   * A typical template looks like this: `https://github.com/umijs/dumi/{gitRevision}/{path}#L{line}`.
+   *
+   * The parser will replace the parts `{gitRevision|path|line}`
+   */
+  sourceLinkTemplate?: string;
+  /**
+   * https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection
+   */
+  gitRevision?: string;
+  /**
+   * Default is "origin"
+   */
+  gitRemote?: string;
   /**
    * Whether to filter global props, the default is true
    *

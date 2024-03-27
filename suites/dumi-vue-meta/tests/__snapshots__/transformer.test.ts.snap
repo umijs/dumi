@@ -214,6 +214,14 @@ exports[`dumi-assets-types transformer 1`] = `
             "description": "",
             "items": {
               "className": "A",
+              "source": [
+                {
+                  "character": 0,
+                  "fileName": "suites/dumi-vue-meta/tests/fixtures/props.ts",
+                  "line": 8,
+                  "url": "https://github.com/umijs/dumi/blob/557ec718/suites/dumi-vue-meta/tests/fixtures/props.ts#L8",
+                },
+              ],
               "type": "any",
             },
             "tags": {},
@@ -308,6 +316,14 @@ exports[`dumi-assets-types transformer 1`] = `
             "oneOf": [
               {
                 "className": "A",
+                "source": [
+                  {
+                    "character": 0,
+                    "fileName": "suites/dumi-vue-meta/tests/fixtures/props.ts",
+                    "line": 8,
+                    "url": "https://github.com/umijs/dumi/blob/557ec718/suites/dumi-vue-meta/tests/fixtures/props.ts#L8",
+                  },
+                ],
                 "type": "any",
               },
               {
@@ -330,6 +346,14 @@ exports[`dumi-assets-types transformer 1`] = `
                   "key": "args",
                   "schema": {
                     "className": "PromiseArgs",
+                    "source": [
+                      {
+                        "character": 0,
+                        "fileName": "suites/dumi-vue-meta/tests/fixtures/props.ts",
+                        "line": 16,
+                        "url": "https://github.com/umijs/dumi/blob/557ec718/suites/dumi-vue-meta/tests/fixtures/props.ts#L16",
+                      },
+                    ],
                     "type": "any",
                   },
                 },
@@ -649,6 +673,14 @@ exports[`dumi-assets-types transformer 1`] = `
             "description": "",
             "items": {
               "className": "A",
+              "source": [
+                {
+                  "character": 0,
+                  "fileName": "suites/dumi-vue-meta/tests/fixtures/props.ts",
+                  "line": 8,
+                  "url": "https://github.com/umijs/dumi/blob/557ec718/suites/dumi-vue-meta/tests/fixtures/props.ts#L8",
+                },
+              ],
               "type": "any",
             },
             "tags": {},
@@ -743,6 +775,14 @@ exports[`dumi-assets-types transformer 1`] = `
             "oneOf": [
               {
                 "className": "A",
+                "source": [
+                  {
+                    "character": 0,
+                    "fileName": "suites/dumi-vue-meta/tests/fixtures/props.ts",
+                    "line": 8,
+                    "url": "https://github.com/umijs/dumi/blob/557ec718/suites/dumi-vue-meta/tests/fixtures/props.ts#L8",
+                  },
+                ],
                 "type": "any",
               },
               {
@@ -765,6 +805,14 @@ exports[`dumi-assets-types transformer 1`] = `
                   "key": "args",
                   "schema": {
                     "className": "PromiseArgs",
+                    "source": [
+                      {
+                        "character": 0,
+                        "fileName": "suites/dumi-vue-meta/tests/fixtures/props.ts",
+                        "line": 16,
+                        "url": "https://github.com/umijs/dumi/blob/557ec718/suites/dumi-vue-meta/tests/fixtures/props.ts#L16",
+                      },
+                    ],
                     "type": "any",
                   },
                 },
@@ -966,6 +1014,14 @@ exports[`dumi-assets-types transformer 1`] = `
                   "schema": {
                     "items": {
                       "className": "Item",
+                      "source": [
+                        {
+                          "character": 46,
+                          "fileName": "suites/dumi-vue-meta/tests/fixtures/tsx/list.tsx",
+                          "line": 25,
+                          "url": "https://github.com/umijs/dumi/blob/557ec718/suites/dumi-vue-meta/tests/fixtures/tsx/list.tsx#L25",
+                        },
+                      ],
                       "type": "any",
                     },
                     "type": "array",
@@ -1001,6 +1057,14 @@ exports[`dumi-assets-types transformer 1`] = `
                   {
                     "items": {
                       "className": "BaseItem",
+                      "source": [
+                        {
+                          "character": 0,
+                          "fileName": "suites/dumi-vue-meta/tests/fixtures/tsx/list.tsx",
+                          "line": 10,
+                          "url": "https://github.com/umijs/dumi/blob/557ec718/suites/dumi-vue-meta/tests/fixtures/tsx/list.tsx#L10",
+                        },
+                      ],
                       "type": "any",
                     },
                     "type": "array",
@@ -1013,6 +1077,14 @@ exports[`dumi-assets-types transformer 1`] = `
                       {
                         "items": {
                           "className": "BaseItem",
+                          "source": [
+                            {
+                              "character": 0,
+                              "fileName": "suites/dumi-vue-meta/tests/fixtures/tsx/list.tsx",
+                              "line": 10,
+                              "url": "https://github.com/umijs/dumi/blob/557ec718/suites/dumi-vue-meta/tests/fixtures/tsx/list.tsx#L10",
+                            },
+                          ],
                           "type": "any",
                         },
                         "type": "array",
@@ -1134,6 +1206,14 @@ exports[`dumi-assets-types transformer 1`] = `
                 "isAsync": false,
                 "returnType": {
                   "className": "T",
+                  "source": [
+                    {
+                      "character": 33,
+                      "fileName": "suites/dumi-vue-meta/tests/fixtures/tsx/use.ts",
+                      "line": 6,
+                      "url": "https://github.com/umijs/dumi/blob/557ec718/suites/dumi-vue-meta/tests/fixtures/tsx/use.ts#L6",
+                    },
+                  ],
                   "type": "any",
                 },
               },
@@ -1151,6 +1231,14 @@ exports[`dumi-assets-types transformer 1`] = `
                     "key": "upstreamValue",
                     "schema": {
                       "className": "T",
+                      "source": [
+                        {
+                          "character": 33,
+                          "fileName": "suites/dumi-vue-meta/tests/fixtures/tsx/use.ts",
+                          "line": 6,
+                          "url": "https://github.com/umijs/dumi/blob/557ec718/suites/dumi-vue-meta/tests/fixtures/tsx/use.ts#L6",
+                        },
+                      ],
                       "type": "any",
                     },
                   },
@@ -1159,6 +1247,14 @@ exports[`dumi-assets-types transformer 1`] = `
                     "key": "oldValue",
                     "schema": {
                       "className": "T",
+                      "source": [
+                        {
+                          "character": 33,
+                          "fileName": "suites/dumi-vue-meta/tests/fixtures/tsx/use.ts",
+                          "line": 6,
+                          "url": "https://github.com/umijs/dumi/blob/557ec718/suites/dumi-vue-meta/tests/fixtures/tsx/use.ts#L6",
+                        },
+                      ],
                       "type": "any",
                     },
                   },
@@ -1166,6 +1262,14 @@ exports[`dumi-assets-types transformer 1`] = `
                 "isAsync": false,
                 "returnType": {
                   "className": "T",
+                  "source": [
+                    {
+                      "character": 33,
+                      "fileName": "suites/dumi-vue-meta/tests/fixtures/tsx/use.ts",
+                      "line": 6,
+                      "url": "https://github.com/umijs/dumi/blob/557ec718/suites/dumi-vue-meta/tests/fixtures/tsx/use.ts#L6",
+                    },
+                  ],
                   "type": "any",
                 },
               },
@@ -1183,6 +1287,14 @@ exports[`dumi-assets-types transformer 1`] = `
                     "key": "internalValue",
                     "schema": {
                       "className": "T",
+                      "source": [
+                        {
+                          "character": 33,
+                          "fileName": "suites/dumi-vue-meta/tests/fixtures/tsx/use.ts",
+                          "line": 6,
+                          "url": "https://github.com/umijs/dumi/blob/557ec718/suites/dumi-vue-meta/tests/fixtures/tsx/use.ts#L6",
+                        },
+                      ],
                       "type": "any",
                     },
                   },
@@ -1191,6 +1303,14 @@ exports[`dumi-assets-types transformer 1`] = `
                     "key": "newValue",
                     "schema": {
                       "className": "T",
+                      "source": [
+                        {
+                          "character": 33,
+                          "fileName": "suites/dumi-vue-meta/tests/fixtures/tsx/use.ts",
+                          "line": 6,
+                          "url": "https://github.com/umijs/dumi/blob/557ec718/suites/dumi-vue-meta/tests/fixtures/tsx/use.ts#L6",
+                        },
+                      ],
                       "type": "any",
                     },
                   },

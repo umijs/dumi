@@ -67,6 +67,7 @@ export const dumiTransformer: MetaTransformer<DumiTransformResult> = (
         .map((item) => item.text)
         .join('\n');
     }
+
     return {
       ...partialProp,
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
@@ -115,7 +116,10 @@ export const dumiTransformer: MetaTransformer<DumiTransformResult> = (
               type: 'any',
               className: (referenceType as ObjectPropertySchema).type,
             } as BasePropertySchema<'any'>)
-          : transformSchema(referencedTypes[schema.ref]);
+          : transformSchema(referenceType);
+        if (referenceType.source) {
+          type.source = referenceType.source;
+        }
         cachedTypes[schema.ref] = type;
         return type;
       }

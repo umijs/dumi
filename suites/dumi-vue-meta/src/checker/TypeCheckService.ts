@@ -16,7 +16,10 @@ import {
   type SingleComponentMeta,
 } from '../types';
 import { getComment, getTag } from '../utils';
-import { createVueLanguageService } from './createVueLanguageService';
+import {
+  createVueLanguageService,
+  type VueLanguageService,
+} from './createVueLanguageService';
 import {
   getExports,
   getFunctionSignatures,
@@ -24,13 +27,14 @@ import {
   readTsComponentDefaultProps,
   readVueComponentDefaultProps,
 } from './helpers';
+import type { Repo } from './repo';
 
 /**
  * Provide component metadata checker services
  * @group project.service
  */
 export class TypeCheckService {
-  private langService!: ReturnType<typeof createVueLanguageService>;
+  private langService!: VueLanguageService;
   private globalPropNames?: string[];
   private options!: MetaCheckerOptions;
 
@@ -40,6 +44,7 @@ export class TypeCheckService {
     private vueCompilerOptions: VueCompilerOptions,
     private globalComponentName: string,
     _host: TypeScriptLanguageHost,
+    private repo: Repo,
   ) {
     this.options = Object.assign(
       {
@@ -369,7 +374,7 @@ export class TypeCheckService {
     entry: string,
     transformer?: MetaTransformer<T>,
   ): T {
-    const { langService, ts, options } = this;
+    const { langService, ts, options, repo } = this;
     const program = langService.tsLs.getProgram()!;
     const typeChecker = program.getTypeChecker();
     const { symbolNode, exports, exportedTypes } = getExports(
@@ -381,10 +386,12 @@ export class TypeCheckService {
     );
 
     const typeResolver = new SchemaResolver(
-      typeChecker,
-      symbolNode,
-      options,
       ts,
+      typeChecker,
+      langService,
+      symbolNode,
+      repo,
+      options,
     );
 
     typeResolver.preResolve(exportedTypes);
@@ -536,7 +543,7 @@ export class TypeCheckService {
     componentPath: string,
     exportName = 'default',
   ): SingleComponentMeta {
-    const { langService, ts, options } = this;
+    const { langService, ts, options, repo } = this;
     const program = langService.tsLs.getProgram()!;
     const typeChecker = program.getTypeChecker();
     const { symbolNode, exports } = getExports(
@@ -552,7 +559,14 @@ export class TypeCheckService {
     if (!_export) {
       throw `Could not find export ${exportName}`;
     }
-    const resolver = new SchemaResolver(typeChecker, symbolNode!, options, ts);
+    const resolver = new SchemaResolver(
+      ts,
+      typeChecker,
+      langService,
+      symbolNode!,
+      repo,
+      options,
+    );
     const component = this.getSingleComponentMeta(
       typeChecker,
       symbolNode,
