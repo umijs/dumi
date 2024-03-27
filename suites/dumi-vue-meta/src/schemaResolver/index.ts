@@ -1,4 +1,4 @@
-import path from 'typesafe-path';
+import * as path from 'typesafe-path/posix';
 import type ts from 'typescript/lib/tsserverlibrary';
 import type { Repo } from '../checker';
 import { VueLanguageService } from '../checker';

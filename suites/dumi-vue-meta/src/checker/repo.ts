@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import { PosixPath } from 'typesafe-path';
+import type { PosixPath } from 'typesafe-path/posix';
 import { MetaCheckerOptions } from '../types';
 import { getPosixPath } from '../utils';
 

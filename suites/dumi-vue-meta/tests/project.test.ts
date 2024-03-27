@@ -1,6 +1,7 @@
-import path from 'path';
+import path from 'node:path/posix';
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
 import { Project, createProject } from '../src/index';
+import { getPosixPath } from '../src/utils';
 import { entry, fixturesPath, rootPath, toRecord, tsconfigPath } from './utils';
 
 describe('project file manipulation', () => {
@@ -9,7 +10,7 @@ describe('project file manipulation', () => {
 
   beforeAll(() => {
     project = createProject({
-      tsconfigPath: path.resolve(fixturesPath, './tsconfig.json'),
+      tsconfigPath,
     });
   });
   test('patchFiles', () => {
@@ -48,7 +49,7 @@ export const Button = defineComponent({
   });
 
   afterAll(() => {
-    project.close();
+    project && project.close();
   });
 });
 
@@ -57,7 +58,7 @@ describe('create project api', () => {
 
   test('create without parameters', () => {
     project = createProject();
-    expect((project as any).rootPath).toBe(process.cwd());
+    expect((project as any).rootPath).toBe(getPosixPath(process.cwd()));
   });
 
   test('create with rootPath', () => {
@@ -69,7 +70,9 @@ describe('create project api', () => {
     project = createProject({
       tsconfigPath,
     });
-    expect((project as any).rootPath).toBe(path.dirname(tsconfigPath));
+    expect((project as any).rootPath).toBe(
+      path.dirname(getPosixPath(tsconfigPath)),
+    );
   });
 
   test('create with tsconfigPath and rootPath', () => {
@@ -77,9 +80,9 @@ describe('create project api', () => {
       rootPath,
       tsconfigPath,
     });
-    expect((project as any).rootPath).toBe(rootPath);
+    expect((project as any).rootPath).toBe(getPosixPath(rootPath));
     expect((project as any).globalComponentName).toBe(
-      tsconfigPath + '.global.vue',
+      getPosixPath(tsconfigPath) + '.global.vue',
     );
   });
 
