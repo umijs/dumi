@@ -13,16 +13,14 @@ export default {
   vue: {
     tsconfigPath: path.resolve(__dirname, './tsconfig.vue.json'),
     checkerOptions: {
-      schema: {
-        externalSymbolLinkMappings: {
-          typescript: {
-            Promise:
-              'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise',
-          },
-          '@vue/runtime-core': {
-            VNodeChild:
-              'https://github.com/vuejs/core/blob/main/packages/runtime-core/src/vnode.ts#L136',
-          },
+      externalSymbolLinkMappings: {
+        typescript: {
+          Promise:
+            'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise',
+        },
+        '@vue/runtime-core': {
+          VNodeChild:
+            'https://github.com/vuejs/core/blob/main/packages/runtime-core/src/vnode.ts#L136',
         },
       },
     },
