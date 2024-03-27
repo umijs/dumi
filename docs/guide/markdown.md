@@ -262,7 +262,7 @@ yarn add -D dumi
 pnpm add -D dumi
 \`\`\`
 
-\`\`\`ts [.dumirc.ts]
+\`\`\`ts [.dumirc.ts] {3}
 import { defineConfig } from 'dumi';
 
 export default defineConfig({
@@ -291,7 +291,7 @@ yarn add -D dumi
 pnpm add -D dumi
 ```
 
-```ts [.dumirc.ts]
+```ts [.dumirc.ts] {3}
 import { defineConfig } from 'dumi';
 
 export default defineConfig({
