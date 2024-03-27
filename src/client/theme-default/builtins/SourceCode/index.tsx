@@ -29,6 +29,7 @@ interface SourceCodeProps {
   highlightLines?: number[];
   extra?: ReactNode;
   textarea?: ReactNode;
+  title?: string;
 }
 
 const SourceCode: FC<SourceCodeProps> = (props) => {

@@ -69,7 +69,7 @@ declare module 'vfile' {
 export interface IMdTransformerOptions {
   cwd: string;
   fileAbsPath: string;
-  alias: object;
+  alias: ResolveOptions['alias'];
   parentAbsPath?: string;
   techStacks: IDumiTechStack[];
   resolve: IDumiConfig['resolve'];
