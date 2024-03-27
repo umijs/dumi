@@ -1,21 +1,25 @@
-import { AtomComponentAsset } from 'dumi-assets-types';
-import {
+import type { AtomComponentAsset, AtomFunctionAsset } from 'dumi-assets-types';
+import type {
+  BasePropertySchema,
   FunctionPropertySchema,
   ObjectPropertySchema,
   PropertySchema,
+  ReferencePropertySchema,
 } from 'dumi-assets-types/typings/atom/props';
-import { TypeMap } from 'dumi-assets-types/typings/atom/props/types';
+import type { TypeMap } from 'dumi-assets-types/typings/atom/props/types';
 import type {
   ComponentLibraryMeta,
   ComponentMeta,
   EventMeta,
+  FuncPropertyMetaSchema,
   MetaTransformer,
   PropertyMeta,
   PropertyMetaSchema,
   SlotMeta,
+  TypeParamPropertyMetaSchema,
 } from './types';
 import { PropertyMetaKind } from './types';
-import { BasicTypes } from './utils';
+import { BasicTypes, getTag, isExternalRefSchema } from './utils';
 
 function getPropertySchema(schema: PropertySchema | string) {
   if (typeof schema === 'string') {
@@ -26,22 +30,27 @@ function getPropertySchema(schema: PropertySchema | string) {
   return schema;
 }
 
-export const dumiTransfomer: MetaTransformer<
-  Record<string, AtomComponentAsset>
-> = (meta: ComponentLibraryMeta) => {
+export interface DumiTransformResult {
+  components: Record<string, AtomComponentAsset>;
+  functions: Record<string, AtomFunctionAsset>;
+}
+
+export const dumiTransformer: MetaTransformer<DumiTransformResult> = (
+  meta: ComponentLibraryMeta,
+) => {
   const referencedTypes = meta.types;
-  const cachedTypes: Record<string, PropertySchema | string> = {};
+  const cachedTypes: Record<string, PropertySchema> = {};
 
   function createPropertySchema(prop: PropertyMeta | EventMeta | SlotMeta) {
     const partialProp: Partial<PropertySchema> = {
       title: prop.name,
       description: prop.description,
-      tags: prop.tags,
+      tags: prop.comment,
     };
-    let tagDef = prop?.tags?.default;
+    let tagDef = getTag(prop.comment, 'default', 'block');
     let def: string | undefined;
-    if (tagDef?.length) {
-      def = tagDef[0];
+    if (tagDef?.content) {
+      def = tagDef.content[0]?.text;
     } else if (prop.default !== undefined) {
       def = prop.default;
     }
@@ -52,20 +61,21 @@ export const dumiTransfomer: MetaTransformer<
       } catch (error) {}
     }
 
-    const desc = prop?.tags?.['description'];
-    if (desc?.length) {
-      partialProp.description = desc.join('\n');
+    const desc = getTag(prop.comment, 'description', 'block');
+    if (desc?.content) {
+      partialProp.description = desc.content
+        .map((item) => item.text)
+        .join('\n');
     }
+
     return {
       ...partialProp,
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
       ...getPropertySchema(transformSchema(prop.schema)),
-    };
+    } as PropertySchema;
   }
 
-  function transformSchema(
-    schema: PropertyMetaSchema,
-  ): PropertySchema | string {
+  function transformSchema(schema: PropertyMetaSchema): PropertySchema {
     // It may not need to be checked, or it may be a basic type
     if (typeof schema === 'string') {
       const basicType = BasicTypes[schema];
@@ -78,11 +88,38 @@ export const dumiTransfomer: MetaTransformer<
     }
     switch (schema.kind) {
       case PropertyMetaKind.REF: {
+        if (isExternalRefSchema(schema)) {
+          const referenceSchema: ReferencePropertySchema = {
+            type: 'reference',
+            name: schema.name,
+            externalUrl: schema.externalUrl,
+          };
+          if (schema.typeParams) {
+            referenceSchema.typeParameters = schema.typeParams.map((param) =>
+              transformSchema(param),
+            );
+          }
+          return referenceSchema;
+        }
         const cachedType = cachedTypes[schema.ref];
         if (cachedType) {
           return cachedType;
         }
-        const type = transformSchema(referencedTypes[schema.ref]);
+        const referenceType = referencedTypes[schema.ref];
+        const type = [
+          PropertyMetaKind.ARRAY,
+          PropertyMetaKind.OBJECT,
+          PropertyMetaKind.FUNC,
+          PropertyMetaKind.ENUM,
+        ].includes(referenceType.kind)
+          ? ({
+              type: 'any',
+              className: (referenceType as ObjectPropertySchema).type,
+            } as BasePropertySchema<'any'>)
+          : transformSchema(referenceType);
+        if (referenceType.source) {
+          type.source = referenceType.source;
+        }
         cachedTypes[schema.ref] = type;
         return type;
       }
@@ -131,18 +168,42 @@ export const dumiTransfomer: MetaTransformer<
           type: 'function',
           signature: {
             isAsync: functionSchema.isAsync,
-            arguments: functionSchema.arguments.map((arg) => ({
-              key: arg.key,
-              hasQuestionToken: !arg.required,
-              type: arg.type,
-            })),
+            arguments: functionSchema.arguments.map((arg) => {
+              const argSchema = {
+                key: arg.key,
+                hasQuestionToken: !arg.required,
+                schema: arg.schema
+                  ? transformSchema(arg.schema)
+                  : { type: 'any', className: arg.type },
+              };
+              return argSchema;
+            }),
             returnType: transformSchema(functionSchema.returnType),
           },
         } as FunctionPropertySchema;
       }
+      case PropertyMetaKind.TYPE_PARAM:
+        return {
+          type: 'any',
+          className: (schema as TypeParamPropertyMetaSchema).name,
+        };
       case PropertyMetaKind.UNKNOWN:
-        return schema.type;
+        return {
+          type: 'any',
+          className: schema.type,
+        };
     }
+  }
+
+  function transformFunction(name: string, func: FuncPropertyMetaSchema) {
+    const { signature } = transformSchema(func) as FunctionPropertySchema;
+    const asset: AtomFunctionAsset = {
+      type: 'FUNCTION',
+      signature,
+      id: name,
+      title: name,
+    };
+    return asset;
   }
 
   function transformComponent(component: ComponentMeta) {
@@ -190,7 +251,7 @@ export const dumiTransfomer: MetaTransformer<
           return acc;
         }, eventsFromProps),
       },
-      methodsConfig: {
+      imperativeConfig: {
         type: 'object',
         properties: exposed.reduce((acc, method) => {
           acc[method.name] = createPropertySchema(method);
@@ -204,8 +265,19 @@ export const dumiTransfomer: MetaTransformer<
     return asset;
   }
 
-  return Object.entries(meta.components).reduce((result, [name, component]) => {
-    result[name] = transformComponent(component);
-    return result;
-  }, {} as Record<string, AtomComponentAsset>);
+  const result: DumiTransformResult = {
+    functions: {},
+    components: {},
+  };
+
+  Object.entries(meta.functions).reduce((acc, [name, func]) => {
+    acc[name] = transformFunction(name, func);
+    return acc;
+  }, result.functions);
+  Object.entries(meta.components).reduce((acc, [name, component]) => {
+    acc[name] = transformComponent(component);
+    return acc;
+  }, result.components);
+
+  return result;
 };

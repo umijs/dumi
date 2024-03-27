@@ -1,17 +1,25 @@
+import * as path from 'typesafe-path/posix';
 import type ts from 'typescript/lib/tsserverlibrary';
+import type { Repo } from '../checker';
+import { VueLanguageService } from '../checker';
 import {
-  CustomSchemaResolver,
   EventMeta,
   ExposeMeta,
+  FuncPropertyMetaSchema,
   MetaCheckerOptions,
   PropertyMeta,
   PropertyMetaKind,
   PropertyMetaSchema,
+  PropertySchemaResolver,
+  PropertySourceReference,
+  TypeParamPropertyMetaSchema,
+  UnknownSymbolResolver,
 } from '../types';
 import {
   BasicTypes,
+  createCachedResolver,
   createRef,
-  getJsDocTags,
+  getComment,
   getNodeOfSymbol,
   getNodeOfType,
   getSignatureArgsMeta,
@@ -20,12 +28,18 @@ import {
   isPromiseLike,
   reducer,
   signatureTypeToString,
+  typeParameterToString,
 } from '../utils';
-import { vueOptionSchemaResolver } from './custom';
+import {
+  externalSymbolResolver as esResolver,
+  vueOptionSchemaResolver,
+} from './custom';
+
+const externalSymbolResolver = createCachedResolver(esResolver);
 
 export class SchemaResolver {
   private schemaCache = new WeakMap<ts.Type, PropertyMetaSchema>();
-  private schemaOptions!: MetaCheckerOptions['schema'];
+  private schemaOptions!: NonNullable<MetaCheckerOptions>;
 
   /**
    * Used to store all declared interfaces or types
@@ -34,17 +48,20 @@ export class SchemaResolver {
   private readonly typeCache = new WeakMap<ts.Type, string>();
 
   constructor(
-    private typeChecker: ts.TypeChecker,
-    private symbolNode: ts.Expression,
-    options: MetaCheckerOptions,
     private ts: typeof import('typescript/lib/tsserverlibrary'),
+    private typeChecker: ts.TypeChecker,
+    private langService: VueLanguageService,
+    private symbolNode: ts.Expression,
+    private repo: Repo,
+    options: MetaCheckerOptions,
   ) {
     this.schemaOptions = Object.assign(
       {
         exclude: /node_modules/,
         ignoreTypeArgs: false,
+        disableExternalLinkAutoDectect: false,
       },
-      options.schema,
+      options,
     );
   }
 
@@ -123,14 +140,32 @@ export class SchemaResolver {
     return false;
   }
 
-  private createSignatureMetaSchema(
-    call: ts.Signature,
-    subtype?: ts.Type,
-  ): PropertyMetaSchema {
+  public createTypeParamMetaSchema(param: ts.TypeParameter) {
+    const { typeChecker } = this;
+    const extendType = param.getConstraint();
+    const defaultType = param.getDefault();
+    const schema: TypeParamPropertyMetaSchema = {
+      kind: PropertyMetaKind.TYPE_PARAM,
+      name: typeChecker.typeToString(param),
+      type: typeParameterToString(typeChecker, param, extendType, defaultType),
+    };
+    if (extendType || defaultType) {
+      schema.schema = {};
+      if (extendType) {
+        schema.schema.type = this.resolveSchema(extendType);
+      }
+      if (defaultType) {
+        schema.schema.default = this.resolveSchema(defaultType);
+      }
+    }
+    return schema;
+  }
+
+  public createSignatureMetaSchema(call: ts.Signature, subtype?: ts.Type) {
     const { typeChecker, ts } = this;
     const returnType = call.getReturnType();
-    call.getDeclaration();
-    return {
+    const typeParams = call.getTypeParameters();
+    const schema: FuncPropertyMetaSchema = {
       kind: PropertyMetaKind.FUNC,
       type: typeChecker.typeToString(
         subtype || getTypeOfSignature(typeChecker, call),
@@ -151,6 +186,12 @@ export class SchemaResolver {
         }),
       },
     };
+    if (typeParams) {
+      schema.schema!.typeParams = typeParams.map((typeParam) =>
+        this.resolveSchema(typeParam),
+      );
+    }
+    return schema;
   }
 
   private resolveExactSchema(subtype: ts.Type): PropertyMetaSchema {
@@ -205,6 +246,8 @@ export class SchemaResolver {
       // There may be multiple signatures, but we only take the first one
       const signature = subtype.getCallSignatures()[0];
       return this.createSignatureMetaSchema(signature);
+    } else if (subtype.isTypeParameter()) {
+      return this.createTypeParamMetaSchema(subtype);
     }
 
     return {
@@ -213,35 +256,92 @@ export class SchemaResolver {
     };
   }
 
+  private getNodeAndSymbolOfUnknownType(subtype: ts.Type) {
+    const targetSymbol = subtype.getSymbol() || subtype.aliasSymbol;
+    if (!targetSymbol) return null;
+    const targetNode = getNodeOfSymbol(targetSymbol);
+    if (!targetNode) return null;
+    return { targetNode, targetSymbol };
+  }
+
   private resolveUnknownSchema(subtype: ts.Type): PropertyMetaSchema {
-    const { typeChecker, resolveSchema, schemaOptions } = this;
+    const { typeChecker, resolveSchema, schemaOptions, ts } = this;
     const type = typeChecker.typeToString(subtype);
+    const schema: any = {
+      kind: PropertyMetaKind.UNKNOWN,
+      type,
+    };
+    const typeInfo = this.getNodeAndSymbolOfUnknownType(subtype);
+    if (typeInfo) {
+      const options = {
+        ts,
+        typeChecker,
+        schemaOptions,
+        ...typeInfo,
+      };
+      const { unknownSymbolResolvers = [] } = schemaOptions;
+      const resolvers: UnknownSymbolResolver<PropertyMetaSchema>[] = [
+        externalSymbolResolver,
+        ...unknownSymbolResolvers,
+      ];
+      resolvers.reduce((targetSchema, resolver) => {
+        const partialSchema = resolver(options);
+        Object.assign(targetSchema, partialSchema);
+        if (partialSchema.kind === PropertyMetaKind.REF) {
+          delete targetSchema.type;
+        }
+        return targetSchema;
+      }, schema);
+    }
+
     if (!schemaOptions?.ignoreTypeArgs) {
       // Obtaining type parameters
       // Although some types do not need to be check themselves,
       // their type parameters still need to be checked.
       let typeArgs = typeChecker.getTypeArguments(subtype as ts.TypeReference);
       if (typeArgs.length) {
-        return {
-          kind: typeChecker.isArrayLikeType(subtype)
-            ? PropertyMetaKind.ARRAY
-            : PropertyMetaKind.UNKNOWN,
-          type,
-          schema: typeArgs.map(resolveSchema.bind(this)),
-        };
+        if (typeChecker.isArrayLikeType(subtype)) {
+          schema.kind = PropertyMetaKind.ARRAY;
+          schema.schema = typeArgs.map(resolveSchema.bind(this));
+        } else {
+          schema.typeParams = typeArgs.map(resolveSchema.bind(this));
+        }
       }
     }
 
-    if (BasicTypes[type]) {
+    if (BasicTypes[type] && schema.kind === PropertyMetaKind.UNKNOWN) {
       return {
         kind: PropertyMetaKind.BASIC,
         type,
       };
     }
+    return schema;
+  }
 
+  private getSource(
+    node:
+      | ts.TypeAliasDeclaration
+      | ts.TypeOnlyAliasDeclaration
+      | ts.InterfaceDeclaration
+      | ts.TypeParameterDeclaration,
+  ): PropertySourceReference {
+    const { ts, langService } = this;
+    const sourceFile = node.getSourceFile();
+    const { line, character } = ts.getLineAndCharacterOfPosition(
+      sourceFile,
+      node.getStart(),
+    );
+    const fullFileName = sourceFile.fileName;
+    const fileName = path.relative(
+      langService.host.rootPath as path.PosixPath,
+      fullFileName as path.PosixPath,
+    );
+    const line1Based = line + 1;
     return {
-      kind: PropertyMetaKind.UNKNOWN,
-      type,
+      fileName,
+      line: line1Based,
+      character,
+      url: this.repo?.getURL(fullFileName, line1Based),
     };
   }
 
@@ -271,11 +371,12 @@ export class SchemaResolver {
         schema.kind !== PropertyMetaKind.UNKNOWN &&
         (ts.isTypeOnlyImportOrExportDeclaration(node) ||
           ts.isTypeAliasDeclaration(node) ||
-          ts.isInterfaceDeclaration(node))
+          ts.isInterfaceDeclaration(node) ||
+          ts.isTypeParameterDeclaration(node))
       ) {
-        const fileName = node.getSourceFile().fileName;
-        Object.assign(schema, { fileName });
-        const ref = this.setType(type, fileName, subtype, schema);
+        const source = this.getSource(node);
+        Object.assign(schema, { source: [source] });
+        const ref = this.setType(type, source.fileName, subtype, schema);
         return { ref, kind: PropertyMetaKind.REF };
       }
     }
@@ -297,7 +398,7 @@ export class SchemaResolver {
         prop.getDocumentationComment(typeChecker),
       ),
       required: !(prop.flags & ts.SymbolFlags.Optional),
-      tags: getJsDocTags(ts, typeChecker, prop),
+      comment: getComment(ts, typeChecker, prop),
       type: typeChecker.typeToString(subtype),
     } as Partial<PropertyMeta>;
 
@@ -306,14 +407,14 @@ export class SchemaResolver {
       return originalMeta as PropertyMeta;
     }
 
-    const { customResovlers } = schemaOptions;
+    const { propertyResovlers } = schemaOptions;
 
-    const resolvers: CustomSchemaResolver<PropertyMeta>[] = [
+    const resolvers: PropertySchemaResolver<PropertyMeta>[] = [
       vueOptionSchemaResolver,
     ];
 
-    if (customResovlers?.length) {
-      resolvers.push(...customResovlers);
+    if (propertyResovlers?.length) {
+      resolvers.push(...propertyResovlers);
     }
 
     originalMeta.global = false;
@@ -361,7 +462,7 @@ export class SchemaResolver {
     return {
       name: prop.getName(),
       type: typeChecker.typeToString(subtype),
-      tags: getJsDocTags(ts, typeChecker, prop),
+      comment: getComment(ts, typeChecker, prop),
       description: ts.displayPartsToString(
         prop.getDocumentationComment(typeChecker),
       ),
@@ -370,7 +471,7 @@ export class SchemaResolver {
   }
 
   public resolveEventSignature(call: ts.Signature): EventMeta {
-    const { symbolNode, typeChecker } = this;
+    const { symbolNode, typeChecker, ts } = this;
     const subtype = typeChecker.getTypeOfSymbolAtLocation(
       call.parameters[1],
       symbolNode!,
@@ -390,6 +491,7 @@ export class SchemaResolver {
         ) as ts.StringLiteralType
       ).value,
       type: typeString,
+      comment: getComment(ts, typeChecker, call),
       schema: {
         kind: PropertyMetaKind.FUNC,
         type: typeString,
@@ -410,7 +512,7 @@ export class SchemaResolver {
     return {
       name: expose.getName(),
       type: typeChecker.typeToString(subtype),
-      tags: getJsDocTags(ts, typeChecker, expose),
+      comment: getComment(ts, typeChecker, expose),
       description: ts.displayPartsToString(
         expose.getDocumentationComment(typeChecker),
       ),

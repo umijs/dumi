@@ -1,9 +1,5 @@
 lockfileVersion: '6.0'
 
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
-
 importers:
 
   .:
@@ -395,15 +391,12 @@ importers:
       dumi-assets-types:
         specifier: workspace:*
         version: link:../../assets-types
-      ts-morph:
-        specifier: ^20.0.0
-        version: 20.0.0
       typesafe-path:
         specifier: ^0.2.2
         version: 0.2.2
       vue-component-type-helpers:
-        specifier: ^1.8.19
-        version: 1.8.19
+        specifier: ^1.8.27
+        version: 1.8.27
     devDependencies:
       eslint-plugin-vue:
         specifier: ^9.17.0
@@ -3494,15 +3487,6 @@ packages:
     resolution: {integrity: sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==}
     engines: {node: '>=10.13.0'}
 
-  /@ts-morph/common@0.21.0:
-    resolution: {integrity: sha512-ES110Mmne5Vi4ypUKrtVQfXFDtCsDXiUiGxF6ILVlE90dDD4fdpC1LSjydl/ml7xJWKSDZwUYD2zkOePMSrPBA==}
-    dependencies:
-      fast-glob: 3.3.1
-      minimatch: 7.4.6
-      mkdirp: 2.1.6
-      path-browserify: 1.0.1
-    dev: false
-
   /@tsconfig/node10@1.0.9:
     resolution: {integrity: sha512-jNsYVVxU8v5g43Erja32laIDHXeoNvFEpX33OK4d6hljo3jDhCBDhx5dhCCTMWUojscpAagGiRkBKxpdl9fxqA==}
     dev: true
@@ -4425,7 +4409,7 @@ packages:
       axios: 0.27.2
       babel-plugin-import: 1.13.8
       dayjs: 1.11.10
-      dva-core: 2.0.4(redux@4.2.1)
+      dva-core: 2.0.4(redux@3.7.2)
       dva-immer: 1.0.1(dva@2.5.0-beta.2)
       dva-loading: 3.0.24(dva-core@2.0.4)
       event-emitter: 0.3.5
@@ -4545,7 +4529,7 @@ packages:
       react-refresh: 0.14.0
       schema-utils: 3.3.0
       source-map: 0.7.4
-      webpack: 5.89.0(@swc/core@1.4.2)
+      webpack: 5.89.0(@swc/core@1.4.2)(esbuild@0.19.11)
 
   /@umijs/renderer-react@4.0.84(react-dom@18.1.0)(react@18.1.0):
     resolution: {integrity: sha512-0SDMuLsBpXmdNzubwke0ihq1tvlhDumZn0BJ0JC7xavOmx9bx6jWo3BRrBn1BfkUoCJC8E4C8ZmDJMKrmQ7BUA==}
@@ -6181,10 +6165,6 @@ packages:
       q: 1.5.1
     dev: false
 
-  /code-block-writer@12.0.0:
-    resolution: {integrity: sha512-q4dMFMlXtKR3XNBHyMHt/3pwYNA69EDk00lloMOaaUMKPUXBw6lpXtbu3MMVG6/uOihGnRDOlkyqsONEUj60+w==}
-    dev: false
-
   /codesandbox-import-util-types@2.2.3:
     resolution: {integrity: sha512-Qj00p60oNExthP2oR3vvXmUGjukij+rxJGuiaKM6tyUmSyimdZsqHI/TUvFFClAffk9s7hxGnQgWQ8KCce27qQ==}
 
@@ -6607,7 +6587,7 @@ packages:
       postcss-modules-values: 4.0.0(postcss@8.4.33)
       postcss-value-parser: 4.2.0
       semver: 7.5.4
-      webpack: 5.89.0(@swc/core@1.4.2)
+      webpack: 5.89.0(@swc/core@1.4.2)(esbuild@0.19.11)
 
   /css-prefers-color-scheme@6.0.3(postcss@8.4.29):
     resolution: {integrity: sha512-4BqMbZksRkJQx2zAjrokiGMd07RqOa2IxIrrN10lyBe9xhn9DEvjUK79J6jkeiv9D9hQFXKb6g1jwU62jziJZA==}
@@ -7104,7 +7084,7 @@ packages:
       warning: 3.0.0
     dev: true
 
-  /dva-core@2.0.4(redux@4.2.1):
+  /dva-core@2.0.4(redux@3.7.2):
     resolution: {integrity: sha512-Zh39llFyItu9HKXKfCZVf9UFtDTcypdAjGBew1S+wK8BGVzFpm1GPTdd6uIMeg7O6STtCvt2Qv+RwUut1GFynA==}
     peerDependencies:
       redux: 4.x
@@ -7114,7 +7094,7 @@ packages:
       global: 4.4.0
       invariant: 2.2.4
       is-plain-object: 2.0.4
-      redux: 4.2.1
+      redux: 3.7.2
       redux-saga: 0.16.2
       warning: 3.0.0
     dev: true
@@ -7135,7 +7115,7 @@ packages:
       dva-core: ^1.1.0 || ^1.5.0-0 || ^1.6.0-0
     dependencies:
       '@babel/runtime': 7.23.1
-      dva-core: 2.0.4(redux@4.2.1)
+      dva-core: 2.0.4(redux@3.7.2)
     dev: true
 
   /dva@2.5.0-beta.2(react-dom@18.2.0)(react@18.2.0):
@@ -8353,7 +8333,7 @@ packages:
       semver: 7.5.4
       tapable: 2.2.1
       typescript: 5.0.4
-      webpack: 5.89.0(@swc/core@1.4.2)
+      webpack: 5.89.0(@swc/core@1.4.2)(esbuild@0.19.11)
 
   /fork-ts-checker-webpack-plugin@8.0.0(typescript@5.3.3)(webpack@5.89.0):
     resolution: {integrity: sha512-mX3qW3idpueT2klaQXBzrIM/pHw+T0B/V9KHEvNrqijTq9NFnMZU6oreVxDYcf33P8a5cW+67PjodNHthGnNVg==}
@@ -9111,7 +9091,7 @@ packages:
       lodash: 4.17.21
       pretty-error: 4.0.0
       tapable: 2.2.1
-      webpack: 5.89.0(@swc/core@1.4.2)
+      webpack: 5.89.0(@swc/core@1.4.2)(esbuild@0.19.11)
     dev: false
 
   /html2sketch@1.0.2:
@@ -11033,13 +11013,6 @@ packages:
     dependencies:
       brace-expansion: 1.1.11
 
-  /minimatch@7.4.6:
-    resolution: {integrity: sha512-sBz8G/YjVniEz6lKPNpKxXwazJe4c19fEfV2GDMX6AjFz+MX9uDWIZW8XreVhkFW3fkIdTv/gxWr/Kks5FFAVw==}
-    engines: {node: '>=10'}
-    dependencies:
-      brace-expansion: 2.0.1
-    dev: false
-
   /minimatch@9.0.3:
     resolution: {integrity: sha512-RHiac9mvaRw0x3AYRgDC1CxAP7HTcNrrECeA8YYJeWnpo+2Q5CegtZjaotWTWxDG3UeGA1coE05iH1mPjT/2mg==}
     engines: {node: '>=16 || 14 >=14.17'}
@@ -11093,12 +11066,6 @@ packages:
     hasBin: true
     dependencies:
       minimist: 1.2.8
-    dev: false
-
-  /mkdirp@2.1.6:
-    resolution: {integrity: sha512-+hEnITedc8LAtIP9u3HJDFIdcLV2vXP33sqLLIzkv1Db1zO/1OxbvYf0Y1OC/S/Qo5dxHXepofhmxL02PsKe+A==}
-    engines: {node: '>=10'}
-    hasBin: true
     dev: false
 
   /mlly@1.4.2:
@@ -11725,10 +11692,6 @@ packages:
 
   /path-browserify@0.0.1:
     resolution: {integrity: sha512-BapA40NHICOS+USX9SN4tyhq+A2RrN/Ws5F0Z5aMHDp98Fl86lX8Oti8B7uN93L4Ifv4fHOEA+pQw87gmMO/lQ==}
-
-  /path-browserify@1.0.1:
-    resolution: {integrity: sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==}
-    dev: false
 
   /path-exists@3.0.0:
     resolution: {integrity: sha512-bpC7GYwiDYQ4wYLe+FA8lhRjhQCMcQGuSgGGqDkg/QerRWw9CmGRT0iSOVRSZJ29NMLZgIzqaljJ63oaL4NIJQ==}
@@ -12934,7 +12897,7 @@ packages:
     dependencies:
       loader-utils: 2.0.4
       schema-utils: 3.3.0
-      webpack: 5.89.0(@swc/core@1.4.2)
+      webpack: 5.89.0(@swc/core@1.4.2)(esbuild@0.19.11)
     dev: false
 
   /rc-align@4.0.15(react-dom@18.2.0)(react@18.2.0):
@@ -15545,31 +15508,6 @@ packages:
       serialize-javascript: 6.0.2
       terser: 5.27.0
       webpack: 5.89.0(@swc/core@1.4.2)(esbuild@0.19.11)
-    dev: false
-
-  /terser-webpack-plugin@5.3.10(@swc/core@1.4.2)(webpack@5.89.0):
-    resolution: {integrity: sha512-BKFPWlPDndPs+NGGCr1U59t0XScL5317Y0UReNrHaw9/FwhPENlq6bfgs+4yPfyP51vqC1bQ4rp1EfXW5ZSH9w==}
-    engines: {node: '>= 10.13.0'}
-    peerDependencies:
-      '@swc/core': '*'
-      esbuild: '*'
-      uglify-js: '*'
-      webpack: ^5.1.0
-    peerDependenciesMeta:
-      '@swc/core':
-        optional: true
-      esbuild:
-        optional: true
-      uglify-js:
-        optional: true
-    dependencies:
-      '@jridgewell/trace-mapping': 0.3.22
-      '@swc/core': 1.4.2
-      jest-worker: 27.5.1
-      schema-utils: 3.3.0
-      serialize-javascript: 6.0.2
-      terser: 5.27.0
-      webpack: 5.89.0(@swc/core@1.4.2)
 
   /terser@5.20.0:
     resolution: {integrity: sha512-e56ETryaQDyebBwJIWYB2TT6f2EZ0fL0sW/JRXNMN26zZdKi2u/E/5my5lG6jNxym6qsrVXfFRmOdV42zlAgLQ==}
@@ -15768,13 +15706,6 @@ packages:
 
   /ts-interface-checker@0.1.13:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
-
-  /ts-morph@20.0.0:
-    resolution: {integrity: sha512-JVmEJy2Wow5n/84I3igthL9sudQ8qzjh/6i4tmYCm6IqYyKFlNbJZi7oBdjyqcWSWYRu3CtL0xbT6fS03ESZIg==}
-    dependencies:
-      '@ts-morph/common': 0.21.0
-      code-block-writer: 12.0.0
-    dev: false
 
   /ts-node@10.9.1(@swc/core@1.4.2)(@types/node@18.17.1)(typescript@5.0.4):
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
@@ -16670,8 +16601,8 @@ packages:
   /vm-browserify@1.1.2:
     resolution: {integrity: sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==}
 
-  /vue-component-type-helpers@1.8.19:
-    resolution: {integrity: sha512-1OANGSZK4pzHF4uc86usWi+o5Y0zgoDtqWkPg6Am6ot+jHSAmpOah59V/4N82So5xRgivgCxGgK09lBy1XNUfQ==}
+  /vue-component-type-helpers@1.8.27:
+    resolution: {integrity: sha512-0vOfAtI67UjeO1G6UiX5Kd76CqaQ67wrRZiOe7UAb9Jm6GzlUr/fC7CV90XfwapJRjpCMaZFhv1V0ajWRmE9Dg==}
     dev: false
 
   /vue-demi@0.14.6(vue@3.4.15):
@@ -16821,45 +16752,6 @@ packages:
     resolution: {integrity: sha512-kyDivFZ7ZM0BVOUteVbDFhlRt7Ah/CSPwJdi8hBpkK7QLumUqdLtVfm/PX/hkcnrvr0i77fO5+TjZ94Pe+C9iw==}
     dev: true
 
-  /webpack@5.89.0(@swc/core@1.4.2):
-    resolution: {integrity: sha512-qyfIC10pOr70V+jkmud8tMfajraGCZMBWJtrmuBymQKCrLTRejBI8STDp1MCyZu/QTdZSeacCQYpYNQVOzX5kw==}
-    engines: {node: '>=10.13.0'}
-    hasBin: true
-    peerDependencies:
-      webpack-cli: '*'
-    peerDependenciesMeta:
-      webpack-cli:
-        optional: true
-    dependencies:
-      '@types/eslint-scope': 3.7.7
-      '@types/estree': 1.0.5
-      '@webassemblyjs/ast': 1.11.6
-      '@webassemblyjs/wasm-edit': 1.11.6
-      '@webassemblyjs/wasm-parser': 1.11.6
-      acorn: 8.11.3
-      acorn-import-assertions: 1.9.0(acorn@8.11.3)
-      browserslist: 4.22.2
-      chrome-trace-event: 1.0.3
-      enhanced-resolve: 5.15.0
-      es-module-lexer: 1.4.1
-      eslint-scope: 5.1.1
-      events: 3.3.0
-      glob-to-regexp: 0.4.1
-      graceful-fs: 4.2.11
-      json-parse-even-better-errors: 2.3.1
-      loader-runner: 4.3.0
-      mime-types: 2.1.35
-      neo-async: 2.6.2
-      schema-utils: 3.3.0
-      tapable: 2.2.1
-      terser-webpack-plugin: 5.3.10(@swc/core@1.4.2)(webpack@5.89.0)
-      watchpack: 2.4.0
-      webpack-sources: 3.2.3
-    transitivePeerDependencies:
-      - '@swc/core'
-      - esbuild
-      - uglify-js
-
   /webpack@5.89.0(@swc/core@1.4.2)(esbuild@0.19.11):
     resolution: {integrity: sha512-qyfIC10pOr70V+jkmud8tMfajraGCZMBWJtrmuBymQKCrLTRejBI8STDp1MCyZu/QTdZSeacCQYpYNQVOzX5kw==}
     engines: {node: '>=10.13.0'}
@@ -16898,7 +16790,6 @@ packages:
       - '@swc/core'
       - esbuild
       - uglify-js
-    dev: false
 
   /whatwg-fetch@3.6.20:
     resolution: {integrity: sha512-EqhiFU6daOA8kpjOWTL0olhVOF3i7OrFzSYiGsEMB8GcXS+RrzauAERX65xMeNWVqxA6HXH2m69Z9LaKKdisfg==}
@@ -17140,3 +17031,7 @@ packages:
   /zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
     dev: false
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false

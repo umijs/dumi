@@ -1,6 +1,6 @@
 import type Config from '@umijs/bundler-webpack/compiled/webpack-5-chain';
+import type { IApi } from 'dumi';
 import { babelPresetTypeScript } from 'dumi/tech-stack-utils';
-import type { IApi } from 'umi';
 import VueLoaderPlugin from 'vue-loader/dist/pluginWebpack5.js';
 // Webpack configuration mainly refers to @umijs/preset-vue
 

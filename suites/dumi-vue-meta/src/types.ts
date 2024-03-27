@@ -11,6 +11,7 @@ export interface Declaration {
 export interface ComponentMeta {
   name: string;
   type: TypeMeta;
+  typeParams?: PropertyMetaSchema[];
   props: PropertyMeta[];
   events: EventMeta[];
   slots: SlotMeta[];
@@ -28,14 +29,15 @@ export interface SingleComponentMeta {
   types: Record<string, PropertyMetaSchema>;
 }
 
-/**
- * Component library metadata
- */
 export interface ComponentLibraryMeta {
   /**
    * Metadata of all components
    */
   components: Record<string, ComponentMeta>;
+  /**
+   * Metadata of functions
+   */
+  functions: Record<string, FuncPropertyMetaSchema>;
   /**
    * All exported common types will be stored here to facilitate reference by other types.
    */
@@ -44,25 +46,40 @@ export interface ComponentLibraryMeta {
 
 /**
  * Meta information transformer
+ * @remarks
  * used to transform standard component library metadata into another format of metadata
  */
 export type MetaTransformer<T> = (meta: ComponentLibraryMeta) => T;
 
 /**
- * custom schema resolver
+ * property schema resolver
+ * @group options
  */
-export type CustomSchemaResolver<T extends ComponentItemMeta> = (
+export type PropertySchemaResolver<T extends ComponentItemMeta> = (
   originMeta: Partial<T>,
   options: {
     ts: typeof import('typescript/lib/tsserverlibrary');
     typeChecker: ts.TypeChecker;
+    schemaOptions: MetaCheckerSchemaOptions;
     symbolNode: ts.Expression;
     prop: ts.Symbol;
     targetNode?: ts.Declaration;
     targetType?: ts.Type;
-    schemaOptions: MetaCheckerSchemaOptions;
   },
 ) => Partial<T>;
+
+/**
+ * @group options
+ */
+export type UnknownSymbolResolver<
+  T extends PropertyMetaSchema = PropertyMetaSchema,
+> = (options: {
+  ts: typeof import('typescript/lib/tsserverlibrary');
+  typeChecker: ts.TypeChecker;
+  targetSymbol: ts.Symbol;
+  schemaOptions: MetaCheckerSchemaOptions;
+  targetNode: ts.Declaration;
+}) => Partial<T>;
 
 export enum TypeMeta {
   Unknown = 0,
@@ -70,7 +87,28 @@ export enum TypeMeta {
   Function = 2,
 }
 
-export type JsDocTagMeta = Record<string, string[]>;
+export interface BlockTagContentTextMeta {
+  kind: string;
+  text: string;
+}
+
+export interface BlockTagMeta {
+  tag: string;
+  content: BlockTagContentTextMeta[];
+}
+
+export interface CommentMeta {
+  /**
+   * @example
+   * [{ tag: 'version', content: [{ kind: 'text', text: '0.0.1' }] }]
+   */
+  blockTags?: BlockTagMeta[];
+  /**
+   * @example
+   * ['alpha', 'deprecated']
+   */
+  modifierTags?: string[];
+}
 
 export interface PropertyMeta {
   type: string;
@@ -79,7 +117,7 @@ export interface PropertyMeta {
   description: string;
   global: boolean;
   required: boolean;
-  tags: JsDocTagMeta;
+  comment: CommentMeta;
   schema: PropertyMetaSchema;
 }
 
@@ -88,7 +126,7 @@ export interface EventMeta {
   type: string;
   description?: string;
   default?: string;
-  tags?: JsDocTagMeta;
+  comment: CommentMeta;
   schema: PropertyMetaSchema;
 }
 
@@ -97,7 +135,7 @@ export interface SlotMeta {
   name: string;
   default?: string;
   description: string;
-  tags: JsDocTagMeta;
+  comment: CommentMeta;
   schema: PropertyMetaSchema;
 }
 
@@ -105,7 +143,7 @@ export interface ExposeMeta {
   type: string;
   name: string;
   description: string;
-  tags: JsDocTagMeta;
+  comment: CommentMeta;
   schema: PropertyMetaSchema;
 }
 
@@ -116,13 +154,36 @@ export enum PropertyMetaKind {
   ARRAY = 'array',
   FUNC = 'function',
   OBJECT = 'object',
+  TYPE_PARAM = 'type_param',
   UNKNOWN = 'unknown',
   REF = 'ref',
 }
+export interface PropertySourceReference {
+  /**
+   * fileName of the source file
+   */
+  fileName: string;
+  /**
+   * The one based number of the line that emitted the declaration
+   */
+  line: number;
+  /**
+   * The index of the character that emitted the declaration
+   */
+  character: number;
+  /**
+   * URL for displaying source file, usually the git repo file URL
+   */
+  url?: string;
+}
 
-/**
- * Signature metadata description
- */
+export interface TypeParamMetaSchema {
+  // extend Type
+  type?: PropertyMetaSchema;
+  // = Type
+  default?: PropertyMetaSchema;
+}
+
 export interface SignatureMetaSchema {
   /**
    * Indicates that the method can be awaited
@@ -132,6 +193,10 @@ export interface SignatureMetaSchema {
    * Return type meta
    */
   returnType: PropertyMetaSchema;
+  /**
+   * type parameters
+   */
+  typeParams?: PropertyMetaSchema[];
   /**
    * Function parameter meta
    */
@@ -143,53 +208,91 @@ export interface SignatureMetaSchema {
   }[];
 }
 
-export type LiteralPropertyMetaSchema = {
+export interface BasePropertyMetaSchema {
+  kind: PropertyMetaKind;
+  /**
+   * interface, type alias, type parameter
+   */
+  source?: PropertySourceReference[];
+}
+
+export interface LiteralPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.LITERAL;
   type: string;
   value: string;
-};
-export type BasicPropertyMetaSchema = {
+}
+
+export interface BasicPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.BASIC;
   type: string;
-};
-export type EnumPropertyMetaSchema = {
+}
+
+export interface EnumPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.ENUM;
   type: string;
   schema?: PropertyMetaSchema[];
   ref?: string;
-};
-export type ArrayPropertyMetaSchema = {
+}
+
+export interface ArrayPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.ARRAY;
   type: string;
   schema?: PropertyMetaSchema[];
   ref?: string;
-};
-export type FuncPropertyMetaSchema = {
+}
+
+export interface FuncPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.FUNC;
   type: string;
   schema?: SignatureMetaSchema;
   ref?: string;
-};
-export type ObjectPropertyMetaSchema = {
+}
+
+export interface ObjectPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.OBJECT;
   type: string;
   schema?: Record<string, PropertyMeta>;
   ref?: string;
-};
+}
+
+export interface TypeParamPropertyMetaSchema extends BasePropertyMetaSchema {
+  kind: PropertyMetaKind.TYPE_PARAM;
+  type: string;
+  name: string;
+  schema?: TypeParamMetaSchema;
+  ref?: string;
+}
 /**
  * Note: The unknown type is mainly used to carry types that are not parsed themselves,
  * but whose type parameters need to be checked.
  */
-export type UnknownPropertyMetaSchema = {
+export interface UnknownPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.UNKNOWN;
   type: string;
-  schema?: PropertyMetaSchema[];
+  typeParams?: PropertyMetaSchema[];
   ref?: string;
-};
+}
+
+export interface ExternalRefPropertyMetaSchema extends BasePropertyMetaSchema {
+  kind: PropertyMetaKind.REF;
+  typeParams?: PropertyMetaSchema[];
+  name: string;
+  /**
+   * If it is not a local type, you can use this external url
+   */
+  externalUrl: string;
+}
+
+export interface LocalRefPropertyMetaSchema extends BasePropertyMetaSchema {
+  kind: PropertyMetaKind.REF;
+  ref: string;
+}
 /**
  * This type is just a placeholder, it points to other types
  */
-export type RefPropertyMetaSchema = { kind: PropertyMetaKind.REF; ref: string };
+export type RefPropertyMetaSchema =
+  | ExternalRefPropertyMetaSchema
+  | LocalRefPropertyMetaSchema;
 
 /**
  * Note: The `ref` prop is designed for schema flattening.
@@ -204,13 +307,15 @@ export type PropertyMetaSchema =
   | ArrayPropertyMetaSchema
   | FuncPropertyMetaSchema
   | ObjectPropertyMetaSchema
+  | TypeParamPropertyMetaSchema
   | UnknownPropertyMetaSchema
   | RefPropertyMetaSchema;
 
 /**
  * Schema resolver options
+ * @group options
  */
-export type MetaCheckerSchemaOptions = {
+export interface MetaCheckerSchemaOptions {
   /**
    * By default, type resolution in node_module will be abandoned.
    */
@@ -236,26 +341,81 @@ export type MetaCheckerSchemaOptions = {
   ignoreTypeArgs?: boolean;
 
   /**
-   * Customized schema resolvers for some special props definition methods, such as `vue-types`
+   * Property schema resolvers for some special props definition methods, such as `vue-types`
    */
-  customResovlers?: CustomSchemaResolver<PropertyMeta>[];
-};
+  propertyResovlers?: PropertySchemaResolver<PropertyMeta>[];
+
+  /**
+   * unknownSymbol resolver
+   */
+  unknownSymbolResolvers?: UnknownSymbolResolver[];
+
+  /**
+   * By default, this option is false,
+   * the resolver will automatically capture the MDN links
+   * contained in the comments of all declaration files under node_modules/typescript/lib.
+   * Users do not need to configure externalSymbolLinkMappings themselves.
+   *
+   * Of course, you can also overwrite the captured links through externalSymbolLinkMappings
+   */
+  disableExternalLinkAutoDectect?: boolean;
+  /**
+   * The types/interfaces mapping method is provided as follows:
+   * ```js
+   * {
+   *   typescript: {
+   *     Promise:
+   *       'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise',
+   *   },
+   * },
+   * ```
+   * For more complex mapping methods, please use `unknownSymbolResolvers`
+   */
+  externalSymbolLinkMappings?: Record<string, Record<string, string>>;
+}
 
 /**
  * Checker Options
+ * @group options
  */
-export interface MetaCheckerOptions {
-  schema?: MetaCheckerSchemaOptions;
+export interface MetaCheckerOptions extends MetaCheckerSchemaOptions {
   forceUseTs?: boolean;
   printer?: ts.PrinterOptions;
   /**
+   * Disable production of source links, the default is false
+   */
+  disableSources?: boolean;
+  /**
+   * Prohibit obtaining git repo URL, git revision, and other information through git commands,
+   * the default is false
+   */
+  disableGit?: boolean;
+  /**
+   * source link template, must be set when you set `disableGit`.
+   *
+   * A typical template looks like this: `https://github.com/umijs/dumi/{gitRevision}/{path}#L{line}`.
+   *
+   * The parser will replace the parts `{gitRevision|path|line}`
+   */
+  sourceLinkTemplate?: string;
+  /**
+   * https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection
+   */
+  gitRevision?: string;
+  /**
+   * Default is "origin"
+   */
+  gitRemote?: string;
+  /**
    * Whether to filter global props, the default is true
+   *
    * If it is true, global props in vue, such as key and ref, will be filtered out
    */
   filterGlobalProps?: boolean;
   /**
-   * Whether to enable filtering for exposed attributes, the default is true
-   * If true, only methods or properties identified by `@exposed/@expose` will be exposed in jsx
+   * Whether to enable filtering for exposed attributes, the default is true.
+   *
+   * If true, only methods or properties identified by release tags like `@public` will be exposed in jsx
    */
   filterExposed?: boolean;
 }

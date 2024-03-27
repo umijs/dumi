@@ -97,3 +97,5 @@ export function createVueLanguageService(
     host,
   };
 }
+
+export type VueLanguageService = ReturnType<typeof createVueLanguageService>;

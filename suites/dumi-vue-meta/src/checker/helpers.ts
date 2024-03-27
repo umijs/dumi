@@ -340,6 +340,34 @@ export function readVueComponentDefaultProps(
   return result;
 }
 
+export function getTypeArguments(
+  typeChecker: ts.TypeChecker,
+  type: ts.Type | ts.TypeReference,
+) {
+  return typeChecker.getTypeArguments(type as ts.TypeReference);
+}
+
+/**
+ * Get function signatures
+ */
+export function getFunctionSignatures(
+  typeChecker: ts.TypeChecker,
+  symbol: ts.Symbol,
+) {
+  const node = getNodeOfSymbol(symbol);
+  if (node) {
+    const type = typeChecker.getTypeAtLocation(node);
+    return type.getCallSignatures();
+  }
+  return [];
+}
+
+/**
+ * Whether it is a functional Vue component
+ * @description
+ * This can only be determined by the introduced type names,
+ * because these types may be introduced from vue, from vue-demi, or even from other third-party packages.
+ */
 export function isFunctionalVueComponent(
   typeChecker: ts.TypeChecker,
   symbol: ts.Symbol,
@@ -347,6 +375,11 @@ export function isFunctionalVueComponent(
   const node = getNodeOfSymbol(symbol);
   if (node) {
     const type = typeChecker.getTypeAtLocation(node);
+    // if using FunctionalComponent for type annotation
+    if (type?.symbol?.escapedName === 'FunctionalComponent') {
+      return true;
+    }
+    // determined by returned type
     const signatures = type.getCallSignatures();
     if (!signatures || !signatures.length) return false;
     const returnType = signatures[0].getReturnType();

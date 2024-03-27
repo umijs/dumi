@@ -1,12 +1,12 @@
 import type ts from 'typescript';
-import type { CustomSchemaResolver, PropertyMeta } from '../../types';
+import type { PropertyMeta, PropertySchemaResolver } from '../../types';
 import { createNodeVisitor } from '../../utils';
 
 /**
  * A custom schema resolver for [vue-types](https://github.com/dwightjack/vue-types)
  * used to identify isRequired, def and other methods
  */
-export const vueTypesSchemaResolver: CustomSchemaResolver<PropertyMeta> = (
+export const vueTypesSchemaResolver: PropertySchemaResolver<PropertyMeta> = (
   meta,
   { ts, typeChecker, targetNode, targetType },
 ) => {

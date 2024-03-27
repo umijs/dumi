@@ -1,7 +1,17 @@
 import { createHash } from 'crypto';
 import * as path from 'typesafe-path/posix';
 import type ts from 'typescript/lib/tsserverlibrary';
-import { PropertyMetaSchema, SignatureMetaSchema } from './types';
+import {
+  BlockTagContentTextMeta,
+  BlockTagMeta,
+  CommentMeta,
+  ExternalRefPropertyMetaSchema,
+  LocalRefPropertyMetaSchema,
+  PropertyMetaSchema,
+  RefPropertyMetaSchema,
+  SignatureMetaSchema,
+  UnknownSymbolResolver,
+} from './types';
 
 export function createNodeVisitor(
   ts: typeof import('typescript/lib/tsserverlibrary'),
@@ -19,6 +29,9 @@ export function createNodeVisitor(
   };
 }
 
+/**
+ * Will return the first declaration node among all declarations of the symbol
+ */
 export function getNodeOfSymbol(symbol?: ts.Symbol) {
   if (symbol?.declarations?.length) {
     return symbol.declarations[0];
@@ -30,20 +43,60 @@ export function getNodeOfType(type: ts.Type) {
   return getNodeOfSymbol(symbol);
 }
 
-export function getJsDocTags(
+const modiferTags = [
+  'public',
+  'alpha',
+  'beta',
+  'experimental',
+  'internal',
+  'expose',
+  'exposed',
+  'ignore',
+];
+
+export function getComment(
   ts: typeof import('typescript/lib/tsserverlibrary'),
   typeChecker: ts.TypeChecker,
   prop: ts.Symbol | ts.Signature,
 ) {
   return prop.getJsDocTags(typeChecker).reduce((doc, tag) => {
-    if (!doc[tag.name]) {
-      doc[tag.name] = [];
+    if (modiferTags.includes(tag.name)) {
+      if (!doc.modifierTags?.length) {
+        doc.modifierTags = [];
+      }
+      doc.modifierTags.push(tag.name);
+    } else {
+      if (!doc.blockTags?.length) {
+        doc.blockTags = [];
+      }
+      const content: BlockTagContentTextMeta[] = [];
+      if (tag.text) {
+        content.push({
+          kind: 'text',
+          text: ts.displayPartsToString(tag.text),
+        });
+      }
+      doc.blockTags.push({ tag: tag.name, content });
     }
-    doc[tag.name].push(
-      tag.text !== undefined ? ts.displayPartsToString(tag.text) : '',
-    );
     return doc;
-  }, {} as Record<string, string[]>);
+  }, {} as CommentMeta);
+}
+
+type GetTagResult<T> = T extends 'block' ? BlockTagMeta : string;
+
+export function getTag<T extends 'block' | 'modifer'>(
+  comment: CommentMeta,
+  tag: string,
+  kind?: T,
+): GetTagResult<T> | undefined {
+  if (kind === 'modifer') {
+    return comment.modifierTags?.find((t) => t === tag) as GetTagResult<T>;
+  } else if (kind === 'block') {
+    return comment.blockTags?.find((t) => t.tag === tag) as GetTagResult<T>;
+  } else {
+    return (getTag(comment, tag, 'modifer') ??
+      getTag(comment, tag, 'block')) as GetTagResult<T>;
+  }
 }
 
 export function reducer(acc: any, cur: any) {
@@ -123,6 +176,22 @@ export function signatureTypeToString(
   )}`;
 }
 
+export function typeParameterToString(
+  typeChecker: ts.TypeChecker,
+  type: ts.TypeParameter,
+  extendType?: ts.Type,
+  defaultType?: ts.Type,
+) {
+  let name = typeChecker.typeToString(type);
+  if (extendType) {
+    name += ` extend ${typeChecker.typeToString(extendType)}`;
+  }
+  if (defaultType) {
+    name += ` = ${typeChecker.typeToString(defaultType)}`;
+  }
+  return name;
+}
+
 export const BasicTypes: Record<string, string> = {
   string: 'string',
   number: 'number',
@@ -150,4 +219,30 @@ export function getPosixPath(anyPath: string) {
     windowsPathReg,
     '/',
   ) as path.PosixPath;
+}
+
+export function isExternalRefSchema(
+  schema: RefPropertyMetaSchema,
+): schema is ExternalRefPropertyMetaSchema {
+  if ((schema as LocalRefPropertyMetaSchema).ref) return false;
+  return true;
+}
+
+export function createCachedResolver<T extends UnknownSymbolResolver>(
+  resolver: T,
+) {
+  const schemaCache = new WeakMap<
+    ts.Declaration,
+    Partial<PropertyMetaSchema>
+  >();
+  return (...args: Parameters<T>) => {
+    const targetNode = args[0].targetNode;
+    const cache = schemaCache.get(targetNode);
+    if (cache) {
+      return cache;
+    }
+    const result = resolver(args[0]);
+    schemaCache.set(targetNode, result);
+    return result;
+  };
 }

@@ -1,7 +1,7 @@
-import type { CustomSchemaResolver, PropertyMeta } from '../../types';
+import type { PropertyMeta, PropertySchemaResolver } from '../../types';
 import { getNodeOfSymbol } from '../../utils';
 
-export const vueOptionSchemaResolver: CustomSchemaResolver<PropertyMeta> = (
+export const vueOptionSchemaResolver: PropertySchemaResolver<PropertyMeta> = (
   meta,
   { ts, targetNode, targetType },
 ) => {

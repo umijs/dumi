@@ -2,28 +2,35 @@ import path from 'path';
 import { afterAll, describe, expect, test } from 'vitest';
 import type {
   EnumPropertyMetaSchema,
+  LocalRefPropertyMetaSchema,
   MetaCheckerOptions,
+  ObjectPropertyMetaSchema,
   PropertyMeta,
+  TypeParamPropertyMetaSchema,
 } from '../src/index';
 import { createProject, vueTypesSchemaResolver } from '../src/index';
-import { toRecord } from './utils';
+import { toRecord, tsconfigPath } from './utils';
 
 const checkerOptions: MetaCheckerOptions = {
   forceUseTs: true,
   printer: { newLine: 1 },
-  schema: {
-    customResovlers: [vueTypesSchemaResolver],
+  propertyResovlers: [vueTypesSchemaResolver],
+  externalSymbolLinkMappings: {
+    typescript: {
+      Promise:
+        'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise',
+    },
   },
 };
 
 const project = createProject({
-  tsconfigPath: path.resolve(__dirname, 'fixtures/tsconfig.json'),
+  tsconfigPath,
   checkerOptions,
 });
 
 function testFeatures(kind: 'tsx' | 'sfc' | 'sfc-alias') {
+  const componentPath = path.resolve(__dirname, `fixtures/${kind}/index.ts`);
   describe(`${kind}: single Vue component meta`, () => {
-    const componentPath = path.resolve(__dirname, `fixtures/${kind}/index.ts`);
     describe('props', () => {
       const { component } = project.service.getComponentMeta(
         componentPath,
@@ -37,7 +44,10 @@ function testFeatures(kind: 'tsx' | 'sfc' | 'sfc-alias') {
           required: true,
           default: "'标题'",
           type: 'string',
-          tags: { default: ["''"] },
+        });
+        expect(titleProp.comment.blockTags).toContainEqual({
+          tag: 'default',
+          content: [{ kind: 'text', text: "''" }],
         });
       });
 
@@ -139,10 +149,26 @@ function testFeatures(kind: 'tsx' | 'sfc' | 'sfc-alias') {
         const dom = propMap['dom'];
         expect(dom).toMatchObject({
           schema: {
-            kind: 'unknown',
-            type: 'HTMLElement',
+            kind: 'ref',
+            externalUrl:
+              'https://developer.mozilla.org/docs/Web/API/HTMLElement',
+            name: 'HTMLElement',
           },
           default: 'null',
+        });
+      });
+
+      test('jsdoc', () => {
+        expect(propMap['func'].comment.modifierTags).toContain('alpha');
+        expect(propMap['c'].comment.modifierTags).toContain('experimental');
+        expect(propMap['e'].comment.modifierTags).toContain('beta');
+        expect(propMap['d'].comment.blockTags).toContainEqual({
+          tag: 'deprecated',
+          content: [],
+        });
+        expect(propMap['dom'].comment.blockTags).toContainEqual({
+          tag: 'since',
+          content: [{ kind: 'text', text: '0.0.1' }],
         });
       });
     });
@@ -176,6 +202,13 @@ function testFeatures(kind: 'tsx' | 'sfc' | 'sfc-alias') {
       test('scoped slots', () => {
         expect(slotMap['item']).matchSnapshot();
       });
+      test('jsdoc', () => {
+        expect(slotMap['item'].comment?.blockTags).toContainEqual({
+          tag: 'deprecated',
+          content: [],
+        });
+        expect(slotMap['icon'].comment?.modifierTags).toContain('experimental');
+      });
     });
 
     describe('expose api', () => {
@@ -185,12 +218,89 @@ function testFeatures(kind: 'tsx' | 'sfc' | 'sfc-alias') {
       );
       const exposed = toRecord(component.exposed);
       test('ref api', () => {
+        expect(Object.keys(exposed)).toStrictEqual(['focus', 'count']);
         expect(exposed['count']).toMatchObject({
           type: 'number',
         });
         expect(exposed['focus']).matchSnapshot();
       });
+
+      test('jsdoc', () => {
+        expect(exposed['count'].comment?.blockTags).toContainEqual({
+          tag: 'deprecated',
+          content: [{ kind: 'text', text: 'will be released in 0.0.1' }],
+        });
+        expect(exposed['focus'].comment?.modifierTags).toContain('alpha');
+      });
     });
+  });
+
+  describe.skipIf(kind !== 'tsx')('tsx: functional component', () => {
+    const { components } =
+      project.service.getComponentLibraryMeta(componentPath);
+    test('anonymous', () => {
+      expect(components['AnonymousFComponent']).toMatchSnapshot();
+    });
+    test('named', () => {
+      expect(components['NamedFComponent']).toMatchSnapshot();
+    });
+  });
+
+  describe.skipIf(kind !== 'tsx')('tsx: composition function', () => {
+    const { components, functions } =
+      project.service.getComponentLibraryMeta(componentPath);
+    test('composition functions', () => {
+      const funcNames = Object.keys(functions);
+      expect(funcNames).toStrictEqual(['useInternalValue', 'useVNode']);
+      expect(functions['useInternalValue']).toMatchObject({
+        kind: 'function',
+        schema: {
+          arguments: [
+            { key: 'upstreamValue', type: '() => T' },
+            { key: 'updator', type: '(upstreamValue: T, oldValue?: T) => T' },
+            {
+              key: 'equal',
+              type: '(internalValue: T, newValue: T) => boolean',
+            },
+          ],
+        },
+      });
+      expect(functions['useVNode'].type).toContain('() => VNode');
+    });
+    test('use @component to identify functional component', () => {
+      const schema = components['InternalComponent'];
+      expect(schema.props[0]).toContain({
+        name: 'a',
+        required: true,
+        type: 'string',
+      });
+    });
+  });
+
+  test.skipIf(kind !== 'tsx')('generic component', () => {
+    const { component, types } = project.service.getComponentMeta(
+      componentPath,
+      'List',
+    );
+    const typeParamRef = component
+      .typeParams?.[0] as LocalRefPropertyMetaSchema;
+    const typeParam = types[typeParamRef.ref] as TypeParamPropertyMetaSchema;
+    expect(typeParam.type).toBe('Item extend BaseItem = BaseItem');
+    const defaultRef = typeParam.schema?.default as LocalRefPropertyMetaSchema;
+    const defaultType = types[defaultRef.ref] as ObjectPropertyMetaSchema;
+    const extendRef = typeParam.schema?.type as LocalRefPropertyMetaSchema;
+    const extendType = types[extendRef.ref] as ObjectPropertyMetaSchema;
+    const baseItemObj = {
+      id: { name: 'id', type: 'string | number' },
+      text: { name: 'text' },
+    };
+    expect(defaultType.schema).toMatchObject(baseItemObj);
+    expect(extendType.schema).toMatchObject(baseItemObj);
+    // Only props of generic components can be automatically recognized
+    expect(component.props).toMatchObject([
+      { type: '() => BaseItem[] | Promise<BaseItem[]>', name: 'source' },
+      { type: '(data: BaseItem[]) => void', name: 'onLoaded' },
+    ]);
   });
 }
 

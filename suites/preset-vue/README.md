@@ -28,7 +28,7 @@ For example, the following configuration can make the `InternalType` type skip p
 ```js
 vue: {
   checkerOptions: {
-    schema: { ignore: ['InternalType'] }
+    ignore: ['InternalType']
   },
 },
 ```

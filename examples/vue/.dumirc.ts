@@ -12,6 +12,18 @@ export default {
   presets: [require.resolve('@dumijs/preset-vue')],
   vue: {
     tsconfigPath: path.resolve(__dirname, './tsconfig.vue.json'),
+    checkerOptions: {
+      externalSymbolLinkMappings: {
+        typescript: {
+          Promise:
+            'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise',
+        },
+        '@vue/runtime-core': {
+          VNodeChild:
+            'https://github.com/vuejs/core/blob/main/packages/runtime-core/src/vnode.ts#L136',
+        },
+      },
+    },
   },
   themeConfig: {
     nav: [
