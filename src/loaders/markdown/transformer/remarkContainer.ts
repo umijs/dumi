@@ -15,7 +15,7 @@ const CODE_GROUP_SPECIFIER = 'code-group';
 })();
 
 // transform attributes to string
-const transformAttributes = (attributes?: Record<string, string | null>) =>
+const transformAttributes = (attributes?: Record<string, any> | null) =>
   Object.entries(attributes ?? {}).reduce<string>(
     (ret, [name, value]) => `${ret} ${value ? `${name}="${value}"` : name}`,
     '',
