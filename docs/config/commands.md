@@ -11,7 +11,7 @@ group: 框架配置
 
 ## `dumi build`
 
-构建项目，适用于生产环境的部署。
+构建 dumi 文档产物，适用于生产环境的部署。
 
 ## `dumi preview`
 
