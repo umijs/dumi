@@ -215,6 +215,7 @@ export interface BasePropertyMetaSchema {
    */
   source?: PropertySourceReference[];
   type?: string;
+  target?: number;
 }
 
 export interface LiteralPropertyMetaSchema extends BasePropertyMetaSchema {
@@ -232,28 +233,24 @@ export interface EnumPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.ENUM;
   type: string;
   schema?: PropertyMetaSchema[];
-  ref?: number;
 }
 
 export interface ArrayPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.ARRAY;
   type: string;
   schema?: PropertyMetaSchema[];
-  ref?: number;
 }
 
 export interface FuncPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.FUNC;
   type: string;
   schema?: SignatureMetaSchema;
-  ref?: number;
 }
 
 export interface ObjectPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.OBJECT;
   type: string;
   schema?: Record<string, PropertyMeta>;
-  ref?: number;
 }
 
 export interface TypeParamPropertyMetaSchema extends BasePropertyMetaSchema {
@@ -261,7 +258,6 @@ export interface TypeParamPropertyMetaSchema extends BasePropertyMetaSchema {
   type: string;
   name: string;
   schema?: TypeParamMetaSchema;
-  ref?: number;
 }
 /**
  * Note: The unknown type is mainly used to carry types that are not parsed themselves,
@@ -271,7 +267,6 @@ export interface UnknownPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.UNKNOWN;
   type: string;
   typeParams?: PropertyMetaSchema[];
-  ref?: number;
 }
 
 export interface ExternalRefPropertyMetaSchema extends BasePropertyMetaSchema {
