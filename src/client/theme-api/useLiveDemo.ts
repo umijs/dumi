@@ -10,25 +10,23 @@ import {
   type RefObject,
 } from 'react';
 import DemoErrorBoundary from './DumiDemo/DemoErrorBoundary';
-import type { AgnosticComponentType } from './types';
+import type { AgnosticComponentType, ModuleType } from './types';
 import { useRenderer } from './useRenderer';
+import { useSandbox } from './useSandbox';
 
 const THROTTLE_WAIT = 500;
 
-type CommonJSContext = {
-  module: any;
-  exports: {
-    default?: any;
+const supports =
+  HTMLScriptElement.supports ||
+  function (type: string) {
+    if (type === 'module') {
+      return 'noModule' in HTMLScriptElement.prototype;
+    }
+    return false;
   };
-  require: any;
-};
 
-function evalCommonJS(
-  js: string,
-  { module, exports, require }: CommonJSContext,
-) {
-  new Function('module', 'exports', 'require', js)(module, exports, require);
-}
+const modules: ModuleType =
+  supports('importmap') && supports('module') ? 'esm' : 'cjs';
 
 export const useLiveDemo = (
   id: string,
@@ -54,6 +52,11 @@ export const useLiveDemo = (
   const [demoNode, setDemoNode] = useState<ReactNode>();
 
   const [error, setError] = useState<Error | null>(null);
+
+  const importMap = useRef({ builtins: context });
+
+  const sandbox = useSandbox(importMap.current, modules);
+
   const setSource = useCallback(
     throttle(
       async (source: Record<string, string>) => {
@@ -82,7 +85,7 @@ export const useLiveDemo = (
                 value: { err: null | Error };
               }>,
             ) => {
-              if (ev.data.type.startsWith('dumi.liveDemo.compileDone')) {
+              if (ev.data.type?.startsWith('dumi.liveDemo.compileDone')) {
                 iframeWindow.removeEventListener('message', handler);
                 setError(ev.data.value.err);
                 resolve();
@@ -99,18 +102,17 @@ export const useLiveDemo = (
           const entryFileName = Object.keys(asset.dependencies).find(
             (k) => asset.dependencies[k].type === 'FILE',
           )!;
-          const require = (v: string) => {
-            if (v in context!) return context![v];
-            throw new Error(`Cannot find module: ${v}`);
-          };
 
           const token = (taskToken.current = Math.random());
           let entryFileCode = source[entryFileName];
+
+          sandbox.init();
 
           if (renderOpts?.compile) {
             try {
               entryFileCode = await renderOpts.compile(entryFileCode, {
                 filename: entryFileName,
+                modules,
               });
             } catch (error: any) {
               setError(error);
@@ -121,13 +123,9 @@ export const useLiveDemo = (
 
           if (renderOpts?.renderer && renderOpts?.compile) {
             try {
-              const exports: AgnosticComponentType = {};
-              const module = { exports };
-              evalCommonJS(entryFileCode, {
-                exports,
-                module,
-                require,
-              });
+              const exports: AgnosticComponentType = await sandbox.exec(
+                entryFileCode,
+              );
               setComponent(exports);
               setDemoNode(createElement('div', { ref }));
               setError(null);
@@ -146,17 +144,9 @@ export const useLiveDemo = (
 
             // skip current task if another task is running
             if (token !== taskToken.current) return;
-
-            const exports: { default?: ComponentType } = {};
-            const module = { exports };
-
-            // initial component with fake runtime
-            evalCommonJS(entryFileCode, {
-              exports,
-              module,
-              require,
-            });
-
+            const exports: { default?: ComponentType } = await sandbox.exec(
+              entryFileCode,
+            );
             const newDemoNode = createElement(
               DemoErrorBoundary,
               null,

@@ -247,9 +247,11 @@ export type AgnosticComponentType =
   | Promise<AgnosticComponentModule>
   | AgnosticComponentModule;
 
+export type ModuleType = 'esm' | 'cjs';
+
 export type IDemoCompileFn = (
   code: string,
-  opts: { filename: string },
+  opts: { filename: string; modules?: ModuleType },
 ) => Promise<string>;
 
 export type IDemoCancelableFn = (
