@@ -2,6 +2,7 @@
 group:
   title: 其他
   order: 3
+order: 2
 ---
 
 # 从 dumi 1.x 升级

@@ -1,6 +1,6 @@
 ---
 group: 其他
-order: 2
+order: 3
 ---
 
 # 常见问题
