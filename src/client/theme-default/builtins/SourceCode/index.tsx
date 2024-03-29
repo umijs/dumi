@@ -23,7 +23,7 @@ const SIMILAR_DSL: Record<string, Language> = {
   vue: 'markup',
 };
 
-interface SourceCodeProps {
+export interface SourceCodeProps {
   children: string;
   lang: Language;
   highlightLines?: number[];
