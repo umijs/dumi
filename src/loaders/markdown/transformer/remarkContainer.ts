@@ -1,4 +1,4 @@
-import type { Code, Root } from 'mdast';
+import type { Root } from 'mdast';
 import type { Transformer } from 'unified';
 import { SKIP_DEMO_PARSE } from './rehypeDemo';
 
@@ -59,7 +59,7 @@ export default function remarkContainer(this: any): Transformer<Root> {
       // code-group is a special container
       if (node.name === CODE_GROUP_SPECIFIER) {
         const codeChildren = node.children
-          .filter((child): child is Code => child.type === 'code')
+          .filter(({ type }) => type === 'code')
           .map((child) => ({
             ...child,
             data: {
