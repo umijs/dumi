@@ -1,4 +1,5 @@
 import type { AtomComponentAsset, AtomFunctionAsset } from 'dumi-assets-types';
+import type { PropertySchema } from 'dumi-assets-types/typings/atom/props';
 import path from 'path';
 import { chokidar, lodash, logger } from 'umi/plugin-utils';
 
@@ -10,6 +11,7 @@ export interface IPatchFile {
 export interface IAtomAssetsParserResult {
   components: Record<string, AtomComponentAsset>;
   functions: Record<string, AtomFunctionAsset>;
+  references?: Record<string | number, PropertySchema>;
 }
 
 /**

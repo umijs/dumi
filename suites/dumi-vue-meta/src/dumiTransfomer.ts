@@ -1,6 +1,5 @@
 import type { AtomComponentAsset, AtomFunctionAsset } from 'dumi-assets-types';
 import type {
-  BasePropertySchema,
   FunctionPropertySchema,
   ObjectPropertySchema,
   PropertySchema,
@@ -33,13 +32,14 @@ function getPropertySchema(schema: PropertySchema | string) {
 export interface DumiTransformResult {
   components: Record<string, AtomComponentAsset>;
   functions: Record<string, AtomFunctionAsset>;
+  references?: Record<string | number, PropertySchema>;
 }
 
 export const dumiTransformer: MetaTransformer<DumiTransformResult> = (
   meta: ComponentLibraryMeta,
 ) => {
   const referencedTypes = meta.types;
-  const cachedTypes: Record<string, PropertySchema> = {};
+  const references: Record<string | number, PropertySchema> = {};
 
   function createPropertySchema(prop: PropertyMeta | EventMeta | SlotMeta) {
     const partialProp: Partial<PropertySchema> = {
@@ -88,12 +88,12 @@ export const dumiTransformer: MetaTransformer<DumiTransformResult> = (
     }
     switch (schema.kind) {
       case PropertyMetaKind.REF: {
+        const referenceSchema: ReferencePropertySchema = {
+          type: 'reference',
+        };
         if (isExternalRefSchema(schema)) {
-          const referenceSchema: ReferencePropertySchema = {
-            type: 'reference',
-            name: schema.name,
-            externalUrl: schema.externalUrl,
-          };
+          referenceSchema.name = schema.name;
+          referenceSchema.externalUrl = schema.externalUrl;
           if (schema.typeParams) {
             referenceSchema.typeParameters = schema.typeParams.map((param) =>
               transformSchema(param),
@@ -101,27 +101,22 @@ export const dumiTransformer: MetaTransformer<DumiTransformResult> = (
           }
           return referenceSchema;
         }
-        const cachedType = cachedTypes[schema.ref];
+        const cachedType = references[schema.target];
+        referenceSchema.target = schema.target;
         if (cachedType) {
-          return cachedType;
+          return referenceSchema;
         }
-        const referenceType = referencedTypes[schema.ref];
-        const type = [
-          PropertyMetaKind.ARRAY,
-          PropertyMetaKind.OBJECT,
-          PropertyMetaKind.FUNC,
-          PropertyMetaKind.ENUM,
-        ].includes(referenceType.kind)
-          ? ({
-              type: 'any',
-              className: (referenceType as ObjectPropertySchema).type,
-            } as BasePropertySchema<'any'>)
-          : transformSchema(referenceType);
+        const referenceType = referencedTypes[schema.target];
+        const resultType = transformSchema(referenceType);
+        if (referenceType.type && !resultType.className) {
+          resultType.className = referenceType.type;
+        }
+
         if (referenceType.source) {
-          type.source = referenceType.source;
+          resultType.source = referenceType.source;
         }
-        cachedTypes[schema.ref] = type;
-        return type;
+        references[referenceSchema.target!] = resultType;
+        return referenceSchema;
       }
       case PropertyMetaKind.LITERAL:
         return {
@@ -278,6 +273,6 @@ export const dumiTransformer: MetaTransformer<DumiTransformResult> = (
     acc[name] = transformComponent(component);
     return acc;
   }, result.components);
-
+  result.references = references;
   return result;
 };

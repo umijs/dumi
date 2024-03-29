@@ -214,6 +214,7 @@ export interface BasePropertyMetaSchema {
    * interface, type alias, type parameter
    */
   source?: PropertySourceReference[];
+  type?: string;
 }
 
 export interface LiteralPropertyMetaSchema extends BasePropertyMetaSchema {
@@ -231,28 +232,28 @@ export interface EnumPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.ENUM;
   type: string;
   schema?: PropertyMetaSchema[];
-  ref?: string;
+  ref?: number;
 }
 
 export interface ArrayPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.ARRAY;
   type: string;
   schema?: PropertyMetaSchema[];
-  ref?: string;
+  ref?: number;
 }
 
 export interface FuncPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.FUNC;
   type: string;
   schema?: SignatureMetaSchema;
-  ref?: string;
+  ref?: number;
 }
 
 export interface ObjectPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.OBJECT;
   type: string;
   schema?: Record<string, PropertyMeta>;
-  ref?: string;
+  ref?: number;
 }
 
 export interface TypeParamPropertyMetaSchema extends BasePropertyMetaSchema {
@@ -260,7 +261,7 @@ export interface TypeParamPropertyMetaSchema extends BasePropertyMetaSchema {
   type: string;
   name: string;
   schema?: TypeParamMetaSchema;
-  ref?: string;
+  ref?: number;
 }
 /**
  * Note: The unknown type is mainly used to carry types that are not parsed themselves,
@@ -270,7 +271,7 @@ export interface UnknownPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.UNKNOWN;
   type: string;
   typeParams?: PropertyMetaSchema[];
-  ref?: string;
+  ref?: number;
 }
 
 export interface ExternalRefPropertyMetaSchema extends BasePropertyMetaSchema {
@@ -285,7 +286,7 @@ export interface ExternalRefPropertyMetaSchema extends BasePropertyMetaSchema {
 
 export interface LocalRefPropertyMetaSchema extends BasePropertyMetaSchema {
   kind: PropertyMetaKind.REF;
-  ref: string;
+  target: number;
 }
 /**
  * This type is just a placeholder, it points to other types

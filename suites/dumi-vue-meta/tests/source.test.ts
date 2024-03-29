@@ -16,7 +16,7 @@ function getSource(project: Project) {
   const props = toRecord(component.props);
   const func = props['func'].schema as FuncPropertyMetaSchema;
   const ref = func.schema?.arguments?.[0]?.schema as LocalRefPropertyMetaSchema;
-  return types[ref.ref].source?.[0];
+  return types[ref.target].source?.[0];
 }
 
 function createSpawnSpy(

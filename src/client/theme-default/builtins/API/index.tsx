@@ -21,7 +21,8 @@ function fixArg(arg: any) {
   return arg;
 }
 
-const HANDLERS = {
+class SchemaHandler {
+  constructor(private references?: Record<string | number, PropertySchema>) {}
   // entry method
   toNode(prop: PropertySchema): ReactNode {
     if (typeof prop.type === 'string' && prop.type in this) {
@@ -42,21 +43,21 @@ const HANDLERS = {
 
     // unknown type
     return <span>unknown</span>;
-  },
+  }
 
   // type handlers
   string(prop: PropertySchema): ReactNode {
     return <span>{prop.type}</span>;
-  },
+  }
   number(prop: PropertySchema): ReactNode {
     return <span>{prop.type}</span>;
-  },
+  }
   boolean(prop: PropertySchema): ReactNode {
     return <span>{prop.type}</span>;
-  },
+  }
   any(prop: PropertySchema): ReactNode {
     return <span>{prop.type}</span>;
-  },
+  }
   object(prop: Extract<PropertySchema, { type: 'object' }>): ReactNode {
     const entries = Object.entries(prop.properties || {});
     const props = entries.map(([key, value], index) => {
@@ -78,7 +79,7 @@ const HANDLERS = {
         <Token>{'}'}</Token>
       </span>
     );
-  },
+  }
   array(prop: Extract<PropertySchema, { type: 'array' }>): ReactNode {
     let arrayType: ReactNode = <span>any</span>;
     if (prop.items) {
@@ -92,7 +93,7 @@ const HANDLERS = {
         <Token>{']'}</Token>
       </span>
     );
-  },
+  }
   // FIXME: extract real type
   element(prop: any): ReactNode {
     return (
@@ -102,7 +103,7 @@ const HANDLERS = {
         <Token>&gt;</Token>
       </span>
     );
-  },
+  }
   // FIXME: extract real type
   function({ signature }: any) {
     // handle Function type without signature
@@ -133,11 +134,11 @@ const HANDLERS = {
         </span>
       );
     });
-  },
+  }
   // FIXME: extract real type
   dom(prop: any): ReactNode {
     return <span>{prop.className || 'DOM'}</span>;
-  },
+  }
 
   // special handlers
   enum(prop: PropertySchema) {
@@ -152,7 +153,7 @@ const HANDLERS = {
         ))}
       </span>
     );
-  },
+  }
   oneOf(prop: PropertySchema): ReactNode {
     return prop.oneOf!.map((v, i) => {
       return (
@@ -162,9 +163,13 @@ const HANDLERS = {
         </span>
       );
     });
-  },
+  }
 
   reference(prop: Extract<PropertySchema, { type: 'reference' }>): ReactNode {
+    if (prop.target && this.references) {
+      const type = this.references[prop.target];
+      return this.getValidClassName(type) || this.toNode(type);
+    }
     const typeParameters = prop.typeParameters || [];
     const params = typeParameters.map((param, i) => (
       <span key={i}>
@@ -193,7 +198,7 @@ const HANDLERS = {
         )}
       </>
     );
-  },
+  }
 
   // utils
   getValidClassName(prop: PropertySchema): ReactNode {
@@ -213,15 +218,22 @@ const HANDLERS = {
         prop.className
       )
     ) : null;
-  },
-};
+  }
+}
 
-const APIType: FC<PropertySchema> = (prop) => {
-  const [type, setType] = useState(() => HANDLERS.toNode(prop));
+const APIType: FC<{
+  prop: PropertySchema;
+  references?: Record<number, PropertySchema>;
+}> = ({ prop, references }) => {
+  const [type, setType] = useState<ReactNode>();
+
+  const handler = useMemo(() => {
+    return new SchemaHandler(references);
+  }, [references]);
 
   useEffect(() => {
-    setType(HANDLERS.toNode(prop));
-  }, [prop]);
+    setType(handler.toNode(prop));
+  }, [prop, handler]);
 
   return <code className="dumi-default-api-type">{type}</code>;
 };
@@ -287,7 +299,7 @@ const API: FC<{
   type?: 'props' | 'events' | 'slots' | 'imperative';
 }> = (props) => {
   const { frontmatter } = useRouteMeta();
-  const { components } = useAtomAssets();
+  const { components, references } = useAtomAssets();
   const id = props.id || frontmatter.atomId;
   const intl = useIntl();
 
@@ -334,7 +346,7 @@ const API: FC<{
                 </td>
                 <td>{prop.description || '--'}</td>
                 <td>
-                  <APIType {...prop} />
+                  <APIType prop={prop} references={references} />
                 </td>
                 {props.type === 'props' && (
                   <td>

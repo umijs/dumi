@@ -224,7 +224,7 @@ export function getPosixPath(anyPath: string) {
 export function isExternalRefSchema(
   schema: RefPropertyMetaSchema,
 ): schema is ExternalRefPropertyMetaSchema {
-  if ((schema as LocalRefPropertyMetaSchema).ref) return false;
+  if ((schema as LocalRefPropertyMetaSchema).target) return false;
   return true;
 }
 

@@ -144,9 +144,10 @@ export interface ObjectPropertySchema extends BasePropertySchema {
 
 export interface ReferencePropertySchema extends BasePropertySchema {
   type: 'reference';
-  name: string;
+  target?: string | number;
+  name?: string;
   typeParameters?: PropertySchema[];
-  externalUrl: string;
+  externalUrl?: string;
 }
 
 export interface FunctionArgSchema {

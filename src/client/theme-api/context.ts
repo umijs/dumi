@@ -1,5 +1,6 @@
 import type { PICKED_PKG_FIELDS } from '@/constants';
 import type { AtomComponentAsset } from 'dumi-assets-types';
+import type { PropertySchema } from 'dumi-assets-types/typings/atom/props';
 import { createContext, useContext } from 'react';
 import type { IDemoData, ILocalesConfig, IThemeConfig } from './types';
 
@@ -9,6 +10,7 @@ export interface ISiteContext {
   entryExports: Record<string, any>;
   demos: Record<string, IDemoData>;
   components: Record<string, AtomComponentAsset>;
+  references: Record<string | number, PropertySchema>;
   locales: ILocalesConfig;
   themeConfig: IThemeConfig;
   hostname?: string;
@@ -26,6 +28,7 @@ export const SiteContext = createContext<ISiteContext>({
   entryExports: {},
   demos: {},
   components: {},
+  references: {},
   locales: [],
   themeConfig: {} as IThemeConfig,
   loading: false,

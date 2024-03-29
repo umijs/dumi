@@ -51,7 +51,8 @@ export default (api: IApi) => {
     api.writeTmpFile({
       noPluginDir: true,
       path: ATOMS_META_PATH,
-      content: 'export const components = null;',
+      content:
+        'export const components = null; export const references = null;',
     });
 
     const parsedMetaFiles: IMetaFiles = await api.applyPlugins({

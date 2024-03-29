@@ -49,11 +49,16 @@ export default (api: IApi) => {
     api.writeTmpFile({
       noPluginDir: true,
       path: ATOMS_META_PATH,
-      content: `export const components = ${JSON.stringify(
-        components,
-        null,
-        2,
-      )};`,
+      content:
+        `export const components = ${JSON.stringify(components, null, 2)};` +
+        (data.references
+          ? `\nexport const references = ${JSON.stringify(
+              data.references,
+              null,
+              2,
+            )};
+      `
+          : '\nexport const references = {};'),
     });
   };
 

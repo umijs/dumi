@@ -284,12 +284,12 @@ function testFeatures(kind: 'tsx' | 'sfc' | 'sfc-alias') {
     );
     const typeParamRef = component
       .typeParams?.[0] as LocalRefPropertyMetaSchema;
-    const typeParam = types[typeParamRef.ref] as TypeParamPropertyMetaSchema;
+    const typeParam = types[typeParamRef.target] as TypeParamPropertyMetaSchema;
     expect(typeParam.type).toBe('Item extend BaseItem = BaseItem');
     const defaultRef = typeParam.schema?.default as LocalRefPropertyMetaSchema;
-    const defaultType = types[defaultRef.ref] as ObjectPropertyMetaSchema;
+    const defaultType = types[defaultRef.target] as ObjectPropertyMetaSchema;
     const extendRef = typeParam.schema?.type as LocalRefPropertyMetaSchema;
-    const extendType = types[extendRef.ref] as ObjectPropertyMetaSchema;
+    const extendType = types[extendRef.target] as ObjectPropertyMetaSchema;
     const baseItemObj = {
       id: { name: 'id', type: 'string | number' },
       text: { name: 'text' },

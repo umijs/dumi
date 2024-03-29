@@ -18,7 +18,6 @@ import {
 import {
   BasicTypes,
   createCachedResolver,
-  createRef,
   getComment,
   getNodeOfSymbol,
   getNodeOfType,
@@ -37,6 +36,8 @@ import {
 
 const externalSymbolResolver = createCachedResolver(esResolver);
 
+let referenceID = 0;
+
 export class SchemaResolver {
   private schemaCache = new WeakMap<ts.Type, PropertyMetaSchema>();
   private schemaOptions!: NonNullable<MetaCheckerOptions>;
@@ -45,7 +46,7 @@ export class SchemaResolver {
    * Used to store all declared interfaces or types
    */
   private readonly types: Record<string, PropertyMetaSchema> = {};
-  private readonly typeCache = new WeakMap<ts.Type, string>();
+  private readonly typeCache = new WeakMap<ts.Type, number>();
 
   constructor(
     private ts: typeof import('typescript/lib/tsserverlibrary'),
@@ -74,28 +75,26 @@ export class SchemaResolver {
     });
   }
 
-  private setType(
-    type: string,
-    fileName: string,
-    subtype: ts.Type,
-    schema: PropertyMetaSchema,
-  ) {
-    const key = createRef(type, fileName);
-    this.types[key] = schema;
-    this.typeCache.set(subtype, key);
-    return key;
+  private setType(subtype: ts.Type, schema: PropertyMetaSchema) {
+    if (this.typeCache.has(subtype)) {
+      return this.getReferenceIdByType(subtype)!;
+    }
+    referenceID++;
+    this.types[referenceID] = schema;
+    this.typeCache.set(subtype, referenceID);
+    return referenceID;
   }
 
-  public getSchemaByRef(ref: string) {
-    return this.types[ref];
+  public getSchemaByRef(target: number) {
+    return this.types[target];
   }
 
-  public getRefByType(type: ts.Type) {
+  public getReferenceIdByType(type: ts.Type) {
     return this.typeCache.get(type);
   }
 
   public getSchemaByType(type: ts.Type) {
-    const ref = this.getRefByType(type);
+    const ref = this.getReferenceIdByType(type);
     if (ref) {
       return this.getSchemaByRef(ref);
     }
@@ -346,8 +345,8 @@ export class SchemaResolver {
   }
 
   public resolveSchema(subtype: ts.Type): PropertyMetaSchema {
-    const ref = this.getRefByType(subtype);
-    if (ref) return { ref, kind: PropertyMetaKind.REF };
+    const target = this.getReferenceIdByType(subtype);
+    if (target) return { target, kind: PropertyMetaKind.REF };
 
     const cachedSchema = this.schemaCache.get(subtype);
     if (cachedSchema) {
@@ -376,8 +375,8 @@ export class SchemaResolver {
       ) {
         const source = this.getSource(node);
         Object.assign(schema, { source: [source] });
-        const ref = this.setType(type, source.fileName, subtype, schema);
-        return { ref, kind: PropertyMetaKind.REF };
+        const target = this.setType(subtype, schema);
+        return { target, kind: PropertyMetaKind.REF };
       }
     }
 
