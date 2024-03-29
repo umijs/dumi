@@ -44,7 +44,7 @@ export default function remarkContainer(this: any): Transformer<Root> {
           1,
           {
             type: 'html',
-            value: `<Container type="${node.name}" ${attrs}>`,
+            value: `<Container type="${node.name}"${attrs}>`,
             position: node.position,
           },
           ...(node.children || []).concat({
