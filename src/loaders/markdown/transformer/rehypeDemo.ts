@@ -19,8 +19,13 @@ const DEMO_NODE_CONTAINER = '$demo-container';
 export const DEMO_PROP_VALUE_KEY = '$demo-prop-value-key';
 export const DUMI_DEMO_TAG = 'DumiDemo';
 export const DUMI_DEMO_GRID_TAG = 'DumiDemoGrid';
-export const SKIP_DEMO_PARSE_SIGN = ' pure'; // 有个空格
-const ALWAYS_DEMO_PARSE_SIGN = ' demo'; // 有个空格
+export const SKIP_DEMO_PARSE = 'pure';
+const ALWAYS_DEMO_PARSE = 'demo';
+
+const skipDemoRE = new RegExp(/** 注意前面有空格 ==> */ ` ${SKIP_DEMO_PARSE}`);
+const alwaysDemoRE = new RegExp(
+  /** 注意前面有空格 ==> */ ` ${ALWAYS_DEMO_PARSE}`,
+);
 
 // workaround to import pure esm module
 (async () => {
@@ -54,15 +59,12 @@ function getCodeLang(node: Element, opts: IRehypeDemoOptions) {
   } else if (
     [
       // 插件开发者可配置 [SKIP_DEMO_PARSE_SIGN] 表示不解析 demo (优先级最高)
-      !Object.prototype.hasOwnProperty.call(
-        node.data ?? {},
-        SKIP_DEMO_PARSE_SIGN,
-      ),
+      !Object.prototype.hasOwnProperty.call(node.data ?? {}, SKIP_DEMO_PARSE),
       Array.isArray(node.properties?.className),
       // 根据用户配置判断 pure 或者 demo
       opts.resolve.codeBlockMode === 'passive'
-        ? new RegExp(ALWAYS_DEMO_PARSE_SIGN).test(String(node.data?.meta)) // passive mode
-        : !new RegExp(SKIP_DEMO_PARSE_SIGN).test(String(node.data?.meta)), // active mode (default)
+        ? alwaysDemoRE.test(String(node.data?.meta)) // passive mode
+        : !skipDemoRE.test(String(node.data?.meta)), // active mode (default)
     ].every(Boolean)
   ) {
     // code block demo

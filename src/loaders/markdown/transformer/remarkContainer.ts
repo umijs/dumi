@@ -1,6 +1,6 @@
 import type { Code, Root } from 'mdast';
 import type { Transformer } from 'unified';
-import { SKIP_DEMO_PARSE_SIGN } from './rehypeDemo';
+import { SKIP_DEMO_PARSE } from './rehypeDemo';
 
 let visit: typeof import('unist-util-visit').visit;
 let SKIP: typeof import('unist-util-visit').SKIP;
@@ -65,7 +65,7 @@ export default function remarkContainer(this: any): Transformer<Root> {
             data: {
               ...child.data,
               //  dumi 默认会编译有关联技术栈的代码块, 标记为不需要编译
-              [SKIP_DEMO_PARSE_SIGN]: true,
+              [SKIP_DEMO_PARSE]: true,
             },
           }));
 
