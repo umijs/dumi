@@ -1,6 +1,11 @@
 {
   "name": "@examples/vue",
   "description": "A Vue3 component library",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/umijs/dumi",
+    "directory": "examples/vue"
+  },
   "license": "MIT",
   "scripts": {
     "build": "node ../../bin/dumi.js build",

@@ -1,4 +1,4 @@
-import { useAtomAssets, useIntl, useRouteMeta } from 'dumi';
+import { useAtomAssets, useIntl, useRouteMeta, useSiteData } from 'dumi';
 import type { AtomComponentAsset } from 'dumi-assets-types';
 import React, { ReactNode, useEffect, useMemo, useState, type FC } from 'react';
 import Badge from '../Badge';
@@ -20,6 +20,27 @@ function fixArg(arg: any) {
   }
   return arg;
 }
+
+// Usually handles types other than basic types, either interfaces or type aliases
+const CompositeType: FC<PropertySchema> = (prop: PropertySchema) => {
+  const intl = useIntl();
+  const { themeConfig } = useSiteData();
+  return prop.source?.[0] && themeConfig.sourceLink ? (
+    <a
+      className="dumi-default-api-link"
+      href={intl.formatMessage(
+        { id: '$internal.api.sourceLink' },
+        { ...prop.source[0] },
+      )}
+      target="_blank"
+      rel="noreferrer"
+    >
+      {prop.className}
+    </a>
+  ) : (
+    prop.className
+  );
+};
 
 const HANDLERS = {
   // entry method
@@ -197,22 +218,14 @@ const HANDLERS = {
 
   // utils
   getValidClassName(prop: PropertySchema): ReactNode {
-    return 'className' in prop &&
+    if (
+      'className' in prop &&
       typeof prop.className === 'string' &&
-      prop.className !== '__type' ? (
-      prop.source?.[0] ? (
-        <a
-          className="dumi-default-api-link"
-          href={prop.source[0]?.url}
-          target="_blank"
-          rel="noreferrer"
-        >
-          {prop.className}
-        </a>
-      ) : (
-        prop.className
-      )
-    ) : null;
+      prop.className !== '__type'
+    ) {
+      return <CompositeType {...prop} />;
+    }
+    return null;
   },
 };
 

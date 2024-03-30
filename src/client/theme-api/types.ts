@@ -225,6 +225,7 @@ export interface IThemeConfig {
     [key in SocialTypes]?: string;
   };
   editLink?: boolean | string;
+  sourceLink?: boolean | string;
   lastUpdated?: boolean;
   [key: string]: any;
 }

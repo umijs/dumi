@@ -8,10 +8,17 @@ import {
   IPatchFile,
   createApiParser,
 } from 'dumi/tech-stack-utils';
-import path from 'path';
+import path from 'node:path';
 
 export interface VueParserOptions extends IBaseApiParserOptions {
   tsconfigPath?: string;
+  /**
+   * By default, this option is the repository.directory option in package.json
+   *
+   * Mainly used to change the root directory of parser.
+   * The default root directory is obtained through getProjectRoot.
+   */
+  directory?: string;
   checkerOptions?: MetaCheckerOptions;
 }
 
@@ -21,12 +28,24 @@ class VueMetaParser implements ILanguageMetaParser {
   private checkerOptions!: MetaCheckerOptions;
   private checker!: ReturnType<typeof createProject>;
   constructor(opts: VueParserOptions) {
-    const { tsconfigPath, checkerOptions, resolveDir, entryFile } = opts;
-    this.checkerOptions = Object.assign({}, checkerOptions);
+    const {
+      tsconfigPath,
+      checkerOptions,
+      resolveDir,
+      entryFile,
+      directory = '',
+    } = opts;
+    this.checkerOptions = Object.assign(
+      {
+        // Source link generation is turned off by default, and will provided by dumi
+        disableSources: true,
+      },
+      checkerOptions,
+    );
     this.resolveDir = resolveDir;
     this.entryFile = path.resolve(this.resolveDir, entryFile);
     this.checker = createProject({
-      rootPath: getProjectRoot(resolveDir),
+      rootPath: path.join(getProjectRoot(resolveDir), directory),
       tsconfigPath,
       checkerOptions: this.checkerOptions,
     });
