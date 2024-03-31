@@ -71,17 +71,19 @@
     display: none;
   }
 
-  &-editor-tip-btn {
-    position: absolute;
+  &-editor-tip-btn,
+  &-importmap-btn,
+  &-json-close,
+  &-json-save {
     appearance: none;
     z-index: 2;
-    right: 42px;
-    top: 9px;
-    padding: 8px 12px;
-    cursor: help;
     background: transparent;
     border: 0;
     transition: all 0.2s;
+    color: darken(@c-border, 20%);
+    @{dark-selector} & {
+      color: lighten(@c-border-dark, 20%);
+    }
 
     > svg {
       width: 16px;
@@ -91,6 +93,18 @@
         fill: lighten(@c-border-dark, 20%);
       }
     }
+    .@{prefix}-tabs-tabpane:not(:hover) & {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+
+  &-editor-tip-btn {
+    position: absolute;
+    top: 9px;
+    right: 42px;
+    padding: 8px 12px;
+    cursor: help;
 
     &[data-readonly] {
       > span {
@@ -104,15 +118,51 @@
         transform: rotate(45deg) translate(-50%, 120%);
       }
     }
+  }
 
-    .@{prefix}-tabs-tabpane:not(:hover) & {
-      opacity: 0;
-      visibility: hidden;
+  &-importmap-btn {
+    position: absolute;
+    top: 9px;
+    right: 72px;
+    padding: 8px 12px;
+    line-height: 16px;
+    cursor: pointer;
+  }
+
+  &-json-ops {
+    position: absolute;
+    top: 9px;
+    right: 44px;
+    z-index: 2;
+
+    > button {
+      padding: 8px;
+      line-height: 16px;
+      cursor: pointer;
+    }
+  }
+
+  &-json-editor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+
+    > div {
+      height: 100%;
+
+      > div {
+        height: 100%;
+      }
     }
   }
 }
 
 .@{prefix}-tabs {
+  position: relative;
+
   &-top {
     flex-direction: column;
 

@@ -3,6 +3,8 @@ import throttle from 'lodash.throttle';
 import {
   createElement,
   useCallback,
+  useEffect,
+  useMemo,
   useRef,
   useState,
   type ComponentType,
@@ -10,6 +12,7 @@ import {
   type RefObject,
 } from 'react';
 import DemoErrorBoundary from './DumiDemo/DemoErrorBoundary';
+import type { ExtendedImportMap } from './sandbox';
 import type { AgnosticComponentType, ModuleType } from './types';
 import { useRenderer } from './useRenderer';
 import { useSandbox } from './useSandbox';
@@ -53,9 +56,47 @@ export const useLiveDemo = (
 
   const [error, setError] = useState<Error | null>(null);
 
-  const importMap = useRef({ builtins: context });
+  const [innerImportMap, setImportMap] = useState({ builtins: context });
 
-  const sandbox = useSandbox(importMap.current, modules);
+  const importMap = useMemo(() => {
+    return Object.assign(
+      {
+        imports: {},
+        scopes: {},
+      },
+      innerImportMap,
+      {
+        builtins: Object.keys(innerImportMap.builtins).reduce(
+          (builtins, dep) => {
+            builtins[dep] = demo.asset.dependencies[dep]?.value;
+            return builtins;
+          },
+          {} as NonNullable<ExtendedImportMap['builtins']>,
+        ),
+      },
+    );
+  }, [innerImportMap]);
+
+  const sandbox = useSandbox(innerImportMap, modules);
+
+  async function updateImportMap(modifiedImportMap: ExtendedImportMap) {
+    const map: ExtendedImportMap = {};
+    if (modifiedImportMap.imports) {
+      map.imports = modifiedImportMap.imports;
+    }
+    if (modifiedImportMap.scopes) {
+      map.scopes = modifiedImportMap.scopes;
+    }
+    setImportMap(() => ({
+      ...innerImportMap,
+      ...map,
+    }));
+    sandbox.init();
+  }
+
+  useEffect(() => {
+    sandbox.updateImportMap(innerImportMap);
+  }, [innerImportMap]);
 
   const setSource = useCallback(
     throttle(
@@ -178,5 +219,12 @@ export const useLiveDemo = (
     [context, asset, renderOpts],
   );
 
-  return { node: demoNode, loading, error, setSource };
+  return {
+    node: demoNode,
+    loading,
+    error,
+    setSource,
+    updateImportMap,
+    importMap,
+  };
 };

@@ -267,18 +267,22 @@ export class Sandbox {
         false,
       );
     }
-    return this.codeSandbox.then(({ destroy }) => {
-      destroy();
+    return this.codeSandbox.then((codeSandbox) => {
+      codeSandbox.destroy();
     });
   }
 
   private updateSrcDoc({ imports, builtins, scopes }: ExtendedImportMap) {
     const realImportMap: ImportMap = {};
     if (imports) {
-      realImportMap.imports = imports;
+      realImportMap.imports = {
+        ...imports,
+      };
     }
     if (scopes) {
-      realImportMap.scopes = scopes;
+      realImportMap.scopes = {
+        ...scopes,
+      };
     }
     if (builtins) {
       realImportMap.imports = Object.entries(builtins).reduce(

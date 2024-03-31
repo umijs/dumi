@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Sandbox, type ExtendedImportMap } from './sandbox';
+import type { ExtendedImportMap, Sandbox } from './sandbox';
 import type { ModuleType } from './types';
 
 type CommonJSContext = {
@@ -18,7 +18,11 @@ function evalCommonJS(
 }
 
 function createSandbox(importMap: ExtendedImportMap, modules: ModuleType) {
-  if (modules === 'esm') return Sandbox.create({ importMap });
+  if (modules === 'esm') {
+    return import('./sandbox').then(({ Sandbox }) => {
+      return Sandbox.create({ importMap });
+    });
+  }
   const require = (v: string) => {
     if (v in importMap.builtins!) return importMap.builtins![v];
     throw new Error(`Cannot find module: ${v}`);
@@ -59,6 +63,12 @@ export function useSandbox(
     init() {
       if (sandbox.current) return;
       sandbox.current = createSandbox(importMap, modules);
+    },
+    async updateImportMap(importMap: ExtendedImportMap) {
+      const sb = await sandbox.current;
+      if (sb) {
+        await sb.updateImportMap(importMap);
+      }
     },
     async exec(esm: string) {
       if (!sandbox.current) {

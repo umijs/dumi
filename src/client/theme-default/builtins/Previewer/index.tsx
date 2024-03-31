@@ -15,6 +15,8 @@ const Previewer: FC<IPreviewerProps> = (props) => {
     error: liveDemoError,
     loading: liveDemoLoading,
     setSource: setLiveDemoSource,
+    importMap,
+    updateImportMap,
   } = useLiveDemo(props.asset.id, {
     iframe: Boolean(props.iframe || props._live_in_iframe),
     containerRef: demoContainer,
@@ -76,6 +78,8 @@ const Previewer: FC<IPreviewerProps> = (props) => {
         )}
         <PreviewerActions
           {...props}
+          importMap={importMap}
+          onImportMapChange={updateImportMap}
           onSourceChange={setLiveDemoSource}
           demoContainer={
             props.iframe

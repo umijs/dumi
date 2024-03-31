@@ -1,3 +1,4 @@
+import type { ExtendedImportMap } from '@/client/theme-api/sandbox';
 import { ReactComponent as IconCheck } from '@ant-design/icons-svg/inline-svg/outlined/check.svg';
 import { ReactComponent as IconCodeSandbox } from '@ant-design/icons-svg/inline-svg/outlined/code-sandbox.svg';
 import { ReactComponent as IconEdit } from '@ant-design/icons-svg/inline-svg/outlined/edit.svg';
@@ -47,6 +48,8 @@ export interface IPreviewerActionsProps extends IPreviewerProps {
   extra?: ReactNode;
   forceShowCode?: boolean;
   demoContainer: HTMLDivElement | HTMLIFrameElement;
+  importMap?: ExtendedImportMap;
+  onImportMapChange?: (importMap: ExtendedImportMap) => void;
   onSourceTranspile?: (
     args:
       | { err: Error; source?: null }
@@ -86,6 +89,10 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
   );
   const copyTimer = useRef<number>();
   const [isCopied, setIsCopied] = useState(false);
+  const [mapOpen, setMapOpen] = useState(false);
+  const [jsonSource, setJsonSource] = useState(
+    JSON.stringify(props.importMap, null, 2),
+  );
   const isSingleFile = files.length === 1;
   const lang = (files[activeKey][0].match(/\.([^.]+)$/)?.[1] || 'text') as any;
 
@@ -218,31 +225,85 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
                 // only support to edit entry file currently
                 children:
                   i === 0 && renderOpts?.compile ? (
-                    <SourceCodeEditor
-                      lang={lang}
-                      initialValue={files[i][1].value.trim()}
-                      onChange={(code) => {
-                        props.onSourceChange?.({ [files[i][0]]: code });
-                        // FIXME: remove before publish
-                        props.onSourceTranspile?.({
-                          source: { [files[i][0]]: code },
-                        });
-                      }}
-                      extra={
-                        <Tooltip
-                          title={intl.formatMessage({
-                            id: 'previewer.actions.code.editable',
-                          })}
-                        >
-                          <button
-                            type="button"
-                            className="dumi-default-previewer-editor-tip-btn"
-                          >
-                            <IconEdit />
-                          </button>
-                        </Tooltip>
-                      }
-                    />
+                    <>
+                      <SourceCodeEditor
+                        lang={lang}
+                        initialValue={files[i][1].value.trim()}
+                        onChange={(code) => {
+                          props.onSourceChange?.({ [files[i][0]]: code });
+                          // FIXME: remove before publish
+                          props.onSourceTranspile?.({
+                            source: { [files[i][0]]: code },
+                          });
+                        }}
+                        extra={
+                          <>
+                            <Tooltip
+                              title={intl.formatMessage({
+                                id: 'previewer.actions.code.editable',
+                              })}
+                            >
+                              <button
+                                type="button"
+                                className="dumi-default-previewer-editor-tip-btn"
+                              >
+                                <IconEdit />
+                              </button>
+                            </Tooltip>
+                            <button
+                              type="button"
+                              className="dumi-default-previewer-importmap-btn"
+                              onClick={() => {
+                                setMapOpen(!mapOpen);
+                              }}
+                            >
+                              Import Map
+                            </button>
+                          </>
+                        }
+                      />
+                      {mapOpen && (
+                        <div className="dumi-default-previewer-json-editor">
+                          <SourceCodeEditor
+                            initialValue={jsonSource}
+                            onChange={(code) => {
+                              setJsonSource(code);
+                            }}
+                            lang="json"
+                            extra={
+                              <div className="dumi-default-previewer-json-ops">
+                                <button
+                                  type="button"
+                                  className="dumi-default-previewer-json-save"
+                                  onClick={() => {
+                                    try {
+                                      const result = JSON.parse(
+                                        jsonSource,
+                                      ) as ExtendedImportMap;
+                                      props.onImportMapChange?.(result);
+                                      setMapOpen(false);
+                                    } catch (error: any) {
+                                      alert(error.toString());
+                                    }
+                                  }}
+                                >
+                                  Save
+                                </button>
+                                <button
+                                  type="button"
+                                  className="dumi-default-previewer-json-close"
+                                  onClick={() => {
+                                    setMapOpen(false);
+                                  }}
+                                >
+                                  Close
+                                </button>
+                              </div>
+                            }
+                          />
+                        </div>
+                      )}
+                    </>
                   ) : (
                     <SourceCode
                       lang={lang}
