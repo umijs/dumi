@@ -74,28 +74,16 @@ demo:
 <!-- 其他 Markdown 内容 -->
 ```
 
-配置 `demo.cols` 后，以下**连续多个**标签组成的 demo 完将会被渲染为双栏布局：
+配置 `demo.cols` 后,以下多个 demo 完将会被渲染为双栏布局：
 
 ```md
-<!-- good ✅ -->
-
 <code src="./demos/cols.tsx">分栏 1</code>
 <code src="./demos/cols.tsx">分栏 2</code>
 <code src="./demos/cols.tsx">分栏 3</code>
 <code src="./demos/cols.tsx">分栏 4</code>
-
-<!-- bad ❌ -->
-
-<code src="./demos/cols.tsx">bad 分栏 1</code>
-
-<code src="./demos/cols.tsx">bad 分栏 2</code>
 ```
 
 <code id="foo" src="./demos/cols.tsx">分栏 1</code>
 <code id="bar" src="./demos/cols.tsx">分栏 2</code>
 <code id="baz" src="./demos/cols.tsx">分栏 3</code>
 <code id="other" src="./demos/cols.tsx">分栏 4</code>
-
-<code id="bad-1" src="./demos/cols.tsx">bad 分栏 1</code>
-
-<code id="bad-2" src="./demos/cols.tsx">bad 分栏 2</code>
