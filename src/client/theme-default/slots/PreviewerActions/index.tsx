@@ -1,6 +1,9 @@
+import type { ExtendedImportMap } from '@/client/theme-api/sandbox';
 import { ReactComponent as IconCheck } from '@ant-design/icons-svg/inline-svg/outlined/check.svg';
+import { ReactComponent as IconClose } from '@ant-design/icons-svg/inline-svg/outlined/close-circle.svg';
 import { ReactComponent as IconCodeSandbox } from '@ant-design/icons-svg/inline-svg/outlined/code-sandbox.svg';
 import { ReactComponent as IconEdit } from '@ant-design/icons-svg/inline-svg/outlined/edit.svg';
+import { ReactComponent as IconSave } from '@ant-design/icons-svg/inline-svg/outlined/save.svg';
 import { ReactComponent as IconSketch } from '@ant-design/icons-svg/inline-svg/outlined/sketch.svg';
 import { ReactComponent as IconStackBlitz } from '@ant-design/icons-svg/inline-svg/outlined/thunderbolt.svg';
 import classNames from 'classnames';
@@ -15,25 +18,159 @@ import {
 } from 'dumi';
 import SourceCode from 'dumi/theme/builtins/SourceCode';
 import PreviewerActionsExtra from 'dumi/theme/slots/PreviewerActionsExtra';
-import SourceCodeEditor from 'dumi/theme/slots/SourceCodeEditor';
+import SourceCodeEditor, {
+  type SourceCodeEditorMethods,
+} from 'dumi/theme/slots/SourceCodeEditor';
 import Tabs from 'rc-tabs';
+import RcTooltip from 'rc-tooltip';
+import type { TooltipProps as RcTooltipProps } from 'rc-tooltip/lib/Tooltip';
 import React, { useRef, useState, type FC, type ReactNode } from 'react';
 import './index.less';
-export interface IPreviewerActionsProps extends IPreviewerProps {
-  /**
-   * disabled actions
-   */
-  disabledActions?: ('CSB' | 'STACKBLITZ' | 'EXTERNAL' | 'HTML2SKETCH')[];
-  extra?: ReactNode;
-  forceShowCode?: boolean;
-  demoContainer: HTMLDivElement | HTMLIFrameElement;
-  onSourceTranspile?: (
-    args:
-      | { err: Error; source?: null }
-      | { err?: null; source: Record<string, string> },
-  ) => void;
-  onSourceChange?: (source: Record<string, string>) => void;
+
+export interface TooltipProps extends Omit<RcTooltipProps, 'overlay'> {
+  placement?: 'top' | 'bottom';
+  title?: React.ReactNode;
 }
+
+const Tooltip: FC<TooltipProps> = (props) => {
+  const { title, placement = 'top', ...rest } = props;
+  return (
+    <RcTooltip
+      prefixCls="dumi-theme-default-tooltip"
+      placement={placement}
+      {...rest}
+      overlay={title}
+    />
+  );
+};
+
+function checkImportMap(
+  importmap: ExtendedImportMap,
+  originImportMap: ExtendedImportMap,
+) {
+  if (
+    JSON.stringify(originImportMap?.builtins) !==
+    JSON.stringify(importmap.builtins)
+  ) {
+    throw new Error('Builtin dependencies cannot be changed online!');
+  }
+  if (importmap.imports && importmap.builtins) {
+    for (const i of Object.keys(importmap.imports)) {
+      if (importmap.builtins[i]) {
+        throw new Error(
+          'Dependencies already in `builtins` cannot be introduced in `imports`',
+        );
+      }
+    }
+  }
+}
+
+export interface UseImportMapEditorProps {
+  importMap?: ExtendedImportMap<string> | null;
+  onImportMapChange?: (importMap: ExtendedImportMap<string>) => void;
+}
+
+function useImportMapEditor(props: UseImportMapEditorProps) {
+  const [visible, setVisible] = useState(false);
+  const originImportMap = useRef(props.importMap);
+  const [source, setSource] = useState(
+    props.importMap && JSON.stringify(props.importMap, null, 2),
+  );
+
+  function close() {
+    setSource(JSON.stringify(originImportMap.current, null, 2));
+    setVisible(false);
+  }
+
+  function toggle() {
+    setVisible(!visible);
+  }
+
+  function saveImportMap() {
+    if (!source) return;
+    try {
+      const result = JSON.parse(source) as ExtendedImportMap;
+      checkImportMap(result, originImportMap.current!);
+      props.onImportMapChange?.(result);
+      originImportMap.current = result;
+      close();
+    } catch (error: any) {
+      alert(error.toString());
+    }
+  }
+
+  return {
+    visible,
+    toggle,
+    close,
+    saveImportMap,
+    source,
+    setSource,
+  };
+}
+
+const ImportMapEditor = (props: ReturnType<typeof useImportMapEditor>) => {
+  const intl = useIntl();
+  if (!props.source) return null;
+  return (
+    <div className="dumi-default-previewer-json-editor">
+      <SourceCodeEditor
+        initialValue={props.source}
+        onChange={(code) => {
+          props.setSource(code);
+        }}
+        lang="json"
+        extra={
+          <div className="dumi-default-previewer-json-ops">
+            <Tooltip
+              title={intl.formatMessage({
+                id: 'previewer.actions.code.save',
+              })}
+            >
+              <button
+                type="button"
+                className="dumi-default-previewer-json-save"
+                onClick={props.saveImportMap}
+              >
+                <IconSave />
+              </button>
+            </Tooltip>
+            <Tooltip
+              title={intl.formatMessage({
+                id: 'previewer.actions.code.close',
+              })}
+            >
+              <button
+                type="button"
+                className="dumi-default-previewer-json-close"
+                onClick={props.close}
+              >
+                <IconClose />
+              </button>
+            </Tooltip>
+          </div>
+        }
+      />
+    </div>
+  );
+};
+
+export type IPreviewerActionsProps = IPreviewerProps &
+  UseImportMapEditorProps & {
+    /**
+     * disabled actions
+     */
+    disabledActions?: ('CSB' | 'STACKBLITZ' | 'EXTERNAL' | 'HTML2SKETCH')[];
+    extra?: ReactNode;
+    forceShowCode?: boolean;
+    demoContainer: HTMLDivElement | HTMLIFrameElement;
+    onSourceTranspile?: (
+      args:
+        | { err: Error; source?: null }
+        | { err?: null; source: Record<string, string> },
+    ) => void;
+    onSourceChange?: (source: Record<string, string>) => void;
+  };
 
 const IconCode: FC = () => (
   <svg viewBox="0 0 200 117">
@@ -66,6 +203,18 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
   );
   const copyTimer = useRef<number>();
   const [isCopied, setIsCopied] = useState(false);
+
+  const codeEditor = useRef<SourceCodeEditorMethods>(null);
+
+  const mapEditor = useImportMapEditor({
+    importMap: props.importMap,
+    onImportMapChange: (importMap) => {
+      props.onImportMapChange?.(importMap);
+      // After the Import Map is updated, code needs to be recompiled.
+      codeEditor.current?.triggerChange();
+    },
+  });
+
   const isSingleFile = files.length === 1;
   const lang = (files[activeKey][0].match(/\.([^.]+)$/)?.[1] || 'text') as any;
 
@@ -198,28 +347,46 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
                 // only support to edit entry file currently
                 children:
                   i === 0 && renderOpts?.compile ? (
-                    <SourceCodeEditor
-                      lang={lang}
-                      initialValue={files[i][1].value.trim()}
-                      onChange={(code) => {
-                        props.onSourceChange?.({ [files[i][0]]: code });
-                        // FIXME: remove before publish
-                        props.onSourceTranspile?.({
-                          source: { [files[i][0]]: code },
-                        });
-                      }}
-                      extra={
-                        <button
-                          type="button"
-                          className="dumi-default-previewer-editor-tip-btn"
-                          data-dumi-tooltip={intl.formatMessage({
-                            id: 'previewer.actions.code.editable',
-                          })}
-                        >
-                          <IconEdit />
-                        </button>
-                      }
-                    />
+                    <>
+                      <SourceCodeEditor
+                        ref={codeEditor}
+                        lang={lang}
+                        initialValue={files[i][1].value.trim()}
+                        onChange={(code) => {
+                          props.onSourceChange?.({ [files[i][0]]: code });
+                          // FIXME: remove before publish
+                          props.onSourceTranspile?.({
+                            source: { [files[i][0]]: code },
+                          });
+                        }}
+                        extra={
+                          <>
+                            <Tooltip
+                              title={intl.formatMessage({
+                                id: 'previewer.actions.code.editable',
+                              })}
+                            >
+                              <button
+                                type="button"
+                                className="dumi-default-previewer-editor-tip-btn"
+                              >
+                                <IconEdit />
+                              </button>
+                            </Tooltip>
+                            {props.importMap && (
+                              <button
+                                type="button"
+                                className="dumi-default-previewer-importmap-btn"
+                                onClick={mapEditor.toggle}
+                              >
+                                Import Map
+                              </button>
+                            )}
+                          </>
+                        }
+                      />
+                      {mapEditor.visible && <ImportMapEditor {...mapEditor} />}
+                    </>
                   ) : (
                     <SourceCode
                       lang={lang}
@@ -227,17 +394,20 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
                         // only show readonly tip for non-entry files
                         // because readonly entry file means live compile is not available for this demo tech stack
                         i !== 0 && (
-                          <button
-                            type="button"
-                            className="dumi-default-previewer-editor-tip-btn"
-                            data-dumi-tooltip={intl.formatMessage({
+                          <Tooltip
+                            title={intl.formatMessage({
                               id: 'previewer.actions.code.readonly',
                             })}
-                            data-readonly
                           >
-                            <span></span>
-                            <IconEdit />
-                          </button>
+                            <button
+                              type="button"
+                              className="dumi-default-previewer-editor-tip-btn"
+                              data-readonly
+                            >
+                              <span></span>
+                              <IconEdit />
+                            </button>
+                          </Tooltip>
                         )
                       }
                     >

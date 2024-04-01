@@ -15,6 +15,8 @@
   "previewer.actions.code.shrink": "Hide Code",
   "previewer.actions.code.editable": "Edit code with real-time preview",
   "previewer.actions.code.readonly": "Only index file is editable",
+  "previewer.actions.code.save": "Save and Close",
+  "previewer.actions.code.close": "Close",
   "previewer.actions.sketch": "Copy to Sketch app",
   "previewer.actions.sketch.group": "Copy as Sketch Group",
   "previewer.actions.sketch.symbol": "Copy as Sketch Symbol",

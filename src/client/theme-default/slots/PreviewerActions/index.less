@@ -71,17 +71,19 @@
     display: none;
   }
 
-  &-editor-tip-btn {
-    position: absolute;
+  &-editor-tip-btn,
+  &-importmap-btn,
+  &-json-close,
+  &-json-save {
     appearance: none;
     z-index: 2;
-    right: 42px;
-    top: 9px;
-    padding: 8px 12px;
-    cursor: help;
     background: transparent;
     border: 0;
     transition: all 0.2s;
+    color: darken(@c-border, 20%);
+    @{dark-selector} & {
+      color: lighten(@c-border-dark, 20%);
+    }
 
     > svg {
       width: 16px;
@@ -91,6 +93,18 @@
         fill: lighten(@c-border-dark, 20%);
       }
     }
+    .@{prefix}-tabs-tabpane:not(:hover) & {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+
+  &-editor-tip-btn {
+    position: absolute;
+    top: 9px;
+    right: 42px;
+    padding: 8px 12px;
+    cursor: help;
 
     &[data-readonly] {
       > span {
@@ -104,15 +118,50 @@
         transform: rotate(45deg) translate(-50%, 120%);
       }
     }
+  }
 
-    .@{prefix}-tabs-tabpane:not(:hover) & {
-      opacity: 0;
-      visibility: hidden;
+  &-importmap-btn {
+    position: absolute;
+    top: 9px;
+    right: 72px;
+    padding: 8px 12px;
+    line-height: 16px;
+    cursor: pointer;
+  }
+
+  &-json-ops {
+    position: absolute;
+    top: 9px;
+    right: 46px;
+    z-index: 3;
+
+    > button {
+      padding: 8px;
+      cursor: pointer;
+    }
+  }
+
+  &-json-editor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    width: 100%;
+    height: 100%;
+
+    > div {
+      height: 100%;
+
+      > div {
+        height: 100%;
+      }
     }
   }
 }
 
 .@{prefix}-tabs {
+  position: relative;
+
   &-top {
     flex-direction: column;
 
@@ -266,5 +315,53 @@
 
   &-tabpane-hidden {
     display: none;
+  }
+}
+
+.dumi-theme-default-tooltip {
+  position: fixed;
+  min-width: 30px;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+  z-index: 5;
+
+  &-hidden {
+    display: none;
+  }
+
+  &-arrow {
+    border: 4px solid transparent;
+    opacity: 0.7;
+  }
+
+  &-placement-top {
+    .dumi-theme-default-tooltip-arrow {
+      border-top-color: #000;
+      transform: translate(-50%, 100%);
+    }
+  }
+
+  &-bottom {
+    .dumi-theme-default-tooltip-arrow {
+      border-bottom-color: #000;
+      transform: translateY(-50%, -100%);
+    }
+  }
+
+  &-content {
+    padding: 5px 8px;
+    color: #fff;
+    font-size: 13px;
+    line-height: 1.1;
+    white-space: nowrap;
+    background-color: #000;
+    opacity: 0.7;
+    border-radius: 2px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 10%);
+    box-sizing: border-box;
+
+    @{dark-selector} & {
+      background-color: #222;
+    }
   }
 }

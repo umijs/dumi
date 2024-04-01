@@ -22,13 +22,13 @@ const { compileSFC, transformTS, toCommonJS } = createCompiler({
 
 export default function compile(
   code: string,
-  { filename }: { filename: string },
+  { filename, modules }: { filename: string; modules?: 'esm' | 'cjs' },
 ) {
   const { lang } = resolveFilename(filename);
   if (['js', 'jsx', 'ts', 'tsx'].includes(lang)) {
     return transformTS(code, filename, {
       lang,
-      presets: [['env', { modules: 'cjs' }]],
+      presets: [['env', { modules: modules === 'esm' ? false : modules }]],
     });
   }
   const id = hashId(code);
@@ -43,5 +43,5 @@ export default function compile(
   }
   js += `\n${COMP_IDENTIFIER}.__id__ = "${id}";
     export default ${COMP_IDENTIFIER};`;
-  return toCommonJS(js)?.code || '';
+  return modules === 'cjs' ? toCommonJS(js)?.code || '' : js;
 }

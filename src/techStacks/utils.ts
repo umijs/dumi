@@ -1,5 +1,6 @@
 import type { ParserConfig } from '@swc/core';
 import { transformSync } from '@swc/core';
+import { IDumiTechStack } from '../types';
 
 export {
   IDumiTechStack,
@@ -58,4 +59,29 @@ export function wrapDemoWithFn(code: string, opts: IWrapDemoWithFnOptions) {
   return `async function() {
   ${result.code}
 }`;
+}
+
+export type IDefineTechStackOptions = IDumiTechStack;
+
+/**
+ * Define a tech stack
+ * @param options techstack options
+ * @returns function that returns {@link IDumiTechStack}, can be used to register a techstack
+ *
+ * @example
+ * const ReactTechStack = defineTechStack({
+ *   name: 'jsx',
+ *   isSupported(_, lang) {
+ *     return ['jsx', 'tsx'].includes(lang);
+ *   },
+ *   transformCode() {
+ *     // ...
+ *     return '';
+ *   },
+ * });
+ *
+ * api.registerTechStack(() => ReactTechStack);
+ */
+export function defineTechStack(options: IDefineTechStackOptions) {
+  return options;
 }

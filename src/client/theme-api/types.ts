@@ -50,6 +50,10 @@ export interface IPreviewerProps {
    * react node of current demo
    */
   children: ReactNode;
+  /**
+   * private field, do not use it in your code
+   */
+  _live_in_iframe: boolean;
   [key: string]: any;
 }
 
@@ -243,9 +247,11 @@ export type AgnosticComponentType =
   | Promise<AgnosticComponentModule>
   | AgnosticComponentModule;
 
+export type ModuleType = 'esm' | 'cjs';
+
 export type IDemoCompileFn = (
   code: string,
-  opts: { filename: string },
+  opts: { filename: string; modules?: ModuleType },
 ) => Promise<string>;
 
 export type IDemoCancelableFn = (
