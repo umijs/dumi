@@ -7,6 +7,7 @@ import type {
   IRouteMeta,
   IRoutesById,
   IUserNavValue,
+  ModuleType,
 } from './types';
 import { useLocale } from './useLocale';
 
@@ -146,3 +147,15 @@ export const pickRouteSortMeta = (
 export function getLocaleNav(nav: IUserNavValue | INav, locale: ILocale) {
   return Array.isArray(nav) ? nav : nav[locale.id];
 }
+
+export const supports =
+  HTMLScriptElement.supports ||
+  function (type: string) {
+    if (type === 'module') {
+      return 'noModule' in HTMLScriptElement.prototype;
+    }
+    return false;
+  };
+
+export const SUPPORTED_MODULE: ModuleType =
+  supports('importmap') && supports('module') ? 'esm' : 'cjs';

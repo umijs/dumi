@@ -42,8 +42,8 @@ interface ImportMap {
   scopes?: Record<string, string>;
 }
 
-export interface ExtendedImportMap extends ImportMap {
-  builtins?: Record<string, any>;
+export interface ExtendedImportMap<T = any> extends ImportMap {
+  builtins?: Record<string, T>;
 }
 
 const MODULE_STORE = '___modules___';
@@ -160,7 +160,7 @@ class IFrameContainer {
   }
 
   exec(moduleId: string, esm: string) {
-    return new Promise((execResolve, execReject) => {
+    return new Promise<any>((execResolve, execReject) => {
       const handleMessage = (e: MessageEvent) => {
         const { data } = e;
         if (data.type?.startsWith(`${this.eventPrefix}.esm.done`)) {
@@ -256,6 +256,7 @@ export class Sandbox {
       });
     })();
 
+    await this.codeSandbox;
     return this;
   }
 
@@ -268,7 +269,7 @@ export class Sandbox {
       );
     }
     return this.codeSandbox.then((codeSandbox) => {
-      codeSandbox.destroy();
+      return codeSandbox.destroy();
     });
   }
 
@@ -323,10 +324,10 @@ export class Sandbox {
   }
 
   async updateImportMap(importMap: ExtendedImportMap) {
-    this.updateSrcDoc(importMap);
     this.codeSandbox = this.codeSandbox
       .then((codeSandbox) => {
         codeSandbox.destroy();
+        this.updateSrcDoc(importMap);
       })
       .then(() => {
         const container = new IFrameContainer(
@@ -336,7 +337,7 @@ export class Sandbox {
         );
         return container.create(this.srcdoc);
       });
-    return await this.codeSandbox;
+    await this.codeSandbox;
   }
 
   async exec(esm: string) {
@@ -344,7 +345,7 @@ export class Sandbox {
     const result = this.moduleCache[moduleId];
     if (result) return result;
     const codeSandbox = await this.codeSandbox;
-    return await codeSandbox.exec(
+    return codeSandbox.exec(
       moduleId,
       rewriteExports(moduleId, esm, this.eventPrefix),
     );

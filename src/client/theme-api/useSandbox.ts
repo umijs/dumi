@@ -17,11 +17,14 @@ function evalCommonJS(
   new Function('module', 'exports', 'require', cjs)(module, exports, require);
 }
 
-function createSandbox(importMap: ExtendedImportMap, modules: ModuleType) {
+async function createSandbox(
+  importMap: ExtendedImportMap,
+  modules: ModuleType,
+) {
   if (modules === 'esm') {
-    return import('./sandbox').then(({ Sandbox }) => {
-      return Sandbox.create({ importMap });
-    });
+    return import('./sandbox').then(({ Sandbox }) =>
+      Sandbox.create({ importMap }),
+    );
   }
   const require = (v: string) => {
     if (v in importMap.builtins!) return importMap.builtins![v];
@@ -53,8 +56,10 @@ export function useSandbox(
   if (lastImportMap.current !== importMap) {
     lastImportMap.current = importMap;
     sandbox.current = sandbox.current
-      ?.then((s) => s.destory())
-      .then(() => createSandbox(importMap, modules));
+      ? sandbox.current
+          .then((s) => s.destory())
+          .then(() => createSandbox(importMap, modules))
+      : createSandbox(importMap, modules);
   }
 
   useEffect(() => () => destorySandbox(), []);
@@ -63,12 +68,6 @@ export function useSandbox(
     init() {
       if (sandbox.current) return;
       sandbox.current = createSandbox(importMap, modules);
-    },
-    async updateImportMap(importMap: ExtendedImportMap) {
-      const sb = await sandbox.current;
-      if (sb) {
-        await sb.updateImportMap(importMap);
-      }
     },
     async exec(esm: string) {
       if (!sandbox.current) {

@@ -3,8 +3,6 @@ import throttle from 'lodash.throttle';
 import {
   createElement,
   useCallback,
-  useEffect,
-  useMemo,
   useRef,
   useState,
   type ComponentType,
@@ -12,24 +10,13 @@ import {
   type RefObject,
 } from 'react';
 import DemoErrorBoundary from './DumiDemo/DemoErrorBoundary';
-import type { ExtendedImportMap } from './sandbox';
-import type { AgnosticComponentType, ModuleType } from './types';
+import type { AgnosticComponentType } from './types';
+import { useImportMap } from './useImportMap';
 import { useRenderer } from './useRenderer';
 import { useSandbox } from './useSandbox';
+import { SUPPORTED_MODULE } from './utils';
 
 const THROTTLE_WAIT = 500;
-
-const supports =
-  HTMLScriptElement.supports ||
-  function (type: string) {
-    if (type === 'module') {
-      return 'noModule' in HTMLScriptElement.prototype;
-    }
-    return false;
-  };
-
-const modules: ModuleType =
-  supports('importmap') && supports('module') ? 'esm' : 'cjs';
 
 export const useLiveDemo = (
   id: string,
@@ -56,47 +43,9 @@ export const useLiveDemo = (
 
   const [error, setError] = useState<Error | null>(null);
 
-  const [innerImportMap, setImportMap] = useState({ builtins: context });
+  const { importMap, internalImportMap, updateImportMap } = useImportMap(demo);
 
-  const importMap = useMemo(() => {
-    return Object.assign(
-      {
-        imports: {},
-        scopes: {},
-      },
-      innerImportMap,
-      {
-        builtins: Object.keys(innerImportMap.builtins).reduce(
-          (builtins, dep) => {
-            builtins[dep] = demo.asset.dependencies[dep]?.value;
-            return builtins;
-          },
-          {} as NonNullable<ExtendedImportMap['builtins']>,
-        ),
-      },
-    );
-  }, [innerImportMap]);
-
-  const sandbox = useSandbox(innerImportMap, modules);
-
-  async function updateImportMap(modifiedImportMap: ExtendedImportMap) {
-    const map: ExtendedImportMap = {};
-    if (modifiedImportMap.imports) {
-      map.imports = modifiedImportMap.imports;
-    }
-    if (modifiedImportMap.scopes) {
-      map.scopes = modifiedImportMap.scopes;
-    }
-    setImportMap(() => ({
-      ...innerImportMap,
-      ...map,
-    }));
-    sandbox.init();
-  }
-
-  useEffect(() => {
-    sandbox.updateImportMap(innerImportMap);
-  }, [innerImportMap]);
+  const sandbox = useSandbox(internalImportMap, SUPPORTED_MODULE);
 
   const setSource = useCallback(
     throttle(
@@ -153,7 +102,7 @@ export const useLiveDemo = (
             try {
               entryFileCode = await renderOpts.compile(entryFileCode, {
                 filename: entryFileName,
-                modules,
+                modules: SUPPORTED_MODULE,
               });
             } catch (error: any) {
               setError(error);

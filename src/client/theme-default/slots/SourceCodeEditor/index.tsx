@@ -1,11 +1,12 @@
 import SourceCode from 'dumi/theme/builtins/SourceCode';
 import React, {
   CSSProperties,
+  forwardRef,
   useEffect,
+  useImperativeHandle,
   useRef,
   useState,
   type ComponentProps,
-  type FC,
 } from 'react';
 import './index.less';
 
@@ -18,13 +19,33 @@ interface ISourceCodeEditorProps
   onChange?: (code: string) => void;
 }
 
+export interface SourceCodeEditorMethods {
+  triggerChange: () => void;
+}
+
 /**
  * simple source code editor based on textarea
  */
-const SourceCodeEditor: FC<ISourceCodeEditorProps> = (props) => {
+const SourceCodeEditor = forwardRef<
+  SourceCodeEditorMethods,
+  ISourceCodeEditorProps
+>((props, ref) => {
   const elm = useRef<HTMLDivElement>(null);
   const [style, setStyle] = useState<CSSProperties>();
   const [code, setCode] = useState(props.initialValue);
+
+  function handleChange(code: string) {
+    setCode(code);
+    props.onChange?.(code);
+    // FIXME: remove before publish
+    props.onTranspile?.({ err: null, code });
+  }
+
+  useImperativeHandle(ref, () => ({
+    triggerChange: () => {
+      handleChange(code);
+    },
+  }));
 
   // generate style from pre element, for adapting to the custom theme
   useEffect(() => {
@@ -93,6 +114,6 @@ const SourceCodeEditor: FC<ISourceCodeEditorProps> = (props) => {
       </SourceCode>
     </div>
   );
-};
+});
 
 export default SourceCodeEditor;
