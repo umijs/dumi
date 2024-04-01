@@ -319,11 +319,8 @@ export default function rehypeDemo(
                   ) {
                     const startLine = node.position?.start.line;
                     const suffix = startLine ? `:${startLine}` : '';
-
-                    logger.warn(
-                      `Duplicate demo id found due to filename conflicts, please consider adding a unique id to code tag to resolve this.
-        at ${opts.fileAbsPath}${suffix}`,
-                    );
+                    // prettier-ignore
+                    logger.warn(`Duplicate demo id found due to filename conflicts, please consider adding a unique id to code tag to resolve this. at ${opts.fileAbsPath}${suffix}`);
                   }
 
                   // eslint-disable-next-line @typescript-eslint/no-unused-vars
