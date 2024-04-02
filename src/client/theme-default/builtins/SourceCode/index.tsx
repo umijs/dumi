@@ -23,7 +23,7 @@ const SIMILAR_DSL: Record<string, Language> = {
   vue: 'markup',
 };
 
-export interface SourceCodeProps {
+export interface ISourceCodeProps {
   children: string;
   lang: Language;
   highlightLines?: number[];
@@ -32,7 +32,7 @@ export interface SourceCodeProps {
   title?: string;
 }
 
-const SourceCode: FC<SourceCodeProps> = (props) => {
+const SourceCode: FC<ISourceCodeProps> = (props) => {
   const { children = '', lang, highlightLines = [] } = props;
   const timer = useRef<number>();
   const [isCopied, setIsCopied] = useState(false);
