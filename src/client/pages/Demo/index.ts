@@ -4,10 +4,15 @@ import { useRenderer } from '../../theme-api/useRenderer';
 import './index.less';
 
 const DemoRenderPage: FC = () => {
-  const { id } = useParams();
-  const demo = useDemo(id!);
+  const params = useParams();
+  const id = params.id!;
 
-  const canvasRef = useRenderer(demo!);
+  const demo = useDemo(id)!;
+  const canvasRef = useRenderer(Object.assign(demo, { id }), {
+    onInitError: (error) => {
+      throw error;
+    },
+  });
 
   const { component, renderOpts } = demo || {};
 
@@ -15,6 +20,7 @@ const DemoRenderPage: FC = () => {
     node: liveDemoNode,
     setSource,
     error: liveDemoError,
+    rendered,
   } = useLiveDemo(id!);
 
   const finalNode =
@@ -41,8 +47,21 @@ const DemoRenderPage: FC = () => {
     return () => window.removeEventListener('message', handler);
   }, [setSource]);
 
+  // The error of the demo with renderer is asynchronous
+  useEffect(() => {
+    if (rendered && (liveDemoError || liveDemoNode)) {
+      window.postMessage({
+        type: 'dumi.liveDemo.compileDone',
+        value: { err: liveDemoError },
+      });
+    }
+  }, [liveDemoError, liveDemoNode, rendered]);
+
   // notify parent window that compile done
   useEffect(() => {
+    if (renderOpts?.renderer) {
+      return;
+    }
     if (liveDemoNode || liveDemoError) {
       window.postMessage({
         type: 'dumi.liveDemo.compileDone',

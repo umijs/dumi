@@ -11,7 +11,7 @@ export default defineConfig([
     target: 'esnext',
     platform: 'browser',
     noExternal: ['@vue/babel-plugin-jsx', 'hash-sum'],
-    external: ['vue/compiler-sfc', '@babel/standalone'],
+    external: ['vue/compiler-sfc'],
     treeshake: true,
   },
   {

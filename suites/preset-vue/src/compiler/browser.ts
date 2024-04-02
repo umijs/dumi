@@ -1,4 +1,4 @@
-import * as Babel from '@babel/standalone';
+import type * as Babel from '@babel/standalone';
 import jsx from '@vue/babel-plugin-jsx';
 import hashId from 'hash-sum';
 import { COMP_IDENTIFIER, createCompiler, resolveFilename } from './index';

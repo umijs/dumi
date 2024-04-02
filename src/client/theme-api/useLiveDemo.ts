@@ -41,6 +41,9 @@ export const useLiveDemo = (
 
   const { context = {}, asset, renderOpts } = demo;
   const [component, setComponent] = useState<AgnosticComponentType>();
+  const [error, setError] = useState<Error | null>(null);
+  const [rendered, setRendered] = useState<boolean>(false);
+
   const ref = useRenderer(
     component
       ? {
@@ -49,11 +52,20 @@ export const useLiveDemo = (
           component,
         }
       : Object.assign(demo, { id }),
+    {
+      onInitError: (err) => {
+        setError(err);
+      },
+      onRuntimeError: (err) => {
+        throw err;
+      },
+      onResolved: () => {
+        setRendered(true);
+      },
+    },
   );
 
   const [demoNode, setDemoNode] = useState<ReactNode>();
-
-  const [error, setError] = useState<Error | null>(null);
   const setSource = useCallback(
     throttle(
       async (source: Record<string, string>) => {
@@ -70,11 +82,10 @@ export const useLiveDemo = (
           clearTimeout(loadingTimer.current);
           setLoading(false);
         }
-
+        setRendered(false);
         if (opts?.iframe && opts?.containerRef?.current) {
           const iframeWindow =
             opts.containerRef.current.querySelector('iframe')!.contentWindow!;
-
           await new Promise<void>((resolve) => {
             const handler = (
               ev: MessageEvent<{
@@ -88,7 +99,6 @@ export const useLiveDemo = (
                 resolve();
               }
             };
-
             iframeWindow.addEventListener('message', handler);
             iframeWindow.postMessage({
               type: 'dumi.liveDemo.setSource',
@@ -115,6 +125,7 @@ export const useLiveDemo = (
             } catch (error: any) {
               setError(error);
               resetLoadingStatus();
+              setRendered(true);
               return;
             }
           }
@@ -133,6 +144,7 @@ export const useLiveDemo = (
               setError(null);
             } catch (err: any) {
               setError(err);
+              setRendered(true);
             }
             resetLoadingStatus();
             return;
@@ -188,5 +200,5 @@ export const useLiveDemo = (
     [context, asset, renderOpts],
   );
 
-  return { node: demoNode, loading, error, setSource };
+  return { node: demoNode, loading, error, setSource, rendered };
 };
