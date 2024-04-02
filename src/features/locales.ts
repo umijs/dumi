@@ -130,6 +130,10 @@ const LocalesContainer: FC<{ children: ReactNode }> = (props) => {
       api.config.themeConfig.editLink,
     )};
 
+    localeMessages['$internal.api.sourceLink'] = ${JSON.stringify(
+      api.config.themeConfig.sourceLink,
+    )};
+
     return createIntl({ locale, messages: localeMessages }, cache);
   }, []);
   const [intl, setIntl] = useState(() => getIntl());

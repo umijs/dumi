@@ -2,6 +2,7 @@
 
 exports[`sfc: single Vue component meta > emits/events > event signature meta should be same as normal methods 1`] = `
 {
+  "comment": {},
   "name": "change",
   "schema": {
     "kind": "function",
@@ -14,6 +15,7 @@ exports[`sfc: single Vue component meta > emits/events > event signature meta sh
             "kind": "object",
             "schema": {
               "name": {
+                "comment": {},
                 "description": "",
                 "name": "name",
                 "required": true,
@@ -21,7 +23,6 @@ exports[`sfc: single Vue component meta > emits/events > event signature meta sh
                   "kind": "basic",
                   "type": "string",
                 },
-                "tags": {},
                 "type": "string",
               },
             },
@@ -44,6 +45,7 @@ exports[`sfc: single Vue component meta > emits/events > event signature meta sh
 
 exports[`sfc: single Vue component meta > emits/events > events defined via defineEmits 1`] = `
 {
+  "comment": {},
   "name": "click",
   "schema": {
     "kind": "function",
@@ -53,8 +55,9 @@ exports[`sfc: single Vue component meta > emits/events > events defined via defi
           "key": "event",
           "required": true,
           "schema": {
-            "kind": "unknown",
-            "type": "MouseEvent",
+            "externalUrl": "https://developer.mozilla.org/docs/Web/API/MouseEvent",
+            "kind": "ref",
+            "name": "MouseEvent",
           },
           "type": "MouseEvent",
         },
@@ -82,6 +85,22 @@ exports[`sfc: single Vue component meta > emits/events > events defined via defi
 
 exports[`sfc: single Vue component meta > expose api > ref api 1`] = `
 {
+  "comment": {
+    "blockTags": [
+      {
+        "content": [
+          {
+            "kind": "text",
+            "text": "The signature of the expose api should be obtained from here",
+          },
+        ],
+        "tag": "description",
+      },
+    ],
+    "modifierTags": [
+      "alpha",
+    ],
+  },
   "description": "",
   "name": "focus",
   "schema": {
@@ -96,26 +115,27 @@ exports[`sfc: single Vue component meta > expose api > ref api 1`] = `
     },
     "type": "() => void",
   },
-  "tags": {
-    "description": [
-      "The signature of the expose api should be obtained from here",
-    ],
-    "exposed": [
-      "",
-    ],
-  },
   "type": "() => void",
 }
 `;
 
 exports[`sfc: single Vue component meta > slots > scoped slots 1`] = `
 {
+  "comment": {
+    "blockTags": [
+      {
+        "content": [],
+        "tag": "deprecated",
+      },
+    ],
+  },
   "description": "item",
   "name": "item",
   "schema": {
     "kind": "object",
     "schema": {
       "extra": {
+        "comment": {},
         "description": "",
         "name": "extra",
         "required": false,
@@ -123,10 +143,10 @@ exports[`sfc: single Vue component meta > slots > scoped slots 1`] = `
           "kind": "basic",
           "type": "boolean",
         },
-        "tags": {},
         "type": "boolean",
       },
       "list": {
+        "comment": {},
         "description": "",
         "name": "list",
         "required": true,
@@ -140,19 +160,18 @@ exports[`sfc: single Vue component meta > slots > scoped slots 1`] = `
           ],
           "type": "string[]",
         },
-        "tags": {},
         "type": "string[]",
       },
     },
     "type": "{ list: string[]; extra?: boolean; }",
   },
-  "tags": {},
   "type": "{ list: string[]; extra?: boolean; }",
 }
 `;
 
 exports[`sfc-alias: single Vue component meta > emits/events > event signature meta should be same as normal methods 1`] = `
 {
+  "comment": {},
   "name": "change",
   "schema": {
     "kind": "function",
@@ -165,6 +184,7 @@ exports[`sfc-alias: single Vue component meta > emits/events > event signature m
             "kind": "object",
             "schema": {
               "name": {
+                "comment": {},
                 "description": "",
                 "name": "name",
                 "required": true,
@@ -172,7 +192,6 @@ exports[`sfc-alias: single Vue component meta > emits/events > event signature m
                   "kind": "basic",
                   "type": "string",
                 },
-                "tags": {},
                 "type": "string",
               },
             },
@@ -195,6 +214,7 @@ exports[`sfc-alias: single Vue component meta > emits/events > event signature m
 
 exports[`sfc-alias: single Vue component meta > emits/events > events defined via defineEmits 1`] = `
 {
+  "comment": {},
   "name": "click",
   "schema": {
     "kind": "function",
@@ -204,8 +224,9 @@ exports[`sfc-alias: single Vue component meta > emits/events > events defined vi
           "key": "event",
           "required": true,
           "schema": {
-            "kind": "unknown",
-            "type": "MouseEvent",
+            "externalUrl": "https://developer.mozilla.org/docs/Web/API/MouseEvent",
+            "kind": "ref",
+            "name": "MouseEvent",
           },
           "type": "MouseEvent",
         },
@@ -233,6 +254,22 @@ exports[`sfc-alias: single Vue component meta > emits/events > events defined vi
 
 exports[`sfc-alias: single Vue component meta > expose api > ref api 1`] = `
 {
+  "comment": {
+    "blockTags": [
+      {
+        "content": [
+          {
+            "kind": "text",
+            "text": "The signature of the expose api should be obtained from here",
+          },
+        ],
+        "tag": "description",
+      },
+    ],
+    "modifierTags": [
+      "alpha",
+    ],
+  },
   "description": "",
   "name": "focus",
   "schema": {
@@ -247,26 +284,27 @@ exports[`sfc-alias: single Vue component meta > expose api > ref api 1`] = `
     },
     "type": "() => void",
   },
-  "tags": {
-    "description": [
-      "The signature of the expose api should be obtained from here",
-    ],
-    "exposed": [
-      "",
-    ],
-  },
   "type": "() => void",
 }
 `;
 
 exports[`sfc-alias: single Vue component meta > slots > scoped slots 1`] = `
 {
+  "comment": {
+    "blockTags": [
+      {
+        "content": [],
+        "tag": "deprecated",
+      },
+    ],
+  },
   "description": "item",
   "name": "item",
   "schema": {
     "kind": "object",
     "schema": {
       "extra": {
+        "comment": {},
         "description": "",
         "name": "extra",
         "required": false,
@@ -274,10 +312,10 @@ exports[`sfc-alias: single Vue component meta > slots > scoped slots 1`] = `
           "kind": "basic",
           "type": "boolean",
         },
-        "tags": {},
         "type": "boolean",
       },
       "list": {
+        "comment": {},
         "description": "",
         "name": "list",
         "required": true,
@@ -291,19 +329,144 @@ exports[`sfc-alias: single Vue component meta > slots > scoped slots 1`] = `
           ],
           "type": "string[]",
         },
-        "tags": {},
         "type": "string[]",
       },
     },
     "type": "{ list: string[]; extra?: boolean; }",
   },
-  "tags": {},
   "type": "{ list: string[]; extra?: boolean; }",
+}
+`;
+
+exports[`tsx: functional component > anonymous 1`] = `
+{
+  "events": [
+    {
+      "comment": {},
+      "name": "sendMessage",
+      "schema": {
+        "kind": "function",
+        "schema": {
+          "arguments": [
+            {
+              "key": "message",
+              "required": true,
+              "schema": {
+                "kind": "basic",
+                "type": "string",
+              },
+              "type": "string",
+            },
+          ],
+          "isAsync": false,
+          "returnType": {
+            "kind": "basic",
+            "type": "void",
+          },
+        },
+        "type": "(message: string) => void",
+      },
+      "type": "(message: string) => void",
+    },
+  ],
+  "exposed": [],
+  "name": "AnonymousFComponent",
+  "props": [
+    {
+      "comment": {},
+      "description": "",
+      "global": false,
+      "name": "message",
+      "required": true,
+      "schema": {
+        "kind": "basic",
+        "type": "string",
+      },
+      "type": "string",
+    },
+  ],
+  "slots": [
+    {
+      "comment": {},
+      "description": "",
+      "name": "default",
+      "schema": {
+        "kind": "basic",
+        "type": "any",
+      },
+      "type": "any",
+    },
+  ],
+  "type": 2,
+}
+`;
+
+exports[`tsx: functional component > named 1`] = `
+{
+  "events": [
+    {
+      "comment": {},
+      "name": "sendMessage",
+      "schema": {
+        "kind": "function",
+        "schema": {
+          "arguments": [
+            {
+              "key": "message",
+              "required": true,
+              "schema": {
+                "kind": "basic",
+                "type": "string",
+              },
+              "type": "string",
+            },
+          ],
+          "isAsync": false,
+          "returnType": {
+            "kind": "basic",
+            "type": "void",
+          },
+        },
+        "type": "(message: string) => void",
+      },
+      "type": "(message: string) => void",
+    },
+  ],
+  "exposed": [],
+  "name": "NamedFComponent",
+  "props": [
+    {
+      "comment": {},
+      "description": "",
+      "global": false,
+      "name": "message",
+      "required": true,
+      "schema": {
+        "kind": "basic",
+        "type": "string",
+      },
+      "type": "string",
+    },
+  ],
+  "slots": [
+    {
+      "comment": {},
+      "description": "",
+      "name": "default",
+      "schema": {
+        "kind": "basic",
+        "type": "any",
+      },
+      "type": "any",
+    },
+  ],
+  "type": 2,
 }
 `;
 
 exports[`tsx: single Vue component meta > emits/events > event signature meta should be same as normal methods 1`] = `
 {
+  "comment": {},
   "name": "change",
   "schema": {
     "kind": "function",
@@ -316,6 +479,7 @@ exports[`tsx: single Vue component meta > emits/events > event signature meta sh
             "kind": "object",
             "schema": {
               "name": {
+                "comment": {},
                 "description": "",
                 "name": "name",
                 "required": true,
@@ -323,7 +487,6 @@ exports[`tsx: single Vue component meta > emits/events > event signature meta sh
                   "kind": "basic",
                   "type": "string",
                 },
-                "tags": {},
                 "type": "string",
               },
             },
@@ -346,6 +509,11 @@ exports[`tsx: single Vue component meta > emits/events > event signature meta sh
 
 exports[`tsx: single Vue component meta > expose api > ref api 1`] = `
 {
+  "comment": {
+    "modifierTags": [
+      "alpha",
+    ],
+  },
   "description": "The signature of the expose api should be obtained from here",
   "name": "focus",
   "schema": {
@@ -360,11 +528,6 @@ exports[`tsx: single Vue component meta > expose api > ref api 1`] = `
     },
     "type": "() => void",
   },
-  "tags": {
-    "exposed": [
-      "",
-    ],
-  },
   "type": "() => void",
 }
 `;
@@ -378,8 +541,9 @@ exports[`tsx: single Vue component meta > props > events in props 1`] = `
         "key": "e",
         "required": true,
         "schema": {
-          "kind": "unknown",
-          "type": "MouseEvent",
+          "externalUrl": "https://developer.mozilla.org/docs/Web/API/MouseEvent",
+          "kind": "ref",
+          "name": "MouseEvent",
         },
         "type": "MouseEvent",
       },
@@ -405,12 +569,21 @@ exports[`tsx: single Vue component meta > props > events in props 1`] = `
 
 exports[`tsx: single Vue component meta > slots > scoped slots 1`] = `
 {
+  "comment": {
+    "blockTags": [
+      {
+        "content": [],
+        "tag": "deprecated",
+      },
+    ],
+  },
   "description": "item",
   "name": "item",
   "schema": {
     "kind": "object",
     "schema": {
       "extra": {
+        "comment": {},
         "description": "",
         "name": "extra",
         "required": false,
@@ -418,10 +591,10 @@ exports[`tsx: single Vue component meta > slots > scoped slots 1`] = `
           "kind": "basic",
           "type": "boolean",
         },
-        "tags": {},
         "type": "boolean",
       },
       "list": {
+        "comment": {},
         "description": "",
         "name": "list",
         "required": true,
@@ -435,13 +608,11 @@ exports[`tsx: single Vue component meta > slots > scoped slots 1`] = `
           ],
           "type": "string[]",
         },
-        "tags": {},
         "type": "string[]",
       },
     },
     "type": "{ list: string[]; extra?: boolean; }",
   },
-  "tags": {},
   "type": "{ list: string[]; extra?: boolean; }",
 }
 `;

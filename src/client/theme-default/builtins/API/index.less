@@ -1,0 +1,47 @@
+@import (reference) '../../styles/variables.less';
+
+.@{prefix}-api {
+  &-type {
+    [data-token='|'],
+    [data-token='=>'] {
+      padding: 0 0.5em;
+    }
+
+    [data-token=';'],
+    [data-token=':'],
+    [data-token=','],
+    [data-token='async'] {
+      padding-right: 0.5em;
+    }
+
+    [data-token='{'] {
+      padding-right: 0.5em;
+    }
+
+    [data-token='}'] {
+      padding-left: 0.5em;
+    }
+  }
+
+  &-release {
+    [data-release] + [data-release] {
+      margin-left: 0.5em;
+    }
+    .@{prefix}-badge {
+      transform: scale(0.9);
+    }
+  }
+
+  &-release-name {
+    &[data-release='deprecated'] {
+      text-decoration: line-through;
+    }
+  }
+
+  &-release-modifer {
+    &[data-release='deprecated'] {
+      cursor: help;
+      border-bottom: 1px dotted @c-text-secondary;
+    }
+  }
+}

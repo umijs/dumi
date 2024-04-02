@@ -37,23 +37,35 @@ export const fooProps = {
     default: [],
   },
   ...baseProps,
+  /**
+   * @beta
+   */
   e: [Object, Number] as PropType<A | 1>,
   onConfirm: Function as PropType<(output: { children: any[] }) => void>,
+  /**
+   * @since 0.0.1
+   */
   dom: {
     type: Object as PropType<HTMLElement>,
     default: null,
   },
+  /**
+   * @alpha
+   * @description
+   */
   func: Function as PropType<(args: PromiseArgs) => Promise<{ type?: string }>>,
 };
 
 export type FooSlotsType = {
   /**
    * icon
+   * @experimental
    * @description icon
    */
   icon?: any;
   /**
    * item
+   * @deprecated
    */
   item?: { list: string[]; extra?: boolean };
 };

@@ -216,12 +216,14 @@ export default (api: IApi) => {
       path.resolve(__dirname, '../../client/theme-api'),
     );
 
-    // set automatic edit link
+    // set automatic edit link/source link
     // why not use default config?
-    // because true value should be transformed to automatic edit link
+    // because true value should be transformed to automatic edit link.
+    // and if link is a string template, there is no need to automatically generate it.
     const repoUrl = api.pkg.repository?.url || api.pkg.repository;
-
-    if (memo.themeConfig?.editLink !== false && typeof repoUrl === 'string') {
+    const autoEditLink = (memo.themeConfig?.editLink ?? true) === true;
+    const autoSourceLink = (memo.themeConfig?.sourceLink ?? true) === true;
+    if ((autoEditLink || autoSourceLink) && typeof repoUrl === 'string') {
       const hostedGitIns = hostedGit.fromUrl(repoUrl);
       let branch = '';
 
@@ -237,11 +239,26 @@ export default (api: IApi) => {
 
       if (hostedGitIns) {
         memo.themeConfig ??= {};
-        // @ts-ignore
-        memo.themeConfig.editLink = `${hostedGitIns.edit(
-          `${api.pkg.repository.directory || ''}/{filename}`,
-          { committish: branch },
-        )}`;
+        const directory = api.pkg.repository.directory || '';
+        if (autoSourceLink) {
+          let anchorPrefix = 'L';
+          if (hostedGitIns.type.includes('bitbucket')) {
+            anchorPrefix = 'lines-';
+          }
+          const sourceLinkTemplate = hostedGitIns.browse(
+            `${directory}/{fileName}#${anchorPrefix}{line}`,
+            { committish: branch },
+          );
+          memo.themeConfig.sourceLink = sourceLinkTemplate;
+        }
+
+        if (autoEditLink) {
+          // @ts-ignore
+          memo.themeConfig.editLink = `${hostedGitIns.edit(
+            `${directory}/{filename}`,
+            { committish: branch },
+          )}`;
+        }
       }
     }
 
