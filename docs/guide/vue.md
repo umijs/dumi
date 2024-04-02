@@ -6,7 +6,7 @@ group:
 order: 1
 ---
 
-# 安装 Vue 支持插件
+# 安装 Vue 支持插件 <Badge>实验性</Badge>
 
 dumi 中对 Vue 的支持主要通过`@dumijs/preset-vue`插件集实现, 目前只支持 Vue3
 
@@ -17,8 +17,9 @@ pnpm i vue
 pnpm i -D @dumijs/preset-vue
 ```
 
-> [!NOTE]
-> 如果您的 Vue 版本低于 3.3.6，请安装`@vue/compiler-sfc`
+:::warning
+如果您的 Vue 版本低于 3.3.6，请安装`@vue/compiler-sfc`
+:::
 
 ## 配置
 
@@ -62,6 +63,8 @@ export default {
   },
 };
 ```
+
+关于 checkerOptions 更多的选项请查看： [`MetaCheckerOptions`](https://github.com/umijs/dumi/tree/master/suites/dumi-vue-meta/README.md#metacheckeroptions)
 
 ### tsconfigPath
 
