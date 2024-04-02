@@ -1,3 +1,4 @@
+import Tabs from '@/client/theme-default/slots/Tabs';
 import { ReactComponent as IconCheck } from '@ant-design/icons-svg/inline-svg/outlined/check.svg';
 import { ReactComponent as IconCodeSandbox } from '@ant-design/icons-svg/inline-svg/outlined/code-sandbox.svg';
 import { ReactComponent as IconEdit } from '@ant-design/icons-svg/inline-svg/outlined/edit.svg';
@@ -16,7 +17,6 @@ import {
 import SourceCode from 'dumi/theme/builtins/SourceCode';
 import PreviewerActionsExtra from 'dumi/theme/slots/PreviewerActionsExtra';
 import SourceCodeEditor from 'dumi/theme/slots/SourceCodeEditor';
-import Tabs from 'rc-tabs';
 import RcTooltip from 'rc-tooltip';
 import type { TooltipProps as RcTooltipProps } from 'rc-tooltip/lib/Tooltip';
 import React, { useRef, useState, type FC, type ReactNode } from 'react';
@@ -207,8 +207,6 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
                 'dumi-default-previewer-tabs',
                 isSingleFile && 'dumi-default-previewer-tabs-single',
               )}
-              prefixCls="dumi-default-tabs"
-              moreIcon="···"
               defaultActiveKey={String(activeKey)}
               onChange={(key) => setActiveKey(Number(key))}
               items={files.map(([filename], i) => ({
