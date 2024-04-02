@@ -74,7 +74,7 @@ demo:
 <!-- 其他 Markdown 内容 -->
 ```
 
-配置 `demo.cols` 后，以下仅用换行符分隔的 code 标签 demo 会被渲染为双栏布局：
+配置 `demo.cols` 后，以下用**单个换行符**分隔的 code 标签 demo 会被渲染为双栏布局：
 
 ```md
 <code src="./demos/cols.tsx">分栏 1</code>
