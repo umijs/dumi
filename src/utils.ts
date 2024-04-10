@@ -1,9 +1,10 @@
+import type { Range, RangeOptions } from '@umijs/utils/compiled/semver';
 import { createHash } from 'crypto';
 import Cache from 'file-system-cache';
 import fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'path';
-import { lodash, logger, winPath } from 'umi/plugin-utils';
+import { lodash, logger, resolve, semver, winPath } from 'umi/plugin-utils';
 import { FS_CACHE_DIR } from './constants';
 
 /**
@@ -221,4 +222,58 @@ export function generateMetaChunkName(
  */
 export function getContentHash(content: string, length = 8) {
   return createHash('md5').update(content).digest('hex').slice(0, length);
+}
+
+/**
+ * get package version from dependency
+ * @param pkgPath   package.json file path
+ */
+export function getPackageVersionFromDependency(
+  pkgPath: string,
+  pkgName: string,
+  category: Array<'peer' | 'dev' | 'prod'> = ['prod'],
+) {
+  const pkg = fs.existsSync(pkgPath) ? require(pkgPath) : null;
+
+  if (!pkg || pkgName.length < 1) return null;
+
+  let depVer = null;
+  for (const cat of category) {
+    const depsCategory = cat === 'prod' ? 'dependencies' : `${cat}Dependencies`;
+    depVer = lodash.get(pkg, [depsCategory, pkgName]);
+    if (depVer) break;
+  }
+
+  if (!depVer) return null;
+
+  if (semver.valid(depVer) || semver.validRange(depVer)) {
+    return depVer;
+  }
+
+  const depJson = resolve.sync(`${pkgName}/package.json`, {
+    basedir: path.dirname(pkgPath),
+  });
+  if (fs.existsSync(depJson)) {
+    const depPkg = require(depJson);
+    return depPkg?.version;
+  }
+}
+
+/**
+ * check if version is in range
+ * @param version   version to check
+ * @param range     range to check
+ */
+export function isVersionInRange(
+  version: string,
+  range: string | Range,
+  options: RangeOptions = { includePrerelease: true },
+) {
+  if (semver.valid(version)) {
+    return semver.satisfies(version, range, options);
+  }
+  if (semver.validRange(version)) {
+    return semver.subset(version, range, options);
+  }
+  return false;
 }
