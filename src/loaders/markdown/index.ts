@@ -84,7 +84,6 @@ function emitDefault(
   if (frontmatter!.atomId && opts.onResolveAtomMeta) {
     opts.onResolveAtomMeta(frontmatter!.atomId, frontmatter);
   }
-
   // import all builtin components, may be used by markdown content
   return `${Object.values(opts.builtins)
     .map((item) => `import ${item.specifier} from '${item.source}';`)
@@ -92,12 +91,11 @@ function emitDefault(
 import LoadingComponent from '@@/dumi/theme/loading';
 import React, { Suspense } from 'react';
 import { DumiPage, useTabMeta, useRouteMeta } from 'dumi';
+import {texts as ${CONTENT_TEXTS_OBJ_NAME}} from '${
+    this.resourcePath
+  }?type=text'
 
 function DumiMarkdownInner() {
-  const { texts: ${CONTENT_TEXTS_OBJ_NAME} } = use${
-    isTabContent ? 'TabMeta' : 'RouteMeta'
-  }();
-
   return ${ret.content};
 }
 
@@ -130,11 +128,13 @@ export const demos = {
     asset: {{{renderAsset}}},
     context: {{{renderContext}}},
     renderOpts: {{{renderRenderOpts}}},
+    originPath: '{{{originPath}}}'
   },
   {{/demos}}
 };`,
     {
       demos,
+      originPath: this.resourcePath,
       renderAsset: function renderAsset(this: NonNullable<typeof demos>[0]) {
         // do not render asset for inline demo
         if (!('asset' in this)) return 'null';
@@ -150,9 +150,11 @@ export const demos = {
           if (asset.dependencies[file]?.type === 'FILE') {
             // to avoid modify original asset object
             asset = lodash.cloneDeep(asset);
+            // x-todo
             asset.dependencies[
               file
-            ].value = `{{{require('-!${resolveMap[file]}?dumi-raw').default}}}`;
+              // ].value = `{{{require('-!${resolveMap[file]}?dumi-raw').default}}}`;
+            ].value = `{{{require('${resolveMap[file]}?dumi-raw').default}}}`;
           }
         });
 

@@ -75,7 +75,6 @@ export const useFullSidebarData = () => {
       Record<string, Record<string, ISidebarGroup>>
     >((ret, route) => {
       const clearPath = getLocaleClearPath(route.path!, locale);
-
       // skip index routes
       if (clearPath && route.meta) {
         // extract parent path from route path

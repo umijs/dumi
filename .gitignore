@@ -4,6 +4,8 @@
 /suites/**/dist
 /dist
 /docs-dist
+/mako_dist
+/_site
 /theme-default
 .DS_Store
 .vscode

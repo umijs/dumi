@@ -1,0 +1,6 @@
+{
+  "manifest": {
+    "fileName": "build-manifest.json"
+  },
+  "watch": true
+}

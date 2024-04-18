@@ -17,7 +17,6 @@ type IMetaFiles = {
 
 export default (api: IApi) => {
   const metaFiles: IMetaFiles = [];
-
   api.register({
     key: 'modifyRoutes',
     // make sure it is called last
@@ -41,7 +40,6 @@ export default (api: IApi) => {
           });
         }
       });
-
       return routes;
     },
   });

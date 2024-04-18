@@ -30,7 +30,7 @@ export default () => &lt;h1&gt;Hello dumi!&lt;/h1&gt;;
  * defaultShowCode: true
  */
 
-import React from 'react';
+import * as React from 'react';
 
 export default () => <h1>Hello dumi!</h1>;
 ```

@@ -20,7 +20,6 @@ const ASYNC_META_PROPS = ['texts'];
 
 function getCachedRouteMeta(route: IRoutesById[string]) {
   const cacheKey = route.id;
-
   if (!cache.get(cacheKey)) {
     const merge = (meta: IRouteMeta = EMPTY_META) => {
       if (route.meta) {
@@ -90,10 +89,9 @@ export const useRouteMeta = () => {
   }, [clientRoutes.length, pathname]);
   const [matchedRoute, setMatchedRoute] = useState(getter);
   const meta = getCachedRouteMeta(matchedRoute);
-
+  console.log('meta', meta);
   useIsomorphicLayoutEffect(() => {
     setMatchedRoute(getter);
   }, [clientRoutes.length, pathname]);
-
   return meta;
 };

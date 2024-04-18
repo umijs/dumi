@@ -30,7 +30,7 @@ function evalCommonJS(
   new Function('module', 'exports', 'require', js)(module, exports, require);
 }
 
-export const useLiveDemo = (
+export const useLiveDemo = async (
   id: string,
   opts?: { containerRef?: RefObject<HTMLElement>; iframe?: boolean },
 ) => {
@@ -38,7 +38,6 @@ export const useLiveDemo = (
   const [loading, setLoading] = useState(false);
   const loadingTimer = useRef<number>();
   const taskToken = useRef<number>();
-
   const { context = {}, asset, renderOpts } = demo;
   const [component, setComponent] = useState<AgnosticComponentType>();
   const ref = useRenderer(
