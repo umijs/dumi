@@ -6,13 +6,12 @@ import {
   VERSION_2_LEVEL_NAV,
 } from '@/constants';
 import type { IApi } from '@/types';
-import { getPackageVersionFromDependency, isVersionInRange } from '@/utils';
 import { parseModule } from '@umijs/bundler-utils';
 import { execSync } from 'child_process';
 import fs from 'fs';
 import hostedGit from 'hosted-git-info';
 import path from 'path';
-import { deepmerge, lodash, resolve, winPath } from 'umi/plugin-utils';
+import { deepmerge, lodash, resolve, semver, winPath } from 'umi/plugin-utils';
 import { safeExcludeInMFSU } from '../derivative';
 import loadTheme, { IThemeLoadResult } from './loader';
 
@@ -83,18 +82,14 @@ async function getModuleExports(modulePath: string) {
 /**
  * check if package dumi version is minor 2
  */
-function checkMinor2ByPkg(pkgPath: string) {
-  const pkg = require(pkgPath);
-
+function checkMinor2ByPkg(pkg: IApi['pkg']) {
   // for dumi local example project
   if (pkg.name?.startsWith('@examples/')) return true;
 
-  const dumiVer = getPackageVersionFromDependency(pkgPath, 'dumi', [
-    'peer',
-    'dev',
-  ]);
+  const ver =
+    pkg.peerDependencies?.dumi || pkg.devDependencies?.dumi || '^2.0.0';
 
-  return isVersionInRange(dumiVer, VERSION_2_LEVEL_NAV);
+  return semver.subset(ver, VERSION_2_LEVEL_NAV);
 }
 
 export default (api: IApi) => {
@@ -184,12 +179,12 @@ export default (api: IApi) => {
   api.modifyAppData((memo) => {
     // auto enable 2-level nav by declared dumi version, for existing projects compatibility
     // ref: https://github.com/umijs/dumi/discussions/1618
-    memo._2LevelNavAvailable = checkMinor2ByPkg(api.pkgPath);
+    memo._2LevelNavAvailable = checkMinor2ByPkg(api.pkg);
 
     // always respect theme package declaration, for theme compatibility
     if (pkgThemePath && !memo._2LevelNavAvailable) {
       memo._2LevelNavAvailable = checkMinor2ByPkg(
-        path.join(pkgThemePath, 'package.json'),
+        require(path.join(pkgThemePath, 'package.json')),
       );
     }
 

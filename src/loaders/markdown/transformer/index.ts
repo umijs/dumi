@@ -5,6 +5,7 @@ import type { IApi, IDumiConfig, IDumiTechStack } from '@/types';
 import { getPackageVersionFromDependency, isVersionInRange } from '@/utils';
 import enhancedResolve, { type ResolveOptions } from 'enhanced-resolve';
 import type { IRoute } from 'umi';
+import { semver } from 'umi/plugin-utils';
 import type { Plugin, Processor } from 'unified';
 import type { Data } from 'vfile';
 import rehypeDemo from './rehypeDemo';
@@ -79,7 +80,7 @@ export interface IMdTransformerOptions {
   extraRehypePlugins?: IDumiConfig['extraRehypePlugins'];
   routes: Record<string, IRoute>;
   locales: ILocalesConfig;
-  pkgPath: IApi['pkgPath'];
+  pkg: IApi['pkg'];
 }
 
 export interface IMdTransformerResult {
@@ -90,8 +91,7 @@ export interface IMdTransformerResult {
 /**
  * keep markdown soft break before 2.2.0
  */
-function keepSoftBreak(pkgPath: string) {
-  const pkg = require(pkgPath);
+function keepSoftBreak(pkg: IApi['pkg']) {
   // for dumi local example project
   if (pkg?.name?.startsWith('@examples/') || pkg?.name === 'dumi') return false;
 
@@ -160,7 +160,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
     .use(remarkContainer)
     .use(remarkGfm);
 
-  if (keepSoftBreak(opts.pkgPath)) {
+  if (keepSoftBreak(opts.pkg)) {
     processor.use(remarkBreaks, { fileAbsPath: opts.fileAbsPath });
   }
 

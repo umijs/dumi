@@ -86,7 +86,7 @@ export default (api: IApi) => {
       extraRehypePlugins: api.config.extraRehypePlugins,
       routes: api.appData.routes,
       locales: api.config.locales,
-      pkgPath: api.pkgPath,
+      pkg: api.pkg,
     };
 
     const mdRule = memo.module

@@ -37,7 +37,7 @@ for (let casePath of cases) {
       },
       locales: [],
       routes: {},
-      pkgPath: '',
+      pkg: {},
       alias: {
         '@': __dirname,
       },
