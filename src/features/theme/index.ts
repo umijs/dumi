@@ -6,12 +6,13 @@ import {
   VERSION_2_LEVEL_NAV,
 } from '@/constants';
 import type { IApi } from '@/types';
+import { isVersionInRange } from '@/utils';
 import { parseModule } from '@umijs/bundler-utils';
 import { execSync } from 'child_process';
 import fs from 'fs';
 import hostedGit from 'hosted-git-info';
 import path from 'path';
-import { deepmerge, lodash, resolve, semver, winPath } from 'umi/plugin-utils';
+import { deepmerge, lodash, resolve, winPath } from 'umi/plugin-utils';
 import { safeExcludeInMFSU } from '../derivative';
 import loadTheme, { IThemeLoadResult } from './loader';
 
@@ -89,7 +90,7 @@ function checkMinor2ByPkg(pkg: IApi['pkg']) {
   const ver =
     pkg.peerDependencies?.dumi || pkg.devDependencies?.dumi || '^2.0.0';
 
-  return semver.subset(ver, VERSION_2_LEVEL_NAV);
+  return isVersionInRange(ver, VERSION_2_LEVEL_NAV);
 }
 
 export default (api: IApi) => {

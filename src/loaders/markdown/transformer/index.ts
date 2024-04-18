@@ -2,10 +2,9 @@ import type { IParsedBlockAsset } from '@/assetParsers/block';
 import type { ILocalesConfig, IRouteMeta } from '@/client/theme-api/types';
 import { VERSION_2_DEPRECATE_SOFT_BREAKS } from '@/constants';
 import type { IApi, IDumiConfig, IDumiTechStack } from '@/types';
-import { getPackageVersionFromDependency, isVersionInRange } from '@/utils';
-import enhancedResolve, { type ResolveOptions } from 'enhanced-resolve';
+import { isVersionInRange } from '@/utils';
+import enhancedResolve from 'enhanced-resolve';
 import type { IRoute } from 'umi';
-import { semver } from 'umi/plugin-utils';
 import type { Plugin, Processor } from 'unified';
 import type { Data } from 'vfile';
 import rehypeDemo from './rehypeDemo';
@@ -96,7 +95,8 @@ function keepSoftBreak(pkg: IApi['pkg']) {
   if (pkg?.name?.startsWith('@examples/') || pkg?.name === 'dumi') return false;
 
   const ver = pkg?.devDependencies?.dumi ?? pkg?.dependencies?.dumi ?? '^2.0.0';
-  return !semver.subset(ver, VERSION_2_DEPRECATE_SOFT_BREAKS);
+
+  return !isVersionInRange(ver, VERSION_2_DEPRECATE_SOFT_BREAKS);
 }
 
 async function applyUnifiedPlugin(opts: {
