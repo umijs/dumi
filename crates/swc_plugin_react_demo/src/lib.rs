@@ -109,8 +109,38 @@ impl VisitMut for ReactDemoVisitor {
             DefaultDecl::TsInterfaceDecl(_) => { /* omit interface declaration */ }
           }
         }
-        ModuleDecl::ExportNamed(_) => {
-          unreachable!("export named should be transform to export default")
+        ModuleDecl::ExportNamed(export_named) => {
+          for specifier in export_named.specifiers.iter() {
+            match specifier {
+              ExportSpecifier::Named(named) => {
+                match &named.orig {
+                  ModuleExportName::Ident(ident) => {
+                    if ident.sym == "default" {
+                      *n = ModuleItem::Stmt(Stmt::Return(ReturnStmt {
+                        span: DUMMY_SP,
+                        arg: Some(Box::new(Expr::Await(AwaitExpr {
+                          span: DUMMY_SP,
+                          arg: Box::new(Expr::Call(CallExpr {
+                            span: DUMMY_SP,
+                            callee: Callee::Import(Import::dummy()),
+                            args: vec![ExprOrSpread {
+                              spread: None,
+                              expr: Box::new(Expr::Lit(Lit::Str(
+                                *export_named.src.clone().unwrap(),
+                              ))),
+                            }],
+                            type_args: None,
+                          })),
+                        }))),
+                      }));
+                    }
+                  }
+                  _ => { /* omit other export named specifier */ }
+                }
+              }
+              _ => {}
+            }
+          }
         }
         _ => { /* omit other declarations */ }
       }
@@ -148,7 +178,8 @@ test_inline!(
   // input
   r#"export default a;
 export default () => null;
-export default class A {}"#,
+export default class A {}
+export { default } from 'abc'"#,
   // output
   r#"return {
     default: a
@@ -159,5 +190,6 @@ return {
 return {
     default: class A {
     }
-};"#
+};
+return await import('abc')"#
 );
