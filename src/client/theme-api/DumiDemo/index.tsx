@@ -22,10 +22,10 @@ const InternalDumiDemo = (props: IDumiDemoProps) => {
   const demo = useDemo(id)!;
   const { component, asset, renderOpts } = demo;
 
-  const canvasRef = useRenderer(Object.assign(demo, { id }), {
-    onInitError: (err) => {
-      throw err;
-    },
+  const canvasRef = useRenderer({
+    id,
+    renderOpts: demo.renderOpts,
+    deferedComponent: demo.component,
   });
 
   // hide debug demo in production

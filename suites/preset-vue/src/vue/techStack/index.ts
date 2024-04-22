@@ -7,6 +7,7 @@ import { VueSfcTechStack } from './sfc';
 
 const COMPILE_FILENAME = 'compiler.mjs';
 const RENDERER_FILENAME = 'renderer.mjs';
+const PREFLIGHT_FILENAME = 'preflight.mjs';
 
 export default function registerTechStack(api: IApi) {
   const vueConfig = api.userConfig?.vue;
@@ -26,11 +27,16 @@ export default function registerTechStack(api: IApi) {
       path: RENDERER_FILENAME,
       content: fsExtra.readFileSync(join(libPath, RENDERER_FILENAME), 'utf8'),
     });
+    api.writeTmpFile({
+      path: PREFLIGHT_FILENAME,
+      content: fsExtra.readFileSync(join(libPath, PREFLIGHT_FILENAME), 'utf8'),
+    });
   });
 
   const runtimeOpts = {
     compilePath: getPluginPath(api, COMPILE_FILENAME),
     rendererPath: getPluginPath(api, RENDERER_FILENAME),
+    preflightPath: getPluginPath(api, PREFLIGHT_FILENAME),
     pluginPath: join(libPath, 'runtimePlugin.mjs'),
   };
 

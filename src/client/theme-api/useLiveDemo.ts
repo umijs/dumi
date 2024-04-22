@@ -10,8 +10,9 @@ import {
   type RefObject,
 } from 'react';
 import DemoErrorBoundary from './DumiDemo/DemoErrorBoundary';
-import type { AgnosticComponentType } from './types';
+import type { AgnosticComponentModule, AgnosticComponentType } from './types';
 import { useRenderer } from './useRenderer';
+import { getAgnosticComponentModule } from './utils';
 
 const THROTTLE_WAIT = 500;
 
@@ -39,31 +40,23 @@ export const useLiveDemo = (
   const loadingTimer = useRef<number>();
   const taskToken = useRef<number>();
 
-  const { context = {}, asset, renderOpts } = demo;
-  const [component, setComponent] = useState<AgnosticComponentType>();
-  const [error, setError] = useState<Error | null>(null);
-  const [rendered, setRendered] = useState<boolean>(false);
+  function resetLoadingStatus() {
+    clearTimeout(loadingTimer.current);
+    setLoading(false);
+  }
 
-  const ref = useRenderer(
-    component
-      ? {
-          id,
-          ...demo,
-          component,
-        }
-      : Object.assign(demo, { id }),
-    {
-      onInitError: (err) => {
-        setError(err);
-      },
-      onRuntimeError: (err) => {
-        throw err;
-      },
-      onResolved: () => {
-        setRendered(true);
-      },
+  const { context = {}, asset, renderOpts } = demo;
+  const [component, setComponent] = useState<AgnosticComponentModule>();
+  const [error, setError] = useState<Error | null>(null);
+
+  const ref = useRenderer({
+    id,
+    component,
+    renderOpts: demo.renderOpts,
+    onResolved: () => {
+      resetLoadingStatus();
     },
-  );
+  });
 
   const [demoNode, setDemoNode] = useState<ReactNode>();
   const setSource = useCallback(
@@ -78,14 +71,10 @@ export const useLiveDemo = (
           THROTTLE_WAIT - 1,
         );
 
-        function resetLoadingStatus() {
-          clearTimeout(loadingTimer.current);
-          setLoading(false);
-        }
-        setRendered(false);
         if (opts?.iframe && opts?.containerRef?.current) {
           const iframeWindow =
             opts.containerRef.current.querySelector('iframe')!.contentWindow!;
+
           await new Promise<void>((resolve) => {
             const handler = (
               ev: MessageEvent<{
@@ -125,7 +114,6 @@ export const useLiveDemo = (
             } catch (error: any) {
               setError(error);
               resetLoadingStatus();
-              setRendered(true);
               return;
             }
           }
@@ -139,14 +127,17 @@ export const useLiveDemo = (
                 module,
                 require,
               });
-              setComponent(exports);
+              const component = await getAgnosticComponentModule(exports);
+              if (renderOpts.preflight) {
+                await renderOpts.preflight(component);
+              }
+              setComponent(component);
               setDemoNode(createElement('div', { ref }));
               setError(null);
             } catch (err: any) {
               setError(err);
-              setRendered(true);
+              resetLoadingStatus();
             }
-            resetLoadingStatus();
             return;
           }
 
@@ -200,5 +191,5 @@ export const useLiveDemo = (
     [context, asset, renderOpts],
   );
 
-  return { node: demoNode, loading, error, setSource, rendered };
+  return { node: demoNode, loading, error, setSource };
 };

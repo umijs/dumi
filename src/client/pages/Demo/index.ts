@@ -8,10 +8,10 @@ const DemoRenderPage: FC = () => {
   const id = params.id!;
 
   const demo = useDemo(id)!;
-  const canvasRef = useRenderer(Object.assign(demo, { id }), {
-    onInitError: (error) => {
-      throw error;
-    },
+  const canvasRef = useRenderer({
+    id,
+    deferedComponent: demo.component,
+    renderOpts: demo.renderOpts,
   });
 
   const { component, renderOpts } = demo || {};
@@ -20,7 +20,7 @@ const DemoRenderPage: FC = () => {
     node: liveDemoNode,
     setSource,
     error: liveDemoError,
-    rendered,
+    loading,
   } = useLiveDemo(id!);
 
   const finalNode =
@@ -47,28 +47,15 @@ const DemoRenderPage: FC = () => {
     return () => window.removeEventListener('message', handler);
   }, [setSource]);
 
-  // The error of the demo with renderer is asynchronous
-  useEffect(() => {
-    if (rendered && (liveDemoError || liveDemoNode)) {
-      window.postMessage({
-        type: 'dumi.liveDemo.compileDone',
-        value: { err: liveDemoError },
-      });
-    }
-  }, [liveDemoError, liveDemoNode, rendered]);
-
   // notify parent window that compile done
   useEffect(() => {
-    if (renderOpts?.renderer) {
-      return;
-    }
-    if (liveDemoNode || liveDemoError) {
+    if (!loading && (liveDemoError || liveDemoNode)) {
       window.postMessage({
         type: 'dumi.liveDemo.compileDone',
         value: { err: liveDemoError },
       });
     }
-  }, [liveDemoNode, liveDemoError]);
+  }, [liveDemoError, liveDemoNode, loading]);
 
   return finalNode;
 };

@@ -261,14 +261,12 @@ export type IDemoCancelableFn = (
      * it will be processed by the react application in ErrorBoundary
      */
     onRuntimeError?: (error: Error) => void;
-    /**
-     * Error message will only be given below the Demo
-     *
-     * Usually this is an error during demo initialization.
-     */
-    onInitError?: (error: Error) => void;
   },
 ) => (() => void) | Promise<() => void>;
+
+export type IDemoPreflightFn = (
+  component: AgnosticComponentModule,
+) => Promise<void>;
 
 export type IDemoData = {
   component: ReactComponentType | AgnosticComponentType;
@@ -280,6 +278,14 @@ export type IDemoData = {
      * provide a runtime compile function for compile demo code for live preview
      */
     compile?: IDemoCompileFn;
+    /**
+     * Component rendering function, used to manage the creation and unmount of components
+     */
     renderer?: IDemoCancelableFn;
+    /**
+     * Used to detect initialization errors of components in advance
+     * (if there is an error, the component will not be mounted)
+     */
+    preflight?: IDemoPreflightFn;
   };
 };

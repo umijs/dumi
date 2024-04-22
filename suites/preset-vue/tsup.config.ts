@@ -27,6 +27,18 @@ export default defineConfig([
     treeshake: true,
   },
   {
+    name: 'preflight',
+    entry: {
+      preflight: 'src/vue/runtime/preflight.ts',
+    },
+    format: 'esm',
+    outDir: 'lib',
+    target: 'esnext',
+    platform: 'browser',
+    external: ['vue'],
+    treeshake: true,
+  },
+  {
     name: 'previewer',
     entry: ['src/vue/runtime/runtimePlugin.ts'],
     format: 'esm',
