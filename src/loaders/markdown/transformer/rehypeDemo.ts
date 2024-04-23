@@ -1,5 +1,6 @@
 import parseBlockAsset from '@/assetParsers/block';
 import type { IDumiDemoProps } from '@/client/theme-api/DumiDemo';
+import { IDumiConfig } from '@/types';
 import { getFileIdFromFsPath } from '@/utils';
 import type { sync } from 'enhanced-resolve';
 import type { Element, Root } from 'hast';
@@ -41,6 +42,7 @@ type IRehypeDemoOptions = Pick<
   resolver: typeof sync;
   fileLocaleLessPath: string;
   fileLocale?: string;
+  externals: IDumiConfig['externals'];
 };
 
 /**
@@ -265,6 +267,7 @@ export default function rehypeDemo(
               entryPointCode: codeType === 'external' ? undefined : codeValue,
               resolver: opts.resolver,
               techStack,
+              externals: opts.externals,
             };
 
             const runtimeOpts = techStack.runtimeOpts;

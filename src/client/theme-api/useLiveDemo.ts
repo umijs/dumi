@@ -170,7 +170,18 @@ export const useLiveDemo = (
               oError.apply(console, args);
 
             // check component is able to render, to avoid show react overlay error
-            (await renderToStaticMarkupDeferred)(newDemoNode);
+            try {
+              (await renderToStaticMarkupDeferred)(newDemoNode);
+            } catch (err: any) {
+              const shouldSkipError =
+                err.message.includes(
+                  'Unable to find node on an unmounted component',
+                ) ||
+                err.message.includes(
+                  'Portals are not currently supported by the server renderer',
+                );
+              if (!shouldSkipError) throw err;
+            }
             console.error = oError;
 
             // set new demo node with passing source

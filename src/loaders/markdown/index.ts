@@ -1,5 +1,6 @@
 import { isTabRouteFile } from '@/features/tabs';
 import type { IThemeLoadResult } from '@/features/theme/loader';
+import { IDumiConfig } from '@/types';
 import { generateMetaChunkName, getCache, getContentHash } from '@/utils';
 import fs from 'fs';
 import { Mustache, lodash, winPath } from 'umi/plugin-utils';
@@ -8,11 +9,11 @@ import transform, {
   type IMdTransformerResult,
 } from './transformer';
 import { CONTENT_TEXTS_OBJ_NAME } from './transformer/rehypeText';
-
 interface IMdLoaderDefaultModeOptions
   extends Omit<IMdTransformerOptions, 'fileAbsPath'> {
   mode?: 'markdown';
   builtins: IThemeLoadResult['builtins'];
+  externals: IDumiConfig['externals'];
   onResolveDemos?: (
     demos: NonNullable<IMdTransformerResult['meta']['demos']>,
   ) => void;
@@ -58,7 +59,11 @@ export type IMdLoaderOptions =
 function getDemoSourceFiles(demos: IMdTransformerResult['meta']['demos'] = []) {
   return demos.reduce<string[]>((ret, demo) => {
     if ('resolveMap' in demo) {
-      ret.push(...Object.values(demo.resolveMap));
+      ret.push(
+        ...Object.values(demo.resolveMap).filter((path) =>
+          path.startsWith('/'),
+        ),
+      );
     }
 
     return ret;

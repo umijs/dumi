@@ -70,6 +70,7 @@ export interface IMdTransformerOptions {
   cwd: string;
   fileAbsPath: string;
   alias: ResolveOptions['alias'];
+  externals: IDumiConfig['externals'];
   parentAbsPath?: string;
   techStacks: IDumiTechStack[];
   resolve: IDumiConfig['resolve'];
@@ -190,6 +191,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
       fileLocale,
       resolve: opts.resolve,
       resolver,
+      externals: opts.externals,
     })
     .use(rehypeSlug)
     .use(rehypeLink, {

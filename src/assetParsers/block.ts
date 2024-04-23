@@ -1,6 +1,7 @@
 import { parseCodeFrontmatter } from '@/utils';
 import { build } from '@umijs/bundler-utils/compiled/esbuild';
 import assert from 'assert';
+import { IDumiConfig } from 'dist/types';
 import type { ExampleBlockAsset } from 'dumi-assets-types';
 import type { sync } from 'enhanced-resolve';
 import fs from 'fs';
@@ -32,6 +33,7 @@ async function parseBlockAsset(opts: {
   entryPointCode?: string;
   resolver: typeof sync;
   techStack: IDumiTechStack;
+  externals: IDumiConfig['externals'];
 }) {
   const asset: IParsedBlockAsset['asset'] = {
     type: 'BLOCK',
@@ -80,7 +82,11 @@ async function parseBlockAsset(opts: {
                   value: pkg.version,
                 };
 
-                result.resolveMap[args.path] = resolved;
+                result.resolveMap[args.path] = Object.keys(
+                  opts.externals || {},
+                ).includes(args.path)
+                  ? args.path
+                  : resolved;
               }
 
               // make all deps external
@@ -179,7 +185,10 @@ async function parseBlockAsset(opts: {
 
               // save file absolute path for load file via raw-loader
               // to avoid bundle same file to save bundle size
-              if (!isEntryPoint || !opts.entryPointCode) {
+              if (
+                opts.techStack.runtimeOpts &&
+                (!isEntryPoint || !opts.entryPointCode)
+              ) {
                 result.resolveMap[filename] = args.path;
               }
 
