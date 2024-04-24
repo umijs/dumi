@@ -1,6 +1,5 @@
 import { isTabRouteFile } from '@/features/tabs';
 import type { IThemeLoadResult } from '@/features/theme/loader';
-import { IDumiConfig } from '@/types';
 import { generateMetaChunkName, getCache, getContentHash } from '@/utils';
 import fs from 'fs';
 import path from 'path';
@@ -15,7 +14,6 @@ interface IMdLoaderDefaultModeOptions
   extends Omit<IMdTransformerOptions, 'fileAbsPath'> {
   mode?: 'markdown';
   builtins: IThemeLoadResult['builtins'];
-  externals: IDumiConfig['externals'];
   onResolveDemos?: (
     demos: NonNullable<IMdTransformerResult['meta']['demos']>,
   ) => void;

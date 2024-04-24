@@ -1,7 +1,6 @@
 import { parseCodeFrontmatter } from '@/utils';
 import { build } from '@umijs/bundler-utils/compiled/esbuild';
 import assert from 'assert';
-import { IDumiConfig } from 'dist/types';
 import type { ExampleBlockAsset } from 'dumi-assets-types';
 import type { sync } from 'enhanced-resolve';
 import fs from 'fs';
@@ -33,7 +32,6 @@ async function parseBlockAsset(opts: {
   entryPointCode?: string;
   resolver: typeof sync;
   techStack: IDumiTechStack;
-  externals: IDumiConfig['externals'];
 }) {
   const asset: IParsedBlockAsset['asset'] = {
     type: 'BLOCK',
