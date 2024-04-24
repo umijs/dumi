@@ -3,12 +3,14 @@ import type { IThemeLoadResult } from '@/features/theme/loader';
 import { IDumiConfig } from '@/types';
 import { generateMetaChunkName, getCache, getContentHash } from '@/utils';
 import fs from 'fs';
+import path from 'path';
 import { Mustache, lodash, winPath } from 'umi/plugin-utils';
 import transform, {
   type IMdTransformerOptions,
   type IMdTransformerResult,
 } from './transformer';
 import { CONTENT_TEXTS_OBJ_NAME } from './transformer/rehypeText';
+
 interface IMdLoaderDefaultModeOptions
   extends Omit<IMdTransformerOptions, 'fileAbsPath'> {
   mode?: 'markdown';
@@ -60,9 +62,7 @@ function getDemoSourceFiles(demos: IMdTransformerResult['meta']['demos'] = []) {
   return demos.reduce<string[]>((ret, demo) => {
     if ('resolveMap' in demo) {
       ret.push(
-        ...Object.values(demo.resolveMap).filter((path) =>
-          path.startsWith('/'),
-        ),
+        ...Object.values(demo.resolveMap).filter((p) => path.isAbsolute(p)),
       );
     }
 

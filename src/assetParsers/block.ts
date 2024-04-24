@@ -82,11 +82,7 @@ async function parseBlockAsset(opts: {
                   value: pkg.version,
                 };
 
-                result.resolveMap[args.path] = Object.keys(
-                  opts.externals || {},
-                ).includes(args.path)
-                  ? args.path
-                  : resolved;
+                result.resolveMap[args.path] = args.path;
               }
 
               // make all deps external
