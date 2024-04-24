@@ -2,6 +2,7 @@ import { isTabRouteFile } from '@/features/tabs';
 import type { IThemeLoadResult } from '@/features/theme/loader';
 import { generateMetaChunkName, getCache, getContentHash } from '@/utils';
 import fs from 'fs';
+import path from 'path';
 import { Mustache, lodash, winPath } from 'umi/plugin-utils';
 import transform, {
   type IMdTransformerOptions,
@@ -58,7 +59,9 @@ export type IMdLoaderOptions =
 function getDemoSourceFiles(demos: IMdTransformerResult['meta']['demos'] = []) {
   return demos.reduce<string[]>((ret, demo) => {
     if ('resolveMap' in demo) {
-      ret.push(...Object.values(demo.resolveMap));
+      ret.push(
+        ...Object.values(demo.resolveMap).filter((p) => path.isAbsolute(p)),
+      );
     }
 
     return ret;
