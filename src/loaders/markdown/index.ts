@@ -210,6 +210,13 @@ export const demos = {
             )}')).default,`);
         }
 
+        if (renderOpts.preflightPath) {
+          propertyArray.push(`
+            preflight: (await import('${winPath(
+              renderOpts.preflightPath,
+            )}')).default,`);
+        }
+
         if (propertyArray.length === 0) return 'undefined';
 
         return `{

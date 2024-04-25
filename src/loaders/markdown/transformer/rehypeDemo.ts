@@ -403,6 +403,7 @@ export default function rehypeDemo(
                       component,
                       renderOpts: {
                         rendererPath: runtimeOpts?.rendererPath,
+                        preflightPath: runtimeOpts?.preflightPath,
                       },
                     };
                   }
@@ -463,6 +464,7 @@ export default function rehypeDemo(
                     renderOpts: {
                       rendererPath: runtimeOpts?.rendererPath,
                       compilePath: runtimeOpts?.compilePath,
+                      preflightPath: runtimeOpts?.preflightPath,
                     },
                   };
                 },

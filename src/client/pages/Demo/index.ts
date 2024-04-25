@@ -4,10 +4,15 @@ import { useRenderer } from '../../theme-api/useRenderer';
 import './index.less';
 
 const DemoRenderPage: FC = () => {
-  const { id } = useParams();
-  const demo = useDemo(id!);
+  const params = useParams();
+  const id = params.id!;
 
-  const canvasRef = useRenderer(demo!);
+  const demo = useDemo(id)!;
+  const { canvasRef } = useRenderer({
+    id,
+    component: demo.component,
+    renderOpts: demo.renderOpts,
+  });
 
   const { component, renderOpts } = demo || {};
 
@@ -15,6 +20,7 @@ const DemoRenderPage: FC = () => {
     node: liveDemoNode,
     setSource,
     error: liveDemoError,
+    loading,
   } = useLiveDemo(id!);
 
   const finalNode =
@@ -43,13 +49,13 @@ const DemoRenderPage: FC = () => {
 
   // notify parent window that compile done
   useEffect(() => {
-    if (liveDemoNode || liveDemoError) {
+    if (!loading && (liveDemoError || liveDemoNode)) {
       window.postMessage({
         type: 'dumi.liveDemo.compileDone',
         value: { err: liveDemoError },
       });
     }
-  }, [liveDemoNode, liveDemoError]);
+  }, [liveDemoError, liveDemoNode, loading]);
 
   return finalNode;
 };

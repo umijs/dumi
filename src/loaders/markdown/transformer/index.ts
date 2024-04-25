@@ -46,6 +46,7 @@ declare module 'vfile' {
           renderOpts: {
             type?: string;
             rendererPath?: string;
+            preflightPath?: string;
             compilePath?: string;
           };
         }
@@ -55,6 +56,7 @@ declare module 'vfile' {
           renderOpts: {
             type?: string;
             rendererPath?: string;
+            preflightPath?: string;
             compilePath?: string; // only for fix type
           };
         }

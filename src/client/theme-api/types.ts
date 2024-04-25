@@ -258,6 +258,10 @@ export type IDemoCancelableFn = (
   component: AgnosticComponentModule,
 ) => (() => void) | Promise<() => void>;
 
+export type IDemoPreflightFn = (
+  component: AgnosticComponentModule,
+) => Promise<void>;
+
 export type IDemoData = {
   component: ReactComponentType | AgnosticComponentType;
   asset: IPreviewerProps['asset'];
@@ -268,6 +272,14 @@ export type IDemoData = {
      * provide a runtime compile function for compile demo code for live preview
      */
     compile?: IDemoCompileFn;
+    /**
+     * Component rendering function, used to manage the creation and unmount of components
+     */
     renderer?: IDemoCancelableFn;
+    /**
+     * Used to detect initialization errors of components in advance
+     * (if there is an error, the component will not be mounted)
+     */
+    preflight?: IDemoPreflightFn;
   };
 };
