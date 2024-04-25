@@ -44,7 +44,7 @@ export default {
   presets: ['@dumijs/preset-vue'],
   vue: {
     checkerOptions: {
-      schema: { ignore: ['InternalType'] },
+      ignore: ['InternalType'],
     },
   },
 };
@@ -58,7 +58,7 @@ export default {
   presets: ['@dumijs/preset-vue'],
   vue: {
     checkerOptions: {
-      schema: { exclude: [/node_modules/, /mylib/] },
+      exclude: [/node_modules/, /mylib/],
     },
   },
 };
@@ -68,7 +68,13 @@ export default {
 
 ### tsconfigPath
 
-TypeChecker 使用的 tsconfig，默认值为 `<project-root>/tsconfig.json`
+TypeChecker 使用的 tsconfig，默认值为 `<project-root>/<directory>/tsconfig.json`
+
+> 默认情况下，如果您的项目位于 Monorepo 中，则 `<project-root>` 为 Monorepo 项目目录；而 `<directory>` 则为 `package.json` 中的 `repository.directory` 选项
+
+## directory
+
+默认情况下，该选项是 `package.json` 中的 `repository.directory` 选项
 
 ### compiler
 

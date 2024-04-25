@@ -54,7 +54,7 @@ api.registerTechStack(() => VueSfcTechStack);
 
 ### runtimeOpts: 运行时配置
 
-有三个选项可供选择：
+有四个选项可供选择：
 
 ```ts
 {
@@ -62,6 +62,7 @@ api.registerTechStack(() => VueSfcTechStack);
     compilePath: '...',
     rendererPath: '...',
     pluginPath: '...',
+    preflightPath: '...'
   },
 }
 
@@ -77,7 +78,10 @@ import { createApp } from 'vue';
 
 const renderer: IDemoCancelableFn = function (canvas, component) {
   const app = createApp(component);
-  app.config.errorHandler = (e) => console.error(e);
+  // 抛给 react 处理
+  app.config.errorHandler = (err) => {
+    throw err;
+  };
   app.mount(canvas);
   return () => {
     app.unmount();
@@ -115,6 +119,10 @@ const rendererPath = getPluginPath(api, 'renderer.mjs');
 
 得到的`rendererPath`我们就可以提供给 dumi 了。
 
+`preflightPath` 是和 `rendererPath` 配套的地址，在用户编辑 demo 时， dumi 会在组件被加载之前使用 preflight 进行预加载，并将发现的错误提示给用户。这能有效提升用户的编辑体验，请务必实现。
+
+`preflightPath`的提供方式和`rendererPath`如出一辙，这里就不赘述了。
+
 `compilePath`则是浏览器端 Vue 实时编译库所在地址，dumi 会在用户进行实时代码编辑时，通过
 
 ```ts
@@ -122,8 +130,6 @@ const { compile } = await import(compilePath);
 ```
 
 进行实时代码编译。
-
-`compilePath`的提供方式和`rendererPath`如出一辙，这里就不赘述了。
 
 在实际实现过程中，主要难度还是在于提供轻量的，浏览器端运行的编译器。
 
@@ -183,8 +189,8 @@ API Table 的支持主要在于对框架元信息信息的提取，例如针对 
 ```ts
 import { ILanguageMetaParser, IPatchFile } from 'dumi/tech-stack-utils';
 
-class VueMetaParser implements LanguageMetaParser {
-  async patch(file: PatchFile) {
+class VueMetaParser implements ILanguageMetaParser {
+  async patch(file: IPatchFile) {
     // ...
   }
   async parse() {

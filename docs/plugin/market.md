@@ -9,6 +9,10 @@ toc: null
 
 阅读更多关于 [如何使用插件](./index.md#配置)，或 [如何编写属于你自己的插件](./new.md) 并与社区分享！
 
+## 官方插件
+
+- [**preset-vue**](https://github.com/umijs/dumi/tree/master/suites/preset-vue): Vue 插件，支持 Vue Demo 渲染及编辑，API Table 等
+
 ## 社区插件
 
 - [**color-chunk**](https://github.com/Wxh16144/dumi-plugin-color-chunk#readme): 美化内联代码颜色块儿 \`#f00\`。
