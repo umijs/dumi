@@ -255,13 +255,6 @@ export type IDemoCompileFn = (
 export type IDemoCancelableFn = (
   canvas: HTMLElement,
   component: AgnosticComponentModule,
-  options?: {
-    /**
-     * If the renderer of a third-party application invokes this function,
-     * it will be processed by the react application in ErrorBoundary
-     */
-    onRuntimeError?: (error: Error) => void;
-  },
 ) => (() => void) | Promise<() => void>;
 
 export type IDemoPreflightFn = (

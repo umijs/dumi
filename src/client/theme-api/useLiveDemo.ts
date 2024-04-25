@@ -10,7 +10,7 @@ import {
   type RefObject,
 } from 'react';
 import DemoErrorBoundary from './DumiDemo/DemoErrorBoundary';
-import type { AgnosticComponentModule, AgnosticComponentType } from './types';
+import type { AgnosticComponentType } from './types';
 import { useRenderer } from './useRenderer';
 import { getAgnosticComponentModule } from './utils';
 
@@ -46,12 +46,10 @@ export const useLiveDemo = (
   }
 
   const { context = {}, asset, renderOpts } = demo;
-  const [component, setComponent] = useState<AgnosticComponentModule>();
   const [error, setError] = useState<Error | null>(null);
 
-  const ref = useRenderer({
+  const { canvasRef: ref, setComponent } = useRenderer({
     id,
-    component,
     renderOpts: demo.renderOpts,
     onResolved: () => {
       resetLoadingStatus();

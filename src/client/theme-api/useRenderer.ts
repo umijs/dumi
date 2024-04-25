@@ -1,9 +1,5 @@
-import { useEffect, useRef } from 'react';
-import type {
-  AgnosticComponentModule,
-  AgnosticComponentType,
-  IDemoData,
-} from './types';
+import { useEffect, useRef, useState } from 'react';
+import type { AgnosticComponentType, IDemoData } from './types';
 import { getAgnosticComponentModule } from './utils';
 
 // maintain all the mounted instance
@@ -14,20 +10,24 @@ const map = new Map<
 
 export interface UseRendererOptions {
   id: string;
-  deferedComponent?: AgnosticComponentType;
-  component?: AgnosticComponentModule;
+  component?: AgnosticComponentType;
   renderOpts: IDemoData['renderOpts'];
   onResolved?: () => void;
 }
 
 export const useRenderer = ({
   id,
-  deferedComponent,
   component,
   renderOpts,
   onResolved,
 }: UseRendererOptions) => {
+  const [deferedComponent, setComponent] =
+    useState<AgnosticComponentType | null>(
+      component ? getAgnosticComponentModule(component) : null,
+    );
+
   const canvasRef = useRef<HTMLDivElement>(null);
+
   const teardownRef = useRef(() => {});
 
   const prevCanvas = useRef(canvasRef.current);
@@ -48,49 +48,35 @@ export const useRenderer = ({
   }
 
   const renderer = renderOpts?.renderer;
-  const preflight = renderOpts?.preflight;
-  const shouldPreflight = !!(deferedComponent && preflight);
-  const comp =
-    component ??
-    (deferedComponent && getAgnosticComponentModule(deferedComponent));
 
   useEffect(() => {
     async function resolveRender() {
-      if (!canvasRef.current || !renderer || !comp) return;
+      if (!canvasRef.current || !renderer || !deferedComponent) return;
       const legacyHandler = map.get(id);
       if (resolving.current) return;
       resolving.current = true;
 
+      const legacyTeardown = legacyHandler?.teardown;
+      const comp = await deferedComponent;
+      const hostElement = document.createElement('div');
       try {
-        const legacyTeardown = legacyHandler?.teardown;
-        const mod = await comp;
-        if (shouldPreflight) {
-          await preflight?.(mod);
-        }
-        const hostElement = document.createElement('div');
-        try {
-          canvasRef.current.appendChild(hostElement);
-          const teardown = await renderer(hostElement, mod, {
-            onRuntimeError: (error) => {
-              throw error;
-            },
-          });
-          legacyTeardown?.();
-          legacyHandler?.hostElement?.remove();
-          // remove instance when react component is unmounted
-          teardownRef.current = function () {
-            teardown();
-            hostElement.remove();
-            map.delete(id);
-          };
-          map.set(id, {
-            teardown: teardownRef.current,
-            hostElement,
-          });
-        } catch (error) {
+        canvasRef.current.appendChild(hostElement);
+        const teardown = await renderer(hostElement, comp);
+        legacyTeardown?.();
+        legacyHandler?.hostElement?.remove();
+        // remove instance when react component is unmounted
+        teardownRef.current = function () {
+          teardown();
           hostElement.remove();
-          throw error;
-        }
+          map.delete(id);
+        };
+        map.set(id, {
+          teardown: teardownRef.current,
+          hostElement,
+        });
+      } catch (error) {
+        hostElement.remove();
+        throw error;
       } finally {
         resolving.current = false;
         onResolved?.();
@@ -98,9 +84,9 @@ export const useRenderer = ({
     }
 
     resolveRender();
-  }, [canvasRef.current, comp, renderer]);
+  }, [canvasRef.current, deferedComponent, renderer]);
 
   useEffect(() => () => teardownRef.current(), []);
 
-  return canvasRef;
+  return { canvasRef, setComponent };
 };

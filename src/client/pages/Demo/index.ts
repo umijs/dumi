@@ -8,9 +8,9 @@ const DemoRenderPage: FC = () => {
   const id = params.id!;
 
   const demo = useDemo(id)!;
-  const canvasRef = useRenderer({
+  const { canvasRef } = useRenderer({
     id,
-    deferedComponent: demo.component,
+    component: demo.component,
     renderOpts: demo.renderOpts,
   });
 

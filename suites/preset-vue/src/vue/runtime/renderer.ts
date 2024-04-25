@@ -1,11 +1,7 @@
 import type { IDemoCancelableFn } from 'dumi/dist/client/theme-api';
 import { createApp } from 'vue';
 
-const renderer: IDemoCancelableFn = async function (
-  canvas,
-  component,
-  options,
-) {
+const renderer: IDemoCancelableFn = async function (canvas, component) {
   if (component.__css__) {
     setTimeout(() => {
       document
@@ -20,7 +16,8 @@ const renderer: IDemoCancelableFn = async function (
   const app = createApp(component);
 
   app.config.errorHandler = function (err) {
-    options?.onRuntimeError?.(err as Error);
+    // This code will run in a sandbox and eventually throw runtime errors to React
+    throw err;
   };
   app.mount(canvas);
   return () => {
