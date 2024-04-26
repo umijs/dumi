@@ -1,6 +1,6 @@
 {
   "name": "dumi-assets-types",
-  "version": "2.0.0-alpha.0",
+  "version": "2.3.0",
   "description": "Standard assets type definitions for dumi library project",
   "homepage": "https://github.com/umijs/dumi/tree/master/assets-types#readme",
   "bugs": "https://github.com/umijs/dumi/issues",
