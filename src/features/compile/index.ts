@@ -71,6 +71,12 @@ export default (api: IApi) => {
   api.chainWebpack(async (memo) => {
     const babelInUmi = memo.module.rule('src').use('babel-loader').entries();
     const loaderPath = require.resolve('../../loaders/markdown');
+
+    // support require mjs packages(eg. element-plus/es)
+    memo.resolve.merge({
+      conditionNames: ['require', 'node', 'import'],
+    });
+
     const loaderBaseOpts: Partial<IMdLoaderOptions> = {
       techStacks,
       cwd: api.cwd,
