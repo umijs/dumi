@@ -46,6 +46,10 @@ export default {
 };
 ```
 
+:::info
+若您的项目 Monorepo 项目， 默认的 tsconfigPath 为 `<project-root>/<directory>/tsconfig.json`。 `<project-root>` 为 Monorepo 项目目录； `<directory>` 则为子包`package.json` 中的 `repository.directory` 选项
+:::
+
 ## checkerOptions
 
 我们还可以通过 checkerOptions 选项来配置 Type Checker：
@@ -57,9 +61,7 @@ export default {
   plugins: ['@dumijs/preset-vue'],
   vue: {
     checkerOptions: {
-      schema: {
-        exclude: /src\/runtime\//,
-      },
+      exclude: /src\/runtime\//,
     },
   },
 };
@@ -74,12 +76,10 @@ export default {
   plugins: ['@dumijs/preset-vue'],
   vue: {
     checkerOptions: {
-      schema: {
-        externalSymbolLinkMappings: {
-          typescript: {
-            Promise:
-              'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise',
-          },
+      externalSymbolLinkMappings: {
+        typescript: {
+          Promise:
+            'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise',
         },
       },
     },
