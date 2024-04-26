@@ -13,6 +13,8 @@
   "header.social.linkedin": "Linkedin",
   "previewer.actions.code.expand": "Show Code",
   "previewer.actions.code.shrink": "Hide Code",
+  "previewer.actions.code.editable": "Edit code with real-time preview",
+  "previewer.actions.code.readonly": "Only index file is editable",
   "previewer.actions.sketch": "Copy to Sketch app",
   "previewer.actions.sketch.group": "Copy as Sketch Group",
   "previewer.actions.sketch.symbol": "Copy as Sketch Symbol",
@@ -29,6 +31,10 @@
   "api.component.type": "Type",
   "api.component.default": "Default",
   "api.component.required": "(required)",
+  "api.component.release.alpha": "Alpha",
+  "api.component.release.beta": "Beta",
+  "api.component.release.experimental": "Experimental",
+  "api.component.release.deprecated": "Deprecated",
   "api.component.unavailable": "apiParser must be enabled to use auto-generated API",
   "api.component.loading": "Properties definition is resolving, wait a moment...",
   "api.component.not.found": "Properties definition not found for {id} component",
@@ -38,5 +44,6 @@
   "content.footer.actions.previous": "PREV",
   "content.footer.actions.next": "NEXT",
   "search.not.found": "No content was found",
+  "search.loading": "Loading...",
   "layout.sidebar.btn": "Sidebar"
 }

@@ -168,6 +168,50 @@ const SearchResult: FC<{
     return () => document.removeEventListener('keydown', handler);
   });
 
+  let returnNode: React.ReactNode = null;
+
+  if (props.loading) {
+    returnNode = (
+      <div className="dumi-default-search-empty">
+        <IconInbox />
+        <FormattedMessage id="search.loading" />
+      </div>
+    );
+  } else if (props.data.length) {
+    returnNode = (
+      <dl>
+        {data.map((item, i) =>
+          item.type === 'title' ? (
+            <dt key={String(i)}>{item.value.title}</dt>
+          ) : (
+            <dd key={String(i)}>
+              <Link
+                to={item.value.link}
+                data-active={activeIndex === item.activeIndex || undefined}
+                onClick={() => onItemSelect?.(item.value)}
+              >
+                {React.createElement(ICONS_MAPPING[item.value.type])}
+                <h4>
+                  <Highlight texts={item.value.highlightTitleTexts} />
+                </h4>
+                <p>
+                  <Highlight texts={item.value.highlightTexts} />
+                </p>
+              </Link>
+            </dd>
+          ),
+        )}
+      </dl>
+    );
+  } else {
+    returnNode = (
+      <div className="dumi-default-search-empty">
+        <IconInbox />
+        <FormattedMessage id="search.not.found" />
+      </div>
+    );
+  }
+
   return (
     <div
       className="dumi-default-search-result"
@@ -178,36 +222,7 @@ const SearchResult: FC<{
         (document.activeElement as HTMLInputElement).blur();
       }}
     >
-      {Boolean(props.data.length || props.loading) ? (
-        <dl>
-          {data.map((item, i) =>
-            item.type === 'title' ? (
-              <dt key={String(i)}>{item.value.title}</dt>
-            ) : (
-              <dd key={String(i)}>
-                <Link
-                  to={item.value.link}
-                  data-active={activeIndex === item.activeIndex || undefined}
-                  onClick={() => onItemSelect?.(item.value)}
-                >
-                  {React.createElement(ICONS_MAPPING[item.value.type])}
-                  <h4>
-                    <Highlight texts={item.value.highlightTitleTexts} />
-                  </h4>
-                  <p>
-                    <Highlight texts={item.value.highlightTexts} />
-                  </p>
-                </Link>
-              </dd>
-            ),
-          )}
-        </dl>
-      ) : (
-        <div className="dumi-default-search-empty">
-          <IconInbox />
-          <FormattedMessage id="search.not.found" />
-        </div>
-      )}
+      {returnNode}
     </div>
   );
 };

@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "declaration": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "baseUrl": "./",
+    "module": "NodeNext",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "exclude": ["lib", "compiled", "dist"]
+}

@@ -1,5 +1,5 @@
 import type { ExampleBlockAsset } from 'dumi-assets-types';
-import type { ComponentType, ReactNode } from 'react';
+import type { ComponentType as ReactComponentType, ReactNode } from 'react';
 
 export interface IPreviewerProps {
   /**
@@ -50,6 +50,10 @@ export interface IPreviewerProps {
    * react node of current demo
    */
   children: ReactNode;
+  /**
+   * private field, do not use it in your code
+   */
+  _live_in_iframe: boolean;
   [key: string]: any;
 }
 
@@ -129,9 +133,9 @@ export interface IRouteMeta {
     title?: string;
     titleIntlId?: string;
     components: {
-      default: ComponentType;
-      Extra: ComponentType;
-      Action: ComponentType;
+      default: ReactComponentType;
+      Extra: ReactComponentType;
+      Action: ReactComponentType;
     };
     meta: {
       frontmatter: Omit<
@@ -221,6 +225,7 @@ export interface IThemeConfig {
     [key in SocialTypes]?: string;
   };
   editLink?: boolean | string;
+  sourceLink?: boolean | string;
   lastUpdated?: boolean;
   [key: string]: any;
 }
@@ -236,3 +241,45 @@ export type IRoutesById = Record<
     [key: string]: any;
   }
 >;
+
+export type AgnosticComponentModule = { default?: any; [key: string]: any };
+
+export type AgnosticComponentType =
+  | Promise<AgnosticComponentModule>
+  | AgnosticComponentModule;
+
+export type IDemoCompileFn = (
+  code: string,
+  opts: { filename: string },
+) => Promise<string>;
+
+export type IDemoCancelableFn = (
+  canvas: HTMLElement,
+  component: AgnosticComponentModule,
+) => (() => void) | Promise<() => void>;
+
+export type IDemoPreflightFn = (
+  component: AgnosticComponentModule,
+) => Promise<void>;
+
+export type IDemoData = {
+  component: ReactComponentType | AgnosticComponentType;
+  asset: IPreviewerProps['asset'];
+  routeId: string;
+  context?: Record<string, unknown>;
+  renderOpts?: {
+    /**
+     * provide a runtime compile function for compile demo code for live preview
+     */
+    compile?: IDemoCompileFn;
+    /**
+     * Component rendering function, used to manage the creation and unmount of components
+     */
+    renderer?: IDemoCancelableFn;
+    /**
+     * Used to detect initialization errors of components in advance
+     * (if there is an error, the component will not be mounted)
+     */
+    preflight?: IDemoPreflightFn;
+  };
+};

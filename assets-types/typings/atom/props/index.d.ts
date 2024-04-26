@@ -1,6 +1,25 @@
 import type { BuiltinTags } from './jsdoc';
 import type { TypeMap } from './types';
 
+export interface PropertySourceReference {
+  /**
+   * fileName of the source file
+   */
+  fileName: string;
+  /**
+   * The one based number of the line that emitted the declaration
+   */
+  line: number;
+  /**
+   * The index of the character that emitted the declaration
+   */
+  character: number;
+  /**
+   * URL for displaying source file, usually the git repo file URL
+   */
+  url?: string;
+}
+
 /**
  * base props definition
  */
@@ -26,6 +45,10 @@ export interface BasePropertySchema<T extends keyof TypeMap = keyof TypeMap> {
    */
   type?: T;
   /**
+   * the full name of the type
+   */
+  className?: string;
+  /**
    * const value of prop
    */
   const?: TypeMap[T];
@@ -50,6 +73,10 @@ export interface BasePropertySchema<T extends keyof TypeMap = keyof TypeMap> {
    * extra jsdoc tags
    */
   tags?: BuiltinTags & Record<string, any>;
+  /**
+   * source of prop
+   */
+  source?: PropertySourceReference[];
 }
 
 /**
@@ -115,6 +142,28 @@ export interface ObjectPropertySchema extends BasePropertySchema {
   required?: string[];
 }
 
+export interface ReferencePropertySchema extends BasePropertySchema {
+  type: 'reference';
+  name: string;
+  typeParameters?: PropertySchema[];
+  externalUrl: string;
+}
+
+export interface FunctionArgSchema {
+  key: string;
+  schema: PropertySchema;
+  hasQuestionToken?: boolean;
+}
+
+export interface FunctionPropertySchema extends BasePropertySchema {
+  type: 'function';
+  signature: {
+    isAsync: boolean;
+    returnType: PropertySchema;
+    arguments: FunctionArgSchema[];
+  };
+}
+
 /**
  * prop definition
  */
@@ -122,6 +171,8 @@ export type PropertySchema =
   | BasePropertySchema
   | ObjectPropertySchema
   | ArrayPropertySchema
+  | FunctionPropertySchema
   | StringPropertySchema
   | NumberPropertySchema
-  | BooleanPropertySchema;
+  | BooleanPropertySchema
+  | ReferencePropertySchema;

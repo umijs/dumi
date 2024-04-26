@@ -11,6 +11,21 @@ let toString: typeof import('hast-util-to-string').toString;
   ({ toString } = await import('hast-util-to-string'));
 })();
 
+/**
+ * [借鉴 vitepress 的实现](https://github.com/vuejs/vitepress/blob/5811b626576ec4569fa0079d921b8e328d87ca91/src/node/markdown/plugins/snippet.ts)
+ *
+ * - [标题]
+ */
+const rawMetaRE = /\[(.+)\]/;
+
+function rehypeCodeMeta(meta: string) {
+  if (typeof meta !== 'string') return {};
+
+  const [title] = (rawMetaRE.exec(meta.trim()) || []).slice(1);
+
+  return { title };
+}
+
 export default function rehypeEnhancedTag(): Transformer<Root> {
   return async (tree) => {
     visit<Root, 'element'>(tree, 'element', (node, i, parent) => {
@@ -28,7 +43,10 @@ export default function rehypeEnhancedTag(): Transformer<Root> {
         parent!.children.splice(i!, 1, {
           type: 'element',
           tagName: 'SourceCode',
-          properties: { lang },
+          properties: {
+            ...rehypeCodeMeta(node.children[0].data?.meta as string),
+            lang,
+          },
           data: node.children[0].data,
           JSXAttributes: [
             {

@@ -38,6 +38,7 @@ const MobilePreviewer: FC<IPreviewerProps> = (props) => {
           ? `${themeConfig.deviceWidth}px`
           : undefined,
       }}
+      _live_in_iframe={mobile}
     >
       {mobile && (
         <Device

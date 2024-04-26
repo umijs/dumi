@@ -1,0 +1,151 @@
+@import (reference) '../../styles/variables.less';
+
+.@{prefix}-tabs {
+  &-nav {
+    position: relative;
+    display: flex;
+    padding: 0 12px;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 0;
+      border-bottom: 1px dashed @c-border-light;
+
+      @{dark-selector} & {
+        border-bottom-color: @c-border-less-dark;
+      }
+    }
+
+    &-wrap {
+      display: flex;
+      white-space: nowrap;
+      overflow: hidden;
+
+      &&-ping-left {
+        box-shadow: 5px 0 5px -5px rgba(0, 0, 0, 10%) inset;
+      }
+
+      &&-ping-right ~ * > .@{prefix}-tabs-nav-more {
+        box-shadow: 0 0 5px rgba(0, 0, 0, 10%);
+      }
+    }
+
+    &-list {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      transition: transform 0.2s;
+    }
+
+    &-more {
+      height: 100%;
+      cursor: pointer;
+      background: none;
+      border: 0;
+      transition: box-shadow 0.2s;
+    }
+  }
+
+  &-tab {
+    display: flex;
+    margin: 0 12px;
+
+    &-btn {
+      padding: 0;
+      color: @c-text-secondary;
+      font-size: 14px;
+      line-height: 36px;
+      border: 0;
+      outline: none;
+      background: transparent;
+      box-sizing: border-box;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      @{dark-selector} & {
+        color: @c-text-secondary-dark;
+      }
+
+      &:hover {
+        color: @c-text;
+
+        @{dark-selector} & {
+          color: @c-text-dark;
+        }
+      }
+    }
+
+    &-active &-btn {
+      color: @c-text;
+
+      @{dark-selector} & {
+        color: @c-text-dark;
+      }
+    }
+  }
+
+  &-ink-bar {
+    position: absolute;
+    height: 1px;
+    background: @c-primary;
+    transition: left 0.2s, width 0.2s;
+    pointer-events: none;
+    bottom: 0;
+
+    @{dark-selector} & {
+      background: @c-primary-dark;
+    }
+  }
+
+  &-dropdown {
+    position: absolute;
+    background: inherit;
+    border: 1px solid @c-border;
+    max-height: 200px;
+    overflow: auto;
+
+    @{dark-selector} & {
+      border-color: @c-border-dark;
+    }
+
+    > ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      > li {
+        padding: 4px 12px;
+        font-size: 14px;
+        cursor: pointer;
+
+        &:hover {
+          color: @c-primary;
+
+          @{dark-selector} & {
+            color: @c-primary-dark;
+          }
+        }
+
+        &:not(:last-child) {
+          border-bottom: 1px dashed @c-border;
+
+          @{dark-selector} & {
+            border-bottom-color: @c-border-dark;
+          }
+        }
+      }
+    }
+
+    &-hidden {
+      display: none;
+    }
+  }
+
+  &-tabpane-hidden {
+    display: none;
+  }
+}
