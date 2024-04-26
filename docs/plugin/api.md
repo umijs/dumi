@@ -93,11 +93,43 @@ api.modifyTheme((memo) => {
 
 ### registerTechStack
 
-注册其他技术栈，用于扩展 Vue.js、小程序等技术栈的 demo 编译能力，可参考内置的 [React 技术栈](https://github.com/umijs/dumi/tree/master/src/techStacks/react.ts) 实现。dumi 官方的 Vue.js 编译方案正在研发中，敬请期待。
+注册其他技术栈，用于扩展 Vue.js、小程序等技术栈的 demo 编译能力。如何添加一个完整的技术栈支持，可查看[添加技术栈](../plugin/techstack.md)。
+
+目前提供两种 API 实现技术栈：
+
+1. `defineTechStack` <Badge>推荐</Badge>
+
+```ts
+import { defineTechStack } from 'dumi/tech-stack-utils';
+const CustomTechStack = defineTechStack({
+  name: 'custom',
+  runtimeOpts: {
+    compilePath: '...',
+    rendererPath: '...',
+    pluginPath: '...',
+  },
+  isSupported(node, lang) {
+    return ['vue'].includes(lang);
+  },
+  onBlockLoad(args) {
+    // ...
+  },
+  transformCode(raw, opts) {
+    // ...
+  },
+});
+
+api.registerTechStack(() => CustomTechStack);
+```
+
+2. 直接实现 `IDumiTechStack`抽象类
 
 ```ts
 // CustomTechStack.ts
-import type { ITechStack } from 'dumi';
+import type {
+  IDumiTechStack,
+  IDumiTechStackRuntimeOpts,
+} from 'dumi/tech-stack-utils';
 
 class CustomTechStack implements IDumiTechStack {
   /**
@@ -110,14 +142,45 @@ class CustomTechStack implements IDumiTechStack {
   isSupported(node: hastElement, lang: string) {
     return lang === 'jsx';
   }
+
   /**
-   * 代码转换函数，返回值必须是 React 组件代码字符串
+   * 默认情况下， dumi 只支持js/jsx/ts/tsx模块的依赖分析，
+   * 所以对于无法识别的文件类型需要通过此方法将文件转换为js模块
+   */
+  onBlockLoad?(
+    args: IDumiTechStackOnBlockLoadArgs,
+  ): IDumiTechStackOnBlockLoadResult {
+    // do something
+  }
+
+  /**
+   * 代码转换函数
    * @note  https://github.com/umijs/dumi/tree/master/src/types.ts#L57
    */
   transformCode(raw: string, opts) {
     // do something
     return 'function Demo() { return ... }';
   }
+
+  /**
+   * 运行时选项
+   */
+  runtimeOpts: IDumiTechStackRuntimeOpts = {
+    /**
+     * IDemoCancelableFn函数所在的模块路径
+     * 操作（挂载/卸载）第三方框架组件
+     */
+    rendererPath: '',
+    /**
+     * 运行时编译功能模块的路径
+     */
+    compilePath: '',
+    /**
+     * 该技术堆栈的运行时插件的路径
+     */
+    pluginPath: '',
+  };
+
   /**
    * 生成 demo 资产元数据（可选，通常仅在 dumi 无法分析出元数据时使用，例如非 JS 模块）
    * @note  https://github.com/umijs/dumi/tree/master/src/types.ts#L64

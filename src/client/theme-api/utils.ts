@@ -1,6 +1,8 @@
 import { PluginManager, useAppData, useIntl, useSiteData } from 'dumi';
 import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import type {
+  AgnosticComponentModule,
+  IDemoData,
   ILocale,
   INav,
   INavItem,
@@ -145,4 +147,12 @@ export const pickRouteSortMeta = (
 
 export function getLocaleNav(nav: IUserNavValue | INav, locale: ILocale) {
   return Array.isArray(nav) ? nav : nav[locale.id];
+}
+
+export async function getAgnosticComponentModule(
+  component: IDemoData['component'],
+): Promise<AgnosticComponentModule> {
+  const mod: AgnosticComponentModule =
+    component instanceof Promise ? await component : component;
+  return mod.default ?? mod;
 }

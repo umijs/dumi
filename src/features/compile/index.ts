@@ -7,6 +7,8 @@ import path from 'path';
 import { addAtomMeta, addExampleAssets } from '../assets';
 
 export default (api: IApi) => {
+  const techStacks: IDumiTechStack[] = [];
+
   api.describe({ key: 'dumi:compile' });
 
   // register react tech stack by default
@@ -38,13 +40,36 @@ export default (api: IApi) => {
     },
   });
 
+  api.onGenerateFiles({
+    // make sure called before `addRuntimePlugin` key
+    // why not use `before: 'tmpFiles'`?
+    // because @umijs/preset-umi/.../tmpFiles has two `onGenerateFiles` key
+    // and `before` only insert before the last one
+    stage: -Infinity,
+    async fn() {
+      techStacks.push(
+        ...(await api.applyPlugins({
+          key: 'registerTechStack',
+          type: api.ApplyPluginsType.add,
+        })),
+      );
+    },
+  });
+
+  // auto register runtime plugin for each tech stack
+  api.addRuntimePlugin(() =>
+    techStacks.reduce<string[]>((acc, techStack) => {
+      if (techStack.runtimeOpts?.pluginPath) {
+        acc.push(techStack.runtimeOpts.pluginPath);
+      }
+
+      return acc;
+    }, []),
+  );
+
   // configure loader to compile markdown
   api.chainWebpack(async (memo) => {
     const babelInUmi = memo.module.rule('src').use('babel-loader').entries();
-    const techStacks: IDumiTechStack[] = await api.applyPlugins({
-      key: 'registerTechStack',
-      type: api.ApplyPluginsType.add,
-    });
     const loaderPath = require.resolve('../../loaders/markdown');
     const loaderBaseOpts: Partial<IMdLoaderOptions> = {
       techStacks,
@@ -58,24 +83,55 @@ export default (api: IApi) => {
       pkg: api.pkg,
     };
 
-    memo.module
+    const mdRule = memo.module
       .rule('dumi-md')
       .type('javascript/auto')
-      .test(/\.md$/)
-      // get meta for each markdown file
-      .oneOf('md-meta')
-      .resourceQuery(/meta$/)
+      .test(/\.md$/);
+
+    // generate independent oneOf rules
+    ['frontmatter', 'text', 'demo-index'].forEach((type) => {
+      mdRule
+        .oneOf(`md-${type}`)
+        .resourceQuery(new RegExp(`${type}$`))
+        .use(`md-${type}-loader`)
+        .loader(loaderPath)
+        .options({
+          ...loaderBaseOpts,
+          mode: type,
+        });
+    });
+
+    // get demo metadata for each markdown file
+    mdRule
+      .oneOf('md-demo')
+      .resourceQuery(/demo$/)
       .use('babel-loader')
       .loader(babelInUmi.loader)
       .options(babelInUmi.options)
       .end()
-      .use('md-meta-loader')
+      .use('md-demo-loader')
+      .loader(loaderPath)
+      .options({
+        ...loaderBaseOpts,
+        mode: 'demo',
+      })
+      .end()
+      .end();
+
+    // get page component for each markdown file
+    mdRule
+      .oneOf('md')
+      .use('babel-loader')
+      .loader(babelInUmi.loader)
+      .options(babelInUmi.options)
+      .end()
+      .use('md-loader')
       .loader(loaderPath)
       .options(
         (api.isPluginEnable('assets') || api.isPluginEnable('exportStatic')
           ? {
               ...loaderBaseOpts,
-              mode: 'meta',
+              builtins: api.service.themeData.builtins,
               onResolveDemos(demos) {
                 const assets = demos.reduce<
                   Parameters<typeof addExampleAssets>[0]
@@ -90,30 +146,16 @@ export default (api: IApi) => {
             }
           : {
               ...loaderBaseOpts,
-              mode: 'meta',
+              builtins: api.service.themeData.builtins,
             }) as IMdLoaderOptions,
-      )
-      .end()
-      .end()
-      // get page component for each markdown file
-      .oneOf('md')
-      .use('babel-loader')
-      .loader(babelInUmi.loader)
-      .options(babelInUmi.options)
-      .end()
-      .use('md-loader')
-      .loader(loaderPath)
-      .options({
-        ...loaderBaseOpts,
-        builtins: api.service.themeData.builtins,
-      } as IMdLoaderOptions);
+      );
 
     // get meta for each page component
     memo.module
       .rule('dumi-page')
       .type('javascript/auto')
       .test(/\.(j|t)sx?$/)
-      .resourceQuery(/meta$/)
+      .resourceQuery(/frontmatter$/)
       .use('page-meta-loader')
       .loader(require.resolve('../../loaders/page'));
 
@@ -149,7 +191,6 @@ export default (api: IApi) => {
         },
       ]);
     }
-
     return memo;
   });
 };

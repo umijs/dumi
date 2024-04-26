@@ -28,4 +28,15 @@ export const VERSION_2_LEVEL_NAV = '^2.2.0';
 
 export const VERSION_2_DEPRECATE_SOFT_BREAKS = '^2.2.0';
 
+export const DEFAULT_DEMO_MODULE_EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx'];
+
+export const DEFAULT_DEMO_PLAIN_TEXT_EXTENSIONS = [
+  '.css',
+  '.less',
+  '.sass',
+  '.scss',
+  '.styl',
+  '.json',
+];
+
 export const FS_CACHE_DIR = 'node_modules/.cache/dumi';

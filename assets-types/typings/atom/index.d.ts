@@ -1,4 +1,8 @@
-import type { ObjectPropertySchema, PropertySchema } from './props';
+import type {
+  FunctionArgSchema,
+  ObjectPropertySchema,
+  PropertySchema,
+} from './props';
 
 /**
  * base atom asset
@@ -41,6 +45,20 @@ export interface AtomComponentAsset extends AtomBaseAsset {
    * props definition of component
    */
   propsConfig: ObjectPropertySchema;
+  /**
+   * slots definition of component
+   */
+  slotsConfig?: ObjectPropertySchema;
+  /**
+   * events definition of component
+   */
+  eventsConfig?: ObjectPropertySchema;
+  /**
+   * Whether it is methods and properties exposed by component instances,
+   * or common functional calls, such as Popup.open().
+   * Such imperative methods and properties should be classified under this configuration
+   */
+  imperativeConfig?: ObjectPropertySchema;
 
   /**
    * available parent components of component
@@ -77,10 +95,7 @@ export interface AtomFunctionAsset extends AtomBaseAsset {
     /**
      * arguments of function
      */
-    arguments: {
-      key: string;
-      schema: PropertySchema;
-    }[];
+    arguments: FunctionArgSchema[];
 
     /**
      * return value of function

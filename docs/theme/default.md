@@ -23,6 +23,15 @@ dumi 内置了一套完善的默认主题，默认主题的呈现效果与 dumi 
 
 当配置为 `true` 时 dumi 会根据项目 `package.json` 中的 `repository` 配置及当前分支，使用 [hosted-git-info](https://github.com/npm/hosted-git-info) 自动生成编辑链接，仅支持[部分代码托管平台](https://github.com/npm/hosted-git-info#supported-hosts)；如果你使用的是其他代码托管平台或私有化部署的平台，可以使用字符串模板自定义编辑链接，例如 `https://gitlab.example.com/group/repo/{filename}`，其中 `{filename}` 会被替换为当前文档在仓库中的文件路径。
 
+### sourceLink <Badge>2.3.0+</Badge>
+
+- 类型：`boolean | string`
+- 默认值：`true`
+
+主要用于 API Table 中类型的外链，目的是让没有文档的类型，直接导航到仓库中，方便用户参考。
+
+用法与 `editLink` 类似，不过其自定义字符串模板比 `editLink` 多了一个 `{line}` ：`https://gitlab.example.com/group/repo/{filename}?L={line}`
+
 ### lastUpdated <Badge>2.2.2+</Badge>
 
 - 类型：`boolean`

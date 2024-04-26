@@ -1,0 +1,55 @@
+{
+  "name": "@dumijs/preset-vue",
+  "version": "0.0.1",
+  "description": "Vue support plugins for dumi",
+  "keywords": [
+    "dumi",
+    "plugin",
+    "preset",
+    "vue"
+  ],
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "lib",
+    "dist",
+    "compiled"
+  ],
+  "scripts": {
+    "build": "father build",
+    "build:deps": "father prebundle",
+    "build:lib": "tsup --minify",
+    "dev": "father dev",
+    "prepublishOnly": "father doctor && npm run build",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@dumijs/vue-meta": "workspace:*",
+    "@types/hash-sum": "^1.0.0",
+    "@umijs/bundler-webpack": "^4.0.81",
+    "codesandbox-import-utils": "^2.2.3",
+    "compare-versions": "^6.1.0",
+    "hash-sum": "^2.0.0",
+    "vue": "^3.3.4",
+    "vue-loader": "^17.0.1"
+  },
+  "devDependencies": {
+    "@types/babel__core": "^7.20.5",
+    "@types/babel__standalone": "^7.1.7",
+    "@vue/babel-plugin-jsx": "^1.1.6",
+    "dumi": "workspace:*",
+    "father": "^4.1.9",
+    "tsup": "^8.0.1"
+  },
+  "peerDependencies": {
+    "dumi": "^2.0.0",
+    "vue": "^3.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "authors": [
+    "jeffwcx <jeffwcx@icloud.com>"
+  ]
+}

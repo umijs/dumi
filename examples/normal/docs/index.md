@@ -30,7 +30,7 @@ features:
 代码块 demo
 
 ```jsx
-import react from 'react';
+import React from 'react';
 
 export default () => <>Hello first code block demo!</>;
 ```

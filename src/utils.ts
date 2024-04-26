@@ -56,18 +56,19 @@ Error: ${err}`);
 };
 
 /**
- * parse frontmatter from code string
+ * parse frontmatter from code string,
+ * also supports html/xml comments
  */
 export function parseCodeFrontmatter(raw: string) {
   const [, comment = '', code = ''] = raw
     // clear head break lines
     .replace(/^\n\s*/, '')
     // split head comments & remaining code
-    .match(/^(\/\*\*[^]*?\n\s*\*\/)?(?:\s|\n)*([^]+)?$/)!;
+    .match(/^(\/\*\*[^]*?\n\s*\*\/|<!--[^]*?\n\s*-->)?(?:\s|\n)*([^]+)?$/)!;
 
   const yamlComment = comment
     // clear / from head & foot for comment
-    .replace(/^\/|\/$/g, '')
+    .replace(/^(\/|<!--)|(\/|-->)$/g, '')
     // remove * from comments
     .replace(/(^|\n)\s*\*+/g, '$1');
   let frontmatter: Record<string, any> | null = null;
@@ -160,6 +161,59 @@ export function getProjectRoot(cwd: string) {
   }
 
   return winPath(cwd);
+}
+
+function lastSlash(str: string) {
+  return str[str.length - 1] === '/' ? str : `${str}/`;
+}
+
+/**
+ *
+ * transform component into webpack chunkName
+ * @export
+ * @param {string} component component path
+ * @param {string} [cwdPath] current root path
+ * @return {*}  {string}
+ */
+export function componentToChunkName(
+  component: string,
+  cwdPath: string = '/',
+): string {
+  const cwd = winPath(cwdPath);
+
+  return typeof component === 'string'
+    ? component
+        .replace(
+          new RegExp(
+            `^(${
+              // match app cwd first
+              lodash.escapeRegExp(lastSlash(cwd))
+            })`,
+          ),
+          '',
+        )
+        .replace(/^.(\/|\\)/, '')
+        .replace(/(\/|\\)/g, '__')
+        .replace(/^src__/, '')
+        .replace(/\.\.__/g, '')
+        .replace(/^pages__/, 'p__')
+    : '';
+}
+
+export function generateMetaChunkName(
+  path: string,
+  cwd: string,
+  locales: string[] = [],
+): string {
+  const chunkName = componentToChunkName(path, cwd);
+
+  const dir = chunkName.replace(/^(.*?)_.*/, '$1');
+
+  const localeRegExp = new RegExp(`.*(${locales.join('|')}).*`);
+  const ifLocale = locales.length && localeRegExp.test(chunkName);
+  const locale = ifLocale ? `__${chunkName.replace(localeRegExp, '$1')}` : '';
+
+  return `meta__${dir}${locale}`;
 }
 
 /**

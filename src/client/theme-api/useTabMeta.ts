@@ -17,7 +17,7 @@ export const useTabQueryState = (): [string | null, (val?: string) => void] => {
         search: `?${params.toString()}`,
       });
     },
-    [params],
+    [params, pathname],
   );
 
   return [params.get(TAB_QUERY_KEY), setTabQueryState];

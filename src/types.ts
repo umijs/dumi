@@ -1,14 +1,18 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import type AtomAssetsParser from '@/assetParsers/atom';
+import type { BaseAtomAssetsParser as IAtomAssetsParser } from '@/assetParsers/BaseParser';
 import type { IParsedBlockAsset } from '@/assetParsers/block';
 import type { IDumiDemoProps } from '@/client/theme-api/DumiDemo';
 import type { ILocalesConfig, IThemeConfig } from '@/client/theme-api/types';
 import type { IContentTab } from '@/features/tabs';
 import type { IThemeLoadResult } from '@/features/theme/loader';
+import {
+  OnLoadArgs,
+  OnLoadResult,
+} from '@umijs/bundler-utils/compiled/esbuild';
 import type { IModify } from '@umijs/core';
 import type { AssetsPackage, ExampleBlockAsset } from 'dumi-assets-types';
 import type { Element } from 'hast';
-import type { defineConfig as defineUmiConfig, IApi as IUmiApi } from 'umi';
+import type { IApi as IUmiApi, defineConfig as defineUmiConfig } from 'umi';
 
 // ref: https://grrr.tech/posts/2021/typescript-partial/
 type Subset<K> = {
@@ -63,22 +67,60 @@ export type IDumiUserConfig = Subset<Omit<IDumiConfig, 'locales'>> & {
   [key: string]: any;
 };
 
+export interface IDumiTechStackOnBlockLoadResult {
+  content: string;
+  type: Required<OnLoadResult>['loader'];
+}
+
+export type IDumiTechStackOnBlockLoadArgs = OnLoadArgs & {
+  entryPointCode: string;
+  filename: string;
+};
+
+export interface IDumiTechStackRuntimeOpts {
+  /**
+   * Component detection function path,
+   * used to detect errors that occur from application creation to component mounting.
+   */
+  preflightPath?: string;
+  /**
+   * path of the cancelable{@link IDemoCancelableFn} function
+   * that manipulate(mount/unmount) third-party framework component
+   */
+  rendererPath?: string;
+  /**
+   * path to runtime compile function module
+   */
+  compilePath?: string;
+  /**
+   * path to runtime plugin for this tech stack
+   */
+  pluginPath?: string;
+}
+
 export abstract class IDumiTechStack {
   /**
    * tech stack name, such as 'react'
    */
   abstract name: string;
   /**
-   * transform code
+   * runtime options
+   */
+  abstract runtimeOpts?: IDumiTechStackRuntimeOpts;
+  /**
+   * Is the lang supported by the current tech stack?
+   * @param lang
+   * @param node hast Element https://github.com/syntax-tree/hast?tab=readme-ov-file#element
    */
   abstract isSupported(node: Element, lang: string): boolean;
   /**
-   * transform for parse demo source to react component
+   * transform for parse demo source to expression/function/class
    */
   abstract transformCode(
     raw: string,
     opts: { type: 'external' | 'code-block'; fileAbsPath: string },
   ): string;
+
   /**
    * generator for return asset metadata
    */
@@ -101,12 +143,24 @@ export abstract class IDumiTechStack {
     | Promise<IDumiDemoProps['previewerProps']>
     | IDumiDemoProps['previewerProps'];
   /**
-   * generator for return file path of demo sources
+   * generator for return file path of demo source
    */
   abstract generateSources?(
-    sources: IParsedBlockAsset['sources'],
+    source: IParsedBlockAsset['resolveMap'],
     opts: Parameters<NonNullable<IDumiTechStack['generateMetadata']>>[1],
-  ): Promise<IParsedBlockAsset['sources']> | IParsedBlockAsset['sources'];
+  ): Promise<IParsedBlockAsset['resolveMap']> | IParsedBlockAsset['resolveMap'];
+
+  /**
+   * Use current function as onLoad CallBack(https://esbuild.github.io/plugins/#on-load)
+   * @description
+   * Why use this method?
+   * By default, dumi can only support the parsing of js/ts related code blocks,
+   * but many front-end frameworks have custom extensions,
+   * so this method is provided to facilitate developers to convert codes.
+   */
+  abstract onBlockLoad?(
+    args: IDumiTechStackOnBlockLoadArgs,
+  ): IDumiTechStackOnBlockLoadResult | null;
 }
 
 export type IApi = IUmiApi & {
@@ -114,7 +168,7 @@ export type IApi = IUmiApi & {
   userConfig: IDumiUserConfig;
   service: IUmiApi['service'] & {
     themeData: IThemeLoadResult;
-    atomParser: AtomAssetsParser;
+    atomParser: IAtomAssetsParser;
   };
   /**
    * register a new tech stack
