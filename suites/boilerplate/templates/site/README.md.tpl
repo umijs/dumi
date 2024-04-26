@@ -13,6 +13,9 @@ $ {{ npmClient }} start
 
 # build docs
 $ {{ npmClient }} run build
+
+# Locally preview the production build
+$ {{ npmClient }} run preview
 ```
 
 ## LICENSE

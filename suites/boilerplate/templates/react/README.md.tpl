@@ -31,6 +31,9 @@ $ {{ npmClient }} run build:watch
 # build docs
 $ {{ npmClient }} run docs:build
 
+# Locally preview the production build.
+$ {{ npmClient }} run docs:preview
+
 # check your project for potential problems
 $ {{ npmClient }} run doctor
 ```

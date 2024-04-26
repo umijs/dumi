@@ -20,7 +20,7 @@ const ContentFooter: FC = () => {
   const { frontmatter } = useRouteMeta();
   const intl = useIntl();
   const [prev, setPrev] = useState<
-    typeof sidebar[0]['children'][0] | undefined
+    (typeof sidebar)[0]['children'][0] | undefined
   >(undefined);
   const [next, setNext] = useState<typeof prev>(undefined);
   const [isoLastUpdated, setIsoLastUpdated] = useState('');
@@ -31,7 +31,7 @@ const ContentFooter: FC = () => {
   // calculate the previous and next page
   useLayoutEffect(() => {
     if (sidebar) {
-      const items = sidebar.reduce<typeof sidebar[0]['children']>(
+      const items = sidebar.reduce<(typeof sidebar)[0]['children']>(
         (ret, group) => ret.concat(group.children),
         [],
       );
@@ -61,7 +61,9 @@ const ContentFooter: FC = () => {
         {showLastUpdated && (
           <dd>
             <IconClock />
-            <FormattedMessage id="content.footer.last.updated" />
+            <span className="dumi-default-mobile-hidden">
+              <FormattedMessage id="content.footer.last.updated" />
+            </span>
             <time dateTime={isoLastUpdated}>{lastUpdated}</time>
           </dd>
         )}
