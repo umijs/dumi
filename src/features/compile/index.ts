@@ -74,7 +74,7 @@ export default (api: IApi) => {
 
     // support require mjs packages(eg. element-plus/es)
     memo.resolve.merge({
-      conditionNames: ['...', 'import'],
+      conditionNames: ['require', 'node', 'import'],
     });
 
     const loaderBaseOpts: Partial<IMdLoaderOptions> = {
