@@ -1,3 +1,4 @@
+import { SHOULD_SKIP_LIVEDEMO_ERROR } from '@/constants';
 import { useDemo } from 'dumi';
 import throttle from 'lodash.throttle';
 import {
@@ -174,13 +175,9 @@ export const useLiveDemo = (
             try {
               (await renderToStaticMarkupDeferred)(newDemoNode);
             } catch (err: any) {
-              const shouldSkipError =
-                err.message.includes(
-                  'Unable to find node on an unmounted component',
-                ) ||
-                err.message.includes(
-                  'Portals are not currently supported by the server renderer',
-                );
+              const shouldSkipError = SHOULD_SKIP_LIVEDEMO_ERROR.some((e) =>
+                err.message.includes(e),
+              );
               if (!shouldSkipError) throw err;
             }
             console.error = oError;

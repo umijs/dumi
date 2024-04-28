@@ -40,3 +40,10 @@ export const DEFAULT_DEMO_PLAIN_TEXT_EXTENSIONS = [
 ];
 
 export const FS_CACHE_DIR = 'node_modules/.cache/dumi';
+
+export const SHOULD_SKIP_LIVEDEMO_ERROR = [
+  'Unable to find node on an unmounted component',
+  '#188',
+  'Portals are not currently supported by the server renderer',
+  '#257',
+];

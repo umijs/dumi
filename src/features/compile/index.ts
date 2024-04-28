@@ -73,7 +73,7 @@ export default (api: IApi) => {
     const loaderPath = require.resolve('../../loaders/markdown');
 
     // support require mjs packages(eg. element-plus/es)
-    memo.resolve.merge({
+    memo.resolve.byDependency.set('commonjs', {
       conditionNames: ['require', 'node', 'import'],
     });
 
