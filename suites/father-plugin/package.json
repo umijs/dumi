@@ -15,8 +15,7 @@
   ],
   "scripts": {
     "build": "father build",
-    "dev": "father dev",
-    "prepublishOnly": "father doctor && npm run build"
+    "dev": "father dev"
   },
   "devDependencies": {
     "father": "^4.1.0"
