@@ -18,7 +18,6 @@
     "build": "father build",
     "build:deps": "father prebundle",
     "dev": "father dev",
-    "prepublishOnly": "father doctor && npm run build",
     "test": "vitest"
   },
   "dependencies": {

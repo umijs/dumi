@@ -21,7 +21,6 @@
     "build:deps": "father prebundle",
     "build:lib": "tsup --minify",
     "dev": "father dev",
-    "prepublishOnly": "father doctor && npm run build",
     "test": "vitest"
   },
   "dependencies": {
