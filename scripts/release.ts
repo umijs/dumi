@@ -145,7 +145,7 @@ const all = [
   await Promise.all(
     pkgs.map(async (pkg) => {
       await $`cd ${pkg} && pnpm publish --no-git-checks --tag ${tag} ${otpArg}`;
-      logger.info(`+ ${pkg}`);
+      logger.info(`+ ${pkg}@${vers[pkg]}`);
     }),
   );
 
