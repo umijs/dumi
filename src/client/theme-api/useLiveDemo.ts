@@ -97,7 +97,10 @@ export const useLiveDemo = (
           const entryFileName = Object.keys(asset.dependencies).find(
             (k) => asset.dependencies[k].type === 'FILE',
           )!;
-          const require = (v: string) => {
+          // why not require?
+          // https://github.com/airbnb/babel-plugin-dynamic-import-node/blob/a68388870de822183218515a1adbb3e8d7fa9486/src/utils.js#L24
+          // if just use require, local variable will overwrite __webpack__require__ in the template method
+          const liveRequire = (v: string) => {
             if (v in context!) return context![v];
             throw new Error(`Cannot find module: ${v}`);
           };
@@ -119,14 +122,14 @@ export const useLiveDemo = (
 
           if (renderOpts?.renderer && renderOpts?.compile) {
             try {
-              const exports: AgnosticComponentType = {};
-              const module = { exports };
+              const liveExports: AgnosticComponentType = {};
+              const liveModule = { exports: liveExports };
               evalCommonJS(entryFileCode, {
-                exports,
-                module,
-                require,
+                exports: liveExports,
+                module: liveModule,
+                require: liveRequire,
               });
-              const component = await getAgnosticComponentModule(exports);
+              const component = await getAgnosticComponentModule(liveExports);
               if (renderOpts.preflight) {
                 await renderOpts.preflight(component);
               }
@@ -149,20 +152,19 @@ export const useLiveDemo = (
             // skip current task if another task is running
             if (token !== taskToken.current) return;
 
-            const exports: { default?: ComponentType } = {};
-            const module = { exports };
-
+            const liveExports: { default?: ComponentType } = {};
+            const liveModule = { exports: liveExports };
             // initial component with fake runtime
             evalCommonJS(entryFileCode, {
-              exports,
-              module,
-              require,
+              exports: liveExports,
+              module: liveModule,
+              require: liveRequire,
             });
 
             const newDemoNode = createElement(
               DemoErrorBoundary,
               null,
-              createElement(exports.default!),
+              createElement(liveExports.default!),
             );
             const oError = console.error;
 
