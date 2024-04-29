@@ -23,6 +23,8 @@ const Toc: FC = () => {
   const { loading } = useSiteData();
   const prevIndexRef = useRef(0);
   const [sectionRefs, setSectionRefs] = useState<RefObject<HTMLElement>[]>([]);
+  const [headerHeight, setHeaderHeight] = useState(0);
+
   const memoToc = React.useMemo(() => {
     let toc = meta.toc;
     if (tabMeta) {
@@ -44,8 +46,17 @@ const Toc: FC = () => {
     }
   }, [pathname, search, loading, memoToc]);
 
+  useEffect(() => {
+    if (sectionRefs.length > 0) {
+      // find the header height, and set it to scrollspy offset
+      // because the header is sticky, so we need to set the offset to avoid the active item is hidden by the header
+      const header = document.querySelector('.dumi-default-header');
+      setHeaderHeight(header ? header.clientHeight : 0);
+    }
+  }, [sectionRefs]);
+
   return sectionRefs.length ? (
-    <ScrollSpy sectionRefs={sectionRefs}>
+    <ScrollSpy sectionRefs={sectionRefs} offset={-headerHeight}>
       {({ currentElementIndexInViewport }) => {
         // for keep prev item active when no item in viewport
         if (currentElementIndexInViewport > -1)
