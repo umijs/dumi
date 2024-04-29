@@ -79,8 +79,8 @@ async function parseBlockAsset(opts: {
                   type: 'NPM',
                   value: pkg.version,
                 };
-
-                result.resolveMap[args.path] = args.path;
+                if (opts.techStack.runtimeOpts)
+                  result.resolveMap[args.path] = args.path;
               }
 
               // make all deps external
