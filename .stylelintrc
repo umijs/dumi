@@ -1,5 +1,6 @@
 {
   "extends": "@umijs/lint/dist/config/stylelint",
+  "ignoreFiles": ["**/compiled/**"],
   "rules": {
     "function-no-unknown": null,
     "color-function-notation": "legacy"
