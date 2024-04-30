@@ -4,8 +4,8 @@ import ReactTechStack from '@/techStacks/react';
 import type { IApi, IDumiTechStack } from '@/types';
 import { _setFSCacheDir } from '@/utils';
 import path from 'path';
-import { compile } from '../../workerPool';
 import { addAtomMeta, addExampleAssets } from '../assets';
+import { getLoadHook } from './okamHooks';
 export const techStacks: IDumiTechStack[] = [];
 export default (api: IApi) => {
   api.describe({ key: 'dumi:compile' });
@@ -68,7 +68,6 @@ export default (api: IApi) => {
   // mako不走 ssr要走 正常要走
 
   // configure loader to compile markdown
-  // if (!process.env.OKAM) {
   api.modifyConfig((memo) => {
     memo.mfsu = false;
     return memo;
@@ -199,139 +198,13 @@ export default (api: IApi) => {
     }
     return memo;
   });
-  // } else {
 
-  api.modifyConfig((memo) => {
-    memo.okamHooks = {
-      // load: async (filePath: string) => {
-      //   const requestUrl = url.parse(filePath);
-      //   const query = querystring.parse(requestUrl.query!);
-      //   if (/\..+$/.test(filePath)) {
-      //     if (requestUrl.query?.includes('techStack')) {
-      //       const result = await runLoaders({
-      //         resource: filePath,
-      //         loaders: [
-      //           {
-      //             loader: require.resolve('../../loaders/demo'),
-      //             options: { techStacks, cwd: api.cwd },
-      //           },
-      //         ],
-      //       });
-      //       return { content: result.result![0], type: 'js' };
-      //     }
-      //   }
-      //   if (/\.(j|t)sx?\?type=frontmatter$/.test(filePath)) {
-      //     const result = await runLoaders({
-      //       resource: filePath,
-      //       loaders: [
-      //         {
-      //           loader: require.resolve('../../loaders/page'),
-      //           options: {},
-      //         },
-      //       ],
-      //     });
-      //     return { content: result.result![0], type: 'js' };
-      //   }
-
-      //   if (requestUrl.pathname?.endsWith('.md')) {
-      //     let options;
-      //     const loaderBaseOpts: Partial<IMdLoaderOptions> = {
-      //       techStacks,
-      //       cwd: api.cwd,
-      //       alias: api.config.alias,
-      //       resolve: api.config.resolve,
-      //       extraRemarkPlugins: api.config.extraRemarkPlugins,
-      //       extraRehypePlugins: api.config.extraRehypePlugins,
-      //       routes: api.appData.routes,
-      //       locales: api.config.locales || [],
-      //       pkg: api.pkg,
-      //     };
-      //     const builtins = api.service.themeData.builtins;
-
-      //     if (query.type === 'demo-index') {
-      //       options = {
-      //         ...loaderBaseOpts,
-      //         mode: 'demo-index',
-      //       };
-      //     } else if (query.type === 'frontmatter') {
-      //       options = {
-      //         ...loaderBaseOpts,
-      //         mode: 'frontmatter',
-      //       };
-      //     } else if (query.type === 'text') {
-      //       options = {
-      //         ...loaderBaseOpts,
-      //         mode: 'text',
-      //       };
-      //     } else if (query.type === 'demo') {
-      //       options = {
-      //         ...loaderBaseOpts,
-      //         mode: 'demo',
-      //       };
-      //     } else {
-      //       options = {
-      //         ...loaderBaseOpts,
-      //         builtins,
-      //       };
-      //     }
-      //     const result = await runLoaders({
-      //       resource: filePath,
-      //       loaders: [
-      //         {
-      //           loader: mdLoaderPath,
-      //           options,
-      //         },
-      //       ],
-      //       context: {},
-      //       readResource: fs.readFile.bind(fs),
-      //     });
-
-      //     // if (!options.mode) {
-      //     //   console.log('md-----', JSON.parse(JSON.stringify(result.result![0])))
-      //     // }
-      //     return {
-      //       content: result.result![0],
-      //       type: 'js',
-      //     };
-      //   }
-      //   if (requestUrl.query?.includes('dumi-raw')) {
-      //     const result = await runLoaders({
-      //       resource: filePath,
-      //       loaders: [
-      //         {
-      //           loader: require.resolve('raw-loader'),
-      //           options: {},
-      //         },
-      //         {
-      //           loader: require.resolve('../../loaders/pre-raw'),
-      //           options: {},
-      //         },
-      //       ],
-      //     });
-      //     return {
-      //       content: result.result![0],
-      //       type: 'js',
-      //     };
-      //   }
-      // }
-      load: async (filePath: string) => {
-        const loaderBaseOpts: Partial<IMdLoaderOptions> = {
-          techStacks,
-          cwd: api.cwd,
-          alias: api.config.alias,
-          resolve: api.config.resolve,
-          extraRemarkPlugins: api.config.extraRemarkPlugins,
-          extraRehypePlugins: api.config.extraRehypePlugins,
-          routes: api.appData.routes,
-          locales: api.config.locales || [],
-          pkg: api.pkg,
-          builtins: api.service.themeData.builtins,
-        };
-        const result = await compile(filePath, loaderBaseOpts);
-        return result;
-      },
-    };
-    return memo;
-  });
-  // }
+  if (process.env.OKAM && api.userConfig.mako) {
+    api.modifyConfig((memo) => {
+      memo.okamHooks = {
+        load: getLoadHook(api),
+      };
+      return memo;
+    });
+  }
 };

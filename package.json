@@ -104,7 +104,6 @@
     "hast-util-raw": "^8.0.0",
     "hast-util-to-estree": "^2.3.3",
     "hast-util-to-string": "^2.0.0",
-    "heti": "^0.9.4",
     "hosted-git-info": "^6.1.1",
     "html-to-text": "^9.0.5",
     "html2sketch": "^1.0.2",

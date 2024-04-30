@@ -12,7 +12,7 @@ export { getContext, runLoaders };
 
 const promisifyRunLoaders = promisify(callbackRunLoaders);
 
-type RunLoaderOption = Partial<InternalRunLoaderOption>;
+export type RunLoaderOption = Partial<InternalRunLoaderOption>;
 
 function runLoaders(options: RunLoaderOption): Promise<RunLoaderResult>;
 function runLoaders(

@@ -1,6 +1,6 @@
 import { useRouteMeta, useSidebarData, useSiteData } from 'dumi';
 import React, { type FC, type ReactNode } from 'react';
-// import './heti.scss';
+import '../../../../../compiled/heti/heti.css';
 import './index.less';
 
 const Content: FC<{ children: ReactNode }> = (props) => {
