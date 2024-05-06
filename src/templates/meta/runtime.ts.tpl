@@ -1,4 +1,4 @@
-import { warning } from '{{{rc_util}}}';
+import { warning } from 'rc-util';
 import deepmerge from '{{{deepmerge}}}';
 import { getRouteMetaById } from './exports';
 

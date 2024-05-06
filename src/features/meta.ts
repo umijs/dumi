@@ -91,7 +91,6 @@ export default (api: IApi) => {
       tplPath: require.resolve('../templates/meta/runtime.ts.tpl'),
       context: {
         deepmerge: winPath(path.dirname(require.resolve('deepmerge/package'))),
-        rc_util: winPath(path.dirname(require.resolve('rc-util/package'))),
       },
     });
 

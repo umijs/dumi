@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useOutlet, history } from 'dumi';
-import { warning } from '{{{rc_util}}}';
+import { warning } from 'rc-util';
 import { SiteContext, type ISiteContext } from '{{{contextPath}}}';
 import { components } from '../meta/atoms';
 import { locales } from '../locales/config';
