@@ -412,7 +412,7 @@ export default DumiLoading;
             api.config.themeConfig,
           ),
         ),
-        rc_util: winPath(path.dirname(require.resolve('rc-util'))),
+        rc_util: winPath(path.dirname(require.resolve('rc-util/package'))),
         _2_level_nav_available: api.appData._2LevelNavAvailable,
       },
     });
