@@ -74,7 +74,7 @@ jobs:
 
       - name: clean up `packageManager`
         if: matrix.client == 'yarn'
-        run: jq 'del(.packageManager)' -c package.json > package.json.tmp && mv package.json.tmp package.json
+        run: jq 'del(.packageManager)' -c package.json > package.json.tmp && rm package.json && mv package.json.tmp package.json
 
       - name: Run mock project build
         run: node ./scripts/ci-mock-project-build.js --type=${{ matrix.type }} --client=${{ matrix.client }}

@@ -1,7 +1,33 @@
 const path = require('path');
-
+const assert = require('assert');
 const { execa, prompts, yParser, fsExtra } = require('@umijs/utils');
 
+// ====== util ======
+const getAllFiles = (dirPath, arrayOfFiles = []) => {
+  files = fsExtra.readdirSync(dirPath);
+
+  // eslint-disable-next-line no-param-reassign
+  arrayOfFiles = arrayOfFiles || [];
+
+  files.forEach(function (file) {
+    if (fsExtra.statSync(path.join(dirPath, file)).isDirectory()) {
+      // eslint-disable-next-line no-param-reassign
+      arrayOfFiles = getAllFiles(path.join(dirPath, file), arrayOfFiles);
+    } else {
+      arrayOfFiles.push(path.join(dirPath, file));
+    }
+  });
+
+  return arrayOfFiles;
+};
+
+const getTotalSize = (directoryPath) =>
+  getAllFiles(directoryPath).reduce(
+    (acc, file) => acc + fsExtra.statSync(file).size,
+    0,
+  );
+
+// \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 const createDumi = require.resolve(
   path.join(__dirname, '../suites/boilerplate/dist/index.js'),
 );
@@ -66,7 +92,25 @@ function main() {
         cwd: tmpDir,
         stdio: 'inherit',
       });
+
+      // Expect the build output (dist) exists and not empty (10 kb at least)
+      let output = 'dist';
+      if (finalType === 'theme') output = 'dist';
+      else if (finalType === 'react') output = 'docs-dist';
+      else if (finalType === 'site') output = 'dist';
+
+      const distDir = path.join(tmpDir, output);
+      assert(
+        fsExtra.existsSync(distDir),
+        `expect dist directory ${distDir} exists`,
+      );
+      assert(
+        getTotalSize(distDir) > 10 * 1024,
+        `expect dist directory ${distDir} not empty`,
+      );
     });
 }
 
+// \\\\\\\\\\
 main();
+// \\\\\\\\\\
