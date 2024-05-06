@@ -169,8 +169,9 @@ async function parseBlockAsset(opts: {
 
                   // support locale prefix for title & description
                   ['description', 'title'].forEach((key) => {
-                    frontmatter[key] ||=
-                      frontmatter[`${key}.${opts.fileLocale}`];
+                    frontmatter[key] =
+                      frontmatter[`${key}.${opts.fileLocale}`] ||
+                      frontmatter[key];
                   });
 
                   result.frontmatter = frontmatter;
