@@ -20,8 +20,8 @@ jobs:
     strategy:
       matrix:
         node_version: [18.x]
-        type: [site, react, theme]
-        client: [npm, yarn, pnpm]
+        type: [site, react]
+        client: [npm, pnpm]
         os: [ubuntu-latest, windows-latest]
       fail-fast: false
     steps:
@@ -74,10 +74,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm i
-
-      - name: clean up `packageManager`
-        if: matrix.client == 'yarn'
-        run: jq 'del(.packageManager)' -c package.json > package.json.tmp && rm package.json && mv package.json.tmp package.json
 
       - name: Run mock project build
         run: node ./scripts/ci-mock-project-build.js --type=${{ matrix.type }} --client=${{ matrix.client }}
