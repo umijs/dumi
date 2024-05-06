@@ -199,7 +199,7 @@ export default (api: IApi) => {
     return memo;
   });
 
-  if (process.env.OKAM && api.userConfig.mako) {
+  if (process.env.OKAM) {
     api.modifyConfig((memo) => {
       memo.okamHooks = {
         load: getLoadHook(api),

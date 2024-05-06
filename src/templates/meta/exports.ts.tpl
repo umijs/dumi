@@ -194,7 +194,6 @@ export async function getFullRoutesMeta(): Promise<Record<string, IRouteMeta>> {
       {},
     ),
   );
-  console.log('a123', a)
   return a
 }
 module.hot.accept()
