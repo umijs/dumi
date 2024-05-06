@@ -1,4 +1,5 @@
 const path = require('path');
+const os = require('os');
 const assert = require('assert');
 const { execa, prompts, yParser, fsExtra } = require('@umijs/utils');
 
@@ -46,8 +47,10 @@ function main() {
 
   const projectName = `dumi-${finalType}`;
   const tmpDir = path.join(
-    process.cwd(),
-    `.tmp/mock-${projectName}/${finalClient}`,
+    os.tmpdir(),
+    'create-dumi',
+    `mock-${projectName}`,
+    finalClient,
   );
   fsExtra.emptyDirSync(tmpDir);
 
@@ -104,10 +107,14 @@ function main() {
         fsExtra.existsSync(distDir),
         `expect dist directory ${distDir} exists`,
       );
+      console.log(`✅ [${finalType}] build successfully`);
+
+      const distDirSize = getTotalSize(distDir);
       assert(
-        getTotalSize(distDir) > 10 * 1024,
+        distDirSize > 10 * 1024,
         `expect dist directory ${distDir} not empty`,
       );
+      console.log(`📦 [${finalType}] dist size: ${distDirSize} bytes`);
     });
 }
 
