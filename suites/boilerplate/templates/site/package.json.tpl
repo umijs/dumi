@@ -6,7 +6,7 @@
     "start": "npm run dev",
     "dev": "dumi dev",
     "build": "dumi build",
-    "preview": "dumi preview",
+    "preview: "dumi preview",
     "prepare": "husky install && dumi setup"
   },
   "authors": [{{#author}}
