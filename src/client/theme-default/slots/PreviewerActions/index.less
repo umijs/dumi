@@ -66,9 +66,26 @@
     }
   }
 
+  &-sources {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  &-tabs {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100%;
+  }
+
   // hide tabs when only one tab pane
   &-tabs-single .@{prefix}-tabs-nav {
     display: none;
+  }
+
+  &-tabs-content-holder {
+    flex: 1;
+    overflow: auto;
   }
 
   &-editor-tip-btn {
