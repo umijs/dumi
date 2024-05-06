@@ -1,20 +1,21 @@
 import Tabs, { ITabsProps } from '@/client/theme-default/slots/Tabs';
 import SourceCode, { ISourceCodeProps } from 'dumi/theme/builtins/SourceCode';
-import toArray from 'rc-util/lib/Children/toArray';
-import React from 'react';
+import React, { Children } from 'react';
 
 type Unpacked<T> = T extends (infer U)[] ? U : T;
 type Item = Unpacked<Required<ITabsProps>['items']>;
 
+const isSourceCodeElement = (
+  child: React.ReactNode,
+): child is React.ReactElement<ISourceCodeProps> =>
+  typeof child === 'object' &&
+  child !== null &&
+  (child as React.ReactElement).type === SourceCode;
+
 function CodeGroup(props: React.PropsWithChildren) {
   const { children } = props;
 
-  const usefulChildren = toArray(children).filter(
-    (child) =>
-      typeof child === 'object' &&
-      typeof child.type === 'function' &&
-      child.type?.name === SourceCode.name,
-  ) as React.ReactElement<ISourceCodeProps>[];
+  const usefulChildren = Children.toArray(children).filter(isSourceCodeElement);
 
   const items = usefulChildren.map<Item>((child, idx) => {
     const { lang, title } = child.props ?? {};
