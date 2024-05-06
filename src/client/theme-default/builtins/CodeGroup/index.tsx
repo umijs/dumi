@@ -1,5 +1,5 @@
 import Tabs, { ITabsProps } from '@/client/theme-default/slots/Tabs';
-import SourceCode, { ISourceCodeProps } from 'dumi/theme/builtins/SourceCode';
+import { ISourceCodeProps } from 'dumi/theme/builtins/SourceCode';
 import React, { Children } from 'react';
 
 type Unpacked<T> = T extends (infer U)[] ? U : T;
@@ -10,7 +10,7 @@ const isSourceCodeElement = (
 ): child is React.ReactElement<ISourceCodeProps> =>
   typeof child === 'object' &&
   child !== null &&
-  (child as React.ReactElement).type === SourceCode;
+  typeof (child as React.ReactElement).type === 'function';
 
 function CodeGroup(props: React.PropsWithChildren) {
   const { children } = props;
