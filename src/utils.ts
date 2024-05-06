@@ -226,8 +226,6 @@ export function getContentHash(content: string, length = 8) {
 
 /**
  * check if version is in range
- * @param version   version to check
- * @param range     range to check
  */
 export function isVersionInRange(
   version: string,
