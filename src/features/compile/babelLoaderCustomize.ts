@@ -8,7 +8,9 @@ export default function babelLoaderCustomize() {
       // make meta filename is different with source file, to avoid collect wrong deps in MFSU
       if (
         config.options.filename &&
-        context.resourceQuery.includes('type=meta')
+        ['type=demo', 'type=frontmatter', 'type=demo-index', 'type=text'].some(
+          (v) => context.resourceQuery.includes(v),
+        )
       ) {
         config.options.filename += context.resourceQuery;
       }
