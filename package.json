@@ -1,6 +1,6 @@
 {
   "name": "dumi",
-  "version": "2.3.3",
+  "version": "2.3.3-beta.0",
   "description": "📖 Documentation Generator of React Component",
   "keywords": [
     "generator",
