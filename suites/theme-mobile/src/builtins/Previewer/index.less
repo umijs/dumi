@@ -56,12 +56,18 @@
 
       &-tabs {
         height: 100%;
+        display: flex;
+        flex-direction: column;
 
         .dumi-default-tabs {
           &-content,
-          &-tabpane,
-          &-content-holder {
+          &-tabpane {
             height: 100%;
+          }
+
+          &-content-holder {
+            flex: 1;
+            overflow: auto;
           }
         }
       }
