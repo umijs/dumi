@@ -169,9 +169,12 @@ features:
 ```md
 <Tree>
   <ul>
+    <ul>components</ul>
     <li>
       src
+      <ul>hooks</ul>
       <ul>
+        <ul>components</ul>
         <li>index.md</li>
       </ul>
     </li>
@@ -184,9 +187,12 @@ features:
 
 <Tree>
   <ul>
+    <ul>components</ul>
     <li>
       src
+      <ul>hooks</ul>
       <ul>
+        <ul>components</ul>
         <li>index.md</li>
       </ul>
     </li>
@@ -199,10 +205,22 @@ features:
 ```diff
 <Tree>
   <ul>
+    <ul>
+      components
++     <small>这是 components 文件夹</small>
+    </ul>
     <li>
       src
 +     <small>这是 src 文件夹</small>
       <ul>
+        hooks
++       <small>这是 hooks 文件夹</small>
+      </ul>
+      <ul>
+        <ul>
+          components
++         <small>这是 components 文件夹</small>
+        </ul>
         <li>
           index.md
 +         <small>这是 index.md</small>
@@ -221,10 +239,22 @@ features:
 
 <Tree>
   <ul>
+    <ul>
+      components
+      <small>这是 components 文件夹</small>
+    </ul>
     <li>
       src
       <small>这是 src 文件夹</small>
       <ul>
+        hooks
+        <small>这是 hooks 文件夹</small>
+      </ul>
+      <ul>
+        <ul>
+          components
+          <small>这是 components 文件夹</small>
+        </ul>
         <li>
           index.md
           <small>这是 index.md</small>
