@@ -16,39 +16,39 @@ import type { ComponentProps, ReactNode } from 'react';
 import React, { createRef, useEffect, useState } from 'react';
 import './index.less';
 
-const filterNonUlNodes = (nodes: ReactNode) =>
-  ([] as ReactNode[]).concat(nodes).filter((child) => child?.type !== 'ul');
-
-const getTreeFromList = (nodes: ReactNode, prefix = '') => {
+function getTreeFromList(nodes: ReactNode, prefix = '') {
   const data: TreeProps['treeData'] = [];
+
   ([] as ReactNode[]).concat(nodes).forEach((node, i) => {
     const key = `${prefix ? `${prefix}-` : ''}${i}`;
-    const childrens = node?.props?.children || [];
+
     switch (node?.type) {
       case 'ul': {
-        const hasLeaf = ([] as ReactNode[])
-        .concat(childrens)
-        .some((child) => ['li', 'ul'].includes(child?.type)) as boolean;
-        const ulLeafs = hasLeaf ? getTreeFromList(childrens, key) : [{
-          title: filterNonUlNodes(childrens),
-          key: key,
-          children: [],
-          isLeaf: false,
-          disabled: true,
-          switcherIcon: <span className="tree-switcher-leaf-line" />,
-        }];
-        data.push(...ulLeafs);
+        const parent = data[data.length - 1]?.children || data;
+        const ulLeafs = getTreeFromList(node.props.children || [], key);
+
+        parent.push(...ulLeafs);
         break;
       }
 
       case 'li': {
-        const liLeafs = getTreeFromList(childrens, key);
-
+        const hasEmptyUl = node.props?.children?.some?.(
+          (child) => child.type === 'ul' && !child.props.children?.length,
+        );
+        const title = ([] as ReactNode[])
+          .concat(node.props.children)
+          .filter((child) => child.type !== 'ul');
+        const children = hasEmptyUl
+          ? []
+          : getTreeFromList(node.props.children, key);
         data.push({
-          title: filterNonUlNodes(childrens),
+          title,
           key,
-          children: liLeafs,
-          isLeaf: !liLeafs.length,
+          children,
+          isLeaf: !hasEmptyUl && !children.length,
+          switcherIcon: hasEmptyUl ? (
+            <span className="tree-switcher-leaf-line" />
+          ) : undefined,
         });
         break;
       }
