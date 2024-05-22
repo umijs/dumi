@@ -1,5 +1,6 @@
 {
   "extends": "@umijs/lint/dist/config/stylelint",
+  "ignoreFiles": ["**/heti.less"],
   "rules": {
     "function-no-unknown": null,
     "color-function-notation": "legacy"

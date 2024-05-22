@@ -5,6 +5,8 @@ import type { IApi, IDumiTechStack } from '@/types';
 import { _setFSCacheDir } from '@/utils';
 import path from 'path';
 import { addAtomMeta, addExampleAssets } from '../assets';
+import { getLoadHook } from './makoHooks';
+export const techStacks: IDumiTechStack[] = [];
 
 export default (api: IApi) => {
   const techStacks: IDumiTechStack[] = [];
@@ -68,8 +70,13 @@ export default (api: IApi) => {
   );
 
   // configure loader to compile markdown
+  api.modifyConfig((memo) => {
+    memo.mfsu = false;
+    return memo;
+  });
   api.chainWebpack(async (memo) => {
     const babelInUmi = memo.module.rule('src').use('babel-loader').entries();
+    if (!babelInUmi) return memo;
     const loaderPath = require.resolve('../../loaders/markdown');
     const loaderBaseOpts: Partial<IMdLoaderOptions> = {
       techStacks,
@@ -82,11 +89,16 @@ export default (api: IApi) => {
       locales: api.config.locales,
       pkg: api.pkg,
     };
-
     const mdRule = memo.module
       .rule('dumi-md')
       .type('javascript/auto')
       .test(/\.md$/);
+
+    mdRule
+      .pre()
+      .resourceQuery(/watch=parent/)
+      .use('raw-loader')
+      .loader(require.resolve('../../loaders/pre-raw'));
 
     // generate independent oneOf rules
     ['frontmatter', 'text', 'demo-index'].forEach((type) => {
@@ -100,7 +112,6 @@ export default (api: IApi) => {
           mode: type,
         });
     });
-
     // get demo metadata for each markdown file
     mdRule
       .oneOf('md-demo')
@@ -117,7 +128,6 @@ export default (api: IApi) => {
       })
       .end()
       .end();
-
     // get page component for each markdown file
     mdRule
       .oneOf('md')
@@ -139,7 +149,6 @@ export default (api: IApi) => {
                   if ('asset' in demo) ret.push(demo.asset);
                   return ret;
                 }, []);
-
                 addExampleAssets(assets);
               },
               onResolveAtomMeta: addAtomMeta,
@@ -149,7 +158,6 @@ export default (api: IApi) => {
               builtins: api.service.themeData.builtins,
             }) as IMdLoaderOptions,
       );
-
     // get meta for each page component
     memo.module
       .rule('dumi-page')
@@ -158,7 +166,6 @@ export default (api: IApi) => {
       .resourceQuery(/frontmatter$/)
       .use('page-meta-loader')
       .loader(require.resolve('../../loaders/page'));
-
     // get pre-transform result for each external demo component
     memo.module
       .rule('dumi-demo')
@@ -169,7 +176,6 @@ export default (api: IApi) => {
       .use('demo-loader')
       .loader(require.resolve('../../loaders/demo'))
       .options({ techStacks, cwd: api.cwd } as IDemoLoaderOptions);
-
     // get raw content for demo source file
     memo.module
       .rule('dumi-raw')
@@ -181,7 +187,6 @@ export default (api: IApi) => {
       .end()
       .use('pre-raw-loader')
       .loader(require.resolve('../../loaders/pre-raw'));
-
     // enable fast-refresh for md component in development mode
     if (api.env === 'development' && memo.plugins.has('fastRefresh')) {
       memo.plugin('fastRefresh').tap(([params]) => [
@@ -190,6 +195,16 @@ export default (api: IApi) => {
           include: /\.([cm]js|[jt]sx?|flow|md)$/i,
         },
       ]);
+    }
+    return memo;
+  });
+
+  api.modifyConfig((memo) => {
+    if (memo.mako) {
+      console.log(memo.mako);
+      memo.mako.hooks = {
+        load: getLoadHook(api),
+      };
     }
     return memo;
   });

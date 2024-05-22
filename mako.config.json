@@ -1,0 +1,8 @@
+{
+  "manifest": {
+    "fileName": "build-manifest.json"
+  },
+  "watch": {
+    "ignorePaths": ["examples", "suites"]
+  }
+}
