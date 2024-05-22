@@ -9,8 +9,6 @@ import { getLoadHook } from './makoHooks';
 export const techStacks: IDumiTechStack[] = [];
 
 export default (api: IApi) => {
-  const techStacks: IDumiTechStack[] = [];
-
   api.describe({ key: 'dumi:compile' });
 
   // register react tech stack by default
