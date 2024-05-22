@@ -181,7 +181,7 @@ dumi 内置了站点统计的功能，目前支持 [Google Analytics](https://an
 
 <img src="https://gw.alipayobjects.com/zos/bmw-prod/0b8bbca9-e642-4964-bdeb-841d2b57dd21/leibpn7e_w1024_h686.gif" width="768" />
 
-光看演示不过瘾？不妨试试看 1：
+光看演示不过瘾？不妨试试看：
 
 ```jsx
 export default () => (

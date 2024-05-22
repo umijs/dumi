@@ -1,8 +1,6 @@
 import { useNavData } from 'dumi';
 import { useCallback, useEffect, useRef, useState } from 'react';
 // @ts-ignore
-// x-todo
-// import workerCode from '-!../../../../compiled/_internal/searchWorker.min?dumi-raw';
 import workerCode from '../../../../compiled/_internal/searchWorker.min?dumi-raw';
 import useSearchData from './useSearchData';
 

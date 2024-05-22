@@ -169,10 +169,8 @@ export const demos = {
           if (asset.dependencies[file]?.type === 'FILE') {
             // to avoid modify original asset object
             asset = lodash.cloneDeep(asset);
-            // x-todo
             asset.dependencies[
               file
-              // ].value = `{{{require('-!${resolveMap[file]}?dumi-raw').default}}}`;
             ].value = `{{{require('${resolveMap[file]}?dumi-raw').default}}}`;
           }
         });

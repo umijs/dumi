@@ -180,7 +180,7 @@ export function getRouteMetaById<T extends { syncOnly?: boolean }>(
  * get all routes meta
  */
 export async function getFullRoutesMeta(): Promise<Record<string, IRouteMeta>> {
-  const a = await Promise.all(
+  return await Promise.all(
     Object.keys(filesMeta).map(async (id) => ({
       id,
       meta: await getRouteMetaById(id),
@@ -194,5 +194,4 @@ export async function getFullRoutesMeta(): Promise<Record<string, IRouteMeta>> {
       {},
     ),
   );
-  return a
 }

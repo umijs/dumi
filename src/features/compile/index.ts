@@ -65,7 +65,6 @@ export default (api: IApi) => {
       return acc;
     }, []),
   );
-  // mako不走 ssr要走 正常要走
 
   // configure loader to compile markdown
   api.modifyConfig((memo) => {
