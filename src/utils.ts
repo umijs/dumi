@@ -10,14 +10,10 @@ import type {
   RunLoaderResult,
 } from '../compiled/loader-runner';
 
-import {
-  runLoaders as callbackRunLoaders,
-  getContext,
-} from '../compiled/loader-runner';
+import { runLoaders as callbackRunLoaders } from '../compiled/loader-runner';
 import { FS_CACHE_DIR } from './constants';
 export type * from '../compiled/loader-runner';
-export { getContext, runLoaders };
-
+export { getContext } from '../compiled/loader-runner';
 /**
  * get route path from file-system path
  */
@@ -239,16 +235,16 @@ const promisifyRunLoaders = promisify(callbackRunLoaders);
 
 export type RunLoaderOption = Partial<InternalRunLoaderOption>;
 
-function runLoaders(options: RunLoaderOption): Promise<RunLoaderResult>;
-function runLoaders(
+export function runLoaders(options: RunLoaderOption): Promise<RunLoaderResult>;
+export function runLoaders(
   options: RunLoaderOption,
   callback: undefined,
 ): Promise<RunLoaderResult>;
-function runLoaders(
+export function runLoaders(
   options: RunLoaderOption,
   callback: (err: NodeJS.ErrnoException | null, result: RunLoaderResult) => any,
 ): void;
-function runLoaders(
+export function runLoaders(
   options: RunLoaderOption,
   callback?: (
     err: NodeJS.ErrnoException | null,
