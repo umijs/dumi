@@ -93,6 +93,12 @@ export default (api: IApi) => {
       .type('javascript/auto')
       .test(/\.md$/);
 
+    mdRule
+      .pre()
+      .resourceQuery(/watch=parent/)
+      .use('raw-loader')
+      .loader(require.resolve('../../loaders/pre-raw'));
+
     // generate independent oneOf rules
     ['frontmatter', 'text', 'demo-index'].forEach((type) => {
       mdRule
@@ -199,12 +205,13 @@ export default (api: IApi) => {
     return memo;
   });
 
-  if (process.env.OKAM) {
-    api.modifyConfig((memo) => {
-      memo.okamHooks = {
+  api.modifyConfig((memo) => {
+    if (memo.mako) {
+      console.log(memo.mako);
+      memo.mako.hooks = {
         load: getLoadHook(api),
       };
-      return memo;
-    });
-  }
+    }
+    return memo;
+  });
 };

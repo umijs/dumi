@@ -4,8 +4,8 @@ import fs from 'fs';
 import querystring from 'querystring';
 import url from 'url';
 import { techStacks } from '.';
+import { RunLoaderOption, runLoaders } from '../../utils';
 import { addAtomMeta, addExampleAssets } from '../assets';
-import { RunLoaderOption, runLoaders } from '../okam/promisifyLoaderRunner';
 
 interface ICustomerRunLoaderInterface extends RunLoaderOption {
   type?: 'css' | 'js' | 'jsx';
@@ -24,7 +24,7 @@ const customRunLoaders = async (options: ICustomerRunLoaderInterface) => {
   const result = await runLoaders(options);
   return {
     content: result.result![0],
-    type: options.type ?? 'js',
+    type: options.type ?? 'jsx',
   };
 };
 
@@ -46,6 +46,12 @@ export const getLoadHook = (api: IApi) => {
 
     const requestUrl = url.parse(filePath);
     const query = querystring.parse(requestUrl.query!);
+    if (requestUrl.query?.includes('watch=parent')) {
+      return {
+        content: '',
+        type: 'js',
+      };
+    }
     if (/\..+$/.test(filePath)) {
       if (requestUrl.query?.includes('techStack')) {
         return await customRunLoaders({

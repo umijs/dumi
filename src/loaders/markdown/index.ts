@@ -84,18 +84,37 @@ function emitDefault(
   if (frontmatter!.atomId && opts.onResolveAtomMeta) {
     opts.onResolveAtomMeta(frontmatter!.atomId, frontmatter);
   }
+  const dependencies = this.getDependencies()
+    .slice(1)
+    .filter((filePath: string) => {
+      return !filePath.includes('node_modules');
+    });
+
   // import all builtin components, may be used by markdown content
   return `${Object.values(opts.builtins)
     .map((item) => `import ${item.specifier} from '${item.source}';`)
     .join('\n')}
+
+
+${dependencies
+  .filter((dep: string) => dep.endsWith('.md'))
+  .map(
+    (md: string) => `
+import '${winPath(md)}?watch=parent';
+`,
+  )
+  .join('\n')}
+
+
+
 import LoadingComponent from '@@/dumi/theme/loading';
 import React, { Suspense } from 'react';
 import { DumiPage, useTabMeta, useRouteMeta } from 'dumi';
-import {texts as ${CONTENT_TEXTS_OBJ_NAME}} from '${
-    this.resourcePath
-  }?type=text'
 
 function DumiMarkdownInner() {
+  const { texts: ${CONTENT_TEXTS_OBJ_NAME} } = use${
+    isTabContent ? 'TabMeta' : 'RouteMeta'
+  }();
   return ${ret.content};
 }
 
@@ -118,7 +137,7 @@ function emitDemo(
 
   return Mustache.render(
     `import React from 'react';
-
+    import '${winPath(this.getDependencies()[0])}?watch=parent';
 export const demos = {
   {{#demos}}
   '{{{id}}}': {
@@ -227,7 +246,9 @@ function emitDemoIndex(
   const { demos } = ret.meta;
 
   return Mustache.render(
-    `export const demoIndex = {
+    `
+    import '${winPath(this.getDependencies()[0])}?watch=parent';
+    export const demoIndex = {
   ids: {{{ids}}},
   getter: {{{getter}}}
 };`,
@@ -243,13 +264,16 @@ function emitDemoIndex(
 }
 
 function emitFrontmatter(
+  this: any,
   opts: IMdLoaderFrontmatterModeOptions,
   ret: IMdTransformerResult,
 ) {
   const { frontmatter, toc } = ret.meta;
 
   return Mustache.render(
-    `export const toc = {{{toc}}};
+    `
+    import '${winPath(this.getDependencies()[0])}?watch=parent';
+    export const toc = {{{toc}}};
 export const frontmatter = {{{frontmatter}}};`,
     {
       toc: JSON.stringify(toc),
@@ -258,17 +282,26 @@ export const frontmatter = {{{frontmatter}}};`,
   );
 }
 
-function emitText(opts: IMdLoaderTextModeOptions, ret: IMdTransformerResult) {
+function emitText(
+  this: any,
+  opts: IMdLoaderTextModeOptions,
+  ret: IMdTransformerResult,
+) {
   const { texts } = ret.meta;
 
-  return Mustache.render(`export const texts = {{{texts}}};`, {
-    texts: JSON.stringify(texts),
-  });
+  return Mustache.render(
+    `
+  import '${winPath(this.getDependencies()[0])}?watch=parent';
+  export const texts = {{{texts}}};
+  `,
+    {
+      texts: JSON.stringify(texts),
+    },
+  );
 }
 
 function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
   const { demos, embeds } = ret.meta;
-
   // declare embedded files as loader dependency, for re-compiling when file changed
   embeds!.forEach((file) => this.addDependency(file));
 

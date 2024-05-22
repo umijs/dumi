@@ -8,7 +8,6 @@ export default (api: IApi) => {
       require.resolve('./registerMethods'),
       require.resolve('./features/configPlugins'),
       require.resolve('./features/autoAlias'),
-      require.resolve('./features/okam'),
       require.resolve('./features/derivative'),
       require.resolve('./features/sideEffects'),
       require.resolve('./features/exports'),

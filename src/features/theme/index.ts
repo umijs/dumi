@@ -260,33 +260,6 @@ export default (api: IApi) => {
     return memo;
   });
 
-  // set dark mode selector as less variable
-  // why not use `theme` or `modifyVars`?
-  // because `theme` will be override by `modifyVars` in umi
-  // and `modifyVar` will override `theme` from user
-  if (!process.env.OKAM) {
-    api.chainWebpack((memo) => {
-      const lessRule = memo.module.rule('less');
-
-      ['css', 'css-modules'].forEach((rule) => {
-        Object.values(lessRule.oneOf(rule).uses.entries()).forEach((loader) => {
-          if (loader.get('loader').includes('less-loader')) {
-            loader.tap((opts) => {
-              opts.lessOptions.modifyVars ??= {};
-              opts.lessOptions.modifyVars[
-                'dark-selector'
-              ] = `~'[${PREFERS_COLOR_ATTR}="dark"]'`;
-
-              return opts;
-            });
-          }
-        });
-      });
-
-      return memo;
-    });
-  }
-
   api.onGenerateFiles({
     // execute before umi tmpFiles plugin
     stage: -Infinity,

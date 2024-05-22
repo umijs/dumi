@@ -89,7 +89,6 @@ export const useRouteMeta = () => {
   }, [clientRoutes.length, pathname]);
   const [matchedRoute, setMatchedRoute] = useState(getter);
   const meta = getCachedRouteMeta(matchedRoute);
-  console.log('meta', meta);
   useIsomorphicLayoutEffect(() => {
     setMatchedRoute(getter);
   }, [clientRoutes.length, pathname]);

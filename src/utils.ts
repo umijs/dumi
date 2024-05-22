@@ -4,7 +4,18 @@ import fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'path';
 import { lodash, logger, winPath } from 'umi/plugin-utils';
+import { promisify } from 'util';
+import type {
+  RunLoaderOption as InternalRunLoaderOption,
+  RunLoaderResult,
+} from '../compiled/loader-runner';
+import {
+  runLoaders as callbackRunLoaders,
+  getContext,
+} from '../compiled/loader-runner';
 import { FS_CACHE_DIR } from './constants';
+export type * from '../compiled/loader-runner';
+export { getContext, runLoaders };
 
 /**
  * get route path from file-system path
@@ -221,4 +232,30 @@ export function generateMetaChunkName(
  */
 export function getContentHash(content: string, length = 8) {
   return createHash('md5').update(content).digest('hex').slice(0, length);
+}
+
+const promisifyRunLoaders = promisify(callbackRunLoaders);
+
+export type RunLoaderOption = Partial<InternalRunLoaderOption>;
+
+function runLoaders(options: RunLoaderOption): Promise<RunLoaderResult>;
+function runLoaders(
+  options: RunLoaderOption,
+  callback: undefined,
+): Promise<RunLoaderResult>;
+function runLoaders(
+  options: RunLoaderOption,
+  callback: (err: NodeJS.ErrnoException | null, result: RunLoaderResult) => any,
+): void;
+function runLoaders(
+  options: RunLoaderOption,
+  callback?: (
+    err: NodeJS.ErrnoException | null,
+    result: RunLoaderResult,
+  ) => any,
+) {
+  if (callback !== undefined) {
+    return callbackRunLoaders(options as InternalRunLoaderOption, callback);
+  }
+  return promisifyRunLoaders(options as InternalRunLoaderOption);
 }
