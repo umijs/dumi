@@ -32,7 +32,7 @@ function getTreeFromList(nodes: ReactNode, prefix = '') {
       }
 
       case 'li': {
-        const hasEmptyUl = node.props?.children?.some?.(
+        const hasEmptyUl = node.props.children?.some?.(
           (child) => child.type === 'ul' && !child.props.children?.length,
         );
         const title = ([] as ReactNode[])
@@ -93,16 +93,16 @@ const getIcon = (props: TreeNodeProps<DataNode>) => {
 const renderSwitcherIcon = (props: TreeNodeProps<DataNode>) => {
   const { isLeaf, expanded } = props;
   if (isLeaf) {
-    return <span className={`tree-switcher-leaf-line`} />;
+    return <span className="tree-switcher-leaf-line" />;
   }
   return expanded ? (
-    <span className={`tree-switcher-line-icon`}>
+    <span className="tree-switcher-line-icon">
       <span className="dumi-default-tree-icon">
         <MinusSquareOutlined fill="currentColor" />
       </span>
     </span>
   ) : (
-    <span className={`tree-switcher-line-icon`}>
+    <span className="tree-switcher-line-icon">
       <span className="dumi-default-tree-icon">
         <PlusSquareOutlined fill="currentColor" />
       </span>
