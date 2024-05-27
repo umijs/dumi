@@ -8,6 +8,7 @@ export default defineConfig({
   ],
   autoAlias: false,
   outputPath: 'docs-dist',
+  mako: {},
   define: {
     'process.env.DUMI_VERSION': version,
   },
