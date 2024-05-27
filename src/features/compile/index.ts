@@ -5,7 +5,7 @@ import type { IApi, IDumiTechStack } from '@/types';
 import { _setFSCacheDir } from '@/utils';
 import path from 'path';
 import { addAtomMeta, addExampleAssets } from '../assets';
-import { getLoadHook } from './okamHooks';
+import { getLoadHook } from './makoHooks';
 export const techStacks: IDumiTechStack[] = [];
 export default (api: IApi) => {
   api.describe({ key: 'dumi:compile' });
