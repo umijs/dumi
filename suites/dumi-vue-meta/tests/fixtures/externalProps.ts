@@ -12,6 +12,12 @@ export const baseProps = {
    * @default {}
    */
   b: object<{ c?: string }>().def({}).isRequired,
+  /**
+   * @experimental
+   */
   c: String as PropType<'1' | '2' | '3'>,
+  /**
+   * @deprecated
+   */
   d: oneOf([1, 2, 3]).def(1),
 };

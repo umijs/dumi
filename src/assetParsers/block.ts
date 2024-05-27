@@ -26,6 +26,7 @@ export interface IParsedBlockAsset {
 
 async function parseBlockAsset(opts: {
   fileAbsPath: string;
+  fileLocale?: string;
   id: string;
   refAtomIds: string[];
   entryPointCode?: string;
@@ -78,8 +79,8 @@ async function parseBlockAsset(opts: {
                   type: 'NPM',
                   value: pkg.version,
                 };
-
-                result.resolveMap[args.path] = resolved;
+                if (opts.techStack.runtimeOpts)
+                  result.resolveMap[args.path] = args.path;
               }
 
               // make all deps external
@@ -156,7 +157,7 @@ async function parseBlockAsset(opts: {
                 if (frontmatter) {
                   // replace entry code when frontmatter available
                   file.value = code;
-                  result.frontmatter = frontmatter;
+                  asset.dependencies[filename].value = code;
 
                   // TODO: locale for title & description
                   ['description', 'title', 'snapshot', 'keywords'].forEach(
@@ -165,12 +166,24 @@ async function parseBlockAsset(opts: {
                         frontmatter?.[key];
                     },
                   );
+
+                  // support locale prefix for title & description
+                  ['description', 'title'].forEach((key) => {
+                    frontmatter[key] =
+                      frontmatter[`${key}.${opts.fileLocale}`] ||
+                      frontmatter[key];
+                  });
+
+                  result.frontmatter = frontmatter;
                 }
               }
 
               // save file absolute path for load file via raw-loader
               // to avoid bundle same file to save bundle size
-              if (!isEntryPoint || !opts.entryPointCode) {
+              if (
+                opts.techStack.runtimeOpts &&
+                (!isEntryPoint || !opts.entryPointCode)
+              ) {
                 result.resolveMap[filename] = args.path;
               }
 

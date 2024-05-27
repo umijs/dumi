@@ -6,12 +6,13 @@ import {
   VERSION_2_LEVEL_NAV,
 } from '@/constants';
 import type { IApi } from '@/types';
+import { isVersionInRange } from '@/utils';
 import { parseModule } from '@umijs/bundler-utils';
 import { execSync } from 'child_process';
 import fs from 'fs';
 import hostedGit from 'hosted-git-info';
 import path from 'path';
-import { deepmerge, lodash, resolve, semver, winPath } from 'umi/plugin-utils';
+import { deepmerge, lodash, resolve, winPath } from 'umi/plugin-utils';
 import { safeExcludeInMFSU } from '../derivative';
 import loadTheme, { IThemeLoadResult } from './loader';
 
@@ -89,7 +90,7 @@ function checkMinor2ByPkg(pkg: IApi['pkg']) {
   const ver =
     pkg.peerDependencies?.dumi || pkg.devDependencies?.dumi || '^2.0.0';
 
-  return semver.subset(ver, VERSION_2_LEVEL_NAV, { includePrerelease: true });
+  return isVersionInRange(ver, VERSION_2_LEVEL_NAV);
 }
 
 export default (api: IApi) => {
@@ -216,12 +217,14 @@ export default (api: IApi) => {
       path.resolve(__dirname, '../../client/theme-api'),
     );
 
-    // set automatic edit link
+    // set automatic edit link/source link
     // why not use default config?
-    // because true value should be transformed to automatic edit link
+    // because true value should be transformed to automatic edit link.
+    // and if link is a string template, there is no need to automatically generate it.
     const repoUrl = api.pkg.repository?.url || api.pkg.repository;
-
-    if (memo.themeConfig?.editLink !== false && typeof repoUrl === 'string') {
+    const autoEditLink = (memo.themeConfig?.editLink ?? true) === true;
+    const autoSourceLink = (memo.themeConfig?.sourceLink ?? true) === true;
+    if ((autoEditLink || autoSourceLink) && typeof repoUrl === 'string') {
       const hostedGitIns = hostedGit.fromUrl(repoUrl);
       let branch = '';
 
@@ -237,11 +240,26 @@ export default (api: IApi) => {
 
       if (hostedGitIns) {
         memo.themeConfig ??= {};
-        // @ts-ignore
-        memo.themeConfig.editLink = `${hostedGitIns.edit(
-          `${api.pkg.repository.directory || ''}/{filename}`,
-          { committish: branch },
-        )}`;
+        const directory = api.pkg.repository.directory || '';
+        if (autoSourceLink) {
+          let anchorPrefix = 'L';
+          if (hostedGitIns.type.includes('bitbucket')) {
+            anchorPrefix = 'lines-';
+          }
+          const sourceLinkTemplate = hostedGitIns.browse(
+            `${directory}/{fileName}#${anchorPrefix}{line}`,
+            { committish: branch },
+          );
+          memo.themeConfig.sourceLink = sourceLinkTemplate;
+        }
+
+        if (autoEditLink) {
+          // @ts-ignore
+          memo.themeConfig.editLink = `${hostedGitIns.edit(
+            `${directory}/{filename}`,
+            { committish: branch },
+          )}`;
+        }
       }
     }
     if (memo.theme) {
@@ -381,6 +399,7 @@ export default DumiLoading;
             api.config.themeConfig,
           ),
         ),
+        rc_util: winPath(path.dirname(require.resolve('rc-util/package'))),
         _2_level_nav_available: api.appData._2LevelNavAvailable,
       },
     });

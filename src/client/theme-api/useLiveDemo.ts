@@ -1,3 +1,4 @@
+import { SHOULD_SKIP_LIVEDEMO_ERROR } from '@/constants';
 import { useDemo } from 'dumi';
 import throttle from 'lodash.throttle';
 import {
@@ -12,6 +13,7 @@ import {
 import DemoErrorBoundary from './DumiDemo/DemoErrorBoundary';
 import type { AgnosticComponentType } from './types';
 import { useRenderer } from './useRenderer';
+import { getAgnosticComponentModule } from './utils';
 
 const THROTTLE_WAIT = 500;
 
@@ -39,21 +41,23 @@ export const useLiveDemo = (
   const loadingTimer = useRef<number>();
   const taskToken = useRef<number>();
 
+  function resetLoadingStatus() {
+    clearTimeout(loadingTimer.current);
+    setLoading(false);
+  }
+
   const { context = {}, asset, renderOpts } = demo;
-  const [component, setComponent] = useState<AgnosticComponentType>();
-  const ref = useRenderer(
-    component
-      ? {
-          id,
-          ...demo,
-          component,
-        }
-      : Object.assign(demo, { id }),
-  );
+  const [error, setError] = useState<Error | null>(null);
+
+  const { canvasRef: ref, setComponent } = useRenderer({
+    id,
+    renderOpts: demo.renderOpts,
+    onResolved: () => {
+      resetLoadingStatus();
+    },
+  });
 
   const [demoNode, setDemoNode] = useState<ReactNode>();
-
-  const [error, setError] = useState<Error | null>(null);
   const setSource = useCallback(
     throttle(
       async (source: Record<string, string>) => {
@@ -65,11 +69,6 @@ export const useLiveDemo = (
           // make sure timer be fired before next throttle
           THROTTLE_WAIT - 1,
         );
-
-        function resetLoadingStatus() {
-          clearTimeout(loadingTimer.current);
-          setLoading(false);
-        }
 
         if (opts?.iframe && opts?.containerRef?.current) {
           const iframeWindow =
@@ -88,7 +87,6 @@ export const useLiveDemo = (
                 resolve();
               }
             };
-
             iframeWindow.addEventListener('message', handler);
             iframeWindow.postMessage({
               type: 'dumi.liveDemo.setSource',
@@ -99,7 +97,10 @@ export const useLiveDemo = (
           const entryFileName = Object.keys(asset.dependencies).find(
             (k) => asset.dependencies[k].type === 'FILE',
           )!;
-          const require = (v: string) => {
+          // why not require?
+          // https://github.com/airbnb/babel-plugin-dynamic-import-node/blob/a68388870de822183218515a1adbb3e8d7fa9486/src/utils.js#L24
+          // if just use require, local variable will overwrite __webpack__require__ in the template method
+          const liveRequire = (v: string) => {
             if (v in context!) return context![v];
             throw new Error(`Cannot find module: ${v}`);
           };
@@ -121,20 +122,24 @@ export const useLiveDemo = (
 
           if (renderOpts?.renderer && renderOpts?.compile) {
             try {
-              const exports: AgnosticComponentType = {};
-              const module = { exports };
+              const liveExports: AgnosticComponentType = {};
+              const liveModule = { exports: liveExports };
               evalCommonJS(entryFileCode, {
-                exports,
-                module,
-                require,
+                exports: liveExports,
+                module: liveModule,
+                require: liveRequire,
               });
-              setComponent(exports);
+              const component = await getAgnosticComponentModule(liveExports);
+              if (renderOpts.preflight) {
+                await renderOpts.preflight(component);
+              }
+              setComponent(component);
               setDemoNode(createElement('div', { ref }));
               setError(null);
             } catch (err: any) {
               setError(err);
+              resetLoadingStatus();
             }
-            resetLoadingStatus();
             return;
           }
 
@@ -147,20 +152,19 @@ export const useLiveDemo = (
             // skip current task if another task is running
             if (token !== taskToken.current) return;
 
-            const exports: { default?: ComponentType } = {};
-            const module = { exports };
-
+            const liveExports: { default?: ComponentType } = {};
+            const liveModule = { exports: liveExports };
             // initial component with fake runtime
             evalCommonJS(entryFileCode, {
-              exports,
-              module,
-              require,
+              exports: liveExports,
+              module: liveModule,
+              require: liveRequire,
             });
 
             const newDemoNode = createElement(
               DemoErrorBoundary,
               null,
-              createElement(exports.default!),
+              createElement(liveExports.default!),
             );
             const oError = console.error;
 
@@ -170,7 +174,14 @@ export const useLiveDemo = (
               oError.apply(console, args);
 
             // check component is able to render, to avoid show react overlay error
-            (await renderToStaticMarkupDeferred)(newDemoNode);
+            try {
+              (await renderToStaticMarkupDeferred)(newDemoNode);
+            } catch (err: any) {
+              const shouldSkipError = SHOULD_SKIP_LIVEDEMO_ERROR.some((e) =>
+                err.message.includes(e),
+              );
+              if (!shouldSkipError) throw err;
+            }
             console.error = oError;
 
             // set new demo node with passing source

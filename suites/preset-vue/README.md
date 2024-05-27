@@ -28,7 +28,7 @@ For example, the following configuration can make the `InternalType` type skip p
 ```js
 vue: {
   checkerOptions: {
-    schema: { ignore: ['InternalType'] }
+    ignore: ['InternalType']
   },
 },
 ```
@@ -38,6 +38,14 @@ For details, please refer to :point_right: [`MetaCheckerOptions`](../dumi-vue-me
 ### tsconfigPath
 
 The tsconfig used by the checker, the default value is `<project-root>/tsconfig.json`
+
+## directory
+
+By default, this option is the repository.directory option in package.json.
+
+Mainly used to change the root directory of checker, must be a relative directory.
+
+By default, if your project is in a Monorepo, the root directory of the parser is the Monorepo project directory
 
 ### compiler
 

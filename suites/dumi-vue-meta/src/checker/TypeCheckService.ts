@@ -5,27 +5,36 @@ import type {
 import { VueFile } from '@vue/language-core';
 import type ts from 'typescript/lib/tsserverlibrary';
 import { SchemaResolver } from '../schemaResolver/index';
-import type {
-  ComponentLibraryMeta,
-  ComponentMeta,
-  MetaCheckerOptions,
-  MetaTransformer,
-  PropertyMeta,
-  SingleComponentMeta,
+import {
+  CommentMeta,
+  TypeMeta,
+  type ComponentLibraryMeta,
+  type ComponentMeta,
+  type MetaCheckerOptions,
+  type MetaTransformer,
+  type PropertyMeta,
+  type SingleComponentMeta,
 } from '../types';
-import { getJsDocTags } from '../utils';
-import { createVueLanguageService } from './createVueLanguageService';
+import { getComment, getTag } from '../utils';
+import {
+  createVueLanguageService,
+  type VueLanguageService,
+} from './createVueLanguageService';
 import {
   getExports,
+  getFunctionSignatures,
+  isFunctionalVueComponent,
   readTsComponentDefaultProps,
   readVueComponentDefaultProps,
 } from './helpers';
+import type { Repo } from './repo';
 
 /**
  * Provide component metadata checker services
+ * @group project.service
  */
 export class TypeCheckService {
-  private langService!: ReturnType<typeof createVueLanguageService>;
+  private langService!: VueLanguageService;
   private globalPropNames?: string[];
   private options!: MetaCheckerOptions;
 
@@ -35,6 +44,7 @@ export class TypeCheckService {
     private vueCompilerOptions: VueCompilerOptions,
     private globalComponentName: string,
     _host: TypeScriptLanguageHost,
+    private repo: Repo,
   ) {
     this.options = Object.assign(
       {
@@ -99,8 +109,8 @@ export class TypeCheckService {
     if ($props) {
       const type = typeChecker.getTypeOfSymbolAtLocation($props, symbolNode!);
       const properties = type.getProperties().filter((slot) => {
-        const tags = getJsDocTags(ts, typeChecker, slot);
-        return !tags['ignore'];
+        const tags = getComment(ts, typeChecker, slot);
+        return !this.shouldIgnore(tags);
       });
 
       result = properties.map((prop) => {
@@ -208,8 +218,8 @@ export class TypeCheckService {
     if ($slots) {
       const type = typeChecker.getTypeOfSymbolAtLocation($slots, symbolNode!);
       const properties = type.getProperties().filter((slot) => {
-        const tags = getJsDocTags(ts, typeChecker, slot);
-        return !tags['ignore'];
+        const comment = getComment(ts, typeChecker, slot);
+        return !this.shouldIgnore(comment);
       });
 
       return properties.map((prop) => {
@@ -218,6 +228,37 @@ export class TypeCheckService {
     }
 
     return [];
+  }
+
+  private shouldPublic({ modifierTags, blockTags }: CommentMeta) {
+    if (modifierTags) {
+      for (let index = 0; index < modifierTags.length; index++) {
+        const tag = modifierTags[index];
+        switch (tag) {
+          case 'public':
+          case 'experimental':
+          case 'alpha':
+          case 'beta':
+            return true;
+          default:
+            continue;
+        }
+      }
+    }
+    if (blockTags) {
+      for (let index = 0; index < blockTags.length; index++) {
+        const { tag } = blockTags[index];
+        if (tag === 'deprecated') return true;
+        continue;
+      }
+    }
+    return false;
+  }
+
+  private shouldIgnore(comment: CommentMeta) {
+    return !!comment.modifierTags?.find(
+      (tag) => tag === 'ignore' || tag === 'internal',
+    );
   }
 
   private getExposed(
@@ -236,16 +277,29 @@ export class TypeCheckService {
       if (!type.getProperty('$props')) {
         throw 'This is not a vue component';
       }
-      const properties = type.getProperties().filter((prop) => {
-        const tags = getJsDocTags(ts, typeChecker, prop);
-
-        if (tags['ignore']) return false;
-
-        if (options.filterExposed) {
-          return !!tags['exposed'] || !!tags['expose'];
+      let outsideProps: string[] = [];
+      if (options.filterExposed) {
+        const $props = symbolProperties.find(
+          (prop) => prop.escapedName === 'props',
+        );
+        if ($props) {
+          const type = typeChecker.getTypeOfSymbolAtLocation(
+            $props,
+            symbolNode!,
+          );
+          outsideProps = type.getProperties().map((s) => s.getName());
         }
-        // It can also be entered if it is marked as exposed.
-        if (prop.valueDeclaration && (!!tags['exposed'] || !!tags['expose'])) {
+      }
+      const properties = type.getProperties().filter((prop) => {
+        const comment = getComment(ts, typeChecker, prop);
+        if (this.shouldIgnore(comment)) return false;
+        if (options.filterExposed) {
+          return (
+            this.shouldPublic(comment) && !outsideProps.includes(prop.getName())
+          );
+        }
+        // It can also be entered if it is marked as public.
+        if (prop.valueDeclaration && this.shouldPublic(comment)) {
           return true;
         }
         // only exposed props will not have a valueDeclaration
@@ -255,9 +309,8 @@ export class TypeCheckService {
       return properties.map((prop) => {
         return resolver.resolveExposedProperties(prop);
       });
-    } else {
-      throw 'This is not a vue component';
     }
+    return [];
   }
 
   /**
@@ -321,7 +374,7 @@ export class TypeCheckService {
     entry: string,
     transformer?: MetaTransformer<T>,
   ): T {
-    const { langService, ts, options } = this;
+    const { langService, ts, options, repo } = this;
     const program = langService.tsLs.getProgram()!;
     const typeChecker = program.getTypeChecker();
     const { symbolNode, exports, exportedTypes } = getExports(
@@ -333,16 +386,42 @@ export class TypeCheckService {
     );
 
     const typeResolver = new SchemaResolver(
-      typeChecker,
-      symbolNode,
-      options,
       ts,
+      typeChecker,
+      langService,
+      symbolNode,
+      repo,
+      options,
     );
 
     typeResolver.preResolve(exportedTypes);
 
-    const components = exports.reduce((acc, _export) => {
+    const meta: ComponentLibraryMeta = {
+      components: {},
+      types: {},
+      functions: {},
+    };
+
+    exports.reduce((acc, _export) => {
       const exportedName = _export.getName();
+      const comment = getComment(ts, typeChecker, _export);
+      // can be identified by jsdoc
+      // sometimes some composition functions or generic component may be similar to functional components,
+      // they can be distinguished by @component
+      if (
+        !getTag(comment, 'component', 'block') &&
+        !isFunctionalVueComponent(typeChecker, _export)
+      ) {
+        const functionMeta = this.getFunctionMeta(
+          typeChecker,
+          _export,
+          typeResolver,
+        );
+        if (functionMeta) {
+          acc.functions[exportedName] = functionMeta;
+          return acc;
+        }
+      }
       try {
         const meta = this.getSingleComponentMeta(
           typeChecker,
@@ -352,17 +431,26 @@ export class TypeCheckService {
           exportedName,
           typeResolver,
         );
-        acc[exportedName] = meta;
+        acc.components[exportedName] = meta;
       } catch (error) {}
       return acc;
-    }, {} as ComponentLibraryMeta['components']);
+    }, meta);
 
-    const meta: ComponentLibraryMeta = {
-      components,
-      types: typeResolver.getTypes(),
-    };
+    meta.types = typeResolver.getTypes();
 
     return transformer ? transformer(meta) : (meta as T);
+  }
+
+  private getFunctionMeta(
+    typeChecker: ts.TypeChecker,
+    exportSymbol: ts.Symbol,
+    resolver: SchemaResolver,
+  ) {
+    const signatures = getFunctionSignatures(typeChecker, exportSymbol);
+    if (!signatures.length) {
+      return null;
+    }
+    return resolver.createSignatureMetaSchema(signatures[0]);
   }
 
   private getSingleComponentMeta(
@@ -377,69 +465,85 @@ export class TypeCheckService {
       exportSymbol,
       symbolNode!,
     );
-    const symbolProperties = componentType.getProperties() ?? [];
+    const symbolProperties = componentType.getProperties();
 
-    let _type: ComponentMeta['type'] | undefined;
-    let _props: ComponentMeta['props'] | undefined;
-    let _events: ComponentMeta['events'] | undefined;
-    let _slots: ComponentMeta['slots'] | undefined;
-    let _exposed: ComponentMeta['exposed'] = this.getExposed(
+    let _type: ComponentMeta['type'] = this.getType(
       typeChecker,
       symbolProperties,
       symbolNode,
-      resolver,
-    ); // Get it in advance to determine whether it is a vue component
-
-    return this.createComponentMeta(
-      {
-        name: exportName,
-      },
-      {
-        type: () =>
-          _type ??
-          (_type = this.getType(typeChecker, symbolProperties, symbolNode)),
-        props: () =>
-          _props ??
-          (_props = this.getProps(
-            typeChecker,
-            symbolProperties,
-            symbolNode,
-            resolver,
-            componentPath,
-            exportName,
-          )),
-        events: () =>
-          _events ??
-          (_events = this.getEvents(
-            typeChecker,
-            symbolProperties,
-            symbolNode,
-            resolver,
-          )),
-        slots: () =>
-          _slots ??
-          (_slots = this.getSlots(
-            typeChecker,
-            symbolProperties,
-            symbolNode,
-            resolver,
-          )),
-        exposed: () => _exposed,
-      },
     );
+    const functional = _type === TypeMeta.Function;
+    if (_type === TypeMeta.Unknown) {
+      throw new Error('This is not a vue component');
+    }
+    const initComponentMeta: Partial<ComponentMeta> = {
+      name: exportName,
+    };
+    if (_type === TypeMeta.Function) {
+      const signature = getFunctionSignatures(typeChecker, exportSymbol);
+      const typeParams = signature[0].getTypeParameters();
+      if (typeParams?.length) {
+        initComponentMeta.typeParams = typeParams.map((param) =>
+          resolver.resolveSchema(param),
+        );
+      }
+    }
+    let _props: ComponentMeta['props'] | undefined;
+    let _events: ComponentMeta['events'] | undefined;
+    let _slots: ComponentMeta['slots'] | undefined;
+    let _exposed: ComponentMeta['exposed'] | undefined;
+    return this.createComponentMeta(initComponentMeta, {
+      type: () => _type,
+      props: () =>
+        _props ??
+        (_props = this.getProps(
+          typeChecker,
+          symbolProperties,
+          symbolNode,
+          resolver,
+          componentPath,
+          exportName,
+        )),
+      events: () =>
+        _events ??
+        (_events = this.getEvents(
+          typeChecker,
+          symbolProperties,
+          symbolNode,
+          resolver,
+        )),
+      slots: () =>
+        _slots ??
+        (_slots = this.getSlots(
+          typeChecker,
+          symbolProperties,
+          symbolNode,
+          resolver,
+        )),
+      exposed: () =>
+        !functional
+          ? _exposed ??
+            (_exposed = this.getExposed(
+              typeChecker,
+              symbolProperties,
+              symbolNode,
+              resolver,
+            ))
+          : [],
+    });
   }
 
   /**
    * Get metadata of single component
    * If the component to be obtained is not a vue component, an error will be thrown
-   * @param componentPath
+   * @param componentPath The file path where the component is located
    * @param exportName Component export name, the default is to get `export default`
    */
   public getComponentMeta(
     componentPath: string,
     exportName = 'default',
   ): SingleComponentMeta {
-    const { langService, ts, options } = this;
+    const { langService, ts, options, repo } = this;
     const program = langService.tsLs.getProgram()!;
     const typeChecker = program.getTypeChecker();
     const { symbolNode, exports } = getExports(
@@ -455,18 +559,24 @@ export class TypeCheckService {
     if (!_export) {
       throw `Could not find export ${exportName}`;
     }
-
-    const resolver = new SchemaResolver(typeChecker, symbolNode!, options, ts);
-
+    const resolver = new SchemaResolver(
+      ts,
+      typeChecker,
+      langService,
+      symbolNode!,
+      repo,
+      options,
+    );
+    const component = this.getSingleComponentMeta(
+      typeChecker,
+      symbolNode,
+      _export,
+      componentPath,
+      exportName,
+      resolver,
+    );
     return {
-      component: this.getSingleComponentMeta(
-        typeChecker,
-        symbolNode,
-        _export,
-        componentPath,
-        exportName,
-        resolver,
-      ),
+      component,
       types: resolver.getTypes(),
     };
   }

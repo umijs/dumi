@@ -1,6 +1,6 @@
 {
   "name": "dumi-theme-mobile",
-  "version": "2.1.2",
+  "version": "2.3.0",
   "description": "dumi-theme-mobile",
   "keywords": [
     "dumi",
@@ -23,8 +23,7 @@
   ],
   "scripts": {
     "build": "father build",
-    "dev": "father dev",
-    "prepublishOnly": "father doctor && npm run build"
+    "dev": "father dev"
   },
   "dependencies": {
     "@ant-design/icons-svg": "^4.2.1",

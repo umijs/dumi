@@ -8,6 +8,7 @@ export default (api: IApi) => {
     config: {
       schema({ zod }) {
         return zod.object({
+          directory: zod.string().optional(),
           tsconfigPath: zod.string().optional(),
           checkerOptions: zod.object({}).optional(),
           compiler: zod

@@ -2,9 +2,9 @@ import type { IParsedBlockAsset } from '@/assetParsers/block';
 import type { ILocalesConfig, IRouteMeta } from '@/client/theme-api/types';
 import { VERSION_2_DEPRECATE_SOFT_BREAKS } from '@/constants';
 import type { IApi, IDumiConfig, IDumiTechStack } from '@/types';
+import { isVersionInRange } from '@/utils';
 import enhancedResolve, { type ResolveOptions } from 'enhanced-resolve';
 import type { IRoute } from 'umi';
-import { semver } from 'umi/plugin-utils';
 import type { Plugin, Processor } from 'unified';
 import type { Data } from 'vfile';
 import rehypeDemo from './rehypeDemo';
@@ -46,6 +46,7 @@ declare module 'vfile' {
           renderOpts: {
             type?: string;
             rendererPath?: string;
+            preflightPath?: string;
             compilePath?: string;
           };
         }
@@ -55,6 +56,7 @@ declare module 'vfile' {
           renderOpts: {
             type?: string;
             rendererPath?: string;
+            preflightPath?: string;
             compilePath?: string; // only for fix type
           };
         }
@@ -69,7 +71,7 @@ declare module 'vfile' {
 export interface IMdTransformerOptions {
   cwd: string;
   fileAbsPath: string;
-  alias: object;
+  alias: ResolveOptions['alias'];
   parentAbsPath?: string;
   techStacks: IDumiTechStack[];
   resolve: IDumiConfig['resolve'];
@@ -93,9 +95,8 @@ function keepSoftBreak(pkg: IApi['pkg']) {
   if (pkg?.name?.startsWith('@examples/') || pkg?.name === 'dumi') return false;
 
   const ver = pkg?.devDependencies?.dumi ?? pkg?.dependencies?.dumi ?? '^2.0.0';
-  return !semver.subset(ver, VERSION_2_DEPRECATE_SOFT_BREAKS, {
-    includePrerelease: true,
-  });
+
+  return !isVersionInRange(ver, VERSION_2_DEPRECATE_SOFT_BREAKS);
 }
 
 async function applyUnifiedPlugin(opts: {

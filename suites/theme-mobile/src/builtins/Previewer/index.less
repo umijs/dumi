@@ -24,8 +24,7 @@
         position: absolute;
         margin-inline-end: 1px;
         top: 0;
-        inset-inline-start: 0;
-        inset-inline-end: var(--device-width);
+        inset-inline: 0 var(--device-width);
         bottom: 0;
         display: flex;
         align-self: stretch;
@@ -42,9 +41,32 @@
         &:first-child + .dumi-default-previewer-sources {
           border-top: 1px dashed @c-border-light;
           margin-top: 42px;
-
+          overflow: auto;
           @{dark-selector} & {
             border-top-color: @c-border-less-dark;
+          }
+        }
+      }
+
+      &-sources {
+        flex: 1;
+        height: 0;
+      }
+
+      &-tabs {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+
+        .dumi-default-tabs {
+          &-content,
+          &-tabpane {
+            height: 100%;
+          }
+
+          &-content-holder {
+            flex: 1;
+            overflow: auto;
           }
         }
       }
@@ -73,10 +95,15 @@
     }
 
     .dumi-default-source-code {
+      height: 100%;
       flex: 1;
       min-height: 0;
       overflow: auto;
       border-bottom-right-radius: 0;
+
+      &-editor {
+        height: 100%;
+      }
     }
   }
 }

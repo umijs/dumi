@@ -6,7 +6,7 @@ group:
 order: 2
 ---
 
-# Vue 的自动 API 表格
+# Vue 的自动 API 表格 <Badge>实验性</Badge>
 
 dumi 支持 Vue 组件的自动 API 表格生成，用户只需配置`entryFile`即可开始 API 表格的使用：
 
@@ -45,6 +45,51 @@ export default {
   },
 };
 ```
+
+:::info
+若您的项目 Monorepo 项目， 默认的 tsconfigPath 为 `<project-root>/<directory>/tsconfig.json`。 `<project-root>` 为 Monorepo 项目目录； `<directory>` 则为子包`package.json` 中的 `repository.directory` 选项
+:::
+
+## checkerOptions
+
+我们还可以通过 checkerOptions 选项来配置 Type Checker：
+
+其中`exclude`选项默认会排除从 node_modules 中引用的所有类型，你还可以配置排除更多的目录：
+
+```ts
+export default {
+  plugins: ['@dumijs/preset-vue'],
+  vue: {
+    checkerOptions: {
+      exclude: /src\/runtime\//,
+    },
+  },
+};
+```
+
+这样，`src/runtime/`目录下引用的所有接口都不会被检查。
+
+还有一个比较有用的选项则是`externalSymbolLinkMappings`，可以帮助我们配置外部接口的外链，例如：
+
+```ts
+export default {
+  plugins: ['@dumijs/preset-vue'],
+  vue: {
+    checkerOptions: {
+      externalSymbolLinkMappings: {
+        typescript: {
+          Promise:
+            'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise',
+        },
+      },
+    },
+  },
+};
+```
+
+上述配置可以将 Promise 接口链接到 MDN 的参考文档。
+
+更多关于 checkerOptions 的选项请查看： [`MetaCheckerOptions`](https://github.com/umijs/dumi/tree/master/suites/dumi-vue-meta/README.md#metacheckeroptions)
 
 ## JSDoc 编写
 
@@ -91,38 +136,70 @@ defineComponent({
 });
 ```
 
-### @exposed/@expose
+### @component
+
+用以区分普通函数和函数组件的。目前无法自动识别为组件的情况有两种：
+
+```ts
+/**
+ * @component
+ */
+function InternalComponent(props: { a: string }) {
+  return h('div', props.a);
+}
+```
+
+```tsx | pure
+/**
+ * @component
+ */
+export const GenericComponent = defineComponent(
+  <T>(props: { item: T }) => {
+    return () => (<div>{item}</div>);
+  },
+);
+```
+
+都需要用`@component`注解，否则会被识别为函数
+
+### API 发行相关
+
+#### @public
+
+#### @deprecated
+
+#### @experimental/@beta
+
+#### @alpha
 
 :::warning
-组件实例的方法或是属性的暴露，必须使用@exposed/@expose 标识，单文件组件也不例外
+这些 release 标签在`defineEmits`中是无法生效
 :::
+
+对于组件实例本身暴露的方法，可以使用像`@public`这样的标签来公开
 
 ```ts
 defineExpose({
   /**
-   * @exposed
+   * @public
    */
   focus() {},
 });
 ```
 
-JSX/TSX 的组件方法暴露比较麻烦，需要用户另外声明
+如果将 MetaCheckerOptions 中的`filterExposed`设置为 false，这些发布标签将全部无效。
 
-```ts
-export default Button as typeof Button & {
-  new (): {
-    /**
-     * The signature of the expose api should be obtained from here
-     * @exposed
-     */
-    focus: () => void;
-  };
-};
-```
+> vue 的组件实例不仅会可以通过`expose`暴露属性和方法，还会暴露从外部传入的 props。
 
-### @ignore
+### @ignore/@internal
 
-被`@ignore`标记的属性就会被忽略，不会被解析
+标有`@ignore`或`@internal`的属性不会被检查。
+
+### 版本控制相关
+
+#### @version
+
+#### @since
 
 ## Markdown 编写
 
@@ -149,7 +226,11 @@ export default Button as typeof Button & {
 
 <API id="Button" type="events"></API>
 
-### Methods
+### Instance Methods
 
-<API id="Button" type="methods"></API>
+<API id="Button" type="imperative"></API>
 ```
+
+:::info
+imperative 类别是通过 release 标签暴露的组件实例方法
+::::

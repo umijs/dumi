@@ -23,15 +23,16 @@ const SIMILAR_DSL: Record<string, Language> = {
   vue: 'markup',
 };
 
-interface SourceCodeProps {
+export interface ISourceCodeProps {
   children: string;
   lang: Language;
   highlightLines?: number[];
   extra?: ReactNode;
   textarea?: ReactNode;
+  title?: string;
 }
 
-const SourceCode: FC<SourceCodeProps> = (props) => {
+const SourceCode: FC<ISourceCodeProps> = (props) => {
   const { children = '', lang, highlightLines = [] } = props;
   const timer = useRef<number>();
   const [isCopied, setIsCopied] = useState(false);
@@ -49,7 +50,7 @@ const SourceCode: FC<SourceCodeProps> = (props) => {
   const code = (
     <Highlight
       {...defaultProps}
-      code={children}
+      code={props.textarea ? children : children.trim()}
       language={SIMILAR_DSL[lang] || lang}
       theme={undefined}
     >

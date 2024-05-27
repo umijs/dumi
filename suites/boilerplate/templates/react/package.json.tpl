@@ -10,6 +10,7 @@
     "build": "father build",
     "build:watch": "father dev",
     "docs:build": "dumi build",
+    "docs:preview": "dumi preview",
     "prepare": "husky install && dumi setup",
     "doctor": "father doctor",
     "lint": "npm run lint:es && npm run lint:css",

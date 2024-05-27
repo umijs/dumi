@@ -1,6 +1,6 @@
 {
   "name": "@dumijs/vue-meta",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Extracting the metadata of Vue components more effectively",
   "keywords": [
     "vue",
@@ -18,15 +18,14 @@
     "build": "father build",
     "build:deps": "father prebundle",
     "dev": "father dev",
-    "prepublishOnly": "father doctor && npm run build"
+    "test": "vitest"
   },
   "dependencies": {
     "@volar/typescript": "^1.10.4",
     "@vue/language-core": "^1.8.19",
     "dumi-assets-types": "workspace:*",
-    "ts-morph": "^20.0.0",
     "typesafe-path": "^0.2.2",
-    "vue-component-type-helpers": "^1.8.19"
+    "vue-component-type-helpers": "^1.8.27"
   },
   "devDependencies": {
     "eslint-plugin-vue": "^9.17.0",

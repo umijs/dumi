@@ -48,34 +48,12 @@ export default {
 ## Functional Component
 
 ```tsx
-interface ArticleProps {
-  title?: string;
-  desc?: string;
+import { Article } from '@examples/vue';
+function ArticleWrapper() {
+  return <Article></Article>;
 }
 
-function Article(props: ArticleProps) {
-  return (
-    <article>
-      <h1>{props.title}</h1>
-      <p>{props.desc}</p>
-    </article>
-  );
-}
-
-Article.props = {
-  title: {
-    type: String,
-    required: false,
-    default: 'Functional Component Demo',
-  },
-  desc: {
-    type: String,
-    required: false,
-    default: 'No Desc here',
-  },
-};
-
-export default Article;
+export default ArticleWrapper;
 ```
 
 ## Button API
@@ -94,4 +72,32 @@ export default Article;
 
 ### Methods
 
-<API id="Button" type="methods"></API>
+<API id="Button" type="imperative"></API>
+
+## Article API
+
+## Props
+
+<API id="Article" type="props"></API>
+
+## Events
+
+<API id="Article" type="events"></API>
+
+## Slots
+
+<API id="Article" type="slots"></API>
+
+## List API
+
+:::warning
+The List component is defined in the form of `defineComponent(<T>function() {})`, so only Props and Events can be obtained
+:::
+
+### Props
+
+<API id="List" type="props"></API>
+
+### Events
+
+<API id="List" type="events"></API>

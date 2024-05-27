@@ -1,3 +1,4 @@
+import Tabs from '@/client/theme-default/slots/Tabs';
 import { ReactComponent as IconCheck } from '@ant-design/icons-svg/inline-svg/outlined/check.svg';
 import { ReactComponent as IconCodeSandbox } from '@ant-design/icons-svg/inline-svg/outlined/code-sandbox.svg';
 import { ReactComponent as IconEdit } from '@ant-design/icons-svg/inline-svg/outlined/edit.svg';
@@ -16,9 +17,28 @@ import {
 import SourceCode from 'dumi/theme/builtins/SourceCode';
 import PreviewerActionsExtra from 'dumi/theme/slots/PreviewerActionsExtra';
 import SourceCodeEditor from 'dumi/theme/slots/SourceCodeEditor';
-import Tabs from 'rc-tabs';
+import RcTooltip from 'rc-tooltip';
+import type { TooltipProps as RcTooltipProps } from 'rc-tooltip/lib/Tooltip';
 import React, { useRef, useState, type FC, type ReactNode } from 'react';
 import './index.less';
+
+export interface TooltipProps extends Omit<RcTooltipProps, 'overlay'> {
+  placement?: 'top' | 'bottom';
+  title?: React.ReactNode;
+}
+
+const Tooltip: FC<TooltipProps> = (props) => {
+  const { title, placement = 'top', ...rest } = props;
+  return (
+    <RcTooltip
+      prefixCls="dumi-theme-default-tooltip"
+      placement={placement}
+      {...rest}
+      overlay={title}
+    />
+  );
+};
+
 export interface IPreviewerActionsProps extends IPreviewerProps {
   /**
    * disabled actions
@@ -187,8 +207,6 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
                 'dumi-default-previewer-tabs',
                 isSingleFile && 'dumi-default-previewer-tabs-single',
               )}
-              prefixCls="dumi-default-tabs"
-              moreIcon="···"
               defaultActiveKey={String(activeKey)}
               onChange={(key) => setActiveKey(Number(key))}
               items={files.map(([filename], i) => ({
@@ -209,15 +227,18 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
                         });
                       }}
                       extra={
-                        <button
-                          type="button"
-                          className="dumi-default-previewer-editor-tip-btn"
-                          data-dumi-tooltip={intl.formatMessage({
+                        <Tooltip
+                          title={intl.formatMessage({
                             id: 'previewer.actions.code.editable',
                           })}
                         >
-                          <IconEdit />
-                        </button>
+                          <button
+                            type="button"
+                            className="dumi-default-previewer-editor-tip-btn"
+                          >
+                            <IconEdit />
+                          </button>
+                        </Tooltip>
                       }
                     />
                   ) : (
@@ -227,17 +248,20 @@ const PreviewerActions: FC<IPreviewerActionsProps> = (props) => {
                         // only show readonly tip for non-entry files
                         // because readonly entry file means live compile is not available for this demo tech stack
                         i !== 0 && (
-                          <button
-                            type="button"
-                            className="dumi-default-previewer-editor-tip-btn"
-                            data-dumi-tooltip={intl.formatMessage({
+                          <Tooltip
+                            title={intl.formatMessage({
                               id: 'previewer.actions.code.readonly',
                             })}
-                            data-readonly
                           >
-                            <span></span>
-                            <IconEdit />
-                          </button>
+                            <button
+                              type="button"
+                              className="dumi-default-previewer-editor-tip-btn"
+                              data-readonly
+                            >
+                              <span></span>
+                              <IconEdit />
+                            </button>
+                          </Tooltip>
                         )
                       }
                     >

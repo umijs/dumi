@@ -79,6 +79,11 @@ export type IDumiTechStackOnBlockLoadArgs = OnLoadArgs & {
 
 export interface IDumiTechStackRuntimeOpts {
   /**
+   * Component detection function path,
+   * used to detect errors that occur from application creation to component mounting.
+   */
+  preflightPath?: string;
+  /**
    * path of the cancelable{@link IDemoCancelableFn} function
    * that manipulate(mount/unmount) third-party framework component
    */
@@ -103,7 +108,9 @@ export abstract class IDumiTechStack {
    */
   abstract runtimeOpts?: IDumiTechStackRuntimeOpts;
   /**
-   * transform code
+   * Is the lang supported by the current tech stack?
+   * @param lang
+   * @param node hast Element https://github.com/syntax-tree/hast?tab=readme-ov-file#element
    */
   abstract isSupported(node: Element, lang: string): boolean;
   /**

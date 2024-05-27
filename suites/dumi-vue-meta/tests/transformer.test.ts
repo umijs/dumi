@@ -3,24 +3,31 @@ import { afterAll, expect, test } from 'vitest';
 import type { MetaCheckerOptions } from '../src/index';
 import {
   createProject,
-  dumiTransfomer,
+  dumiTransformer,
   vueTypesSchemaResolver,
 } from '../src/index';
+import { rootPath, tsconfigPath } from './utils';
 
 const checkerOptions: MetaCheckerOptions = {
-  schema: {
-    customResovlers: [vueTypesSchemaResolver],
+  propertyResovlers: [vueTypesSchemaResolver],
+  gitRevision: 'main', // pin to the main branch
+  externalSymbolLinkMappings: {
+    typescript: {
+      Promise:
+        'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise',
+    },
   },
 };
 
 const project = createProject({
-  tsconfigPath: path.resolve(__dirname, 'fixtures/tsconfig.json'),
+  rootPath,
+  tsconfigPath,
   checkerOptions,
 });
 
 test('dumi-assets-types transformer', () => {
   const entry = path.resolve(__dirname, 'fixtures/index.ts');
-  const meta = project.service.getComponentLibraryMeta(entry, dumiTransfomer);
+  const meta = project.service.getComponentLibraryMeta(entry, dumiTransformer);
   expect(meta).toMatchSnapshot();
 });
 

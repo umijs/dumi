@@ -1,18 +1,22 @@
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
+const http = require('http');
 
 const UMI_DOC_DIR = path.join(__dirname, '..', 'docs', '.upstream');
 const RM_FM_ACTION = {
   type: 'replace',
   value: [/^---[^]+?---\n/, ''],
 };
+
+const JSDELIVR_PREFIX = 'https://cdn.jsdelivr.net/gh/umijs/umi@4/';
+const GITHUB_RAW_PREFIX = 'https://raw.githubusercontent.com/umijs/umi/master/';
+
 const FILE_LIST = [
   // config docs
   {
     localname: 'config.md',
-    upstream:
-      'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/docs/api/config.md',
+    repoPath: 'docs/docs/docs/api/config.md',
     actions: [
       RM_FM_ACTION,
       // remove head content
@@ -152,8 +156,7 @@ const FILE_LIST = [
   },
   {
     localname: 'api.md',
-    upstream:
-      'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/docs/api/api.md',
+    repoPath: 'docs/docs/docs/api/api.md',
     actions: [
       RM_FM_ACTION,
       // remove head content
@@ -177,8 +180,7 @@ const FILE_LIST = [
   },
   {
     localname: 'plugin.md',
-    upstream:
-      'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/docs/guides/plugins.md',
+    repoPath: 'docs/docs/docs/guides/plugins.md',
     actions: [
       RM_FM_ACTION,
       // remove head content
@@ -203,8 +205,7 @@ const FILE_LIST = [
   },
   {
     localname: 'plugin-api.md',
-    upstream:
-      'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/docs/api/plugin-api.md',
+    repoPath: 'docs/docs/docs/api/plugin-api.md',
     actions: [
       RM_FM_ACTION,
       // remove head content
@@ -243,8 +244,7 @@ const FILE_LIST = [
   },
   {
     localname: 'runtime-config.md',
-    upstream:
-      'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/docs/api/runtime-config.md',
+    repoPath: 'docs/docs/docs/api/runtime-config.md',
     actions: [
       RM_FM_ACTION,
       // replace jsx to jsx | pure
@@ -289,8 +289,7 @@ const FILE_LIST = [
   },
   {
     localname: 'env-config.md',
-    upstream:
-      'https://cdn.jsdelivr.net/gh/umijs/umi@4/docs/docs/docs/guides/env-variables.md',
+    repoPath: 'docs/docs/docs/guides/env-variables.md',
     actions: [
       RM_FM_ACTION,
       // remove head content
@@ -310,7 +309,16 @@ const FILE_LIST = [
       { type: 'replace', value: [/config\./g, '.dumirc.'] },
     ],
   },
-];
+].map((file) => {
+  const urlPrefix = [
+    // 可以完全自定义(也许是一个本地启动的服务) `SYNC_CUSTOM_UPSTREAM=http://127.0.0.1:8080/ npm run docs:sync`
+    process.env.SYNC_CUSTOM_UPSTREAM,
+    // 同步遇到 443 失败时, 可以尝试 `SYNC_USE_GITHUB=1 npm run docs:sync` 使用 GitHub 作为源
+    process.env.SYNC_USE_GITHUB && GITHUB_RAW_PREFIX,
+    JSDELIVR_PREFIX,
+  ].find(Boolean);
+  return { ...file, upstream: `${urlPrefix}${file.repoPath}` };
+});
 
 if (!fs.existsSync(UMI_DOC_DIR)) {
   fs.mkdirSync(UMI_DOC_DIR);
@@ -320,8 +328,10 @@ if (!fs.existsSync(UMI_DOC_DIR)) {
 FILE_LIST.forEach((file) => {
   const localPath = path.join(UMI_DOC_DIR, file.localname);
 
+  const protocol = file.upstream.startsWith('https') ? https : http;
+
   // get file from upstream
-  https.get(file.upstream, (res) => {
+  protocol.get(file.upstream, (res) => {
     let content = '';
 
     res.setEncoding('utf8');
@@ -349,7 +359,11 @@ FILE_LIST.forEach((file) => {
 
       // write back to file
       fs.writeFileSync(localPath, content);
-      console.log('sync', file.localname, 'from upstream successfully!');
+      console.log(
+        `🔁 ${file.upstream} -> ${path.relative(process.cwd(), localPath)} [${(
+          content.length / 1024
+        ).toFixed(2)}KB]`,
+      );
     });
   });
 });

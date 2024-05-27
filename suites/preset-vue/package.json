@@ -1,6 +1,6 @@
 {
   "name": "@dumijs/preset-vue",
-  "version": "0.0.1",
+  "version": "2.3.0",
   "description": "Vue support plugins for dumi",
   "keywords": [
     "dumi",
@@ -21,7 +21,6 @@
     "build:deps": "father prebundle",
     "build:lib": "tsup --minify",
     "dev": "father dev",
-    "prepublishOnly": "father doctor && npm run build",
     "test": "vitest"
   },
   "dependencies": {

@@ -1,15 +1,15 @@
+import type { Range, RangeOptions } from '@umijs/utils/compiled/semver';
 import { createHash } from 'crypto';
 import Cache from 'file-system-cache';
 import fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'path';
-import { lodash, logger, winPath } from 'umi/plugin-utils';
+import { lodash, logger, semver, winPath } from 'umi/plugin-utils';
 import { promisify } from 'util';
 import type {
   RunLoaderOption as InternalRunLoaderOption,
   RunLoaderResult,
 } from '../compiled/loader-runner';
-
 import { runLoaders as callbackRunLoaders } from '../compiled/loader-runner';
 import { FS_CACHE_DIR } from './constants';
 export type * from '../compiled/loader-runner';
@@ -255,4 +255,20 @@ export function runLoaders(
     return callbackRunLoaders(options as InternalRunLoaderOption, callback);
   }
   return promisifyRunLoaders(options as InternalRunLoaderOption);
+}
+/**
+ * check if version is in range
+ */
+export function isVersionInRange(
+  version: string,
+  range: string | Range,
+  options: RangeOptions = { includePrerelease: true },
+) {
+  if (semver.valid(version)) {
+    return semver.satisfies(version, range, options);
+  }
+  if (semver.validRange(version)) {
+    return semver.subset(version, range, options);
+  }
+  return false;
 }

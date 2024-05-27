@@ -6,7 +6,7 @@ group:
 order: 1
 ---
 
-# 安装 Vue 支持插件
+# 安装 Vue 支持插件 <Badge>实验性</Badge>
 
 dumi 中对 Vue 的支持主要通过`@dumijs/preset-vue`插件集实现, 目前只支持 Vue3
 
@@ -17,8 +17,9 @@ pnpm i vue
 pnpm i -D @dumijs/preset-vue
 ```
 
-> [!NOTE]
-> 如果您的 Vue 版本低于 3.3.6，请安装`@vue/compiler-sfc`
+:::warning
+如果您的 Vue 版本低于 3.3.6，请安装`@vue/compiler-sfc`
+:::
 
 ## 配置
 
@@ -43,7 +44,7 @@ export default {
   presets: ['@dumijs/preset-vue'],
   vue: {
     checkerOptions: {
-      schema: { ignore: ['InternalType'] },
+      ignore: ['InternalType'],
     },
   },
 };
@@ -57,15 +58,23 @@ export default {
   presets: ['@dumijs/preset-vue'],
   vue: {
     checkerOptions: {
-      schema: { exclude: [/node_modules/, /mylib/] },
+      exclude: [/node_modules/, /mylib/],
     },
   },
 };
 ```
 
+关于 checkerOptions 更多的选项请查看： [`MetaCheckerOptions`](https://github.com/umijs/dumi/tree/master/suites/dumi-vue-meta/README.md#metacheckeroptions)
+
 ### tsconfigPath
 
-TypeChecker 使用的 tsconfig，默认值为 `<project-root>/tsconfig.json`
+TypeChecker 使用的 tsconfig，默认值为 `<project-root>/<directory>/tsconfig.json`
+
+> 默认情况下，如果您的项目位于 Monorepo 中，则 `<project-root>` 为 Monorepo 项目目录；而 `<directory>` 则为 `package.json` 中的 `repository.directory` 选项
+
+## directory
+
+默认情况下，该选项是 `package.json` 中的 `repository.directory` 选项
 
 ### compiler
 
