@@ -5,9 +5,8 @@ import type { IApi, IDumiTechStack } from '@/types';
 import { _setFSCacheDir } from '@/utils';
 import path from 'path';
 import { addAtomMeta, addExampleAssets } from '../assets';
-import { getLoadHook } from './makoHooks';
+import { getLoadHook } from './okamHooks';
 export const techStacks: IDumiTechStack[] = [];
-
 export default (api: IApi) => {
   api.describe({ key: 'dumi:compile' });
 
@@ -87,16 +86,19 @@ export default (api: IApi) => {
       locales: api.config.locales,
       pkg: api.pkg,
     };
+
     const mdRule = memo.module
       .rule('dumi-md')
       .type('javascript/auto')
       .test(/\.md$/);
 
     mdRule
+      .oneOf('md-null')
       .pre()
       .resourceQuery(/watch=parent/)
-      .use('raw-loader')
-      .loader(require.resolve('../../loaders/pre-raw'));
+      .use('null-loader')
+      .loader(require.resolve('../../loaders/null'))
+      .end();
 
     // generate independent oneOf rules
     ['frontmatter', 'text', 'demo-index'].forEach((type) => {
@@ -110,6 +112,7 @@ export default (api: IApi) => {
           mode: type,
         });
     });
+
     // get demo metadata for each markdown file
     mdRule
       .oneOf('md-demo')
@@ -126,6 +129,7 @@ export default (api: IApi) => {
       })
       .end()
       .end();
+
     // get page component for each markdown file
     mdRule
       .oneOf('md')
@@ -147,6 +151,7 @@ export default (api: IApi) => {
                   if ('asset' in demo) ret.push(demo.asset);
                   return ret;
                 }, []);
+
                 addExampleAssets(assets);
               },
               onResolveAtomMeta: addAtomMeta,
@@ -156,6 +161,7 @@ export default (api: IApi) => {
               builtins: api.service.themeData.builtins,
             }) as IMdLoaderOptions,
       );
+
     // get meta for each page component
     memo.module
       .rule('dumi-page')
@@ -164,6 +170,7 @@ export default (api: IApi) => {
       .resourceQuery(/frontmatter$/)
       .use('page-meta-loader')
       .loader(require.resolve('../../loaders/page'));
+
     // get pre-transform result for each external demo component
     memo.module
       .rule('dumi-demo')
@@ -174,6 +181,7 @@ export default (api: IApi) => {
       .use('demo-loader')
       .loader(require.resolve('../../loaders/demo'))
       .options({ techStacks, cwd: api.cwd } as IDemoLoaderOptions);
+
     // get raw content for demo source file
     memo.module
       .rule('dumi-raw')
@@ -185,6 +193,7 @@ export default (api: IApi) => {
       .end()
       .use('pre-raw-loader')
       .loader(require.resolve('../../loaders/pre-raw'));
+
     // enable fast-refresh for md component in development mode
     if (api.env === 'development' && memo.plugins.has('fastRefresh')) {
       memo.plugin('fastRefresh').tap(([params]) => [

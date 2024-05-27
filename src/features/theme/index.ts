@@ -461,6 +461,8 @@ export default DumiLoading;
   api.addEntryCodeAhead(() => {
     const { prefersColor } = api.config.themeConfig;
 
+    if (typeof window === 'undefined') return '';
+
     if (prefersColor.switch === false && prefersColor.default !== 'auto') {
       return `document.documentElement.setAttribute('${PREFERS_COLOR_ATTR}', '${prefersColor.default}');`;
     }
