@@ -28,7 +28,7 @@ function getCachedRouteMeta(route: IRoutesById[string]) {
         Object.keys(route.meta).forEach((key) => {
           (meta as any)[key] ??= (route.meta as any)[key];
         });
-        meta.frontmatter = deepmerge(meta.frontmatter, route.meta.frontmatter);
+        meta.frontmatter = deepmerge(meta.frontmatter, route.meta.frontmatter, { arrayMerge: (_destinationArray, sourceArray) => sourceArray });
       }
       return meta;
     };
