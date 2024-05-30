@@ -126,9 +126,14 @@ export const useNavData = () => {
     );
 
     data.forEach((item, i) => {
+      // item.link => the parent link is not in routes, but has children, will use parent.title or children.title
       if (!item.link && item.children?.length === 1) {
         // hoist nav item if only one child
-        data[i] = item.children[0];
+        const first = item.children[0];
+        data[i] = {
+          ...first,
+          title: item?.title || first.title,
+        };
       } else if (item.children) {
         // sort nav item children by order or title
         item.children.sort(sidebarDataComparer);
