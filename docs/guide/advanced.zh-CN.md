@@ -378,29 +378,31 @@ expect(screen.queryByText('Please Enter Password.')).toBeDefined()
 ```
 > 注意我们此处用的是 `queryByText`，因为 `getByText` 找不到文本将报错。
 
-更多示例以及关于 `get/query``ByText` 等 API 使用和选择可以参考 https://www.robinwieruch.de/react-testing-library/。
+更多示例以及关于 `get|queryByText` 等 API 使用和选择可以参考 https://www.robinwieruch.de/react-testing-library/。
 此处不再详述。
 
 #### 文档测试
-如果我们能对 demo 文件单测，那该多好。相当于对用户契约进行自动化保障，类比社区 Rust 的 documentation test。
+如果我们能对 demo 进行单测，那该多好。相当于对用户契约有了自动化保障，类比 Rust 的 documentation test。
 > Nothing is better than documentation with examples. But nothing is worse than examples that don't work because the code has changed since the documentation was written.
+> 
 > 没有什么比文档里面有实例更好的事情了，但如果示例有问题那就太糟糕了。因为我们的代码是随时变化的如果示例跟不上变化那就会让使用者陷入无底深渊。
+> 
 > 来自 https://doc.rust-lang.org/book/ch14-02-publishing-to-crates-io.html#documentation-comments-as-tests
 
-针对于 dumi 而言，文档测试是指我们在 markdown 中写的示例。还记得我们在 vitest.config.mjs 中配置的 alias 吗
+针对 dumi 而言，文档测试是指我们在 markdown 中写的示例。还记得我们在 vitest.config.mjs 中配置的 alias 吗
 ```js
 {
   find: 'name-in-package.json', // 组件名，package.json 的 name。目的是文档测试
-   replacement: '/src',
+  replacement: '/src',
 },
 ```
-该配置是让 demo 中 `import { App } from 'name-in-package.json'` 能正确解析的关键。
-举例说明。
+该配置是让 demo 中 `import { ComponentA } from 'name-in-package.json'` 能正确解析的关键。
+举例说明，若我们有如下文档：
 ```md
 // index.md
 <code src="./demo/app.tsx"></code>
 ```
-
+demo 内容为：
 ```tsx
 // demo/app.tsx
 import React from 'react'
@@ -413,6 +415,7 @@ export default () => {
 同理在 demo/ 下新增测试文件 demo/app.`test`.tsx：
 
 ```tsx
+// demo/app.test.tsx
 import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 
@@ -427,8 +430,9 @@ describe('Demo', () => {
 });
 ```
 
-至此我们已完成对一个组件的单测加文档测试，可以在该组件的 index.md 标题添加单测通过的 tag：
+至此我们已完成对一个组件的**单测**和**文档测试**，可以在该组件的 index.md 标题添加单测通过的 tag！
 
+index.md：
 ```diff
 - # ComponenA / 中文标题
 + # ComponenA / 中文标题 <Badge type="success">test passing</Badge>
