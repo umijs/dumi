@@ -398,7 +398,7 @@ expect(screen.queryByText('Please Enter Password.')).toBeDefined()
 
 “没有什么比带有示例的文档更好了。但是，没有什么比示例不起作用更糟糕了，因为自从编写文档以来，代码已经发生了变化。” 给我们的启发是文档中的示例可以帮助理解，但需要确保示例的代码与文档一致，传统做法是定期检查代码与文档的匹配度。我们是否还有更好的手段？那就是**文档测试**。
 
-针对 dumi 而言，文档测试是指我们在 markdown 中写的示例。还记得我们在 vitest.config.mjs 中配置的 alias 吗
+针对 dumi 而言，文档测试是指我们在 markdown 中写的示例。还记得我们在 vitest.config.mjs 中配置的 alias 吗？
 
 ```js
 {
@@ -427,7 +427,7 @@ export default () => {
 }
 ```
 
-同理在 demo/ 下新增测试文件 demo/app.`test`.tsx：
+在同目录 demo/ 下新增测试文件 demo/app.`test`.tsx：
 
 ```tsx
 // demo/app.test.tsx
