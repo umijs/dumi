@@ -79,8 +79,8 @@ toc: menu
 ### 1. 初始化 dumi 组件开发项目
 
 ```bash
-$ mkdir dumi-lib && cd dumi-lib
-$ npx @umijs/create-dumi-lib
+mkdir dumi-lib && cd dumi-lib
+npx @umijs/create-dumi-lib
 ```
 
 ### 2. 为 demo 添加资产元信息
@@ -134,8 +134,8 @@ export default () => <Foo title="First Demo" />;
 如果只是用于测试，可以用 `npm version` 来代替 `npm publish`，随后用 link 进行本地玩耍：
 
 ```bash
-$ npm run build
-$ npm version patch -m "build: bump version to %s"
+npm run build
+npm version patch -m "build: bump version to %s"
 ```
 
 ### 5. 在 Umi UI 中使用
@@ -143,10 +143,10 @@ $ npm version patch -m "build: bump version to %s"
 初始化 Umi 应用，安装 Umi UI 并 link 我们刚刚的组件库：
 
 ```bash
-$ mkdir umi-app && cd umi-app
-$ npx @umijs/create-dumi-app
-$ npm i @umijs/preset-ui -D
-$ npm link path/to/dumi/lib
+mkdir umi-app && cd umi-app
+npx @umijs/create-dumi-app
+npm i @umijs/preset-ui -D
+npm link path/to/dumi/lib
 ```
 
 在 Umi 应用的 `package.json` 中，手动添加组件库为依赖：
@@ -256,11 +256,13 @@ src
 ### 环境准备
 
 安装依赖：
+
 ```sh
 npm install vitest jsdom @testing-library/react @testing-library/jest-dom --save-dev
 ```
 
 新增文件 tests/setup.mjs，写入以下内容：
+
 ```js
 // tests/setup.js
 // @ts-check
@@ -325,17 +327,21 @@ export default defineConfig({
 ```
 
 更新 package.json，新增以下 script：
+
 ```json
 "test": "vitest",
 "ci": "vitest run --coverage",
 ```
+
 - `test`：本地写单测会用到，将 watch 单测和配置文件达到热更新的效果。
 - `ci`：ci 流程会用到或在发布前进行自动化测试，此处会读取 vitest.config.mjs 中设置的 coverage 阈值，如果低于阈值 ci 将失败。
 
 ### 书写单测
+
 下面结合例子来说明如何写一个单测。
 
 比如有如下组件，我们想测试是否能正常展示 `Hello React`。
+
 ```tsx
 // src/App.tsx
 import * as React from 'react';
@@ -350,6 +356,7 @@ export default App;
 ```
 
 新增测试文件 `src/App.test.tsx`：
+
 ```tsx {9}
 import * as React from 'react';
 import { render, screen } from '@testing-library/react';
@@ -376,33 +383,40 @@ fireEvent.click(screen.getByRole('button'))
 expect(screen.queryByText('Please Enter Username / Email.')).toBeDefined()
 expect(screen.queryByText('Please Enter Password.')).toBeDefined()
 ```
+
 > 注意我们此处用的是 `queryByText`，因为 `getByText` 找不到文本将报错。
 
-更多示例以及关于 `get|queryByText` 等 API 使用和选择可以参考 https://www.robinwieruch.de/react-testing-library/。
+更多示例以及关于 `get|queryByText` 等 API 使用和选择可以参考 <https://www.robinwieruch.de/react-testing-library/>。
 此处不再详述。
 
 #### 文档测试
+
 如果我们能对 demo 进行单测，那该多好。相当于对用户契约有了自动化保障，类比 Rust 的 documentation test。
 > Nothing is better than documentation with examples. But nothing is worse than examples that don't work because the code has changed since the documentation was written.
-> 
-> 没有什么比文档里面有实例更好的事情了，但如果示例有问题那就太糟糕了。因为我们的代码是随时变化的如果示例跟不上变化那就会让使用者陷入无底深渊。
-> 
-> 来自 https://doc.rust-lang.org/book/ch14-02-publishing-to-crates-io.html#documentation-comments-as-tests
+>
+> 来自 <https://doc.rust-lang.org/book/ch14-02-publishing-to-crates-io.html#documentation-comments-as-tests>
+
+“没有什么比带有示例的文档更好了。但是，没有什么比示例不起作用更糟糕了，因为自从编写文档以来，代码已经发生了变化。” 给我们的启发是文档中的示例可以帮助理解，但需要确保示例的代码与文档一致，传统做法是定期检查代码与文档的匹配度。我们是否还有更好的手段？那就是**文档测试**。
 
 针对 dumi 而言，文档测试是指我们在 markdown 中写的示例。还记得我们在 vitest.config.mjs 中配置的 alias 吗
+
 ```js
 {
   find: 'name-in-package.json', // 组件名，package.json 的 name。目的是文档测试
   replacement: '/src',
 },
 ```
-该配置是让 demo 中 `import { ComponentA } from 'name-in-package.json'` 能正确解析的关键。
+
+该配置是让示例代码中 `import { ComponentA } from 'name-in-package.json'` 能正确解析的关键。
 举例说明，若我们有如下文档：
+
 ```md
 // index.md
 <code src="./demo/app.tsx"></code>
 ```
+
 demo 内容为：
+
 ```tsx
 // demo/app.tsx
 import React from 'react'
@@ -412,6 +426,7 @@ export default () => {
   return <ComponentA ... />
 }
 ```
+
 同理在 demo/ 下新增测试文件 demo/app.`test`.tsx：
 
 ```tsx
@@ -433,7 +448,8 @@ describe('Demo', () => {
 至此我们已完成对一个组件的**单测**和**文档测试**，可以在该组件的 index.md 标题添加单测通过的 tag！
 
 index.md：
+
 ```diff
-- # ComponenA / 中文标题
-+ # ComponenA / 中文标题 <Badge type="success">test passing</Badge>
+- # ComponentA / 中文标题
++ # ComponentA / 中文标题 <Badge type="success">test passing</Badge>
 ```
