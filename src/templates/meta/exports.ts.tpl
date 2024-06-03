@@ -141,7 +141,7 @@ export function getRouteMetaById<T extends { syncOnly?: boolean }>(
   ? IRouteMeta
   : Promise<IRouteMeta> {
      const routeMeta: IRouteMeta = {
-      frontmatter: [],
+      frontmatter: {},
       toc: [],
       texts: [],
     };
