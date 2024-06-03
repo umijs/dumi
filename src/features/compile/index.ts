@@ -214,7 +214,6 @@ export default (api: IApi) => {
 
   api.modifyConfig((memo) => {
     if (memo.mako) {
-      console.log(memo.mako);
       memo.mako.hooks = {
         load: getLoadHook(api),
       };

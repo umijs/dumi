@@ -480,18 +480,16 @@ export default DumiLoading;
   api.addEntryCodeAhead(() => {
     const { prefersColor } = api.config.themeConfig;
 
-    if (typeof window === 'undefined') return '';
-
     if (prefersColor.switch === false && prefersColor.default !== 'auto') {
-      return `document.documentElement.setAttribute('${PREFERS_COLOR_ATTR}', '${prefersColor.default}');`;
+      return `typeof document !== 'undefined' && document.documentElement.setAttribute('${PREFERS_COLOR_ATTR}', '${prefersColor.default}');`;
     }
 
     return `(function () {
   var cache = typeof navigator !== 'undefined' && navigator.cookieEnabled && typeof window.localStorage !== 'undefined' && localStorage.getItem('dumi:prefers-color') || '${prefersColor.default}';
-  var isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  var isDark = typeof window !== 'undefined' &&  window.matchMedia('(prefers-color-scheme: dark)').matches;
   var enums = ['light', 'dark', 'auto'];
 
-  document.documentElement.setAttribute(
+  typeof document !== 'undefined' && document.documentElement.setAttribute(
     '${PREFERS_COLOR_ATTR}',
     cache === enums[2]
       ? (isDark ? enums[1] : enums[0])
