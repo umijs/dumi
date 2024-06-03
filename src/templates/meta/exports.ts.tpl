@@ -147,8 +147,8 @@ export function getRouteMetaById<T extends { syncOnly?: boolean }>(
     };
   if (filesMeta[id]) {
     const { frontmatter, toc, textGetter, tabs } = filesMeta[id];
-    routeMeta.frontmatter = frontmatter
-    routeMeta.toc = toc
+    routeMeta.frontmatter = frontmatter;
+    routeMeta.toc = toc;
 
     if (opts?.syncOnly) {
       if (tabs) {
