@@ -49,9 +49,8 @@ function getCachedRouteMeta(route: IRoutesById[string]) {
               ),
             );
           }
-        }
-        // throw promise to trigger suspense
-        if (currentCache) {
+        } else {
+          // throw promise to trigger suspense
           throw currentCache;
         }
       }
