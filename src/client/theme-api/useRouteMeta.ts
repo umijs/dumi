@@ -46,8 +46,11 @@ function getCachedRouteMeta(route: IRoutesById[string]) {
               (full) => cache.set(cacheKey, merge(full)).get(cacheKey)!,
             ),
           );
-          // throw promise to trigger suspense
-          throw asyncCache.get(cacheKey);
+        }
+        // throw promise to trigger suspense
+        const currentCache = asyncCache.get(cacheKey);
+        if (currentCache) {
+          throw currentCache;
         }
       }
 
