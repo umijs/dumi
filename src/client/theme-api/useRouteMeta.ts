@@ -50,8 +50,9 @@ function getCachedRouteMeta(route: IRoutesById[string]) {
           }
         }
         // throw promise to trigger suspense
-        if (asyncCache.get(cacheKey)) {
-          throw asyncCache.get(cacheKey);
+        const currentCache = asyncCache.get(cacheKey);
+        if (currentCache) {
+          throw currentCache;
         }
       }
 
