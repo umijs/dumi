@@ -138,17 +138,16 @@ export function getRouteMetaById<T extends { syncOnly?: boolean }>(
   id: string,
   opts?: T,
 ): T extends { syncOnly: true }
-  ? IRouteMeta
-  : Promise<IRouteMeta> {
-     const routeMeta: IRouteMeta = {
-      frontmatter: {},
-      toc: [],
-      texts: [],
-    };
+  ? IRouteMeta | undefined
+  : Promise<IRouteMeta> | undefined {
+     
   if (filesMeta[id]) {
     const { frontmatter, toc, textGetter, tabs } = filesMeta[id];
-    routeMeta.frontmatter = frontmatter;
-    routeMeta.toc = toc;
+    const routeMeta: IRouteMeta = {
+      frontmatter,
+      toc,
+      texts: [],
+    };
 
     if (opts?.syncOnly) {
       if (tabs) {
@@ -176,10 +175,6 @@ export function getRouteMetaById<T extends { syncOnly?: boolean }>(
       });
     }
   }
-  if (opts?.syncOnly) {
-    return routeMeta;
-  } 
-  return Promise.resolve(routeMeta);
 }
 
 /**
