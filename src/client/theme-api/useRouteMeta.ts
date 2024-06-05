@@ -37,8 +37,7 @@ function getCachedRouteMeta(route: IRoutesById[string]) {
     const meta = merge(getRouteMetaById(route.id, { syncOnly: true }));
     const proxyGetter = (target: any, prop: string) => {
       if (ASYNC_META_PROPS.includes(prop)) {
-        const currentCache = asyncCache.get(cacheKey);
-        if (!currentCache) {
+        if (!asyncCache.get(cacheKey)) {
           const routeMetaPromise = getRouteMetaById(route.id);
           // load async meta then replace cache
           if (routeMetaPromise) {
@@ -49,9 +48,10 @@ function getCachedRouteMeta(route: IRoutesById[string]) {
               ),
             );
           }
-        } else {
-          // throw promise to trigger suspense
-          throw currentCache;
+        }
+        // throw promise to trigger suspense
+        if (asyncCache.get(cacheKey)) {
+          throw asyncCache.get(cacheKey);
         }
       }
 
