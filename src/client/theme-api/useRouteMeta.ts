@@ -52,7 +52,6 @@ function getCachedRouteMeta(route: IRoutesById[string]) {
         // throw promise to trigger suspense
         const currentCache = asyncCache.get(cacheKey);
         if (currentCache) {
-          // @todo
           throw currentCache;
         }
       }
