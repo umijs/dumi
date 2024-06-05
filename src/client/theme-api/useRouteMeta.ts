@@ -28,25 +28,27 @@ function getCachedRouteMeta(route: IRoutesById[string]) {
         Object.keys(route.meta).forEach((key) => {
           (meta as any)[key] ??= (route.meta as any)[key];
         });
-        meta.frontmatter = deepmerge(meta.frontmatter, route.meta.frontmatter, { arrayMerge: (_destinationArray, sourceArray) => sourceArray });
+        meta.frontmatter = deepmerge(meta.frontmatter, route.meta.frontmatter, {
+          arrayMerge: (_destinationArray, sourceArray) => sourceArray,
+        });
       }
       return meta;
     };
     const meta = merge(getRouteMetaById(route.id, { syncOnly: true }));
     const proxyGetter = (target: any, prop: string) => {
       if (ASYNC_META_PROPS.includes(prop)) {
-        if (!asyncCache.get(cacheKey)) {
+        const routeMetaPromise = getRouteMetaById(route.id);
+        if (!asyncCache.get(cacheKey) && routeMetaPromise) {
           // load async meta then replace cache
           asyncCache.set(
             cacheKey,
-            getRouteMetaById(route.id)!.then(
+            routeMetaPromise.then(
               (full) => cache.set(cacheKey, merge(full)).get(cacheKey)!,
             ),
           );
+          // throw promise to trigger suspense
+          throw asyncCache.get(cacheKey);
         }
-
-        // throw promise to trigger suspense
-        throw asyncCache.get(cacheKey);
       }
 
       return target[prop];
@@ -61,7 +63,6 @@ function getCachedRouteMeta(route: IRoutesById[string]) {
     const ret = new Proxy(meta, {
       get: proxyGetter,
     });
-
     cache.set(cacheKey, ret);
   }
 
