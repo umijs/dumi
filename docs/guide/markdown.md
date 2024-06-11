@@ -172,6 +172,7 @@ features:
     <li>
       src
       <ul>
+        <li>directory <ul></ul></li>
         <li>index.md</li>
       </ul>
     </li>
@@ -187,6 +188,7 @@ features:
     <li>
       src
       <ul>
+        <li>directory <ul></ul></li>
         <li>index.md</li>
       </ul>
     </li>
@@ -203,6 +205,11 @@ features:
       src
 +     <small>这是 src 文件夹</small>
       <ul>
+        <li>
+          directory
++         <small>没有子项的文件夹</small>
+          <ul></ul>
+        </li>
         <li>
           index.md
 +         <small>这是 index.md</small>
@@ -225,6 +232,11 @@ features:
       src
       <small>这是 src 文件夹</small>
       <ul>
+        <li>
+          directory
+          <small>没有子项的文件夹</small>
+          <ul></ul>
+        </li>
         <li>
           index.md
           <small>这是 index.md</small>

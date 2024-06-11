@@ -32,15 +32,23 @@ function getTreeFromList(nodes: ReactNode, prefix = '') {
       }
 
       case 'li': {
-        const liLeafs = getTreeFromList(node.props.children, key);
-
+        const hasEmptyUl = node.props.children?.some?.(
+          (child) => child.type === 'ul' && !child.props.children?.length,
+        );
+        const title = ([] as ReactNode[])
+          .concat(node.props.children)
+          .filter((child) => child.type !== 'ul');
+        const children = hasEmptyUl
+          ? []
+          : getTreeFromList(node.props.children, key);
         data.push({
-          title: ([] as ReactNode[])
-            .concat(node.props.children)
-            .filter((child) => child.type !== 'ul'),
+          title,
           key,
-          children: liLeafs,
-          isLeaf: !liLeafs.length,
+          children,
+          isLeaf: !hasEmptyUl && !children.length,
+          switcherIcon: hasEmptyUl ? (
+            <span className="tree-switcher-leaf-line" />
+          ) : undefined,
         });
         break;
       }
@@ -63,7 +71,7 @@ const useListToTree = (nodes: ReactNode) => {
 };
 
 const getIcon = (props: TreeNodeProps<DataNode>) => {
-  const { isLeaf, expanded } = props;
+  const { isLeaf, expanded, data } = props;
   if (isLeaf) {
     return (
       <span className="dumi-default-tree-icon">
@@ -71,13 +79,13 @@ const getIcon = (props: TreeNodeProps<DataNode>) => {
       </span>
     );
   }
-  return expanded ? (
+  return !expanded || !data?.children?.length ? (
     <span className="dumi-default-tree-icon">
-      <FolderOpenOutlined fill="currentColor" />
+      <FolderOutlined fill="currentColor" />
     </span>
   ) : (
     <span className="dumi-default-tree-icon">
-      <FolderOutlined fill="currentColor" />
+      <FolderOpenOutlined fill="currentColor" />
     </span>
   );
 };
@@ -85,16 +93,16 @@ const getIcon = (props: TreeNodeProps<DataNode>) => {
 const renderSwitcherIcon = (props: TreeNodeProps<DataNode>) => {
   const { isLeaf, expanded } = props;
   if (isLeaf) {
-    return <span className={`tree-switcher-leaf-line`} />;
+    return <span className="tree-switcher-leaf-line" />;
   }
   return expanded ? (
-    <span className={`tree-switcher-line-icon`}>
+    <span className="tree-switcher-line-icon">
       <span className="dumi-default-tree-icon">
         <MinusSquareOutlined fill="currentColor" />
       </span>
     </span>
   ) : (
-    <span className={`tree-switcher-line-icon`}>
+    <span className="tree-switcher-line-icon">
       <span className="dumi-default-tree-icon">
         <PlusSquareOutlined fill="currentColor" />
       </span>
@@ -142,8 +150,14 @@ export default (props: ComponentProps<'div'>) => {
     node: EventDataNode<any>,
   ) => {
     const { isLeaf } = node;
-
-    if (isLeaf || event.shiftKey || event.metaKey || event.ctrlKey) {
+    const isEmptyUl = !isLeaf && !node.children?.length;
+    if (
+      isLeaf ||
+      isEmptyUl ||
+      event.shiftKey ||
+      event.metaKey ||
+      event.ctrlKey
+    ) {
       return;
     }
     treeRef.current!.onNodeExpand(event as any, node);
