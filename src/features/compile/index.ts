@@ -213,7 +213,8 @@ export default (api: IApi) => {
   });
 
   api.modifyConfig((memo) => {
-    if (memo.mako) {
+    if (memo.mako || memo.ssr?.builder === 'mako') {
+      memo.mako ??= {};
       memo.mako.plugins = [
         {
           load: getLoadHook(api),

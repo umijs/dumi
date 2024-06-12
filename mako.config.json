@@ -4,5 +4,9 @@
   },
   "watch": {
     "ignorePaths": ["examples", "suites"]
+  },
+  "optimization": {
+    "skipModules": false,
+    "concatenateModules": false
   }
 }
