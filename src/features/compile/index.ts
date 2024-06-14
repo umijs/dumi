@@ -111,11 +111,6 @@ export default (api: IApi) => {
     mdRule
       .oneOf('md-demo')
       .resourceQuery(/demo$/)
-      // .resolve.byDependency.set('commonjs', {
-      //   conditionNames: ['require', 'node', 'import'],
-      // })
-      // .end()
-      // .end()
       .use('babel-loader')
       .loader(babelInUmi.loader)
       .options(babelInUmi.options)
