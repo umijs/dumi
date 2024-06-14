@@ -9,13 +9,18 @@ export function getConfig(config: Config, api: IApi) {
   const babelInUmi = config.module.rule('src').use('babel-loader').entries();
 
   // react jsx rules will only include the .dumi directory
-  config.module.rule('jsx-ts-tsx').include.add(dumiSrc).end();
+  config.module
+    .rule('jsx-ts-tsx')
+    .include.add(dumiSrc)
+    .add(/node_modules/)
+    .end();
 
   // Vue3 tsx support
   config.module
     .rule('vue-jsx-tsx')
     .test(/\.(jsx|ts|tsx)$/)
     .exclude.add(dumiSrc)
+    .add(/node_modules/) // limitation: vue jsx/tsx cannot be imported directly from node_modules
     .end()
     .use('babel-loader')
     .loader(babelInUmi.loader)
