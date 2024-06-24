@@ -72,11 +72,6 @@ export default (api: IApi) => {
     const babelInUmi = memo.module.rule('src').use('babel-loader').entries();
     const loaderPath = require.resolve('../../loaders/markdown');
 
-    // support require mjs packages(eg. element-plus/es)
-    // memo.resolve.byDependency.set('commonjs', {
-    //   conditionNames: ['require', 'node', 'import'],
-    // });
-
     const loaderBaseOpts: Partial<IMdLoaderOptions> = {
       techStacks,
       cwd: api.cwd,
@@ -111,12 +106,6 @@ export default (api: IApi) => {
     mdRule
       .oneOf('md-demo')
       .resourceQuery(/demo$/)
-      // support require mjs packages(eg. element-plus/es)
-      .resolve.byDependency.set('commonjs', {
-        conditionNames: ['require', 'node', 'import'],
-      })
-      .end()
-      .end()
       .use('babel-loader')
       .loader(babelInUmi.loader)
       .options(babelInUmi.options)

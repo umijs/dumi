@@ -53,15 +53,16 @@ const demosCache = new Map<string, Promise<IDemoData | undefined>>();
  * why not do this in compile-time?
  * asset metadata also has extension and for reduce bundle size
  */
-function expandDemoContext(context?: IDemoData['context']) {
+ async function expandDemoContext(context?: IDemoData['context']) {
   if (context) {
-    Object.keys(context).forEach((src) => {
+    const srcs = Object.keys(context);
+    for (const src of srcs) {
+      context[src] = await context[src];
       const withoutExt = src.match(/^(.+)\.(js|jsx|ts|tsx|json)$/)?.[1];
-
       if (withoutExt && !context[withoutExt]) {
         context[withoutExt] = context[src];
       }
-    });
+    }
   }
 }
 
@@ -75,7 +76,6 @@ export function useDemo(id: string): IDemoData | undefined {
       demoIdMap[id]?.().then(({ demos }) => {
         // expand context for omit ext
         expandDemoContext(demos[id].context);
-
         return demos[id];
       }),
     );
@@ -140,7 +140,7 @@ export function getRouteMetaById<T extends { syncOnly?: boolean }>(
 ): T extends { syncOnly: true }
   ? IRouteMeta | undefined
   : Promise<IRouteMeta> | undefined {
-     
+
   if (filesMeta[id]) {
     const { frontmatter, toc, textGetter, tabs } = filesMeta[id];
     const routeMeta: IRouteMeta = {
