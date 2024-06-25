@@ -26,8 +26,8 @@ Powered by self`,
     },
   },
   ...(process.env.NODE_ENV === 'development'
-    ? { ssr: { builder: 'mako' } }
-    : { ssr: {} }),
+    ? {}
+    : { ssr: { builder: 'mako' } }),
   analytics: {
     ga_v2: 'G-GX2S89BMXB',
   },
