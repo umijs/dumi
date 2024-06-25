@@ -3,6 +3,7 @@ import { version } from './package.json';
 
 export default defineConfig({
   html2sketch: {},
+  mako: {},
   favicons: [
     'https://gw.alipayobjects.com/zos/bmw-prod/d3e3eb39-1cd7-4aa5-827c-877deced6b7e/lalxt4g3_w256_h256.png',
   ],
@@ -24,7 +25,9 @@ Powered by self`,
       github: 'https://github.com/umijs/dumi',
     },
   },
-  ...(process.env.NODE_ENV === 'development' ? {} : { ssr: {} }),
+  ...(process.env.NODE_ENV === 'development'
+    ? { ssr: { builder: 'mako' } }
+    : { ssr: {} }),
   analytics: {
     ga_v2: 'G-GX2S89BMXB',
   },

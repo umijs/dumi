@@ -127,6 +127,10 @@ export const getLoadHook = (api: IApi) => {
         resource: filePath,
         loaders: [
           {
+            loader: require.resolve('../../loaders/post-raw'),
+            options: {},
+          },
+          {
             loader: require.resolve('raw-loader'),
             options: {},
           },
