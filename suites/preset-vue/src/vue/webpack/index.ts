@@ -9,10 +9,10 @@ export default function (api: IApi) {
       const msfuConfig = memo.mfsu || {};
       memo.mfsu = {
         ...msfuConfig,
-        exclude: [
-          ...(msfuConfig.exclude || []),
-          'vue', // Avoid multiple vue instances
-        ],
+        shared: {
+          ...msfuConfig.shared,
+          vue: { singleton: true },
+        },
         chainWebpack(config: Config) {
           getConfig(config, api);
           return config;
