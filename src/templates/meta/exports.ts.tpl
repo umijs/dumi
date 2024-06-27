@@ -140,7 +140,6 @@ export function getRouteMetaById<T extends { syncOnly?: boolean }>(
 ): T extends { syncOnly: true }
   ? IRouteMeta | undefined
   : Promise<IRouteMeta> | undefined {
-     
   if (filesMeta[id]) {
     const { frontmatter, toc, textGetter, tabs } = filesMeta[id];
     const routeMeta: IRouteMeta = {
@@ -148,41 +147,42 @@ export function getRouteMetaById<T extends { syncOnly?: boolean }>(
       toc,
       texts: [],
     };
-  if (filesMeta[id]) {
-    const { frontmatter, toc, textGetter, tabs } = filesMeta[id];
-    routeMeta.frontmatter = frontmatter;
-    routeMeta.toc = toc;
+    if (filesMeta[id]) {
+      const { frontmatter, toc, textGetter, tabs } = filesMeta[id];
+      routeMeta.frontmatter = frontmatter;
+      routeMeta.toc = toc;
 
-    if (opts?.syncOnly) {
-      if (tabs) {
-        routeMeta.tabs = tabs.map((tabId) =>
-          genTab(tabId, getRouteMetaById(tabId, opts)),
-        );
-      }
-
-      return routeMeta;
-    } else {
-      return new Promise(async (resolve) => {
-        if (textGetter) {
-          ({ texts: routeMeta.texts } = await textGetter());
-        }
-
+      if (opts?.syncOnly) {
         if (tabs) {
-          routeMeta.tabs = await Promise.all(
-            tabs.map(async (tabId) =>
-              genTab(tabId, await getRouteMetaById(tabId, opts)),
-            ),
+          routeMeta.tabs = tabs.map((tabId) =>
+            genTab(tabId, getRouteMetaById(tabId, opts)),
           );
         }
 
-        resolve(routeMeta);
-      });
+        return routeMeta;
+      } else {
+        return new Promise(async (resolve) => {
+          if (textGetter) {
+            ({ texts: routeMeta.texts } = await textGetter());
+          }
+
+          if (tabs) {
+            routeMeta.tabs = await Promise.all(
+              tabs.map(async (tabId) =>
+                genTab(tabId, await getRouteMetaById(tabId, opts)),
+              ),
+            );
+          }
+
+          resolve(routeMeta);
+        });
+      }
     }
+    if (opts?.syncOnly) {
+      return routeMeta;
+    }
+    return Promise.resolve(routeMeta);
   }
-  if (opts?.syncOnly) {
-    return routeMeta;
-  } 
-  return Promise.resolve(routeMeta);
 }
 
 /**
