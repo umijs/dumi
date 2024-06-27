@@ -16,6 +16,6 @@ export default function demoLoader(this: any, raw: string) {
     type: 'external',
     fileAbsPath: this.resourcePath,
   });
-  code = code + `import '${winPath(this.resourcePath)}?watch=parent';`;
+  code = `import '${winPath(this.resourcePath)}?watch=parent';${code}`;
   return code;
 }
