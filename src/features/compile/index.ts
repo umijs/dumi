@@ -5,10 +5,9 @@ import type { IApi, IDumiTechStack } from '@/types';
 import { _setFSCacheDir } from '@/utils';
 import path from 'path';
 import { addAtomMeta, addExampleAssets } from '../assets';
-
+import { getLoadHook } from './makoHooks';
+export const techStacks: IDumiTechStack[] = [];
 export default (api: IApi) => {
-  const techStacks: IDumiTechStack[] = [];
-
   api.describe({ key: 'dumi:compile' });
 
   // register react tech stack by default
@@ -68,8 +67,13 @@ export default (api: IApi) => {
   );
 
   // configure loader to compile markdown
+  api.modifyConfig((memo) => {
+    memo.mfsu = false;
+    return memo;
+  });
   api.chainWebpack(async (memo) => {
     const babelInUmi = memo.module.rule('src').use('babel-loader').entries();
+    if (!babelInUmi) return memo;
     const loaderPath = require.resolve('../../loaders/markdown');
 
     const loaderBaseOpts: Partial<IMdLoaderOptions> = {
@@ -88,6 +92,14 @@ export default (api: IApi) => {
       .rule('dumi-md')
       .type('javascript/auto')
       .test(/\.md$/);
+
+    mdRule
+      .oneOf('md-null')
+      .pre()
+      .resourceQuery(/watch=parent/)
+      .use('null-loader')
+      .loader(require.resolve('../../loaders/null'))
+      .end();
 
     // generate independent oneOf rules
     ['frontmatter', 'text', 'demo-index'].forEach((type) => {
@@ -193,5 +205,20 @@ export default (api: IApi) => {
       ]);
     }
     return memo;
+  });
+
+  api.modifyConfig({
+    before: 'mako',
+    fn: (memo) => {
+      if (memo.mako || memo.ssr?.builder === 'mako') {
+        memo.mako ??= {};
+        memo.mako.plugins = [
+          {
+            load: getLoadHook(api),
+          },
+        ];
+      }
+      return memo;
+    },
   });
 };

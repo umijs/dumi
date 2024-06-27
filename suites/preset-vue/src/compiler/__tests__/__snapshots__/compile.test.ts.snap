@@ -168,7 +168,6 @@ const __sfc__ = Object.assign(__default__, {
         onClick: _ctx.log
       }, {
         default: _withCtx(() => [_createTextVNode(_toDisplayString(msg.value), 1 /* TEXT */)]),
-
         _: 1 /* STABLE */
       }, 8 /* PROPS */, [\\"onClick\\"]);
     };

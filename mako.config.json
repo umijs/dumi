@@ -1,0 +1,10 @@
+{
+  "watch": {
+    "ignorePaths": ["examples", "suites"]
+  },
+  "moduleIdStrategy": "named",
+  "optimization": {
+    "skipModules": false,
+    "concatenateModules": false
+  }
+}

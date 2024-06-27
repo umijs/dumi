@@ -1,0 +1,953 @@
+/*!
+ * Project: Heti
+ * URL: https://github.com/sivan/heti
+ * Author: Sivan [sun.sivan@gmail.com]
+ */
+@font-face {
+  font-family: 'Heti Hei';
+  src: 'Heti Hei SC', 'Heti Hei TC', 'Heti Hei JP', 'Heti Hei KR';
+}
+@font-face {
+  font-family: 'Heti Hei SC';
+  src: local('PingFang SC Regular'), local('Heiti SC Regular'),
+    local('Microsoft YaHei'), local('Source Han Sans CN Regular'),
+    local('Noto Sans CJK SC Regular'), local('WenQuanYi Micro Hei'),
+    local('Droid Sans Fallback');
+}
+@font-face {
+  font-family: 'Heti Hei TC';
+  src: local('PingFang TC Regular'), local('Heiti TC Regular'),
+    local('Microsoft Jhenghei'), local('Source Han Sans HK Regular'),
+    local('Source Han Sans TW Regular'), local('Noto Sans CJK TC Regular'),
+    local('WenQuanYi Micro Hei'), local('Droid Sans Fallback');
+}
+@font-face {
+  font-family: 'Heti Hei JP';
+  src: local('Hiragino Sans GB W3'), local('Source Han Sans JP Regular'),
+    local('Noto Sans CJK JP Regular'), local('Droid Sans Fallback');
+}
+@font-face {
+  font-family: 'Heti Hei KR';
+  src: local('Source Han Sans KR Regular'), local('Noto Sans CJK KR Regular'),
+    local('Droid Sans Fallback');
+}
+@font-face {
+  font-family: 'Heti Hei';
+  font-weight: 200;
+  src: 'Heti Hei SC Light', 'Heti Hei TC Light', 'Heti Hei JP Light',
+    'Heti Hei KR Light';
+}
+@font-face {
+  font-family: 'Heti Hei SC Light';
+  font-weight: 200;
+  src: local('PingFang SC Light'), local('Heiti SC Light'),
+    'Heti Hei SC Light Fallback', local('Source Han Sans CN Light'),
+    local('Noto Sans CJK SC Light');
+}
+@font-face {
+  font-family: 'Heti Hei TC Light';
+  font-weight: 200;
+  src: local('PingFang TC Light'), local('Heiti TC Light'),
+    local('Microsoft Jhenghei Light'), local('Source Han Sans HK Light'),
+    local('Source Han Sans TW Light'), local('Noto Sans CJK TC Light');
+}
+@font-face {
+  font-family: 'Heti Hei JP Light';
+  font-weight: 200;
+  src: local('Source Han Sans JP Light'), local('Noto Sans CJK JP Light');
+}
+@font-face {
+  font-family: 'Heti Hei KR Light';
+  font-weight: 200;
+  src: local('Source Han Sans KR Light'), local('Noto Sans CJK KR Light');
+}
+@font-face {
+  font-family: 'Heti Hei SC Light Fallback';
+  font-weight: 200;
+  src: local('Microsoft YaHei'), local('Droid Sans Fallback');
+}
+@font-face {
+  font-family: 'Heti Hei';
+  font-weight: 600;
+  src: 'Heti Hei SC Bold', 'Heti Hei TC Bold', 'Heti Hei JP Bold',
+    'Heti Hei KR Bold';
+}
+@font-face {
+  font-family: 'Heti Hei SC Bold';
+  font-weight: 600;
+  src: local('PingFang SC Medium'), local('Heiti SC Medium'),
+    'Heti Hei SC Bold Fallback', local('Source Han Sans CN Bold'),
+    local('Noto Sans CJK SC Bold');
+}
+@font-face {
+  font-family: 'Heti Hei TC Bold';
+  font-weight: 600;
+  src: local('PingFang TC Medium'), local('Heiti TC Medium'),
+    local('Microsoft Jhenghei Bold'), local('Source Han Sans HK Bold'),
+    local('Source Han Sans TW Bold'), local('Noto Sans CJK TC Bold');
+}
+@font-face {
+  font-family: 'Heti Hei JP Bold';
+  font-weight: 600;
+  src: local('Hiragino Sans GB W6'), local('Source Han Sans JP Bold'),
+    local('Noto Sans CJK JP Bold');
+}
+@font-face {
+  font-family: 'Heti Hei KR Bold';
+  font-weight: 600;
+  src: local('Source Han Sans KR Bold'), local('Noto Sans CJK KR Bold');
+}
+@font-face {
+  font-family: 'Heti Hei SC Bold Fallback';
+  font-weight: 600;
+  src: local('Microsoft YaHei'), local('Droid Sans Fallback');
+}
+@font-face {
+  font-family: 'Heti Hei Black';
+  font-weight: 800;
+  src: 'Heti Hei SC Black', 'Heti Hei TC Black', 'Heti Hei JP Black',
+    'Heti Hei KR Black';
+}
+@font-face {
+  font-family: 'Heti Hei SC Black';
+  font-weight: 800;
+  src: local('Lantinghei SC Heavy'), local('PingFang SC Semibold'),
+    local('Heiti SC Medium'), 'Heti Hei SC Black Fallback',
+    local('Source Han Sans CN Heavy'), local('Noto Sans CJK SC Heavy');
+}
+@font-face {
+  font-family: 'Heti Hei TC Black';
+  font-weight: 800;
+  src: local('Lantinghei TC Heavy'), local('PingFang TC Semibold'),
+    local('Heiti TC Medium'), local('Microsoft Jhenghei Bold'),
+    local('Source Han Sans HK Heavy'), local('Source Han Sans TW Heavy'),
+    local('Noto Sans CJK TC Heavy');
+}
+@font-face {
+  font-family: 'Heti Hei JP Black';
+  font-weight: 800;
+  src: local('Hiragino Sans GB W6'), local('Source Han Sans JP Heavy'),
+    local('Noto Sans CJK JP Heavy');
+}
+@font-face {
+  font-family: 'Heti Hei KR Black';
+  font-weight: 800;
+  src: local('Source Han Sans KR Heavy'), local('Noto Sans CJK KR Heavy');
+}
+@font-face {
+  font-family: 'Heti Hei SC Black Fallback';
+  font-weight: 800;
+  src: local('Microsoft YaHei'), local('Droid Sans Fallback');
+}
+@font-face {
+  font-family: 'Heti Song';
+  src: local('Songti SC Regular'), local('Songti TC Regular'), local('SimSun');
+}
+@font-face {
+  font-family: 'Heti Song';
+  font-weight: 200;
+  src: local('Songti SC Light'), local('Songti TC Light'),
+    'Heti Song Light Fallback';
+}
+@font-face {
+  font-family: 'Heti Song Light Fallback';
+  font-weight: 200;
+  src: local('SimSun');
+}
+@font-face {
+  font-family: 'Heti Song';
+  font-weight: 600;
+  src: local('Songti SC Bold'), local('Songti TC Bold'),
+    'Heti Song Bold Fallback';
+}
+@font-face {
+  font-family: 'Heti Song Bold Fallback';
+  font-weight: 600;
+  src: local('SimSun');
+}
+@font-face {
+  font-family: 'Heti Song Black';
+  font-weight: 800;
+  src: local('Songti SC Black'), local('SimSun');
+}
+@font-face {
+  font-family: 'Heti Kai';
+  src: local('Kaiti SC Regular'), local('Kaiti TC Regular'), local('STKaiti'),
+    local('Kaiti'), local('BiauKai');
+}
+@font-face {
+  font-family: 'Heti Kai';
+  font-weight: 600;
+  src: local('Kaiti SC Bold'), local('Kaiti TC Bold');
+}
+@font-face {
+  font-family: 'Heti Kai Bold Fallback';
+  font-weight: 600;
+  src: local('STKaiti'), local('Kaiti') local('BiauKai');
+}
+@font-face {
+  font-family: 'Heti Kai Black';
+  font-weight: 800;
+  src: local('Kaiti SC Black'), local('Kaiti TC Black'), local('STKaiti'),
+    local('Kaiti');
+}
+.markdown {
+  max-width: 100%;
+  font-size: 16px;
+  font-weight: 400;
+  -webkit-font-smoothing: subpixel-antialiased;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
+  letter-spacing: 0.02em;
+}
+.markdown::before,
+.markdown::after {
+  content: '';
+  display: table;
+}
+.markdown::after {
+  clear: both;
+}
+.markdown > *:first-child,
+.markdown section > *:first-child,
+.markdown td > *:first-child {
+  margin-block-start: 0 !important;
+}
+.markdown > *:last-child,
+.markdown section > *:last-child,
+.markdown td > *:last-child {
+  margin-block-end: 0 !important;
+}
+.markdown blockquote {
+  margin-block-start: 12px;
+  margin-block-end: 24px;
+  margin-inline-start: 32px;
+  margin-inline-end: 32px;
+  padding-block-start: 12px;
+  padding-block-end: 12px;
+  padding-inline-start: 16px;
+  padding-inline-end: 16px;
+  background-color: rgba(0, 0, 0, 0.054);
+}
+@media (prefers-color-scheme: dark) {
+  .markdown blockquote {
+    background-color: rgba(255, 255, 255, 0.054);
+  }
+}
+.markdown figure {
+  display: block;
+  text-align: center;
+}
+.markdown figure > img {
+  display: block;
+  margin-inline-start: auto;
+  margin-inline-end: auto;
+}
+.markdown hr {
+  width: 30%;
+  height: 1px;
+  margin-block-start: 48px;
+  margin-block-end: 47px;
+  margin-inline-start: auto;
+  margin-inline-end: auto;
+  border: 0;
+  background-color: #ccc;
+}
+@media (prefers-color-scheme: dark) {
+  .markdown hr {
+    background-color: #404040;
+  }
+}
+.markdown p {
+  margin-block-start: 12px;
+  margin-block-end: 24px;
+  text-align: justify;
+}
+.markdown p:not(:lang(zh)):not(:lang(ja)):not(:lang(ko)),
+.markdown p:not(:lang(zh)) {
+  text-align: start;
+}
+.markdown pre {
+  margin-block-start: 12px;
+  margin-block-end: 12px;
+  margin-inline-start: 0;
+  margin-inline-end: 0;
+  padding-block-start: 12px;
+  padding-block-end: 12px;
+  padding-inline-start: 16px;
+  padding-inline-end: 16px;
+  overflow: auto;
+  font-family: 'SFMono-Regular', consolas, 'Liberation Mono', menlo, courier,
+    monospace, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  white-space: pre;
+  word-wrap: normal;
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.054);
+}
+@media (prefers-color-scheme: dark) {
+  .markdown pre {
+    background-color: rgba(255, 255, 255, 0.054);
+  }
+}
+.markdown pre code {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background-color: rgba(0, 0, 0, 0);
+  color: inherit;
+}
+.markdown:not(:lang(zh)):not(:lang(ja)):not(:lang(ko)),
+.markdown:not(:lang(zh)) {
+  letter-spacing: 0;
+}
+.markdown a,
+.markdown abbr,
+.markdown code,
+.markdown heti-spacing,
+.markdown [lang='en-US'] {
+  letter-spacing: normal;
+}
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+  position: relative;
+  margin: 0;
+  margin-block-start: 24px;
+  margin-block-end: 12px;
+  font-weight: 600;
+}
+.markdown h1 {
+  margin-block-end: 24px;
+  font-size: 32px;
+  line-height: 48px;
+}
+.markdown h2 {
+  font-size: 24px;
+  line-height: 36px;
+}
+.markdown h3 {
+  font-size: 20px;
+  line-height: 36px;
+}
+.markdown h4 {
+  font-size: 18px;
+  line-height: 24px;
+}
+.markdown h5 {
+  font-size: 16px;
+  line-height: 24px;
+}
+.markdown h6 {
+  font-size: 14px;
+  line-height: 24px;
+}
+.markdown h1,
+.markdown h2,
+.markdown h3 {
+  letter-spacing: 0.05em;
+}
+.markdown h1:not(:lang(zh)):not(:lang(ja)):not(:lang(ko)),
+.markdown h1:not(:lang(zh)),
+.markdown h2:not(:lang(zh)):not(:lang(ja)):not(:lang(ko)),
+.markdown h2:not(:lang(zh)),
+.markdown h3:not(:lang(zh)):not(:lang(ja)):not(:lang(ko)),
+.markdown h3:not(:lang(zh)) {
+  letter-spacing: 0;
+}
+.markdown h1 + h2,
+.markdown h2 + h3,
+.markdown h3 + h4,
+.markdown h4 + h5,
+.markdown h5 + h6 {
+  margin-block-start: 12px;
+}
+.markdown ul,
+.markdown ol,
+.markdown dl {
+  margin-block-start: 12px;
+  margin-block-end: 24px;
+}
+.markdown ul,
+.markdown ol {
+  padding-inline-start: 32px;
+}
+.markdown ul ul,
+.markdown ul ol,
+.markdown ol ul,
+.markdown ol ol {
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+.markdown ul {
+  list-style-type: disc;
+}
+.markdown ol {
+  list-style-type: decimal;
+}
+.markdown ul ul,
+.markdown ol ul {
+  list-style-type: circle;
+}
+.markdown ul ul ul,
+.markdown ul ol ul,
+.markdown ol ul ul,
+.markdown ol ol ul {
+  list-style-type: square;
+}
+.markdown li {
+  list-style-type: unset;
+}
+.markdown table {
+  box-sizing: border-box;
+  table-layout: fixed;
+  margin-block-start: 12px;
+  margin-block-end: 24px;
+  margin-inline-start: auto;
+  margin-inline-end: auto;
+  border-collapse: collapse;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #ccc;
+  word-break: break-word;
+}
+@media (prefers-color-scheme: dark) {
+  .markdown table {
+    border-color: #404040;
+  }
+}
+.markdown th,
+.markdown td {
+  padding-block-start: 6px;
+  padding-block-end: 6px;
+  padding-inline-start: 8px;
+  padding-inline-end: 8px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #ccc;
+}
+@media (prefers-color-scheme: dark) {
+  .markdown th,
+  .markdown td {
+    border-color: #404040;
+  }
+}
+.markdown caption {
+  caption-side: bottom;
+  margin-block-start: 2px;
+  margin-block-end: -4px;
+  font-size: 14px;
+  line-height: 24px;
+}
+.markdown a {
+  text-decoration: none;
+}
+.markdown a:hover {
+  padding-block-end: 1px;
+  border-block-end: 1px solid currentColor;
+  text-decoration: none;
+}
+.markdown abbr[title] {
+  padding-block-end: 1px;
+  border-block-end: 1px dotted;
+  text-decoration: none;
+  cursor: help;
+}
+.markdown b,
+.markdown strong {
+  font-weight: 600;
+}
+.markdown code {
+  margin-inline-start: 0.25em;
+  margin-inline-end: 0.25em;
+  font-family: 'SFMono-Regular', consolas, 'Liberation Mono', menlo, courier,
+    monospace, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-size: 0.875em;
+}
+.markdown dfn {
+  font-weight: 600;
+}
+.markdown dfn:not(:lang(zh)):not(:lang(ja)):not(:lang(ko)),
+.markdown dfn:not(:lang(zh)) {
+  font-weight: 400;
+}
+.markdown em {
+  font-weight: 600;
+}
+.markdown figcaption {
+  display: inline-block;
+  vertical-align: top;
+  font-size: 14px;
+  text-align: start;
+}
+.markdown i {
+  font-style: italic;
+}
+.markdown ins,
+.markdown u {
+  padding-block-end: 1px;
+  border-block-end: 1px solid;
+  text-decoration: none;
+}
+.markdown mark {
+  padding-block-start: 2px;
+  padding-block-end: 2px;
+  padding-inline-start: 1px;
+  padding-inline-end: 1px;
+  margin-inline-start: 1px;
+  margin-inline-end: 1px;
+  background-color: rgba(255, 247, 0, 0.88);
+  color: inherit;
+}
+@media (prefers-color-scheme: dark) {
+  .markdown mark {
+    background-color: rgba(77, 74, 0, 0.88);
+  }
+}
+.markdown q {
+  quotes: '「' '」' '『' '』';
+}
+.markdown q:not(:lang(zh)):not(:lang(ja)):not(:lang(ko)),
+.markdown q:not(:lang(zh)) {
+  quotes: initial;
+  quotes: auto;
+}
+.markdown rt {
+  font-size: 0.875em;
+  font-weight: 400;
+}
+.markdown small {
+  font-size: 0.875em;
+}
+.markdown strong {
+  font-weight: 600;
+}
+.markdown sub,
+.markdown sup {
+  position: relative;
+  margin-inline-start: 0.25em;
+  margin-inline-end: 0.25em;
+  font-size: 0.75em;
+  font-family: 'Helvetica Neue', helvetica, arial, 'Heti Hei', sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-style: normal;
+  line-height: 1;
+  vertical-align: baseline;
+}
+.markdown sub {
+  bottom: -0.25em;
+}
+.markdown sup {
+  top: -0.5em;
+}
+.markdown sup:target,
+.markdown sup a:target {
+  background-color: #dbedff;
+}
+@media (prefers-color-scheme: dark) {
+  .markdown sup:target,
+  .markdown sup a:target {
+    background-color: #3a6188;
+  }
+}
+.markdown summary {
+  padding-inline-start: 1em;
+  outline: 0;
+  cursor: pointer;
+}
+.markdown summary::-webkit-details-marker {
+  width: 0.6em;
+  margin-inline-end: 0.4em;
+}
+.markdown u[title] {
+  cursor: help;
+  border-block-end-width: 3px;
+  border-block-end-style: double;
+  border-block-end-color: rgba(0, 0, 0, 0.54);
+}
+@media (prefers-color-scheme: dark) {
+  .markdown u[title] {
+    border-block-end-color: rgba(255, 255, 255, 0.54);
+  }
+}
+.markdown address,
+.markdown cite,
+.markdown dfn,
+.markdown dt,
+.markdown em {
+  font-style: normal;
+}
+.markdown address:not(:lang(zh)):not(:lang(ja)):not(:lang(ko)),
+.markdown address:not(:lang(zh)),
+.markdown cite:not(:lang(zh)):not(:lang(ja)):not(:lang(ko)),
+.markdown cite:not(:lang(zh)),
+.markdown dfn:not(:lang(zh)):not(:lang(ja)):not(:lang(ko)),
+.markdown dfn:not(:lang(zh)),
+.markdown dt:not(:lang(zh)):not(:lang(ja)):not(:lang(ko)),
+.markdown dt:not(:lang(zh)),
+.markdown em:not(:lang(zh)):not(:lang(ja)):not(:lang(ko)),
+.markdown em:not(:lang(zh)) {
+  font-style: italic;
+}
+.markdown abbr[title],
+.markdown del,
+.markdown ins,
+.markdown s,
+.markdown u {
+  margin-inline-start: 1px;
+  margin-inline-end: 1px;
+}
+.markdown,
+.markdown--sans {
+  font-family: 'Helvetica Neue', helvetica, arial, 'Heti Hei', sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+.markdown--serif {
+  font-family: 'Times New Roman', times, 'Heti Song', serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+.markdown--classic {
+  font-family: 'Times New Roman', times, 'Heti Song', serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+.markdown--classic h1,
+.markdown--classic h2,
+.markdown--classic h3,
+.markdown--classic h4,
+.markdown--classic h5,
+.markdown--classic h6 {
+  font-family: 'Times New Roman', times, 'Heti Kai Black', serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-weight: 800;
+}
+.markdown--classic blockquote,
+.markdown--classic cite,
+.markdown--classic q {
+  font-family: 'Times New Roman', times, 'Heti Kai', serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+.markdown--classic figcaption,
+.markdown--classic caption,
+.markdown--classic th {
+  font-family: 'Helvetica Neue', helvetica, arial, 'Heti Hei', sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+.markdown--hei {
+  font-family: 'Helvetica Neue', helvetica, arial, 'Heti Hei', sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+.markdown--song {
+  font-family: 'Times New Roman', times, 'Heti Song', serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+.markdown--kai {
+  font-family: 'Times New Roman', times, 'Heti Kai', serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+.markdown--columns-1,
+.markdown--columns-2,
+.markdown--columns-3,
+.markdown--columns-4,
+.markdown--columns-16em,
+.markdown--columns-20em,
+.markdown--columns-24em,
+.markdown--columns-28em,
+.markdown--columns-32em,
+.markdown--columns-36em,
+.markdown--columns-40em,
+.markdown--columns-44em,
+.markdown--columns-48em,
+.markdown comma {
+  max-width: none;
+  column-gap: 2em;
+}
+.markdown--columns-1 p,
+.markdown--columns-2 p,
+.markdown--columns-3 p,
+.markdown--columns-4 p,
+.markdown--columns-16em p,
+.markdown--columns-20em p,
+.markdown--columns-24em p,
+.markdown--columns-28em p,
+.markdown--columns-32em p,
+.markdown--columns-36em p,
+.markdown--columns-40em p,
+.markdown--columns-44em p,
+.markdown--columns-48em p,
+.markdown comma p {
+  margin-block-start: 6px;
+  margin-block-end: 12px;
+  text-indent: 2em;
+}
+.markdown--columns-1 {
+  column-count: 1;
+}
+.markdown--columns-2 {
+  column-count: 2;
+}
+.markdown--columns-3 {
+  column-count: 3;
+}
+.markdown--columns-4 {
+  column-count: 4;
+}
+.markdown--columns-16em {
+  column-width: 16em;
+}
+.markdown--columns-20em {
+  column-width: 20em;
+}
+.markdown--columns-24em {
+  column-width: 24em;
+}
+.markdown--columns-28em {
+  column-width: 28em;
+}
+.markdown--columns-32em {
+  column-width: 32em;
+}
+.markdown--columns-36em {
+  column-width: 36em;
+}
+.markdown--columns-40em {
+  column-width: 40em;
+}
+.markdown--columns-44em {
+  column-width: 44em;
+}
+.markdown--columns-48em {
+  column-width: 48em;
+}
+.markdown--vertical {
+  max-width: none;
+  max-height: 100%;
+  writing-mode: vertical-rl;
+  letter-spacing: 0.125em;
+}
+.markdown--vertical h1,
+.markdown--vertical h2,
+.markdown--vertical h3,
+.markdown--vertical h4,
+.markdown--vertical h5,
+.markdown--vertical h6 {
+  text-align: start;
+}
+.markdown--vertical q {
+  quotes: '「' '」' '『' '』';
+}
+.markdown--ancient,
+.markdown--poetry {
+  font-family: 'Times New Roman', times, 'Heti Song', serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+.markdown--ancient h1,
+.markdown--ancient h2,
+.markdown--ancient h3,
+.markdown--ancient h4,
+.markdown--ancient h5,
+.markdown--ancient h6,
+.markdown--poetry h1,
+.markdown--poetry h2,
+.markdown--poetry h3,
+.markdown--poetry h4,
+.markdown--poetry h5,
+.markdown--poetry h6 {
+  font-family: 'Times New Roman', times, 'Heti Kai Black', serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-weight: 800;
+  text-align: center;
+}
+.markdown--ancient h1 .markdown-meta,
+.markdown--ancient h2 .markdown-meta,
+.markdown--ancient h3 .markdown-meta,
+.markdown--ancient h4 .markdown-meta,
+.markdown--ancient h5 .markdown-meta,
+.markdown--ancient h6 .markdown-meta,
+.markdown--poetry h1 .markdown-meta,
+.markdown--poetry h2 .markdown-meta,
+.markdown--poetry h3 .markdown-meta,
+.markdown--poetry h4 .markdown-meta,
+.markdown--poetry h5 .markdown-meta,
+.markdown--poetry h6 .markdown-meta {
+  font-weight: 400;
+}
+@media screen and (min-width: 640px) {
+  .markdown--ancient h1 .markdown-meta,
+  .markdown--ancient h2 .markdown-meta,
+  .markdown--ancient h3 .markdown-meta,
+  .markdown--ancient h4 .markdown-meta,
+  .markdown--ancient h5 .markdown-meta,
+  .markdown--ancient h6 .markdown-meta,
+  .markdown--poetry h1 .markdown-meta,
+  .markdown--poetry h2 .markdown-meta,
+  .markdown--poetry h3 .markdown-meta,
+  .markdown--poetry h4 .markdown-meta,
+  .markdown--poetry h5 .markdown-meta,
+  .markdown--poetry h6 .markdown-meta {
+    position: absolute;
+    line-height: inherit;
+    text-indent: 0;
+    display: inline;
+    margin-block-start: 4px;
+    margin-inline-start: 8px;
+  }
+}
+.markdown--ancient .markdown-meta,
+.markdown--poetry .markdown-meta {
+  line-height: 24px;
+  text-align: center;
+  text-indent: 0;
+}
+.markdown--ancient p {
+  text-indent: 2em;
+}
+.markdown--poetry p {
+  text-align: center;
+  text-indent: 0;
+}
+.markdown--annotation p {
+  margin-block-start: 0;
+  margin-block-end: 0;
+  line-height: 2.25;
+  text-indent: 2em;
+}
+.markdown--annotation em {
+  -webkit-text-emphasis: filled circle;
+  -webkit-text-emphasis-position: under;
+  text-emphasis: filled circle;
+  text-emphasis-position: under right;
+  font-weight: 400;
+}
+.markdown--annotation em:not(:lang(zh)):not(:lang(ja)):not(:lang(ko)),
+.markdown--annotation em:not(:lang(zh)) {
+  -webkit-text-emphasis: none;
+  text-emphasis: none;
+}
+.markdown--annotation .markdown-meta {
+  margin-block-start: 12px;
+  margin-block-end: 24px;
+}
+.markdown .markdown-meta {
+  display: block;
+  text-indent: 0;
+}
+.markdown .markdown-verse {
+  text-align: center;
+  text-indent: 0;
+}
+.markdown .markdown-large {
+  font-size: 18px;
+  line-height: 24px;
+}
+.markdown .markdown-x-large {
+  font-size: 20px;
+  line-height: 30px;
+  letter-spacing: 0.05em;
+}
+.markdown .markdown-small {
+  font-size: 14px;
+  line-height: 24px;
+}
+.markdown .markdown-x-small {
+  font-size: 12px;
+  line-height: 18px;
+}
+.markdown .markdown-list-latin {
+  list-style-type: upper-latin;
+}
+.markdown .markdown-list-latin ol {
+  list-style-type: lower-roman;
+}
+.markdown .markdown-list-latin ol ol {
+  list-style-type: lower-latin;
+}
+.markdown .markdown-list-han {
+  list-style-type: cjk-ideographic;
+}
+.markdown .markdown-list-han ol {
+  list-style-type: decimal;
+}
+.markdown .markdown-list-han ol ol {
+  list-style-type: decimal-leading-zero;
+}
+.markdown .markdown-fn {
+  margin-block-start: 59px;
+  border-block-start: 1px solid;
+  border-block-start-color: #ccc;
+  font-size: 14px;
+  font-family: 'Helvetica Neue', helvetica, arial, 'Heti Hei', sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  line-height: 24px;
+}
+@media (prefers-color-scheme: dark) {
+  .markdown .markdown-fn {
+    border-block-start-color: #404040;
+  }
+}
+.markdown .markdown-fn ol {
+  margin-block-start: 12px;
+  margin-block-end: 0;
+}
+.markdown .markdown-fn li:target {
+  background-color: #dbedff;
+}
+@media (prefers-color-scheme: dark) {
+  .markdown .markdown-fn li:target {
+    background-color: #3a6188;
+  }
+}
+.markdown .markdown-hang {
+  position: absolute;
+  line-height: inherit;
+  text-indent: 0;
+}
+.markdown .markdown-em {
+  -webkit-text-emphasis: filled circle;
+  -webkit-text-emphasis-position: under;
+  text-emphasis: filled circle;
+  text-emphasis-position: under right;
+}
+.markdown .markdown-em:not(:lang(zh)):not(:lang(ja)):not(:lang(ko)),
+.markdown .markdown-em:not(:lang(zh)) {
+  -webkit-text-emphasis: none;
+  text-emphasis: none;
+}
+.markdown .markdown-ruby--inline {
+  display: inline-flex;
+  flex-direction: column-reverse;
+  height: 1.5em;
+  vertical-align: top;
+}
+.markdown .markdown-ruby--inline rt {
+  display: inline;
+  margin-bottom: -0.25em;
+  line-height: 1;
+  text-align: center;
+}
+.markdown heti-spacing {
+  display: inline;
+}
+.markdown heti-spacing + sup,
+.markdown heti-spacing + sub {
+  margin-inline-start: 0;
+}
+.markdown .heti-spacing-start {
+  margin-inline-end: 0.25em;
+}
+.markdown .heti-spacing-end {
+  margin-inline-start: 0.25em;
+}
+.markdown heti-adjacent {
+  display: inline;
+}
+.markdown .heti-adjacent-half {
+  margin-inline-end: -0.5em;
+}
+.markdown .heti-adjacent-quarter {
+  margin-inline-end: -0.25em;
+}
