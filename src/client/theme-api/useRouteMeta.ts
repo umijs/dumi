@@ -38,17 +38,22 @@ function getCachedRouteMeta(route: IRoutesById[string]) {
     const proxyGetter = (target: any, prop: string) => {
       if (ASYNC_META_PROPS.includes(prop)) {
         if (!asyncCache.get(cacheKey)) {
+          const routeMetaPromise = getRouteMetaById(route.id);
           // load async meta then replace cache
-          asyncCache.set(
-            cacheKey,
-            getRouteMetaById(route.id)!.then(
-              (full) => cache.set(cacheKey, merge(full)).get(cacheKey)!,
-            ),
-          );
+          if (routeMetaPromise) {
+            asyncCache.set(
+              cacheKey,
+              routeMetaPromise.then(
+                (full) => cache.set(cacheKey, merge(full)).get(cacheKey)!,
+              ),
+            );
+          }
         }
-
         // throw promise to trigger suspense
-        throw asyncCache.get(cacheKey);
+        const currentCache = asyncCache.get(cacheKey);
+        if (currentCache) {
+          throw currentCache;
+        }
       }
 
       return target[prop];
@@ -63,7 +68,6 @@ function getCachedRouteMeta(route: IRoutesById[string]) {
     const ret = new Proxy(meta, {
       get: proxyGetter,
     });
-
     cache.set(cacheKey, ret);
   }
 

@@ -329,7 +329,7 @@ const API: FC<{
             <th>{intl.formatMessage({ id: 'api.component.name' })}</th>
             <th>{intl.formatMessage({ id: 'api.component.description' })}</th>
             <th>{intl.formatMessage({ id: 'api.component.type' })}</th>
-            {props.type === 'props' && (
+            {type === 'props' && (
               <th>{intl.formatMessage({ id: 'api.component.default' })}</th>
             )}
           </tr>
@@ -349,7 +349,7 @@ const API: FC<{
                 <td>
                   <APIType {...prop} />
                 </td>
-                {props.type === 'props' && (
+                {type === 'props' && (
                   <td>
                     <code>
                       {definition.propsConfig.required?.includes(name)

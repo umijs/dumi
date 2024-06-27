@@ -190,7 +190,7 @@ export function componentToChunkName(
   const cwd = winPath(cwdPath);
 
   return typeof component === 'string'
-    ? component
+    ? winPath(component)
         .replace(
           new RegExp(
             `^(${
