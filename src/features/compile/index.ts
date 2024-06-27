@@ -212,15 +212,18 @@ export default (api: IApi) => {
     return memo;
   });
 
-  api.modifyConfig((memo) => {
-    if (memo.mako || memo.ssr?.builder === 'mako') {
-      memo.mako ??= {};
-      memo.mako.plugins = [
-        {
-          load: getLoadHook(api),
-        },
-      ];
-    }
-    return memo;
+  api.modifyConfig({
+    before: 'mako',
+    fn: (memo) => {
+      if (memo.mako || memo.ssr?.builder === 'mako') {
+        memo.mako ??= {};
+        memo.mako.plugins = [
+          {
+            load: getLoadHook(api),
+          },
+        ];
+      }
+      return memo;
+    },
   });
 };
