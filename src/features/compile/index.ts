@@ -92,19 +92,17 @@ export default (api: IApi) => {
       locales: api.config.locales,
       pkg: api.pkg,
     };
-
-    const mdRule = memo.module
-      .rule('dumi-md')
-      .type('javascript/auto')
-      .test(/\.md$/);
-
-    mdRule
-      .oneOf('md-null')
+    memo.module
+      .rule('watch-parent')
       .pre()
       .resourceQuery(/watch=parent/)
       .use('null-loader')
       .loader(require.resolve('../../loaders/null'))
       .end();
+    const mdRule = memo.module
+      .rule('dumi-md')
+      .type('javascript/auto')
+      .test(/\.md$/);
 
     // generate independent oneOf rules
     ['frontmatter', 'text', 'demo-index'].forEach((type) => {
