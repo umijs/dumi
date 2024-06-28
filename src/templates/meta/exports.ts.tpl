@@ -147,41 +147,29 @@ export function getRouteMetaById<T extends { syncOnly?: boolean }>(
       toc,
       texts: [],
     };
-    if (filesMeta[id]) {
-      const { frontmatter, toc, textGetter, tabs } = filesMeta[id];
-      routeMeta.frontmatter = frontmatter;
-      routeMeta.toc = toc;
 
-      if (opts?.syncOnly) {
+    if (opts?.syncOnly) {
+      if (tabs) {
+        routeMeta.tabs = tabs.map((tabId) =>
+          genTab(tabId, getRouteMetaById(tabId, opts)),
+        );
+      }
+      return routeMeta;
+    } else {
+      return new Promise(async (resolve) => {
+        if (textGetter) {
+          ({ texts: routeMeta.texts } = await textGetter());
+        }
         if (tabs) {
-          routeMeta.tabs = tabs.map((tabId) =>
-            genTab(tabId, getRouteMetaById(tabId, opts)),
+          routeMeta.tabs = await Promise.all(
+            tabs.map(async (tabId) =>
+              genTab(tabId, await getRouteMetaById(tabId, opts)),
+            ),
           );
         }
-
-        return routeMeta;
-      } else {
-        return new Promise(async (resolve) => {
-          if (textGetter) {
-            ({ texts: routeMeta.texts } = await textGetter());
-          }
-
-          if (tabs) {
-            routeMeta.tabs = await Promise.all(
-              tabs.map(async (tabId) =>
-                genTab(tabId, await getRouteMetaById(tabId, opts)),
-              ),
-            );
-          }
-
-          resolve(routeMeta);
-        });
-      }
+        resolve(routeMeta);
+      });
     }
-    if (opts?.syncOnly) {
-      return routeMeta;
-    }
-    return Promise.resolve(routeMeta);
   }
 }
 
