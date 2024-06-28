@@ -163,11 +163,14 @@ export const demos = {
           // skip un-existed source file, e.g. custom tech-stack return custom dependencies
           // skip non-file asset because resolveMap will contains all dependencies since 2.3.0
           if (asset.dependencies[file]?.type === 'FILE') {
+            let assetValue = `{{{require('-!${resolveMap[file]}?dumi-raw').default}}}`;
+            // mako not support -!
+            if (process.env.OKAM) {
+              assetValue = `{{{require('${resolveMap[file]}?dumi-raw').default}}}`;
+            }
             // to avoid modify original asset object
             asset = lodash.cloneDeep(asset);
-            asset.dependencies[
-              file
-            ].value = `{{{require('${resolveMap[file]}?dumi-raw').default}}}`;
+            asset.dependencies[file].value = assetValue;
           }
         });
 
