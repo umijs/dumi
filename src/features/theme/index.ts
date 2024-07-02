@@ -262,17 +262,13 @@ export default (api: IApi) => {
         }
       }
     }
-    if (memo.theme) {
-      memo.theme['dark-selector'] = `~'[${PREFERS_COLOR_ATTR}="dark"]'`;
-    } else if (memo.lessLoader) {
-      memo.lessLoader.lessOptions.modifyVars ??= {};
-      memo.lessLoader.lessOptions.modifyVars[
+    memo.theme ??= {};
+    memo.theme['dark-selector'] = `~'[${PREFERS_COLOR_ATTR}="dark"]'`;
+    if (memo.lessLoader) {
+      memo.lessLoader.modifyVars ??= {};
+      memo.lessLoader.modifyVars[
         'dark-selector'
       ] = `~'[${PREFERS_COLOR_ATTR}="dark"]'`;
-    } else {
-      memo.theme = {
-        'dark-selector': `~'[${PREFERS_COLOR_ATTR}="dark"]'`,
-      };
     }
     return memo;
   });
