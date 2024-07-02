@@ -6,8 +6,13 @@ export default function (api: IApi) {
   api.modifyConfig((memo) => {
     const enableMFSU = memo.mfsu !== false;
     if (enableMFSU) {
+      const msfuConfig = memo.mfsu || {};
       memo.mfsu = {
-        ...(memo.mfsu || {}),
+        ...msfuConfig,
+        shared: {
+          ...msfuConfig.shared,
+          vue: { singleton: true },
+        },
         chainWebpack(config: Config) {
           getConfig(config, api);
           return config;

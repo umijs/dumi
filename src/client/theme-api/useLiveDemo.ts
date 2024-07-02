@@ -111,7 +111,7 @@ export const useLiveDemo = (
           if (renderOpts?.compile) {
             try {
               entryFileCode = await renderOpts.compile(entryFileCode, {
-                filename: entryFileName,
+                filename: `${id}-${entryFileName}`,
               });
             } catch (error: any) {
               setError(error);

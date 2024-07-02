@@ -191,7 +191,7 @@ export const demos = {
             // omit entry file
             ...(key !== entryFileName
               ? {
-                  [key]: `{{{require('${path}')}}}`,
+                  [key]: `{{{import('${path}')}}}`,
                 }
               : {}),
           }),
