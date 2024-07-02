@@ -182,6 +182,7 @@ export type SocialTypes =
   | 'github'
   | 'weibo'
   | 'twitter'
+  | 'x'
   | 'gitlab'
   | 'facebook'
   | 'zhihu'
