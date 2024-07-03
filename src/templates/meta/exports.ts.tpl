@@ -53,16 +53,15 @@ const demosCache = new Map<string, Promise<IDemoData | undefined>>();
  * why not do this in compile-time?
  * asset metadata also has extension and for reduce bundle size
  */
- async function expandDemoContext(context?: IDemoData['context']) {
+function expandDemoContext(context?: IDemoData['context']) {
   if (context) {
-    const srcs = Object.keys(context);
-    for (const src of srcs) {
-      context[src] = await context[src];
+    Object.keys(context).forEach((src) => {
       const withoutExt = src.match(/^(.+)\.(js|jsx|ts|tsx|json)$/)?.[1];
+
       if (withoutExt && !context[withoutExt]) {
         context[withoutExt] = context[src];
       }
-    }
+    });
   }
 }
 
