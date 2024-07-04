@@ -30,7 +30,7 @@ if (typeof window !== 'undefined') {
   worker = new Worker(
     URL.createObjectURL(
       // @ts-ignore
-      new Blob([WORKER_CODE], { type: 'application/javascript' }),
+      new Blob([SEARCH_WORKER_CODE], { type: 'application/javascript' }),
     ),
   );
 }

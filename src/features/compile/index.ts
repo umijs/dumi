@@ -36,7 +36,8 @@ export default (api: IApi) => {
 
       if (cacheDirPath) _setFSCacheDir(path.join(cacheDirPath, 'dumi'));
 
-      const WORKER_CODE = fs.readFileSync(
+      // inject raw code to use search worker in inline mode
+      const SEARCH_WORKER_CODE = fs.readFileSync(
         path.resolve(
           __dirname,
           '../../../compiled/_internal/searchWorker.min.js',
@@ -44,7 +45,7 @@ export default (api: IApi) => {
         'utf-8',
       );
       memo.define ??= {};
-      memo.define.WORKER_CODE = WORKER_CODE;
+      memo.define.SEARCH_WORKER_CODE = SEARCH_WORKER_CODE;
 
       return memo;
     },
