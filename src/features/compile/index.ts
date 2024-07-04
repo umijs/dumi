@@ -3,6 +3,7 @@ import type { IMdLoaderOptions } from '@/loaders/markdown';
 import ReactTechStack from '@/techStacks/react';
 import type { IApi, IDumiTechStack } from '@/types';
 import { _setFSCacheDir } from '@/utils';
+import fs from 'fs';
 import path from 'path';
 import { addAtomMeta, addExampleAssets } from '../assets';
 import { getLoadHook } from './makoHooks';
@@ -34,6 +35,16 @@ export default (api: IApi) => {
         api.userConfig.cacheDirectoryPath || memo.cacheDirectoryPath;
 
       if (cacheDirPath) _setFSCacheDir(path.join(cacheDirPath, 'dumi'));
+
+      const WORKER_CODE = fs.readFileSync(
+        path.resolve(
+          __dirname,
+          '../../../compiled/_internal/searchWorker.min.js',
+        ),
+        'utf-8',
+      );
+      memo.define ??= {};
+      memo.define.WORKER_CODE = WORKER_CODE;
 
       return memo;
     },
