@@ -43,7 +43,7 @@ jobs:
           target: wasm32-wasi
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2.2.2
+        uses: pnpm/action-setup@v4
         with:
           run_install: false
 
