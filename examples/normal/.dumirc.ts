@@ -4,7 +4,7 @@ export default {
     { id: 'en-US', name: 'EN' },
   ],
   mako: {},
-  // ssr: { builder: 'mako' },
+  ssr: { builder: 'mako' },
 
   themeConfig: { name: '示例' },
   mfsu: false,
