@@ -1,7 +1,5 @@
 import { useNavData } from 'dumi';
 import { useCallback, useEffect, useRef, useState } from 'react';
-// @ts-ignore
-import workerCode from '../../../../compiled/_internal/searchWorker.min?dumi-raw';
 import useSearchData from './useSearchData';
 
 export interface IHighlightText {
@@ -31,7 +29,8 @@ if (typeof window !== 'undefined') {
   // use blob to avoid generate entry(chunk) for worker
   worker = new Worker(
     URL.createObjectURL(
-      new Blob([workerCode], { type: 'application/javascript' }),
+      // @ts-ignore
+      new Blob([SEARCH_WORKER_CODE], { type: 'application/javascript' }),
     ),
   );
 }
