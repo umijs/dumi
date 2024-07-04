@@ -43,8 +43,9 @@ jobs:
           target: wasm32-wasi
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2.2.2
+        uses: pnpm/action-setup@v4
         with:
+          version: 8.15.8
           run_install: false
 
       - name: Get pnpm store directory
