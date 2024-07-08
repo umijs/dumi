@@ -88,11 +88,6 @@ export default (api: IApi) => {
     if (!babelInUmi) return memo;
     const loaderPath = require.resolve('../../loaders/markdown');
 
-    // support require mjs packages(eg. element-plus/es)
-    memo.resolve.byDependency.set('commonjs', {
-      conditionNames: ['require', 'node', 'import'],
-    });
-
     const loaderBaseOpts: Partial<IMdLoaderOptions> = {
       techStacks,
       cwd: api.cwd,
