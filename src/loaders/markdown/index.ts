@@ -1,6 +1,7 @@
 import { isTabRouteFile } from '@/features/tabs';
 import type { IThemeLoadResult } from '@/features/theme/loader';
 import { generateMetaChunkName, getCache, getContentHash } from '@/utils';
+import enhancedResolve from 'enhanced-resolve';
 import fs from 'fs';
 import path from 'path';
 import { Mustache, lodash, winPath } from 'umi/plugin-utils';
@@ -67,6 +68,12 @@ function getDemoSourceFiles(demos: IMdTransformerResult['meta']['demos'] = []) {
     return ret;
   }, []);
 }
+
+const resolver = enhancedResolve.create.sync({
+  mainFields: ['browser', 'module', 'main'],
+  extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+  conditionNames: ['import', 'default', 'browser'],
+});
 
 function emitDefault(
   this: any,
@@ -186,12 +193,17 @@ export const demos = {
 
         // render context for normal demo
         const context = Object.entries(this.resolveMap).reduce(
-          (acc, [key, path]) => ({
+          (acc, [key, resolvedPath]) => ({
             ...acc,
             // omit entry file
             ...(key !== entryFileName
               ? {
-                  [key]: `{{{require('${path}')}}}`,
+                  [key]: `{{{require('${
+                    resolvedPath === opts.pkg.name ||
+                    path.isAbsolute(resolvedPath)
+                      ? resolvedPath
+                      : resolver(opts.cwd, resolvedPath)
+                  }')}}}`,
                 }
               : {}),
           }),

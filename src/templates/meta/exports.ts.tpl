@@ -75,7 +75,6 @@ export function useDemo(id: string): IDemoData | undefined {
       demoIdMap[id]?.().then(({ demos }) => {
         // expand context for omit ext
         expandDemoContext(demos[id].context);
-
         return demos[id];
       }),
     );
@@ -140,6 +139,7 @@ export function getRouteMetaById<T extends { syncOnly?: boolean }>(
 ): T extends { syncOnly: true }
   ? IRouteMeta | undefined
   : Promise<IRouteMeta> | undefined {
+
   if (filesMeta[id]) {
     const { frontmatter, toc, textGetter, tabs } = filesMeta[id];
     const routeMeta: IRouteMeta = {
