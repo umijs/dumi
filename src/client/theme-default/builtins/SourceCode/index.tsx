@@ -55,7 +55,13 @@ const SourceCode: FC<ISourceCodeProps> = (props) => {
       theme={undefined}
     >
       {({ className, style, tokens, getLineProps, getTokenProps }) => (
-        <pre className={className} style={style}>
+        <pre
+          className={classNames({
+            [className]: className,
+            showLineNum: themeConfig.showLineNum,
+          })}
+          style={style}
+        >
           {tokens.map((line, i) => (
             <div
               key={String(i)}

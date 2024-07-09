@@ -32,14 +32,16 @@ const SourceCodeEditor: FC<ISourceCodeEditorProps> = (props) => {
 
     if (pre) {
       const preStyle = window.getComputedStyle(pre);
-
-      setStyle({
+      const styles: any = {
         fontSize: preStyle.fontSize,
         fontFamily: preStyle.fontFamily,
         lineHeight: preStyle.lineHeight,
         padding: preStyle.padding,
         margin: preStyle.margin,
-      });
+      };
+      if (pre.classList.contains('showLineNum')) styles.paddingLeft = '48px';
+
+      setStyle(styles);
     } else {
       console.warn(
         '[dumi] pre element not found in SourceCode component, the SourceCodeEditor will be disabled, you can report an issue to dumi repository.',
