@@ -29,11 +29,11 @@ const SourceCodeEditor: FC<ISourceCodeEditorProps> = (props) => {
   // generate style from pre element, for adapting to the custom theme
   useEffect(() => {
     const pre = elm.current?.querySelector('pre');
-    const lineCell: HTMLDivElement | null | undefined =
+    let lineCell: HTMLDivElement | null | undefined =
       elm.current?.querySelector('.line-cell');
     if (pre) {
       const preStyle = window.getComputedStyle(pre);
-      const styles: any = {
+      const styles: CSSProperties = {
         fontSize: preStyle.fontSize,
         fontFamily: preStyle.fontFamily,
         lineHeight: preStyle.lineHeight,
