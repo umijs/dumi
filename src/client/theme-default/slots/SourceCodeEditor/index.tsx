@@ -29,7 +29,8 @@ const SourceCodeEditor: FC<ISourceCodeEditorProps> = (props) => {
   // generate style from pre element, for adapting to the custom theme
   useEffect(() => {
     const pre = elm.current?.querySelector('pre');
-
+    const lineCell: HTMLDivElement | null | undefined =
+      elm.current?.querySelector('.line-cell');
     if (pre) {
       const preStyle = window.getComputedStyle(pre);
       const styles: any = {
@@ -39,7 +40,9 @@ const SourceCodeEditor: FC<ISourceCodeEditorProps> = (props) => {
         padding: preStyle.padding,
         margin: preStyle.margin,
       };
-      if (pre.classList.contains('showLineNum')) styles.paddingLeft = '48px';
+      if (lineCell) {
+        styles.paddingLeft = lineCell.offsetLeft;
+      }
 
       setStyle(styles);
     } else {
