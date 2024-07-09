@@ -31,8 +31,7 @@ const SourceCodeEditor: FC<ISourceCodeEditorProps> = (props) => {
     const pre = elm.current?.querySelector('pre');
 
     if (pre) {
-      const lineCell: HTMLDivElement | null | undefined =
-        elm.current?.querySelector('div.line-cell');
+      const lineCell = pre.querySelector<HTMLDivElement>('.line-cell');
       const preStyle = window.getComputedStyle(pre);
       const styles: CSSProperties = {
         fontSize: preStyle.fontSize,
