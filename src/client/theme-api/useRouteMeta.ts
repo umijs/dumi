@@ -78,7 +78,7 @@ function getCachedRouteMeta(route: IRoutesById[string]) {
  * hook for get matched route
  * @internal internal use. Do not use in your production code.
  */
-export const useMatchRoute = () => {
+export const useMatchedRoute = () => {
   const { route } = useRouteData();
   const { pathname } = useLocation();
   const { clientRoutes } = useAppData();
@@ -110,7 +110,7 @@ export const useMatchRoute = () => {
  * hook for get matched route meta
  */
 export const useRouteMeta = () => {
-  const matchedRoute = useMatchRoute();
+  const route = useMatchedRoute();
 
-  return getCachedRouteMeta(matchedRoute);
+  return getCachedRouteMeta(route);
 };
