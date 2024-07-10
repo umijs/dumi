@@ -156,6 +156,28 @@ const Example = () => {
 };
 ```
 
+### useMatchRoute
+
+- 作用：获取当前匹配的路由数据
+- 场景：搭配 getRouteMetaById API 自定义获取页面元数据时可能需要用到
+- 用法：
+
+```ts
+import { useMatchRoute, getRouteMetaById, type IRouteMeta } from 'dumi';
+import useSWR from 'swr';
+
+export function useMeta() {
+  const matched = useMatchRoute();
+
+  useSWR(matched.id, getRouteMetaById, {
+    onSuccess: (meta: IRouteMeta) => {
+      // do something with meta
+      globalThis.console.log(meta);
+    },
+  });
+}
+```
+
 ### useRouteMeta
 
 - 作用：获取当前路由的元数据
