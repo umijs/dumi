@@ -75,9 +75,10 @@ function getCachedRouteMeta(route: IRoutesById[string]) {
 }
 
 /**
- * hook for get matched route meta
+ * hook for get matched route
+ * @internal internal use. Do not use in your production code.
  */
-export const useRouteMeta = () => {
+export const useMatchRoute = () => {
   const { route } = useRouteData();
   const { pathname } = useLocation();
   const { clientRoutes } = useAppData();
@@ -95,12 +96,21 @@ export const useRouteMeta = () => {
 
     return ret;
   }, [clientRoutes.length, pathname]);
+
   const [matchedRoute, setMatchedRoute] = useState(getter);
-  const meta = getCachedRouteMeta(matchedRoute);
 
   useIsomorphicLayoutEffect(() => {
     setMatchedRoute(getter);
   }, [clientRoutes.length, pathname]);
 
-  return meta;
+  return matchedRoute;
+};
+
+/**
+ * hook for get matched route meta
+ */
+export const useRouteMeta = () => {
+  const matchedRoute = useMatchRoute();
+
+  return getCachedRouteMeta(matchedRoute);
 };
