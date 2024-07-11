@@ -6,6 +6,7 @@ const rootPath = path.join(__dirname, '..');
 
 function modifyPackageJson(pkgJson: any) {
   return Object.assign({}, pkgJson, {
+    version: '0.0.1', // reset version
     scripts: {
       // ...pkgJson.scripts, // ignore original scripts
       dev: 'dumi dev',
