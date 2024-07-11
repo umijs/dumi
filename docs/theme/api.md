@@ -159,7 +159,7 @@ const Example = () => {
 ### useMatchedRoute
 
 - 作用：获取当前匹配的路由数据
-- 场景：搭配 getRouteMetaById API 自定义获取页面元数据时可能需要用到
+- 场景：搭配 getRouteMetaById API 可自定义获取页面元数据
 - 用法：
 
 ```ts
