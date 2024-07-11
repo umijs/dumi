@@ -13,7 +13,13 @@ interface IPackage {
 
 export const workspaces: IPackage[] = (function () {
   try {
-    const { stdout } = execa.execaSync('pnpm', ['recursive', 'list', '--json']);
+    const { stdout } = execa.execaSync(
+      'pnpm',
+      ['recursive', 'list', '--json'],
+      {
+        cwd: path.join(__dirname, '..'),
+      },
+    );
     return JSON.parse(stdout);
   } catch (error) {
     return [];
