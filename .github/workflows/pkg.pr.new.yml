@@ -1,0 +1,65 @@
+name: Publish any Pull Requests
+
+on:
+  workflow_run:
+    workflows: ["Preview Build"]
+    types:
+      - completed
+
+jobs:
+  on-success:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Print a message
+        run: echo 'The triggering workflow passed'
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          registry-url: "https://registry.npmjs.org/"
+
+      - name: Install rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          target: wasm32-wasi
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          # ref: <root>/package.packageManager
+          version: 8.4.0
+
+      # cv: ./ci.yml
+      - name: Setup cargo cache
+        uses: actions/cache@v3
+        with:
+          # ref: https://doc.rust-lang.org/cargo/guide/cargo-home.html#caching-the-cargo-home-in-ci
+          path: |
+            ~/.cargo/.crates.toml
+            ~/.cargo/.crates2.json
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ubuntu-latest-cargo-store-node18.x-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build
+        run: pnpm build
+
+      - name: Prepare examples
+        run: npx esno scripts/prepare-examples.ts
+
+      - name: Publish
+        run: npx -p @wuxh/pkg-pr-new@0.0.15-fork.1 \
+          pkg-pr-new publish '.' \
+          --template './examples/*' \
+          --pnpm
