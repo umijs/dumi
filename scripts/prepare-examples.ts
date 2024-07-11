@@ -1,12 +1,8 @@
-import fg from 'fast-glob';
-import fs from 'fs';
+import { fsExtra } from '@umijs/utils';
 import path from 'path';
+import { getExamples } from './miscUtil';
 
-const examples = fg.sync(['examples/**/package.json'], {
-  cwd: process.cwd(),
-  onlyFiles: true,
-  ignore: ['**/node_modules/**', '.git'],
-});
+const rootPath = path.join(__dirname, '..');
 
 function modifyPackageJson(pkgJson: any) {
   return Object.assign({}, pkgJson, {
@@ -26,23 +22,28 @@ function modifyPackageJson(pkgJson: any) {
 }
 
 function main() {
-  for (const example of examples) {
-    const pkgJson = require(example);
+  for (const example of getExamples()) {
+    // const pkgJson = require(example);
+    const pkgJson = fsExtra.readJSONSync(
+      path.join(example.path, 'package.json'),
+    );
     const newPkgJson = modifyPackageJson(pkgJson);
 
     const rewritePath = process.env.CI
-      ? example
-      : path.join(
-          path.dirname(example),
-          '.dumi/tmp', // ignore .dumi/tmp
-          path.basename(example, '.json') + '_rewrite.json',
-        );
+      ? example.path
+      : path.join(example.path, '.dumi/tmp_prepare' /** ignored */);
 
-    if (!fs.existsSync(path.dirname(rewritePath))) {
-      fs.mkdirSync(path.dirname(rewritePath), { recursive: true });
-    }
+    const pkgFile = path.join(rewritePath, 'package.json');
 
-    fs.writeFileSync(rewritePath, JSON.stringify(newPkgJson, null, 2));
+    fsExtra.ensureFileSync(pkgFile);
+    fsExtra.writeJSONSync(pkgFile, newPkgJson, { spaces: 2 });
+
+    console.log(
+      `[${example.name}] Successfully prepared package.json => ${path.relative(
+        rootPath,
+        pkgFile,
+      )}`,
+    );
   }
 }
 
