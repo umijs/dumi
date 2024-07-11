@@ -20,7 +20,7 @@ function main() {
 
   execa.execaSync(
     'npx',
-    ['-p @wuxh/pkg-pr-new@0.0.15-fork.1', 'pkg-pr-new', '', ...params],
+    ['-p', '@wuxh/pkg-pr-new@0.0.15-fork.1', 'pkg-pr-new', ...params],
     {
       stdio: 'inherit',
       cwd: rootPath,
