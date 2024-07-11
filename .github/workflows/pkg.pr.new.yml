@@ -2,7 +2,7 @@ name: Publish any Pull Requests
 
 on:
   workflow_run:
-    workflows: ["Preview Build"]
+    workflows: ["CI"]
     types:
       - completed
 
