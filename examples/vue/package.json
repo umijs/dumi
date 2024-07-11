@@ -1,5 +1,6 @@
 {
   "name": "@examples/vue",
+  "private": true,
   "description": "A Vue3 component library",
   "repository": {
     "type": "git",

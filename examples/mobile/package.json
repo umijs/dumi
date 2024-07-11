@@ -1,5 +1,6 @@
 {
   "name": "@examples/mobile",
+  "private": true,
   "scripts": {
     "build": "node ../../bin/dumi.js build",
     "dev": "node ../../bin/dumi.js dev",
