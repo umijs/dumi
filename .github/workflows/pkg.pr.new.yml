@@ -8,6 +8,8 @@ on:
 
 jobs:
   on-success:
+    env:
+      SELF_NODE_VERSION: 18
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
@@ -17,10 +19,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Use Node.js 18.x
+      - name: Use Node.js ${{ env.SELF_NODE_VERSION }}
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: ${{ env.SELF_NODE_VERSION }}
           registry-url: "https://registry.npmjs.org/"
 
       - name: Install rust toolchain
@@ -31,10 +33,18 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          # ref: <root>/package.packageManager
-          version: 8.4.0
+          run_install: false
 
-      # cv: ./ci.yml
+      # ========== Cache setup starts here ==========
+      # copied from .github/workflows/ci.yml
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+          key: ${{ runner.os }}-pnpm-store-node${{ env.SELF_NODE_VERSION }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-node${{ env.SELF_NODE_VERSION }}-
+
       - name: Setup cargo cache
         uses: actions/cache@v3
         with:
@@ -47,7 +57,10 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: ubuntu-latest-cargo-store-node18.x-${{ hashFiles('**/Cargo.lock') }} # cv: ./ci.yml
+          key: ${{ runner.os }}-cargo-store-node${{ env.SELF_NODE_VERSION }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-store-node${{ env.SELF_NODE_VERSION }}-
+      # ========== Cache setup ends here ==========
 
       - name: Install dependencies
         run: pnpm install
@@ -58,8 +71,5 @@ jobs:
       - name: Prepare examples
         run: npx esno scripts/prepare-examples.ts
 
-      - name: Publish
-        run: npx -p @wuxh/pkg-pr-new@0.0.15-fork.1 \
-          pkg-pr-new publish '.' './suites/theme-mobile' \
-          --template './examples/*' \
-          --pnpm
+      - name: pkg-pr-new Publish
+        run: npx esno scripts/pkg-pr-new.ts
