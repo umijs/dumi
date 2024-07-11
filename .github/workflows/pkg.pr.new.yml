@@ -47,7 +47,7 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: ubuntu-latest-cargo-store-node18.x-${{ hashFiles('**/Cargo.lock') }}
+          key: ubuntu-latest-cargo-store-node18.x-${{ hashFiles('**/Cargo.lock') }} # cv: ./ci.yml
 
       - name: Install dependencies
         run: pnpm install
@@ -60,6 +60,6 @@ jobs:
 
       - name: Publish
         run: npx -p @wuxh/pkg-pr-new@0.0.15-fork.1 \
-          pkg-pr-new publish '.' \
+          pkg-pr-new publish '.' './suites/theme-mobile' \
           --template './examples/*' \
           --pnpm
