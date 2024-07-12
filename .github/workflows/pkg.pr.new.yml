@@ -1,21 +1,21 @@
-name: Publish any Pull Requests
+name: Continuous Releases
 
 on:
-  workflow_run:
-    workflows: ["CI"]
+  push:
+    branches:
+      - master
+      - feature/*
+  pull_request:
     types:
-      - completed
+      - opened
+      - synchronize
 
 jobs:
   on-success:
     env:
       USE_NODE_VERSION: 18
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-      - name: Print a message
-        run: echo 'The triggering workflow passed'
-
       - name: Checkout code
         uses: actions/checkout@v4
 
