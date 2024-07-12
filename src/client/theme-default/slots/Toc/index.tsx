@@ -1,4 +1,4 @@
-import { Scrollspy as ScrollSpy } from '@makotot/ghostui';
+import { Scrollspy as ScrollSpy } from '@makotot/ghostui/src/Scrollspy';
 import {
   history,
   Link,

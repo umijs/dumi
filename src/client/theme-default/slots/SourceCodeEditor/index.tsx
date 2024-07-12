@@ -31,15 +31,20 @@ const SourceCodeEditor: FC<ISourceCodeEditorProps> = (props) => {
     const pre = elm.current?.querySelector('pre');
 
     if (pre) {
+      const lineCell = pre.querySelector<HTMLDivElement>('.line-cell');
       const preStyle = window.getComputedStyle(pre);
-
-      setStyle({
+      const styles: CSSProperties = {
         fontSize: preStyle.fontSize,
         fontFamily: preStyle.fontFamily,
         lineHeight: preStyle.lineHeight,
         padding: preStyle.padding,
         margin: preStyle.margin,
-      });
+      };
+      if (lineCell) {
+        styles.paddingLeft = lineCell.offsetLeft;
+      }
+
+      setStyle(styles);
     } else {
       console.warn(
         '[dumi] pre element not found in SourceCode component, the SourceCodeEditor will be disabled, you can report an issue to dumi repository.',
