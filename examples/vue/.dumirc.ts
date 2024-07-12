@@ -3,6 +3,7 @@
 // import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
 import path from 'node:path';
 export default {
+  mfsu: false,
   apiParser: {},
   resolve: {
     entryFile: './src/index.ts',

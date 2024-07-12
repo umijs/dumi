@@ -31,7 +31,7 @@ export default function compile(
       presets: [['env', { modules: 'cjs' }]],
     });
   }
-  const id = hashId(filename);
+  const id = hashId(code);
   const compiled = compileSFC({ id, filename, code });
 
   if (Array.isArray(compiled)) {
