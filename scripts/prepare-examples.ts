@@ -24,7 +24,6 @@ function modifyPackageJson(pkgJson: any) {
 
 function main() {
   for (const example of getExamples()) {
-    // const pkgJson = require(example);
     const pkgJson = fsExtra.readJSONSync(
       path.join(example.path, 'package.json'),
     );

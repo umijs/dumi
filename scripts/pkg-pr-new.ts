@@ -7,7 +7,6 @@ const rootPath = path.join(__dirname, '..');
 function main() {
   // https://github.com/stackblitz-labs/pkg.pr.new
   const params = [
-    'publish',
     // packages
     ...getPublishPackages().map((pkg) => pkg.path),
     // template
@@ -18,14 +17,10 @@ function main() {
 
   console.log('🚀 pkg-pr-new', params);
 
-  execa.execaSync(
-    'npx',
-    ['-p', '@wuxh/pkg-pr-new@0.0.15-fork.1', 'pkg-pr-new', ...params],
-    {
-      stdio: 'inherit',
-      cwd: rootPath,
-    },
-  );
+  execa.execaSync('npx', ['pkg-pr-new', 'publish', ...params], {
+    stdio: 'inherit',
+    cwd: rootPath,
+  });
 }
 
 // \\\\\\\\\\\
