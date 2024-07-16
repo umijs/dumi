@@ -69,8 +69,8 @@ importers:
         specifier: ^1.2.1
         version: 1.2.1
       file-system-cache:
-        specifier: ^2.4.3
-        version: 2.4.3
+        specifier: 2.4.4
+        version: 2.4.4
       github-slugger:
         specifier: ^1.5.0
         version: 1.5.0
@@ -9017,8 +9017,8 @@ packages:
       ramda: 0.28.0
     dev: true
 
-  /file-system-cache@2.4.3:
-    resolution: {integrity: sha512-wBJ+ysm8ma2m7bNYKu72ZZ02LfypRg00AYdG9w2sbpOsu9KgHGQ4mJEGoAWYjAr+C+9jf1Q1ZwBqTB4Rdz0upA==}
+  /file-system-cache@2.4.4:
+    resolution: {integrity: sha512-vCYhn8pb5nlC3Gs2FFCOkmf4NEg2Ym3ulJwkmS9o6p9oRShGj6CwTMFvpgZihBlsh373NaM0XgAgDHXQIlS4LQ==}
     dependencies:
       '@types/fs-extra': 11.0.1
       '@types/ramda': 0.29.3
