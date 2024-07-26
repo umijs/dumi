@@ -7,7 +7,7 @@
     "dev": "dumi dev",
     "build": "dumi build",
     "preview": "dumi preview",
-    "prepare": "husky install && dumi setup"
+    "prepare": "husky && dumi setup"
   },
   "authors": [{{#author}}
     "{{{ author }}}"
@@ -27,7 +27,7 @@
     "@commitlint/cli": "^17.1.2",
     "@commitlint/config-conventional": "^17.1.0",
     "dumi": "{{{version}}}",
-    "husky": "^8.0.1",
+    "husky": "^9.1.2",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1"
   }
