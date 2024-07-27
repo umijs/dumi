@@ -144,7 +144,7 @@ export function getRouteMetaById<T extends { syncOnly?: boolean }>(
     const { frontmatter, toc, textGetter, tabs } = filesMeta[id];
     const routeMeta: IRouteMeta = {
       frontmatter,
-      toc: toc,
+      toc,
       texts: [],
     };
 
@@ -154,14 +154,12 @@ export function getRouteMetaById<T extends { syncOnly?: boolean }>(
           genTab(tabId, getRouteMetaById(tabId, opts)),
         );
       }
-
       return routeMeta;
     } else {
       return new Promise(async (resolve) => {
         if (textGetter) {
           ({ texts: routeMeta.texts } = await textGetter());
         }
-
         if (tabs) {
           routeMeta.tabs = await Promise.all(
             tabs.map(async (tabId) =>
@@ -169,7 +167,6 @@ export function getRouteMetaById<T extends { syncOnly?: boolean }>(
             ),
           );
         }
-
         resolve(routeMeta);
       });
     }

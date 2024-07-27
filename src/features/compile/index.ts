@@ -3,12 +3,12 @@ import type { IMdLoaderOptions } from '@/loaders/markdown';
 import ReactTechStack from '@/techStacks/react';
 import type { IApi, IDumiTechStack } from '@/types';
 import { _setFSCacheDir } from '@/utils';
+import fs from 'fs';
 import path from 'path';
 import { addAtomMeta, addExampleAssets } from '../assets';
-
+import { getLoadHook } from './makoHooks';
+export const techStacks: IDumiTechStack[] = [];
 export default (api: IApi) => {
-  const techStacks: IDumiTechStack[] = [];
-
   api.describe({ key: 'dumi:compile' });
 
   // register react tech stack by default
@@ -35,6 +35,17 @@ export default (api: IApi) => {
         api.userConfig.cacheDirectoryPath || memo.cacheDirectoryPath;
 
       if (cacheDirPath) _setFSCacheDir(path.join(cacheDirPath, 'dumi'));
+
+      // inject raw code to use search worker in inline mode
+      const SEARCH_WORKER_CODE = fs.readFileSync(
+        path.resolve(
+          __dirname,
+          '../../../compiled/_internal/searchWorker.min.js',
+        ),
+        'utf-8',
+      );
+      memo.define ??= {};
+      memo.define.SEARCH_WORKER_CODE = SEARCH_WORKER_CODE;
 
       return memo;
     },
@@ -68,8 +79,13 @@ export default (api: IApi) => {
   );
 
   // configure loader to compile markdown
+  api.modifyConfig((memo) => {
+    memo.mfsu = false;
+    return memo;
+  });
   api.chainWebpack(async (memo) => {
     const babelInUmi = memo.module.rule('src').use('babel-loader').entries();
+    if (!babelInUmi) return memo;
     const loaderPath = require.resolve('../../loaders/markdown');
 
     // support require mjs packages(eg. element-plus/es)
@@ -88,7 +104,13 @@ export default (api: IApi) => {
       locales: api.config.locales,
       pkg: api.pkg,
     };
-
+    memo.module
+      .rule('watch-parent')
+      .pre()
+      .resourceQuery(/watch=parent/)
+      .use('null-loader')
+      .loader(require.resolve('../../loaders/null'))
+      .end();
     const mdRule = memo.module
       .rule('dumi-md')
       .type('javascript/auto')
@@ -198,5 +220,20 @@ export default (api: IApi) => {
       ]);
     }
     return memo;
+  });
+
+  api.modifyConfig({
+    before: 'mako',
+    fn: (memo) => {
+      if (memo.mako || memo.ssr?.builder === 'mako') {
+        memo.mako ??= {};
+        memo.mako.plugins = [
+          {
+            load: getLoadHook(api),
+          },
+        ];
+      }
+      return memo;
+    },
   });
 };

@@ -87,11 +87,23 @@ function emitDefault(
   if (frontmatter!.atomId && opts.onResolveAtomMeta) {
     opts.onResolveAtomMeta(frontmatter!.atomId, frontmatter);
   }
-
+  const dependencies = this.getDependencies()
+    .slice(1)
+    .filter((filePath: string) => {
+      return !filePath.includes('node_modules');
+    });
   // import all builtin components, may be used by markdown content
   return `${Object.values(opts.builtins)
     .map((item) => `import ${item.specifier} from '${item.source}';`)
     .join('\n')}
+${dependencies
+  .filter((dep: string) => dep.endsWith('.md'))
+  .map(
+    (md: string) => `
+import '${winPath(md)}?watch=parent';
+`,
+  )
+  .join('\n')}
 import LoadingComponent from '@@/dumi/theme/loading';
 import React, { Suspense } from 'react';
 import { DumiPage, useTabMeta, useRouteMeta } from 'dumi';
@@ -123,7 +135,7 @@ function emitDemo(
 
   return Mustache.render(
     `import React from 'react';
-
+     import '${winPath(this.getDependencies()[0])}?watch=parent';
 export const demos = {
   {{#demos}}
   '{{{id}}}': {
@@ -151,11 +163,14 @@ export const demos = {
           // skip un-existed source file, e.g. custom tech-stack return custom dependencies
           // skip non-file asset because resolveMap will contains all dependencies since 2.3.0
           if (asset.dependencies[file]?.type === 'FILE') {
+            let assetValue = `{{{require('-!${resolveMap[file]}?dumi-raw').default}}}`;
+            // mako not support -!
+            if (process.env.OKAM) {
+              assetValue = `{{{require('${resolveMap[file]}?dumi-raw').default}}}`;
+            }
             // to avoid modify original asset object
             asset = lodash.cloneDeep(asset);
-            asset.dependencies[
-              file
-            ].value = `{{{require('-!${resolveMap[file]}?dumi-raw').default}}}`;
+            asset.dependencies[file].value = assetValue;
           }
         });
 
@@ -235,7 +250,9 @@ function emitDemoIndex(
   const { demos } = ret.meta;
 
   return Mustache.render(
-    `export const demoIndex = {
+    `
+    import '${winPath(this.getDependencies()[0])}?watch=parent';
+    export const demoIndex = {
   ids: {{{ids}}},
   getter: {{{getter}}}
 };`,
@@ -251,13 +268,16 @@ function emitDemoIndex(
 }
 
 function emitFrontmatter(
+  this: any,
   opts: IMdLoaderFrontmatterModeOptions,
   ret: IMdTransformerResult,
 ) {
   const { frontmatter, toc } = ret.meta;
 
   return Mustache.render(
-    `export const toc = {{{toc}}};
+    `
+    import '${winPath(this.getDependencies()[0])}?watch=parent';
+    export const toc = {{{toc}}};
 export const frontmatter = {{{frontmatter}}};`,
     {
       toc: JSON.stringify(toc),
@@ -266,12 +286,22 @@ export const frontmatter = {{{frontmatter}}};`,
   );
 }
 
-function emitText(opts: IMdLoaderTextModeOptions, ret: IMdTransformerResult) {
+function emitText(
+  this: any,
+  opts: IMdLoaderTextModeOptions,
+  ret: IMdTransformerResult,
+) {
   const { texts } = ret.meta;
 
-  return Mustache.render(`export const texts = {{{texts}}};`, {
-    texts: JSON.stringify(texts),
-  });
+  return Mustache.render(
+    `
+  import '${winPath(this.getDependencies()[0])}?watch=parent';
+  export const texts = {{{texts}}};
+  `,
+    {
+      texts: JSON.stringify(texts),
+    },
+  );
 }
 
 function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
