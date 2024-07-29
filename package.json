@@ -78,7 +78,7 @@
     ]
   },
   "dependencies": {
-    "@ant-design/icons-svg": "^4.2.1",
+    "@ant-design/icons-svg": "^4.4.2",
     "@makotot/ghostui": "^2.0.0",
     "@stackblitz/sdk": "^1.9.0",
     "@swc/core": "1.4.2",
