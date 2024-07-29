@@ -178,7 +178,7 @@ export default {
 | :------: | :--------------------: |
 |  github  |      GitHub 平台       |
 |  weibo   |        微博平台        |
-|    X     | X（Twitter）平台 |
+|    x     | X（Twitter）平台 |
 |  gitlab  |      Gitlab 平台       |
 | facebook |     Facebook 平台      |
 |  zhihu   |        知乎平台        |
