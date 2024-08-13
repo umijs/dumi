@@ -218,7 +218,7 @@ export const demos = {
       renderContext: function renderContext(
         this: NonNullable<typeof demos>[0],
       ) {
-        // // do not render context for inline demo
+        // do not render context for inline demo
         if (!('resolveMap' in this) || !('asset' in this)) return 'undefined';
         const context = Object.entries(demoDepsMap[this.id]).reduce(
           (acc, [key, specifier]) => ({
