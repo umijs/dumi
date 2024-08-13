@@ -89,7 +89,7 @@ const SourceCodeEditor: FC<ISourceCodeEditorProps> = (props) => {
               autoComplete="off"
               autoCorrect="off"
               autoSave="off"
-              spellcheck="false"
+              spellCheck="false"
             />
           )
         }

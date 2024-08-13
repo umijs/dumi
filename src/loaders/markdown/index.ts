@@ -56,6 +56,11 @@ export type IMdLoaderOptions =
   | IMdLoaderTextModeOptions
   | IMdLoaderDemoIndexModeOptions;
 
+interface IDemoDependency {
+  key: string;
+  specifier: string;
+}
+
 function getDemoSourceFiles(demos: IMdTransformerResult['meta']['demos'] = []) {
   return demos.reduce<string[]>((ret, demo) => {
     if ('resolveMap' in demo) {
@@ -132,10 +137,43 @@ function emitDemo(
   ret: IMdTransformerResult,
 ) {
   const { demos } = ret.meta;
+  const demoDepsMap: Record<string, Record<string, string>> = {};
+
+  demos?.forEach((demo) => {
+    if ('resolveMap' in demo && 'asset' in demo) {
+      const entryFileName = Object.keys(demo.asset.dependencies)[0];
+      Object.keys(demo.resolveMap).forEach((key, index) => {
+        if (key !== entryFileName) {
+          demoDepsMap[demo.id] ??= {};
+          demoDepsMap[demo.id][key] = `${demo.id.replace(
+            /-/g,
+            '_',
+          )}_deps_${index}`;
+        }
+      });
+    }
+  });
+
+  const demosDeps = Object.entries(demoDepsMap).reduce<IDemoDependency[]>(
+    (acc, [, deps]) => {
+      return acc.concat(
+        Object.entries(deps).map(([key, specifier]) => {
+          return {
+            key,
+            specifier,
+          };
+        }),
+      );
+    },
+    [],
+  );
 
   return Mustache.render(
     `import React from 'react';
-     import '${winPath(this.getDependencies()[0])}?watch=parent';
+import '${winPath(this.getDependencies()[0])}?watch=parent';
+{{#demosDeps}}
+import * as {{{specifier}}} from '{{{key}}}';
+{{/demosDeps}}
 export const demos = {
   {{#demos}}
   '{{{id}}}': {
@@ -150,6 +188,7 @@ export const demos = {
 };`,
     {
       demos,
+      demosDeps,
       renderAsset: function renderAsset(this: NonNullable<typeof demos>[0]) {
         // do not render asset for inline demo
         if (!('asset' in this)) return 'null';
@@ -179,25 +218,15 @@ export const demos = {
       renderContext: function renderContext(
         this: NonNullable<typeof demos>[0],
       ) {
-        // do not render context for inline demo
+        // // do not render context for inline demo
         if (!('resolveMap' in this) || !('asset' in this)) return 'undefined';
-
-        const entryFileName = Object.keys(this.asset.dependencies)[0];
-
-        // render context for normal demo
-        const context = Object.entries(this.resolveMap).reduce(
-          (acc, [key, path]) => ({
+        const context = Object.entries(demoDepsMap[this.id]).reduce(
+          (acc, [key, specifier]) => ({
             ...acc,
-            // omit entry file
-            ...(key !== entryFileName
-              ? {
-                  [key]: `{{{require('${path}')}}}`,
-                }
-              : {}),
+            ...{ [key]: `{{{${specifier}}}}` },
           }),
           {},
         );
-
         return JSON.stringify(context, null, 2).replace(/"{{{|}}}"/g, '');
       },
       renderRenderOpts: function renderRenderOpts(
