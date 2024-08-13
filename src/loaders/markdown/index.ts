@@ -142,9 +142,9 @@ function emitDemo(
   demos?.forEach((demo) => {
     if ('resolveMap' in demo && 'asset' in demo) {
       const entryFileName = Object.keys(demo.asset.dependencies)[0];
+      demoDepsMap[demo.id] ??= {};
       Object.keys(demo.resolveMap).forEach((key, index) => {
         if (key !== entryFileName) {
-          demoDepsMap[demo.id] ??= {};
           demoDepsMap[demo.id][key] = `${demo.id.replace(
             /-/g,
             '_',
