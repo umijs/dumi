@@ -73,6 +73,10 @@ function getDemoSourceFiles(demos: IMdTransformerResult['meta']['demos'] = []) {
   }, []);
 }
 
+function isRelativePath(path: string) {
+  return path.startsWith('./') || path.startsWith('../');
+}
+
 function emitDefault(
   this: any,
   opts: IMdLoaderDefaultModeOptions,
@@ -137,6 +141,7 @@ function emitDemo(
   ret: IMdTransformerResult,
 ) {
   const { demos } = ret.meta;
+  const shareDepsMap: Record<string, string> = {};
   const demoDepsMap: Record<string, Record<string, string>> = {};
 
   demos?.forEach((demo) => {
@@ -144,36 +149,42 @@ function emitDemo(
       const entryFileName = Object.keys(demo.asset.dependencies)[0];
       demoDepsMap[demo.id] ??= {};
       Object.keys(demo.resolveMap).forEach((key, index) => {
-        if (key !== entryFileName) {
-          demoDepsMap[demo.id][key] = `${demo.id.replace(
-            /-/g,
-            '_',
-          )}_deps_${index}`;
+        const specifier = `${demo.id.replace(/-/g, '_')}_deps_${index}`;
+        if (key !== entryFileName && !isRelativePath(key)) {
+          if (shareDepsMap[key]) {
+            demoDepsMap[demo.id][key] = shareDepsMap[key];
+          } else {
+            demoDepsMap[demo.id][key] = specifier;
+            shareDepsMap[key] = specifier;
+          }
+        } else if (isRelativePath(key)) {
+          demoDepsMap[demo.id][demo.resolveMap[key]] = specifier;
         }
       });
     }
   });
 
-  const demosDeps = Object.entries(demoDepsMap).reduce<IDemoDependency[]>(
-    (acc, [, deps]) => {
-      return acc.concat(
-        Object.entries(deps).map(([key, specifier]) => {
-          return {
-            key,
-            specifier,
-          };
-        }),
-      );
-    },
-    [],
-  );
-
+  const dedupedDemosDeps = Object.entries(demoDepsMap).reduce<
+    IDemoDependency[]
+  >((acc, [, deps]) => {
+    return acc.concat(
+      Object.entries(deps)
+        .map(([key, specifier]) => {
+          const existingIndex = acc.findIndex((obj) => obj.key === key);
+          if (existingIndex === -1) {
+            return { key, specifier };
+          }
+          return undefined;
+        })
+        .filter((item) => item !== undefined),
+    );
+  }, []);
   return Mustache.render(
     `import React from 'react';
 import '${winPath(this.getDependencies()[0])}?watch=parent';
-{{#demosDeps}}
+{{#dedupedDemosDeps}}
 import * as {{{specifier}}} from '{{{key}}}';
-{{/demosDeps}}
+{{/dedupedDemosDeps}}
 export const demos = {
   {{#demos}}
   '{{{id}}}': {
@@ -188,7 +199,7 @@ export const demos = {
 };`,
     {
       demos,
-      demosDeps,
+      dedupedDemosDeps,
       renderAsset: function renderAsset(this: NonNullable<typeof demos>[0]) {
         // do not render asset for inline demo
         if (!('asset' in this)) return 'null';
