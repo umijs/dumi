@@ -158,7 +158,7 @@ function emitDemo(
             shareDepsMap[key] = specifier;
           }
         } else if (isRelativePath(key)) {
-          demoDepsMap[demo.id][demo.resolveMap[key]] = specifier;
+          demoDepsMap[demo.id][winPath(demo.resolveMap[key])] = specifier;
         }
       });
     }
@@ -172,7 +172,7 @@ function emitDemo(
         .map(([key, specifier]) => {
           const existingIndex = acc.findIndex((obj) => obj.key === key);
           if (existingIndex === -1) {
-            return { key: isRelativePath(key) ? winPath(key) : key, specifier };
+            return { key, specifier };
           }
           return undefined;
         })
