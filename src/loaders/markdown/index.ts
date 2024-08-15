@@ -172,7 +172,7 @@ function emitDemo(
         .map(([key, specifier]) => {
           const existingIndex = acc.findIndex((obj) => obj.key === key);
           if (existingIndex === -1) {
-            return { key, specifier };
+            return { key: isRelativePath(key) ? winPath(key) : key, specifier };
           }
           return undefined;
         })
