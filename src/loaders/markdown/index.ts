@@ -56,6 +56,11 @@ export type IMdLoaderOptions =
   | IMdLoaderTextModeOptions
   | IMdLoaderDemoIndexModeOptions;
 
+interface IDemoDependency {
+  key: string;
+  specifier: string;
+}
+
 function getDemoSourceFiles(demos: IMdTransformerResult['meta']['demos'] = []) {
   return demos.reduce<string[]>((ret, demo) => {
     if ('resolveMap' in demo) {
@@ -66,6 +71,10 @@ function getDemoSourceFiles(demos: IMdTransformerResult['meta']['demos'] = []) {
 
     return ret;
   }, []);
+}
+
+function isRelativePath(path: string) {
+  return path.startsWith('./') || path.startsWith('../');
 }
 
 function emitDefault(
@@ -132,10 +141,50 @@ function emitDemo(
   ret: IMdTransformerResult,
 ) {
   const { demos } = ret.meta;
+  const shareDepsMap: Record<string, string> = {};
+  const demoDepsMap: Record<string, Record<string, string>> = {};
 
+  demos?.forEach((demo) => {
+    if ('resolveMap' in demo && 'asset' in demo) {
+      const entryFileName = Object.keys(demo.asset.dependencies)[0];
+      demoDepsMap[demo.id] ??= {};
+      Object.keys(demo.resolveMap).forEach((key, index) => {
+        const specifier = `${demo.id.replace(/-/g, '_')}_deps_${index}`;
+        if (key !== entryFileName && !isRelativePath(key)) {
+          if (shareDepsMap[key]) {
+            demoDepsMap[demo.id][key] = shareDepsMap[key];
+          } else {
+            demoDepsMap[demo.id][key] = specifier;
+            shareDepsMap[key] = specifier;
+          }
+        } else if (isRelativePath(key)) {
+          demoDepsMap[demo.id][winPath(demo.resolveMap[key])] = specifier;
+        }
+      });
+    }
+  });
+
+  const dedupedDemosDeps = Object.entries(demoDepsMap).reduce<
+    IDemoDependency[]
+  >((acc, [, deps]) => {
+    return acc.concat(
+      Object.entries(deps)
+        .map(([key, specifier]) => {
+          const existingIndex = acc.findIndex((obj) => obj.key === key);
+          if (existingIndex === -1) {
+            return { key, specifier };
+          }
+          return undefined;
+        })
+        .filter((item) => item !== undefined),
+    );
+  }, []);
   return Mustache.render(
     `import React from 'react';
-     import '${winPath(this.getDependencies()[0])}?watch=parent';
+import '${winPath(this.getDependencies()[0])}?watch=parent';
+{{#dedupedDemosDeps}}
+import * as {{{specifier}}} from '{{{key}}}';
+{{/dedupedDemosDeps}}
 export const demos = {
   {{#demos}}
   '{{{id}}}': {
@@ -150,6 +199,7 @@ export const demos = {
 };`,
     {
       demos,
+      dedupedDemosDeps,
       renderAsset: function renderAsset(this: NonNullable<typeof demos>[0]) {
         // do not render asset for inline demo
         if (!('asset' in this)) return 'null';
@@ -181,23 +231,13 @@ export const demos = {
       ) {
         // do not render context for inline demo
         if (!('resolveMap' in this) || !('asset' in this)) return 'undefined';
-
-        const entryFileName = Object.keys(this.asset.dependencies)[0];
-
-        // render context for normal demo
-        const context = Object.entries(this.resolveMap).reduce(
-          (acc, [key, path]) => ({
+        const context = Object.entries(demoDepsMap[this.id]).reduce(
+          (acc, [key, specifier]) => ({
             ...acc,
-            // omit entry file
-            ...(key !== entryFileName
-              ? {
-                  [key]: `{{{require('${path}')}}}`,
-                }
-              : {}),
+            ...{ [key]: `{{{${specifier}}}}` },
           }),
           {},
         );
-
         return JSON.stringify(context, null, 2).replace(/"{{{|}}}"/g, '');
       },
       renderRenderOpts: function renderRenderOpts(
