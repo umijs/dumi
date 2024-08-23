@@ -150,15 +150,17 @@ function emitDemo(
       demoDepsMap[demo.id] ??= {};
       Object.keys(demo.resolveMap).forEach((key, index) => {
         const specifier = `${demo.id.replace(/-/g, '_')}_deps_${index}`;
-        if (key !== entryFileName && !isRelativePath(key)) {
-          if (shareDepsMap[key]) {
-            demoDepsMap[demo.id][key] = shareDepsMap[key];
+        if (key !== entryFileName) {
+          const normalizedKey = isRelativePath(key)
+            ? winPath(demo.resolveMap[key])
+            : key;
+
+          if (!shareDepsMap[normalizedKey]) {
+            demoDepsMap[demo.id][normalizedKey] = specifier;
+            shareDepsMap[normalizedKey] = specifier;
           } else {
-            demoDepsMap[demo.id][key] = specifier;
-            shareDepsMap[key] = specifier;
+            demoDepsMap[demo.id][normalizedKey] = shareDepsMap[normalizedKey];
           }
-        } else if (isRelativePath(key)) {
-          demoDepsMap[demo.id][winPath(demo.resolveMap[key])] = specifier;
         }
       });
     }
