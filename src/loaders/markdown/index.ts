@@ -74,7 +74,9 @@ function getDemoSourceFiles(demos: IMdTransformerResult['meta']['demos'] = []) {
 }
 
 function isRelativePath(path: string) {
-  return path.startsWith('./') || path.startsWith('../');
+  return (
+    path.startsWith('./') || path.startsWith('../') || path.startsWith('..')
+  );
 }
 
 function emitDefault(
