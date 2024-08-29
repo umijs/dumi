@@ -74,7 +74,7 @@ function getDemoSourceFiles(demos: IMdTransformerResult['meta']['demos'] = []) {
 }
 
 function isRelativePath(path: string) {
-  return path.startsWith('./') || path.startsWith('../');
+  return /^\.{1,2}(?!\w)/.test(path);
 }
 
 function emitDefault(
