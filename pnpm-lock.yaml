@@ -1,9 +1,5 @@
 lockfileVersion: '6.0'
 
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
-
 importers:
 
   .:
@@ -2973,7 +2969,7 @@ packages:
       jest-haste-map: 29.7.0
       jest-regex-util: 29.6.3
       jest-util: 29.7.0
-      micromatch: 4.0.5
+      micromatch: 4.0.8
       pirates: 4.0.6
       slash: 3.0.0
       write-file-atomic: 4.0.2
@@ -4971,7 +4967,7 @@ packages:
       axios: 0.27.2
       babel-plugin-import: 1.13.8
       dayjs: 1.11.10
-      dva-core: 2.0.4(redux@4.2.1)
+      dva-core: 2.0.4(redux@3.7.2)
       dva-immer: 1.0.1(dva@2.5.0-beta.2)
       dva-loading: 3.0.24(dva-core@2.0.4)
       event-emitter: 0.3.5
@@ -5094,7 +5090,7 @@ packages:
       react-refresh: 0.14.0
       schema-utils: 3.3.0
       source-map: 0.7.4
-      webpack: 5.89.0(@swc/core@1.4.2)
+      webpack: 5.89.0(@swc/core@1.4.2)(esbuild@0.19.11)
 
   /@umijs/renderer-react@4.3.0(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-hl90ZndMCToEQKKKd9VpTw551WjBp7HTlqkwnGvT52sl/NBoHr46g3MASiYKqXFTyMf4nYQBBA/II6aeKsP2PQ==}
@@ -7274,7 +7270,7 @@ packages:
       postcss-modules-values: 4.0.0(postcss@8.4.33)
       postcss-value-parser: 4.2.0
       semver: 7.5.4
-      webpack: 5.89.0(@swc/core@1.4.2)
+      webpack: 5.89.0(@swc/core@1.4.2)(esbuild@0.19.11)
 
   /css-prefers-color-scheme@6.0.3(postcss@8.4.29):
     resolution: {integrity: sha512-4BqMbZksRkJQx2zAjrokiGMd07RqOa2IxIrrN10lyBe9xhn9DEvjUK79J6jkeiv9D9hQFXKb6g1jwU62jziJZA==}
@@ -7800,7 +7796,7 @@ packages:
       warning: 3.0.0
     dev: true
 
-  /dva-core@2.0.4(redux@4.2.1):
+  /dva-core@2.0.4(redux@3.7.2):
     resolution: {integrity: sha512-Zh39llFyItu9HKXKfCZVf9UFtDTcypdAjGBew1S+wK8BGVzFpm1GPTdd6uIMeg7O6STtCvt2Qv+RwUut1GFynA==}
     peerDependencies:
       redux: 4.x
@@ -7810,7 +7806,7 @@ packages:
       global: 4.4.0
       invariant: 2.2.4
       is-plain-object: 2.0.4
-      redux: 4.2.1
+      redux: 3.7.2
       redux-saga: 0.16.2
       warning: 3.0.0
     dev: true
@@ -7831,7 +7827,7 @@ packages:
       dva-core: ^1.1.0 || ^1.5.0-0 || ^1.6.0-0
     dependencies:
       '@babel/runtime': 7.23.1
-      dva-core: 2.0.4(redux@4.2.1)
+      dva-core: 2.0.4(redux@3.7.2)
     dev: true
 
   /dva@2.5.0-beta.2(react-dom@19.0.0-rc-fb9a90fa48-20240614)(react@19.0.0-rc-fb9a90fa48-20240614):
@@ -8905,7 +8901,7 @@ packages:
       '@nodelib/fs.walk': 1.2.8
       glob-parent: 5.1.2
       merge2: 1.4.1
-      micromatch: 4.0.5
+      micromatch: 4.0.8
 
   /fast-glob@3.3.1:
     resolution: {integrity: sha512-kNFPyjhh5cKjrUltxs+wFx+ZkbRaxxmZ+X0ZU31SOsxCEtP9VPgtq2teZw1DebupL5GmDaNQ6yKMMVcM41iqDg==}
@@ -8915,7 +8911,7 @@ packages:
       '@nodelib/fs.walk': 1.2.8
       glob-parent: 5.1.2
       merge2: 1.4.1
-      micromatch: 4.0.5
+      micromatch: 4.0.8
 
   /fast-json-stable-stringify@2.1.0:
     resolution: {integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==}
@@ -9176,7 +9172,7 @@ packages:
       semver: 7.5.4
       tapable: 2.2.1
       typescript: 5.0.4
-      webpack: 5.89.0(@swc/core@1.4.2)
+      webpack: 5.89.0(@swc/core@1.4.2)(esbuild@0.19.11)
 
   /fork-ts-checker-webpack-plugin@8.0.0(typescript@5.3.3)(webpack@5.89.0):
     resolution: {integrity: sha512-mX3qW3idpueT2klaQXBzrIM/pHw+T0B/V9KHEvNrqijTq9NFnMZU6oreVxDYcf33P8a5cW+67PjodNHthGnNVg==}
@@ -9975,7 +9971,7 @@ packages:
       lodash: 4.17.21
       pretty-error: 4.0.0
       tapable: 2.2.1
-      webpack: 5.89.0(@swc/core@1.4.2)
+      webpack: 5.89.0(@swc/core@1.4.2)(esbuild@0.19.11)
     dev: false
 
   /html2sketch@1.0.2:
@@ -10718,7 +10714,7 @@ packages:
       jest-regex-util: 29.6.3
       jest-util: 29.7.0
       jest-worker: 29.7.0
-      micromatch: 4.0.5
+      micromatch: 4.0.8
       walker: 1.0.8
     optionalDependencies:
       fsevents: 2.3.3
@@ -11164,7 +11160,7 @@ packages:
       execa: 7.2.0
       lilconfig: 2.1.0
       listr2: 5.0.8
-      micromatch: 4.0.5
+      micromatch: 4.0.8
       normalize-path: 3.0.0
       object-inspect: 1.12.3
       pidtree: 0.6.0
@@ -12003,8 +11999,8 @@ packages:
       - supports-color
     dev: false
 
-  /micromatch@4.0.5:
-    resolution: {integrity: sha512-DMy+ERcEW2q8Z2Po+WNXuw3c5YaUSFjAO5GsJqfEl7UjvtIuFKO6ZrKvcItdy98dwFI2N1tg3zNIdKaQT+aNdA==}
+  /micromatch@4.0.8:
+    resolution: {integrity: sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA==}
     engines: {node: '>=8.6'}
     dependencies:
       braces: 3.0.3
@@ -14142,7 +14138,7 @@ packages:
     dependencies:
       loader-utils: 2.0.4
       schema-utils: 3.3.0
-      webpack: 5.89.0(@swc/core@1.4.2)
+      webpack: 5.89.0(@swc/core@1.4.2)(esbuild@0.19.11)
     dev: false
 
   /rc-align@4.0.15(react-dom@18.3.1)(react@18.3.1):
@@ -16886,7 +16882,7 @@ packages:
       known-css-properties: 0.27.0
       mathml-tag-names: 2.1.3
       meow: 10.1.5
-      micromatch: 4.0.5
+      micromatch: 4.0.8
       normalize-path: 3.0.0
       picocolors: 1.0.0
       postcss: 8.4.29
@@ -17098,31 +17094,6 @@ packages:
       serialize-javascript: 6.0.2
       terser: 5.27.0
       webpack: 5.89.0(@swc/core@1.4.2)(esbuild@0.19.11)
-    dev: false
-
-  /terser-webpack-plugin@5.3.10(@swc/core@1.4.2)(webpack@5.89.0):
-    resolution: {integrity: sha512-BKFPWlPDndPs+NGGCr1U59t0XScL5317Y0UReNrHaw9/FwhPENlq6bfgs+4yPfyP51vqC1bQ4rp1EfXW5ZSH9w==}
-    engines: {node: '>= 10.13.0'}
-    peerDependencies:
-      '@swc/core': '*'
-      esbuild: '*'
-      uglify-js: '*'
-      webpack: ^5.1.0
-    peerDependenciesMeta:
-      '@swc/core':
-        optional: true
-      esbuild:
-        optional: true
-      uglify-js:
-        optional: true
-    dependencies:
-      '@jridgewell/trace-mapping': 0.3.22
-      '@swc/core': 1.4.2
-      jest-worker: 27.5.1
-      schema-utils: 3.3.0
-      serialize-javascript: 6.0.2
-      terser: 5.27.0
-      webpack: 5.89.0(@swc/core@1.4.2)
 
   /terser@5.27.0:
     resolution: {integrity: sha512-bi1HRwVRskAjheeYl291n3JC4GgO/Ty4z1nVs5AAsmonJulGxpSektecnNedrwK9C7vpvVtcX3cw00VSLt7U2A==}
@@ -18423,45 +18394,6 @@ packages:
     resolution: {integrity: sha512-kyDivFZ7ZM0BVOUteVbDFhlRt7Ah/CSPwJdi8hBpkK7QLumUqdLtVfm/PX/hkcnrvr0i77fO5+TjZ94Pe+C9iw==}
     dev: true
 
-  /webpack@5.89.0(@swc/core@1.4.2):
-    resolution: {integrity: sha512-qyfIC10pOr70V+jkmud8tMfajraGCZMBWJtrmuBymQKCrLTRejBI8STDp1MCyZu/QTdZSeacCQYpYNQVOzX5kw==}
-    engines: {node: '>=10.13.0'}
-    hasBin: true
-    peerDependencies:
-      webpack-cli: '*'
-    peerDependenciesMeta:
-      webpack-cli:
-        optional: true
-    dependencies:
-      '@types/eslint-scope': 3.7.7
-      '@types/estree': 1.0.5
-      '@webassemblyjs/ast': 1.11.6
-      '@webassemblyjs/wasm-edit': 1.11.6
-      '@webassemblyjs/wasm-parser': 1.11.6
-      acorn: 8.11.3
-      acorn-import-assertions: 1.9.0(acorn@8.11.3)
-      browserslist: 4.22.2
-      chrome-trace-event: 1.0.3
-      enhanced-resolve: 5.15.0
-      es-module-lexer: 1.4.1
-      eslint-scope: 5.1.1
-      events: 3.3.0
-      glob-to-regexp: 0.4.1
-      graceful-fs: 4.2.11
-      json-parse-even-better-errors: 2.3.1
-      loader-runner: 4.3.0
-      mime-types: 2.1.35
-      neo-async: 2.6.2
-      schema-utils: 3.3.0
-      tapable: 2.2.1
-      terser-webpack-plugin: 5.3.10(@swc/core@1.4.2)(webpack@5.89.0)
-      watchpack: 2.4.0
-      webpack-sources: 3.2.3
-    transitivePeerDependencies:
-      - '@swc/core'
-      - esbuild
-      - uglify-js
-
   /webpack@5.89.0(@swc/core@1.4.2)(esbuild@0.19.11):
     resolution: {integrity: sha512-qyfIC10pOr70V+jkmud8tMfajraGCZMBWJtrmuBymQKCrLTRejBI8STDp1MCyZu/QTdZSeacCQYpYNQVOzX5kw==}
     engines: {node: '>=10.13.0'}
@@ -18500,7 +18432,6 @@ packages:
       - '@swc/core'
       - esbuild
       - uglify-js
-    dev: false
 
   /webpod@0.0.2:
     resolution: {integrity: sha512-cSwwQIeg8v4i3p4ajHhwgR7N6VyxAf+KYSSsY6Pd3aETE+xEU4vbitz7qQkB0I321xnhDdgtxuiSfk5r/FVtjg==}
@@ -18799,3 +18730,7 @@ packages:
       which: 3.0.1
       yaml: 2.3.4
     dev: true
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
