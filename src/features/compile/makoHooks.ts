@@ -6,6 +6,7 @@ import url from 'url';
 import { techStacks } from '.';
 import { RunLoaderOption, runLoaders } from '../../utils';
 import { addAtomMeta, addExampleAssets } from '../assets';
+import { shouldDisabledLiveDemo } from './utils';
 
 interface ICustomerRunLoaderInterface extends RunLoaderOption {
   type?: 'css' | 'js' | 'jsx';
@@ -31,6 +32,7 @@ const customRunLoaders = async (options: ICustomerRunLoaderInterface) => {
 const mdLoaderPath = require.resolve('../../loaders/markdown');
 
 export const getLoadHook = (api: IApi) => {
+  const disableLiveDemo = shouldDisabledLiveDemo(api);
   return async (filePath: string) => {
     const loaderBaseOpts: Partial<IMdLoaderOptions> = {
       techStacks,
@@ -42,6 +44,7 @@ export const getLoadHook = (api: IApi) => {
       routes: api.appData.routes,
       locales: api.config.locales || [],
       pkg: api.pkg,
+      disableLiveDemo,
     };
 
     const requestUrl = url.parse(filePath);
