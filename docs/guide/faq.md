@@ -219,14 +219,13 @@ import './index.css';
 
 不支持。如果文档目录结构的复杂度超过 3 级，应该考虑优化文档整体结构而非使用三级导航。如果有特殊场景需要，可以自定义主题实现。
 
-## 为什么 live demo 和 按需加载配置(babel-plugin-import) 不能同时开启?
+## ## 为什么 live demo 和 babel-plugin-import 无法一起使用？
 
-先说结论, `live demo` 特性开启时, 组件皆是全量导入的, 按需配置是无效的。 `babel-plugin-import` 唯一的作用就是自动引入组件 `css` 文件, 如果你的按需加载配置是 `style: false`, 请放心移除按需加载配置, 即可开启 `dumi` 最新的 `live demo` 特性。
+live demo 需要的正是全量引入，和 babel-plugin-import 的工作逻辑有冲突。
 
-原因在于 `live demo` 是需要使用 `sucrase` 在浏览器编译的, 我们会把依赖在编译时准备好注入到 `context` 中, 结合用户代码在源码在运行时变更时进行重新编译. 但此时会出现以下几点问题:
+解决方案:
 
-1. 运行时重新编译并不会经过各类按需加载`插件loader`的流程处理, 和编译时行为不符。
-2. `babel-plugin-import` 会在编译时移除 `dumi` 注入的 `import * as antd from 'antd';` 等全量注入的`import`语句, 导致编译时变量缺失。
-3. 如果我们支持了按需的 `context` 依赖注入, 用户在运行时额外新增了 `input` 组件 -> `import { Button, Input } from 'antd';`, 也会发现 `Input` 组件未定义, 这不是预期内的结果。
-
-所以 `dumi` 不建议在编写 `demo` 时配置按需加载, 考虑到部分用户使用按需加载是为了导入组件样式文件, 所以我们不会禁用 `babel-plugin-import` 等按需加载插件, 只是禁用 `dumi` 本身的 `live demo` 特性。
+- 不需要 live demo：忽略警告即可
+- 希望开启 live demo：
+  - style: false 直接去掉插件即可
+  - 否则借助 .dumi/global.css 加载组件样式，可以参考 [and ssr 静态样式导出](https://ant.design/docs/blog/extract-ssr-cn#static-extract-style)提取`css`文件。
