@@ -218,3 +218,14 @@ import './index.css';
 ## 是否支持三级导航？
 
 不支持。如果文档目录结构的复杂度超过 3 级，应该考虑优化文档整体结构而非使用三级导航。如果有特殊场景需要，可以自定义主题实现。
+
+## ## 为什么 live demo 和 babel-plugin-import 无法一起使用？
+
+live demo 需要的正是全量引入，和 babel-plugin-import 的工作逻辑有冲突。
+
+解决方案:
+
+- 不需要 live demo：忽略警告即可
+- 希望开启 live demo：
+  - style: false 直接去掉插件即可
+  - 否则借助 .dumi/global.css 加载组件样式，可以参考 [and ssr 静态样式导出](https://ant.design/docs/blog/extract-ssr-cn#static-extract-style)提取`css`文件。

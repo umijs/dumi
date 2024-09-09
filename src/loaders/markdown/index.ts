@@ -21,6 +21,7 @@ interface IMdLoaderDefaultModeOptions
     atomId: string,
     meta: IMdTransformerResult['meta']['frontmatter'],
   ) => void;
+  disableLiveDemo: boolean;
 }
 
 interface IMdLoaderDemosModeOptions
@@ -166,21 +167,21 @@ function emitDemo(
     }
   });
 
-  const dedupedDemosDeps = Object.entries(demoDepsMap).reduce<
-    IDemoDependency[]
-  >((acc, [, deps]) => {
-    return acc.concat(
-      Object.entries(deps)
-        .map(([key, specifier]) => {
-          const existingIndex = acc.findIndex((obj) => obj.key === key);
-          if (existingIndex === -1) {
-            return { key, specifier };
-          }
-          return undefined;
-        })
-        .filter((item) => item !== undefined),
-    );
-  }, []);
+  const dedupedDemosDeps = opts.disableLiveDemo
+    ? []
+    : Object.entries(demoDepsMap).reduce<IDemoDependency[]>((acc, [, deps]) => {
+        return acc.concat(
+          Object.entries(deps)
+            .map(([key, specifier]) => {
+              const existingIndex = acc.findIndex((obj) => obj.key === key);
+              if (existingIndex === -1) {
+                return { key, specifier };
+              }
+              return undefined;
+            })
+            .filter((item) => item !== undefined),
+        );
+      }, []);
   return Mustache.render(
     `import React from 'react';
 import '${winPath(this.getDependencies()[0])}?watch=parent';
@@ -231,8 +232,13 @@ export const demos = {
       renderContext: function renderContext(
         this: NonNullable<typeof demos>[0],
       ) {
-        // do not render context for inline demo
-        if (!('resolveMap' in this) || !('asset' in this)) return 'undefined';
+        // do not render context for inline demo && config babel-import-plugin project
+        if (
+          !('resolveMap' in this) ||
+          !('asset' in this) ||
+          opts.disableLiveDemo
+        )
+          return 'undefined';
         const context = Object.entries(demoDepsMap[this.id]).reduce(
           (acc, [key, specifier]) => ({
             ...acc,
@@ -245,7 +251,7 @@ export const demos = {
       renderRenderOpts: function renderRenderOpts(
         this: NonNullable<typeof demos>[0],
       ) {
-        if (!('renderOpts' in this)) {
+        if (!('renderOpts' in this) || opts.disableLiveDemo) {
           return 'undefined';
         }
         const renderOpts = this.renderOpts;
