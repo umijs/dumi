@@ -150,7 +150,7 @@ function emitDemo(
       const entryFileName = Object.keys(demo.asset.dependencies)[0];
       demoDepsMap[demo.id] ??= {};
       Object.keys(demo.resolveMap).forEach((key, index) => {
-        const specifier = `${demo.id.replace(/-/g, '_')}_deps_${index}`;
+        const specifier = `${demo.id.replace(/[^\w\d]/g, '_')}_deps_${index}`;
         if (key !== entryFileName) {
           const normalizedKey = isRelativePath(key)
             ? winPath(demo.resolveMap[key])
