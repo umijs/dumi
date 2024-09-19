@@ -174,16 +174,16 @@ export default {
 
 目前支持以下社交平台图标：
 
-|   Key    |     描述      |
-| :------: | :-----------: |
-|  github  |  GitHub 平台  |
-|  weibo   |   微博平台    |
-| twitter  | Twitter 平台  |
-|  gitlab  |  Gitlab 平台  |
-| facebook | Facebook 平台 |
-|  zhihu   |   知乎平台    |
-|  yuque   |   语雀平台    |
-| linkedin | Linkedin 平台 |
+|   Key    |       描述       |
+| :------: | :--------------: |
+|  github  |   GitHub 平台    |
+|  weibo   |     微博平台     |
+|    x     | X（Twitter）平台 |
+|  gitlab  |   Gitlab 平台    |
+| facebook |  Facebook 平台   |
+|  zhihu   |     知乎平台     |
+|  yuque   |     语雀平台     |
+| linkedin |  Linkedin 平台   |
 
 ```ts
 export default {

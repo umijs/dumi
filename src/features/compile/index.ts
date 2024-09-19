@@ -7,6 +7,7 @@ import fs from 'fs';
 import path from 'path';
 import { addAtomMeta, addExampleAssets } from '../assets';
 import { getLoadHook } from './makoHooks';
+import { shouldDisabledLiveDemo } from './utils';
 export const techStacks: IDumiTechStack[] = [];
 export default (api: IApi) => {
   api.describe({ key: 'dumi:compile' });
@@ -87,7 +88,6 @@ export default (api: IApi) => {
     const babelInUmi = memo.module.rule('src').use('babel-loader').entries();
     if (!babelInUmi) return memo;
     const loaderPath = require.resolve('../../loaders/markdown');
-
     const loaderBaseOpts: Partial<IMdLoaderOptions> = {
       techStacks,
       cwd: api.cwd,
@@ -98,6 +98,7 @@ export default (api: IApi) => {
       routes: api.appData.routes,
       locales: api.config.locales,
       pkg: api.pkg,
+      disableLiveDemo: shouldDisabledLiveDemo(api),
     };
     memo.module
       .rule('watch-parent')
