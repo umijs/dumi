@@ -248,7 +248,7 @@ export const demos = {
           opts.disableLiveDemo
         )
           return 'undefined';
-        let context = Object.entries(demoDepsMap[this.id]).reduce(
+        const context = Object.entries(demoDepsMap[this.id]).reduce(
           (acc, [key, specifier]) => ({
             ...acc,
             ...{ [key]: `{{{${specifier}}}}` },
