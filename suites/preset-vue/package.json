@@ -1,6 +1,6 @@
 {
   "name": "@dumijs/preset-vue",
-  "version": "2.4.12-beta.1",
+  "version": "2.4.12",
   "description": "Vue support plugins for dumi",
   "keywords": [
     "dumi",
