@@ -1,4 +1,5 @@
 import { defineComponent } from 'vue';
+import './Foo.less';
 
 export const Foo = defineComponent({
   props: {
@@ -11,6 +12,6 @@ export const Foo = defineComponent({
     },
   },
   setup({ title }) {
-    return () => <div>{title}</div>;
+    return () => <div className="foo">{title}</div>;
   },
 });

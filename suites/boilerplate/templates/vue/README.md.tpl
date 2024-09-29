@@ -7,7 +7,19 @@
 
 ## Usage
 
-TODO
+First, introduce css file:
+
+```ts
+import '{{ name }}/dist/style.css';
+```
+
+Then, introduce components:
+
+```html
+<script setup lang="ts">
+  import { Foo, Bar } from '{{ name }}';
+</script>
+```
 
 ## Options
 
@@ -36,6 +48,15 @@ $ {{ npmClient }} run docs:preview
 
 # check your project for potential problems
 $ {{ npmClient }} run doctor
+
+# Test
+$ {{ npmClient }} test
+
+# Coverage
+$ {{ npmClient }} test:cov
+
+# Lint
+$ {{ npmClient }} lint
 ```
 
 ## LICENSE

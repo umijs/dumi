@@ -1,5 +1,5 @@
 module.exports = {
-  extends: require.resolve('@umijs/lint/dist/config/eslint'),
+  extends: ['plugin:vue/vue3-recommended'],
   parser: 'vue-eslint-parser',
   parserOptions: {
     parser: '@typescript-eslint/parser',
@@ -9,6 +9,5 @@ module.exports = {
       jsx: true,
     },
   },
-  extends: ['plugin:vue/vue3-recommended'],
   rules: {},
 };

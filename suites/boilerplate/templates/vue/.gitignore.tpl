@@ -4,3 +4,4 @@ node_modules
 .dumi/tmp-test
 .dumi/tmp-production
 .DS_Store
+/coverage

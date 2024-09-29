@@ -3,19 +3,15 @@
     @click="handleClick"
   >
     <template v-if="icon">
-      {{icon}}
+      {{ icon }}
     </template>
-    <slot v-else name="icon" /> <slot />
+    <slot
+      v-else
+      name="icon"
+    />
+    <slot />
   </span>
 </template>
-
-<style lang="css" scoped>
-span {
-  border: 1px solid red;
-  border-radius: 4px;
-  padding: 4px;
-}
-</style>
 
 <script setup lang="ts">
 import { VNodeChild } from 'vue';
@@ -45,3 +41,11 @@ function handleClick(e: MouseEvent) {
 }
 
 </script>
+
+<style lang="less" scoped>
+span {
+  border: 1px solid red;
+  border-radius: 4px;
+  padding: 4px;
+}
+</style>
