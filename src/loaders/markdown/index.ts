@@ -144,15 +144,18 @@ function emitDemo(
   const { demos } = ret.meta;
   const shareDepsMap: Record<string, string> = {};
   const demoDepsMap: Record<string, Record<string, string>> = {};
+  const relativeDepsMap: Record<string, Record<string, string>> = {};
 
   demos?.forEach((demo) => {
     if ('resolveMap' in demo && 'asset' in demo) {
       const entryFileName = Object.keys(demo.asset.dependencies)[0];
       demoDepsMap[demo.id] ??= {};
+      relativeDepsMap[demo.id] ??= {};
       Object.keys(demo.resolveMap).forEach((key, index) => {
         const specifier = `${demo.id.replace(/[^\w\d]/g, '_')}_deps_${index}`;
         if (key !== entryFileName) {
-          const normalizedKey = isRelativePath(key)
+          const isRelative = isRelativePath(key);
+          const normalizedKey = isRelative
             ? winPath(demo.resolveMap[key])
             : key;
 
@@ -161,6 +164,12 @@ function emitDemo(
             shareDepsMap[normalizedKey] = specifier;
           } else {
             demoDepsMap[demo.id][normalizedKey] = shareDepsMap[normalizedKey];
+          }
+
+          if (isRelative) {
+            relativeDepsMap[demo.id][key] = `{{{${
+              shareDepsMap[normalizedKey] || specifier
+            }}}}`;
           }
         }
       });
@@ -244,7 +253,7 @@ export const demos = {
             ...acc,
             ...{ [key]: `{{{${specifier}}}}` },
           }),
-          {},
+          relativeDepsMap[this.id],
         );
         return JSON.stringify(context, null, 2).replace(/"{{{|}}}"/g, '');
       },
