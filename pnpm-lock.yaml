@@ -19230,7 +19230,3 @@ packages:
       which: 3.0.1
       yaml: 2.3.4
     dev: true
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
