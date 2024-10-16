@@ -184,10 +184,10 @@ export async function getFullRoutesMeta(): Promise<Record<string, IRouteMeta>> {
     })),
   ).then((ret) =>
     ret.reduce(
-      (total, { id, meta }) => ({
-        ...total,
-        [id]: meta,
-      }),
+      (total, { id, meta }) => {
+        total[id] = meta;
+        return total;
+      },
       {},
     ),
   );
