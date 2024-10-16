@@ -1,5 +1,6 @@
 import { filesMeta, tabsMeta } from '.';
 import type { IDemoData, IRouteMeta } from 'dumi/dist/client/theme-api/types';
+
 // Copy from React official demo.
 type ReactPromise<T> = Promise<T> & {
   status?: 'pending' | 'fulfilled' | 'rejected';
