@@ -51,7 +51,7 @@
     "lint:es": "eslint \"{src,test}/**/*.{js,jsx,ts,tsx}\"",
     "prepare": "husky install && npm run build && npm run build:suites && node ./bin/dumi.js setup && npm run docs:sync",
     "release": "esno scripts/release.ts",
-    "test": "vitest",
+    "test": "vitest run",
     "vercel:build": "npm run docs:build",
     "vercel:install": "./scripts/vercel-install.sh"
   },
@@ -181,7 +181,7 @@
     "stylelint": "^15.10.2",
     "ts-node": "^10.9.1",
     "typescript": "~5.0.4",
-    "vitest": "^0.33.0",
+    "vitest": "^2.0.0",
     "zx": "^7.2.3"
   },
   "peerDependencies": {
