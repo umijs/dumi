@@ -10,6 +10,7 @@
 .dumi/tmp
 .dumi/tmp-production
 /examples/*/dist
+/examples/*/server
 /examples/*/.dumi/tmp
 /examples/*/.dumi/tmp-production
 /docs/.upstream

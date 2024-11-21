@@ -1,6 +1,6 @@
 use crate::utils::create_return_with_default;
 use swc_core::{
-  common::{util::take::Take, Spanned, DUMMY_SP},
+  common::{util::take::Take, Spanned, DUMMY_SP, SyntaxContext},
   ecma::{ast::*, transforms::testing::test_inline, visit::*},
   plugin::{plugin_transform, proxies::TransformPluginProgramMetadata},
 };
@@ -35,16 +35,16 @@ impl VisitMut for ReactDemoVisitor {
                     ImportSpecifier::Default(import_default) => {
                       // transform default import to { default: x }
                       ObjectPatProp::KeyValue(KeyValuePatProp {
-                        key: PropName::Ident(Ident::new("default".into(), import_default.span)),
+                        key: PropName::Ident(IdentName::new("default".into(), import_default.span)),
                         value: import_default.clone().local.into(),
                       })
                     }
                     ImportSpecifier::Named(import_named) => {
                       // transform non-default import, e.g. { y: x } or { 'y*y': x } or { x: x }
                       let key: PropName = match &import_named.imported {
-                        Some(ModuleExportName::Ident(ident)) => PropName::Ident(ident.clone()),
+                        Some(ModuleExportName::Ident(ident)) => PropName::Ident(IdentName::new(ident.sym.clone(), ident.span)),
                         Some(ModuleExportName::Str(str)) => PropName::Str(str.clone()),
-                        None => PropName::Ident(import_named.local.clone()),
+                        None => PropName::Ident(IdentName::new(import_named.local.sym.clone(), import_named.local.span)),
                       };
 
                       ObjectPatProp::KeyValue(KeyValuePatProp {
@@ -67,6 +67,7 @@ impl VisitMut for ReactDemoVisitor {
 
             // replace import declaration to variable declaration with await import
             *n = ModuleItem::Stmt(Stmt::Decl(Decl::Var(Box::new(VarDecl {
+              ctxt: SyntaxContext::empty(),
               kind: VarDeclKind::Const,
               declare: false,
               span: n.span(),
@@ -77,6 +78,7 @@ impl VisitMut for ReactDemoVisitor {
                 init: Some(Box::new(Expr::Await(AwaitExpr {
                   span: DUMMY_SP,
                   arg: CallExpr {
+                    ctxt: SyntaxContext::empty(),
                     span: DUMMY_SP,
                     callee: Callee::Import(Import::dummy()),
                     args: vec![ExprOrSpread {
@@ -120,12 +122,12 @@ impl VisitMut for ReactDemoVisitor {
 
 #[plugin_transform]
 pub fn process_transform(program: Program, _metadata: TransformPluginProgramMetadata) -> Program {
-  program.fold_with(&mut as_folder(ReactDemoVisitor))
+  program.apply(&mut visit_mut_pass(ReactDemoVisitor))
 }
 
 test_inline!(
   Default::default(),
-  |_| as_folder(ReactDemoVisitor),
+  |_| visit_mut_pass(ReactDemoVisitor),
   imports,
   // input
   r#"import a from 'a';
@@ -143,7 +145,7 @@ const { default: e , e1: e1 , e2: e3  } = await import('e');"#
 
 test_inline!(
   Default::default(),
-  |_| as_folder(ReactDemoVisitor),
+  |_| visit_mut_pass(ReactDemoVisitor),
   exports,
   // input
   r#"export default a;
