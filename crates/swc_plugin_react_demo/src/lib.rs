@@ -127,7 +127,7 @@ pub fn process_transform(program: Program, _metadata: TransformPluginProgramMeta
 
 test_inline!(
   Default::default(),
-  |_| as_folder(ReactDemoVisitor),
+  |_| visit_mut_pass(ReactDemoVisitor),
   imports,
   // input
   r#"import a from 'a';
@@ -145,7 +145,7 @@ const { default: e , e1: e1 , e2: e3  } = await import('e');"#
 
 test_inline!(
   Default::default(),
-  |_| as_folder(ReactDemoVisitor),
+  |_| visit_mut_pass(ReactDemoVisitor),
   exports,
   // input
   r#"export default a;
