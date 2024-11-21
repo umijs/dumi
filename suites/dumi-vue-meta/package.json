@@ -1,6 +1,6 @@
 {
   "name": "@dumijs/vue-meta",
-  "version": "1.0.0",
+  "version": "2.4.14",
   "description": "Extracting the metadata of Vue components more effectively",
   "keywords": [
     "vue",
