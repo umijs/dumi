@@ -8,6 +8,6 @@ export default defineConfig({
     alias: {
       '@': path.join(__dirname, 'src'),
     },
-    poolMatchGlobs: [['**/__tests__/**/*.fork.test.*', 'child_process']],
+    poolMatchGlobs: [['**/__tests__/**/*.fork.test.*', 'threads']],
   },
 });
