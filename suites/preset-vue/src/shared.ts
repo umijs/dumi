@@ -5,6 +5,9 @@ import { dirname, join } from 'path';
 export const BABEL_STANDALONE_CDN =
   'https://cdn.bootcdn.net/ajax/libs/babel-standalone/7.22.17/babel.min.js';
 
+export const TYPESCRIPT_STANDALONE_CDN =
+  'https://cdn.bootcdn.net/ajax/libs/typescript/5.5.3/typescript.min.js';
+
 export function getPluginPath(api: IApi, filename: string) {
   return winPath(
     join(api.paths.absTmpPath, `plugin-${api.plugin.key}`, filename),

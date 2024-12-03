@@ -1,4 +1,9 @@
-import { BABEL_STANDALONE_CDN, getPkgPath, getPluginPath } from '@/shared';
+import {
+  BABEL_STANDALONE_CDN,
+  getPkgPath,
+  getPluginPath,
+  TYPESCRIPT_STANDALONE_CDN,
+} from '@/shared';
 import type { IApi } from 'dumi';
 import { fsExtra } from 'dumi/plugin-utils';
 import { join } from 'path';
@@ -41,18 +46,31 @@ export default function registerTechStack(api: IApi) {
   };
 
   // mark @babel/standalone as external
+
+  if (vueConfig.supportTsMetadata) {
+    // @ts-ignore set option global so compile can get
+    globalThis.supportTsMetadata = true;
+  }
   api.addHTMLHeadScripts(() => {
-    return [
+    const scripts = [
       {
         src: vueConfig?.compiler?.babelStandaloneCDN || BABEL_STANDALONE_CDN,
         async: true,
       },
     ];
+    if (vueConfig.supportTsMetadata) {
+      scripts.push({
+        src: vueConfig?.compiler?.typescriptCDN || TYPESCRIPT_STANDALONE_CDN,
+        async: true,
+      });
+    }
+    return scripts;
   });
   api.modifyConfig((memo) => {
     memo.externals = {
       ...memo.externals,
       '@babel/standalone': 'Babel',
+      typescript: 'ts',
     };
     return memo;
   });

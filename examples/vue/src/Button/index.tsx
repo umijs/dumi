@@ -1,4 +1,10 @@
-import { defineComponent, PropType, shallowRef, SlotsType } from 'vue';
+import {
+  defineComponent,
+  renderSlot,
+  shallowRef,
+  type PropType,
+  type SlotsType,
+} from 'vue';
 import './button.less';
 
 export const buttonProps = {
@@ -83,7 +89,7 @@ const Button = defineComponent({
       const { icon } = props;
       return (
         <button {...buttonProps} ref={buttonNodeRef}>
-          {slots.icon ? <slot name="icon"></slot> : icon} {slots.default?.()}
+          {renderSlot(slots, 'icon', {}, () => [icon])} {slots.default?.()}
         </button>
       );
     };

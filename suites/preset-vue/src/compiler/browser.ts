@@ -4,6 +4,8 @@ import hashId from 'hash-sum';
 import { COMP_IDENTIFIER, createCompiler, resolveFilename } from './index';
 
 const { compileSFC, transformTS, toCommonJS } = createCompiler({
+  // @ts-ignore
+  typescript: () => window.ts,
   babel: {
     // @ts-ignore
     transformSync(...args) {

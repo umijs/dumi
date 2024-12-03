@@ -11,6 +11,7 @@ export function getConfig(config: Config, api: IApi) {
   // and include/exclude of webpack needs to be converted to the corresponding format for different systems.
   const dumiSrc = path.resolve(api.paths.absSrcPath);
   const babelInUmi = config.module.rule('src').use('babel-loader').entries();
+  const { userConfig } = api;
 
   // react jsx rules will only include the .dumi directory
   config.module.rule('jsx-ts-tsx').include.add(dumiSrc).end();
@@ -28,6 +29,19 @@ export function getConfig(config: Config, api: IApi) {
       presets: [...babelInUmi.options.presets, babelPresetTypeScript()],
       plugins: [require.resolve('../../../compiled/@vue/babel-plugin-jsx')],
     });
+
+  // support ts decorator metadata
+  if (userConfig.vue?.supportTsMetadata) {
+    config.module
+      .rule('vue-jsx-tsx')
+      .use('ts-loader')
+      .loader(require.resolve('ts-loader'))
+      .after('babel-loader')
+      .options({
+        transpileOnly: true,
+        configFile: userConfig.vue.tsconfigPath,
+      });
+  }
 
   config.module.noParse(/^(vue|vue-router|vuex|vuex-router-sync)$/);
 
@@ -72,8 +86,6 @@ export function getConfig(config: Config, api: IApi) {
 
   // asset
   config.module.rules.delete('asset');
-
-  const { userConfig } = api;
 
   const inlineLimit = parseInt(userConfig.inlineLimit || '10000', 10);
 

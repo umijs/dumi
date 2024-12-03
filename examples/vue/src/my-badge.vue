@@ -7,7 +7,8 @@
   </span>
 </template>
 <script setup lang="ts">
-import { VNodeChild } from 'vue';
+import './my-badge.css'
+import { type VNodeChild } from 'vue';
 defineProps<{
   icon?: string;
 }>();

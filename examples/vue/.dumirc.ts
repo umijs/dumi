@@ -7,9 +7,9 @@ export default {
   resolve: {
     entryFile: './src/index.ts',
   },
-  html2sketch: {},
   presets: [require.resolve('@dumijs/preset-vue')],
   vue: {
+    supportTsMetadata: true,
     tsconfigPath: path.resolve(__dirname, './tsconfig.vue.json'),
     checkerOptions: {
       externalSymbolLinkMappings: {

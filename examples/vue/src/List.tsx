@@ -1,5 +1,5 @@
 import {
-  SetupContext,
+  type SetupContext,
   defineComponent,
   onMounted,
   ref,

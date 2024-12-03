@@ -30,6 +30,7 @@
     "codesandbox-import-utils": "^2.2.3",
     "compare-versions": "^6.1.0",
     "hash-sum": "^2.0.0",
+    "ts-loader": "^9.5.1",
     "vue": "^3.3.4",
     "vue-loader": "^17.0.1"
   },
@@ -39,11 +40,13 @@
     "@vue/babel-plugin-jsx": "^1.1.6",
     "dumi": "workspace:*",
     "father": "^4.1.9",
-    "tsup": "^8.0.1"
+    "tsup": "^8.0.1",
+    "typescript": "^5.7.2"
   },
   "peerDependencies": {
     "dumi": "^2.0.0",
-    "vue": "^3.0.0"
+    "vue": "^3.0.0",
+    "typescript": "^5"
   },
   "publishConfig": {
     "access": "public"

@@ -1,4 +1,5 @@
 import type { BabelCore, babelCore } from 'dumi/tech-stack-utils';
+import type * as typescript from 'typescript';
 import {
   CompilerError,
   CompilerOptions,
@@ -30,6 +31,7 @@ export function resolveFilename(filename: string) {
 type Plugins = Record<string, BabelCore.PluginItem>;
 
 type CreateCompilerContext = {
+  typescript: () => typeof typescript;
   babel: ReturnType<typeof babelCore>;
   availablePlugins?: Plugins;
   availablePresets?: Plugins;
@@ -38,6 +40,7 @@ type CreateCompilerContext = {
 export const COMP_IDENTIFIER = '__sfc__';
 
 export function createCompiler({
+  typescript,
   babel,
   availablePlugins = {},
   availablePresets = {},
@@ -58,6 +61,7 @@ export function createCompiler({
     } = {},
   ) {
     const { lang, plugins = [], presets = [] } = options;
+
     if (lang === 'ts' || lang === 'tsx') {
       const isTSX = lang === 'tsx';
       presets.push([
@@ -70,7 +74,31 @@ export function createCompiler({
     }
 
     const { basename } = resolveFilename(filename);
-    const result = babel.transformSync(src, {
+
+    let code = src;
+
+    if ((lang === 'ts' || lang === 'tsx') && typescript()) {
+      const ts = typescript();
+      const { outputText } = ts.transpileModule(src, {
+        compilerOptions: {
+          module: ts.ModuleKind.ESNext,
+          target: ts.ScriptTarget.ES2020,
+          jsx: ts.JsxEmit.Preserve,
+          jsxImportSource: 'vue',
+          isolatedModules: true,
+          experimentalDecorators: true,
+          emitDecoratorMetadata: true,
+          useDefineForClassFields: false,
+          verbatimModuleSyntax: true,
+          inlineSourceMap: true,
+        },
+        fileName: basename + '.' + (lang || 'ts'),
+        reportDiagnostics: true,
+      });
+      code = outputText;
+    }
+
+    const result = babel.transformSync(code, {
       filename: basename + '.' + (lang || 'ts'),
       presets,
       plugins,

@@ -10,10 +10,12 @@ export default (api: IApi) => {
         return zod.object({
           directory: zod.string().optional(),
           tsconfigPath: zod.string().optional(),
+          supportTsMetadata: zod.boolean().optional(),
           checkerOptions: zod.object({}).optional(),
           compiler: zod
             .object({
               babelStandaloneCDN: zod.string().optional(),
+              typescriptCDN: zod.string().optional(),
             })
             .optional(),
         });

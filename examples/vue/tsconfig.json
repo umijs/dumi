@@ -1,14 +1,29 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "target": "ES2020",
     "baseUrl": "./",
     "paths": {
       "@examples/vue": ["./src"]
     },
     "allowJs": true,
+    "types": ["vue/jsx"],
     "jsx": "preserve",
     "jsxImportSource": "vue",
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "useDefineForClassFields": false,
+    "verbatimModuleSyntax": true,
     "strictNullChecks": false
   },
-  "include": [".dumirc.ts", "src/**/*", "docs/**/*"]
+  "include": [
+    ".dumirc.ts",
+    "shims-vue.d.ts",
+    "vite.config.mts",
+    "src/**/*",
+    "docs/**/*"
+  ]
 }

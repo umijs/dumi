@@ -3,6 +3,7 @@ import {
   babelPresetEnv,
   babelPresetTypeScript,
 } from 'dumi/tech-stack-utils';
+import * as ts from 'typescript';
 import { COMP_IDENTIFIER, createCompiler, type CompileOptions } from './index';
 
 const babel = babelCore();
@@ -10,6 +11,8 @@ const env = babelPresetEnv();
 const typescript = babelPresetTypeScript();
 
 export const compiler = createCompiler({
+  // @ts-ignore
+  typescript: () => globalThis.supportTsMetadata && ts,
   babel,
   availablePlugins: {
     'vue-jsx': require.resolve('../../compiled/@vue/babel-plugin-jsx'),

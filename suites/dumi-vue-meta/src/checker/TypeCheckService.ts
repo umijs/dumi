@@ -104,6 +104,8 @@ export class TypeCheckService {
       (prop) => prop.escapedName === 'props',
     );
     // const propEventRegex = /^(on[A-Z])/;
+    const propDirectiveRegex = /^v-/;
+
     let result: PropertyMeta[] = [];
 
     if ($props) {
@@ -113,9 +115,11 @@ export class TypeCheckService {
         return !this.shouldIgnore(tags);
       });
 
-      result = properties.map((prop) => {
-        return resolver.resolveNestedProperties(prop);
-      });
+      result = properties
+        .map((prop) => {
+          return resolver.resolveNestedProperties(prop);
+        })
+        .filter((prop) => !prop.name.match(propDirectiveRegex));
       // .filter((prop) => !prop.name.match(propEventRegex)); // Here, props starting with on are excluded.
     }
 

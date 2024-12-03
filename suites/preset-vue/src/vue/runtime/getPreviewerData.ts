@@ -4,6 +4,8 @@ import type { IPreviewerProps } from 'dumi/dist/client/theme-api';
 
 export const defaultTitle = 'vue demo';
 export const defaultDesc = 'An auto-generated vue demo by dumi';
+// @ts-ignore
+const isSupportMetadata = () => !!window.ts;
 
 const genIndexHtml = (
   title: string,
@@ -28,12 +30,19 @@ const genIndexHtml = (
 };
 
 const genViteConfig = (tsx: boolean, sourceDir: string) => {
+  const isMetadata = isSupportMetadata();
   return `
 import { fileURLToPath, URL } from 'node:url';
 
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-${tsx ? `import vueJsx from '@vitejs/plugin-vue-jsx';` : ''}
+${
+  tsx
+    ? `import vueJsx from ${
+        isMetadata ? `'@vue3-oop/plugin-vue-jsx'` : `'@vitejs/plugin-vue-jsx'`
+      };`
+    : ''
+}
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -48,7 +57,10 @@ export default defineConfig({
 });`;
 };
 
-const genRenderCode = (mainFileName: string) => `
+const genRenderCode = (mainFileName: string) => {
+  const isMetadata = isSupportMetadata();
+  return `
+${isMetadata ? `import '@abraham/reflection'` : ''}
 import { createApp } from 'vue';
 import App from './${mainFileName}';
 
@@ -56,13 +68,26 @@ const app = createApp(App);
 app.config.errorHandler = (err) => console.error(err);
 app.mount('#app');
 `;
+};
 
-const tsconfig = `
+const tsconfig = () => {
+  const isMetadata = isSupportMetadata();
+  return `
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
   "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
   "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {
+    ${
+      isMetadata
+        ? `"isolatedModules": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "useDefineForClassFields": false,
+    "verbatimModuleSyntax": true,`
+        : ''
+    }
+    "allowImportingTsExtensions": true,
     "composite": true,
     "baseUrl": ".",
     "paths": {
@@ -70,6 +95,7 @@ const tsconfig = `
     }
   }
 }`;
+};
 
 // the corresponding preprocessor map
 const extDepMap: Record<string, [string, string]> = {
@@ -105,6 +131,7 @@ export function getVueApp({
   const { name, ext } = result;
   const isVue = ext === 'vue';
   let isTs = isVue || ext === 'tsx';
+  const isMetadata = isSupportMetadata();
   const sourceDir = 'src/';
 
   const files: IFiles = {
@@ -115,13 +142,13 @@ export function getVueApp({
   };
 
   if (isTs) {
-    files['tsconfig.json'] = { content: tsconfig, isBinary: false };
+    files['tsconfig.json'] = { content: tsconfig(), isBinary: false };
   }
 
   const deps: Record<string, string> = {};
   const devDeps: Record<string, string> = {
-    '@vitejs/plugin-vue': '~4.0.0',
-    vite: '~4.0.0',
+    '@vitejs/plugin-vue': '~5.2.1',
+    vite: '~6.0.3',
   };
 
   const mainFileName = name === 'index' ? `App.${ext}` : entryFileName;
@@ -152,20 +179,29 @@ export function getVueApp({
 
   deps['vue'] ??= '^3.3';
   deps['vue-router'] ??= '^4.2';
+  if (isMetadata) {
+    deps['@abraham/reflection'] = '^0.12.0';
+    deps['injection-js'] = '^2.4.0';
+  }
 
   const previewerEntryFileName = isTs
     ? `${sourceDir}index.ts`
     : `${sourceDir}index.js`;
 
   if (isTs) {
-    Object.assign(devDeps, {
-      '@tsconfig/node18': '~18.2.2',
-      '@types/node': '~18.17.17',
-      '@vitejs/plugin-vue-jsx': '~3.0.2',
-      '@vue/tsconfig': '~0.4.0',
-      typescript: '~5.2.0',
-      'vue-tsc': '~1.8.11',
-    });
+    Object.assign(
+      devDeps,
+      {
+        '@tsconfig/node18': '~18.2.2',
+        '@types/node': '~18.17.17',
+        '@vue/tsconfig': '~0.4.0',
+        typescript: '~5.2.0',
+        'vue-tsc': '~1.8.11',
+      },
+      isMetadata
+        ? { '@vue3-oop/plugin-vue-jsx': '~1.4.6' }
+        : { '@vitejs/plugin-vue-jsx': '~4.0.0' },
+    );
   }
 
   // append package.json

@@ -7,28 +7,58 @@
     "directory": "examples/vue"
   },
   "license": "MIT",
+  "sideEffects": [
+    "**/*.css",
+    "**/*.less"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      }
+    },
+    "./dist/*": "./dist/*"
+  },
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.MD",
+    "CHANGELOG.md"
+  ],
   "scripts": {
     "build": "node ../../bin/dumi.js build",
+    "build:lib": "vite build",
     "dev": "node ../../bin/dumi.js dev",
     "preview": "node ../../bin/dumi.js preview",
     "setup": "node ../../bin/dumi.js setup",
     "start": "npm run dev"
   },
   "dependencies": {
+    "@abraham/reflection": "^0.12.0",
     "dayjs": "^1.11.10",
     "element-plus": "^2.3.14",
+    "injection-js": "^2.4.0",
     "pinia": "^2.1.7",
     "react": "^18.2.0",
-    "vue": "3.4.28"
+    "vue": "3.4.28",
+    "vue3-oop": "^1.0.16"
   },
   "devDependencies": {
     "@dumijs/preset-vue": "workspace:*",
     "@typescript-eslint/parser": "^6.7.2",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "@vue3-oop/plugin-vue-jsx": "^1.4.6",
     "eslint-plugin-vue": "^9.17.0",
-    "typescript": "~4.7.4",
+    "typescript": "^5.6.3",
     "unplugin-auto-import": "^0.16.6",
     "unplugin-element-plus": "^0.8.0",
-    "unplugin-vue-components": "^0.25.2"
+    "unplugin-vue-components": "^0.25.2",
+    "vite": "^6.0.3",
+    "vite-plugin-dts": "^4.3.0",
+    "vite-plugin-no-bundle": "^4.0.0"
   },
   "authors": []
 }

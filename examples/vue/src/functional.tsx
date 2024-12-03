@@ -1,4 +1,4 @@
-import { FunctionalComponent as FC } from 'vue';
+import  { type FunctionalComponent as FC } from 'vue';
 export interface ArticleProps {
   /**
    * 文章标题

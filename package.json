@@ -77,6 +77,9 @@
       "prettier --cache --parser=typescript --write"
     ]
   },
+  "resolutions": {
+    "click-to-react-component": "1.1.0"
+  },
   "dependencies": {
     "@ant-design/icons-svg": "^4.4.2",
     "@makotot/ghostui": "^2.0.0",
