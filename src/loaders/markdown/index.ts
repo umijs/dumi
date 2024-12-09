@@ -104,7 +104,7 @@ function emitDefault(
     });
   // import all builtin components, may be used by markdown content
   return `${Object.values(opts.builtins)
-    .map((item) => `import ${item.specifier} from '${item.source}';`)
+    .map((item) => `import ${item.specifier} from '${winPath(item.source)}';`)
     .join('\n')}
 ${dependencies
   .filter((dep: string) => dep.endsWith('.md'))
