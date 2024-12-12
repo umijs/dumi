@@ -346,12 +346,6 @@ importers:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
     devDependencies:
-      '@swc/core':
-        specifier: ^1.3.67
-        version: 1.9.2
-      swc-plugin-auto-css-modules:
-        specifier: ^1.5.0
-        version: 1.6.0
       typescript:
         specifier: ~4.7.4
         version: 4.7.4
@@ -17733,10 +17727,6 @@ packages:
       omit-deep: 0.3.0
       xml-reader: 2.4.3
     dev: false
-
-  /swc-plugin-auto-css-modules@1.6.0:
-    resolution: {integrity: sha512-G3lT7v2F8BJtyr/ixldcPnpqI+R1+6/LEZereTuzBIoI6TxYpsiiFnsm7m2dOWhcF6YgcQe4UfzDLbxHdpMW2Q==}
-    dev: true
 
   /swr@2.2.4(react@19.0.0-rc-fb9a90fa48-20240614):
     resolution: {integrity: sha512-njiZ/4RiIhoOlAaLYDqwz5qH/KZXVilRLvomrx83HjzCWTfa+InyfAjv05PSFxnmLzZkNO9ZfvgoqzAaEI4sGQ==}
