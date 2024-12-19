@@ -1,10 +1,17 @@
 import { DumiDemo, useRouteMeta } from 'dumi';
-import React, { useCallback, useEffect, useState, type FC } from 'react';
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useState,
+  type FC,
+} from 'react';
 import type { IDumiDemoProps } from './DumiDemo';
 import type { IRouteMeta } from './types';
 
 export interface IDumiDemoGridProps {
   items: IDumiDemoProps[];
+  demoRender?: (item: IDumiDemoProps) => ReactNode;
 }
 
 export const DumiDemoGrid: FC<IDumiDemoGridProps> = (props) => {
@@ -55,9 +62,12 @@ export const DumiDemoGrid: FC<IDumiDemoGridProps> = (props) => {
     <div style={{ display: 'flex', margin: -8 }} data-dumi-demo-grid>
       {cols.map((col, i) => (
         <section style={{ flex: 1, padding: 8, width: 0 }} key={String(i)}>
-          {col.map((item) => (
-            <DumiDemo key={item.demo.id} {...item} />
-          ))}
+          {col.map((item) => {
+            if (props.demoRender) {
+              return props.demoRender(item);
+            }
+            return <DumiDemo key={item.demo.id} {...item} />;
+          })}
         </section>
       ))}
     </div>
