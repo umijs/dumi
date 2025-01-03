@@ -91,6 +91,9 @@ const SourceCode: FC<ISourceCodeProps> = (props) => {
 
   return (
     <div className="dumi-default-source-code">
+      {!lang ? null : (
+        <span className="dumi-default-source-code-language">{lang}</span>
+      )}
       <CopyToClipboard
         text={text}
         onCopy={() => {
