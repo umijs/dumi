@@ -89,7 +89,6 @@
     "@umijs/utils": "^4.3.0",
     "animated-scroll-to": "^2.3.0",
     "classnames": "2.3.2",
-    "codesandbox": "^2.2.3",
     "comlink": "^4.4.1",
     "copy-to-clipboard": "^3.3.3",
     "deepmerge": "^4.3.1",
