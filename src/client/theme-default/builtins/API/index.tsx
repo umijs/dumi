@@ -100,9 +100,21 @@ const HANDLERS = {
       </span>
     );
   },
-  array(prop: Extract<PropertySchema, { type: 'array' }>): ReactNode {
+  array(prop: Extract<PropertySchema, { type: 'array' }> & { items?: any[] }): ReactNode {
     let arrayType: ReactNode = <span>any</span>;
     if (prop.items) {
+      if (Array.isArray(prop.items)) return (
+        <span>
+          <Token>{'['}</Token>
+          {prop.items.map((item: Extract<PropertySchema, { type: 'array' }>, i) => (
+            <span key={`${i}`}>
+                {i > 0 && ', '}
+                {this.toNode(item)}
+            </span>
+          ))}
+          <Token>{']'}</Token>
+        </span>
+      );
       const className = this.getValidClassName(prop.items);
       arrayType = className ?? this.toNode(prop.items);
     }
