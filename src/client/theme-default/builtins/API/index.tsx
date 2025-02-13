@@ -106,7 +106,7 @@ const HANDLERS = {
       if (Array.isArray(prop.items)) return (
         <span>
           <Token>{'['}</Token>
-          {prop.items.map((item: Extract<PropertySchema, { type: 'array' }>, i) => (
+          {prop.items.map((item, i) => (
             <span key={`${i}`}>
                 {i > 0 && ', '}
                 {this.toNode(item)}
