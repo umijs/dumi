@@ -268,10 +268,11 @@ export default (api: IApi) => {
     }
 
     // append demo separate render page
+    const base = api.config.base;
     routes['demo-render'] = {
       id: 'demo-render',
       path: `${SP_ROUTE_PREFIX}demos/:id`,
-      absPath: `/${SP_ROUTE_PREFIX}demos/:id`,
+      absPath: `${base}${SP_ROUTE_PREFIX}demos/:id`,
       parentId: demoLayoutId,
       file: require.resolve('../client/pages/Demo'),
     };
