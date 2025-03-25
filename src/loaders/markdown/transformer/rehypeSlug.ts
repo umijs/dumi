@@ -36,13 +36,17 @@ export default function rehypeSlug(): Transformer<Root> {
           ),
         }).trim();
         const depth = Number(node.tagName.slice(1));
-        const id = slugger.slug(title);
 
-        // add slug to heading node
-        node.properties!.id = id;
+        node.properties ??= {};
+        // add slug to heading node（if not exists）
+        node.properties.id ??= slugger.slug(title);
 
         // add heading node to toc
-        vFile.data.toc!.push({ id, depth, title });
+        vFile.data.toc!.push({
+          id: node.properties.id as string,
+          depth,
+          title,
+        });
       } else if (
         [DUMI_DEMO_TAG, DUMI_DEMO_GRID_TAG].includes(node.tagName) &&
         node.data?.[DEMO_PROP_VALUE_KEY]
