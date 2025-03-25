@@ -10,7 +10,10 @@ export default (ret: IMdTransformerResult) => {
   });
 
   const filePath = `${__filename}.snap`;
-  if (!fs.existsSync(filePath) || process.env.UPDATE_SNAPSHOT) {
+  if (
+    (!fs.existsSync(filePath) || process.env.UPDATE_SNAPSHOT) &&
+    !process.env.CI
+  ) {
     fs.writeFileSync(filePath, content);
     return;
   }
