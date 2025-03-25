@@ -10,6 +10,10 @@
 
 ###### sixth-level title
 
+<h3>hello</h3>
+
+<h3 id="say-hi">world</h3>
+
 ---
 
 **strong**_italic_~~strike through~~`inline code`
