@@ -40,7 +40,7 @@ jobs:
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
         with:
-          target: wasm32-wasi
+          target: wasm32-wasip1
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4

@@ -21,6 +21,7 @@ interface IMdLoaderDefaultModeOptions
     atomId: string,
     meta: IMdTransformerResult['meta']['frontmatter'],
   ) => void;
+  disableLiveDemo: boolean;
 }
 
 interface IMdLoaderDemosModeOptions
@@ -56,6 +57,11 @@ export type IMdLoaderOptions =
   | IMdLoaderTextModeOptions
   | IMdLoaderDemoIndexModeOptions;
 
+interface IDemoDependency {
+  key: string;
+  specifier: string;
+}
+
 function getDemoSourceFiles(demos: IMdTransformerResult['meta']['demos'] = []) {
   return demos.reduce<string[]>((ret, demo) => {
     if ('resolveMap' in demo) {
@@ -66,6 +72,10 @@ function getDemoSourceFiles(demos: IMdTransformerResult['meta']['demos'] = []) {
 
     return ret;
   }, []);
+}
+
+function isRelativePath(path: string) {
+  return /^\.{1,2}(?!\w)/.test(path);
 }
 
 function emitDefault(
@@ -94,7 +104,7 @@ function emitDefault(
     });
   // import all builtin components, may be used by markdown content
   return `${Object.values(opts.builtins)
-    .map((item) => `import ${item.specifier} from '${item.source}';`)
+    .map((item) => `import ${item.specifier} from '${winPath(item.source)}';`)
     .join('\n')}
 ${dependencies
   .filter((dep: string) => dep.endsWith('.md'))
@@ -132,10 +142,61 @@ function emitDemo(
   ret: IMdTransformerResult,
 ) {
   const { demos } = ret.meta;
+  const shareDepsMap: Record<string, string> = {};
+  const demoDepsMap: Record<string, Record<string, string>> = {};
+  const relativeDepsMap: Record<string, Record<string, string>> = {};
 
+  demos?.forEach((demo) => {
+    if ('resolveMap' in demo && 'asset' in demo) {
+      const entryFileName = Object.keys(demo.asset.dependencies)[0];
+      demoDepsMap[demo.id] ??= {};
+      relativeDepsMap[demo.id] ??= {};
+      Object.keys(demo.resolveMap).forEach((key, index) => {
+        const specifier = `${demo.id.replace(/[^\w\d]/g, '_')}_deps_${index}`;
+        if (key !== entryFileName) {
+          const isRelative = isRelativePath(key);
+          const normalizedKey = isRelative
+            ? winPath(demo.resolveMap[key])
+            : key;
+
+          if (!shareDepsMap[normalizedKey]) {
+            demoDepsMap[demo.id][normalizedKey] = specifier;
+            shareDepsMap[normalizedKey] = specifier;
+          } else {
+            demoDepsMap[demo.id][normalizedKey] = shareDepsMap[normalizedKey];
+          }
+
+          if (isRelative) {
+            relativeDepsMap[demo.id][key] = `{{{${
+              shareDepsMap[normalizedKey] || specifier
+            }}}}`;
+          }
+        }
+      });
+    }
+  });
+
+  const dedupedDemosDeps = opts.disableLiveDemo
+    ? []
+    : Object.entries(demoDepsMap).reduce<IDemoDependency[]>((acc, [, deps]) => {
+        return acc.concat(
+          Object.entries(deps)
+            .map(([key, specifier]) => {
+              const existingIndex = acc.findIndex((obj) => obj.key === key);
+              if (existingIndex === -1) {
+                return { key, specifier };
+              }
+              return undefined;
+            })
+            .filter((item) => item !== undefined),
+        );
+      }, []);
   return Mustache.render(
     `import React from 'react';
-     import '${winPath(this.getDependencies()[0])}?watch=parent';
+import '${winPath(this.getDependencies()[0])}?watch=parent';
+{{#dedupedDemosDeps}}
+import * as {{{specifier}}} from '{{{key}}}';
+{{/dedupedDemosDeps}}
 export const demos = {
   {{#demos}}
   '{{{id}}}': {
@@ -150,6 +211,7 @@ export const demos = {
 };`,
     {
       demos,
+      dedupedDemosDeps,
       renderAsset: function renderAsset(this: NonNullable<typeof demos>[0]) {
         // do not render asset for inline demo
         if (!('asset' in this)) return 'null';
@@ -179,31 +241,26 @@ export const demos = {
       renderContext: function renderContext(
         this: NonNullable<typeof demos>[0],
       ) {
-        // do not render context for inline demo
-        if (!('resolveMap' in this) || !('asset' in this)) return 'undefined';
-
-        const entryFileName = Object.keys(this.asset.dependencies)[0];
-
-        // render context for normal demo
-        const context = Object.entries(this.resolveMap).reduce(
-          (acc, [key, path]) => ({
+        // do not render context for inline demo && config babel-import-plugin project
+        if (
+          !('resolveMap' in this) ||
+          !('asset' in this) ||
+          opts.disableLiveDemo
+        )
+          return 'undefined';
+        const context = Object.entries(demoDepsMap[this.id]).reduce(
+          (acc, [key, specifier]) => ({
             ...acc,
-            // omit entry file
-            ...(key !== entryFileName
-              ? {
-                  [key]: `{{{require('${path}')}}}`,
-                }
-              : {}),
+            ...{ [key]: `{{{${specifier}}}}` },
           }),
-          {},
+          relativeDepsMap[this.id],
         );
-
         return JSON.stringify(context, null, 2).replace(/"{{{|}}}"/g, '');
       },
       renderRenderOpts: function renderRenderOpts(
         this: NonNullable<typeof demos>[0],
       ) {
-        if (!('renderOpts' in this)) {
+        if (!('renderOpts' in this) || opts.disableLiveDemo) {
           return 'undefined';
         }
         const renderOpts = this.renderOpts;

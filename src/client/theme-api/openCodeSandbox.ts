@@ -1,4 +1,4 @@
-import { getParameters } from 'codesandbox/lib/api/define';
+import { getParameters } from 'codesandbox-import-utils/lib/api/define';
 import { ApplyPluginsType, type IPreviewerProps } from 'dumi';
 import { genReactRenderCode, pluginManager } from './utils';
 

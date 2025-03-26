@@ -1,6 +1,5 @@
 use swc_core::{
-  ecma::ast::{Stmt, ReturnStmt, Expr, ObjectLit, PropOrSpread, Prop, KeyValueProp, Ident, PropName},
-  common::{DUMMY_SP, Span},
+  common::{Span, DUMMY_SP}, ecma::ast::{Expr, IdentName, KeyValueProp, ObjectLit, Prop, PropName, PropOrSpread, ReturnStmt, Stmt}
 };
 
 /**
@@ -12,7 +11,7 @@ pub fn create_return_with_default(e: Expr, s: Span) -> Stmt {
     arg: Some(Box::new(Expr::Object(ObjectLit {
       span: DUMMY_SP,
       props: vec![PropOrSpread::Prop(Box::new(Prop::KeyValue(KeyValueProp {
-        key: PropName::Ident(Ident::new("default".into(), DUMMY_SP)),
+        key: PropName::Ident(IdentName::new("default".into(), DUMMY_SP)),
         value: Box::new(e),
       })))],
     }))),

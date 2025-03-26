@@ -38,5 +38,5 @@ features:
 请访问 [GitHub](https://github.com/umijs/dumi) 或加入讨论群：
 
 <div>
-  <img data-type="dingtalk" src="https://mdn.alipayobjects.com/huamei_i7qs1c/afts/img/A*T94jRZmW1fgAAAAAAAAAAAAADs-oAQ" width="300" />
+  <img data-type="dingtalk" src="https://mdn.alipayobjects.com/huamei_hktuwg/afts/img/A*I2ovSZsMctUAAAAAAAAAAAAADteaAQ/original" width="300" />
 </div>

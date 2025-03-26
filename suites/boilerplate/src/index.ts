@@ -47,6 +47,7 @@ export default async ({
         choices: [
           { title: 'Static Site', value: 'site' },
           { title: 'React Library', value: 'react' },
+          { title: 'Vue Library', value: 'vue' },
           { title: 'Theme Package', value: 'theme' },
         ],
         initial: 0,
@@ -75,6 +76,7 @@ export default async ({
   const descriptions = {
     site: 'A static site based on dumi',
     react: 'A react library developed with dumi',
+    vue: 'A vue library developed with dumi',
     theme: 'A theme package for dumi',
   };
   const questions: prompts.PromptObject[] = [
@@ -116,6 +118,16 @@ export default async ({
       message: `Input project name`,
     });
   } else if (type === 'react') {
+    questions.unshift({
+      name: 'name',
+      type: 'text',
+      message: 'Input NPM package name',
+      validate: (value: string) => {
+        if (value && value.trim()) return true;
+        return 'NPM package name is required';
+      },
+    });
+  } else if (type === 'vue') {
     questions.unshift({
       name: 'name',
       type: 'text',

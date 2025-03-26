@@ -5,7 +5,7 @@ import modifyWebpackConfig from './webpack';
 
 export default (api: IApi) => {
   api.describe({
-    key: 'preset-vue:vue3',
+    key: 'preset-vue', // dont add `:`, if use `api.writeTmpFile` in plugin
   });
 
   checkVersion(api);

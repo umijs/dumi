@@ -31,7 +31,7 @@ export { useLiveDemo } from './useLiveDemo';
 export { useLocale } from './useLocale';
 export { useNavData } from './useNavData';
 export { usePrefersColor } from './usePrefersColor';
-export { useRouteMeta } from './useRouteMeta';
+export { useMatchedRoute, useRouteMeta } from './useRouteMeta';
 export { useFullSidebarData, useSidebarData } from './useSidebarData';
 export { useSiteSearch } from './useSiteSearch';
 export { useTabMeta } from './useTabMeta';

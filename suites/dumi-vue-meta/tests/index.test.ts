@@ -269,7 +269,7 @@ function testFeatures(kind: 'tsx' | 'sfc' | 'sfc-alias') {
     });
     test('use @component to identify functional component', () => {
       const schema = components['InternalComponent'];
-      expect(schema.props[0]).toContain({
+      expect(schema.props[0]).toMatchObject({
         name: 'a',
         required: true,
         type: 'string',
