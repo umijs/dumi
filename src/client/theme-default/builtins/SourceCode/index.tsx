@@ -91,7 +91,7 @@ const SourceCode: FC<ISourceCodeProps> = (props) => {
 
   return (
     <div className="dumi-default-source-code">
-      {!lang ? null : (
+      {Boolean(lang) && (
         <span className="dumi-default-source-code-language">{lang}</span>
       )}
       <CopyToClipboard
