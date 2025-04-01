@@ -158,6 +158,24 @@
     visibility: hidden;
   }
 
+  &-language {
+    position: absolute;
+    top: 2px;
+    right: 8px;
+    z-index: 2;
+    font-size: 12px;
+    font-weight: 500;
+    user-select: none;
+    user-select: none;
+    color: @c-text-note;
+    transition: color 0.4s, opacity 0.4s;
+  }
+
+  &:hover &-language {
+    opacity: 0;
+    visibility: hidden;
+  }
+
   @{dark-selector} & {
     @bg-color: shade(@c-site-bg-dark, 50%);
 
