@@ -123,7 +123,6 @@ impl VisitMut for ReactDemoVisitor {
                         arg: Some(Box::new(Expr::Await(AwaitExpr {
                           span: DUMMY_SP,
                           arg: Box::new(Expr::Call(CallExpr {
-                            ctxt: SyntaxContext::empty(),
                             span: DUMMY_SP,
                             callee: Callee::Import(Import::dummy()),
                             args: vec![ExprOrSpread {
