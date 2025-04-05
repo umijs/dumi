@@ -1,0 +1,79 @@
+name: Continuous Releases
+
+on:
+  push:
+    branches:
+      - master
+      - feature/*
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  on-success:
+    env:
+      USE_NODE_VERSION: 18
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ env.USE_NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.USE_NODE_VERSION }}
+          registry-url: "https://registry.npmjs.org/"
+
+      - name: Install rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          target: wasm32-wasip1
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      # ========== Cache setup starts here ==========
+      # copied from .github/workflows/ci.yml
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: echo "pnpm_cache_dir=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+          key: ${{ runner.os }}-pnpm-store-node${{ env.USE_NODE_VERSION }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-node${{ env.USE_NODE_VERSION }}-
+
+      - name: Setup cargo cache
+        uses: actions/cache@v3
+        with:
+          # ref: https://doc.rust-lang.org/cargo/guide/cargo-home.html#caching-the-cargo-home-in-ci
+          path: |
+            ~/.cargo/.crates.toml
+            ~/.cargo/.crates2.json
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-store-node${{ env.USE_NODE_VERSION }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-store-node${{ env.USE_NODE_VERSION }}-
+      # ========== Cache setup ends here ==========
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build
+        run: pnpm build
+
+      - name: Prepare examples
+        run: npx esno scripts/prepare-examples.ts
+
+      - name: pkg-pr-new Publish
+        run: npx esno scripts/pkg-pr-new.ts
