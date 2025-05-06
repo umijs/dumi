@@ -2,6 +2,7 @@ import { defineConfig } from './dist';
 import { version } from './package.json';
 
 export default defineConfig({
+  plugins: ['dumi-plugin-code-snippets'],
   html2sketch: {},
   // mako: {},
   favicons: [
