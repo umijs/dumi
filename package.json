@@ -163,6 +163,7 @@
     "@types/react-dom": "^18.2.7",
     "@umijs/lint": "^4.3.0",
     "@umijs/plugins": "4.0.32",
+    "dumi-plugin-code-snippets": "^1.2.0",
     "dumi-theme-mobile": "workspace:*",
     "eslint": "^8.46.0",
     "esno": "^4.7.0",
