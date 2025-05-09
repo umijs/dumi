@@ -32,7 +32,17 @@ function InternalPage() {
     }, [] as React.LazyExoticComponent<any>[]);
   }, [searchParams]);
 
-  if (demo.length === 0) return null;
+  if (demo.length === 0) {
+    return (
+      <div hidden>
+        <h1>Internal Demos</h1>
+        <p>
+          No internal demos found. Please add the demo name to the URL
+          parameters, e.g. ?debug=test.
+        </p>
+      </div>
+    );
+  }
   return (
     <React.Suspense fallback={<Loading />}>
       {demo.map((Comp, index) => (

@@ -1,3 +1,9 @@
 @{dark-selector} body {
   color: #fff;
 }
+
+.dumi-default-navbar {
+  li:has(a[href*='_internal']) {
+    display: none;
+  }
+}
