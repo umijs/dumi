@@ -4,6 +4,8 @@
 
 // nav / sidebar
 li,
-dd:has(a[href*='_internal']) {
-  display: none;
+dd {
+  &:has(a[href*='_internal']) {
+    display: none;
+  }
 }
