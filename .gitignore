@@ -11,8 +11,7 @@
 .dumi/tmp-production
 /examples/*/dist
 /examples/*/server
-/examples/*/.dumi/tmp
-/examples/*/.dumi/tmp-production
+/examples/*/.dumi/tmp*
 /docs/.upstream
 .idea
 /target
