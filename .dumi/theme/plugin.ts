@@ -8,7 +8,7 @@ export default (api: IApi) => {
       path: `__internal`,
       absPath: `/__internal`,
       parentId: void 0,
-      file: require.resolve('../pages/_internal.tsx'),
+      file: require.resolve('../pages/__internal.tsx'),
     };
 
     return oRoutes;
