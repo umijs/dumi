@@ -1,7 +1,13 @@
 # Hello Dumi
 
-- test
-- test2
+- hello
+- world
+
+---
+
+- [ ] eat
+- [ ] sleep
+- [ ] code
 
 see: [#2281](https://github.com/umijs/dumi/pull/2281)
 
