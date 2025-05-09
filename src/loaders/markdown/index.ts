@@ -370,6 +370,9 @@ function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
   // declare demo source files as loader dependency, for re-compiling when file changed
   getDemoSourceFiles(demos).forEach((file) => this.addDependency(file));
 
+  // to avoid compile watch=parent virtual module
+  if (this.resourceQuery.includes('watch=parent')) return null;
+
   switch (opts.mode) {
     case 'demo':
       return emitDemo.call(this, opts, ret);
