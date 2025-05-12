@@ -1,3 +1,11 @@
 @{dark-selector} body {
   color: #fff;
 }
+
+// nav / sidebar
+li,
+dd {
+  &:has(a[href*='__internal']) {
+    display: none;
+  }
+}

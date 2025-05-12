@@ -116,21 +116,21 @@ import '${winPath(md)}?watch=parent';
   .join('\n')}
 import LoadingComponent from '@@/dumi/theme/loading';
 import React, { Suspense } from 'react';
-import { DumiPage, useTabMeta, useRouteMeta } from 'dumi';
-
-function DumiMarkdownInner() {
-  const { texts: ${CONTENT_TEXTS_OBJ_NAME} } = use${
-    isTabContent ? 'TabMeta' : 'RouteMeta'
-  }();
-
-  return ${ret.content};
-}
+import { DumiPage } from 'dumi';
+import { texts as ${CONTENT_TEXTS_OBJ_NAME} } from '${winPath(
+    this.resourcePath,
+  )}?type=text';
 
 // export named function for fastRefresh
 // ref: https://github.com/pmmmwh/react-refresh-webpack-plugin/blob/main/docs/TROUBLESHOOTING.md#edits-always-lead-to-full-reload
 function DumiMarkdownContent() {
-  // wrap suspense for catch async meta data
-  return <${wrapper}><Suspense fallback={<LoadingComponent />}><DumiMarkdownInner /></Suspense></${wrapper}>;
+  return (
+    <${wrapper}>
+      <Suspense fallback={<LoadingComponent />}>
+        ${ret.content}
+      </Suspense>
+    </${wrapper}>
+  )
 }
 
 export default DumiMarkdownContent;`;
