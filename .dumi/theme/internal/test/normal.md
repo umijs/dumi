@@ -7,7 +7,7 @@
 
 - [ ] eat
 - [ ] sleep
-- [ ] code
+- [x] code
 
 see: [#2281](https://github.com/umijs/dumi/pull/2281)
 
