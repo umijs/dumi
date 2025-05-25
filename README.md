@@ -15,7 +15,7 @@ To view more online examples and docs, please visit [dumi official site](https:/
 See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 <a href="https://openomy.app/github/umijs/dumi" target="_blank" style="display: block; width: 100%;" align="center">
-  <img src="https://www.openomy.app/svg?repo=umijs/dumi&chart=bubble&latestMonth=24" target="_blank" alt="Contribution Leaderboard" style="display: block; width: 100%;" />
+  <img src="https://www.openomy.app/svg?repo=umijs/dumi&chart=bubble&latestMonth=3" target="_blank" alt="Contribution Leaderboard" style="display: block; width: 100%;" />
 </a>
 
 ## Badge
