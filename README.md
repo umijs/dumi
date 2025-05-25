@@ -14,6 +14,10 @@ To view more online examples and docs, please visit [dumi official site](https:/
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
 
+<a href="https://openomy.app/github/umijs/dumi" target="_blank" style="display: block; width: 100%;" align="center">
+  <img src="https://www.openomy.app/svg?repo=umijs/dumi&chart=bubble&latestMonth=3" target="_blank" alt="Contribution Leaderboard" style="display: block; width: 100%;" />
+</a>
+
 ## Badge
 
 Using dumi? Add a README badge to show it off: [![dumi](https://img.shields.io/badge/docs%20by-dumi-blue)](https://github.com/umijs/dumi)
