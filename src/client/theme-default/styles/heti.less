@@ -264,10 +264,15 @@
   margin-block-start: 12px;
   margin-block-end: 24px;
   text-align: justify;
+  word-break: break-all;
 }
 .markdown p:not(:lang(zh)):not(:lang(ja)):not(:lang(ko)),
 .markdown p:not(:lang(zh)) {
   text-align: start;
+}
+.markdown blockquote p {
+  margin-block-start: 0;
+  margin-block-end: 0;
 }
 .markdown pre {
   margin-block-start: 12px;
