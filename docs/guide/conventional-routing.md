@@ -101,7 +101,7 @@ nav:
 2. 在相同一级路径下，如果仅存在三级路径，则只展示下拉菜单，一级导航本身不带超链，比如上述例子中的 `Platforms` 导航就不带超链；
 3. 在相同一级路径下，在 2 的基础上还存在二级或一级路径，则一级导航除了下拉菜单外也带超链，比如上述例子中如果添加 `platforms/xx.md` 则 `Platforms` 带超链；
 4. 不同级导航之间的侧边菜单是完全隔离的，比如上述例子中 `Platforms`、`Pc`、`Mobile` 都拥有不同的菜单；
-5. 资产路由本身不支持嵌套，但我们仍然可以通过 [`resolve.atomDirs[n].subType`](../config/index.md#resolve) 配置项实现二级导航，比如 `[{ type: 'component', subType: 'pc' dir: 'src' }]` 会为 `src/xx/index.md` 生成 `/components/pc/xx` 路由，以满足二级导航的路径规则。
+5. 资产路由本身不支持嵌套，但我们仍然可以通过 [`resolve.atomDirs[n].subType`](../config/index.md#resolve) 配置项实现二级导航，比如 `[{ type: 'component', subType: 'pc', dir: 'src' }]` 会为 `src/xx/index.md` 生成 `/components/pc/xx` 路由，以满足二级导航的路径规则。
 
 ## 菜单归类及生成
 
