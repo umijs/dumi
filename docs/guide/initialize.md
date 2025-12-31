@@ -29,7 +29,8 @@ $ npx create-dumi
 # 选择一个模板
 $ ? Pick template type › - Use arrow-keys. Return to submit.
 $ ❯   Static Site # 用于构建网站
-$     React Library # 用于构建组件库，有组件例子
+$     React Library # 用于构建 React 组件库，有组件例子
+$     Vue Library # 用于构建 Vue 组件库，有组件例子
 $     Theme Package # 主题包开发脚手架，用于开发主题包
 
 # 安装依赖后启动项目
