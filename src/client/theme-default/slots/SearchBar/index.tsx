@@ -81,7 +81,7 @@ const SearchBar: FC = () => {
 
   return (
     <div className="dumi-default-search-bar">
-      <IconSearch className="dumi-default-search-bar-svg" />
+      <IconSearch className="dumi-default-search-bar-svg" title="Search" />
       <Input
         onFocus={() => {
           setFocusing(true);
