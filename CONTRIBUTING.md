@@ -4,10 +4,10 @@
 
 [Node.js](https://nodejs.org/) >= 14, [PNPM](https://pnpm.io/) >= 7, [Rust](https://www.rust-lang.org/)
 
-After Rust is installed, add `wasm32-wasi`.
+After Rust is installed, add `wasm32-wasip1`.
 
 ```shell
-rustup target add wasm32-wasi
+rustup target add wasm32-wasip1
 ```
 
 ## Setup the repository locally
