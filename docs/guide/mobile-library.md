@@ -1,6 +1,6 @@
 ---
 group: 进阶
-order: 2
+order: 3
 ---
 
 # 移动端组件研发
@@ -10,7 +10,7 @@ order: 2
 与 dumi 1 一样，只需要安装移动端组件研发主题即可切换到移动端组件研发模式：
 
 ```bash
-$ npm i dumi-theme-mobile@^2.0.0 -D
+npm i dumi-theme-mobile@^2.0.0 -D
 ```
 
 然后可以通过 `themeConfig` 配置该主题包的行为：
