@@ -54,7 +54,7 @@ const SocialIcon: FC<SocialIconProps> = (props: SocialIconProps) => {
       href={preset.link}
       rel="noreferrer"
     >
-      <preset.Icon />
+      <preset.Icon title={icon}/>
     </a>
   );
 };
