@@ -71,7 +71,7 @@ export default function remarkMeta(opts: IRemarkMetaOpts): Transformer<Root> {
     try {
       vFile.data.frontmatter.lastUpdated =
         parseInt(
-          execSync(`git log -1 --format=%at ${opts.fileAbsPath}`, {
+          execSync(`git log -1 --format=%at -- "${opts.fileAbsPath}"`, {
             stdio: 'pipe',
           }).toString(),
           10,
