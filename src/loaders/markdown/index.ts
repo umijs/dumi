@@ -1,3 +1,4 @@
+import { UTOOPACK_LOADER_CTX_KEY } from '@/features/compile/utoopackLoaders';
 import { isTabRouteFile } from '@/features/tabs';
 import type { IThemeLoadResult } from '@/features/theme/loader';
 import { generateMetaChunkName, getCache, getContentHash } from '@/utils';
@@ -97,17 +98,22 @@ function emitDefault(
   if (frontmatter!.atomId && opts.onResolveAtomMeta) {
     opts.onResolveAtomMeta(frontmatter!.atomId, frontmatter);
   }
-  const dependencies = this.getDependencies()
-    .slice(1)
-    .filter((filePath: string) => {
-      return !filePath.includes('node_modules');
-    });
+  // Use ret.meta.embeds directly instead of this.getDependencies().slice(1):
+  // - In webpack, getDependencies() returns [resourcePath, ...addDependency() files]
+  //   so slice(1) gets the embedded files.
+  // - In utoopack (turbopack), getDependencies() may return [] or only explicitly
+  //   added items without the resource, making slice(1) unreliable.
+  // ret.meta.embeds is the canonical list of embedded markdown files from the
+  // transformer, so use it directly.
+  const embeddedMdFiles = (ret.meta.embeds ?? []).filter(
+    (filePath: string) =>
+      filePath.endsWith('.md') && !filePath.includes('node_modules'),
+  );
   // import all builtin components, may be used by markdown content
   return `${Object.values(opts.builtins)
     .map((item) => `import ${item.specifier} from '${winPath(item.source)}';`)
     .join('\n')}
-${dependencies
-  .filter((dep: string) => dep.endsWith('.md'))
+${embeddedMdFiles
   .map(
     (md: string) => `
 import '${winPath(md)}?watch=parent';
@@ -193,7 +199,7 @@ function emitDemo(
       }, []);
   return Mustache.render(
     `import React from 'react';
-import '${winPath(this.getDependencies()[0])}?watch=parent';
+import '${winPath(this.resourcePath)}?watch=parent';
 {{#dedupedDemosDeps}}
 import * as {{{specifier}}} from '{{{key}}}';
 {{/dedupedDemosDeps}}
@@ -226,8 +232,8 @@ export const demos = {
           // skip non-file asset because resolveMap will contains all dependencies since 2.3.0
           if (asset.dependencies[file]?.type === 'FILE') {
             let assetValue = `{{{require('-!${resolveMap[file]}?dumi-raw').default}}}`;
-            // mako not support -!
-            if (process.env.OKAM) {
+            // mako and utoopack (turbopack) do not support webpack's -! inline loader syntax
+            if (process.env.OKAM || (opts as any)[UTOOPACK_LOADER_CTX_KEY]) {
               assetValue = `{{{require('${resolveMap[file]}?dumi-raw').default}}}`;
             }
             // to avoid modify original asset object
@@ -308,7 +314,7 @@ function emitDemoIndex(
 
   return Mustache.render(
     `
-    import '${winPath(this.getDependencies()[0])}?watch=parent';
+    import '${winPath(this.resourcePath)}?watch=parent';
     export const demoIndex = {
   ids: {{{ids}}},
   getter: {{{getter}}}
@@ -330,12 +336,30 @@ function emitFrontmatter(
   ret: IMdTransformerResult,
 ) {
   const { frontmatter, toc } = ret.meta;
+  const resourcePath = winPath(this.resourcePath);
+  const isUtoopack = UTOOPACK_LOADER_CTX_KEY in (opts as any);
+
+  if (isUtoopack) {
+    const rendered = Mustache.render(
+      `import '${resourcePath}?watch=parent';
+globalThis.__DUMI_FM__ = globalThis.__DUMI_FM__ || {};
+globalThis.__DUMI_TOC__ = globalThis.__DUMI_TOC__ || {};
+globalThis.__DUMI_FM__['${resourcePath}'] = {{{frontmatter}}};
+globalThis.__DUMI_TOC__['${resourcePath}'] = {{{toc}}};
+export const frontmatter = globalThis.__DUMI_FM__['${resourcePath}'];
+export const toc = globalThis.__DUMI_TOC__['${resourcePath}'];`,
+      {
+        toc: JSON.stringify(toc),
+        frontmatter: JSON.stringify(frontmatter),
+      },
+    );
+    return rendered;
+  }
 
   return Mustache.render(
-    `
-    import '${winPath(this.getDependencies()[0])}?watch=parent';
-    export const toc = {{{toc}}};
-export const frontmatter = {{{frontmatter}}};`,
+    `import '${resourcePath}?watch=parent';
+export const toc = new Proxy({{{toc}}}, {});
+export const frontmatter = new Proxy({{{frontmatter}}}, {});`,
     {
       toc: JSON.stringify(toc),
       frontmatter: JSON.stringify(frontmatter),
@@ -352,7 +376,7 @@ function emitText(
 
   return Mustache.render(
     `
-  import '${winPath(this.getDependencies()[0])}?watch=parent';
+  import '${winPath(this.resourcePath)}?watch=parent';
   export const texts = {{{texts}}};
   `,
     {
@@ -399,7 +423,26 @@ const deferrer: Record<string, Promise<IMdTransformerResult>> = {};
 const depsMapping: Record<string, string[]> = {};
 
 export default function mdLoader(this: any, content: string) {
-  const opts: IMdLoaderOptions = this.getOptions();
+  let opts: IMdLoaderOptions = this.getOptions();
+  const loaderContextPath: string | undefined = (opts as any)[
+    UTOOPACK_LOADER_CTX_KEY
+  ];
+  if (loaderContextPath) {
+    const ctx = require(loaderContextPath) as {
+      techStacks: any[];
+      builtins?: Record<string, { specifier: string; source: string }>;
+    };
+    if (!opts.techStacks?.length) {
+      (opts as any).techStacks = ctx.techStacks;
+    }
+    // builtins are not available at modifyConfig time in utoopack mode
+    // (themeData is only set in modifyAppData, which is later).
+    // Read them from the CJS loader-ctx file written in onGenerateFiles.
+    if (ctx.builtins && !Object.keys((opts as any).builtins ?? {}).length) {
+      (opts as any).builtins = ctx.builtins;
+    }
+  }
+
   const cb = this.async();
 
   // disable cache for avoid assets metadata lost

@@ -8,6 +8,11 @@ import path from 'path';
 import { addAtomMeta, addExampleAssets } from '../assets';
 import { getLoadHook } from './makoHooks';
 import { shouldDisabledLiveDemo } from './utils';
+import {
+  LOADER_CTX_FILENAME,
+  buildLoaderContextContent,
+  getUtoopackRules,
+} from './utoopackLoaders';
 export const techStacks: IDumiTechStack[] = [];
 export default (api: IApi) => {
   api.describe({ key: 'dumi:compile' });
@@ -65,6 +70,21 @@ export default (api: IApi) => {
           type: api.ApplyPluginsType.add,
         })),
       );
+    },
+  });
+
+  api.onGenerateFiles({
+    fn() {
+      if (api.config.utoopack) {
+        api.writeTmpFile({
+          noPluginDir: true,
+          path: LOADER_CTX_FILENAME,
+          content: buildLoaderContextContent(
+            techStacks,
+            (api as any).service.themeData?.builtins ?? {},
+          ),
+        });
+      }
     },
   });
 
@@ -228,6 +248,25 @@ export default (api: IApi) => {
             load: getLoadHook(api),
           },
         ];
+      }
+      return memo;
+    },
+  });
+
+  api.modifyConfig({
+    before: 'utoopack',
+    fn: (memo) => {
+      if (memo.utoopack) {
+        memo.utoopack = {
+          ...memo.utoopack,
+          module: {
+            ...(memo.utoopack.module || {}),
+            rules: {
+              ...(memo.utoopack.module?.rules || {}),
+              ...getUtoopackRules(api),
+            },
+          },
+        };
       }
       return memo;
     },

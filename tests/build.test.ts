@@ -1,7 +1,15 @@
 import path from 'path';
 import { execa } from 'umi/plugin-utils';
 
-test('build', () => {
+test('build with mako', () => {
+  const bin = require.resolve('../bin/dumi');
+
+  execa.execaSync('node', [bin, 'build'], {
+    cwd: path.join(__dirname, '../examples/normal'),
+  });
+});
+
+test('build with utoopack', () => {
   const bin = require.resolve('../bin/dumi');
 
   execa.execaSync('node', [bin, 'build'], {

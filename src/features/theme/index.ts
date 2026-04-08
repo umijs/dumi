@@ -222,7 +222,7 @@ export default (api: IApi) => {
       path.join(api.paths.absTmpPath, 'dumi/theme'),
     );
     // alias default theme
-    memo.alias['dumi/theme-default'] = DEFAULT_THEME_PATH;
+    memo.alias['dumi/theme-default'] = winPath(DEFAULT_THEME_PATH);
 
     // FIXME: for replace deps by MFSU in local
     memo.extraBabelIncludes ??= [];
