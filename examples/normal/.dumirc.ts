@@ -4,7 +4,7 @@ export default {
     { id: 'en-US', name: 'EN' },
   ],
   mako: {},
-  ssr: { builder: 'mako' },
+  ssr: process.platform === 'win32' ? false : { builder: 'mako' },
 
   themeConfig: { name: '示例' },
   mfsu: false,
