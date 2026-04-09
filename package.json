@@ -86,7 +86,6 @@
     "@types/mdast": "^3.0.12",
     "@umijs/bundler-utils": "^4.6.40",
     "@umijs/core": "^4.6.40",
-    "@umijs/mako": "0.7.3",
     "@umijs/utils": "^4.6.40",
     "animated-scroll-to": "^2.3.0",
     "classnames": "2.3.2",
@@ -194,10 +193,5 @@
   },
   "authors": [
     "Peach <scdzwyxst@gmail.com>"
-  ],
-  "pnpm": {
-    "overrides": {
-      "@umijs/mako": "0.7.3"
-    }
-  }
+  ]
 }
