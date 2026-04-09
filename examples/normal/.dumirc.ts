@@ -8,6 +8,5 @@ export default {
 
   themeConfig: { name: '示例' },
   mfsu: false,
-  apiParser: {},
   resolve: { entryFile: './src/index.ts' },
 };
