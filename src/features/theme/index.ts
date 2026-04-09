@@ -6,7 +6,7 @@ import {
   VERSION_2_LEVEL_NAV,
 } from '@/constants';
 import type { IApi } from '@/types';
-import { isVersionInRange } from '@/utils';
+import { isVersionInRange, toImportSpecifier } from '@/utils';
 import { parseModule } from '@umijs/bundler-utils';
 import { execSync } from 'child_process';
 import fs from 'fs';
@@ -303,13 +303,13 @@ export default (api: IApi) => {
         path: 'dumi/theme/loading.tsx',
         content: `${
           enableNProgress
-            ? `import nprogress from '${winPath(
+            ? `import nprogress from '${toImportSpecifier(
                 path.dirname(require.resolve('nprogress/package')),
               )}';
 import './nprogress.css';`
             : ''
         }
-import UserLoading from '${globalLoading}';
+import UserLoading from '${toImportSpecifier(globalLoading)}';
 import React, { useLayoutEffect, type FC } from 'react';
 import { useSiteData } from 'dumi';
 
@@ -357,12 +357,14 @@ export default DumiLoading;
 
         // export default
         if (exports.includes('default')) {
-          contents.push(`export { default } from '${item.source}';`);
+          contents.push(
+            `export { default } from '${toImportSpecifier(item.source)}';`,
+          );
         }
 
         // export members
         if (exports.some((exp) => exp !== 'default')) {
-          contents.push(`export * from '${item.source}';`);
+          contents.push(`export * from '${toImportSpecifier(item.source)}';`);
         }
 
         api.writeTmpFile({
@@ -388,12 +390,16 @@ export default DumiLoading;
       path: 'dumi/theme/ContextWrapper.tsx',
       tplPath: require.resolve('../../templates/ContextWrapper.ts.tpl'),
       context: {
-        contextPath: winPath(require.resolve('../../client/theme-api/context')),
+        contextPath: toImportSpecifier(
+          require.resolve('../../client/theme-api/context'),
+        ),
         defaultExport: hasDefaultExport
-          ? `import entryDefaultExport from '${winPath(entryFile!)}';`
+          ? `import entryDefaultExport from '${toImportSpecifier(entryFile!)}';`
           : '',
         namedExport: hasNamedExport
-          ? `import * as entryMemberExports from '${winPath(entryFile!)}';`
+          ? `import * as entryMemberExports from '${toImportSpecifier(
+              entryFile!,
+            )}';`
           : '',
         hasDefaultExport,
         hasNamedExport,
@@ -408,7 +414,9 @@ export default DumiLoading;
             api.config.themeConfig,
           ),
         ),
-        rc_util: winPath(path.dirname(require.resolve('rc-util/package'))),
+        rc_util: toImportSpecifier(
+          path.dirname(require.resolve('rc-util/package')),
+        ),
         _2_level_nav_available: api.appData._2LevelNavAvailable,
       },
     });
@@ -515,7 +523,9 @@ export default DumiLoading;
     },
     {
       specifier: '{ setPluginManager as setDumiPluginManager }',
-      source: winPath(require.resolve('../../client/theme-api/utils')),
+      source: toImportSpecifier(
+        require.resolve('../../client/theme-api/utils'),
+      ),
     },
   ]);
   api.addEntryCode(() => 'setDumiPluginManager(getDumiPluginManager());');

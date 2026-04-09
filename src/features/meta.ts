@@ -1,5 +1,5 @@
 import type { IApi } from '@/types';
-import { generateMetaChunkName } from '@/utils';
+import { generateMetaChunkName, toImportSpecifier } from '@/utils';
 import path from 'path';
 import type { IRoute } from 'umi';
 import { winPath } from 'umi/plugin-utils';
@@ -90,8 +90,12 @@ export default (api: IApi) => {
       path: 'dumi/meta/runtime.ts',
       tplPath: require.resolve('../templates/meta/runtime.ts.tpl'),
       context: {
-        deepmerge: winPath(path.dirname(require.resolve('deepmerge/package'))),
-        rc_util: winPath(path.dirname(require.resolve('rc-util/package'))),
+        deepmerge: toImportSpecifier(
+          path.dirname(require.resolve('deepmerge/package')),
+        ),
+        rc_util: toImportSpecifier(
+          path.dirname(require.resolve('rc-util/package')),
+        ),
       },
     });
 

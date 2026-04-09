@@ -5,6 +5,7 @@ import fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'path';
 import { lodash, logger, semver, winPath } from 'umi/plugin-utils';
+import { pathToFileURL } from 'url';
 import { promisify } from 'util';
 import type {
   RunLoaderOption as InternalRunLoaderOption,
@@ -271,4 +272,20 @@ export function isVersionInRange(
     return semver.subset(version, range, options);
   }
   return false;
+}
+
+/**
+ * normalize module specifier for generated import/export statements
+ * - keep package/bare specifiers unchanged
+ * - use file URL for absolute paths on Windows to avoid ESM `d:` scheme error
+ */
+export function toImportSpecifier(source: string) {
+  if (!source) return source;
+  if (/^(?:node|data|file):/.test(source)) return source;
+
+  if (process.platform === 'win32' && path.win32.isAbsolute(source)) {
+    return pathToFileURL(source).href;
+  }
+
+  return winPath(source);
 }

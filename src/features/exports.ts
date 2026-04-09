@@ -1,5 +1,5 @@
 import type { IApi } from '@/types';
-import { winPath } from 'umi/plugin-utils';
+import { toImportSpecifier } from '@/utils';
 
 export default (api: IApi) => {
   api.describe({ key: 'dumi:exports' });
@@ -17,7 +17,7 @@ export default (api: IApi) => {
       noPluginDir: true,
       path: 'dumi/exports.ts',
       content: `export * from '../exports';
-export * from '${winPath(require.resolve('../client/theme-api'))}';
+export * from '${toImportSpecifier(require.resolve('../client/theme-api'))}';
 export * from './meta/exports';`,
     });
   });

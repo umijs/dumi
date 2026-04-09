@@ -1,7 +1,7 @@
 import { SP_ROUTE_PREFIX } from '@/constants';
 import type { IApi } from '@/types';
+import { toImportSpecifier } from '@/utils';
 import path from 'path';
-import { winPath } from 'umi/plugin-utils';
 
 export default (api: IApi) => {
   api.describe({
@@ -93,10 +93,10 @@ export const messages = ${JSON.stringify(
       content: `
 import { history } from 'dumi';
 import React, { useState, useLayoutEffect, useCallback, type ReactNode } from 'react';
-import { RawIntlProvider, createIntl, createIntlCache } from '${winPath(
+import { RawIntlProvider, createIntl, createIntlCache } from '${toImportSpecifier(
         path.dirname(require.resolve('react-intl/package')),
       )}';
-import { useIsomorphicLayoutEffect } from '${winPath(
+import { useIsomorphicLayoutEffect } from '${toImportSpecifier(
         require.resolve('../client/theme-api/utils'),
       )}'
 import { locales, messages } from './config';
