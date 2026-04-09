@@ -39,6 +39,11 @@ function filterIgnoredProps(
 
 export default (api: IApi) => {
   let prevData: IParsedAtomAssets;
+  const fallbackData: IParsedAtomAssets = {
+    components: {},
+    functions: {},
+  };
+
   const writeAtomsMetaFile = (data: typeof prevData) => {
     // filter ignored properties
     const components = lodash.mapValues(data.components, (component) => ({
@@ -118,7 +123,17 @@ export default (api: IApi) => {
   api.onGenerateFiles(async () => {
     if (api.env === 'production') {
       // sync parse in production
-      writeAtomsMetaFile(await api.service.atomParser.parse());
+      // fallback to empty metadata when parser runtime is unavailable
+      try {
+        writeAtomsMetaFile(await api.service.atomParser.parse());
+      } catch (err) {
+        api.logger.warn(
+          `apiParser parse failed, fallback to empty metadata: ${
+            err instanceof Error ? err.message : String(err)
+          }`,
+        );
+        writeAtomsMetaFile(fallbackData);
+      }
     } else if (prevData) {
       // also write prev data when re-generate files in development
       writeAtomsMetaFile(prevData);

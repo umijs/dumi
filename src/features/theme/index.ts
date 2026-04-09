@@ -195,11 +195,23 @@ export default (api: IApi) => {
   });
 
   api.modifyConfig((memo) => {
+    // alias each component from package/default theme, as fallback source
+    // this keeps theme slots resolvable even if tmp shadow theme generation is interrupted
+    themeMapKeys.forEach((key) => {
+      Object.values(pkgThemeData[key] || {}).forEach((item) => {
+        memo.alias[`dumi/theme/${key}/${item.specifier}`] = winPath(
+          item.source,
+        );
+      });
+    });
+
     // alias each component from local theme, as a part of final theme
     if (localThemeData) {
       themeMapKeys.forEach((key) => {
         Object.values(localThemeData[key] || {}).forEach((item) => {
-          memo.alias[`dumi/theme/${key}/${item.specifier}`] = item.source;
+          memo.alias[`dumi/theme/${key}/${item.specifier}`] = winPath(
+            item.source,
+          );
         });
       });
     }
