@@ -16,7 +16,9 @@ import { deepmerge, lodash, resolve, winPath } from 'umi/plugin-utils';
 import { safeExcludeInMFSU } from '../derivative';
 import loadTheme, { IThemeLoadResult } from './loader';
 
-const DEFAULT_THEME_PATH = path.join(__dirname, '../../../theme-default');
+const DEFAULT_THEME_PATH = winPath(
+  path.join(__dirname, '../../../theme-default'),
+);
 const DEFAULT_LOADING_PATH = winPath(
   path.resolve(__dirname, '../../client/pages/Loading'),
 );
@@ -204,9 +206,8 @@ export default (api: IApi) => {
     // alias final theme to fall back to original theme
     memo.alias['dumi/theme'] = 'dumi/theme-original';
     // alias original theme to temp dir
-    memo.alias['dumi/theme-original'] = path.join(
-      api.paths.absTmpPath,
-      'dumi/theme',
+    memo.alias['dumi/theme-original'] = winPath(
+      path.join(api.paths.absTmpPath, 'dumi/theme'),
     );
     // alias default theme
     memo.alias['dumi/theme-default'] = DEFAULT_THEME_PATH;
