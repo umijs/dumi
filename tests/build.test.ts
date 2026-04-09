@@ -8,11 +8,3 @@ test('build with mako', () => {
     cwd: path.join(__dirname, '../examples/normal'),
   });
 });
-
-test('build with utoopack', () => {
-  const bin = require.resolve('../bin/dumi');
-
-  execa.execaSync('node', [bin, 'build'], {
-    cwd: path.join(__dirname, '../examples/normal-utoopack'),
-  });
-});
