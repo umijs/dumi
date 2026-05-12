@@ -82,6 +82,7 @@ export default (api: IApi) => {
           content: buildLoaderContextContent(
             techStacks,
             (api as any).service.themeData?.builtins ?? {},
+            api.appData.routes ?? {},
           ),
         });
       }

@@ -205,6 +205,32 @@ export default () => (
 );
 ```
 
+### utoopack
+
+- 类型：`object`
+- 默认值：`undefined`
+
+使用 Rust Bundler [utoopack](http://github.com/utooland/utoo) 提升文档站构建性能。通过配置 `utoopack: {}` 即可启用，开启后 dumi 会使用 utoopack 处理客户端构建产物。
+
+```ts
+import { defineConfig } from 'dumi';
+
+export default defineConfig({
+  utoopack: {},
+});
+```
+
+如果站点同时启用了 SSR 预渲染，SSR 服务端构建器仍可通过 `ssr.builder` 去单独指定构建，例如可以开启 utoopack 的 SSR 构建:
+
+```ts
+export default defineConfig({
+  utoopack: {},
+  ssr: { builder: 'utoopack' },
+});
+```
+
+注意：utoopack 依赖 Node.js 20 及以上版本。
+
 ## 主题配置项
 
 通过 `themeConfig` 可配置传递给主题的配置项：
