@@ -32,6 +32,7 @@ function findInRequireCache(
 export function buildLoaderContextContent(
   techStacks: IDumiTechStack[],
   builtins: Record<string, { specifier: string; source: string }> = {},
+  routes: Record<string, unknown> = {},
 ): string {
   const refs: string[] = [];
 
@@ -66,7 +67,8 @@ export function buildLoaderContextContent(
   return (
     `'use strict';\n` +
     `exports.techStacks = [${refs.join(', ')}];\n` +
-    `exports.builtins = ${JSON.stringify(builtins)};\n`
+    `exports.builtins = ${JSON.stringify(builtins)};\n` +
+    `exports.routes = ${JSON.stringify(routes)};\n`
   );
 }
 
@@ -89,7 +91,7 @@ export const getUtoopackRules = (api: IApi): Record<string, unknown> => {
       forceKebabCaseRouting: cfgResolve.forceKebabCaseRouting ?? true,
       ...(cfgResolve.entryFile ? { entryFile: cfgResolve.entryFile } : {}),
     },
-    routes: api.appData.routes || {},
+    routes: {},
     builtins: {},
     locales: api.config.locales || [],
     pkg: api.pkg,

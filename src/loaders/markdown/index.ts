@@ -431,6 +431,7 @@ export default function mdLoader(this: any, content: string) {
     const ctx = require(loaderContextPath) as {
       techStacks: any[];
       builtins?: Record<string, { specifier: string; source: string }>;
+      routes?: IMdLoaderOptions['routes'];
     };
     if (!opts.techStacks?.length) {
       (opts as any).techStacks = ctx.techStacks;
@@ -440,6 +441,10 @@ export default function mdLoader(this: any, content: string) {
     // Read them from the CJS loader-ctx file written in onGenerateFiles.
     if (ctx.builtins && !Object.keys((opts as any).builtins ?? {}).length) {
       (opts as any).builtins = ctx.builtins;
+    }
+    // routes are also generated later than modifyConfig in utoopack mode.
+    if (ctx.routes && !Object.keys((opts as any).routes ?? {}).length) {
+      (opts as any).routes = ctx.routes;
     }
   }
 

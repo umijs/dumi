@@ -57,9 +57,13 @@ export default function rehypeLink(
           // e.g. in /a page, <Link to="./b">b</Link> will be resolved to /a/b in react-router@6
           //      but will be resolved to /b in <a href="./b">b</a>
           const routes = Object.values(opts.routes);
-          const basePath = routes.find(
+          const currentRoute = routes.find(
             (route) => route.file === hostAbsPath,
-          )!.absPath;
+          );
+
+          if (!currentRoute) return;
+
+          const basePath = currentRoute.absPath;
           const htmlTargetPath = url.resolve(basePath, parsedUrl.pathname!);
           const rr6TargetPath = winPath(
             path.resolve(basePath, parsedUrl.pathname!),
