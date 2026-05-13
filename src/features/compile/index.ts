@@ -3,6 +3,7 @@ import type { IMdLoaderOptions } from '@/loaders/markdown';
 import ReactTechStack from '@/techStacks/react';
 import type { IApi, IDumiTechStack } from '@/types';
 import { _setFSCacheDir } from '@/utils';
+import enhancedResolve from 'enhanced-resolve';
 import fs from 'fs';
 import path from 'path';
 import { addAtomMeta, addExampleAssets } from '../assets';
@@ -14,6 +15,42 @@ import {
   getUtoopackRules,
 } from './utoopackLoaders';
 export const techStacks: IDumiTechStack[] = [];
+
+function normalizeMakoAliases(
+  alias: NonNullable<IApi['config']['alias']>,
+  cwd: string,
+) {
+  const normalizedAlias = { ...alias };
+  // Mako does not support webpack's exact alias suffix (`$`). Resolve exact
+  // alias targets up front to keep package subpath aliases on their CJS entry.
+  const resolver = enhancedResolve.create.sync({
+    alias,
+    conditionNames: ['import', 'require', 'default', 'browser', 'node'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.mjs', '.json'],
+    exportsFields: [],
+    mainFields: ['browser', 'module', 'main'],
+  });
+
+  Object.keys(alias).forEach((key) => {
+    if (!key.endsWith('$')) return;
+
+    const makoAliasKey = key.slice(0, -1);
+    const aliasValue = alias[key];
+
+    delete normalizedAlias[key];
+
+    if (makoAliasKey in normalizedAlias) return;
+
+    try {
+      normalizedAlias[makoAliasKey] = resolver(cwd, aliasValue);
+    } catch {
+      normalizedAlias[makoAliasKey] = aliasValue;
+    }
+  });
+
+  return normalizedAlias;
+}
+
 export default (api: IApi) => {
   api.describe({ key: 'dumi:compile' });
 
@@ -243,6 +280,7 @@ export default (api: IApi) => {
     before: 'mako',
     fn: (memo) => {
       if (memo.mako || memo.ssr?.builder === 'mako') {
+        memo.alias = normalizeMakoAliases(memo.alias, api.cwd);
         memo.mako ??= {};
         memo.mako.plugins = [
           {
