@@ -99,6 +99,14 @@ export const getUtoopackRules = (api: IApi): Record<string, unknown> => {
     [UTOOPACK_LOADER_CTX_KEY]: loaderContextPath,
   });
 
+  const externalDemoLoader = {
+    loader: require.resolve('../../loaders/demo'),
+    options: toSerializable({
+      cwd: api.cwd,
+      [UTOOPACK_LOADER_CTX_KEY]: loaderContextPath,
+    }),
+  };
+
   return {
     // handle ?watch=parent virtual module: return empty content to establish file-watching dependency
     '**/*': [
@@ -120,16 +128,34 @@ export const getUtoopackRules = (api: IApi): Record<string, unknown> => {
       // handle external demo component files (?techStack=xxx)
       // techStacks are NOT serializable; pass loaderContextPath and hydrate in the loader
       {
-        condition: { query: /^\?techStack=.*$/ },
-        loaders: [
-          {
-            loader: require.resolve('../../loaders/demo'),
-            options: toSerializable({
-              cwd: api.cwd,
-              [UTOOPACK_LOADER_CTX_KEY]: loaderContextPath,
-            }),
-          },
-        ],
+        condition: {
+          all: [{ query: /^\?techStack=.*$/ }, { path: /\.tsx$/ }],
+        },
+        loaders: [externalDemoLoader],
+        as: '*.tsx',
+      },
+      {
+        condition: {
+          all: [{ query: /^\?techStack=.*$/ }, { path: /\.ts$/ }],
+        },
+        loaders: [externalDemoLoader],
+        as: '*.ts',
+      },
+      {
+        condition: {
+          all: [{ query: /^\?techStack=.*$/ }, { path: /\.jsx$/ }],
+        },
+        loaders: [externalDemoLoader],
+        as: '*.jsx',
+      },
+      {
+        condition: {
+          all: [
+            { query: /^\?techStack=.*$/ },
+            { not: { path: /\.(tsx?|jsx)$/ } },
+          ],
+        },
+        loaders: [externalDemoLoader],
         as: '*.js',
       },
     ],
