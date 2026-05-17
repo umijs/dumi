@@ -84,8 +84,9 @@ export default (api: IApi) => {
     assert(
       !api.config.ssr ||
         api.config.ssr.builder === 'webpack' ||
-        api.config.ssr.builder === 'mako',
-      'Only `webpack` and `mako` builder is supported in SSR mode!',
+        api.config.ssr.builder === 'mako' ||
+        api.config.ssr.builder === 'utoopack',
+      'Only `webpack`, `mako` and `utoopack` builder is supported in SSR mode!',
     );
     assert(
       api.config.cssLoader?.modules === undefined &&
