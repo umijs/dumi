@@ -72,7 +72,10 @@ export function buildLoaderContextContent(
   );
 }
 
-export const getUtoopackRules = (api: IApi): Record<string, unknown> => {
+export const getUtoopackRules = (
+  api: IApi,
+  config: IApi['config'] = api.config,
+): Record<string, unknown> => {
   const disableLiveDemo = shouldDisabledLiveDemo(api);
 
   const loaderContextPath = path.join(
@@ -80,10 +83,10 @@ export const getUtoopackRules = (api: IApi): Record<string, unknown> => {
     LOADER_CTX_FILENAME,
   );
 
-  const cfgResolve = (api.config as any).resolve ?? {};
+  const cfgResolve = config.resolve ?? {};
   const serializableBaseOpts = toSerializable({
     cwd: api.cwd,
-    alias: api.config.alias || {},
+    alias: config.alias || {},
     resolve: {
       atomDirs: cfgResolve.atomDirs ?? [{ type: 'component', dir: 'src' }],
       docDirs: cfgResolve.docDirs ?? ['docs'],
@@ -93,7 +96,7 @@ export const getUtoopackRules = (api: IApi): Record<string, unknown> => {
     },
     routes: {},
     builtins: {},
-    locales: api.config.locales || [],
+    locales: config.locales || [],
     pkg: api.pkg,
     disableLiveDemo,
     [UTOOPACK_LOADER_CTX_KEY]: loaderContextPath,
