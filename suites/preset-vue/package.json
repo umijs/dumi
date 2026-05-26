@@ -38,7 +38,7 @@
     "@types/babel__standalone": "^7.1.7",
     "@vue/babel-plugin-jsx": "^1.1.6",
     "dumi": "workspace:*",
-    "father": "^4.1.9",
+    "father": "^4.6.21",
     "tsup": "^8.0.1"
   },
   "peerDependencies": {

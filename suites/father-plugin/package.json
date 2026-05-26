@@ -18,10 +18,10 @@
     "dev": "father dev"
   },
   "devDependencies": {
-    "father": "^4.1.0"
+    "father": "^4.6.21"
   },
   "peerDependencies": {
-    "father": "^4.1.0"
+    "father": "^4.6.21"
   },
   "publishConfig": {
     "access": "public"
