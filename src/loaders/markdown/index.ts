@@ -305,6 +305,28 @@ export const demos = {
   );
 }
 
+function renderDemoIndex(
+  resourcePath: string,
+  opts: Pick<IMdLoaderDemoIndexModeOptions, 'cwd' | 'locales'>,
+  demos: IMdTransformerResult['meta']['demos'],
+) {
+  return Mustache.render(
+    `
+export const demoIndex = {
+  ids: {{{ids}}},
+  getter: {{{getter}}}
+};`,
+    {
+      ids: JSON.stringify(demos?.map((demo) => demo.id)),
+      getter: `() => import(/* webpackChunkName: "${generateMetaChunkName(
+        resourcePath,
+        opts.cwd,
+        opts.locales.map(({ id }) => id),
+      )}" */'${winPath(resourcePath)}?type=demo')`,
+    },
+  );
+}
+
 function emitDemoIndex(
   this: any,
   opts: IMdLoaderDemoIndexModeOptions,
@@ -312,22 +334,8 @@ function emitDemoIndex(
 ) {
   const { demos } = ret.meta;
 
-  return Mustache.render(
-    `
-    import '${winPath(this.resourcePath)}?watch=parent';
-    export const demoIndex = {
-  ids: {{{ids}}},
-  getter: {{{getter}}}
-};`,
-    {
-      ids: JSON.stringify(demos?.map((demo) => demo.id)),
-      getter: `() => import(/* webpackChunkName: "${generateMetaChunkName(
-        this.resourcePath,
-        opts.cwd,
-        opts.locales.map(({ id }) => id),
-      )}" */'${winPath(this.resourcePath)}?type=demo')`,
-    },
-  );
+  return `import '${winPath(this.resourcePath)}?watch=parent';
+${renderDemoIndex(this.resourcePath, opts, demos)}`;
 }
 
 function emitFrontmatter(
@@ -335,9 +343,10 @@ function emitFrontmatter(
   opts: IMdLoaderFrontmatterModeOptions,
   ret: IMdTransformerResult,
 ) {
-  const { frontmatter, toc } = ret.meta;
+  const { frontmatter, toc, demos } = ret.meta;
   const resourcePath = winPath(this.resourcePath);
   const isUtoopack = UTOOPACK_LOADER_CTX_KEY in (opts as any);
+  const demoIndex = renderDemoIndex(this.resourcePath, opts, demos);
 
   if (isUtoopack) {
     const rendered = Mustache.render(
@@ -347,10 +356,12 @@ globalThis.__DUMI_TOC__ = globalThis.__DUMI_TOC__ || {};
 globalThis.__DUMI_FM__['${resourcePath}'] = {{{frontmatter}}};
 globalThis.__DUMI_TOC__['${resourcePath}'] = {{{toc}}};
 export const frontmatter = globalThis.__DUMI_FM__['${resourcePath}'];
-export const toc = globalThis.__DUMI_TOC__['${resourcePath}'];`,
+export const toc = globalThis.__DUMI_TOC__['${resourcePath}'];
+{{{demoIndex}}}`,
       {
         toc: JSON.stringify(toc),
         frontmatter: JSON.stringify(frontmatter),
+        demoIndex,
       },
     );
     return rendered;
@@ -359,10 +370,12 @@ export const toc = globalThis.__DUMI_TOC__['${resourcePath}'];`,
   return Mustache.render(
     `import '${resourcePath}?watch=parent';
 export const toc = new Proxy({{{toc}}}, {});
-export const frontmatter = new Proxy({{{frontmatter}}}, {});`,
+export const frontmatter = new Proxy({{{frontmatter}}}, {});
+{{{demoIndex}}}`,
     {
       toc: JSON.stringify(toc),
       frontmatter: JSON.stringify(frontmatter),
+      demoIndex,
     },
   );
 }

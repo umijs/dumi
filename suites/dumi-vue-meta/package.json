@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "eslint-plugin-vue": "^9.17.0",
-    "father": "^4.1.9",
+    "father": "^4.6.21",
     "typescript": "^5.2.2",
     "vue": "^3.3.4",
     "vue-types": "^5.1.1"
