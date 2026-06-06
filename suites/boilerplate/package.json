@@ -23,7 +23,7 @@
     "dev": "father dev"
   },
   "dependencies": {
-    "@umijs/utils": "^4.0.84"
+    "@umijs/utils": "^4.6.59"
   },
   "publishConfig": {
     "access": "public"
