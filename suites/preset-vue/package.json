@@ -26,7 +26,7 @@
   "dependencies": {
     "@dumijs/vue-meta": "workspace:*",
     "@types/hash-sum": "^1.0.0",
-    "@umijs/bundler-webpack": "^4.6.59",
+    "@umijs/bundler-webpack": "^4.6.61",
     "codesandbox-import-utils": "^2.2.3",
     "compare-versions": "^6.1.0",
     "hash-sum": "^2.0.0",
