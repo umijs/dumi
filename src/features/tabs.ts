@@ -84,14 +84,18 @@ export default (api: IApi) => {
           routesTabMapping[parentFile].push(routeId);
         }
       } else {
+        const routeFile = route.file;
+
+        if (!routeFile) return;
+
         // apply plugin tabs for normal routes
         tabsFromPlugins.forEach((tab) => {
           if (
             (!tab.test || route.absPath.match(tab.test)) &&
-            !routesTabMapping[route.file]?.includes(tab.id!)
+            !routesTabMapping[routeFile]?.includes(tab.id!)
           ) {
-            routesTabMapping[route.file] ??= [];
-            routesTabMapping[route.file].push(tab.id!);
+            routesTabMapping[routeFile] ??= [];
+            routesTabMapping[routeFile].push(tab.id!);
           }
         });
       }

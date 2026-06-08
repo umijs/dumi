@@ -1,11 +1,24 @@
-export * from '@@/dumi/exports';
 export { Root as HastRoot } from 'hast';
 export * from 'umi';
 export {
   Plugin as UnifiedPlugin,
   Transformer as UnifiedTransformer,
 } from 'unified';
-export * from './dist';
-// override umi exported defineConfig
-export { defineConfig } from './dist';
-export { IApi } from './dist/types';
+export type {
+  IApi,
+  IDumiConfig,
+  IDumiTechStack,
+  IDumiTechStackOnBlockLoadArgs,
+  IDumiTechStackOnBlockLoadResult,
+  IDumiTechStackRuntimeOpts,
+  IDumiUserConfig,
+} from './dumi-types';
+export * from './theme-api';
+
+export declare let unistUtilVisit: typeof import('unist-util-visit');
+export declare const getProjectRoot: (cwd: string) => string;
+export declare const defineConfig: <
+  T extends import('./dumi-types').IDumiUserConfig,
+>(
+  config: T,
+) => T;

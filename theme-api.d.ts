@@ -1,70 +1,60 @@
-import type { ExampleBlockAsset } from 'dumi-assets-types';
-import type { ComponentType as ReactComponentType, ReactNode } from 'react';
+import type {
+  AtomAsset,
+  AtomComponentAsset,
+  ExampleBlockAsset,
+  ExamplePresetAsset,
+} from 'dumi-assets-types';
+import type { TypeMap } from 'dumi-assets-types/typings/atom/props/types';
+import type {
+  FC,
+  ComponentType as ReactComponentType,
+  ReactNode,
+  RefObject,
+} from 'react';
+
+export {
+  FormattedDate,
+  FormattedDateParts,
+  FormattedDisplayName,
+  FormattedList,
+  FormattedMessage,
+  FormattedNumber,
+  FormattedNumberParts,
+  FormattedPlural,
+  FormattedRelativeTime,
+  FormattedTime,
+  FormattedTimeParts,
+  IntlContext,
+  IntlProvider,
+  RawIntlProvider,
+  createIntlCache,
+  defineMessages,
+  injectIntl,
+  useIntl,
+} from 'react-intl';
 
 export interface IPreviewerProps {
-  /**
-   * title of current demo
-   */
   title?: string;
-  /**
-   * description of current demo
-   */
   description?: string;
-  /**
-   * filename of current demo
-   */
   filename?: string;
-  /**
-   * use iframe to render demo
-   */
   iframe?: boolean | number;
-  /**
-   * debug mark (will only render in dev by default)
-   */
   debug?: boolean;
-  /**
-   * display the source code or not by default
-   */
   defaultShowCode?: boolean;
-  /**
-   * url for render current demo in a single page
-   */
   demoUrl: string;
-  /**
-   * disable demo content padding
-   */
   compact?: boolean;
-  /**
-   * add transform property for handle absolute/fixed position element
-   */
   transform?: boolean;
-  /**
-   * background color for demo content
-   */
   background?: string;
-  /**
-   * asset metadata of current demo
-   */
   asset: ExampleBlockAsset;
-  /**
-   * react node of current demo
-   */
   children: ReactNode;
-  /**
-   * private field, do not use it in your code
-   */
   _live_in_iframe?: boolean;
   [key: string]: any;
 }
 
 export interface IRouteMeta {
-  // route frontmatter
   frontmatter: {
-    // seo related
     title: string;
     description?: string;
     keywords?: string[];
-    // render related
     nav?:
       | string
       | {
@@ -97,37 +87,16 @@ export interface IRouteMeta {
     filename?: string;
     lastUpdated?: number;
     debug?: boolean;
-    /**
-     * Control the display of the sidebar menu.
-     * @default true
-     */
     sidebar?: boolean;
     [key: string]: any;
   };
-  // route toc
-  toc: {
-    id: string;
-    depth: number;
-    title: string;
-    /**
-     * private field, do not use it in your code
-     */
-    _debug_demo?: boolean;
-  }[];
-  // route texts
+  toc: { id: string; depth: number; title: string; _debug_demo?: boolean }[];
   texts: {
     type?: 'content';
     value: string;
-    /**
-     * paragraph index
-     */
     paraId: number;
-    /**
-     * title index in toc
-     */
     tocIndex?: number;
   }[];
-  // tabs
   tabs?: {
     key: string;
     title?: string;
@@ -147,9 +116,6 @@ export interface IRouteMeta {
       [key: string]: any;
     };
   }[];
-  /**
-   * private field, do not use it in your code
-   */
   _atom_route?: boolean;
 }
 
@@ -158,7 +124,6 @@ export type ILocale =
   | (IBasicLocale & { base: string })
   | (IBasicLocale & { suffix: string });
 export type ILocalesConfig = ILocale[];
-
 export interface INavItem {
   title: string;
   link?: string;
@@ -188,25 +153,15 @@ export type SocialTypes =
   | 'zhihu'
   | 'yuque'
   | 'linkedin';
-
 export type INavItems = (INavItem & { children?: INavItem[] })[];
-export type INav = INavItems | Record<string, INavItems>;
-type IUserNavItem = Pick<INavItem, 'title' | 'link' | 'activePath'>;
+export type IUserNavItem = Pick<INavItem, 'title' | 'link' | 'activePath'>;
 export type IUserNavMode = 'override' | 'append' | 'prepend';
 export type IUserNavItems = (IUserNavItem & { children?: IUserNavItem[] })[];
 export type IUserNavValue = IUserNavItems | Record<string, IUserNavItems>;
 export type NavWithMode<T extends IUserNavValue> = {
-  /**
-   * 扩展导航的模式
-   * @description
-   * - 'override': 用 value 中配置的导航直接覆盖约定路由的导航
-   * - 'append': 将 value 中配置的导航追加到约定路由导航后面
-   * - 'prepend': 将 value 中配置的导航添加到约定路由导航前面
-   */
   mode: IUserNavMode;
   value: T;
 };
-
 export interface IThemeConfig {
   name?: string;
   logo?: string | false;
@@ -219,18 +174,12 @@ export interface IThemeConfig {
     switch: boolean;
   };
   nprogress?: boolean;
-  socialLinks?: {
-    /**
-     * 形如：github: "https://github.com/umijs/dumi"
-     */
-    [key in SocialTypes]?: string;
-  };
+  socialLinks?: { [key in SocialTypes]?: string };
   editLink?: boolean | string;
   sourceLink?: boolean | string;
   lastUpdated?: boolean;
   [key: string]: any;
 }
-
 export type IRoutesById = Record<
   string,
   {
@@ -242,45 +191,129 @@ export type IRoutesById = Record<
     [key: string]: any;
   }
 >;
-
 export type AgnosticComponentModule = { default?: any; [key: string]: any };
-
 export type AgnosticComponentType =
   | Promise<AgnosticComponentModule>
   | AgnosticComponentModule;
-
 export type IDemoCompileFn = (
   code: string,
   opts: { filename: string },
 ) => Promise<string>;
-
 export type IDemoCancelableFn = (
   canvas: HTMLElement,
   component: AgnosticComponentModule,
 ) => (() => void) | Promise<() => void>;
-
 export type IDemoPreflightFn = (
   component: AgnosticComponentModule,
 ) => Promise<void>;
-
 export type IDemoData = {
   component: ReactComponentType | AgnosticComponentType;
   asset: IPreviewerProps['asset'];
   routeId: string;
   context?: Record<string, unknown>;
   renderOpts?: {
-    /**
-     * provide a runtime compile function for compile demo code for live preview
-     */
     compile?: IDemoCompileFn;
-    /**
-     * Component rendering function, used to manage the creation and unmount of components
-     */
     renderer?: IDemoCancelableFn;
-    /**
-     * Used to detect initialization errors of components in advance
-     * (if there is an error, the component will not be mounted)
-     */
     preflight?: IDemoPreflightFn;
   };
 };
+export interface ISiteContext {
+  pkg: Record<string, any>;
+  historyType: 'browser' | 'hash' | 'memory';
+  entryExports: Record<string, any>;
+  demos: Record<string, IDemoData>;
+  components: Record<string, AtomComponentAsset>;
+  locales: ILocalesConfig;
+  themeConfig: IThemeConfig;
+  hostname?: string;
+  loading: boolean;
+  setLoading: (status: boolean) => void;
+  _2_level_nav_available: boolean;
+  [key: string]: any;
+}
+export interface IDumiDemoProps {
+  demo: { id: string; inline?: boolean };
+  previewerProps: Omit<IPreviewerProps, 'asset' | 'children'>;
+}
+export interface IDumiDemoGridProps {
+  items: IDumiDemoProps[];
+  demoRender?: (item: IDumiDemoProps) => ReactNode;
+}
+export type IColorValue = 'light' | 'dark';
+export type IPrefersColorValue = IColorValue | 'auto';
+export interface IHighlightText {
+  highlighted?: boolean;
+  text: string;
+}
+export interface ISearchNavResult {
+  title?: string;
+  priority: number;
+  hints: {
+    type: 'page' | 'title' | 'demo' | 'content';
+    link: string;
+    priority: number;
+    pageTitle: string;
+    highlightTitleTexts: IHighlightText[];
+    highlightTexts: IHighlightText[];
+  }[];
+}
+export type ISearchResult = ISearchNavResult[];
+export interface IAtomRendererProps {
+  type: AtomAsset['type'];
+  value: ExamplePresetAsset['value'];
+  processor?: (
+    entity: TypeMap['element'] | TypeMap['function'] | TypeMap['dom'],
+    entryExports: Record<string, any>,
+  ) => any;
+}
+export declare const AtomRenderer: FC<IAtomRendererProps>;
+export declare const DumiDemo: FC<IDumiDemoProps>;
+export declare const DumiDemoGrid: FC<IDumiDemoGridProps>;
+export declare const DumiPage: FC<{ children: ReactNode }>;
+export declare const useSiteData: () => ISiteContext;
+export declare const useAtomAssets: () => {
+  components: Record<string, AtomComponentAsset>;
+};
+export declare const useLiveDemo: (
+  id: string,
+  opts?: { containerRef?: RefObject<HTMLElement>; iframe?: boolean },
+) => {
+  node: ReactNode;
+  loading: boolean;
+  error: Error | null;
+  setSource: (source: Record<string, string>) => void;
+};
+export declare const useLocale: () => ILocale;
+export declare const useNavData: () => INavItems;
+export declare const usePrefersColor: () => [
+  IColorValue,
+  IPrefersColorValue,
+  (value: IPrefersColorValue) => void,
+];
+export declare const useMatchedRoute: () => IRoutesById[string];
+export declare const useRouteMeta: () => IRouteMeta;
+export declare const useFullSidebarData: () => NonNullable<
+  IThemeConfig['sidebar']
+>;
+export declare const useSidebarData: () => ISidebarGroup[];
+export declare const useSiteSearch: () => {
+  keywords: string;
+  setKeywords: (keywords: string) => void;
+  result: ISearchResult;
+  loading: boolean;
+  load: () => Promise<void>;
+};
+export declare const useTabMeta: () =>
+  | NonNullable<IRouteMeta['tabs']>[number]['meta']
+  | undefined;
+export declare const openCodeSandbox: (data: IPreviewerProps) => void;
+export declare const openStackBlitz: (data: IPreviewerProps) => void;
+export declare function useDemo(id: string): IDemoData | undefined;
+export declare function getFullDemos(): Promise<Record<string, IDemoData>>;
+export declare function getRouteMetaById<T extends { syncOnly?: boolean }>(
+  id: string,
+  opts?: T,
+): T extends { syncOnly: true } ? IRouteMeta | undefined : Promise<IRouteMeta>;
+export declare function getFullRoutesMeta(): Promise<
+  Record<string, IRouteMeta>
+>;

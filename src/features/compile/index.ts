@@ -302,7 +302,7 @@ export default (api: IApi) => {
             ...(memo.utoopack.module || {}),
             rules: {
               ...(memo.utoopack.module?.rules || {}),
-              ...getUtoopackRules(api, memo),
+              ...getUtoopackRules(api, memo as IApi['config']),
             },
           },
         };

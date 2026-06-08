@@ -61,6 +61,7 @@ export default (api: IApi) => {
         ? await api.service.atomParser.parse()
         : // allow generate assets.json without atoms when parser is not available
           { components: {} };
+      const atomComponents = components as Record<string, AtomAsset>;
 
       return await api.applyPlugins({
         key: 'modifyAssetsMetadata',
@@ -73,7 +74,7 @@ export default (api: IApi) => {
           homepage: api.pkg.homepage,
           repository: api.pkg.repository,
           assets: {
-            atoms: Object.values(components).map((atom) =>
+            atoms: Object.values(atomComponents).map((atom) =>
               // assign extra meta data from md frontmatter
               Object.assign(atom, atomsMeta[atom.id] || {}),
             ),
