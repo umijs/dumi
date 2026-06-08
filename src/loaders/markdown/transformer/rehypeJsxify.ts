@@ -1,11 +1,11 @@
 import type { JSXElement } from '@umijs/bundler-utils/compiled/@babel/types';
 import * as parser from '@umijs/bundler-utils/compiled/babel/parser';
-import type { JSXExpressionContainer } from 'estree-util-to-js/lib/jsx';
-import type { Element, Root, Text } from 'hast';
 import type {
-  EstreeJsxAttribute,
-  EstreeJsxSpreadAttribute,
-} from 'hast-util-to-estree/lib';
+  JSXAttribute,
+  JSXExpressionContainer,
+  JSXSpreadAttribute,
+} from 'estree-util-to-js/lib/jsx';
+import type { Element, Root, Text } from 'hast';
 import type { FrozenProcessor } from 'unified';
 
 let visitUnist: typeof import('unist-util-visit').visit;
@@ -29,16 +29,16 @@ function getJSXAttrAST(
     NonNullable<Element['JSXAttributes']>[0],
     { type: 'JSXAttribute' }
   >,
-): EstreeJsxAttribute;
+): JSXAttribute;
 function getJSXAttrAST(
   node: Extract<
     NonNullable<Element['JSXAttributes']>[0],
     { type: 'JSXSpreadAttribute' }
   >,
-): EstreeJsxSpreadAttribute;
+): JSXSpreadAttribute;
 function getJSXAttrAST(
   node: NonNullable<Element['JSXAttributes']>[0],
-): EstreeJsxAttribute | EstreeJsxSpreadAttribute {
+): JSXAttribute | JSXSpreadAttribute {
   const tmpCode = `<a ${
     node.type === 'JSXAttribute'
       ? `${node.name}={${node.value}}`
@@ -85,7 +85,7 @@ export default function rehypeJsxify(this: FrozenProcessor) {
           };
         },
       },
-    });
+    }) as any;
 
     // transform stub JSX attributes to ast JSX attributes
     visitEstree(esTree, (node) => {
@@ -126,6 +126,8 @@ export default function rehypeJsxify(this: FrozenProcessor) {
     });
 
     // estree to jsx string, and strip the last semicolon
-    return toJs(esTree, { handlers: jsx }).value.trim().slice(0, -1);
+    return toJs(esTree, { handlers: jsx as any })
+      .value.trim()
+      .slice(0, -1);
   };
 }

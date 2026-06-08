@@ -194,7 +194,7 @@ function emitDemo(
               }
               return undefined;
             })
-            .filter((item) => item !== undefined),
+            .filter((item): item is IDemoDependency => item !== undefined),
         );
       }, []);
   return Mustache.render(

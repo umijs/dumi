@@ -19,33 +19,37 @@ import './index.less';
 function getTreeFromList(nodes: ReactNode, prefix = '') {
   const data: TreeProps['treeData'] = [];
 
-  ([] as ReactNode[]).concat(nodes).forEach((node, i) => {
+  React.Children.toArray(nodes).forEach((node, i) => {
+    if (!React.isValidElement<{ children?: ReactNode }>(node)) return;
+
     const key = `${prefix ? `${prefix}-` : ''}${i}`;
+    const children = node.props.children;
 
     switch (node?.type) {
       case 'ul': {
         const parent = data[data.length - 1]?.children || data;
-        const ulLeafs = getTreeFromList(node.props.children || [], key);
+        const ulLeafs = getTreeFromList(children || [], key);
 
         parent.push(...ulLeafs);
         break;
       }
 
       case 'li': {
-        const hasEmptyUl = node.props.children?.some?.(
-          (child) => child.type === 'ul' && !child.props.children?.length,
+        const hasEmptyUl = React.Children.toArray(children).some(
+          (child) =>
+            React.isValidElement<{ children?: ReactNode }>(child) &&
+            child.type === 'ul' &&
+            !React.Children.count(child.props.children),
         );
-        const title = ([] as ReactNode[])
-          .concat(node.props.children)
-          .filter((child) => child.type !== 'ul');
-        const children = hasEmptyUl
-          ? []
-          : getTreeFromList(node.props.children, key);
+        const title = React.Children.toArray(children).filter(
+          (child) => !React.isValidElement(child) || child.type !== 'ul',
+        );
+        const treeChildren = hasEmptyUl ? [] : getTreeFromList(children, key);
         data.push({
           title,
           key,
-          children,
-          isLeaf: !hasEmptyUl && !children.length,
+          children: treeChildren,
+          isLeaf: !hasEmptyUl && !treeChildren.length,
           switcherIcon: hasEmptyUl ? (
             <span className="tree-switcher-leaf-line" />
           ) : undefined,

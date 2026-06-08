@@ -7,7 +7,7 @@ import { ReactComponent as IconWeiBo } from '@ant-design/icons-svg/inline-svg/ou
 import { ReactComponent as IconX } from '@ant-design/icons-svg/inline-svg/outlined/x.svg';
 import { ReactComponent as IconYuque } from '@ant-design/icons-svg/inline-svg/outlined/yuque.svg';
 import { ReactComponent as IconZhihu } from '@ant-design/icons-svg/inline-svg/outlined/zhihu.svg';
-import React, { FunctionComponent, useMemo, type FC } from 'react';
+import React, { FunctionComponent, SVGProps, useMemo, type FC } from 'react';
 import { useIntl } from 'react-intl';
 import './index.less';
 
@@ -17,11 +17,11 @@ export type SocialIconProps = {
 };
 
 export type PresetSocialIcon = {
-  Icon: FunctionComponent;
+  Icon: FunctionComponent<SVGProps<SVGSVGElement> & { title?: string }>;
   titleIntlId: string;
 };
 
-const presetIconMap: Record<SocialTypes, FunctionComponent> = {
+const presetIconMap: Record<SocialTypes, PresetSocialIcon['Icon']> = {
   github: IconGitHub,
   weibo: IconWeiBo,
   twitter: IconX,
@@ -54,7 +54,7 @@ const SocialIcon: FC<SocialIconProps> = (props: SocialIconProps) => {
       href={preset.link}
       rel="noreferrer"
     >
-      <preset.Icon title={icon}/>
+      <preset.Icon title={icon} />
     </a>
   );
 };

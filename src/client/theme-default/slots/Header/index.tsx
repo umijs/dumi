@@ -18,18 +18,21 @@ const Header: FC = () => {
   const [showMenu, setShowMenu] = useState(false);
   const { themeConfig } = useSiteData();
 
-  const socialIcons = useMemo(
-    () =>
-      themeConfig.socialLinks
-        ? Object.keys(themeConfig.socialLinks)
-            .slice(0, 5)
-            .map((key) => ({
-              icon: key as SocialTypes,
-              link: themeConfig.socialLinks[key as SocialTypes],
-            }))
-        : [],
-    [themeConfig.socialLinks],
-  );
+  const socialIcons = useMemo(() => {
+    const socialLinks = themeConfig.socialLinks;
+
+    return socialLinks
+      ? Object.keys(socialLinks)
+          .slice(0, 5)
+          .map((key) => ({
+            icon: key as SocialTypes,
+            link: socialLinks[key as SocialTypes],
+          }))
+          .filter((item): item is { icon: SocialTypes; link: string } =>
+            Boolean(item.link),
+          )
+      : [];
+  }, [themeConfig.socialLinks]);
 
   return (
     <div
