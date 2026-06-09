@@ -10,11 +10,11 @@ order: 0
 
 ## 环境准备
 
-确保正确安装 [Node.js](https://nodejs.org/en/) 且版本为 14+ 即可。
+确保正确安装 [Node.js](https://nodejs.org/en/) 且版本为 20+ 即可。
 
 ```bash
 $ node -v
-v14.19.1
+v20.11.0
 ```
 
 ## 脚手架
