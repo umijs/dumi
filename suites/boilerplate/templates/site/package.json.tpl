@@ -13,6 +13,9 @@
     "{{{ author }}}"
   {{/author}}],
   "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
