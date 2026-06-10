@@ -1,0 +1,31 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@@/*": [".dumi/tmp/*"],
+      "dumi": ["."],
+      "dumi/dist/*": ["src/*"],
+      "dumi/theme-default/*": ["src/client/theme-default/*"]
+    }
+  },
+  "files": [
+    "dumi-types.d.ts",
+    "index.d.ts",
+    "plugin-utils.d.ts",
+    "tech-stack-utils.d.ts",
+    "theme-api.d.ts",
+    "theme-modules.d.ts",
+    "src/client/typings.d.ts",
+    "typings/father-build.d.ts"
+  ],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": [
+    "src/**/*.d.ts",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/**/__tests__/**",
+    "src/loaders/markdown/transformer/fixtures/**"
+  ]
+}
