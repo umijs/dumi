@@ -1,5 +1,8 @@
 import { defineConfig } from 'father';
 
+process.env.FATHER_TSCONFIG_NAME =
+  process.env.FATHER_TSCONFIG_NAME || 'tsconfig.father.json';
+
 export default defineConfig({
   cjs: {
     output: 'dist',
@@ -17,6 +20,9 @@ export default defineConfig({
         output: 'theme-default',
       },
     },
+  },
+  dts: {
+    compiler: 'tsgo',
   },
   prebundle: {
     deps: {
