@@ -11,7 +11,8 @@
     "jamstack",
     "markdown",
     "components",
-    "documentation"
+    "documentation",
+    "utoopack"
   ],
   "homepage": "https://d.umijs.org",
   "bugs": {
