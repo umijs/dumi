@@ -4,6 +4,8 @@ const https = require('https');
 const http = require('http');
 
 const UMI_DOC_DIR = path.join(__dirname, '..', 'docs', '.upstream');
+const MAX_REDIRECTS = 5;
+const REQUEST_TIMEOUT = 60 * 1000;
 const RM_FM_ACTION = {
   type: 'replace',
   value: [/^---[^]+?---\n/, ''],
@@ -324,46 +326,88 @@ if (!fs.existsSync(UMI_DOC_DIR)) {
   fs.mkdirSync(UMI_DOC_DIR);
 }
 
-// process files
-FILE_LIST.forEach((file) => {
-  const localPath = path.join(UMI_DOC_DIR, file.localname);
+function fetchText(url, redirectCount = 0) {
+  return new Promise((resolve, reject) => {
+    const protocol = url.startsWith('https') ? https : http;
+    const req = protocol.get(url, (res) => {
+      const statusCode = res.statusCode || 0;
 
-  const protocol = file.upstream.startsWith('https') ? https : http;
+      if (statusCode >= 300 && statusCode < 400 && res.headers.location) {
+        res.resume();
 
-  // get file from upstream
-  protocol.get(file.upstream, (res) => {
-    let content = '';
-
-    res.setEncoding('utf8');
-    res.on('data', (chunk) => {
-      content += chunk;
-    });
-    res.on('end', () => {
-      // execute process actions
-      (file.actions || []).forEach((action) => {
-        switch (action.type) {
-          case 'slice':
-            content = content
-              .split(/\n/g)
-              .slice(action.value[0], action.value[1])
-              .join('\n');
-            break;
-
-          case 'replace':
-            content = content.replace(action.value[0], action.value[1]);
-            break;
-
-          default:
+        if (redirectCount >= MAX_REDIRECTS) {
+          reject(new Error(`Too many redirects: ${url}`));
+          return;
         }
-      });
 
-      // write back to file
-      fs.writeFileSync(localPath, content);
-      console.log(
-        `🔁 ${file.upstream} -> ${path.relative(process.cwd(), localPath)} [${(
-          content.length / 1024
-        ).toFixed(2)}KB]`,
-      );
+        resolve(
+          fetchText(
+            new URL(res.headers.location, url).toString(),
+            redirectCount + 1,
+          ),
+        );
+        return;
+      }
+
+      if (statusCode < 200 || statusCode >= 300) {
+        res.resume();
+        reject(new Error(`Request failed with status ${statusCode}: ${url}`));
+        return;
+      }
+
+      let content = '';
+
+      res.setEncoding('utf8');
+      res.on('data', (chunk) => {
+        content += chunk;
+      });
+      res.on('end', () => {
+        resolve(content);
+      });
     });
+
+    req.setTimeout(REQUEST_TIMEOUT, () => {
+      req.destroy(new Error(`Request timeout: ${url}`));
+    });
+    req.on('error', reject);
   });
+}
+
+// process files
+(async () => {
+  for (const file of FILE_LIST) {
+    const localPath = path.join(UMI_DOC_DIR, file.localname);
+
+    // get file from upstream
+    let content = await fetchText(file.upstream);
+
+    // execute process actions
+    (file.actions || []).forEach((action) => {
+      switch (action.type) {
+        case 'slice':
+          content = content
+            .split(/\n/g)
+            .slice(action.value[0], action.value[1])
+            .join('\n');
+          break;
+
+        case 'replace':
+          content = content.replace(action.value[0], action.value[1]);
+          break;
+
+        default:
+      }
+    });
+
+    // write back to file
+    fs.writeFileSync(localPath, content);
+    console.log(
+      `🔁 ${file.upstream} -> ${path.relative(process.cwd(), localPath)} [${(
+        content.length / 1024
+      ).toFixed(2)}KB]`,
+    );
+  }
+})().catch((err) => {
+  console.error(err);
+  process.exitCode = 1;
 });
