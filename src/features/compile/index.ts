@@ -120,6 +120,8 @@ export default (api: IApi) => {
             techStacks,
             (api as any).service.themeData?.builtins ?? {},
             api.appData.routes ?? {},
+            api.config.extraRemarkPlugins,
+            api.config.extraRehypePlugins,
           ),
         });
       }

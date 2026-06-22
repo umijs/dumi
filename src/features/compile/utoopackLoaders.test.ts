@@ -97,3 +97,27 @@ test('utoopack markdown rules use current config memo', async () => {
     forceKebabCaseRouting: false,
   });
 });
+
+test('utoopack loader context serializes extra unified plugins', async () => {
+  const plugins = require('./fixtures/unifiedPlugins.cjs');
+  const { buildLoaderContextContent } = await import('./utoopackLoaders');
+  const content = buildLoaderContextContent(
+    [],
+    {},
+    {},
+    [plugins.remarkPluginForTest, ['remark-string-plugin', { value: 1 }]],
+    [[plugins.rehypePluginForTest, { enabled: true }], 'rehype-string-plugin'],
+  );
+  const exports: any = {};
+
+  new Function('require', 'exports', content)(require, exports);
+
+  expect(exports.extraRemarkPlugins).toEqual([
+    plugins.remarkPluginForTest,
+    ['remark-string-plugin', { value: 1 }],
+  ]);
+  expect(exports.extraRehypePlugins).toEqual([
+    [plugins.rehypePluginForTest, { enabled: true }],
+    'rehype-string-plugin',
+  ]);
+});
