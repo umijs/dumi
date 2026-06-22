@@ -122,6 +122,7 @@ export default (api: IApi) => {
             api.appData.routes ?? {},
             api.config.extraRemarkPlugins,
             api.config.extraRehypePlugins,
+            (api as any).service.configManager?.files ?? [],
           ),
         });
       }

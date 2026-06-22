@@ -121,3 +121,30 @@ test('utoopack loader context serializes extra unified plugins', async () => {
     'rehype-string-plugin',
   ]);
 });
+
+test('utoopack loader context resolves plugins from config source files', async () => {
+  registerTsResolveExtension();
+
+  const pluginPath = require.resolve('./fixtures/cacheClearedPlugin.ts');
+  const plugins = require(pluginPath);
+  const { buildLoaderContextContent } = await import('./utoopackLoaders');
+
+  delete require.cache[pluginPath];
+
+  const content = buildLoaderContextContent(
+    [],
+    {},
+    {},
+    [plugins.default],
+    [plugins.namedCacheClearedPlugin],
+    [pluginPath],
+  );
+  const exports: any = {};
+
+  new Function('require', 'exports', content)(require, exports);
+
+  expect(exports.extraRemarkPlugins[0]).toBe(require(pluginPath).default);
+  expect(exports.extraRehypePlugins[0]).toBe(
+    require(pluginPath).namedCacheClearedPlugin,
+  );
+});
