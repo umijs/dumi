@@ -1,4 +1,6 @@
 import type { IApi, IDumiTechStack } from '@/types';
+import esbuild from '@umijs/bundler-utils/compiled/esbuild';
+import { register } from '@umijs/utils';
 import path from 'path';
 import { shouldDisabledLiveDemo } from './utils';
 
@@ -15,9 +17,9 @@ function toSerializable<T>(value: T): T {
   return JSON.parse(JSON.stringify(value));
 }
 
-function findInRequireCache(
-  target: object,
-): { modulePath: string; exportName: string } | null {
+type RequireRef = { modulePath: string; exportName: string };
+
+function findInRequireCache(target: object): RequireRef | null {
   for (const [filename, mod] of Object.entries(require.cache)) {
     if (!mod?.exports) continue;
     const exp = mod.exports;
@@ -32,7 +34,72 @@ function findInRequireCache(
   return null;
 }
 
-function toRequireRef(found: { modulePath: string; exportName: string }) {
+function normalizeFnSource(fn: UnifiedPluginFn) {
+  return Function.prototype.toString.call(fn).replace(/\s+/g, ' ');
+}
+
+function isSameFunction(candidate: unknown, target: UnifiedPluginFn) {
+  return (
+    typeof candidate === 'function' &&
+    candidate.name === target.name &&
+    normalizeFnSource(candidate as UnifiedPluginFn) ===
+      normalizeFnSource(target)
+  );
+}
+
+function findInModuleExports(
+  target: UnifiedPluginFn,
+  mod: NodeJS.Module,
+): RequireRef | null {
+  const exp = mod.exports;
+  if (!exp) return null;
+  if (isSameFunction(exp, target)) {
+    return { modulePath: mod.filename, exportName: 'module.exports' };
+  }
+  if (isSameFunction(exp?.default, target)) {
+    return { modulePath: mod.filename, exportName: 'default' };
+  }
+  for (const [k, v] of Object.entries(exp as object)) {
+    if (isSameFunction(v, target)) {
+      return { modulePath: mod.filename, exportName: k };
+    }
+  }
+
+  return null;
+}
+
+function findInSourceFiles(
+  target: UnifiedPluginFn,
+  sourceFiles: string[],
+): RequireRef | null {
+  register.register({ implementor: esbuild });
+  register.clearFiles();
+
+  try {
+    for (const file of sourceFiles) {
+      try {
+        require(file);
+        const mod = require.cache[file];
+        if (!mod?.exports) continue;
+
+        const found = findInModuleExports(target, mod);
+        if (found) return found;
+      } catch {}
+    }
+
+    return null;
+  } finally {
+    for (const file of register.getFiles()) {
+      delete require.cache[file];
+    }
+    for (const file of sourceFiles) {
+      delete require.cache[file];
+    }
+    register.restore();
+  }
+}
+
+function toRequireRef(found: RequireRef) {
   const modRef = `require(${JSON.stringify(found.modulePath)})`;
 
   return found.exportName === 'module.exports'
@@ -40,10 +107,14 @@ function toRequireRef(found: { modulePath: string; exportName: string }) {
     : `(${modRef})[${JSON.stringify(found.exportName)}]`;
 }
 
-function toPluginTargetRef(target: string | UnifiedPluginFn) {
+function toPluginTargetRef(
+  target: string | UnifiedPluginFn,
+  sourceFiles: string[],
+) {
   if (typeof target === 'string') return JSON.stringify(target);
 
-  const found = findInRequireCache(target);
+  const found =
+    findInRequireCache(target) ?? findInSourceFiles(target, sourceFiles);
   if (!found) {
     const name = target.name ? ` "${target.name}"` : '';
 
@@ -55,7 +126,10 @@ function toPluginTargetRef(target: string | UnifiedPluginFn) {
   return toRequireRef(found);
 }
 
-function toPluginRefs(plugins: UnifiedPluginConfig[] = []) {
+function toPluginRefs(
+  plugins: UnifiedPluginConfig[] = [],
+  sourceFiles: string[] = [],
+) {
   return `[${plugins
     .map((plugin) => {
       if (Array.isArray(plugin)) {
@@ -67,10 +141,11 @@ function toPluginRefs(plugins: UnifiedPluginConfig[] = []) {
 
         return `[${toPluginTargetRef(
           target as string | UnifiedPluginFn,
+          sourceFiles,
         )}, ${optionsRef}]`;
       }
 
-      return toPluginTargetRef(plugin as string | UnifiedPluginFn);
+      return toPluginTargetRef(plugin as string | UnifiedPluginFn, sourceFiles);
     })
     .join(', ')}]`;
 }
@@ -81,6 +156,7 @@ export function buildLoaderContextContent(
   routes: Record<string, unknown> = {},
   extraRemarkPlugins: IApi['config']['extraRemarkPlugins'] = [],
   extraRehypePlugins: IApi['config']['extraRehypePlugins'] = [],
+  sourceFiles: string[] = [],
 ): string {
   const refs: string[] = [];
 
@@ -104,11 +180,20 @@ export function buildLoaderContextContent(
 
   return (
     `'use strict';\n` +
+    `try {\n` +
+    `  require('@umijs/utils').register.register({ implementor: require('@umijs/bundler-utils/compiled/esbuild') });\n` +
+    `} catch (_) {}\n` +
     `exports.techStacks = [${refs.join(', ')}];\n` +
     `exports.builtins = ${JSON.stringify(builtins)};\n` +
     `exports.routes = ${JSON.stringify(routes)};\n` +
-    `exports.extraRemarkPlugins = ${toPluginRefs(extraRemarkPlugins)};\n` +
-    `exports.extraRehypePlugins = ${toPluginRefs(extraRehypePlugins)};\n`
+    `exports.extraRemarkPlugins = ${toPluginRefs(
+      extraRemarkPlugins,
+      sourceFiles,
+    )};\n` +
+    `exports.extraRehypePlugins = ${toPluginRefs(
+      extraRehypePlugins,
+      sourceFiles,
+    )};\n`
   );
 }
 
