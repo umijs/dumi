@@ -445,6 +445,8 @@ export default function mdLoader(this: any, content: string) {
       techStacks: any[];
       builtins?: Record<string, { specifier: string; source: string }>;
       routes?: IMdLoaderOptions['routes'];
+      extraRemarkPlugins?: IMdLoaderOptions['extraRemarkPlugins'];
+      extraRehypePlugins?: IMdLoaderOptions['extraRehypePlugins'];
     };
     if (!opts.techStacks?.length) {
       (opts as any).techStacks = ctx.techStacks;
@@ -458,6 +460,12 @@ export default function mdLoader(this: any, content: string) {
     // routes are also generated later than modifyConfig in utoopack mode.
     if (ctx.routes && !Object.keys((opts as any).routes ?? {}).length) {
       (opts as any).routes = ctx.routes;
+    }
+    if (ctx.extraRemarkPlugins && !(opts as any).extraRemarkPlugins?.length) {
+      (opts as any).extraRemarkPlugins = ctx.extraRemarkPlugins;
+    }
+    if (ctx.extraRehypePlugins && !(opts as any).extraRehypePlugins?.length) {
+      (opts as any).extraRehypePlugins = ctx.extraRehypePlugins;
     }
   }
 

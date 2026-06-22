@@ -8,6 +8,9 @@ export const UTOOPACK_LOADER_CTX_KEY = '__dumiLoaderContextPath';
 
 export const LOADER_CTX_FILENAME = 'dumi-loader-ctx.cjs';
 
+type UnifiedPluginConfig = NonNullable<IApi['config']['extraRemarkPlugins']>[0];
+type UnifiedPluginFn = (...args: any[]) => any;
+
 function toSerializable<T>(value: T): T {
   return JSON.parse(JSON.stringify(value));
 }
@@ -29,10 +32,55 @@ function findInRequireCache(
   return null;
 }
 
+function toRequireRef(found: { modulePath: string; exportName: string }) {
+  const modRef = `require(${JSON.stringify(found.modulePath)})`;
+
+  return found.exportName === 'module.exports'
+    ? modRef
+    : `(${modRef})[${JSON.stringify(found.exportName)}]`;
+}
+
+function toPluginTargetRef(target: string | UnifiedPluginFn) {
+  if (typeof target === 'string') return JSON.stringify(target);
+
+  const found = findInRequireCache(target);
+  if (!found) {
+    const name = target.name ? ` "${target.name}"` : '';
+
+    throw new Error(
+      `Utoopack markdown loader requires extra unified plugin function${name} to be exported from a module.`,
+    );
+  }
+
+  return toRequireRef(found);
+}
+
+function toPluginRefs(plugins: UnifiedPluginConfig[] = []) {
+  return `[${plugins
+    .map((plugin) => {
+      if (Array.isArray(plugin)) {
+        const [target, options] = plugin;
+        const optionsRef =
+          typeof options === 'undefined'
+            ? 'undefined'
+            : JSON.stringify(options);
+
+        return `[${toPluginTargetRef(
+          target as string | UnifiedPluginFn,
+        )}, ${optionsRef}]`;
+      }
+
+      return toPluginTargetRef(plugin as string | UnifiedPluginFn);
+    })
+    .join(', ')}]`;
+}
+
 export function buildLoaderContextContent(
   techStacks: IDumiTechStack[],
   builtins: Record<string, { specifier: string; source: string }> = {},
   routes: Record<string, unknown> = {},
+  extraRemarkPlugins: IApi['config']['extraRemarkPlugins'] = [],
+  extraRehypePlugins: IApi['config']['extraRehypePlugins'] = [],
 ): string {
   const refs: string[] = [];
 
@@ -43,23 +91,13 @@ export function buildLoaderContextContent(
       // Class instance — find the constructor in the require cache
       const found = findInRequireCache(ctor);
       if (found) {
-        const modRef = `require(${JSON.stringify(found.modulePath)})`;
-        const ctorRef =
-          found.exportName === 'module.exports'
-            ? modRef
-            : `(${modRef})[${JSON.stringify(found.exportName)}]`;
-        refs.push(`new (${ctorRef})()`);
+        refs.push(`new (${toRequireRef(found)})()`);
       }
     } else {
       // Plain object (defineTechStack) — find the object itself in the cache
       const found = findInRequireCache(ts);
       if (found) {
-        const modRef = `require(${JSON.stringify(found.modulePath)})`;
-        const ref =
-          found.exportName === 'module.exports'
-            ? modRef
-            : `(${modRef})[${JSON.stringify(found.exportName)}]`;
-        refs.push(ref);
+        refs.push(toRequireRef(found));
       }
     }
   }
@@ -68,7 +106,9 @@ export function buildLoaderContextContent(
     `'use strict';\n` +
     `exports.techStacks = [${refs.join(', ')}];\n` +
     `exports.builtins = ${JSON.stringify(builtins)};\n` +
-    `exports.routes = ${JSON.stringify(routes)};\n`
+    `exports.routes = ${JSON.stringify(routes)};\n` +
+    `exports.extraRemarkPlugins = ${toPluginRefs(extraRemarkPlugins)};\n` +
+    `exports.extraRehypePlugins = ${toPluginRefs(extraRehypePlugins)};\n`
   );
 }
 
