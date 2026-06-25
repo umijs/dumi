@@ -46,6 +46,8 @@ const demoIdMap = Object.keys(filesMeta).reduce((total, current) => {
   return total;
 }, {});
 
+type DemoGetter = () => Promise<{ demos: Record<string, IDemoData> }>;
+
 const demosCache = new Map<string, Promise<IDemoData | undefined>>();
 
 /**
@@ -68,19 +70,31 @@ function expandDemoContext(context?: IDemoData['context']) {
 /**
  * use demo data by id
  */
-export function useDemo(id: string): IDemoData | undefined {
-  if (!demosCache.get(id)) {
+export function useDemo(
+  id: string,
+  loader?: DemoGetter,
+  version?: string,
+): IDemoData | undefined {
+  const cacheKey = version ? `${id}:${version}` : id;
+  const getter = loader ?? demoIdMap[id];
+
+  if (!demosCache.get(cacheKey)) {
+    if (!getter) return undefined;
+
     demosCache.set(
-      id,
-      demoIdMap[id]?.().then(({ demos }) => {
+      cacheKey,
+      getter().then(({ demos }) => {
         // expand context for omit ext
         expandDemoContext(demos[id].context);
         return demos[id];
       }),
     );
+
+    // Reuse local demo data for consumers that still call useDemo(id), such as useLiveDemo.
+    demosCache.set(id, demosCache.get(cacheKey)!);
   }
 
-  return use(demosCache.get(id)!);
+  return use(demosCache.get(cacheKey)!);
 }
 
 /**

@@ -1,7 +1,8 @@
 import type { IMdTransformerResult } from '../..';
+import { omitDemoLoader } from '../../utils';
 
 export default (ret: IMdTransformerResult) => {
-  expect(ret.content).toEqual(`<><DumiDemoGrid items={[{
+  expect(omitDemoLoader(ret.content)).toEqual(`<><DumiDemoGrid items={[{
   "demo": {
     "id": "demo-foo"
   },

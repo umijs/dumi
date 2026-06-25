@@ -1,6 +1,6 @@
 import parseBlockAsset from '@/assetParsers/block';
 import type { IDumiDemoProps } from '@/client/theme-api/DumiDemo';
-import { getFileIdFromFsPath } from '@/utils';
+import { getContentHash, getFileIdFromFsPath } from '@/utils';
 import type { sync } from 'enhanced-resolve';
 import type { Element, Root } from 'hast';
 import path from 'path';
@@ -17,6 +17,11 @@ let isElement: typeof import('hast-util-is-element').isElement;
 const DEMO_NODE_CONTAINER = '$demo-container';
 
 export const DEMO_PROP_VALUE_KEY = '$demo-prop-value-key';
+const DEMO_LOADER_PLACEHOLDER = '__DUMI_DEMO_LOADER__';
+const DEMO_LOADER_PLACEHOLDER_VALUE =
+  DEMO_LOADER_PLACEHOLDER as unknown as NonNullable<
+    IDumiDemoProps['demo']['loader']
+  >;
 export const DUMI_DEMO_TAG = 'DumiDemo';
 export const DUMI_DEMO_GRID_TAG = 'DumiDemoGrid';
 export const SKIP_DEMO_PARSE = 'pure';
@@ -41,6 +46,7 @@ type IRehypeDemoOptions = Pick<
   resolver: typeof sync;
   fileLocaleLessPath: string;
   fileLocale?: string;
+  useUtoopackDemoHMR?: boolean;
 };
 
 /**
@@ -334,11 +340,17 @@ export default function rehypeDemo(
             }
 
             const propDemo: IDumiDemoProps['demo'] = { id: parseOpts.id };
+            if (opts.useUtoopackDemoHMR) {
+              propDemo.loader = DEMO_LOADER_PLACEHOLDER_VALUE;
+            }
             demoIds.push(parseOpts.id);
 
             // generate asset data for demo
             deferrers.push(
-              parseBlockAsset(parseOpts).then(
+              parseBlockAsset({
+                ...parseOpts,
+                cacheable: opts.useUtoopackDemoHMR,
+              }).then(
                 async ({ asset, resolveMap, frontmatter }) => {
                   // repeat id to give warning
                   if (
@@ -388,6 +400,12 @@ export default function rehypeDemo(
                   validAssetAttrs.forEach((key) => {
                     if (originalProps[key]) asset[key] = originalProps[key];
                   });
+
+                  if (opts.useUtoopackDemoHMR) {
+                    propDemo.version = getContentHash(
+                      JSON.stringify(asset.dependencies),
+                    );
+                  }
 
                   // do not generate previewer props & asset for inline demo
                   if (
@@ -518,7 +536,17 @@ export default function rehypeDemo(
 
       // parse final value for jsx attributes
       replaceNodes.forEach((node) => {
-        const value = JSON.stringify(node.data![DEMO_PROP_VALUE_KEY]);
+        const demoLoader = `() => import('${winPath(
+          opts.fileAbsPath,
+        )}?type=demo')`;
+        let value = JSON.stringify(node.data![DEMO_PROP_VALUE_KEY]);
+
+        if (opts.useUtoopackDemoHMR) {
+          value = value.replace(
+            new RegExp(`"${DEMO_LOADER_PLACEHOLDER}"`, 'g'),
+            demoLoader,
+          );
+        }
 
         if (node.JSXAttributes![0].type === 'JSXAttribute') {
           node.JSXAttributes![0].value = value;
