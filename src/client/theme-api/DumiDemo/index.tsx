@@ -1,16 +1,25 @@
 import { SP_ROUTE_PREFIX } from '@/constants';
 import { useAppData, useDemo, useSiteData } from 'dumi';
 import React, { ComponentType, createElement, type FC } from 'react';
-import type { IPreviewerProps } from '../types';
+import type { IDemoData, IPreviewerProps } from '../types';
 
 import Previewer from 'dumi/theme/builtins/Previewer';
 import { useRenderer } from '../useRenderer';
 import DemoErrorBoundary from './DemoErrorBoundary';
 
+type DemoGetter = () => Promise<{ demos: Record<string, IDemoData> }>;
+type UseDemo = (
+  id: string,
+  loader?: DemoGetter,
+  version?: string,
+) => IDemoData | undefined;
+
 export interface IDumiDemoProps {
   demo: {
     id: string;
     inline?: boolean;
+    loader?: DemoGetter;
+    version?: string;
   };
   previewerProps: Omit<IPreviewerProps, 'asset' | 'children'>;
 }
@@ -18,8 +27,8 @@ export interface IDumiDemoProps {
 const InternalDumiDemo = (props: IDumiDemoProps) => {
   const { historyType } = useSiteData();
   const { basename } = useAppData();
-  const id = props.demo.id;
-  const demo = useDemo(id)!;
+  const { id, loader, version } = props.demo;
+  const demo = (useDemo as UseDemo)(id, loader, version)!;
   const { component, asset, renderOpts } = demo;
 
   const { canvasRef } = useRenderer({

@@ -440,6 +440,9 @@ export default function mdLoader(this: any, content: string) {
   const loaderContextPath: string | undefined = (opts as any)[
     UTOOPACK_LOADER_CTX_KEY
   ];
+  const useUtoopackDemoHMR =
+    process.env.NODE_ENV !== 'production' && Boolean(loaderContextPath);
+
   if (loaderContextPath) {
     const ctx = require(loaderContextPath) as {
       techStacks: any[];
@@ -485,6 +488,7 @@ export default function mdLoader(this: any, content: string) {
   const baseCacheKey = [
     this.resourcePath,
     getContentHash(content),
+    useUtoopackDemoHMR,
     JSON.stringify(lodash.omit(opts, ['mode', 'builtins', 'onResolveDemos'])),
   ].join(':');
   // format: {baseCacheKey:{deps:contenthash}[]}
@@ -515,6 +519,7 @@ export default function mdLoader(this: any, content: string) {
       'mode' | 'builtins' | 'onResolveDemos'
     >),
     fileAbsPath: winPath(this.resourcePath),
+    useUtoopackDemoHMR,
   });
 
   deferrer[cacheKey]

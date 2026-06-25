@@ -13,6 +13,7 @@ type IMetaFiles = {
   file: string;
   id: string;
   isMarkdown?: boolean;
+  loadDemoIndex?: boolean;
 }[];
 
 export default (api: IApi) => {
@@ -63,6 +64,9 @@ export default (api: IApi) => {
     // mark isMarkdown flag
     parsedMetaFiles.forEach((metaFile) => {
       metaFile.isMarkdown = metaFile.file.endsWith('.md');
+      metaFile.loadDemoIndex =
+        metaFile.isMarkdown &&
+        !(api.env === 'development' && Boolean(api.config.utoopack));
     });
 
     api.writeTmpFile({

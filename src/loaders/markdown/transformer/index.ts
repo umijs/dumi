@@ -71,6 +71,7 @@ declare module 'vfile' {
 export interface IMdTransformerOptions {
   cwd: string;
   fileAbsPath: string;
+  useUtoopackDemoHMR?: boolean;
   alias: ResolveOptions['alias'];
   parentAbsPath?: string;
   techStacks: IDumiTechStack[];
@@ -189,6 +190,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
       fileAbsPath: opts.fileAbsPath,
       fileLocaleLessPath,
       fileLocale,
+      useUtoopackDemoHMR: opts.useUtoopackDemoHMR,
       resolve: opts.resolve,
       resolver,
     })
