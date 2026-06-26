@@ -441,7 +441,7 @@ export default function mdLoader(this: any, content: string) {
     UTOOPACK_LOADER_CTX_KEY
   ];
   const useUtoopackDemoHMR =
-    process.env.NODE_ENV === 'development' && Boolean(loaderContextPath);
+    process.env.NODE_ENV !== 'production' && Boolean(loaderContextPath);
 
   if (loaderContextPath) {
     const ctx = require(loaderContextPath) as {
