@@ -21,28 +21,48 @@ class FakeTechStack implements IDumiTechStack {
   }
 }
 
+function getTransformerOptions(
+  fileAbsPath: string,
+  useUtoopackDemoHMR?: boolean,
+) {
+  return {
+    techStacks: [new FakeTechStack()],
+    cwd: path.dirname(fileAbsPath),
+    fileAbsPath,
+    ...(useUtoopackDemoHMR === undefined ? {} : { useUtoopackDemoHMR }),
+    resolve: {
+      codeBlockMode: 'active' as const,
+      atomDirs: [],
+      docDirs: [],
+      forceKebabCaseRouting: true,
+    },
+    locales: [],
+    routes: {},
+    pkg: {},
+    alias: {
+      '@': __dirname,
+    },
+  };
+}
+
 for (let casePath of cases) {
   test(`markdown transformer: ${casePath}`, async () => {
     const fileAbsPath = path.join(CASES_DIR, casePath, 'index.md');
     const content = fs.readFileSync(fileAbsPath, 'utf8');
-    const ret = await transformer(content, {
-      techStacks: [new FakeTechStack()],
-      cwd: path.dirname(fileAbsPath),
-      fileAbsPath: fileAbsPath,
-      resolve: {
-        codeBlockMode: 'active',
-        atomDirs: [],
-        docDirs: [],
-        forceKebabCaseRouting: true,
-      },
-      locales: [],
-      routes: {},
-      pkg: {},
-      alias: {
-        '@': __dirname,
-      },
-    });
+    const ret = await transformer(
+      content,
+      getTransformerOptions(fileAbsPath, true),
+    );
 
     (await import(`${CASES_DIR}/${casePath}/expect.ts`)).default(ret);
   });
 }
+
+test('markdown transformer: skips local demo loader by default', async () => {
+  const fileAbsPath = path.join(CASES_DIR, 'demo', 'index.md');
+  const content = fs.readFileSync(fileAbsPath, 'utf8');
+  const ret = await transformer(content, getTransformerOptions(fileAbsPath));
+
+  expect(ret.content).not.toContain('"loader": () => import');
+  expect(ret.content).not.toContain('"version":');
+});

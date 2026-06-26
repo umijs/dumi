@@ -1,4 +1,4 @@
-import { parseCodeFrontmatter } from '@/utils';
+import { getContentHash, parseCodeFrontmatter } from '@/utils';
 import { build } from '@umijs/bundler-utils/compiled/esbuild';
 import assert from 'assert';
 import type { ExampleBlockAsset } from 'dumi-assets-types';
@@ -24,7 +24,7 @@ export interface IParsedBlockAsset {
   frontmatter: ReturnType<typeof parseCodeFrontmatter>['frontmatter'];
 }
 
-async function parseBlockAsset(opts: {
+interface IParseBlockAssetOptions {
   fileAbsPath: string;
   fileLocale?: string;
   id: string;
@@ -32,7 +32,101 @@ async function parseBlockAsset(opts: {
   entryPointCode?: string;
   resolver: typeof sync;
   techStack: IDumiTechStack;
-}) {
+  cacheable?: boolean;
+}
+
+type BlockAssetCache = {
+  deps: string[];
+  depsKey: string;
+  result: IParsedBlockAsset;
+};
+
+const MAX_BLOCK_ASSET_CACHE_SIZE = 512;
+const blockAssetCache = new Map<string, BlockAssetCache>();
+
+function cloneParsedBlockAsset(ret: IParsedBlockAsset): IParsedBlockAsset {
+  return {
+    asset: JSON.parse(JSON.stringify(ret.asset)),
+    resolveMap: { ...ret.resolveMap },
+    frontmatter: ret.frontmatter
+      ? JSON.parse(JSON.stringify(ret.frontmatter))
+      : ret.frontmatter,
+  };
+}
+
+function getContentHashFromFile(file: string) {
+  try {
+    return getContentHash(fs.readFileSync(file, 'utf-8'));
+  } catch {
+    return 'missing';
+  }
+}
+
+function getDepsKey(deps: string[]) {
+  return JSON.stringify(
+    Array.from(new Set(deps))
+      .sort()
+      .map((file) => `${winPath(file)}:${getContentHashFromFile(file)}`),
+  );
+}
+
+function getParseCacheKey(opts: IParseBlockAssetOptions) {
+  const entryContent =
+    opts.entryPointCode ?? fs.readFileSync(opts.fileAbsPath, 'utf-8');
+
+  return JSON.stringify({
+    file: winPath(opts.fileAbsPath),
+    fileLocale: opts.fileLocale,
+    id: opts.id,
+    refAtomIds: opts.refAtomIds,
+    entryHash: getContentHash(entryContent),
+    techStack: opts.techStack.name,
+    runtimeOpts: opts.techStack.runtimeOpts,
+    hasOnBlockLoad: Boolean(opts.techStack.onBlockLoad),
+    hasGenerateMetadata: Boolean(opts.techStack.generateMetadata),
+    hasGenerateSources: Boolean(opts.techStack.generateSources),
+  });
+}
+
+function getParseDeps(ret: IParsedBlockAsset, entryFile: string) {
+  return Object.values(ret.resolveMap).filter(
+    (file) => path.isAbsolute(file) && file !== entryFile,
+  );
+}
+
+function getCachedBlockAsset(cacheKey: string) {
+  const cached = blockAssetCache.get(cacheKey);
+
+  if (cached && cached.depsKey === getDepsKey(cached.deps)) {
+    return cloneParsedBlockAsset(cached.result);
+  }
+}
+
+function setCachedBlockAsset(
+  cacheKey: string,
+  ret: IParsedBlockAsset,
+  deps: string[],
+) {
+  if (blockAssetCache.size >= MAX_BLOCK_ASSET_CACHE_SIZE) {
+    const firstKey = blockAssetCache.keys().next().value;
+    if (firstKey) blockAssetCache.delete(firstKey);
+  }
+
+  blockAssetCache.set(cacheKey, {
+    deps,
+    depsKey: getDepsKey(deps),
+    result: cloneParsedBlockAsset(ret),
+  });
+}
+
+async function parseBlockAsset(opts: IParseBlockAssetOptions) {
+  const cacheKey = opts.cacheable ? getParseCacheKey(opts) : '';
+  const cached = cacheKey ? getCachedBlockAsset(cacheKey) : undefined;
+
+  if (cached) {
+    return cached;
+  }
+
   const asset: IParsedBlockAsset['asset'] = {
     type: 'BLOCK',
     id: opts.id,
@@ -199,14 +293,24 @@ async function parseBlockAsset(opts: {
     ],
   });
 
+  let hasError = false;
   try {
     await deferrer;
   } catch {
+    hasError = true;
     /**
      * eat errors, for preserve the dependency relationship of demo & md for md loader
      * to make sure the parent md can be re-compiling when demo errors be fixed
      * and don't worry, the real error still be reported by the demo loader
      */
+  }
+
+  if (!hasError && cacheKey) {
+    setCachedBlockAsset(
+      cacheKey,
+      result,
+      getParseDeps(result, opts.fileAbsPath),
+    );
   }
 
   return result;

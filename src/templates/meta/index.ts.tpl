@@ -1,10 +1,10 @@
 {{#metaFiles}}
-{{#isMarkdown}}
+{{#loadDemoIndex}}
 import { frontmatter as fm{{{index}}}, toc as t{{{index}}}, demoIndex as dmi{{{index}}} } from '{{{file}}}?type=frontmatter';
-{{/isMarkdown}}
-{{^isMarkdown}}
+{{/loadDemoIndex}}
+{{^loadDemoIndex}}
 import { frontmatter as fm{{{index}}}, toc as t{{{index}}} } from '{{{file}}}?type=frontmatter';
-{{/isMarkdown}}
+{{/loadDemoIndex}}
 {{/metaFiles}}
 
 export const filesMeta = {
@@ -12,9 +12,9 @@ export const filesMeta = {
   '{{{id}}}': {
     frontmatter: fm{{{index}}},
     toc: t{{{index}}},
-    {{#isMarkdown}}
+    {{#loadDemoIndex}}
     demoIndex: dmi{{{index}}},
-    {{/isMarkdown}}
+    {{/loadDemoIndex}}
     {{#tabs}}
     tabs: {{{tabs}}},
     {{/tabs}}
