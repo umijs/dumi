@@ -79,6 +79,21 @@ function isRelativePath(path: string) {
   return /^\.{1,2}(?!\w)/.test(path);
 }
 
+function normalizeRouteFile(file: string) {
+  return winPath(file).replace(/\.(mdx?)\.js$/, '.$1');
+}
+
+function getRouteId(opts: IMdLoaderOptions, fileAbsPath: string) {
+  const normalizedFile = normalizeRouteFile(fileAbsPath);
+  const route = Object.values(opts.routes ?? {}).find((item) => {
+    const routeFile = (item as any).file || (item as any).__absFile;
+
+    return routeFile && normalizeRouteFile(routeFile) === normalizedFile;
+  });
+
+  return (route as any)?.id as string | undefined;
+}
+
 function emitDefault(
   this: any,
   opts: IMdLoaderDefaultModeOptions,
@@ -197,6 +212,8 @@ function emitDemo(
             .filter((item): item is IDemoDependency => item !== undefined),
         );
       }, []);
+  const routeId = getRouteId(opts, this.resourcePath);
+
   return Mustache.render(
     `import React from 'react';
 import '${winPath(this.resourcePath)}?watch=parent';
@@ -210,6 +227,9 @@ export const demos = {
     component: {{{component}}},
     {{/component}}
     asset: {{{renderAsset}}},
+    {{#routeId}}
+    routeId: '{{{routeId}}}',
+    {{/routeId}}
     context: {{{renderContext}}},
     renderOpts: {{{renderRenderOpts}}},
   },
@@ -218,6 +238,7 @@ export const demos = {
     {
       demos,
       dedupedDemosDeps,
+      routeId,
       renderAsset: function renderAsset(this: NonNullable<typeof demos>[0]) {
         // do not render asset for inline demo
         if (!('asset' in this)) return 'null';
@@ -404,8 +425,11 @@ function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
   // declare embedded files as loader dependency, for re-compiling when file changed
   embeds!.forEach((file) => this.addDependency(file));
 
-  // declare demo source files as loader dependency, for re-compiling when file changed
-  getDemoSourceFiles(demos).forEach((file) => this.addDependency(file));
+  // demo-index only needs demo ids and lazy getters. Keep demo source files out
+  // of the global meta dependency graph so JSX edits can stay local.
+  if (opts.mode !== 'demo-index') {
+    getDemoSourceFiles(demos).forEach((file) => this.addDependency(file));
+  }
 
   // to avoid compile watch=parent virtual module
   if (this.resourceQuery.includes('watch=parent')) return null;

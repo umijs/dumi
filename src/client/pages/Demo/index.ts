@@ -1,13 +1,24 @@
-import { useDemo, useLiveDemo, useParams } from 'dumi';
+import { useDemo, useLiveDemo, useLocation, useParams } from 'dumi';
 import { ComponentType, createElement, useEffect, type FC } from 'react';
+import type { IDemoData } from '../../theme-api/types';
 import { useRenderer } from '../../theme-api/useRenderer';
 import './index.less';
 
+type DemoGetter = () => Promise<{ demos: Record<string, IDemoData> }>;
+type UseDemo = (
+  id: string,
+  loader?: DemoGetter,
+  version?: string,
+  routeId?: string,
+) => IDemoData | undefined;
+
 const DemoRenderPage: FC = () => {
   const params = useParams();
+  const { search } = useLocation();
   const id = params.id!;
+  const routeId = new URLSearchParams(search).get('routeId') || undefined;
 
-  const demo = useDemo(id)!;
+  const demo = (useDemo as UseDemo)(id, undefined, undefined, routeId)!;
   const { canvasRef } = useRenderer({
     id,
     component: demo.component,

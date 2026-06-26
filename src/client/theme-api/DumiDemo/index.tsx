@@ -12,6 +12,7 @@ type UseDemo = (
   id: string,
   loader?: DemoGetter,
   version?: string,
+  routeId?: string,
 ) => IDemoData | undefined;
 
 export interface IDumiDemoProps {
@@ -56,6 +57,9 @@ const InternalDumiDemo = (props: IDumiDemoProps) => {
   }
 
   const isHashRoute = historyType === 'hash';
+  const routeQuery = demo.routeId
+    ? `?routeId=${encodeURIComponent(demo.routeId)}`
+    : '';
 
   return (
     <Previewer
@@ -66,7 +70,7 @@ const InternalDumiDemo = (props: IDumiDemoProps) => {
         // when use hash route, browser can automatically handle relative paths starting with #
         `${isHashRoute ? `#` : ''}${basename}${SP_ROUTE_PREFIX}demos/${
           props.demo.id
-        }`
+        }${routeQuery}`
       }
       {...props.previewerProps}
     >
