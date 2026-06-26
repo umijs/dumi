@@ -7,6 +7,7 @@ import { isTabRouteFile } from './tabs';
 
 export const TABS_META_PATH = 'dumi/meta/tabs.ts';
 export const ATOMS_META_PATH = 'dumi/meta/atoms.ts';
+export const DEMO_INDEX_META_PATH = 'dumi/meta/demoIndex.ts';
 
 type IMetaFiles = {
   index: number;
@@ -14,6 +15,7 @@ type IMetaFiles = {
   id: string;
   isMarkdown?: boolean;
   loadDemoIndex?: boolean;
+  loadDemoIndexMap?: boolean;
 }[];
 
 export default (api: IApi) => {
@@ -62,11 +64,13 @@ export default (api: IApi) => {
     });
 
     // mark isMarkdown flag
+    const useUtoopackDemoHMR =
+      api.env === 'development' && Boolean(api.config.utoopack);
+
     parsedMetaFiles.forEach((metaFile) => {
       metaFile.isMarkdown = metaFile.file.endsWith('.md');
-      metaFile.loadDemoIndex =
-        metaFile.isMarkdown &&
-        !(api.env === 'development' && Boolean(api.config.utoopack));
+      metaFile.loadDemoIndex = metaFile.isMarkdown && !useUtoopackDemoHMR;
+      metaFile.loadDemoIndexMap = metaFile.isMarkdown && useUtoopackDemoHMR;
     });
 
     api.writeTmpFile({
@@ -85,6 +89,15 @@ export default (api: IApi) => {
             api.config.locales?.map(({ id }) => id),
           )}" */`;
         },
+      },
+    });
+
+    api.writeTmpFile({
+      noPluginDir: true,
+      path: DEMO_INDEX_META_PATH,
+      tplPath: require.resolve('../templates/meta/demoIndex.ts.tpl'),
+      context: {
+        metaFiles: parsedMetaFiles,
       },
     });
 
