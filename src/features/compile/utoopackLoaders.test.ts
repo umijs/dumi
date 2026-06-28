@@ -1,4 +1,5 @@
 import Module from 'module';
+import { vi } from 'vitest';
 
 function registerTsResolveExtension() {
   const extensions = (Module as any)._extensions as NodeJS.RequireExtensions;
@@ -120,6 +121,39 @@ test('utoopack loader context serializes extra unified plugins', async () => {
     [plugins.rehypePluginForTest, { enabled: true }],
     'rehype-string-plugin',
   ]);
+});
+
+test('utoopack loader context registers TS hook without project root phantom deps', async () => {
+  const { buildLoaderContextContent } = await import('./utoopackLoaders');
+  const content = buildLoaderContextContent([]);
+  const exports: any = {};
+  const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+  const requireWithoutProjectDeps = (id: string) => {
+    if (id.startsWith('@umijs/')) {
+      throw new Error(`Unexpected project-root dependency: ${id}`);
+    }
+
+    return require(id);
+  };
+
+  expect(content).not.toContain(`require('@umijs/utils')`);
+  expect(content).not.toContain(
+    `require('@umijs/bundler-utils/compiled/esbuild')`,
+  );
+  expect(content).toContain(require.resolve('@umijs/utils'));
+  expect(content).toContain(
+    require.resolve('@umijs/bundler-utils/compiled/esbuild'),
+  );
+
+  try {
+    new Function('require', 'exports', content)(
+      requireWithoutProjectDeps,
+      exports,
+    );
+    expect(warn).not.toHaveBeenCalled();
+  } finally {
+    warn.mockRestore();
+  }
 });
 
 test('utoopack loader context resolves plugins from config source files', async () => {

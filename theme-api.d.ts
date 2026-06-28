@@ -309,7 +309,9 @@ export declare const useTabMeta: () =>
 export declare const openCodeSandbox: (data: IPreviewerProps) => void;
 export declare const openStackBlitz: (data: IPreviewerProps) => void;
 export declare function useDemo(id: string): IDemoData | undefined;
-export declare function getFullDemos(): Promise<Record<string, IDemoData>>;
+export declare function getFullDemos(opts?: {
+  loadLazy?: boolean;
+}): Promise<Record<string, IDemoData>>;
 export declare function getRouteMetaById<T extends { syncOnly?: boolean }>(
   id: string,
   opts?: T,

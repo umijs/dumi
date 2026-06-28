@@ -5,6 +5,10 @@ import path from 'path';
 import { shouldDisabledLiveDemo } from './utils';
 
 const mdLoaderPath = require.resolve('../../loaders/markdown');
+const utilsRegisterPath = require.resolve('@umijs/utils');
+const esbuildImplementorPath = require.resolve(
+  '@umijs/bundler-utils/compiled/esbuild',
+);
 
 export const UTOOPACK_LOADER_CTX_KEY = '__dumiLoaderContextPath';
 
@@ -181,8 +185,14 @@ export function buildLoaderContextContent(
   return (
     `'use strict';\n` +
     `try {\n` +
-    `  require('@umijs/utils').register.register({ implementor: require('@umijs/bundler-utils/compiled/esbuild') });\n` +
-    `} catch (_) {}\n` +
+    `  require(${JSON.stringify(
+      utilsRegisterPath,
+    )}).register.register({ implementor: require(${JSON.stringify(
+      esbuildImplementorPath,
+    )}) });\n` +
+    `} catch (e) {\n` +
+    `  console.warn('[dumi] failed to register TS require hook for utoopack loader context:', e);\n` +
+    `}\n` +
     `exports.techStacks = [${refs.join(', ')}];\n` +
     `exports.builtins = ${JSON.stringify(builtins)};\n` +
     `exports.routes = ${JSON.stringify(routes)};\n` +

@@ -201,14 +201,18 @@ export function useDemo(
 /**
  * get all demos
  */
-export async function getFullDemos() {
-  const demoIndexMap = await loadDemoIndexMap();
-  const lazyDemoIndexes = await Promise.all(
-    Object.entries(demoIndexMap).map(async ([id, demoIndexGetter]) => ({
-      id,
-      demoIndex: await demoIndexGetter?.().catch(() => undefined),
-    })),
-  );
+export async function getFullDemos(opts: { loadLazy?: boolean } = {}) {
+  const loadLazy = opts.loadLazy ?? process.env.NODE_ENV === 'production';
+  const lazyDemoIndexes = loadLazy
+    ? await loadDemoIndexMap().then((demoIndexMap) =>
+        Promise.all(
+          Object.entries(demoIndexMap).map(async ([id, demoIndexGetter]) => ({
+            id,
+            demoIndex: await demoIndexGetter?.().catch(() => undefined),
+          })),
+        ),
+      )
+    : [];
   const allDemoIndexes = [
     ...demoIndexes,
     ...lazyDemoIndexes,
