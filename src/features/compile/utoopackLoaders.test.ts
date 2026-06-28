@@ -140,9 +140,13 @@ test('utoopack loader context registers TS hook without project root phantom dep
   expect(content).not.toContain(
     `require('@umijs/bundler-utils/compiled/esbuild')`,
   );
-  expect(content).toContain(require.resolve('@umijs/utils'));
   expect(content).toContain(
-    require.resolve('@umijs/bundler-utils/compiled/esbuild'),
+    `require(${JSON.stringify(require.resolve('@umijs/utils'))})`,
+  );
+  expect(content).toContain(
+    `require(${JSON.stringify(
+      require.resolve('@umijs/bundler-utils/compiled/esbuild'),
+    )})`,
   );
 
   try {
