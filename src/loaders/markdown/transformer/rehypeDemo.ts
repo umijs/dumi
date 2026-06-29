@@ -18,14 +18,10 @@ const DEMO_NODE_CONTAINER = '$demo-container';
 
 export const DEMO_PROP_VALUE_KEY = '$demo-prop-value-key';
 const DEMO_LOADER_PLACEHOLDER = '__DUMI_DEMO_LOADER__';
-const DEMO_LOADER_PLACEHOLDER_RE = new RegExp(
-  `"${DEMO_LOADER_PLACEHOLDER}:([^"]+)"`,
-  'g',
-);
-const getDemoLoaderPlaceholder = (id: string) =>
-  `${DEMO_LOADER_PLACEHOLDER}:${encodeURIComponent(
-    id,
-  )}` as unknown as NonNullable<IDumiDemoProps['demo']['loader']>;
+const DEMO_LOADER_PLACEHOLDER_VALUE =
+  DEMO_LOADER_PLACEHOLDER as unknown as NonNullable<
+    IDumiDemoProps['demo']['loader']
+  >;
 export const DUMI_DEMO_TAG = 'DumiDemo';
 export const DUMI_DEMO_GRID_TAG = 'DumiDemoGrid';
 export const SKIP_DEMO_PARSE = 'pure';
@@ -345,7 +341,7 @@ export default function rehypeDemo(
 
             const propDemo: IDumiDemoProps['demo'] = { id: parseOpts.id };
             if (opts.useUtoopackDemoHMR) {
-              propDemo.loader = getDemoLoaderPlaceholder(parseOpts.id);
+              propDemo.loader = DEMO_LOADER_PLACEHOLDER_VALUE;
             }
             demoIds.push(parseOpts.id);
 
@@ -527,14 +523,16 @@ export default function rehypeDemo(
 
       // parse final value for jsx attributes
       replaceNodes.forEach((node) => {
+        const demoLoader = `() => import('${winPath(
+          opts.fileAbsPath,
+        )}?type=demo')`;
         let value = JSON.stringify(node.data![DEMO_PROP_VALUE_KEY]);
 
         if (opts.useUtoopackDemoHMR) {
-          value = value.replace(DEMO_LOADER_PLACEHOLDER_RE, (_, demoId) => {
-            return `() => import('${winPath(
-              opts.fileAbsPath,
-            )}?type=demo&demoId=${demoId}')`;
-          });
+          value = value.replace(
+            new RegExp(`"${DEMO_LOADER_PLACEHOLDER}"`, 'g'),
+            demoLoader,
+          );
         }
 
         if (node.JSXAttributes![0].type === 'JSXAttribute') {

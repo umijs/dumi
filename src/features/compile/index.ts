@@ -12,7 +12,6 @@ import { shouldDisabledLiveDemo } from './utils';
 import {
   LOADER_CTX_FILENAME,
   buildLoaderContextContent,
-  getLoaderContextSourceFiles,
   getUtoopackRules,
 } from './utoopackLoaders';
 export const techStacks: IDumiTechStack[] = [];
@@ -123,10 +122,7 @@ export default (api: IApi) => {
             api.appData.routes ?? {},
             api.config.extraRemarkPlugins,
             api.config.extraRehypePlugins,
-            getLoaderContextSourceFiles(
-              api.cwd,
-              (api as any).service.configManager?.files ?? [],
-            ),
+            (api as any).service.configManager?.files ?? [],
           ),
         });
       }

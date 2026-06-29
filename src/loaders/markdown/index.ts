@@ -103,19 +103,6 @@ function getDemoSourceFiles(demos: IMdTransformerResult['meta']['demos'] = []) {
   }, []);
 }
 
-function getDemoIdFromQuery(resourceQuery = '') {
-  return new URLSearchParams(resourceQuery.replace(/^\?/, '')).get('demoId');
-}
-
-function filterDemosByQuery(
-  demos: IMdTransformerResult['meta']['demos'],
-  resourceQuery?: string,
-) {
-  const demoId = getDemoIdFromQuery(resourceQuery);
-
-  return demoId ? demos?.filter((demo) => demo.id === demoId) : demos;
-}
-
 function isRelativePath(path: string) {
   return /^\.{1,2}(?!\w)/.test(path);
 }
@@ -203,7 +190,7 @@ function emitDemo(
   opts: IMdLoaderDemoModeOptions,
   ret: IMdTransformerResult,
 ) {
-  const demos = filterDemosByQuery(ret.meta.demos, this.resourceQuery);
+  const { demos } = ret.meta;
   const shareDepsMap: Record<string, string> = {};
   const demoDepsMap: Record<string, Record<string, string>> = {};
   const relativeDepsMap: Record<string, Record<string, string>> = {};
@@ -462,10 +449,6 @@ function emitText(
 
 function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
   const { demos, embeds } = ret.meta;
-  const dependencyDemos =
-    opts.mode === 'demo'
-      ? filterDemosByQuery(demos, this.resourceQuery)
-      : demos;
 
   // declare embedded files as loader dependency, for re-compiling when file changed
   embeds!.forEach((file) => this.addDependency(file));
@@ -473,9 +456,7 @@ function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
   // demo-index only needs demo ids and lazy getters. Keep demo source files out
   // of the global meta dependency graph so JSX edits can stay local.
   if (opts.mode !== 'demo-index') {
-    getDemoSourceFiles(dependencyDemos).forEach((file) =>
-      this.addDependency(file),
-    );
+    getDemoSourceFiles(demos).forEach((file) => this.addDependency(file));
   }
 
   // to avoid compile watch=parent virtual module

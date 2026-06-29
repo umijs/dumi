@@ -1,13 +1,6 @@
 import { SP_ROUTE_PREFIX } from '@/constants';
 import { useAppData, useDemo, useSiteData } from 'dumi';
-import React, {
-  ComponentType,
-  createElement,
-  useEffect,
-  useRef,
-  useState,
-  type FC,
-} from 'react';
+import React, { ComponentType, createElement, type FC } from 'react';
 import type { IDemoData, IPreviewerProps } from '../types';
 
 import Previewer from 'dumi/theme/builtins/Previewer';
@@ -32,41 +25,7 @@ export interface IDumiDemoProps {
   previewerProps: Omit<IPreviewerProps, 'asset' | 'children'>;
 }
 
-const LazyDemoPlaceholder: FC<{ id: string; onVisible: () => void }> = ({
-  id,
-  onVisible,
-}) => {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (typeof IntersectionObserver === 'undefined') {
-      onVisible();
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          observer.disconnect();
-          onVisible();
-        }
-      },
-      { rootMargin: '1000px 0px' },
-    );
-
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-
-    return () => observer.disconnect();
-  }, [onVisible]);
-
-  return (
-    <div id={id} ref={ref} data-dumi-demo-lazy style={{ minHeight: 160 }} />
-  );
-};
-
-const LoadedDumiDemo = (props: IDumiDemoProps) => {
+const InternalDumiDemo = (props: IDumiDemoProps) => {
   const { historyType } = useSiteData();
   const { basename } = useAppData();
   const { id, loader, version } = props.demo;
@@ -120,36 +79,11 @@ const LoadedDumiDemo = (props: IDumiDemoProps) => {
   );
 };
 
-const InternalDumiDemo = (props: IDumiDemoProps) => {
-  const shouldLazyLoad =
-    process.env.NODE_ENV !== 'production' &&
-    Boolean(props.demo.loader) &&
-    !props.demo.inline;
-  const [visible, setVisible] = useState(!shouldLazyLoad);
-
-  if (!visible) {
-    return (
-      <LazyDemoPlaceholder
-        id={props.demo.id}
-        onVisible={() => setVisible(true)}
-      />
-    );
-  }
-
-  return <LoadedDumiDemo {...props} />;
-};
-
 export const DumiDemo: FC<IDumiDemoProps> = React.memo(
   InternalDumiDemo,
   (prev, next) => {
     // compare length for performance
-    return (
-      prev.demo.id === next.demo.id &&
-      prev.demo.inline === next.demo.inline &&
-      prev.demo.version === next.demo.version &&
-      JSON.stringify(prev.previewerProps).length ===
-        JSON.stringify(next.previewerProps).length
-    );
+    return JSON.stringify(prev).length === JSON.stringify(next).length;
   },
 );
 
