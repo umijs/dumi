@@ -350,130 +350,143 @@ export default function rehypeDemo(
               parseBlockAsset({
                 ...parseOpts,
                 cacheable: opts.useUtoopackDemoHMR,
-              }).then(async ({ asset, resolveMap, frontmatter }) => {
-                // repeat id to give warning
-                if (
-                  demoIds.indexOf(parseOpts.id) !==
-                  demoIds.lastIndexOf(parseOpts.id)
-                ) {
-                  const startLine = node.position?.start.line;
-                  const suffix = startLine ? `:${startLine}` : '';
+              }).then(
+                async ({ asset, resolveMap, frontmatter }) => {
+                  // repeat id to give warning
+                  if (
+                    demoIds.indexOf(parseOpts.id) !==
+                    demoIds.lastIndexOf(parseOpts.id)
+                  ) {
+                    const startLine = node.position?.start.line;
+                    const suffix = startLine ? `:${startLine}` : '';
 
-                  logger.warn(
-                    `Duplicate demo id found due to filename conflicts, please consider adding a unique id to code tag to resolve this.
+                    logger.warn(
+                      `Duplicate demo id found due to filename conflicts, please consider adding a unique id to code tag to resolve this.
         at ${opts.fileAbsPath}${suffix}`,
+                    );
+                  }
+
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                  const { src, className, ...restAttrs } =
+                    codeNode.properties || {};
+                  const validAssetAttrs: ['title', 'snapshot', 'keywords'] = [
+                    'title',
+                    'snapshot',
+                    'keywords',
+                  ];
+                  const techStackOpts = {
+                    type: codeType,
+                    mdAbsPath: opts.fileAbsPath,
+                    fileAbsPath:
+                      codeType === 'external'
+                        ? parseOpts.fileAbsPath
+                        : undefined,
+                    entryPointCode: parseOpts.entryPointCode,
+                  };
+
+                  // transform empty string attr to boolean, such as `debug`, `iframe` & etc.
+                  Object.keys(restAttrs).forEach((key) => {
+                    if (restAttrs[key] === '') restAttrs[key] = true;
+                  });
+
+                  // update previewer props after parse
+                  const originalProps = Object.assign(
+                    {},
+                    frontmatter,
+                    restAttrs,
                   );
-                }
 
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                const { src, className, ...restAttrs } =
-                  codeNode.properties || {};
-                const validAssetAttrs: ['title', 'snapshot', 'keywords'] = [
-                  'title',
-                  'snapshot',
-                  'keywords',
-                ];
-                const techStackOpts = {
-                  type: codeType,
-                  mdAbsPath: opts.fileAbsPath,
-                  fileAbsPath:
-                    codeType === 'external' ? parseOpts.fileAbsPath : undefined,
-                  entryPointCode: parseOpts.entryPointCode,
-                };
+                  // copy valid props for asset
+                  validAssetAttrs.forEach((key) => {
+                    if (originalProps[key]) asset[key] = originalProps[key];
+                  });
 
-                // transform empty string attr to boolean, such as `debug`, `iframe` & etc.
-                Object.keys(restAttrs).forEach((key) => {
-                  if (restAttrs[key] === '') restAttrs[key] = true;
-                });
+                  if (opts.useUtoopackDemoHMR) {
+                    propDemo.version = getContentHash(
+                      JSON.stringify(asset.dependencies),
+                    );
+                  }
 
-                // update previewer props after parse
-                const originalProps = Object.assign({}, frontmatter, restAttrs);
+                  // do not generate previewer props & asset for inline demo
+                  if (
+                    / inline/.test(String(codeNode.data?.meta)) ||
+                    originalProps.inline
+                  ) {
+                    // HINT: must keep the reference
+                    propDemo.inline = true;
 
-                // copy valid props for asset
-                validAssetAttrs.forEach((key) => {
-                  if (originalProps[key]) asset[key] = originalProps[key];
-                });
+                    return {
+                      // TODO: special id for inline demo
+                      id: asset.id,
+                      component,
+                      renderOpts: {
+                        rendererPath: runtimeOpts?.rendererPath,
+                        preflightPath: runtimeOpts?.preflightPath,
+                      },
+                    };
+                  }
 
-                if (opts.useUtoopackDemoHMR) {
-                  propDemo.version = getContentHash(
-                    JSON.stringify(asset.dependencies),
+                  // HINT: must use `Object.assign` to keep the reference
+                  Object.assign(
+                    previewerProps,
+                    (await techStack.generatePreviewerProps?.(
+                      originalProps,
+                      techStackOpts,
+                    )) || originalProps,
                   );
-                }
 
-                // do not generate previewer props & asset for inline demo
-                if (
-                  / inline/.test(String(codeNode.data?.meta)) ||
-                  originalProps.inline
-                ) {
-                  // HINT: must keep the reference
-                  propDemo.inline = true;
+                  // md to string for asset metadata
+                  // md to html for previewer props
+                  if (previewerProps.description) {
+                    const { unified } = await import('unified');
+                    const { default: remarkParse } = await import(
+                      'remark-parse'
+                    );
+                    const { default: remarkGfm } = await import('remark-gfm');
+                    const { default: remarkRehype } = await import(
+                      'remark-rehype'
+                    );
+                    const { default: rehypeStringify } = await import(
+                      'rehype-stringify'
+                    );
+                    const { convert } = require('html-to-text');
+                    const result = await unified()
+                      .use(remarkParse)
+                      .use(remarkGfm)
+                      .use(remarkRehype, { allowDangerousHtml: true })
+                      .use(rehypeStringify, { allowDangerousHtml: true })
+                      .process(previewerProps.description);
 
+                    previewerProps.description = String(result.value);
+                    asset.description = convert(result.value, {
+                      wordwrap: false,
+                    });
+                  }
+
+                  // return demo data
                   return {
-                    // TODO: special id for inline demo
                     id: asset.id,
                     component,
+                    asset: techStack.generateMetadata
+                      ? await techStack.generateMetadata(asset, techStackOpts)
+                      : asset,
+                    /**
+                     * keep `generateSources` rather than `generateResolveMap` for compatibility
+                     */
+                    resolveMap: techStack.generateSources
+                      ? await techStack.generateSources(
+                          resolveMap,
+                          techStackOpts,
+                        )
+                      : resolveMap,
                     renderOpts: {
                       rendererPath: runtimeOpts?.rendererPath,
+                      compilePath: runtimeOpts?.compilePath,
                       preflightPath: runtimeOpts?.preflightPath,
                     },
                   };
-                }
-
-                // HINT: must use `Object.assign` to keep the reference
-                Object.assign(
-                  previewerProps,
-                  (await techStack.generatePreviewerProps?.(
-                    originalProps,
-                    techStackOpts,
-                  )) || originalProps,
-                );
-
-                // md to string for asset metadata
-                // md to html for previewer props
-                if (previewerProps.description) {
-                  const { unified } = await import('unified');
-                  const { default: remarkParse } = await import('remark-parse');
-                  const { default: remarkGfm } = await import('remark-gfm');
-                  const { default: remarkRehype } = await import(
-                    'remark-rehype'
-                  );
-                  const { default: rehypeStringify } = await import(
-                    'rehype-stringify'
-                  );
-                  const { convert } = require('html-to-text');
-                  const result = await unified()
-                    .use(remarkParse)
-                    .use(remarkGfm)
-                    .use(remarkRehype, { allowDangerousHtml: true })
-                    .use(rehypeStringify, { allowDangerousHtml: true })
-                    .process(previewerProps.description);
-
-                  previewerProps.description = String(result.value);
-                  asset.description = convert(result.value, {
-                    wordwrap: false,
-                  });
-                }
-
-                // return demo data
-                return {
-                  id: asset.id,
-                  component,
-                  asset: techStack.generateMetadata
-                    ? await techStack.generateMetadata(asset, techStackOpts)
-                    : asset,
-                  /**
-                   * keep `generateSources` rather than `generateResolveMap` for compatibility
-                   */
-                  resolveMap: techStack.generateSources
-                    ? await techStack.generateSources(resolveMap, techStackOpts)
-                    : resolveMap,
-                  renderOpts: {
-                    rendererPath: runtimeOpts?.rendererPath,
-                    compilePath: runtimeOpts?.compilePath,
-                    preflightPath: runtimeOpts?.preflightPath,
-                  },
-                };
-              }),
+                },
+              ),
             );
 
             // save into demos property
