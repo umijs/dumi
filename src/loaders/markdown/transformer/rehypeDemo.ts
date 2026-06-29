@@ -18,10 +18,14 @@ const DEMO_NODE_CONTAINER = '$demo-container';
 
 export const DEMO_PROP_VALUE_KEY = '$demo-prop-value-key';
 const DEMO_LOADER_PLACEHOLDER = '__DUMI_DEMO_LOADER__';
-const DEMO_LOADER_PLACEHOLDER_VALUE =
-  DEMO_LOADER_PLACEHOLDER as unknown as NonNullable<
-    IDumiDemoProps['demo']['loader']
-  >;
+const DEMO_LOADER_PLACEHOLDER_RE = new RegExp(
+  `"${DEMO_LOADER_PLACEHOLDER}:([^"]+)"`,
+  'g',
+);
+const getDemoLoaderPlaceholder = (id: string) =>
+  `${DEMO_LOADER_PLACEHOLDER}:${encodeURIComponent(
+    id,
+  )}` as unknown as NonNullable<IDumiDemoProps['demo']['loader']>;
 export const DUMI_DEMO_TAG = 'DumiDemo';
 export const DUMI_DEMO_GRID_TAG = 'DumiDemoGrid';
 export const SKIP_DEMO_PARSE = 'pure';
@@ -341,7 +345,7 @@ export default function rehypeDemo(
 
             const propDemo: IDumiDemoProps['demo'] = { id: parseOpts.id };
             if (opts.useUtoopackDemoHMR) {
-              propDemo.loader = DEMO_LOADER_PLACEHOLDER_VALUE;
+              propDemo.loader = getDemoLoaderPlaceholder(parseOpts.id);
             }
             demoIds.push(parseOpts.id);
 
@@ -350,143 +354,130 @@ export default function rehypeDemo(
               parseBlockAsset({
                 ...parseOpts,
                 cacheable: opts.useUtoopackDemoHMR,
-              }).then(
-                async ({ asset, resolveMap, frontmatter }) => {
-                  // repeat id to give warning
-                  if (
-                    demoIds.indexOf(parseOpts.id) !==
-                    demoIds.lastIndexOf(parseOpts.id)
-                  ) {
-                    const startLine = node.position?.start.line;
-                    const suffix = startLine ? `:${startLine}` : '';
+              }).then(async ({ asset, resolveMap, frontmatter }) => {
+                // repeat id to give warning
+                if (
+                  demoIds.indexOf(parseOpts.id) !==
+                  demoIds.lastIndexOf(parseOpts.id)
+                ) {
+                  const startLine = node.position?.start.line;
+                  const suffix = startLine ? `:${startLine}` : '';
 
-                    logger.warn(
-                      `Duplicate demo id found due to filename conflicts, please consider adding a unique id to code tag to resolve this.
+                  logger.warn(
+                    `Duplicate demo id found due to filename conflicts, please consider adding a unique id to code tag to resolve this.
         at ${opts.fileAbsPath}${suffix}`,
-                    );
-                  }
-
-                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                  const { src, className, ...restAttrs } =
-                    codeNode.properties || {};
-                  const validAssetAttrs: ['title', 'snapshot', 'keywords'] = [
-                    'title',
-                    'snapshot',
-                    'keywords',
-                  ];
-                  const techStackOpts = {
-                    type: codeType,
-                    mdAbsPath: opts.fileAbsPath,
-                    fileAbsPath:
-                      codeType === 'external'
-                        ? parseOpts.fileAbsPath
-                        : undefined,
-                    entryPointCode: parseOpts.entryPointCode,
-                  };
-
-                  // transform empty string attr to boolean, such as `debug`, `iframe` & etc.
-                  Object.keys(restAttrs).forEach((key) => {
-                    if (restAttrs[key] === '') restAttrs[key] = true;
-                  });
-
-                  // update previewer props after parse
-                  const originalProps = Object.assign(
-                    {},
-                    frontmatter,
-                    restAttrs,
                   );
+                }
 
-                  // copy valid props for asset
-                  validAssetAttrs.forEach((key) => {
-                    if (originalProps[key]) asset[key] = originalProps[key];
-                  });
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                const { src, className, ...restAttrs } =
+                  codeNode.properties || {};
+                const validAssetAttrs: ['title', 'snapshot', 'keywords'] = [
+                  'title',
+                  'snapshot',
+                  'keywords',
+                ];
+                const techStackOpts = {
+                  type: codeType,
+                  mdAbsPath: opts.fileAbsPath,
+                  fileAbsPath:
+                    codeType === 'external' ? parseOpts.fileAbsPath : undefined,
+                  entryPointCode: parseOpts.entryPointCode,
+                };
 
-                  if (opts.useUtoopackDemoHMR) {
-                    propDemo.version = getContentHash(
-                      JSON.stringify(asset.dependencies),
-                    );
-                  }
+                // transform empty string attr to boolean, such as `debug`, `iframe` & etc.
+                Object.keys(restAttrs).forEach((key) => {
+                  if (restAttrs[key] === '') restAttrs[key] = true;
+                });
 
-                  // do not generate previewer props & asset for inline demo
-                  if (
-                    / inline/.test(String(codeNode.data?.meta)) ||
-                    originalProps.inline
-                  ) {
-                    // HINT: must keep the reference
-                    propDemo.inline = true;
+                // update previewer props after parse
+                const originalProps = Object.assign({}, frontmatter, restAttrs);
 
-                    return {
-                      // TODO: special id for inline demo
-                      id: asset.id,
-                      component,
-                      renderOpts: {
-                        rendererPath: runtimeOpts?.rendererPath,
-                        preflightPath: runtimeOpts?.preflightPath,
-                      },
-                    };
-                  }
+                // copy valid props for asset
+                validAssetAttrs.forEach((key) => {
+                  if (originalProps[key]) asset[key] = originalProps[key];
+                });
 
-                  // HINT: must use `Object.assign` to keep the reference
-                  Object.assign(
-                    previewerProps,
-                    (await techStack.generatePreviewerProps?.(
-                      originalProps,
-                      techStackOpts,
-                    )) || originalProps,
+                if (opts.useUtoopackDemoHMR) {
+                  propDemo.version = getContentHash(
+                    JSON.stringify(asset.dependencies),
                   );
+                }
 
-                  // md to string for asset metadata
-                  // md to html for previewer props
-                  if (previewerProps.description) {
-                    const { unified } = await import('unified');
-                    const { default: remarkParse } = await import(
-                      'remark-parse'
-                    );
-                    const { default: remarkGfm } = await import('remark-gfm');
-                    const { default: remarkRehype } = await import(
-                      'remark-rehype'
-                    );
-                    const { default: rehypeStringify } = await import(
-                      'rehype-stringify'
-                    );
-                    const { convert } = require('html-to-text');
-                    const result = await unified()
-                      .use(remarkParse)
-                      .use(remarkGfm)
-                      .use(remarkRehype, { allowDangerousHtml: true })
-                      .use(rehypeStringify, { allowDangerousHtml: true })
-                      .process(previewerProps.description);
+                // do not generate previewer props & asset for inline demo
+                if (
+                  / inline/.test(String(codeNode.data?.meta)) ||
+                  originalProps.inline
+                ) {
+                  // HINT: must keep the reference
+                  propDemo.inline = true;
 
-                    previewerProps.description = String(result.value);
-                    asset.description = convert(result.value, {
-                      wordwrap: false,
-                    });
-                  }
-
-                  // return demo data
                   return {
+                    // TODO: special id for inline demo
                     id: asset.id,
                     component,
-                    asset: techStack.generateMetadata
-                      ? await techStack.generateMetadata(asset, techStackOpts)
-                      : asset,
-                    /**
-                     * keep `generateSources` rather than `generateResolveMap` for compatibility
-                     */
-                    resolveMap: techStack.generateSources
-                      ? await techStack.generateSources(
-                          resolveMap,
-                          techStackOpts,
-                        )
-                      : resolveMap,
                     renderOpts: {
                       rendererPath: runtimeOpts?.rendererPath,
-                      compilePath: runtimeOpts?.compilePath,
                       preflightPath: runtimeOpts?.preflightPath,
                     },
                   };
-                },
-              ),
+                }
+
+                // HINT: must use `Object.assign` to keep the reference
+                Object.assign(
+                  previewerProps,
+                  (await techStack.generatePreviewerProps?.(
+                    originalProps,
+                    techStackOpts,
+                  )) || originalProps,
+                );
+
+                // md to string for asset metadata
+                // md to html for previewer props
+                if (previewerProps.description) {
+                  const { unified } = await import('unified');
+                  const { default: remarkParse } = await import('remark-parse');
+                  const { default: remarkGfm } = await import('remark-gfm');
+                  const { default: remarkRehype } = await import(
+                    'remark-rehype'
+                  );
+                  const { default: rehypeStringify } = await import(
+                    'rehype-stringify'
+                  );
+                  const { convert } = require('html-to-text');
+                  const result = await unified()
+                    .use(remarkParse)
+                    .use(remarkGfm)
+                    .use(remarkRehype, { allowDangerousHtml: true })
+                    .use(rehypeStringify, { allowDangerousHtml: true })
+                    .process(previewerProps.description);
+
+                  previewerProps.description = String(result.value);
+                  asset.description = convert(result.value, {
+                    wordwrap: false,
+                  });
+                }
+
+                // return demo data
+                return {
+                  id: asset.id,
+                  component,
+                  asset: techStack.generateMetadata
+                    ? await techStack.generateMetadata(asset, techStackOpts)
+                    : asset,
+                  /**
+                   * keep `generateSources` rather than `generateResolveMap` for compatibility
+                   */
+                  resolveMap: techStack.generateSources
+                    ? await techStack.generateSources(resolveMap, techStackOpts)
+                    : resolveMap,
+                  renderOpts: {
+                    rendererPath: runtimeOpts?.rendererPath,
+                    compilePath: runtimeOpts?.compilePath,
+                    preflightPath: runtimeOpts?.preflightPath,
+                  },
+                };
+              }),
             );
 
             // save into demos property
@@ -536,16 +527,14 @@ export default function rehypeDemo(
 
       // parse final value for jsx attributes
       replaceNodes.forEach((node) => {
-        const demoLoader = `() => import('${winPath(
-          opts.fileAbsPath,
-        )}?type=demo')`;
         let value = JSON.stringify(node.data![DEMO_PROP_VALUE_KEY]);
 
         if (opts.useUtoopackDemoHMR) {
-          value = value.replace(
-            new RegExp(`"${DEMO_LOADER_PLACEHOLDER}"`, 'g'),
-            demoLoader,
-          );
+          value = value.replace(DEMO_LOADER_PLACEHOLDER_RE, (_, demoId) => {
+            return `() => import('${winPath(
+              opts.fileAbsPath,
+            )}?type=demo&demoId=${demoId}')`;
+          });
         }
 
         if (node.JSXAttributes![0].type === 'JSXAttribute') {
