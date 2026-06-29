@@ -5,6 +5,10 @@ import path from 'path';
 import { shouldDisabledLiveDemo } from './utils';
 
 const mdLoaderPath = require.resolve('../../loaders/markdown');
+const utilsRegisterPath = require.resolve('@umijs/utils');
+const esbuildImplementorPath = require.resolve(
+  '@umijs/bundler-utils/compiled/esbuild',
+);
 
 export const UTOOPACK_LOADER_CTX_KEY = '__dumiLoaderContextPath';
 
@@ -12,6 +16,7 @@ export const LOADER_CTX_FILENAME = 'dumi-loader-ctx.cjs';
 
 type UnifiedPluginConfig = NonNullable<IApi['config']['extraRemarkPlugins']>[0];
 type UnifiedPluginFn = (...args: any[]) => any;
+type FunctionRef = { name: string };
 
 function toSerializable<T>(value: T): T {
   return JSON.parse(JSON.stringify(value));
@@ -34,16 +39,15 @@ function findInRequireCache(target: object): RequireRef | null {
   return null;
 }
 
-function normalizeFnSource(fn: UnifiedPluginFn) {
+function normalizeFnSource(fn: FunctionRef) {
   return Function.prototype.toString.call(fn).replace(/\s+/g, ' ');
 }
 
-function isSameFunction(candidate: unknown, target: UnifiedPluginFn) {
+function isSameFunction(candidate: unknown, target: FunctionRef) {
   return (
     typeof candidate === 'function' &&
     candidate.name === target.name &&
-    normalizeFnSource(candidate as UnifiedPluginFn) ===
-      normalizeFnSource(target)
+    normalizeFnSource(candidate) === normalizeFnSource(target)
   );
 }
 
@@ -107,6 +111,42 @@ function toRequireRef(found: RequireRef) {
     : `(${modRef})[${JSON.stringify(found.exportName)}]`;
 }
 
+function toTechStackRefs(techStacks: IDumiTechStack[]) {
+  const refs: string[] = [];
+
+  for (const ts of techStacks) {
+    const ctor = ts.constructor;
+    let ref: string | undefined;
+
+    if (ctor !== Object) {
+      // Class instance — find the constructor in the require cache
+      const found = findInRequireCache(ctor);
+      if (found) {
+        ref = `new (${toRequireRef(found)})()`;
+      }
+    } else {
+      // Plain object (defineTechStack) — find the object itself in the cache
+      const found = findInRequireCache(ts);
+      if (found) {
+        ref = toRequireRef(found);
+      }
+    }
+
+    if (ref) {
+      refs.push(ref);
+    } else {
+      const name = ts.constructor.name ? ` (${ts.constructor.name})` : '';
+
+      console.warn(
+        `[dumi] Utoopack markdown loader cannot serialize tech stack "${ts.name}"${name}. ` +
+          `Please export the tech stack class from a module.`,
+      );
+    }
+  }
+
+  return refs;
+}
+
 function toPluginTargetRef(
   target: string | UnifiedPluginFn,
   sourceFiles: string[],
@@ -158,31 +198,19 @@ export function buildLoaderContextContent(
   extraRehypePlugins: IApi['config']['extraRehypePlugins'] = [],
   sourceFiles: string[] = [],
 ): string {
-  const refs: string[] = [];
-
-  for (const ts of techStacks) {
-    const ctor = ts.constructor;
-
-    if (ctor !== Object) {
-      // Class instance — find the constructor in the require cache
-      const found = findInRequireCache(ctor);
-      if (found) {
-        refs.push(`new (${toRequireRef(found)})()`);
-      }
-    } else {
-      // Plain object (defineTechStack) — find the object itself in the cache
-      const found = findInRequireCache(ts);
-      if (found) {
-        refs.push(toRequireRef(found));
-      }
-    }
-  }
+  const refs = toTechStackRefs(techStacks);
 
   return (
     `'use strict';\n` +
     `try {\n` +
-    `  require('@umijs/utils').register.register({ implementor: require('@umijs/bundler-utils/compiled/esbuild') });\n` +
-    `} catch (_) {}\n` +
+    `  require(${JSON.stringify(
+      utilsRegisterPath,
+    )}).register.register({ implementor: require(${JSON.stringify(
+      esbuildImplementorPath,
+    )}) });\n` +
+    `} catch (e) {\n` +
+    `  console.warn('[dumi] failed to register TS require hook for utoopack loader context:', e);\n` +
+    `}\n` +
     `exports.techStacks = [${refs.join(', ')}];\n` +
     `exports.builtins = ${JSON.stringify(builtins)};\n` +
     `exports.routes = ${JSON.stringify(routes)};\n` +
