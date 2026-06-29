@@ -448,11 +448,26 @@ function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
   }
 }
 
+const fileHashCache = new Map<string, { signature: string; hash: string }>();
+
+function getCachedFileHash(file: string) {
+  const stat = fs.statSync(file, { bigint: true });
+  const signature = `${stat.mtimeNs}:${stat.size}`;
+  const cached = fileHashCache.get(file);
+
+  if (cached?.signature === signature) {
+    return cached.hash;
+  }
+
+  const hash = getContentHash(fs.readFileSync(file, 'utf-8'));
+  fileHashCache.set(file, { signature, hash });
+
+  return hash;
+}
+
 function getDepsCacheKey(deps: (typeof depsMapping)['0'] = []) {
   return JSON.stringify(
-    deps.map(
-      (file) => `${file}:${getContentHash(fs.readFileSync(file, 'utf-8'))}`,
-    ),
+    deps.map((file) => `${file}:${getCachedFileHash(file)}`),
   );
 }
 
