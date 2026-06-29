@@ -63,6 +63,34 @@ interface IDemoDependency {
   specifier: string;
 }
 
+type MdLoaderCache = {
+  getSync: (key: string, defaultValue: any) => any;
+};
+
+function isMalformedCacheError(err: unknown) {
+  return (
+    err instanceof SyntaxError ||
+    (err instanceof Error &&
+      /Unexpected end of JSON input|Unterminated string in JSON/.test(
+        err.message,
+      ))
+  );
+}
+
+export function getMdLoaderCacheSync<T>(
+  cache: MdLoaderCache,
+  key: string,
+  defaultValue: T,
+): T {
+  try {
+    return cache.getSync(key, defaultValue);
+  } catch (err) {
+    if (isMalformedCacheError(err)) return defaultValue;
+
+    throw err;
+  }
+}
+
 function getDemoSourceFiles(demos: IMdTransformerResult['meta']['demos'] = []) {
   return demos.reduce<string[]>((ret, demo) => {
     if ('resolveMap' in demo) {
@@ -539,7 +567,7 @@ export default function mdLoader(this: any, content: string) {
     baseCacheKey,
     getDepsCacheKey(depsMapping[this.resourcePath]),
   ].join(':');
-  const cacheRet = cache.getSync(cacheKey, '');
+  const cacheRet = getMdLoaderCacheSync(cache, cacheKey, '');
 
   if (cacheRet) {
     // file cache

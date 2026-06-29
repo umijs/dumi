@@ -1,6 +1,7 @@
 import type { IApi, IDumiTechStack } from '@/types';
 import esbuild from '@umijs/bundler-utils/compiled/esbuild';
 import { register } from '@umijs/utils';
+import fs from 'fs';
 import path from 'path';
 import { shouldDisabledLiveDemo } from './utils';
 
@@ -14,11 +15,37 @@ export const UTOOPACK_LOADER_CTX_KEY = '__dumiLoaderContextPath';
 
 export const LOADER_CTX_FILENAME = 'dumi-loader-ctx.cjs';
 
+const LOCAL_THEME_PLUGIN_FILES = [
+  '.dumi/theme/plugins/tech-stack.ts',
+  '.dumi/theme/plugins/tech-stack.tsx',
+  '.dumi/theme/plugins/tech-stack.js',
+  '.dumi/theme/plugins/tech-stack.jsx',
+  '.dumi/theme/plugin.ts',
+  '.dumi/theme/plugin.tsx',
+  '.dumi/theme/plugin.js',
+  '.dumi/theme/plugin.jsx',
+];
+
 type UnifiedPluginConfig = NonNullable<IApi['config']['extraRemarkPlugins']>[0];
 type UnifiedPluginFn = (...args: any[]) => any;
+type FunctionRef = { name: string };
 
 function toSerializable<T>(value: T): T {
   return JSON.parse(JSON.stringify(value));
+}
+
+export function getLoaderContextSourceFiles(cwd: string, files: string[] = []) {
+  const ret = new Set(files);
+
+  for (const file of LOCAL_THEME_PLUGIN_FILES) {
+    const absPath = path.join(cwd, file);
+
+    if (fs.existsSync(absPath)) {
+      ret.add(absPath);
+    }
+  }
+
+  return [...ret];
 }
 
 type RequireRef = { modulePath: string; exportName: string };
@@ -39,21 +66,41 @@ function findInRequireCache(target: object): RequireRef | null {
   return null;
 }
 
-function normalizeFnSource(fn: UnifiedPluginFn) {
+function normalizeFnSource(fn: FunctionRef) {
   return Function.prototype.toString.call(fn).replace(/\s+/g, ' ');
 }
 
-function isSameFunction(candidate: unknown, target: UnifiedPluginFn) {
+function isSameFunction(candidate: unknown, target: FunctionRef) {
   return (
     typeof candidate === 'function' &&
     candidate.name === target.name &&
-    normalizeFnSource(candidate as UnifiedPluginFn) ===
-      normalizeFnSource(target)
+    normalizeFnSource(candidate) === normalizeFnSource(target)
   );
 }
 
 function findInModuleExports(
   target: UnifiedPluginFn,
+  mod: NodeJS.Module,
+): RequireRef | null {
+  const exp = mod.exports;
+  if (!exp) return null;
+  if (isSameFunction(exp, target)) {
+    return { modulePath: mod.filename, exportName: 'module.exports' };
+  }
+  if (isSameFunction(exp?.default, target)) {
+    return { modulePath: mod.filename, exportName: 'default' };
+  }
+  for (const [k, v] of Object.entries(exp as object)) {
+    if (isSameFunction(v, target)) {
+      return { modulePath: mod.filename, exportName: k };
+    }
+  }
+
+  return null;
+}
+
+function findConstructorInModuleExports(
+  target: FunctionRef,
   mod: NodeJS.Module,
 ): RequireRef | null {
   const exp = mod.exports;
@@ -88,6 +135,37 @@ function findInSourceFiles(
         if (!mod?.exports) continue;
 
         const found = findInModuleExports(target, mod);
+        if (found) return found;
+      } catch {}
+    }
+
+    return null;
+  } finally {
+    for (const file of register.getFiles()) {
+      delete require.cache[file];
+    }
+    for (const file of sourceFiles) {
+      delete require.cache[file];
+    }
+    register.restore();
+  }
+}
+
+function findConstructorInSourceFiles(
+  target: FunctionRef,
+  sourceFiles: string[],
+): RequireRef | null {
+  register.register({ implementor: esbuild });
+  register.clearFiles();
+
+  try {
+    for (const file of sourceFiles) {
+      try {
+        require(file);
+        const mod = require.cache[file];
+        if (!mod?.exports) continue;
+
+        const found = findConstructorInModuleExports(target, mod);
         if (found) return found;
       } catch {}
     }
@@ -231,7 +309,9 @@ function toTechStackRefs(
 
     if (ctor !== Object) {
       // Class instance — find the constructor in the require cache
-      const found = findInRequireCache(ctor);
+      const found =
+        findInRequireCache(ctor) ??
+        findConstructorInSourceFiles(ctor, sourceFiles);
       if (found) {
         ref = `new (${toRequireRef(found)})()`;
       }
