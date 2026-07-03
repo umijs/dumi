@@ -38,21 +38,6 @@ const all = [
     'npm registry is not https://registry.npmjs.org/',
   );
 
-  // check npm ownership
-  logger.event('check npm ownership');
-  const whoami = (await $`npm whoami`).stdout.trim();
-  await Promise.all(
-    ['dumi', 'create-dumi'].map(async (pkg) => {
-      const owners = (await $`npm owner ls ${pkg}`).stdout
-        .trim()
-        .split('\n')
-        .map((line) => {
-          return line.split(' ')[0];
-        });
-      assert(owners.includes(whoami), `${pkg} is not owned by ${whoami}`);
-    }),
-  );
-
   // select pkgs
   const pkgs: string[] = [];
   const vers: Record<string, string> = {};
@@ -123,41 +108,7 @@ const all = [
   logger.event('git push');
   await $`git push origin ${branch} --tags`;
 
-  // npm publish
-  logger.event('pnpm publish');
-  $.verbose = false;
-
-  // check 2fa config
-  let otpArg: string[] = [];
-  if (
-    (await $`npm profile get "two-factor auth"`).toString().includes('writes')
-  ) {
-    let code = '';
-    do {
-      // get otp from user
-      code = await question('This operation requires a one-time password: ');
-      // generate arg for zx command
-      // why use array? https://github.com/google/zx/blob/main/docs/quotes.md
-      otpArg = ['--otp', code];
-    } while (code.length !== 6);
-  }
-
-  await Promise.all(
-    pkgs.map(async (pkg) => {
-      await $`cd ${pkg} && pnpm publish --no-git-checks --tag ${tag} ${otpArg}`;
-      logger.info(`+ ${pkg}@${vers[pkg]}`);
-    }),
+  logger.ready(
+    `release commit pushed, GitHub Actions will publish with tag ${tag}`,
   );
-
-  // sync tnpm
-  logger.event('sync tnpm');
-  $.verbose = false;
-  await Promise.all(
-    pkgs.map(async (pkg) => {
-      const { name } = require(path.join(pkg, 'package.json'));
-      logger.info(`sync ${name}`);
-      await $`tnpm sync ${name}`;
-    }),
-  );
-  $.verbose = true;
 })();

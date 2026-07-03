@@ -6,7 +6,8 @@
   "bugs": "https://github.com/umijs/dumi/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/umijs/dumi"
+    "url": "git+https://github.com/umijs/dumi.git",
+    "directory": "assets-types"
   },
   "license": "MIT",
   "types": "typings/index.d.ts",
