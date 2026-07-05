@@ -8,6 +8,11 @@
     "dumi",
     "theme"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/umijs/dumi.git",
+    "directory": "suites/father-plugin"
+  },
   "license": "MIT",
   "main": "dist/index.js",
   "files": [

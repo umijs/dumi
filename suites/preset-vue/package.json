@@ -8,6 +8,11 @@
     "preset",
     "vue"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/umijs/dumi.git",
+    "directory": "suites/preset-vue"
+  },
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
