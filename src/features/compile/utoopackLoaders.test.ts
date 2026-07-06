@@ -99,6 +99,22 @@ test('utoopack markdown rules use current config memo', async () => {
   });
 });
 
+test('utoopack treats ?raw imports as source strings', async () => {
+  registerTsResolveExtension();
+
+  const { getUtoopackRules } = await import('./utoopackLoaders');
+  const rules = getUtoopackRules(createApi());
+  const wildcardRules = rules['**/*'] as any[];
+  const rawRule = wildcardRules.find(
+    (rule) => String(rule.condition?.query) === '/^\\?raw$/',
+  );
+
+  expect(rawRule).toMatchObject({
+    loaders: [require.resolve('raw-loader')],
+    as: '*.js',
+  });
+});
+
 test('utoopack loader context serializes extra unified plugins', async () => {
   const plugins = require('./fixtures/unifiedPlugins.cjs');
   const { buildLoaderContextContent } = await import('./utoopackLoaders');
