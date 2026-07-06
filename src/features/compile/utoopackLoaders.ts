@@ -281,6 +281,12 @@ export const getUtoopackRules = (
         ],
         as: '*.js',
       },
+      // handle untouched raw content for user imports like `import source from './file?raw'`
+      {
+        condition: { query: /^\?raw$/ },
+        loaders: [require.resolve('raw-loader')],
+        as: '*.js',
+      },
       // handle external demo component files (?techStack=xxx)
       // techStacks are NOT serializable; pass loaderContextPath and hydrate in the loader
       {
