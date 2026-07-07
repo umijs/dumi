@@ -91,16 +91,32 @@ export function getMdLoaderCacheSync<T>(
   }
 }
 
-function getDemoSourceFiles(demos: IMdTransformerResult['meta']['demos'] = []) {
-  return demos.reduce<string[]>((ret, demo) => {
-    if ('resolveMap' in demo) {
-      ret.push(
-        ...Object.values(demo.resolveMap).filter((p) => path.isAbsolute(p)),
-      );
-    }
+function getDemoSidecarFiles(file: string) {
+  const { dir, name } = path.parse(file);
+  const mdFile = path.join(dir, `${name}.md`);
 
-    return ret;
-  }, []);
+  return fs.existsSync(mdFile) ? [mdFile] : [];
+}
+
+export function getDemoSourceFiles(
+  demos: IMdTransformerResult['meta']['demos'] = [],
+) {
+  const files = new Set<string>();
+
+  demos.forEach((demo) => {
+    if ('resolveMap' in demo) {
+      Object.values(demo.resolveMap)
+        .filter((p) => path.isAbsolute(p))
+        .forEach((file) => {
+          files.add(file);
+          getDemoSidecarFiles(file).forEach((sidecarFile) =>
+            files.add(sidecarFile),
+          );
+        });
+    }
+  });
+
+  return Array.from(files);
 }
 
 function isRelativePath(path: string) {
