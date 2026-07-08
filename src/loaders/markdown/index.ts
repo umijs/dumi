@@ -22,6 +22,7 @@ interface IMdLoaderDefaultModeOptions
     atomId: string,
     meta: IMdTransformerResult['meta']['frontmatter'],
   ) => void;
+  demoAssetsFile?: string;
   disableLiveDemo: boolean;
 }
 
@@ -151,6 +152,18 @@ function emitDefault(
   // apply demos resolve hook
   if (demos && opts.onResolveDemos) {
     opts.onResolveDemos(demos);
+  }
+
+  if (demos && opts.demoAssetsFile) {
+    const assets = demos.reduce<string[]>((acc, demo) => {
+      if ('asset' in demo) acc.push(JSON.stringify(demo.asset));
+      return acc;
+    }, []);
+
+    if (assets.length) {
+      fs.mkdirSync(path.dirname(opts.demoAssetsFile), { recursive: true });
+      fs.appendFileSync(opts.demoAssetsFile, `${assets.join('\n')}\n`);
+    }
   }
 
   // apply atom meta resolve hook
@@ -518,6 +531,7 @@ export default function mdLoader(this: any, content: string) {
       routes?: IMdLoaderOptions['routes'];
       extraRemarkPlugins?: IMdLoaderOptions['extraRemarkPlugins'];
       extraRehypePlugins?: IMdLoaderOptions['extraRehypePlugins'];
+      demoAssetsFile?: string;
     };
     if (!opts.techStacks?.length) {
       (opts as any).techStacks = ctx.techStacks;
@@ -538,6 +552,9 @@ export default function mdLoader(this: any, content: string) {
     if (ctx.extraRehypePlugins && !(opts as any).extraRehypePlugins?.length) {
       (opts as any).extraRehypePlugins = ctx.extraRehypePlugins;
     }
+    if (ctx.demoAssetsFile && !(opts as any).demoAssetsFile) {
+      (opts as any).demoAssetsFile = ctx.demoAssetsFile;
+    }
   }
 
   const cb = this.async();
@@ -546,7 +563,9 @@ export default function mdLoader(this: any, content: string) {
   // because the onResolveDemos and onResolveAtomMeta hook does not be fired when cache hit
   if (
     process.env.NODE_ENV === 'production' &&
-    ['onResolveDemos', 'onResolveAtomMeta'].some((k) => k in opts)
+    ['onResolveDemos', 'onResolveAtomMeta', 'demoAssetsFile'].some(
+      (k) => k in opts,
+    )
   ) {
     this.cacheable(false);
   }

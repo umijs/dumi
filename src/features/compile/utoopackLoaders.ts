@@ -13,6 +13,7 @@ const esbuildImplementorPath = require.resolve(
 export const UTOOPACK_LOADER_CTX_KEY = '__dumiLoaderContextPath';
 
 export const LOADER_CTX_FILENAME = 'dumi-loader-ctx.cjs';
+export const UTOOPACK_DEMO_ASSETS_FILENAME = 'dumi-utoopack-demo-assets.jsonl';
 
 type UnifiedPluginConfig = NonNullable<IApi['config']['extraRemarkPlugins']>[0];
 type UnifiedPluginFn = (...args: any[]) => any;
@@ -197,6 +198,7 @@ export function buildLoaderContextContent(
   extraRemarkPlugins: IApi['config']['extraRemarkPlugins'] = [],
   extraRehypePlugins: IApi['config']['extraRehypePlugins'] = [],
   sourceFiles: string[] = [],
+  demoAssetsFile?: string,
 ): string {
   const refs = toTechStackRefs(techStacks);
 
@@ -214,6 +216,7 @@ export function buildLoaderContextContent(
     `exports.techStacks = [${refs.join(', ')}];\n` +
     `exports.builtins = ${JSON.stringify(builtins)};\n` +
     `exports.routes = ${JSON.stringify(routes)};\n` +
+    `exports.demoAssetsFile = ${JSON.stringify(demoAssetsFile)};\n` +
     `exports.extraRemarkPlugins = ${toPluginRefs(
       extraRemarkPlugins,
       sourceFiles,

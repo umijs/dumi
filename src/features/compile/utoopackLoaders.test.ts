@@ -124,6 +124,8 @@ test('utoopack loader context serializes extra unified plugins', async () => {
     {},
     [plugins.remarkPluginForTest, ['remark-string-plugin', { value: 1 }]],
     [[plugins.rehypePluginForTest, { enabled: true }], 'rehype-string-plugin'],
+    [],
+    '/tmp/dumi-app/.dumi/tmp/dumi-utoopack-demo-assets.jsonl',
   );
   const exports: any = {};
 
@@ -137,6 +139,9 @@ test('utoopack loader context serializes extra unified plugins', async () => {
     [plugins.rehypePluginForTest, { enabled: true }],
     'rehype-string-plugin',
   ]);
+  expect(exports.demoAssetsFile).toBe(
+    '/tmp/dumi-app/.dumi/tmp/dumi-utoopack-demo-assets.jsonl',
+  );
 });
 
 test('utoopack loader context registers TS hook without project root phantom deps', async () => {
