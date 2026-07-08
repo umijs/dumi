@@ -11,6 +11,7 @@ import { getLoadHook } from './makoHooks';
 import { shouldDisabledLiveDemo } from './utils';
 import {
   LOADER_CTX_FILENAME,
+  UTOOPACK_DEMO_ASSETS_FILENAME,
   buildLoaderContextContent,
   getUtoopackRules,
 } from './utoopackLoaders';
@@ -113,6 +114,12 @@ export default (api: IApi) => {
   api.onGenerateFiles({
     fn() {
       if (api.config.utoopack) {
+        const demoAssetsFile = path.join(
+          api.paths.absTmpPath,
+          UTOOPACK_DEMO_ASSETS_FILENAME,
+        );
+
+        fs.rmSync(demoAssetsFile, { force: true });
         api.writeTmpFile({
           noPluginDir: true,
           path: LOADER_CTX_FILENAME,
@@ -123,6 +130,7 @@ export default (api: IApi) => {
             api.config.extraRemarkPlugins,
             api.config.extraRehypePlugins,
             (api as any).service.configManager?.files ?? [],
+            demoAssetsFile,
           ),
         });
       }
