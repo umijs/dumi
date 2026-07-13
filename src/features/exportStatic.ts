@@ -70,9 +70,20 @@ export default (api: IApi) => {
         ],
         'id',
       );
+      const localeSuffixes = api.config.locales
+        .map((locale) => ('suffix' in locale ? locale.suffix : ''))
+        .filter(Boolean);
+      const exampleIds = lodash.uniq(
+        examples.flatMap(({ id }) => [
+          id,
+          ...localeSuffixes.map((suffix) =>
+            id.endsWith(suffix) ? id : `${id}${suffix}`,
+          ),
+        ]),
+      );
 
       api.appData.exportHtmlData.push(
-        ...examples.map(({ id }) => ({
+        ...exampleIds.map((id) => ({
           route: { path: `/${routePrefix}/${id}` },
           file: `${routePrefix}/${id}/index.html`,
           prerender: false,
