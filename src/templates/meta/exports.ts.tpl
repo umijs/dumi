@@ -167,19 +167,22 @@ export function useDemo(
   version?: string,
   routeId?: string,
 ): IDemoData | undefined {
+  const mappedDemoId = loader
+    ? undefined
+    : getDemoIdCandidates(id).find((candidate) => demoIdMap[candidate]);
   const cacheKey = version
     ? `${id}:${version}`
     : routeId
       ? `${id}:route=${routeId}`
       : id;
-  const getter = loader ?? demoIdMap[id];
+  const getter = loader ?? (mappedDemoId ? demoIdMap[mappedDemoId] : undefined);
 
   if (!demosCache.get(cacheKey)) {
     demosCache.set(
       cacheKey,
       getter
         ? getter().then(({ demos }) => {
-            const demo = demos[id];
+            const demo = demos[id] ?? (mappedDemoId && demos[mappedDemoId]);
             if (!demo) return undefined;
 
             // expand context for omit ext
