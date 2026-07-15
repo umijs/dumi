@@ -1,4 +1,5 @@
 import type { IApi, IDumiTechStack } from '@/types';
+import { resolveDumiCacheDir } from '@/utils';
 import esbuild from '@umijs/bundler-utils/compiled/esbuild';
 import { register } from '@umijs/utils';
 import path from 'path';
@@ -14,6 +15,12 @@ export const UTOOPACK_LOADER_CTX_KEY = '__dumiLoaderContextPath';
 
 export const LOADER_CTX_FILENAME = 'dumi-loader-ctx.cjs';
 export const UTOOPACK_DEMO_ASSETS_FILENAME = 'dumi-utoopack-demo-assets.jsonl';
+export const MARKDOWN_LOADER_CACHE_EPOCH = `${process.pid}-${Date.now()}`;
+export const UTOOPACK_MD_CACHE_NAMESPACE = 'md-loader-sessions';
+
+export function getUtoopackMdCacheNamespace(epoch: string) {
+  return path.join(UTOOPACK_MD_CACHE_NAMESPACE, epoch);
+}
 
 type UnifiedPluginConfig = NonNullable<IApi['config']['extraRemarkPlugins']>[0];
 type UnifiedPluginFn = (...args: any[]) => any;
@@ -241,6 +248,11 @@ export const getUtoopackRules = (
 
   const cfgResolve = config.resolve ?? {};
   const serializableBaseOpts = toSerializable({
+    cacheDirectory: resolveDumiCacheDir(
+      api.cwd,
+      api.userConfig.cacheDirectoryPath || config.cacheDirectoryPath,
+    ),
+    cacheEpoch: MARKDOWN_LOADER_CACHE_EPOCH,
     cwd: api.cwd,
     alias: config.alias || {},
     resolve: {

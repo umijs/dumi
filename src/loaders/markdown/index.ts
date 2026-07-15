@@ -1,10 +1,14 @@
-import { UTOOPACK_LOADER_CTX_KEY } from '@/features/compile/utoopackLoaders';
+import {
+  UTOOPACK_LOADER_CTX_KEY,
+  getUtoopackMdCacheNamespace,
+} from '@/features/compile/utoopackLoaders';
 import { isTabRouteFile } from '@/features/tabs';
 import type { IThemeLoadResult } from '@/features/theme/loader';
 import { generateMetaChunkName, getCache, getContentHash } from '@/utils';
 import fs from 'fs';
 import path from 'path';
 import { Mustache, lodash, winPath } from 'umi/plugin-utils';
+import { getOrCreateWithFileLock } from './sharedCache';
 import transform, {
   type IMdTransformerOptions,
   type IMdTransformerResult,
@@ -14,6 +18,8 @@ import { CONTENT_TEXTS_OBJ_NAME } from './transformer/rehypeText';
 interface IMdLoaderDefaultModeOptions
   extends Omit<IMdTransformerOptions, 'fileAbsPath'> {
   mode?: 'markdown';
+  cacheDirectory?: string;
+  cacheEpoch?: string;
   builtins: IThemeLoadResult['builtins'];
   onResolveDemos?: (
     demos: NonNullable<IMdTransformerResult['meta']['demos']>,
@@ -68,6 +74,93 @@ type MdLoaderCache = {
   getSync: (key: string, defaultValue: any) => any;
 };
 
+type MdTransformCacheRecord = {
+  version: 2;
+  deps: string[];
+  depsKey: string;
+  result: IMdTransformerResult;
+};
+
+type MdTransformDepsHint = {
+  version: 1;
+  deps: string[];
+};
+
+type ReadDependency = (file: string) => Promise<string>;
+
+const MD_LOADER_RUNTIME_OPTION_KEYS = [
+  'mode',
+  'builtins',
+  'onResolveDemos',
+  'onResolveAtomMeta',
+  'demoAssetsFile',
+  'cacheDirectory',
+  'cacheEpoch',
+] as const;
+
+export function getMdTransformCacheKeys({
+  resourcePath,
+  content,
+  useUtoopackDemoHMR,
+  opts,
+}: {
+  resourcePath: string;
+  content: string;
+  useUtoopackDemoHMR: boolean;
+  opts: IMdLoaderOptions;
+}) {
+  const depsHintKey = [
+    resourcePath,
+    useUtoopackDemoHMR,
+    JSON.stringify(lodash.omit(opts, MD_LOADER_RUNTIME_OPTION_KEYS)),
+  ].join(':');
+
+  return {
+    depsHintKey,
+    baseCacheKey: [depsHintKey, getContentHash(content)].join(':'),
+  };
+}
+
+function getStatRevision(stat: fs.BigIntStats) {
+  return [stat.dev, stat.ino, stat.mode, stat.size, stat.mtimeNs, stat.ctimeNs]
+    .map(String)
+    .join(':');
+}
+
+async function getFileRevision(file: string) {
+  return getStatRevision(await fs.promises.stat(file, { bigint: true }));
+}
+
+function isMissingFsError(err: any) {
+  return err?.code === 'ENOENT' || err?.code === 'ENOTDIR';
+}
+
+async function getMissingParentRevision(file: string) {
+  let current = file;
+
+  while (true) {
+    try {
+      const revision = getStatRevision(
+        await fs.promises.stat(current, { bigint: true }),
+      );
+
+      // The loader filesystem reported a missing target which appeared before
+      // the physical snapshot completed. Keep that race distinct from a
+      // genuinely missing path so it cannot validate an older cache record.
+      return `${path.normalize(current)}:${
+        current === file ? '<appeared>:' : ''
+      }${revision}`;
+    } catch (err: any) {
+      if (!isMissingFsError(err)) throw err;
+
+      const parent = path.dirname(current);
+      if (parent === current) return `${current}:<missing>`;
+
+      current = parent;
+    }
+  }
+}
+
 function isMalformedCacheError(err: unknown) {
   return (
     err instanceof SyntaxError ||
@@ -92,15 +185,15 @@ export function getMdLoaderCacheSync<T>(
   }
 }
 
-function getDemoSidecarFiles(file: string) {
+function getDemoSidecarFile(file: string) {
   const { dir, name } = path.parse(file);
-  const mdFile = path.join(dir, `${name}.md`);
 
-  return fs.existsSync(mdFile) ? [mdFile] : [];
+  return path.join(dir, `${name}.md`);
 }
 
-export function getDemoSourceFiles(
+function collectDemoSourceFiles(
   demos: IMdTransformerResult['meta']['demos'] = [],
+  includeMissingSidecars = false,
 ) {
   const files = new Set<string>();
 
@@ -110,14 +203,50 @@ export function getDemoSourceFiles(
         .filter((p) => path.isAbsolute(p))
         .forEach((file) => {
           files.add(file);
-          getDemoSidecarFiles(file).forEach((sidecarFile) =>
-            files.add(sidecarFile),
-          );
+          const sidecarFile = getDemoSidecarFile(file);
+
+          if (includeMissingSidecars || fs.existsSync(sidecarFile)) {
+            files.add(sidecarFile);
+          }
         });
     }
   });
 
   return Array.from(files);
+}
+
+export function getDemoSourceFiles(
+  demos: IMdTransformerResult['meta']['demos'] = [],
+) {
+  return collectDemoSourceFiles(demos);
+}
+
+function getDemoCacheFiles(demos: IMdTransformerResult['meta']['demos'] = []) {
+  return collectDemoSourceFiles(demos, true);
+}
+
+export function addDemoFileDependency(
+  loaderContext: {
+    addDependency: (file: string) => void;
+    addMissingDependency?: (file: string) => void;
+  },
+  opts: IMdLoaderOptions,
+  file: string,
+) {
+  // @utoo/pack currently forwards fileDependencies, but not
+  // missingDependencies, to its native watcher. Register missing sidecars as
+  // regular file dependencies there so creating one still invalidates the
+  // markdown transform.
+  if (
+    fs.existsSync(file) ||
+    UTOOPACK_LOADER_CTX_KEY in (opts as IMdLoaderOptions & Record<string, any>)
+  ) {
+    loaderContext.addDependency(file);
+  } else if (loaderContext.addMissingDependency) {
+    loaderContext.addMissingDependency(file);
+  } else {
+    loaderContext.addDependency(file);
+  }
 }
 
 function isRelativePath(path: string) {
@@ -485,7 +614,9 @@ function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
   // demo-index only needs demo ids and lazy getters. Keep demo source files out
   // of the global meta dependency graph so JSX edits can stay local.
   if (opts.mode !== 'demo-index') {
-    getDemoSourceFiles(demos).forEach((file) => this.addDependency(file));
+    getDemoCacheFiles(demos).forEach((file) =>
+      addDemoFileDependency(this, opts, file),
+    );
   }
 
   // to avoid compile watch=parent virtual module
@@ -505,16 +636,152 @@ function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
   }
 }
 
-function getDepsCacheKey(deps: (typeof depsMapping)['0'] = []) {
+function normalizeDeps(deps: string[] = []) {
+  return Array.from(new Set(deps)).sort();
+}
+
+const readDependencyFromFs: ReadDependency = (file) =>
+  fs.promises.readFile(file, 'utf-8');
+
+export async function getDepsCacheKey(
+  deps: string[] = [],
+  readDependency: ReadDependency = readDependencyFromFs,
+) {
   return JSON.stringify(
-    deps.map(
-      (file) => `${file}:${getContentHash(fs.readFileSync(file, 'utf-8'))}`,
+    await Promise.all(
+      normalizeDeps(deps).map(async (file) => {
+        try {
+          const content = await readDependency(file);
+
+          return `${file}:${getContentHash(content)}:${await getFileRevision(
+            file,
+          )}`;
+        } catch (err: any) {
+          if (isMissingFsError(err)) {
+            return `${file}:<missing>:${await getMissingParentRevision(file)}`;
+          }
+
+          throw err;
+        }
+      }),
     ),
   );
 }
 
-const deferrer: Record<string, Promise<IMdTransformerResult>> = {};
-const depsMapping: Record<string, string[]> = {};
+function getMdLoaderCacheRecord(cache: MdLoaderCache, key: string) {
+  const record = getMdLoaderCacheSync<MdTransformCacheRecord | undefined>(
+    cache,
+    key,
+    undefined,
+  );
+
+  return record?.version === 2 ? record : undefined;
+}
+
+async function getValidMdLoaderCacheRecord(
+  cache: MdLoaderCache,
+  key: string,
+  readDependency: ReadDependency = readDependencyFromFs,
+) {
+  const record = getMdLoaderCacheRecord(cache, key);
+
+  if (!record) return undefined;
+
+  if (record.depsKey === (await getDepsCacheKey(record.deps, readDependency))) {
+    return record;
+  }
+
+  return undefined;
+}
+
+export async function getMdLoaderCacheResult(
+  cache: MdLoaderCache,
+  key: string,
+  readDependency: ReadDependency = readDependencyFromFs,
+): Promise<IMdTransformerResult | undefined> {
+  return (await getValidMdLoaderCacheRecord(cache, key, readDependency))
+    ?.result;
+}
+
+export async function createStableTransform({
+  initialDeps,
+  createValue,
+  getDeps,
+  readDependency = readDependencyFromFs,
+  onDepsDiscovered,
+  maxAttempts = 3,
+}: {
+  initialDeps?: string[];
+  createValue: () => Promise<IMdTransformerResult>;
+  getDeps: (result: IMdTransformerResult) => string[];
+  readDependency?: ReadDependency;
+  onDepsDiscovered?: (deps: string[]) => void;
+  maxAttempts?: number;
+}): Promise<MdTransformCacheRecord> {
+  let expectedDeps = initialDeps && normalizeDeps(initialDeps);
+
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    const beforeKey = expectedDeps
+      ? await getDepsCacheKey(expectedDeps, readDependency)
+      : undefined;
+    const result = await createValue();
+    const deps = normalizeDeps(getDeps(result));
+    const depsKey = await getDepsCacheKey(deps, readDependency);
+
+    onDepsDiscovered?.(deps);
+
+    if (
+      expectedDeps &&
+      JSON.stringify(expectedDeps) === JSON.stringify(deps) &&
+      beforeKey === depsKey
+    ) {
+      return { version: 2, deps, depsKey, result };
+    }
+
+    expectedDeps = deps;
+  }
+
+  throw Object.assign(
+    new Error('Markdown dependencies changed repeatedly while transforming'),
+    { code: 'EDEPSUNSTABLE' },
+  );
+}
+
+export function createDependencyReader(
+  loaderContext: any,
+  useUtoopack: boolean,
+  mode?: IMdLoaderOptions['mode'],
+) {
+  if (useUtoopack && mode !== 'demo-index' && loaderContext.fs?.readFile) {
+    return (file: string) =>
+      new Promise<string>((resolve, reject) => {
+        loaderContext.fs.readFile(
+          file,
+          (err: NodeJS.ErrnoException, data: any) => {
+            if (err) reject(err);
+            else
+              resolve(
+                Buffer.isBuffer(data) ? data.toString('utf-8') : String(data),
+              );
+          },
+        );
+      });
+  }
+
+  return readDependencyFromFs;
+}
+
+function getMdTransformDepsHint(cache: MdLoaderCache, key: string) {
+  const hint = getMdLoaderCacheSync<MdTransformDepsHint | undefined>(
+    cache,
+    key,
+    undefined,
+  );
+
+  return hint?.version === 1 ? normalizeDeps(hint.deps) : undefined;
+}
+
+const deferrer: Record<string, Promise<MdTransformCacheRecord>> = {};
 
 export default function mdLoader(this: any, content: string) {
   let opts: IMdLoaderOptions = this.getOptions();
@@ -570,62 +837,140 @@ export default function mdLoader(this: any, content: string) {
     this.cacheable(false);
   }
 
-  const cache = getCache('md-loader');
-  // format: {path:contenthash:loaderOpts}
-  const baseCacheKey = [
-    this.resourcePath,
-    getContentHash(content),
+  const cacheEpoch = opts.cacheEpoch;
+  const cacheNamespace =
+    useUtoopackDemoHMR && cacheEpoch
+      ? getUtoopackMdCacheNamespace(cacheEpoch)
+      : 'md-loader';
+  const cache = getCache(cacheNamespace, opts.cacheDirectory);
+  const depsHintCache = getCache('md-loader-deps', opts.cacheDirectory);
+  const readDependency = createDependencyReader(
+    this,
     useUtoopackDemoHMR,
-    JSON.stringify(lodash.omit(opts, ['mode', 'builtins', 'onResolveDemos'])),
-  ].join(':');
-  // format: {baseCacheKey:{deps:contenthash}[]}
-  const cacheKey = [
-    baseCacheKey,
-    getDepsCacheKey(depsMapping[this.resourcePath]),
-  ].join(':');
-  const cacheRet = getMdLoaderCacheSync(cache, cacheKey, '');
-
-  if (cacheRet) {
-    // file cache
-    cb(null, emit.call(this, opts, cacheRet));
-    return;
-  } else if (cacheKey in deferrer) {
-    // deferrer cache
-    deferrer[cacheKey]
-      .then((res) => {
-        cb(null, emit.call(this, opts, res));
-      })
-      .catch(cb);
-    return;
-  }
-
-  // share deferrer for same cache key
-  deferrer[cacheKey] = transform(content, {
-    ...(lodash.omit(opts, ['mode', 'builtins', 'onResolveDemos']) as Omit<
-      IMdLoaderOptions,
-      'mode' | 'builtins' | 'onResolveDemos'
-    >),
-    fileAbsPath: winPath(this.resourcePath),
+    opts.mode,
+  );
+  // Dependency hints intentionally omit markdown content so a markdown edit
+  // can reuse the previously discovered dependency set. The stable transform
+  // loop verifies and refreshes that set before publishing a result.
+  const { baseCacheKey, depsHintKey } = getMdTransformCacheKeys({
+    resourcePath: this.resourcePath,
+    content,
     useUtoopackDemoHMR,
+    opts,
   });
 
-  deferrer[cacheKey]
-    .then((ret) => {
-      // update deps mapping
-      depsMapping[this.resourcePath] = ret.meta.embeds!.concat(
-        getDemoSourceFiles(ret.meta.demos),
-      );
+  const createTransform = async () => {
+    return transform(content, {
+      ...(lodash.omit(opts, [
+        'mode',
+        'builtins',
+        'onResolveDemos',
+        'cacheDirectory',
+        'cacheEpoch',
+      ]) as Omit<
+        IMdLoaderOptions,
+        'mode' | 'builtins' | 'onResolveDemos' | 'cacheDirectory' | 'cacheEpoch'
+      >),
+      fileAbsPath: winPath(this.resourcePath),
+      useUtoopackDemoHMR,
+    });
+  };
+  const getTransformDeps = (ret: IMdTransformerResult) =>
+    normalizeDeps(ret.meta.embeds!.concat(getDemoCacheFiles(ret.meta.demos)));
+  const saveDepsHint = (deps: string[]) => {
+    depsHintCache.setSync(depsHintKey, {
+      version: 1,
+      deps: normalizeDeps(deps),
+    } satisfies MdTransformDepsHint);
+  };
+  const cacheWithPath = cache as typeof cache & {
+    path?: (key: string) => string;
+  };
 
-      // re-generate cache key with latest embeds & source data
-      const finalCacheKey = [
-        baseCacheKey,
-        getDepsCacheKey(depsMapping[this.resourcePath]),
-      ].join(':');
+  const getTransform = async () => {
+    const cached = await getValidMdLoaderCacheRecord(
+      cache,
+      baseCacheKey,
+      readDependency,
+    );
 
-      // save cache with final cache key
-      cache.setSync(finalCacheKey, ret);
-      cb(null, emit.call(this, opts, ret));
-      delete deferrer[cacheKey];
-    })
+    if (cached) return cached;
+
+    const initialDeps =
+      getMdTransformDepsHint(depsHintCache, depsHintKey) ??
+      getMdLoaderCacheRecord(cache, baseCacheKey)?.deps;
+    const depsFingerprint = initialDeps
+      ? await getDepsCacheKey(initialDeps, readDependency)
+      : '<discover>';
+    const deferrerKey = [cacheNamespace, baseCacheKey, depsFingerprint].join(
+      ':',
+    );
+
+    if (deferrerKey in deferrer) return deferrer[deferrerKey];
+
+    const createRecord = async () => {
+      if (useUtoopackDemoHMR) {
+        return createStableTransform({
+          initialDeps,
+          createValue: createTransform,
+          getDeps: getTransformDeps,
+          readDependency,
+          onDepsDiscovered: saveDepsHint,
+        });
+      }
+
+      const result = await createTransform();
+      const deps = getTransformDeps(result);
+      const record: MdTransformCacheRecord = {
+        version: 2,
+        deps,
+        depsKey: await getDepsCacheKey(deps),
+        result,
+      };
+
+      saveDepsHint(deps);
+      return record;
+    };
+    const saveRecord = (record: MdTransformCacheRecord) => {
+      cache.setSync(baseCacheKey, record);
+      saveDepsHint(record.deps);
+    };
+
+    // Utoopack runs loaders in isolated workers. Keep the file lock scoped to
+    // one dev session; other builders continue to use process-local sharing.
+    const pending =
+      useUtoopackDemoHMR && cacheWithPath.path
+        ? getOrCreateWithFileLock({
+            lockPath: `${cacheWithPath.path(`transform:${baseCacheKey}`)}.lock`,
+            getValue: () =>
+              getValidMdLoaderCacheRecord(cache, baseCacheKey, readDependency),
+            createValue: createRecord,
+            setValue: saveRecord,
+          })
+        : (async () => {
+            const current = await getValidMdLoaderCacheRecord(
+              cache,
+              baseCacheKey,
+              readDependency,
+            );
+
+            if (current) return current;
+
+            const created = await createRecord();
+            saveRecord(created);
+            return created;
+          })();
+
+    deferrer[deferrerKey] = pending;
+
+    try {
+      return await pending;
+    } finally {
+      if (deferrer[deferrerKey] === pending) delete deferrer[deferrerKey];
+    }
+  };
+
+  getTransform()
+    .then((record) => cb(null, emit.call(this, opts, record.result)))
     .catch(cb);
 }

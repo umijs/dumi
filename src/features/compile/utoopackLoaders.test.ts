@@ -1,4 +1,5 @@
 import Module from 'module';
+import path from 'path';
 import { vi } from 'vitest';
 
 function registerTsResolveExtension() {
@@ -30,10 +31,10 @@ test('utoopack preserves external demo source language for parsing', async () =>
   const rules = getUtoopackRules(createApi());
   const wildcardRules = rules['**/*'] as any[];
 
-  const findDemoRuleByPath = (path: string) =>
+  const findDemoRuleByPath = (filePattern: string) =>
     wildcardRules.find((rule) =>
       rule.condition?.all?.some(
-        (condition: any) => String(condition.path) === path,
+        (condition: any) => String(condition.path) === filePattern,
       ),
     );
 
@@ -65,10 +66,15 @@ test('utoopack preserves external demo source language for parsing', async () =>
 test('utoopack markdown rules use current config memo', async () => {
   registerTsResolveExtension();
 
-  const { getUtoopackRules } = await import('./utoopackLoaders');
+  const {
+    MARKDOWN_LOADER_CACHE_EPOCH,
+    getUtoopackMdCacheNamespace,
+    getUtoopackRules,
+  } = await import('./utoopackLoaders');
   const api = createApi();
   const rules = getUtoopackRules(api, {
     ...api.config,
+    cacheDirectoryPath: '../shared-cache',
     alias: {
       antd: '/tmp/dumi-app/components',
     },
@@ -97,6 +103,22 @@ test('utoopack markdown rules use current config memo', async () => {
     codeBlockMode: 'passive',
     forceKebabCaseRouting: false,
   });
+  expect(MARKDOWN_LOADER_CACHE_EPOCH).toEqual(expect.any(String));
+  expect(MARKDOWN_LOADER_CACHE_EPOCH).not.toHaveLength(0);
+  expect(defaultMdOptions.cacheEpoch).toBe(MARKDOWN_LOADER_CACHE_EPOCH);
+  expect(defaultMdOptions.cacheDirectory).toBe(
+    path.resolve(api.cwd, '../shared-cache', 'dumi'),
+  );
+  expect(
+    mdRules.every(
+      (rule) =>
+        rule.loaders[0].options.cacheDirectory ===
+        defaultMdOptions.cacheDirectory,
+    ),
+  ).toBe(true);
+  expect(getUtoopackMdCacheNamespace('session-a')).not.toBe(
+    getUtoopackMdCacheNamespace('session-b'),
+  );
 });
 
 test('utoopack treats ?raw imports as source strings', async () => {

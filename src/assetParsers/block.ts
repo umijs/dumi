@@ -70,6 +70,19 @@ function getDepsKey(deps: string[]) {
   );
 }
 
+function getDepsKeyFromSnapshot(deps: string[], snapshot: Map<string, string>) {
+  return JSON.stringify(
+    Array.from(new Set(deps))
+      .sort()
+      .map(
+        (file) =>
+          `${winPath(file)}:${
+            snapshot.get(file) ?? getContentHashFromFile(file)
+          }`,
+      ),
+  );
+}
+
 function getParseCacheKey(opts: IParseBlockAssetOptions) {
   const entryContent =
     opts.entryPointCode ?? fs.readFileSync(opts.fileAbsPath, 'utf-8');
@@ -88,10 +101,8 @@ function getParseCacheKey(opts: IParseBlockAssetOptions) {
   });
 }
 
-function getParseDeps(ret: IParsedBlockAsset, entryFile: string) {
-  return Object.values(ret.resolveMap).filter(
-    (file) => path.isAbsolute(file) && file !== entryFile,
-  );
+function getParseDeps(ret: IParsedBlockAsset) {
+  return Object.values(ret.resolveMap).filter((file) => path.isAbsolute(file));
 }
 
 function getCachedBlockAsset(cacheKey: string) {
@@ -106,6 +117,7 @@ function setCachedBlockAsset(
   cacheKey: string,
   ret: IParsedBlockAsset,
   deps: string[],
+  depsKey: string,
 ) {
   if (blockAssetCache.size >= MAX_BLOCK_ASSET_CACHE_SIZE) {
     const firstKey = blockAssetCache.keys().next().value;
@@ -114,7 +126,7 @@ function setCachedBlockAsset(
 
   blockAssetCache.set(cacheKey, {
     deps,
-    depsKey: getDepsKey(deps),
+    depsKey,
     result: cloneParsedBlockAsset(ret),
   });
 }
@@ -139,6 +151,7 @@ async function parseBlockAsset(opts: IParseBlockAssetOptions) {
     resolveMap: {},
     frontmatter: null,
   };
+  const loadedFileSnapshot = new Map<string, string>();
   // demo dependency analysis and asset processing
   const deferrer = build({
     // do not emit file
@@ -199,6 +212,12 @@ async function parseBlockAsset(opts: IParseBlockAssetOptions) {
             const techStack = opts.techStack;
 
             const isEntryPoint = args.pluginData.kind === 'entry-point';
+            let sourceContent: string | undefined;
+            const getSourceContent = () =>
+              (sourceContent ??=
+                isEntryPoint && opts.entryPointCode !== undefined
+                  ? opts.entryPointCode
+                  : fs.readFileSync(args.path, 'utf-8'));
 
             // always add extname for highlight in runtime
             const filename = `${
@@ -213,16 +232,13 @@ async function parseBlockAsset(opts: IParseBlockAssetOptions) {
                   )
             }${ext}`;
 
-            let entryPointCode = opts.entryPointCode;
+            let entryPointCode = isEntryPoint ? opts.entryPointCode : undefined;
             let contents: string | undefined = undefined;
 
             if (techStack.onBlockLoad) {
               const result = techStack.onBlockLoad({
                 filename,
-                entryPointCode: (entryPointCode ??= fs.readFileSync(
-                  args.path,
-                  'utf-8',
-                )),
+                entryPointCode: (entryPointCode ??= getSourceContent()),
                 ...args,
               });
               if (result) {
@@ -235,10 +251,12 @@ async function parseBlockAsset(opts: IParseBlockAssetOptions) {
             let isPlainText = DEFAULT_DEMO_PLAIN_TEXT_EXTENSIONS.includes(ext);
 
             if (isModule || isPlainText) {
+              const assetValue = getSourceContent();
+
+              loadedFileSnapshot.set(args.path, getContentHash(assetValue));
               asset.dependencies[filename] = {
                 type: 'FILE',
-                value:
-                  opts.entryPointCode ?? fs.readFileSync(args.path, 'utf-8'),
+                value: assetValue,
               };
 
               const file = asset.dependencies[filename];
@@ -276,7 +294,7 @@ async function parseBlockAsset(opts: IParseBlockAssetOptions) {
               // to avoid bundle same file to save bundle size
               if (
                 opts.techStack.runtimeOpts &&
-                (!isEntryPoint || !opts.entryPointCode)
+                (!isEntryPoint || opts.entryPointCode === undefined)
               ) {
                 result.resolveMap[filename] = args.path;
               }
@@ -306,10 +324,13 @@ async function parseBlockAsset(opts: IParseBlockAssetOptions) {
   }
 
   if (!hasError && cacheKey) {
+    const deps = getParseDeps(result);
+
     setCachedBlockAsset(
       cacheKey,
       result,
-      getParseDeps(result, opts.fileAbsPath),
+      deps,
+      getDepsKeyFromSnapshot(deps, loadedFileSnapshot),
     );
   }
 

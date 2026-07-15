@@ -2,7 +2,7 @@ import type { IDemoLoaderOptions } from '@/loaders/demo';
 import type { IMdLoaderOptions } from '@/loaders/markdown';
 import ReactTechStack from '@/techStacks/react';
 import type { IApi, IDumiTechStack } from '@/types';
-import { _setFSCacheDir } from '@/utils';
+import { _setFSCacheDir, getCache, resolveDumiCacheDir } from '@/utils';
 import enhancedResolve from 'enhanced-resolve';
 import fs from 'fs';
 import path from 'path';
@@ -11,11 +11,17 @@ import { getLoadHook } from './makoHooks';
 import { shouldDisabledLiveDemo } from './utils';
 import {
   LOADER_CTX_FILENAME,
+  MARKDOWN_LOADER_CACHE_EPOCH,
   UTOOPACK_DEMO_ASSETS_FILENAME,
   buildLoaderContextContent,
+  getUtoopackMdCacheNamespace,
   getUtoopackRules,
 } from './utoopackLoaders';
 export const techStacks: IDumiTechStack[] = [];
+
+function replaceTechStacks(nextTechStacks: IDumiTechStack[]) {
+  techStacks.splice(0, techStacks.length, ...nextTechStacks);
+}
 
 export function getUtoopackDemoAssetsFile(api: {
   env: string;
@@ -67,6 +73,26 @@ function normalizeMakoAliases(
 export default (api: IApi) => {
   api.describe({ key: 'dumi:compile' });
 
+  api.register({
+    key: 'onExit',
+    stage: Infinity,
+    fn() {
+      const cacheDirectory = resolveDumiCacheDir(
+        api.cwd,
+        api.userConfig.cacheDirectoryPath || api.config.cacheDirectoryPath,
+      );
+      const sessionCache = getCache(
+        getUtoopackMdCacheNamespace(MARKDOWN_LOADER_CACHE_EPOCH),
+        cacheDirectory,
+      );
+      const sessionCachePath = (sessionCache as { basePath?: string }).basePath;
+
+      if (sessionCachePath) {
+        fs.rmSync(sessionCachePath, { force: true, recursive: true });
+      }
+    },
+  });
+
   // register react tech stack by default
   api.register({
     key: 'registerTechStack',
@@ -90,7 +116,7 @@ export default (api: IApi) => {
       const cacheDirPath =
         api.userConfig.cacheDirectoryPath || memo.cacheDirectoryPath;
 
-      if (cacheDirPath) _setFSCacheDir(path.join(cacheDirPath, 'dumi'));
+      _setFSCacheDir(resolveDumiCacheDir(api.cwd, cacheDirPath));
 
       // inject raw code to use search worker in inline mode
       const SEARCH_WORKER_CODE = fs.readFileSync(
@@ -114,11 +140,11 @@ export default (api: IApi) => {
     // and `before` only insert before the last one
     stage: -Infinity,
     async fn() {
-      techStacks.push(
-        ...(await api.applyPlugins({
+      replaceTechStacks(
+        await api.applyPlugins({
           key: 'registerTechStack',
           type: api.ApplyPluginsType.add,
-        })),
+        }),
       );
     },
   });
