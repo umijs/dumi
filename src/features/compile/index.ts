@@ -17,6 +17,18 @@ import {
 } from './utoopackLoaders';
 export const techStacks: IDumiTechStack[] = [];
 
+export function getUtoopackDemoAssetsFile(api: {
+  env: string;
+  paths: { absTmpPath: string };
+  isPluginEnable: (key: string) => boolean;
+}) {
+  if (api.env !== 'production' || !api.isPluginEnable('exportStatic')) {
+    return undefined;
+  }
+
+  return path.join(api.paths.absTmpPath, UTOOPACK_DEMO_ASSETS_FILENAME);
+}
+
 function normalizeMakoAliases(
   alias: NonNullable<IApi['config']['alias']>,
   cwd: string,
@@ -114,12 +126,9 @@ export default (api: IApi) => {
   api.onGenerateFiles({
     fn() {
       if (api.config.utoopack) {
-        const demoAssetsFile = path.join(
-          api.paths.absTmpPath,
-          UTOOPACK_DEMO_ASSETS_FILENAME,
-        );
+        const demoAssetsFile = getUtoopackDemoAssetsFile(api);
 
-        fs.rmSync(demoAssetsFile, { force: true });
+        if (demoAssetsFile) fs.rmSync(demoAssetsFile, { force: true });
         api.writeTmpFile({
           noPluginDir: true,
           path: LOADER_CTX_FILENAME,
