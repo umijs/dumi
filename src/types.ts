@@ -96,6 +96,12 @@ export interface IDumiTechStackRuntimeOpts {
    * path to runtime plugin for this tech stack
    */
   pluginPath?: string;
+  /**
+   * Previewer props that are derived from demo source code and may be loaded
+   * with the demo runtime instead of being embedded in the Markdown page.
+   * This is only used by the utoopack development HMR fast path.
+   */
+  deferPreviewerProps?: string[];
 }
 
 export abstract class IDumiTechStack {

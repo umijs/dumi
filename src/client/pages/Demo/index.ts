@@ -1,5 +1,15 @@
 import { useDemo, useLiveDemo, useLocation, useParams } from 'dumi';
-import { ComponentType, createElement, useEffect, type FC } from 'react';
+import {
+  ComponentType,
+  createElement,
+  useEffect,
+  useState,
+  type FC,
+} from 'react';
+import {
+  getDemoHMRRevision,
+  subscribeDemoHMR,
+} from '../../theme-api/DumiDemo/hmr';
 import type { IDemoData } from '../../theme-api/types';
 import { useRenderer } from '../../theme-api/useRenderer';
 import './index.less';
@@ -12,13 +22,58 @@ type UseDemo = (
   routeId?: string,
 ) => IDemoData | undefined;
 
+function useDemoHMRRevision(
+  moduleId: string | undefined,
+  id: string,
+): number {
+  const hmr = process.env.NODE_ENV === 'production' ? undefined : moduleId;
+  const revision = hmr ? getDemoHMRRevision(hmr, id) : 0;
+  const [, setHMRState] = useState(() => ({ id, moduleId: hmr, revision }));
+
+  useEffect(() => {
+    if (!hmr) return;
+
+    let observedRevision = revision;
+    const syncRevision = () => {
+      const nextRevision = getDemoHMRRevision(hmr, id);
+
+      if (nextRevision === observedRevision) return;
+
+      observedRevision = nextRevision;
+      setHMRState((current) => {
+        if (
+          current.id === id &&
+          current.moduleId === hmr &&
+          current.revision === nextRevision
+        )
+          return current;
+
+        return { id, moduleId: hmr, revision: nextRevision };
+      });
+    };
+    const unsubscribe = subscribeDemoHMR(hmr, id, syncRevision);
+
+    // Re-read after subscribing so a change between render and effect is not lost.
+    syncRevision();
+    return unsubscribe;
+  }, [hmr, id, revision]);
+
+  return revision;
+}
+
 const DemoRenderPage: FC = () => {
   const params = useParams();
   const { search } = useLocation();
   const id = params.id!;
-  const routeId = new URLSearchParams(search).get('routeId') || undefined;
+  const routeParams = new URLSearchParams(search);
+  const routeId = routeParams.get('routeId') || undefined;
+  const hmrModuleId = routeParams.get('dumi-hmr') || undefined;
+  const hmrRevision = useDemoHMRRevision(hmrModuleId, id);
+  const cacheVersion = hmrRevision
+    ? `dumi-hmr:${hmrRevision}:route=${routeId ?? ''}`
+    : undefined;
 
-  const demo = (useDemo as UseDemo)(id, undefined, undefined, routeId)!;
+  const demo = (useDemo as UseDemo)(id, undefined, cacheVersion, routeId)!;
   const { canvasRef } = useRenderer({
     id,
     component: demo.component,

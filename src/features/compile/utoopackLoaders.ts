@@ -267,6 +267,7 @@ export const getUtoopackRules = (
     locales: config.locales || [],
     pkg: api.pkg,
     disableLiveDemo,
+    useUtoopackDemoHMR: api.env === 'development',
     [UTOOPACK_LOADER_CTX_KEY]: loaderContextPath,
   });
 

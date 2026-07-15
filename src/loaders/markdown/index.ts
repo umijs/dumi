@@ -343,12 +343,38 @@ function DumiMarkdownContent() {
 export default DumiMarkdownContent;`;
 }
 
-function emitDemo(
+export function emitDemo(
   this: any,
   opts: IMdLoaderDemoModeOptions,
   ret: IMdTransformerResult,
 ) {
   const { demos } = ret.meta;
+  const demoHMRVersions = Object.fromEntries(
+    (demos ?? []).flatMap((demo) => {
+      const hmrVersion = (
+        demo as typeof demo & { __dumiUtoopackHMRVersion?: string }
+      ).__dumiUtoopackHMRVersion;
+
+      return typeof hmrVersion === 'string'
+        ? [[demo.id, hmrVersion] as const]
+        : [];
+    }),
+  );
+  const enableDemoHMR =
+    opts.useUtoopackDemoHMR === true &&
+    Object.keys(demoHMRVersions).length > 0;
+  const demoHMRModuleId = JSON.stringify(
+    winPath(`${this.resourcePath}?type=demo`),
+  );
+  const enableUtoopackSelfAccept =
+    enableDemoHMR && UTOOPACK_LOADER_CTX_KEY in (opts as any);
+  const renderedDemos = demos?.map((demo) => ({
+    ...demo,
+    renderedPreviewerProps:
+      'previewerProps' in demo && demo.previewerProps
+        ? JSON.stringify(demo.previewerProps)
+        : undefined,
+  }));
   const shareDepsMap: Record<string, string> = {};
   const demoDepsMap: Record<string, Record<string, string>> = {};
   const relativeDepsMap: Record<string, Record<string, string>> = {};
@@ -403,6 +429,9 @@ function emitDemo(
   return Mustache.render(
     `import React from 'react';
 import '${winPath(this.resourcePath)}?watch=parent';
+{{#enableDemoHMR}}
+import { registerDemoHMRModule } from 'dumi/dist/client/theme-api/DumiDemo/hmr';
+{{/enableDemoHMR}}
 {{#dedupedDemosDeps}}
 import * as {{{specifier}}} from '{{{key}}}';
 {{/dedupedDemosDeps}}
@@ -417,13 +446,29 @@ export const demos = {
     routeId: '{{{routeId}}}',
     {{/routeId}}
     context: {{{renderContext}}},
+    {{#previewerProps}}
+    previewerProps: {{{renderedPreviewerProps}}},
+    {{/previewerProps}}
     renderOpts: {{{renderRenderOpts}}},
   },
   {{/demos}}
-};`,
+};{{#enableUtoopackSelfAccept}}
+if (
+  typeof __turbopack_context__ !== 'undefined' &&
+  typeof __turbopack_context__.m?.hot?.accept === 'function'
+) {
+  __turbopack_context__.m.hot.accept();
+}
+{{/enableUtoopackSelfAccept}}{{#enableDemoHMR}}
+registerDemoHMRModule({{{demoHMRModuleId}}}, {{{demoHMRVersions}}});
+{{/enableDemoHMR}}`,
     {
-      demos,
+      demos: renderedDemos,
       dedupedDemosDeps,
+      demoHMRModuleId,
+      demoHMRVersions: JSON.stringify(demoHMRVersions),
+      enableDemoHMR,
+      enableUtoopackSelfAccept,
       routeId,
       renderAsset: function renderAsset(this: NonNullable<typeof demos>[0]) {
         // do not render asset for inline demo
@@ -789,7 +834,7 @@ export default function mdLoader(this: any, content: string) {
     UTOOPACK_LOADER_CTX_KEY
   ];
   const useUtoopackDemoHMR =
-    process.env.NODE_ENV !== 'production' && Boolean(loaderContextPath);
+    opts.useUtoopackDemoHMR === true && Boolean(loaderContextPath);
 
   if (loaderContextPath) {
     const ctx = require(loaderContextPath) as {

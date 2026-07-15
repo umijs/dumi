@@ -1,4 +1,5 @@
 import type { IParsedBlockAsset } from '@/assetParsers/block';
+import type { IDumiDemoProps } from '@/client/theme-api/DumiDemo';
 import type { ILocalesConfig, IRouteMeta } from '@/client/theme-api/types';
 import { VERSION_2_DEPRECATE_SOFT_BREAKS } from '@/constants';
 import type { IApi, IDumiConfig, IDumiTechStack } from '@/types';
@@ -43,6 +44,9 @@ declare module 'vfile' {
           component: string;
           asset: IParsedBlockAsset['asset'];
           resolveMap: IParsedBlockAsset['resolveMap'];
+          previewerProps?: IDumiDemoProps['previewerProps'];
+          /** Internal semantic version used by the utoopack demo HMR runtime. */
+          __dumiUtoopackHMRVersion?: string;
           renderOpts: {
             type?: string;
             rendererPath?: string;

@@ -8,8 +8,9 @@ function registerTsResolveExtension() {
   extensions['.ts'] ??= extensions['.js'];
 }
 
-function createApi() {
+function createApi(env = 'development') {
   return {
+    env,
     cwd: '/tmp/dumi-app',
     paths: {
       absTmpPath: '/tmp/dumi-app/.dumi/tmp',
@@ -106,6 +107,7 @@ test('utoopack markdown rules use current config memo', async () => {
   expect(MARKDOWN_LOADER_CACHE_EPOCH).toEqual(expect.any(String));
   expect(MARKDOWN_LOADER_CACHE_EPOCH).not.toHaveLength(0);
   expect(defaultMdOptions.cacheEpoch).toBe(MARKDOWN_LOADER_CACHE_EPOCH);
+  expect(defaultMdOptions.useUtoopackDemoHMR).toBe(true);
   expect(defaultMdOptions.cacheDirectory).toBe(
     path.resolve(api.cwd, '../shared-cache', 'dumi'),
   );
@@ -119,6 +121,20 @@ test('utoopack markdown rules use current config memo', async () => {
   expect(getUtoopackMdCacheNamespace('session-a')).not.toBe(
     getUtoopackMdCacheNamespace('session-b'),
   );
+});
+
+test('utoopack disables demo HMR loader output in production', async () => {
+  registerTsResolveExtension();
+
+  const { getUtoopackRules } = await import('./utoopackLoaders');
+  const rules = getUtoopackRules(createApi('production'));
+  const mdRules = rules['*.md'] as any[];
+
+  expect(
+    mdRules.every(
+      (rule) => rule.loaders[0].options.useUtoopackDemoHMR === false,
+    ),
+  ).toBe(true);
 });
 
 test('utoopack treats ?raw imports as source strings', async () => {

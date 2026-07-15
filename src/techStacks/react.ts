@@ -6,6 +6,7 @@ export default class ReactTechStack implements IDumiTechStack {
 
   runtimeOpts?: IDumiTechStack['runtimeOpts'] = {
     compilePath: require.resolve('../client/misc/reactDemoCompiler'),
+    deferPreviewerProps: ['jsx'],
   };
 
   isSupported(...[, lang]: Parameters<IDumiTechStack['isSupported']>) {

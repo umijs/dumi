@@ -12,6 +12,7 @@ let getMdTransformCacheKeys: typeof import('.')['getMdTransformCacheKeys'];
 let addDemoFileDependency: typeof import('.')['addDemoFileDependency'];
 let createStableTransform: typeof import('.')['createStableTransform'];
 let createDependencyReader: typeof import('.')['createDependencyReader'];
+let emitDemo: typeof import('.')['emitDemo'];
 
 function registerTsResolveExtension() {
   const extensions = (Module as any)._extensions as NodeJS.RequireExtensions;
@@ -25,6 +26,7 @@ beforeAll(async () => {
     addDemoFileDependency,
     createDependencyReader,
     createStableTransform,
+    emitDemo,
     getDemoSourceFiles,
     getDepsCacheKey,
     getMdLoaderCacheResult,
@@ -40,6 +42,201 @@ test('markdown loader reads md-loader cache', () => {
 
   expect(getMdLoaderCacheSync(cache, 'key', '')).toBe('cached');
   expect(cache.getSync).toHaveBeenCalledWith('key', '');
+});
+
+test('markdown demo runtime includes deferred previewer props', () => {
+  const output = emitDemo.call(
+    { resourcePath: '/docs/button.md' },
+    {
+      cwd: '/docs',
+      locales: [],
+      routes: {},
+      disableLiveDemo: false,
+      useUtoopackDemoHMR: true,
+    } as any,
+    {
+      meta: {
+        demos: [
+          {
+            id: 'button-demo-basic',
+            component: 'DemoComponent',
+            asset: { id: 'button-demo-basic', dependencies: {} },
+            resolveMap: {},
+            previewerProps: { jsx: 'export default () => null;' },
+            renderOpts: {},
+          },
+        ],
+      },
+    } as any,
+  );
+
+  expect(output).toContain(
+    'previewerProps: {"jsx":"export default () => null;"}',
+  );
+});
+
+test('markdown demo runtime registers internal HMR versions without exposing them', () => {
+  const output = emitDemo.call(
+    {
+      resource: 'C:\\repo\\docs\\button.md?type=demo&locale=zh-CN',
+      resourcePath: 'C:\\repo\\docs\\button.md',
+      resourceQuery: '?type=demo&locale=zh-CN',
+    },
+    {
+      cwd: 'C:\\repo',
+      locales: [],
+      routes: {},
+      disableLiveDemo: false,
+      useUtoopackDemoHMR: true,
+      __dumiLoaderContextPath: 'C:\\repo\\.dumi\\loader-context.cjs',
+    } as any,
+    {
+      meta: {
+        demos: [
+          {
+            id: 'button-demo-basic',
+            component: 'DemoComponent',
+            asset: { id: 'button-demo-basic', dependencies: {} },
+            resolveMap: {},
+            renderOpts: {},
+            __dumiUtoopackHMRVersion: 'semantic-v1',
+          },
+        ],
+      },
+    } as any,
+  );
+
+  expect(output).toContain(
+    "import { registerDemoHMRModule } from 'dumi/dist/client/theme-api/DumiDemo/hmr';",
+  );
+  expect(output).toContain(
+    'registerDemoHMRModule("C:/repo/docs/button.md?type=demo", {"button-demo-basic":"semantic-v1"});',
+  );
+  expect(output).toContain("typeof __turbopack_context__ !== 'undefined'");
+  expect(output).toContain(
+    "typeof __turbopack_context__.m?.hot?.accept === 'function'",
+  );
+  expect(output).toContain('__turbopack_context__.m.hot.accept();');
+  expect(output.indexOf('__turbopack_context__.m.hot.accept();')).toBeLessThan(
+    output.indexOf('registerDemoHMRModule('),
+  );
+  expect(output).not.toContain('module.hot');
+  expect(output).not.toContain('import.meta.turbopackHot');
+  expect(output).not.toContain('__dumiUtoopackHMRVersion');
+});
+
+test('markdown demo runtime ignores stale HMR metadata in production', () => {
+  const output = emitDemo.call(
+    {
+      resource: '/docs/button.md?type=demo',
+      resourcePath: '/docs/button.md',
+      resourceQuery: '?type=demo',
+    },
+    {
+      cwd: '/docs',
+      locales: [],
+      routes: {},
+      disableLiveDemo: false,
+      useUtoopackDemoHMR: false,
+      __dumiLoaderContextPath: '/docs/.dumi/loader-context.cjs',
+    } as any,
+    {
+      meta: {
+        demos: [
+          {
+            id: 'button-demo-basic',
+            component: 'DemoComponent',
+            asset: { id: 'button-demo-basic', dependencies: {} },
+            resolveMap: {},
+            renderOpts: {},
+            __dumiUtoopackHMRVersion: 'stale-dev-version',
+          },
+        ],
+      },
+    } as any,
+  );
+
+  expect(output).not.toContain('registerDemoHMRModule');
+  expect(output).not.toContain('__turbopack_context__.m.hot.accept()');
+});
+
+test('markdown demo runtime stays byte-compatible without internal HMR versions', () => {
+  const output = emitDemo.call(
+    {
+      resource: 'C:\\repo\\docs\\button.md?type=demo&locale=zh-CN',
+      resourcePath: 'C:\\repo\\docs\\button.md',
+      resourceQuery: '?type=demo&locale=zh-CN',
+    },
+    {
+      cwd: 'C:\\repo',
+      locales: [],
+      routes: {},
+      disableLiveDemo: false,
+      __dumiLoaderContextPath: 'C:\\repo\\.dumi\\loader-context.cjs',
+    } as any,
+    {
+      meta: {
+        demos: [
+          {
+            id: 'button-demo-basic',
+            component: 'DemoComponent',
+            asset: { id: 'button-demo-basic', dependencies: {} },
+            resolveMap: {},
+            renderOpts: {},
+          },
+        ],
+      },
+    } as any,
+  );
+
+  expect(output).toBe(`import React from 'react';
+import 'C:/repo/docs/button.md?watch=parent';
+export const demos = {
+  'button-demo-basic': {
+    component: DemoComponent,
+    asset: {
+  "id": "button-demo-basic",
+  "dependencies": {}
+},
+    context: {},
+    renderOpts: undefined,
+  },
+};`);
+});
+
+test('markdown demo runtime does not self-accept outside utoopack', () => {
+  const output = emitDemo.call(
+    {
+      resourcePath: '/docs/button.md',
+      resourceQuery: '?type=demo',
+    },
+    {
+      cwd: '/docs',
+      locales: [],
+      routes: {},
+      disableLiveDemo: false,
+      useUtoopackDemoHMR: true,
+    } as any,
+    {
+      meta: {
+        demos: [
+          {
+            id: 'button-demo-basic',
+            component: 'DemoComponent',
+            asset: { id: 'button-demo-basic', dependencies: {} },
+            resolveMap: {},
+            renderOpts: {},
+            __dumiUtoopackHMRVersion: 'semantic-v1',
+          },
+        ],
+      },
+    } as any,
+  );
+
+  expect(output).toContain(
+    'registerDemoHMRModule("/docs/button.md?type=demo", {"button-demo-basic":"semantic-v1"});',
+  );
+  expect(output).not.toContain('__turbopack_context__.m.hot.accept()');
 });
 
 test('markdown loader treats malformed md-loader cache as missed', () => {

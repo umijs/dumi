@@ -1,6 +1,8 @@
 import type { IDumiTechStack } from '@/types';
+import ReactTechStack from '@/techStacks/react';
 import glob from 'fast-glob';
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import transformer from '.';
 
@@ -18,6 +20,80 @@ class FakeTechStack implements IDumiTechStack {
 
   transformCode(...[raw, opts]: Parameters<IDumiTechStack['transformCode']>) {
     return opts.type === 'code-block' ? "() => 'Fake'" : raw;
+  }
+}
+
+class DeferredPreviewerPropsTechStack extends FakeTechStack {
+  runtimeOpts = { deferPreviewerProps: ['jsx'] } as any;
+
+  generatePreviewerProps(
+    props: Record<string, any>,
+    opts: { fileAbsPath?: string },
+  ) {
+    return {
+      ...props,
+      jsx: fs.readFileSync(opts.fileAbsPath!, 'utf8'),
+    };
+  }
+}
+
+class SourceMetadataTechStack extends DeferredPreviewerPropsTechStack {
+  generateMetadata(asset: any, opts: { fileAbsPath?: string }) {
+    return {
+      ...asset,
+      sourceLabel: fs.readFileSync(opts.fileAbsPath!, 'utf8').includes('B')
+        ? 'B'
+        : 'A',
+    };
+  }
+}
+
+class RendererTechStack extends DeferredPreviewerPropsTechStack {
+  runtimeOpts = {
+    ...this.runtimeOpts,
+    rendererPath: '/custom-renderer',
+  } as any;
+}
+
+class ReorderedMetadataTechStack extends DeferredPreviewerPropsTechStack {
+  constructor(private reverseMetadata: boolean) {
+    super();
+  }
+
+  generateMetadata(asset: any) {
+    const dependencies = Object.entries(asset.dependencies);
+
+    if (this.reverseMetadata) {
+      dependencies.reverse();
+    }
+
+    return {
+      ...asset,
+      dependencies: Object.fromEntries(dependencies),
+    };
+  }
+
+  generateSources(resolveMap: Record<string, any>) {
+    const entries = Object.entries(resolveMap);
+
+    if (this.reverseMetadata) entries.reverse();
+
+    return Object.fromEntries(entries);
+  }
+}
+
+class SidecarPreviewerPropsTechStack extends DeferredPreviewerPropsTechStack {
+  generatePreviewerProps(
+    props: Record<string, any>,
+    opts: { fileAbsPath?: string },
+  ) {
+    const previewerProps = super.generatePreviewerProps(props, opts);
+    const sidecar = opts.fileAbsPath!.replace(/\.\w+$/, '.md');
+
+    return {
+      ...previewerProps,
+      description: fs.readFileSync(sidecar, 'utf8'),
+    };
   }
 }
 
@@ -45,6 +121,21 @@ function getTransformerOptions(
   };
 }
 
+function createReactTechStack() {
+  const tsExtension = require.extensions['.ts'];
+  require.extensions['.ts'] = () => {};
+
+  try {
+    return new ReactTechStack();
+  } finally {
+    if (tsExtension) {
+      require.extensions['.ts'] = tsExtension;
+    } else {
+      delete require.extensions['.ts'];
+    }
+  }
+}
+
 for (let casePath of cases) {
   test(`markdown transformer: ${casePath}`, async () => {
     const fileAbsPath = path.join(CASES_DIR, casePath, 'index.md');
@@ -65,4 +156,382 @@ test('markdown transformer: skips local demo loader by default', async () => {
 
   expect(ret.content).not.toContain('"loader": () => import');
   expect(ret.content).not.toContain('"version":');
+});
+
+test('utoopack keeps the markdown page stable for deferred demo props', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dumi-deferred-demo-'));
+  const fileAbsPath = path.join(dir, 'index.md');
+  const demoFile = path.join(dir, 'demo.jsx');
+  const content = '<code src="./demo.jsx"></code>';
+
+  fs.writeFileSync(fileAbsPath, content);
+  fs.writeFileSync(demoFile, 'export default () => <div>A</div>;');
+
+  try {
+    const options = {
+      ...getTransformerOptions(fileAbsPath, true),
+      techStacks: [new DeferredPreviewerPropsTechStack()],
+    };
+    const before = await transformer(content, options);
+
+    fs.writeFileSync(demoFile, 'export default () => <div>B</div>;');
+
+    const after = await transformer(content, options);
+
+    expect(after.content).toBe(before.content);
+    expect(before.meta.demos[0]).toMatchObject({
+      previewerProps: { jsx: 'export default () => <div>A</div>;' },
+    });
+    expect(after.meta.demos[0]).toMatchObject({
+      previewerProps: { jsx: 'export default () => <div>B</div>;' },
+    });
+    expect((after.meta.demos[0] as any).__dumiUtoopackHMRVersion).not.toBe(
+      (before.meta.demos[0] as any).__dumiUtoopackHMRVersion,
+    );
+    expect(after.content).toContain('"__dumiUtoopackHMR": "');
+  } finally {
+    fs.rmSync(dir, { force: true, recursive: true });
+  }
+});
+
+test('utoopack keeps the markdown page stable with the built-in React stack', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dumi-react-demo-'));
+  const fileAbsPath = path.join(dir, 'index.md');
+  const demoFile = path.join(dir, 'demo.jsx');
+  const content = '<code src="./demo.jsx"></code>';
+
+  fs.writeFileSync(fileAbsPath, content);
+  fs.writeFileSync(demoFile, 'export default () => <div>A</div>;');
+
+  try {
+    const options = {
+      ...getTransformerOptions(fileAbsPath, true),
+      techStacks: [createReactTechStack()],
+    };
+    const before = await transformer(content, options);
+
+    fs.writeFileSync(demoFile, 'export default () => <div>B</div>;');
+
+    const after = await transformer(content, options);
+
+    expect(after.content).toBe(before.content);
+    expect((after.meta.demos[0] as any).__dumiUtoopackHMRVersion).not.toBe(
+      (before.meta.demos[0] as any).__dumiUtoopackHMRVersion,
+    );
+  } finally {
+    fs.rmSync(dir, { force: true, recursive: true });
+  }
+});
+
+test('utoopack refreshes the markdown page when demo metadata changes', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dumi-demo-metadata-'));
+  const fileAbsPath = path.join(dir, 'index.md');
+  const demoFile = path.join(dir, 'demo.jsx');
+  const content = '<code src="./demo.jsx"></code>';
+
+  fs.writeFileSync(fileAbsPath, content);
+  fs.writeFileSync(demoFile, 'export default () => <div>A</div>;');
+
+  try {
+    const options = {
+      ...getTransformerOptions(fileAbsPath, true),
+      techStacks: [new SourceMetadataTechStack()],
+    };
+    const before = await transformer(content, options);
+
+    fs.writeFileSync(demoFile, 'export default () => <div>B</div>;');
+
+    const after = await transformer(content, options);
+
+    expect(after.content).not.toBe(before.content);
+  } finally {
+    fs.rmSync(dir, { force: true, recursive: true });
+  }
+});
+
+test('utoopack keeps the legacy version behavior for inline external demos', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dumi-inline-demo-'));
+  const fileAbsPath = path.join(dir, 'index.md');
+  const demoFile = path.join(dir, 'demo.jsx');
+  const content = '<code src="./demo.jsx" inline></code>';
+
+  fs.writeFileSync(fileAbsPath, content);
+  fs.writeFileSync(demoFile, 'export default () => <div>A</div>;');
+
+  try {
+    const options = {
+      ...getTransformerOptions(fileAbsPath, true),
+      techStacks: [new DeferredPreviewerPropsTechStack()],
+    };
+    const before = await transformer(content, options);
+
+    fs.writeFileSync(demoFile, 'export default () => <div>B</div>;');
+
+    const after = await transformer(content, options);
+
+    expect(after.content).not.toBe(before.content);
+    expect(after.content).not.toContain('"__dumiUtoopackHMR":');
+    expect(
+      (after.meta.demos[0] as any).__dumiUtoopackHMRVersion,
+    ).toBeUndefined();
+  } finally {
+    fs.rmSync(dir, { force: true, recursive: true });
+  }
+});
+
+test('utoopack keeps the legacy path for custom renderer tech stacks', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dumi-renderer-demo-'));
+  const fileAbsPath = path.join(dir, 'index.md');
+  const demoFile = path.join(dir, 'demo.jsx');
+  const content = '<code src="./demo.jsx"></code>';
+
+  fs.writeFileSync(fileAbsPath, content);
+  fs.writeFileSync(demoFile, 'export default () => <div>A</div>;');
+
+  try {
+    const options = {
+      ...getTransformerOptions(fileAbsPath, true),
+      techStacks: [new RendererTechStack()],
+    };
+    const before = await transformer(content, options);
+
+    fs.writeFileSync(demoFile, 'export default () => <div>B</div>;');
+
+    const after = await transformer(content, options);
+
+    expect(after.content).not.toBe(before.content);
+    expect(after.content).not.toContain('__dumiUtoopackHMR');
+    expect(
+      (after.meta.demos[0] as any).__dumiUtoopackHMRVersion,
+    ).toBeUndefined();
+  } finally {
+    fs.rmSync(dir, { force: true, recursive: true });
+  }
+});
+
+test('utoopack keeps the markdown page stable for nested source edits', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dumi-nested-demo-'));
+  const fileAbsPath = path.join(dir, 'index.md');
+  const demoFile = path.join(dir, 'demo.jsx');
+  const helperFile = path.join(dir, 'helper.js');
+  const content = '<code src="./demo.jsx"></code>';
+
+  fs.writeFileSync(fileAbsPath, content);
+  fs.writeFileSync(
+    demoFile,
+    "import label from './helper'; export default () => <div>{label}</div>;",
+  );
+  fs.writeFileSync(helperFile, "export default 'A';");
+
+  try {
+    const options = {
+      ...getTransformerOptions(fileAbsPath, true),
+      techStacks: [new DeferredPreviewerPropsTechStack()],
+    };
+    const before = await transformer(content, options);
+
+    fs.writeFileSync(helperFile, "export default 'B';");
+
+    const after = await transformer(content, options);
+
+    expect(after.content).toBe(before.content);
+    expect((after.meta.demos[0] as any).__dumiUtoopackHMRVersion).not.toBe(
+      (before.meta.demos[0] as any).__dumiUtoopackHMRVersion,
+    );
+  } finally {
+    fs.rmSync(dir, { force: true, recursive: true });
+  }
+});
+
+test('utoopack demo hashes ignore metadata object insertion order', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dumi-demo-order-'));
+  const fileAbsPath = path.join(dir, 'index.md');
+  const demoFile = path.join(dir, 'demo.jsx');
+  const content = '<code src="./demo.jsx"></code>';
+
+  fs.writeFileSync(fileAbsPath, content);
+  fs.writeFileSync(
+    demoFile,
+    "import alpha from './alpha'; import beta from './beta'; export default () => <div>{alpha}{beta}</div>;",
+  );
+  fs.writeFileSync(path.join(dir, 'alpha.js'), "export default 'A';");
+  fs.writeFileSync(path.join(dir, 'beta.js'), "export default 'B';");
+
+  try {
+    const getOptions = (reverseMetadata: boolean) => ({
+      ...getTransformerOptions(fileAbsPath, true),
+      techStacks: [new ReorderedMetadataTechStack(reverseMetadata)],
+    });
+    const forward = await transformer(content, getOptions(false));
+    const reverse = await transformer(content, getOptions(true));
+
+    expect(reverse.content).toBe(forward.content);
+    expect((reverse.meta.demos[0] as any).__dumiUtoopackHMRVersion).toBe(
+      (forward.meta.demos[0] as any).__dumiUtoopackHMRVersion,
+    );
+  } finally {
+    fs.rmSync(dir, { force: true, recursive: true });
+  }
+});
+
+test('utoopack refreshes the markdown page when the import graph changes', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dumi-demo-imports-'));
+  const fileAbsPath = path.join(dir, 'index.md');
+  const demoFile = path.join(dir, 'demo.jsx');
+  const content = '<code src="./demo.jsx"></code>';
+
+  fs.writeFileSync(fileAbsPath, content);
+  fs.writeFileSync(path.join(dir, 'alpha.js'), "export default 'same';");
+  fs.writeFileSync(path.join(dir, 'bravo.js'), "export default 'same';");
+  fs.writeFileSync(
+    demoFile,
+    "import label from './alpha'; export default () => <div>{label}</div>;",
+  );
+
+  try {
+    const options = {
+      ...getTransformerOptions(fileAbsPath, true),
+      techStacks: [new DeferredPreviewerPropsTechStack()],
+    };
+    const before = await transformer(content, options);
+
+    fs.writeFileSync(
+      demoFile,
+      "import label from './bravo'; export default () => <div>{label}</div>;",
+    );
+
+    const after = await transformer(content, options);
+
+    expect(after.content).not.toBe(before.content);
+    expect((after.meta.demos[0] as any).__dumiUtoopackHMRVersion).not.toBe(
+      (before.meta.demos[0] as any).__dumiUtoopackHMRVersion,
+    );
+  } finally {
+    fs.rmSync(dir, { force: true, recursive: true });
+  }
+});
+
+test('utoopack keeps non-deferred sidecar previewer props on the page', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dumi-demo-sidecar-'));
+  const fileAbsPath = path.join(dir, 'index.md');
+  const demoFile = path.join(dir, 'demo.jsx');
+  const sidecarFile = path.join(dir, 'demo.md');
+  const content = '<code src="./demo.jsx"></code>';
+
+  fs.writeFileSync(fileAbsPath, content);
+  fs.writeFileSync(demoFile, 'export default () => <div>Demo</div>;');
+  fs.writeFileSync(sidecarFile, 'Description A');
+
+  try {
+    const options = {
+      ...getTransformerOptions(fileAbsPath, true),
+      techStacks: [new SidecarPreviewerPropsTechStack()],
+    };
+    const before = await transformer(content, options);
+
+    fs.writeFileSync(sidecarFile, 'Description B');
+
+    const after = await transformer(content, options);
+
+    expect(after.content).not.toBe(before.content);
+    expect(after.content).toContain('Description B');
+    expect((after.meta.demos[0] as any).previewerProps).toEqual({
+      jsx: 'export default () => <div>Demo</div>;',
+    });
+  } finally {
+    fs.rmSync(dir, { force: true, recursive: true });
+  }
+});
+
+test('utoopack refreshes the markdown page when demo frontmatter changes', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dumi-demo-frontmatter-'));
+  const fileAbsPath = path.join(dir, 'index.md');
+  const demoFile = path.join(dir, 'demo.jsx');
+  const content = '<code src="./demo.jsx"></code>';
+
+  fs.writeFileSync(fileAbsPath, content);
+  fs.writeFileSync(
+    demoFile,
+    '/**\n * title: Title A\n */\nexport default () => <div>Demo</div>;',
+  );
+
+  try {
+    const options = {
+      ...getTransformerOptions(fileAbsPath, true),
+      techStacks: [new DeferredPreviewerPropsTechStack()],
+    };
+    const before = await transformer(content, options);
+
+    fs.writeFileSync(
+      demoFile,
+      '/**\n * title: Title B\n */\nexport default () => <div>Demo</div>;',
+    );
+
+    const after = await transformer(content, options);
+
+    expect(after.content).not.toBe(before.content);
+    expect(after.content).toContain('Title B');
+  } finally {
+    fs.rmSync(dir, { force: true, recursive: true });
+  }
+});
+
+test('deferred tech stacks keep the production transformer behavior', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dumi-prod-demo-'));
+  const fileAbsPath = path.join(dir, 'index.md');
+  const demoFile = path.join(dir, 'demo.jsx');
+  const content = '<code src="./demo.jsx"></code>';
+
+  fs.writeFileSync(fileAbsPath, content);
+  fs.writeFileSync(demoFile, 'export default () => <div>A</div>;');
+
+  try {
+    const options = {
+      ...getTransformerOptions(fileAbsPath, false),
+      techStacks: [new DeferredPreviewerPropsTechStack()],
+    };
+    const before = await transformer(content, options);
+
+    fs.writeFileSync(demoFile, 'export default () => <div>B</div>;');
+
+    const after = await transformer(content, options);
+
+    expect(after.content).not.toBe(before.content);
+    expect(after.content).not.toContain('__dumiUtoopackHMR');
+    expect(
+      (after.meta.demos[0] as any).__dumiUtoopackHMRVersion,
+    ).toBeUndefined();
+  } finally {
+    fs.rmSync(dir, { force: true, recursive: true });
+  }
+});
+
+test('utoopack keeps the full-version behavior for tech stacks without opt-in', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dumi-legacy-demo-'));
+  const fileAbsPath = path.join(dir, 'index.md');
+  const demoFile = path.join(dir, 'demo.jsx');
+  const content = '<code src="./demo.jsx"></code>';
+
+  fs.writeFileSync(fileAbsPath, content);
+  fs.writeFileSync(demoFile, 'export default () => <div>A</div>;');
+
+  try {
+    const options = {
+      ...getTransformerOptions(fileAbsPath, true),
+      techStacks: [new FakeTechStack()],
+    };
+    const before = await transformer(content, options);
+
+    fs.writeFileSync(demoFile, 'export default () => <div>B</div>;');
+
+    const after = await transformer(content, options);
+
+    expect(after.content).not.toBe(before.content);
+    expect(after.content).not.toContain('__dumiUtoopackHMR');
+    expect(
+      (after.meta.demos[0] as any).__dumiUtoopackHMRVersion,
+    ).toBeUndefined();
+  } finally {
+    fs.rmSync(dir, { force: true, recursive: true });
+  }
 });

@@ -267,6 +267,7 @@ export type IDemoData = {
   component: ReactComponentType | AgnosticComponentType;
   asset: IPreviewerProps['asset'];
   routeId: string;
+  previewerProps?: Omit<IPreviewerProps, 'asset' | 'children'>;
   context?: Record<string, unknown>;
   renderOpts?: {
     /**
