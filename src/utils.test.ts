@@ -4,7 +4,7 @@ import path from 'path';
 import { getCache, resolveDumiCacheDir } from './utils';
 
 test('dumi cache directory resolves relative to the project cwd', () => {
-  const cwd = path.join(path.sep, 'tmp', 'dumi-app');
+  const cwd = path.resolve(os.tmpdir(), 'dumi-app');
 
   expect(resolveDumiCacheDir(cwd)).toBe(
     path.join(cwd, 'node_modules', '.cache', 'dumi'),
