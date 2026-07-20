@@ -201,5 +201,10 @@
   },
   "authors": [
     "Peach <scdzwyxst@gmail.com>"
-  ]
+  ],
+  "pnpm": {
+    "overrides": {
+      "@utoo/pack": "1.4.28-alpha.0"
+    }
+  }
 }
