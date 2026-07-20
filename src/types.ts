@@ -102,6 +102,13 @@ export interface IDumiTechStackRuntimeOpts {
    * This is only used by the utoopack development HMR fast path.
    */
   deferPreviewerProps?: string[];
+  /**
+   * Whether same-name Markdown sidecars only feed deferred previewer props.
+   * This lets the utoopack development path keep them out of the page module
+   * dependency graph. Tech stack subclasses must disable this when a sidecar
+   * also changes page-level metadata such as title or TOC.
+   */
+  deferDemoSidecar?: boolean;
 }
 
 export abstract class IDumiTechStack {

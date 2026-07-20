@@ -5,6 +5,8 @@ import path from 'path';
 import { vi } from 'vitest';
 
 let getDemoSourceFiles: typeof import('.')['getDemoSourceFiles'];
+let getDemoWatchFiles: typeof import('.')['getDemoWatchFiles'];
+let addMdResultDependencies: typeof import('.')['addMdResultDependencies'];
 let getMdLoaderCacheSync: typeof import('.')['getMdLoaderCacheSync'];
 let getMdLoaderCacheResult: typeof import('.')['getMdLoaderCacheResult'];
 let getDepsCacheKey: typeof import('.')['getDepsCacheKey'];
@@ -13,6 +15,8 @@ let addDemoFileDependency: typeof import('.')['addDemoFileDependency'];
 let createStableTransform: typeof import('.')['createStableTransform'];
 let createDependencyReader: typeof import('.')['createDependencyReader'];
 let emitDemo: typeof import('.')['emitDemo'];
+let emitFrontmatter: typeof import('.')['emitFrontmatter'];
+let renderDemoIndex: typeof import('.')['renderDemoIndex'];
 
 function registerTsResolveExtension() {
   const extensions = (Module as any)._extensions as NodeJS.RequireExtensions;
@@ -24,15 +28,65 @@ beforeAll(async () => {
   registerTsResolveExtension();
   ({
     addDemoFileDependency,
+    addMdResultDependencies,
     createDependencyReader,
     createStableTransform,
     emitDemo,
+    emitFrontmatter,
     getDemoSourceFiles,
+    getDemoWatchFiles,
     getDepsCacheKey,
     getMdLoaderCacheResult,
     getMdLoaderCacheSync,
     getMdTransformCacheKeys,
+    renderDemoIndex,
   } = await import('.'));
+});
+
+test('utoopack frontmatter does not retain demo chunk references', () => {
+  const output = emitFrontmatter.call(
+    { resourcePath: '/docs/button.md' },
+    {
+      cwd: '/docs',
+      locales: [],
+      useUtoopackDemoHMR: true,
+      __dumiLoaderContextPath: '/docs/.dumi/loader-context.cjs',
+    } as any,
+    {
+      meta: {
+        frontmatter: { title: 'Button' },
+        toc: [],
+        demos: [{ id: 'button-demo-basic' }],
+      },
+    } as any,
+  );
+
+  expect(output).toContain('export const frontmatter');
+  expect(output).toContain('export const toc');
+  expect(output).not.toContain('?type=demo');
+  expect(output).not.toContain('demoIndex');
+});
+
+test('production utoopack frontmatter still exports the demo index', () => {
+  const output = emitFrontmatter.call(
+    { resourcePath: '/docs/button.md' },
+    {
+      cwd: '/docs',
+      locales: [],
+      useUtoopackDemoHMR: false,
+      __dumiLoaderContextPath: '/docs/.dumi/loader-context.cjs',
+    } as any,
+    {
+      meta: {
+        frontmatter: { title: 'Button' },
+        toc: [],
+        demos: [{ id: 'button-demo-basic' }],
+      },
+    } as any,
+  );
+
+  expect(output).toContain('export const demoIndex');
+  expect(output).toContain('/docs/button.md?type=demo');
 });
 
 test('markdown loader reads md-loader cache', () => {
@@ -75,12 +129,111 @@ test('markdown demo runtime includes deferred previewer props', () => {
   );
 });
 
+test('utoopack emits one lightweight overlay for every demo in a markdown file', () => {
+  const output = emitDemo.call(
+    {
+      resource: '/docs/button.md?type=demo&overlay=1',
+      resourcePath: '/docs/button.md',
+      resourceQuery: '?type=demo&overlay=1',
+    },
+    {
+      cwd: '/docs',
+      locales: [],
+      routes: {},
+      disableLiveDemo: false,
+      useUtoopackDemoHMR: true,
+      __dumiLoaderContextPath: '/docs/.dumi/loader-context.cjs',
+    } as any,
+    {
+      meta: {
+        demos: [
+          {
+            id: 'button-demo-basic',
+            component: 'BasicDemo',
+            asset: {
+              id: 'button-demo-basic',
+              description: 'Basic asset',
+              dependencies: {
+                'basic.tsx': { type: 'FILE', value: 'source' },
+              },
+            },
+            resolveMap: { 'basic.tsx': '/docs/basic.tsx' },
+            previewerProps: { description: '<p>Basic</p>' },
+            renderOpts: {},
+            __dumiUtoopackHMRVersion: 'basic-v1',
+            __dumiUtoopackDeferredPreviewerProps: [
+              'jsx',
+              'description',
+              'style',
+            ],
+          },
+          {
+            id: 'button-demo-icon',
+            component: 'IconDemo',
+            asset: { id: 'button-demo-icon', dependencies: {} },
+            resolveMap: {},
+            renderOpts: {},
+            __dumiUtoopackHMRVersion: 'icon-v1',
+            __dumiUtoopackDeferredPreviewerProps: [
+              'jsx',
+              'description',
+              'style',
+            ],
+          },
+        ],
+      },
+    } as any,
+  );
+
+  expect(output).toContain('"button-demo-basic"');
+  expect(output).toContain('"button-demo-icon"');
+  expect(output).toContain('"previewerProps":{"description":"<p>Basic</p>"}');
+  expect(output).toContain('"asset":{"description":"Basic asset"}');
+  expect(output).toContain(
+    '"button-demo-icon":{"asset":{},"previewerProps":{},',
+  );
+  expect(output).toContain(
+    '"__dumiOwnedPreviewerProps":["jsx","description","style"]',
+  );
+  expect(output).not.toContain('BasicDemo');
+  expect(output).not.toContain("from '/docs/basic.tsx'");
+  expect(output).not.toContain('require(');
+  expect(output).toContain(
+    'registerDemoHMRModule("/docs/button.md?type=demo&overlay=1", {"button-demo-basic":"basic-v1","button-demo-icon":"icon-v1"});',
+  );
+});
+
+test('utoopack demo indexes share one overlay getter across every demo', () => {
+  const output = renderDemoIndex(
+    'C:\\repo\\docs\\button.md',
+    {
+      cwd: 'C:\\repo',
+      locales: [],
+      useUtoopackDemoHMR: true,
+      __dumiLoaderContextPath: 'C:\\repo\\.dumi\\loader-context.cjs',
+    } as any,
+    [{ id: 'button-demo-basic' }, { id: 'button-demo-icon' }] as any,
+  );
+
+  expect(output).toContain('getters: demoGetters');
+  expect(output).toContain('() => import("C:/repo/docs/button.md?type=demo")');
+  expect(output).toContain(
+    '() => import("C:/repo/docs/button.md?type=demo&overlay=1")',
+  );
+  expect(output.match(/\?type=demo&overlay=1/g)).toHaveLength(1);
+  expect(output).not.toContain('&demo=');
+  expect(output).toContain('mergeDemoModules');
+  expect(output).toContain(
+    'Promise.all([demoRuntimeGetter(), demoOverlayGetter()])',
+  );
+});
+
 test('markdown demo runtime registers internal HMR versions without exposing them', () => {
   const output = emitDemo.call(
     {
-      resource: 'C:\\repo\\docs\\button.md?type=demo&locale=zh-CN',
+      resource: 'C:\\repo\\docs\\button.md?type=demo&overlay=1',
       resourcePath: 'C:\\repo\\docs\\button.md',
-      resourceQuery: '?type=demo&locale=zh-CN',
+      resourceQuery: '?type=demo&overlay=1',
     },
     {
       cwd: 'C:\\repo',
@@ -110,7 +263,7 @@ test('markdown demo runtime registers internal HMR versions without exposing the
     "import { registerDemoHMRModule } from 'dumi/dist/client/theme-api/DumiDemo/hmr';",
   );
   expect(output).toContain(
-    'registerDemoHMRModule("C:/repo/docs/button.md?type=demo", {"button-demo-basic":"semantic-v1"});',
+    'registerDemoHMRModule("C:/repo/docs/button.md?type=demo&overlay=1", {"button-demo-basic":"semantic-v1"});',
   );
   expect(output).toContain("typeof __turbopack_context__ !== 'undefined'");
   expect(output).toContain(
@@ -123,6 +276,43 @@ test('markdown demo runtime registers internal HMR versions without exposing the
   expect(output).not.toContain('module.hot');
   expect(output).not.toContain('import.meta.turbopackHot');
   expect(output).not.toContain('__dumiUtoopackHMRVersion');
+});
+
+test('utoopack self-accepts a fully versioned runtime and notifies the overlay channel', () => {
+  const output = emitDemo.call(
+    {
+      resource: '/docs/button.md?type=demo',
+      resourcePath: '/docs/button.md',
+      resourceQuery: '?type=demo',
+    },
+    {
+      cwd: '/docs',
+      locales: [],
+      routes: {},
+      disableLiveDemo: false,
+      useUtoopackDemoHMR: true,
+      __dumiLoaderContextPath: '/docs/.dumi/loader-context.cjs',
+    } as any,
+    {
+      meta: {
+        demos: [
+          {
+            id: 'button-demo-basic',
+            component: 'DemoComponent',
+            asset: { id: 'button-demo-basic', dependencies: {} },
+            resolveMap: {},
+            renderOpts: {},
+            __dumiUtoopackHMRVersion: 'runtime-v1',
+          },
+        ],
+      },
+    } as any,
+  );
+
+  expect(output).toContain('__turbopack_context__.m.hot.accept();');
+  expect(output).toContain(
+    'registerDemoHMRModule("/docs/button.md?type=demo&overlay=1", {"button-demo-basic":"runtime-v1"}, "runtime");',
+  );
 });
 
 test('markdown demo runtime ignores stale HMR metadata in production', () => {
@@ -158,6 +348,47 @@ test('markdown demo runtime ignores stale HMR metadata in production', () => {
 
   expect(output).not.toContain('registerDemoHMRModule');
   expect(output).not.toContain('__turbopack_context__.m.hot.accept()');
+});
+
+test('legacy page-level demo modules never self-accept mixed demo updates', () => {
+  const output = emitDemo.call(
+    {
+      resource: '/docs/button.md?type=demo',
+      resourcePath: '/docs/button.md',
+      resourceQuery: '?type=demo',
+    },
+    {
+      cwd: '/docs',
+      locales: [],
+      routes: {},
+      disableLiveDemo: false,
+      useUtoopackDemoHMR: true,
+      __dumiLoaderContextPath: '/docs/.dumi/loader-context.cjs',
+    } as any,
+    {
+      meta: {
+        demos: [
+          {
+            id: 'button-demo-deferred',
+            component: 'DeferredDemo',
+            asset: { id: 'button-demo-deferred', dependencies: {} },
+            resolveMap: {},
+            renderOpts: {},
+            __dumiUtoopackHMRVersion: 'deferred-v1',
+          },
+          {
+            id: 'button-demo-legacy',
+            component: 'LegacyDemo',
+            asset: { id: 'button-demo-legacy', dependencies: {} },
+            resolveMap: {},
+            renderOpts: {},
+          },
+        ],
+      },
+    } as any,
+  );
+
+  expect(output).not.toContain('__turbopack_context__.m.hot.accept();');
 });
 
 test('markdown demo runtime stays byte-compatible without internal HMR versions', () => {
@@ -300,6 +531,26 @@ test('markdown dependency hints survive content and runtime-only option changes'
   expect(runtimeChanged).toEqual(first);
   expect(transformOptionChanged.depsHintKey).not.toBe(first.depsHintKey);
   expect(transformOptionChanged.baseCacheKey).not.toBe(first.baseCacheKey);
+});
+
+test('the document overlay uses an isolated cache namespace', () => {
+  const base = {
+    resourcePath: '/docs/button.md',
+    content: '# Button',
+    useUtoopackDemoHMR: true,
+    opts: {
+      mode: 'demo',
+      alias: { '@': '/src' },
+    } as any,
+  };
+  const fullPage = getMdTransformCacheKeys(base);
+  const overlay = getMdTransformCacheKeys({
+    ...base,
+    demoOverlay: true,
+  });
+
+  expect(overlay.depsHintKey).not.toBe(fullPage.depsHintKey);
+  expect(overlay.baseCacheKey).not.toBe(fullPage.baseCacheKey);
 });
 
 test('markdown loader reuses a transform when demo dependencies are unchanged', async () => {
@@ -627,55 +878,54 @@ test('markdown cache rejects a missing-created-missing dependency mutation', asy
   }
 });
 
-test('utoopack tracks dependency reads before reading their content', async () => {
-  const events: string[] = [];
+test('utoopack fingerprints do not create implicit demo watch edges', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dumi-md-fingerprint-'));
+  const dependencyFile = path.join(dir, 'demo.tsx');
+  const trackedRead = vi.fn();
   const readDependency = createDependencyReader(
     {
       fs: {
-        readFile(_file: string, callback: (err: null, data: Buffer) => void) {
-          events.push('tracked');
-          callback(null, Buffer.from('content'));
-        },
+        readFile: trackedRead,
       },
     },
     true,
     'demo',
   );
 
-  await expect(readDependency('/tmp/demo.tsx')).resolves.toBe('content');
-  events.push('read');
-  expect(events).toEqual(['tracked', 'read']);
-});
-
-test('utoopack demo-index fingerprints dependencies without tracked reads', async () => {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dumi-md-untracked-'));
-  const dependencyFile = path.join(dir, 'demo.tsx');
-  const trackedRead = vi.fn(
-    (_file: string, callback: (err: null, data: Buffer) => void) => {
-      callback(null, Buffer.from('tracked'));
-    },
-  );
-  const loaderContext = { fs: { readFile: trackedRead } };
-
   fs.writeFileSync(dependencyFile, 'untracked');
 
   try {
-    await expect(
-      createDependencyReader(loaderContext, true, 'demo-index')(dependencyFile),
-    ).resolves.toBe('untracked');
+    await expect(readDependency(dependencyFile)).resolves.toBe('untracked');
     expect(trackedRead).not.toHaveBeenCalled();
-
-    await expect(
-      createDependencyReader(loaderContext, true, 'demo')(dependencyFile),
-    ).resolves.toBe('tracked');
-    expect(trackedRead).toHaveBeenCalledWith(
-      dependencyFile,
-      expect.any(Function),
-    );
   } finally {
     fs.rmSync(dir, { force: true, recursive: true });
   }
 });
+
+test.each([undefined, 'frontmatter', 'text', 'demo-index', 'demo'] as const)(
+  'utoopack %s mode fingerprints demo dependencies without tracked reads',
+  async (mode) => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dumi-md-untracked-'));
+    const dependencyFile = path.join(dir, 'demo.tsx');
+    const trackedRead = vi.fn(
+      (_file: string, callback: (err: null, data: Buffer) => void) => {
+        callback(null, Buffer.from('tracked'));
+      },
+    );
+    const loaderContext = { fs: { readFile: trackedRead } };
+
+    fs.writeFileSync(dependencyFile, 'untracked');
+
+    try {
+      await expect(
+        createDependencyReader(loaderContext, true, mode)(dependencyFile),
+      ).resolves.toBe('untracked');
+      expect(trackedRead).not.toHaveBeenCalled();
+    } finally {
+      fs.rmSync(dir, { force: true, recursive: true });
+    }
+  },
+);
 
 test('markdown loader tracks external demo sidecar markdown files', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dumi-demo-source-'));
@@ -696,6 +946,79 @@ test('markdown loader tracks external demo sidecar markdown files', () => {
         } as any,
       ]),
     ).toEqual([demoFile, demoMdFile]);
+  } finally {
+    fs.rmSync(dir, { force: true, recursive: true });
+  }
+});
+
+test('utoopack scopes deferred sidecars to one lightweight document overlay', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dumi-demo-watch-plan-'));
+  const basicFile = path.join(dir, 'basic.tsx');
+  const basicSidecar = path.join(dir, 'basic.md');
+  const iconFile = path.join(dir, 'icon.tsx');
+  const iconSidecar = path.join(dir, 'icon.md');
+  const demos = [
+    {
+      id: 'button-demo-basic',
+      resolveMap: { 'index.tsx': basicFile },
+      __dumiUtoopackDeferredSidecar: true,
+    },
+    {
+      id: 'button-demo-icon',
+      resolveMap: { 'index.tsx': iconFile },
+    },
+  ] as any;
+  const baseOpts = {
+    useUtoopackDemoHMR: true,
+    __dumiLoaderContextPath: '/tmp/dumi-loader-context.cjs',
+  } as any;
+
+  fs.writeFileSync(basicFile, 'export default () => null;');
+  fs.writeFileSync(basicSidecar, 'Basic description');
+  fs.writeFileSync(iconFile, 'export default () => null;');
+  fs.writeFileSync(iconSidecar, 'Icon description');
+
+  try {
+    expect(
+      getDemoWatchFiles(
+        { ...baseOpts, mode: 'demo' },
+        demos,
+        '?type=demo&overlay=1',
+      ),
+    ).toEqual([basicFile, basicSidecar, iconFile, iconSidecar]);
+    expect(getDemoWatchFiles({ ...baseOpts, mode: 'demo' }, demos)).toEqual([
+      basicFile,
+      iconFile,
+      iconSidecar,
+    ]);
+    expect(getDemoWatchFiles(baseOpts, demos)).toEqual([
+      basicFile,
+      iconFile,
+      iconSidecar,
+    ]);
+    expect(
+      getDemoWatchFiles({ ...baseOpts, mode: 'frontmatter' }, demos),
+    ).toEqual([basicFile, iconFile, iconSidecar]);
+    expect(
+      getDemoWatchFiles({ ...baseOpts, mode: 'demo-index' }, demos),
+    ).toEqual([]);
+
+    const loaderContext = {
+      addDependency: vi.fn(),
+      addMissingDependency: vi.fn(),
+    };
+    addMdResultDependencies(
+      loaderContext,
+      { ...baseOpts, mode: 'demo' },
+      { meta: { demos, embeds: [] } } as any,
+      '?type=demo&overlay=1',
+    );
+    expect(loaderContext.addDependency.mock.calls).toEqual([
+      [basicFile],
+      [basicSidecar],
+      [iconFile],
+      [iconSidecar],
+    ]);
   } finally {
     fs.rmSync(dir, { force: true, recursive: true });
   }

@@ -38,8 +38,7 @@ function useDemoCacheVersion(
   metadataVersion: string | undefined,
   hmrModuleId: string | undefined,
 ): string | undefined {
-  const hmr =
-    process.env.NODE_ENV === 'production' ? undefined : hmrModuleId;
+  const hmr = process.env.NODE_ENV === 'production' ? undefined : hmrModuleId;
   const [hmrState, setHMRState] = useState(() => ({
     id,
     moduleId: hmr,
@@ -76,18 +75,13 @@ function useDemoCacheVersion(
       ? Math.max(hmrState.revision, storedRevision)
       : storedRevision;
 
-  return `${metadataVersion}:${revision}`;
+  return JSON.stringify([hmr, metadataVersion, revision]);
 }
 
 const InternalDumiDemo = (props: IDumiDemoProps) => {
   const { historyType } = useSiteData();
   const { basename } = useAppData();
-  const {
-    __dumiUtoopackHMR: hmrModuleId,
-    id,
-    loader,
-    version,
-  } = props.demo;
+  const { __dumiUtoopackHMR: hmrModuleId, id, loader, version } = props.demo;
   const cacheVersion = useDemoCacheVersion(id, version, hmrModuleId);
   const demo = (useDemo as UseDemo)(id, loader, cacheVersion)!;
   const { component, asset, renderOpts } = demo;
@@ -150,7 +144,10 @@ export function areDumiDemoPropsEqual(
   prev: IDumiDemoProps,
   next: IDumiDemoProps,
 ): boolean {
-  return JSON.stringify(prev) === JSON.stringify(next);
+  return (
+    prev.demo.loader === next.demo.loader &&
+    JSON.stringify(prev) === JSON.stringify(next)
+  );
 }
 
 export const DumiDemo: FC<IDumiDemoProps> = React.memo(

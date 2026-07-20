@@ -25,6 +25,26 @@ function createApi(env = 'development') {
   } as any;
 }
 
+test('scoped demo HMR avoids runtime cache snapshots that contend with updates', async () => {
+  registerTsResolveExtension();
+
+  const { getUtoopackDemoHmrEngineConfig } = await import('./utoopackLoaders');
+  const scopedTechStack = {
+    runtimeOpts: { deferDemoSidecar: true },
+  } as any;
+
+  expect(
+    getUtoopackDemoHmrEngineConfig([scopedTechStack], 'development'),
+  ).toEqual({
+    turbopackBackgroundPersistence: false,
+    turbopackMemoryEviction: false,
+  });
+  expect(
+    getUtoopackDemoHmrEngineConfig([scopedTechStack], 'production'),
+  ).toEqual({});
+  expect(getUtoopackDemoHmrEngineConfig([], 'development')).toEqual({});
+});
+
 test('utoopack preserves external demo source language for parsing', async () => {
   registerTsResolveExtension();
 
@@ -121,6 +141,24 @@ test('utoopack markdown rules use current config memo', async () => {
   expect(getUtoopackMdCacheNamespace('session-a')).not.toBe(
     getUtoopackMdCacheNamespace('session-b'),
   );
+});
+
+test('utoopack routes the canonical document overlay query to the demo loader', async () => {
+  registerTsResolveExtension();
+
+  const { getUtoopackRules } = await import('./utoopackLoaders');
+  const mdRules = getUtoopackRules(createApi())['*.md'] as any[];
+  const demoRule = mdRules.find(
+    (rule) => rule.loaders[0].options.mode === 'demo',
+  );
+  const query = demoRule.condition.query as RegExp;
+
+  expect(query.test('?type=demo')).toBe(true);
+  expect(query.test('?type=demo&overlay=1')).toBe(true);
+  expect(query.test('?type=demo&overlay=1&demo=button-demo-basic')).toBe(false);
+  expect(query.test('?type=demo&demo=button-demo-basic')).toBe(false);
+  expect(query.test('?type=demo&other=value')).toBe(false);
+  expect(query.test('?type=demo&demo=button&extra=value')).toBe(false);
 });
 
 test('utoopack disables demo HMR loader output in production', async () => {

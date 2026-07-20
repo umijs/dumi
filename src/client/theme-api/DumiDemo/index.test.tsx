@@ -122,6 +122,20 @@ test('DumiDemo rerenders for equal-length prop changes', () => {
   expect(areDumiDemoPropsEqual(previous, next)).toBe(false);
 });
 
+test('DumiDemo adopts a replacement loader from a refreshed Markdown parent', () => {
+  const previous = {
+    demo: { id: 'button-demo-basic', loader: vi.fn() },
+    previewerProps: { title: 'Basic' },
+  };
+  const next = {
+    demo: { id: 'button-demo-basic', loader: vi.fn() },
+    previewerProps: { title: 'Basic' },
+  };
+
+  expect(JSON.stringify(previous)).toBe(JSON.stringify(next));
+  expect(areDumiDemoPropsEqual(previous, next)).toBe(false);
+});
+
 test('DumiDemo uses the persisted HMR revision in the demo cache version', () => {
   registerDemoHMRModule('button-demos', {
     'button-demo-basic': 'runtime-version-1',
@@ -144,7 +158,28 @@ test('DumiDemo uses the persisted HMR revision in the demo cache version', () =>
   expect(mocks.useDemo).toHaveBeenCalledWith(
     'button-demo-basic',
     undefined,
-    'metadata-version:1',
+    JSON.stringify(['button-demos', 'metadata-version', 1]),
+  );
+});
+
+test('DumiDemo isolates cache versions for identical ids in different modules', () => {
+  const renderDemo = (hmrModuleId: string) =>
+    renderToStaticMarkup(
+      <DumiDemo
+        demo={{
+          id: 'button-demo-basic',
+          __dumiUtoopackHMR: hmrModuleId,
+          version: 'metadata-version',
+        }}
+        previewerProps={{ filename: 'demo.tsx' }}
+      />,
+    );
+
+  renderDemo('button.zh-CN.md?type=demo&demo=button-demo-basic');
+  renderDemo('button.en-US.md?type=demo&demo=button-demo-basic');
+
+  expect(mocks.useDemo.mock.calls[0][2]).not.toBe(
+    mocks.useDemo.mock.calls[1][2],
   );
 });
 
@@ -170,7 +205,7 @@ test('DumiDemo keeps the original cache version when HMR is not enabled', () => 
   );
 });
 
-test('DumiDemo subscribes to semantic version changes for HMR demos', () => {
+test('DumiDemo subscribes to semantic version changes for HMR demos', async () => {
   renderToStaticMarkup(
     <DumiDemo
       demo={{
@@ -189,6 +224,9 @@ test('DumiDemo subscribes to semantic version changes for HMR demos', () => {
   });
   registerDemoHMRModule('button-demos', {
     'button-demo-basic': 'runtime-version-2',
+  });
+  await new Promise((resolve) => {
+    setTimeout(resolve);
   });
 
   expect(mocks.setHMRState).toHaveBeenCalledTimes(2);

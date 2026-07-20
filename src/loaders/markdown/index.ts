@@ -8,6 +8,11 @@ import { generateMetaChunkName, getCache, getContentHash } from '@/utils';
 import fs from 'fs';
 import path from 'path';
 import { Mustache, lodash, winPath } from 'umi/plugin-utils';
+import {
+  getDemoOverlayResourceQuery,
+  getDemoResourceQuery,
+  isDemoOverlayQuery,
+} from './demoQuery';
 import { getOrCreateWithFileLock } from './sharedCache';
 import transform, {
   type IMdTransformerOptions,
@@ -102,16 +107,19 @@ export function getMdTransformCacheKeys({
   resourcePath,
   content,
   useUtoopackDemoHMR,
+  demoOverlay,
   opts,
 }: {
   resourcePath: string;
   content: string;
   useUtoopackDemoHMR: boolean;
+  demoOverlay?: boolean;
   opts: IMdLoaderOptions;
 }) {
   const depsHintKey = [
     resourcePath,
     useUtoopackDemoHMR,
+    demoOverlay ? 'demo-overlay' : 'all-demos',
     JSON.stringify(lodash.omit(opts, MD_LOADER_RUNTIME_OPTION_KEYS)),
   ].join(':');
 
@@ -225,6 +233,49 @@ function getDemoCacheFiles(demos: IMdTransformerResult['meta']['demos'] = []) {
   return collectDemoSourceFiles(demos, true);
 }
 
+export function getDemoWatchFiles(
+  opts: IMdLoaderOptions,
+  demos: IMdTransformerResult['meta']['demos'] = [],
+  resourceQuery = '',
+) {
+  if (opts.mode === 'demo-index') return [];
+
+  const useScopedDemoHMR =
+    opts.useUtoopackDemoHMR === true &&
+    UTOOPACK_LOADER_CTX_KEY in (opts as IMdLoaderOptions & Record<string, any>);
+  const demoOverlay =
+    useScopedDemoHMR && opts.mode === 'demo'
+      ? isDemoOverlayQuery(resourceQuery)
+      : false;
+
+  if (!useScopedDemoHMR || demoOverlay) {
+    return getDemoCacheFiles(demos);
+  }
+
+  const files = new Set<string>();
+
+  demos.forEach((demo) => {
+    if (!('resolveMap' in demo)) return;
+
+    const deferSidecar = Boolean(
+      (
+        demo as typeof demo & {
+          __dumiUtoopackDeferredSidecar?: boolean;
+        }
+      ).__dumiUtoopackDeferredSidecar,
+    );
+
+    Object.values(demo.resolveMap)
+      .filter((file) => path.isAbsolute(file))
+      .forEach((file) => {
+        files.add(file);
+        if (!deferSidecar) files.add(getDemoSidecarFile(file));
+      });
+  });
+
+  return Array.from(files);
+}
+
 export function addDemoFileDependency(
   loaderContext: {
     addDependency: (file: string) => void;
@@ -247,6 +298,21 @@ export function addDemoFileDependency(
   } else {
     loaderContext.addDependency(file);
   }
+}
+
+export function addMdResultDependencies(
+  loaderContext: {
+    addDependency: (file: string) => void;
+    addMissingDependency?: (file: string) => void;
+  },
+  opts: IMdLoaderOptions,
+  ret: IMdTransformerResult,
+  resourceQuery = '',
+) {
+  ret.meta.embeds?.forEach((file) => loaderContext.addDependency(file));
+  getDemoWatchFiles(opts, ret.meta.demos, resourceQuery).forEach((file) =>
+    addDemoFileDependency(loaderContext, opts, file),
+  );
 }
 
 function isRelativePath(path: string) {
@@ -324,6 +390,11 @@ import '${winPath(md)}?watch=parent';
 import LoadingComponent from '@@/dumi/theme/loading';
 import React, { Suspense } from 'react';
 import { DumiPage } from 'dumi';
+${
+  opts.useUtoopackDemoHMR
+    ? "import { mergeDemoModules } from 'dumi/dist/client/theme-api/DumiDemo/hmr';"
+    : ''
+}
 import { texts as ${CONTENT_TEXTS_OBJ_NAME} } from '${winPath(
     this.resourcePath,
   )}?type=text';
@@ -348,7 +419,11 @@ export function emitDemo(
   opts: IMdLoaderDemoModeOptions,
   ret: IMdTransformerResult,
 ) {
-  const { demos } = ret.meta;
+  const demoOverlay =
+    opts.useUtoopackDemoHMR && UTOOPACK_LOADER_CTX_KEY in (opts as any)
+      ? isDemoOverlayQuery(this.resourceQuery)
+      : false;
+  const demos = ret.meta.demos;
   const demoHMRVersions = Object.fromEntries(
     (demos ?? []).flatMap((demo) => {
       const hmrVersion = (
@@ -360,14 +435,85 @@ export function emitDemo(
         : [];
     }),
   );
+  const isUtoopackContext = UTOOPACK_LOADER_CTX_KEY in (opts as any);
+  const isRuntimeFullyVersioned = (demos ?? []).every(
+    (demo) =>
+      !('asset' in demo) ||
+      typeof (demo as typeof demo & { __dumiUtoopackHMRVersion?: string })
+        .__dumiUtoopackHMRVersion === 'string',
+  );
   const enableDemoHMR =
     opts.useUtoopackDemoHMR === true &&
-    Object.keys(demoHMRVersions).length > 0;
+    Object.keys(demoHMRVersions).length > 0 &&
+    (!isUtoopackContext || demoOverlay || isRuntimeFullyVersioned);
+  const demoHMRChannel =
+    isUtoopackContext && !demoOverlay ? 'runtime' : undefined;
   const demoHMRModuleId = JSON.stringify(
-    winPath(`${this.resourcePath}?type=demo`),
+    winPath(
+      `${this.resourcePath}${
+        isUtoopackContext
+          ? getDemoOverlayResourceQuery()
+          : getDemoResourceQuery()
+      }`,
+    ),
   );
-  const enableUtoopackSelfAccept =
-    enableDemoHMR && UTOOPACK_LOADER_CTX_KEY in (opts as any);
+  const enableUtoopackSelfAccept = enableDemoHMR && isUtoopackContext;
+
+  if (demoOverlay) {
+    const overlayDemos = Object.fromEntries(
+      (demos ?? []).map((demo) => {
+        const previewerProps =
+          'previewerProps' in demo ? demo.previewerProps : undefined;
+        const ownedPreviewerProps =
+          (
+            demo as typeof demo & {
+              __dumiUtoopackDeferredPreviewerProps?: string[];
+            }
+          ).__dumiUtoopackDeferredPreviewerProps ?? [];
+        const assetPatch =
+          'asset' in demo
+            ? lodash.pick(demo.asset, [
+                'description',
+                'keywords',
+                'snapshot',
+                'title',
+              ])
+            : undefined;
+
+        return [
+          demo.id,
+          {
+            ...(assetPatch ? { asset: assetPatch } : {}),
+            previewerProps: previewerProps ?? {},
+            __dumiOwnedPreviewerProps: ownedPreviewerProps,
+          },
+        ];
+      }),
+    );
+    const output = [
+      `import '${winPath(this.resourcePath)}?watch=parent';`,
+      enableDemoHMR
+        ? "import { registerDemoHMRModule } from 'dumi/dist/client/theme-api/DumiDemo/hmr';"
+        : '',
+      `export const demos = ${JSON.stringify(overlayDemos)};`,
+      enableUtoopackSelfAccept
+        ? `if (
+  typeof __turbopack_context__ !== 'undefined' &&
+  typeof __turbopack_context__.m?.hot?.accept === 'function'
+) {
+  __turbopack_context__.m.hot.accept();
+}`
+        : '',
+      enableDemoHMR
+        ? `registerDemoHMRModule(${demoHMRModuleId}, ${JSON.stringify(
+            demoHMRVersions,
+          )}${demoHMRChannel ? `, ${JSON.stringify(demoHMRChannel)}` : ''});`
+        : '',
+    ];
+
+    return output.filter(Boolean).join('\n');
+  }
+
   const renderedDemos = demos?.map((demo) => ({
     ...demo,
     renderedPreviewerProps:
@@ -460,12 +606,15 @@ if (
   __turbopack_context__.m.hot.accept();
 }
 {{/enableUtoopackSelfAccept}}{{#enableDemoHMR}}
-registerDemoHMRModule({{{demoHMRModuleId}}}, {{{demoHMRVersions}}});
+  registerDemoHMRModule({{{demoHMRModuleId}}}, {{{demoHMRVersions}}}{{#demoHMRChannel}}, {{{demoHMRChannel}}}{{/demoHMRChannel}});
 {{/enableDemoHMR}}`,
     {
       demos: renderedDemos,
       dedupedDemosDeps,
       demoHMRModuleId,
+      demoHMRChannel: demoHMRChannel
+        ? JSON.stringify(demoHMRChannel)
+        : undefined,
       demoHMRVersions: JSON.stringify(demoHMRVersions),
       enableDemoHMR,
       enableUtoopackSelfAccept,
@@ -557,11 +706,44 @@ registerDemoHMRModule({{{demoHMRModuleId}}}, {{{demoHMRVersions}}});
   );
 }
 
-function renderDemoIndex(
+export function renderDemoIndex(
   resourcePath: string,
-  opts: Pick<IMdLoaderDemoIndexModeOptions, 'cwd' | 'locales'>,
+  opts: Pick<
+    IMdLoaderDemoIndexModeOptions,
+    'cwd' | 'locales' | 'useUtoopackDemoHMR'
+  > &
+    Record<string, any>,
   demos: IMdTransformerResult['meta']['demos'],
 ) {
+  const useScopedDemoHMR =
+    opts.useUtoopackDemoHMR === true && UTOOPACK_LOADER_CTX_KEY in opts;
+
+  if (useScopedDemoHMR) {
+    const runtimeRequest = winPath(`${resourcePath}${getDemoResourceQuery()}`);
+    const overlayRequest = winPath(
+      `${resourcePath}${getDemoOverlayResourceQuery()}`,
+    );
+
+    return `
+import { mergeDemoModules } from 'dumi/dist/client/theme-api/DumiDemo/hmr';
+const demoRuntimeGetter = () => import(${JSON.stringify(runtimeRequest)});
+const demoOverlayGetter = () => import(${JSON.stringify(overlayRequest)});
+const demoGetter = () =>
+  Promise.all([demoRuntimeGetter(), demoOverlayGetter()]).then(
+    ([runtime, overlay]) => mergeDemoModules(runtime, overlay),
+  );
+const demoGetters = Object.fromEntries(
+  ${JSON.stringify(
+    demos?.map((demo) => demo.id),
+  )}.map((id) => [id, demoGetter]),
+);
+export const demoIndex = {
+  ids: ${JSON.stringify(demos?.map((demo) => demo.id))},
+  getters: demoGetters,
+  getter: demoGetter,
+};`;
+  }
+
   return Mustache.render(
     `
 export const demoIndex = {
@@ -590,7 +772,7 @@ function emitDemoIndex(
 ${renderDemoIndex(this.resourcePath, opts, demos)}`;
 }
 
-function emitFrontmatter(
+export function emitFrontmatter(
   this: any,
   opts: IMdLoaderFrontmatterModeOptions,
   ret: IMdTransformerResult,
@@ -598,9 +780,9 @@ function emitFrontmatter(
   const { frontmatter, toc, demos } = ret.meta;
   const resourcePath = winPath(this.resourcePath);
   const isUtoopack = UTOOPACK_LOADER_CTX_KEY in (opts as any);
-  const demoIndex = renderDemoIndex(this.resourcePath, opts, demos);
+  const useScopedDemoHMR = isUtoopack && opts.useUtoopackDemoHMR === true;
 
-  if (isUtoopack) {
+  if (useScopedDemoHMR) {
     const rendered = Mustache.render(
       `import '${resourcePath}?watch=parent';
 globalThis.__DUMI_FM__ = globalThis.__DUMI_FM__ || {};
@@ -608,16 +790,16 @@ globalThis.__DUMI_TOC__ = globalThis.__DUMI_TOC__ || {};
 globalThis.__DUMI_FM__['${resourcePath}'] = {{{frontmatter}}};
 globalThis.__DUMI_TOC__['${resourcePath}'] = {{{toc}}};
 export const frontmatter = globalThis.__DUMI_FM__['${resourcePath}'];
-export const toc = globalThis.__DUMI_TOC__['${resourcePath}'];
-{{{demoIndex}}}`,
+export const toc = globalThis.__DUMI_TOC__['${resourcePath}'];`,
       {
         toc: JSON.stringify(toc),
         frontmatter: JSON.stringify(frontmatter),
-        demoIndex,
       },
     );
     return rendered;
   }
+
+  const demoIndex = renderDemoIndex(this.resourcePath, opts, demos);
 
   return Mustache.render(
     `import '${resourcePath}?watch=parent';
@@ -651,18 +833,7 @@ function emitText(
 }
 
 function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
-  const { demos, embeds } = ret.meta;
-
-  // declare embedded files as loader dependency, for re-compiling when file changed
-  embeds!.forEach((file) => this.addDependency(file));
-
-  // demo-index only needs demo ids and lazy getters. Keep demo source files out
-  // of the global meta dependency graph so JSX edits can stay local.
-  if (opts.mode !== 'demo-index') {
-    getDemoCacheFiles(demos).forEach((file) =>
-      addDemoFileDependency(this, opts, file),
-    );
-  }
+  addMdResultDependencies(this, opts, ret, this.resourceQuery);
 
   // to avoid compile watch=parent virtual module
   if (this.resourceQuery.includes('watch=parent')) return null;
@@ -797,22 +968,11 @@ export function createDependencyReader(
   useUtoopack: boolean,
   mode?: IMdLoaderOptions['mode'],
 ) {
-  if (useUtoopack && mode !== 'demo-index' && loaderContext.fs?.readFile) {
-    return (file: string) =>
-      new Promise<string>((resolve, reject) => {
-        loaderContext.fs.readFile(
-          file,
-          (err: NodeJS.ErrnoException, data: any) => {
-            if (err) reject(err);
-            else
-              resolve(
-                Buffer.isBuffer(data) ? data.toString('utf-8') : String(data),
-              );
-          },
-        );
-      });
-  }
-
+  void loaderContext;
+  void useUtoopack;
+  void mode;
+  // Cache fingerprints must not create bundler dependency edges. Watch edges
+  // are registered explicitly from the emitted mode's dependency plan.
   return readDependencyFromFs;
 }
 
@@ -835,6 +995,10 @@ export default function mdLoader(this: any, content: string) {
   ];
   const useUtoopackDemoHMR =
     opts.useUtoopackDemoHMR === true && Boolean(loaderContextPath);
+  const demoOverlay =
+    useUtoopackDemoHMR && opts.mode === 'demo'
+      ? isDemoOverlayQuery(this.resourceQuery)
+      : false;
 
   if (loaderContextPath) {
     const ctx = require(loaderContextPath) as {
@@ -901,11 +1065,12 @@ export default function mdLoader(this: any, content: string) {
     resourcePath: this.resourcePath,
     content,
     useUtoopackDemoHMR,
+    demoOverlay,
     opts,
   });
 
   const createTransform = async () => {
-    return transform(content, {
+    const result = await transform(content, {
       ...(lodash.omit(opts, [
         'mode',
         'builtins',
@@ -918,7 +1083,13 @@ export default function mdLoader(this: any, content: string) {
       >),
       fileAbsPath: winPath(this.resourcePath),
       useUtoopackDemoHMR,
+      demoOverlay,
     });
+
+    // Establish explicit watch edges before the stable transform fingerprints
+    // the files it discovered.
+    addMdResultDependencies(this, opts, result, this.resourceQuery);
+    return result;
   };
   const getTransformDeps = (ret: IMdTransformerResult) =>
     normalizeDeps(ret.meta.embeds!.concat(getDemoCacheFiles(ret.meta.demos)));
@@ -933,6 +1104,15 @@ export default function mdLoader(this: any, content: string) {
   };
 
   const getTransform = async () => {
+    const cachedCandidate = getMdLoaderCacheRecord(cache, baseCacheKey);
+    if (cachedCandidate) {
+      addMdResultDependencies(
+        this,
+        opts,
+        cachedCandidate.result,
+        this.resourceQuery,
+      );
+    }
     const cached = await getValidMdLoaderCacheRecord(
       cache,
       baseCacheKey,
@@ -1016,6 +1196,9 @@ export default function mdLoader(this: any, content: string) {
   };
 
   getTransform()
-    .then((record) => cb(null, emit.call(this, opts, record.result)))
+    .then((record) => {
+      addMdResultDependencies(this, opts, record.result, this.resourceQuery);
+      cb(null, emit.call(this, opts, record.result));
+    })
     .catch(cb);
 }

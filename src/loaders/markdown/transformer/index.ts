@@ -47,6 +47,10 @@ declare module 'vfile' {
           previewerProps?: IDumiDemoProps['previewerProps'];
           /** Internal semantic version used by the utoopack demo HMR runtime. */
           __dumiUtoopackHMRVersion?: string;
+          /** Whether same-name sidecars are fully owned by the demo module. */
+          __dumiUtoopackDeferredSidecar?: boolean;
+          /** Previewer prop keys whose values are authoritative in the HMR overlay. */
+          __dumiUtoopackDeferredPreviewerProps?: string[];
           renderOpts: {
             type?: string;
             rendererPath?: string;
@@ -76,6 +80,8 @@ export interface IMdTransformerOptions {
   cwd: string;
   fileAbsPath: string;
   useUtoopackDemoHMR?: boolean;
+  /** Parse lightweight deferred props for the document HMR overlay. */
+  demoOverlay?: boolean;
   alias: ResolveOptions['alias'];
   parentAbsPath?: string;
   techStacks: IDumiTechStack[];
@@ -195,6 +201,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
       fileLocaleLessPath,
       fileLocale,
       useUtoopackDemoHMR: opts.useUtoopackDemoHMR,
+      demoOverlay: opts.demoOverlay,
       resolve: opts.resolve,
       resolver,
     })

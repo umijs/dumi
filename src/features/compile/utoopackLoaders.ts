@@ -18,6 +18,24 @@ export const UTOOPACK_DEMO_ASSETS_FILENAME = 'dumi-utoopack-demo-assets.jsonl';
 export const MARKDOWN_LOADER_CACHE_EPOCH = `${process.pid}-${Date.now()}`;
 export const UTOOPACK_MD_CACHE_NAMESPACE = 'md-loader-sessions';
 
+export function getUtoopackDemoHmrEngineConfig(
+  techStacks: IDumiTechStack[],
+  env: string,
+) {
+  const useScopedDemoHMR =
+    env === 'development' &&
+    techStacks.some((techStack) => techStack.runtimeOpts?.deferDemoSidecar);
+
+  return useScopedDemoHMR
+    ? {
+        // dumi's eager single-page graph can contain hundreds of thousands of
+        // tasks. Runtime cache snapshots compete with the small demo update.
+        turbopackBackgroundPersistence: false,
+        turbopackMemoryEviction: false,
+      }
+    : {};
+}
+
 export function getUtoopackMdCacheNamespace(epoch: string) {
   return path.join(UTOOPACK_MD_CACHE_NAMESPACE, epoch);
 }
@@ -394,7 +412,9 @@ export const getUtoopackRules = (
       },
       // compile inline demo code blocks
       {
-        condition: { query: /^\?type=demo$/ },
+        condition: {
+          query: /^\?type=demo(?:&overlay=1)?$/,
+        },
         loaders: [
           {
             loader: mdLoaderPath,

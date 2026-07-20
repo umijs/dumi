@@ -8,6 +8,7 @@ import type { IRoute } from 'umi';
 import { glob, winPath } from 'umi/plugin-utils';
 
 const CTX_LAYOUT_ID = 'dumi-context-layout';
+const ATOM_ROUTE_MARKDOWN_GLOB = '{*,*/index,*/index.*,*/README,*/README.*}.md';
 
 /**
  * normalize item of `resolve.docDirs` to object
@@ -93,12 +94,14 @@ export default (api: IApi) => {
   api.describe({ key: 'dumi:routes' });
 
   // watch docs paths to re-generate routes
-  api.addTmpGenerateWatcherPaths(() =>
-    [
-      ...api.config.resolve.atomDirs,
-      ...api.config.resolve.docDirs.map(normalizeDocDir),
-    ].map(({ dir }) => path.join(api.cwd, dir, '**/*.md')),
-  );
+  api.addTmpGenerateWatcherPaths(() => [
+    ...api.config.resolve.atomDirs.map(({ dir }) =>
+      winPath(path.join(api.cwd, dir, ATOM_ROUTE_MARKDOWN_GLOB)),
+    ),
+    ...api.config.resolve.docDirs
+      .map(normalizeDocDir)
+      .map(({ dir }) => winPath(path.join(api.cwd, dir, '**/*.md'))),
+  ]);
 
   api.modifyDefaultConfig((memo) => {
     // support to disable docDirs & atomDirs by empty array
@@ -210,10 +213,7 @@ export default (api: IApi) => {
     // generate atom routes
     atomDirs.forEach(({ type, subType = '', dir }) => {
       const base = path.join(api.cwd, dir);
-      const atomFiles = glob.sync(
-        '{*,*/index,*/index.*,*/README,*/README.*}.md',
-        { cwd: base },
-      );
+      const atomFiles = glob.sync(ATOM_ROUTE_MARKDOWN_GLOB, { cwd: base });
 
       atomFiles.forEach((file) => {
         const routeFile = winPath(path.join(plural(type), subType, file));

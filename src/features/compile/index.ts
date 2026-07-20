@@ -14,6 +14,7 @@ import {
   MARKDOWN_LOADER_CACHE_EPOCH,
   UTOOPACK_DEMO_ASSETS_FILENAME,
   buildLoaderContextContent,
+  getUtoopackDemoHmrEngineConfig,
   getUtoopackMdCacheNamespace,
   getUtoopackRules,
 } from './utoopackLoaders';
@@ -72,6 +73,15 @@ function normalizeMakoAliases(
 
 export default (api: IApi) => {
   api.describe({ key: 'dumi:compile' });
+
+  const applyRegisteredTechStacks = async () =>
+    api.applyPlugins({
+      key: 'registerTechStack',
+      type: api.ApplyPluginsType.add,
+    });
+  let pendingRegisteredTechStacks:
+    | ReturnType<typeof applyRegisteredTechStacks>
+    | undefined;
 
   api.register({
     key: 'onExit',
@@ -140,12 +150,14 @@ export default (api: IApi) => {
     // and `before` only insert before the last one
     stage: -Infinity,
     async fn() {
-      replaceTechStacks(
-        await api.applyPlugins({
-          key: 'registerTechStack',
-          type: api.ApplyPluginsType.add,
-        }),
-      );
+      const applyingTechStacks =
+        pendingRegisteredTechStacks ?? applyRegisteredTechStacks();
+      const nextTechStacks = await applyingTechStacks;
+
+      if (pendingRegisteredTechStacks === applyingTechStacks) {
+        pendingRegisteredTechStacks = undefined;
+      }
+      replaceTechStacks(nextTechStacks);
     },
   });
 
@@ -340,9 +352,18 @@ export default (api: IApi) => {
 
   api.modifyConfig({
     before: 'utoopack',
-    fn: (memo) => {
+    async fn(memo) {
       if (memo.utoopack) {
+        // Config is resolved before onGenerateFiles populates the shared list,
+        // so resolve registered stacks here as well for the engine defaults.
+        pendingRegisteredTechStacks ??= applyRegisteredTechStacks();
+        const registeredTechStacks = await pendingRegisteredTechStacks;
+        const demoHmrEngineConfig = getUtoopackDemoHmrEngineConfig(
+          registeredTechStacks,
+          api.env,
+        );
         memo.utoopack = {
+          ...demoHmrEngineConfig,
           ...memo.utoopack,
           module: {
             ...(memo.utoopack.module || {}),

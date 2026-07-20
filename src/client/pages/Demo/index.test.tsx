@@ -90,7 +90,7 @@ test('uses the persisted HMR revision and route id in the demo cache version', (
   );
 });
 
-test('subscribes the iframe page to demo semantic version changes', () => {
+test('subscribes the iframe page to demo semantic version changes', async () => {
   renderToStaticMarkup(<DemoRenderPage />);
 
   registerDemoHMRModule('button-demos', {
@@ -98,6 +98,9 @@ test('subscribes the iframe page to demo semantic version changes', () => {
   });
   registerDemoHMRModule('button-demos', {
     'button-basic': 'runtime-version-2',
+  });
+  await new Promise((resolve) => {
+    setTimeout(resolve);
   });
 
   expect(mocks.setHMRState).toHaveBeenCalledTimes(1);

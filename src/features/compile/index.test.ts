@@ -77,6 +77,62 @@ test('registered tech stacks are replaced between generate cycles', async () => 
   }
 });
 
+test('utoopack config and first generate cycle reuse one tech stack registration', async () => {
+  registerTsResolveExtension();
+  const compileFeature = await import('.');
+  const generateHooks: any[] = [];
+  const configHooks: any[] = [];
+  const stack = {
+    name: 'scoped',
+    runtimeOpts: { deferDemoSidecar: true },
+  } as any;
+  const applyPlugins = vi.fn().mockResolvedValue([stack]);
+  const api: any = new Proxy(
+    {
+      ApplyPluginsType: { add: 'add' },
+      applyPlugins,
+      config: { utoopack: {} },
+      cwd: '/tmp/dumi-app',
+      env: 'development',
+      modifyConfig: vi.fn((hook) => configHooks.push(hook)),
+      onGenerateFiles: vi.fn((hook) => generateHooks.push(hook)),
+      paths: { absTmpPath: '/tmp/dumi-app/.dumi/tmp' },
+      userConfig: {},
+    },
+    {
+      get(target, property) {
+        if (property in target) return target[property as keyof typeof target];
+
+        return vi.fn();
+      },
+    },
+  );
+
+  compileFeature.default(api);
+  const utoopackConfigHook = configHooks.find(
+    (hook) => hook.before === 'utoopack',
+  ).fn;
+  const registerTechStacks = generateHooks.find(
+    (hook) => hook.stage === -Infinity,
+  ).fn;
+
+  try {
+    const config = await utoopackConfigHook({
+      utoopack: { turbopackMemoryEviction: true },
+    });
+    await registerTechStacks();
+
+    expect(applyPlugins).toHaveBeenCalledOnce();
+    expect(compileFeature.techStacks).toEqual([stack]);
+    expect(config.utoopack).toMatchObject({
+      turbopackBackgroundPersistence: false,
+      turbopackMemoryEviction: true,
+    });
+  } finally {
+    compileFeature.techStacks.length = 0;
+  }
+});
+
 test('utoopack session cache cleanup uses the configured cache directory', async () => {
   registerTsResolveExtension();
   const compileFeature = await import('.');
