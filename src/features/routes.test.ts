@@ -1,7 +1,7 @@
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import { glob } from 'umi/plugin-utils';
+import { glob, winPath } from 'umi/plugin-utils';
 import { vi } from 'vitest';
 import routesFeature from './routes';
 
@@ -41,15 +41,17 @@ test('tmp generation watches only routable markdown files in atom directories', 
   const { cwd, paths } = getTmpGenerateWatcherPaths();
 
   expect(paths).toEqual([
-    path.join(
-      cwd,
-      'components',
-      '{*,*/index,*/index.*,*/README,*/README.*}.md',
+    winPath(
+      path.join(
+        cwd,
+        'components',
+        '{*,*/index,*/index.*,*/README,*/README.*}.md',
+      ),
     ),
-    path.join(cwd, 'docs', '**/*.md'),
-    path.join(cwd, 'guides', '**/*.md'),
+    winPath(path.join(cwd, 'docs', '**/*.md')),
+    winPath(path.join(cwd, 'guides', '**/*.md')),
   ]);
-  expect(paths).not.toContain(path.join(cwd, 'components', '**/*.md'));
+  expect(paths).not.toContain(winPath(path.join(cwd, 'components', '**/*.md')));
 });
 
 test('tmp generation watcher globs use portable path separators', () => {
