@@ -131,7 +131,7 @@ export const pickRouteSortMeta = (
 
   switch (typeof sub) {
     case 'object':
-      original.title = sub.title || original.title;
+      original.title = sub?.title || original.title;
       original.order = sub.order ?? original.order;
       break;
 
