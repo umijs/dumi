@@ -1,4 +1,5 @@
 import Module from 'module';
+import path from 'path';
 import { vi } from 'vitest';
 
 function registerTsResolveExtension() {
@@ -7,8 +8,9 @@ function registerTsResolveExtension() {
   extensions['.ts'] ??= extensions['.js'];
 }
 
-function createApi() {
+function createApi(env = 'development') {
   return {
+    env,
     cwd: '/tmp/dumi-app',
     paths: {
       absTmpPath: '/tmp/dumi-app/.dumi/tmp',
@@ -23,6 +25,26 @@ function createApi() {
   } as any;
 }
 
+test('scoped demo HMR avoids runtime cache snapshots that contend with updates', async () => {
+  registerTsResolveExtension();
+
+  const { getUtoopackDemoHmrEngineConfig } = await import('./utoopackLoaders');
+  const scopedTechStack = {
+    runtimeOpts: { deferDemoSidecar: true },
+  } as any;
+
+  expect(
+    getUtoopackDemoHmrEngineConfig([scopedTechStack], 'development'),
+  ).toEqual({
+    turbopackBackgroundPersistence: false,
+    turbopackMemoryEviction: false,
+  });
+  expect(
+    getUtoopackDemoHmrEngineConfig([scopedTechStack], 'production'),
+  ).toEqual({});
+  expect(getUtoopackDemoHmrEngineConfig([], 'development')).toEqual({});
+});
+
 test('utoopack preserves external demo source language for parsing', async () => {
   registerTsResolveExtension();
 
@@ -30,10 +52,10 @@ test('utoopack preserves external demo source language for parsing', async () =>
   const rules = getUtoopackRules(createApi());
   const wildcardRules = rules['**/*'] as any[];
 
-  const findDemoRuleByPath = (path: string) =>
+  const findDemoRuleByPath = (filePattern: string) =>
     wildcardRules.find((rule) =>
       rule.condition?.all?.some(
-        (condition: any) => String(condition.path) === path,
+        (condition: any) => String(condition.path) === filePattern,
       ),
     );
 
@@ -65,10 +87,15 @@ test('utoopack preserves external demo source language for parsing', async () =>
 test('utoopack markdown rules use current config memo', async () => {
   registerTsResolveExtension();
 
-  const { getUtoopackRules } = await import('./utoopackLoaders');
+  const {
+    MARKDOWN_LOADER_CACHE_EPOCH,
+    getUtoopackMdCacheNamespace,
+    getUtoopackRules,
+  } = await import('./utoopackLoaders');
   const api = createApi();
   const rules = getUtoopackRules(api, {
     ...api.config,
+    cacheDirectoryPath: '../shared-cache',
     alias: {
       antd: '/tmp/dumi-app/components',
     },
@@ -97,6 +124,55 @@ test('utoopack markdown rules use current config memo', async () => {
     codeBlockMode: 'passive',
     forceKebabCaseRouting: false,
   });
+  expect(MARKDOWN_LOADER_CACHE_EPOCH).toEqual(expect.any(String));
+  expect(MARKDOWN_LOADER_CACHE_EPOCH).not.toHaveLength(0);
+  expect(defaultMdOptions.cacheEpoch).toBe(MARKDOWN_LOADER_CACHE_EPOCH);
+  expect(defaultMdOptions.useUtoopackDemoHMR).toBe(true);
+  expect(defaultMdOptions.cacheDirectory).toBe(
+    path.resolve(api.cwd, '../shared-cache', 'dumi'),
+  );
+  expect(
+    mdRules.every(
+      (rule) =>
+        rule.loaders[0].options.cacheDirectory ===
+        defaultMdOptions.cacheDirectory,
+    ),
+  ).toBe(true);
+  expect(getUtoopackMdCacheNamespace('session-a')).not.toBe(
+    getUtoopackMdCacheNamespace('session-b'),
+  );
+});
+
+test('utoopack routes the canonical document overlay query to the demo loader', async () => {
+  registerTsResolveExtension();
+
+  const { getUtoopackRules } = await import('./utoopackLoaders');
+  const mdRules = getUtoopackRules(createApi())['*.md'] as any[];
+  const demoRule = mdRules.find(
+    (rule) => rule.loaders[0].options.mode === 'demo',
+  );
+  const query = demoRule.condition.query as RegExp;
+
+  expect(query.test('?type=demo')).toBe(true);
+  expect(query.test('?type=demo&overlay=1')).toBe(true);
+  expect(query.test('?type=demo&overlay=1&demo=button-demo-basic')).toBe(false);
+  expect(query.test('?type=demo&demo=button-demo-basic')).toBe(false);
+  expect(query.test('?type=demo&other=value')).toBe(false);
+  expect(query.test('?type=demo&demo=button&extra=value')).toBe(false);
+});
+
+test('utoopack disables demo HMR loader output in production', async () => {
+  registerTsResolveExtension();
+
+  const { getUtoopackRules } = await import('./utoopackLoaders');
+  const rules = getUtoopackRules(createApi('production'));
+  const mdRules = rules['*.md'] as any[];
+
+  expect(
+    mdRules.every(
+      (rule) => rule.loaders[0].options.useUtoopackDemoHMR === false,
+    ),
+  ).toBe(true);
 });
 
 test('utoopack treats ?raw imports as source strings', async () => {

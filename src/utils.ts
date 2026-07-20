@@ -96,12 +96,25 @@ const caches: Record<string, ReturnType<typeof Cache>> = {};
 export function _setFSCacheDir(dir: string) {
   cacheDir = dir;
 }
-export function getCache(ns: string): (typeof caches)['0'] {
+
+export function resolveDumiCacheDir(
+  cwd: string,
+  cacheDirectoryPath?: string | false,
+) {
+  return cacheDirectoryPath
+    ? path.resolve(cwd, cacheDirectoryPath, 'dumi')
+    : path.resolve(cwd, FS_CACHE_DIR);
+}
+
+export function getCache(ns: string, baseDir = cacheDir): (typeof caches)['0'] {
   // return fake cache if cache disabled
   if (process.env.DUMI_CACHE === 'none') {
     return { set() {}, get() {}, setSync() {}, getSync() {} } as any;
   }
-  return (caches[ns] ??= Cache({ basePath: path.resolve(cacheDir, ns) }));
+
+  const basePath = path.resolve(baseDir, ns);
+
+  return (caches[basePath] ??= Cache({ basePath }));
 }
 
 /**

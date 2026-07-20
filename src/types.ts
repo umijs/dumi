@@ -96,6 +96,19 @@ export interface IDumiTechStackRuntimeOpts {
    * path to runtime plugin for this tech stack
    */
   pluginPath?: string;
+  /**
+   * Previewer props that are derived from demo source code and may be loaded
+   * with the demo runtime instead of being embedded in the Markdown page.
+   * This is only used by the utoopack development HMR fast path.
+   */
+  deferPreviewerProps?: string[];
+  /**
+   * Whether same-name Markdown sidecars only feed deferred previewer props.
+   * This lets the utoopack development path keep them out of the page module
+   * dependency graph. Tech stack subclasses must disable this when a sidecar
+   * also changes page-level metadata such as title or TOC.
+   */
+  deferDemoSidecar?: boolean;
 }
 
 export abstract class IDumiTechStack {

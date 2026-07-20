@@ -38,6 +38,7 @@ type DemoGetter = () => Promise<{ demos: Record<string, IDemoData> }>;
 type DemoIndex = {
   ids: string[];
   getter: DemoGetter;
+  getters?: Record<string, DemoGetter>;
 };
 type DemoIndexGetter = () => Promise<DemoIndex>;
 
@@ -46,18 +47,17 @@ const demoIndexes = Object.entries(filesMeta)
     id,
     demoIndex: meta.demoIndex,
   }))
-  .filter(
-    (item): item is { id: string; demoIndex: DemoIndex } =>
-      Boolean(item.demoIndex),
+  .filter((item): item is { id: string; demoIndex: DemoIndex } =>
+    Boolean(item.demoIndex),
   );
 
 const demoIdMap = demoIndexes.reduce<Record<string, DemoGetter>>(
   (total, { demoIndex }) => {
     if (demoIndex) {
-      const { ids, getter } = demoIndex;
+      const { ids, getter, getters } = demoIndex;
 
       ids.forEach((id) => {
-        total[id] = getter;
+        total[id] = getters?.[id] ?? getter;
       });
     }
 
@@ -118,7 +118,9 @@ async function getDemoFromDemoIndex(
   const demoId = getDemoIdCandidates(id).find((candidate) =>
     demoIndex.ids.includes(candidate),
   );
-  const getter = demoId ? demoIndex.getter : undefined;
+  const getter = demoId
+    ? demoIndex.getters?.[demoId] ?? demoIndex.getter
+    : undefined;
 
   if (!getter) return undefined;
 
@@ -139,8 +141,7 @@ async function getDemoFromRouteIndex(id: string, routeId: string) {
   if (!demoIndexGetter) return getDemoFromIndexMap(id);
 
   return (
-    (await getDemoFromDemoIndex(id, demoIndexGetter)) ??
-    getDemoFromIndexMap(id)
+    (await getDemoFromDemoIndex(id, demoIndexGetter)) ?? getDemoFromIndexMap(id)
   );
 }
 
@@ -173,8 +174,8 @@ export function useDemo(
   const cacheKey = version
     ? `${id}:${version}`
     : routeId
-      ? `${id}:route=${routeId}`
-      : id;
+    ? `${id}:route=${routeId}`
+    : id;
   const getter = loader ?? (mappedDemoId ? demoIdMap[mappedDemoId] : undefined);
 
   if (!demosCache.get(cacheKey)) {
@@ -190,8 +191,8 @@ export function useDemo(
             return demo;
           })
         : routeId
-          ? getDemoFromRouteIndex(id, routeId)
-          : getDemoFromIndexMap(id),
+        ? getDemoFromRouteIndex(id, routeId)
+        : getDemoFromIndexMap(id),
     );
 
     // Reuse local demo data for consumers that still call useDemo(id), such as useLiveDemo.
@@ -212,10 +213,7 @@ export async function getFullDemos() {
       demoIndex: await demoIndexGetter?.().catch(() => undefined),
     })),
   );
-  const allDemoIndexes = [
-    ...demoIndexes,
-    ...lazyDemoIndexes,
-  ].filter(
+  const allDemoIndexes = [...demoIndexes, ...lazyDemoIndexes].filter(
     (item): item is { id: string; demoIndex: DemoIndex } =>
       Boolean(item.demoIndex),
   );
@@ -265,7 +263,6 @@ export function getRouteMetaById<T extends { syncOnly?: boolean }>(
 ): T extends { syncOnly: true }
   ? IRouteMeta | undefined
   : Promise<IRouteMeta> | undefined {
-
   if (filesMeta[id]) {
     const { frontmatter, toc, textGetter, tabs } = filesMeta[id];
     const routeMeta: IRouteMeta = {
@@ -309,12 +306,9 @@ export async function getFullRoutesMeta(): Promise<Record<string, IRouteMeta>> {
       meta: await getRouteMetaById(id),
     })),
   ).then((ret) =>
-    ret.reduce(
-      (total, { id, meta }) => {
-        total[id] = meta;
-        return total;
-      },
-      {},
-    ),
+    ret.reduce((total, { id, meta }) => {
+      total[id] = meta;
+      return total;
+    }, {}),
   );
 }

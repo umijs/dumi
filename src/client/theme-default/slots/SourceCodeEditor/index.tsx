@@ -26,6 +26,10 @@ const SourceCodeEditor: FC<ISourceCodeEditorProps> = (props) => {
   const [style, setStyle] = useState<CSSProperties>();
   const [code, setCode] = useState(props.initialValue);
 
+  useEffect(() => {
+    setCode(props.initialValue);
+  }, [props.initialValue]);
+
   // generate style from pre element, for adapting to the custom theme
   useEffect(() => {
     const pre = elm.current?.querySelector('pre');
