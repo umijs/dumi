@@ -110,7 +110,7 @@ export default (api: IApi) => {
         // Existing Markdown files are already watched by the bundler. Only
         // route topology changes need to regenerate Umi's temporary files.
         events: ['add', 'unlink'],
-      })) as any;
+      }));
     }
 
     return watcherPaths;
