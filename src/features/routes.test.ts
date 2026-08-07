@@ -1,7 +1,7 @@
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import { glob } from 'umi/plugin-utils';
+import { glob, winPath } from 'umi/plugin-utils';
 import { vi } from 'vitest';
 import routesFeature from './routes';
 
@@ -44,19 +44,21 @@ test('tmp generation watches route topology changes only', () => {
 
   expect(watchers).toEqual([
     {
-      path: path.join(
-        cwd,
-        'components',
-        '{*,*/index,*/index.*,*/README,*/README.*}.md',
+      path: winPath(
+        path.join(
+          cwd,
+          'components',
+          '{*,*/index,*/index.*,*/README,*/README.*}.md',
+        ),
       ),
       events: ['add', 'unlink'],
     },
     {
-      path: path.join(cwd, 'docs', '**/*.md'),
+      path: winPath(path.join(cwd, 'docs', '**/*.md')),
       events: ['add', 'unlink'],
     },
     {
-      path: path.join(cwd, 'guides', '**/*.md'),
+      path: winPath(path.join(cwd, 'guides', '**/*.md')),
       events: ['add', 'unlink'],
     },
   ]);
@@ -102,12 +104,14 @@ test('non-utoopack bundlers keep the existing string watchers', () => {
   routesFeature(api);
 
   expect(addTmpGenerateWatcherPaths.mock.calls[0][0]()).toEqual([
-    path.join(
-      cwd,
-      'components',
-      '{*,*/index,*/index.*,*/README,*/README.*}.md',
+    winPath(
+      path.join(
+        cwd,
+        'components',
+        '{*,*/index,*/index.*,*/README,*/README.*}.md',
+      ),
     ),
-    path.join(cwd, 'docs', '**/*.md'),
+    winPath(path.join(cwd, 'docs', '**/*.md')),
   ]);
 });
 
