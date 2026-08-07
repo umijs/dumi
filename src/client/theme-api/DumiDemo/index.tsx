@@ -6,6 +6,7 @@ import type { IDemoData, IPreviewerProps } from '../types';
 import Previewer from 'dumi/theme/builtins/Previewer';
 import { useRenderer } from '../useRenderer';
 import DemoErrorBoundary from './DemoErrorBoundary';
+import { areDumiDemoPropsEqual } from './areDumiDemoPropsEqual';
 
 type DemoGetter = () => Promise<{ demos: Record<string, IDemoData> }>;
 type UseDemo = (
@@ -81,10 +82,7 @@ const InternalDumiDemo = (props: IDumiDemoProps) => {
 
 export const DumiDemo: FC<IDumiDemoProps> = React.memo(
   InternalDumiDemo,
-  (prev, next) => {
-    // compare length for performance
-    return JSON.stringify(prev).length === JSON.stringify(next).length;
-  },
+  areDumiDemoPropsEqual,
 );
 
 if (process.env.NODE_ENV !== 'production') {
