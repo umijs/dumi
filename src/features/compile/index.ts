@@ -17,6 +17,10 @@ import {
 } from './utoopackLoaders';
 export const techStacks: IDumiTechStack[] = [];
 
+export function replaceTechStacks(nextTechStacks: IDumiTechStack[]) {
+  techStacks.splice(0, techStacks.length, ...nextTechStacks);
+}
+
 export function getUtoopackDemoAssetsFile(api: {
   env: string;
   paths: { absTmpPath: string };
@@ -114,11 +118,11 @@ export default (api: IApi) => {
     // and `before` only insert before the last one
     stage: -Infinity,
     async fn() {
-      techStacks.push(
-        ...(await api.applyPlugins({
+      replaceTechStacks(
+        await api.applyPlugins({
           key: 'registerTechStack',
           type: api.ApplyPluginsType.add,
-        })),
+        }),
       );
     },
   });

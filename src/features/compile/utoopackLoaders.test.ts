@@ -97,6 +97,18 @@ test('utoopack markdown rules use current config memo', async () => {
     codeBlockMode: 'passive',
     forceKebabCaseRouting: false,
   });
+
+  const renderTextRule = mdRules.find(
+    (rule) => String(rule.condition?.query) === '/^\\?type=text-render$/',
+  );
+  expect(renderTextRule).toMatchObject({
+    loaders: [
+      {
+        options: expect.objectContaining({ mode: 'text-render' }),
+      },
+    ],
+    as: '*.js',
+  });
 });
 
 test('utoopack treats ?raw imports as source strings', async () => {

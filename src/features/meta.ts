@@ -1,5 +1,9 @@
 import type { IApi } from '@/types';
-import { generateMetaChunkName, toImportSpecifier } from '@/utils';
+import {
+  generateMetaChunkName,
+  getContentHash,
+  toImportSpecifier,
+} from '@/utils';
 import path from 'path';
 import type { IRoute } from 'umi';
 import { winPath } from 'umi/plugin-utils';
@@ -78,7 +82,9 @@ export default (api: IApi) => {
       path: 'dumi/meta/index.ts',
       tplPath: require.resolve('../templates/meta/index.ts.tpl'),
       context: {
+        enableUtoopackHMR: useUtoopackDemoHMR,
         metaFiles: parsedMetaFiles,
+        metaStructureHash: getContentHash(JSON.stringify(parsedMetaFiles)),
         chunkName: function chunkName(this) {
           if (!('file' in this)) {
             return '';

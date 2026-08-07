@@ -3,11 +3,16 @@
 import { frontmatter as fm{{{index}}}, toc as t{{{index}}}, demoIndex as dmi{{{index}}} } from '{{{file}}}?type=frontmatter';
 {{/loadDemoIndex}}
 {{^loadDemoIndex}}
-import { frontmatter as fm{{{index}}}, toc as t{{{index}}} } from '{{{file}}}?type=frontmatter';
+import { frontmatter as fm{{{index}}}, toc as t{{{index}}}{{#enableUtoopackHMR}}{{#isMarkdown}}, routeStructureHash as rsh{{{index}}}{{/isMarkdown}}{{/enableUtoopackHMR}} } from '{{{file}}}?type=frontmatter';
 {{/loadDemoIndex}}
 {{/metaFiles}}
 
+{{#enableUtoopackHMR}}
+const nextFilesMeta = {
+{{/enableUtoopackHMR}}
+{{^enableUtoopackHMR}}
 export const filesMeta = {
+{{/enableUtoopackHMR}}
   {{#metaFiles}}
   '{{{id}}}': {
     frontmatter: fm{{{index}}},
@@ -24,5 +29,38 @@ export const filesMeta = {
   },
   {{/metaFiles}}
 }
+
+{{#enableUtoopackHMR}}
+const dumiGlobal = globalThis as any;
+dumiGlobal.__DUMI_FILES_META__ = dumiGlobal.__DUMI_FILES_META__ || {};
+const filesMeta = dumiGlobal.__DUMI_FILES_META__;
+Object.keys(filesMeta).forEach((id) => delete filesMeta[id]);
+Object.assign(filesMeta, nextFilesMeta);
+export { filesMeta };
+
+const nextMetaStructureHash = JSON.stringify([
+  '{{{metaStructureHash}}}',
+  {{#metaFiles}}
+  {{#isMarkdown}}rsh{{{index}}},{{/isMarkdown}}
+  {{^isMarkdown}}JSON.stringify([fm{{{index}}}, t{{{index}}}]),{{/isMarkdown}}
+  {{/metaFiles}}
+]);
+const previousMetaStructureHash = dumiGlobal.__DUMI_META_INDEX_STRUCTURE_HASH__;
+const didMetaStructureChange = previousMetaStructureHash !== undefined && previousMetaStructureHash !== nextMetaStructureHash;
+dumiGlobal.__DUMI_META_INDEX_STRUCTURE_HASH__ = nextMetaStructureHash;
+
+if (
+  typeof __turbopack_context__ !== 'undefined' &&
+  typeof __turbopack_context__.m?.hot?.accept === 'function'
+) {
+  // Dynamic imports have an async-loader wrapper module. Accept at this
+  // stable metadata boundary as well as inside the loaded text module so an
+  // already-loaded search chunk cannot invalidate the global runtime graph.
+  __turbopack_context__.m.hot.accept();
+  if (didMetaStructureChange) {
+    __turbopack_context__.m.hot.invalidate();
+  }
+}
+{{/enableUtoopackHMR}}
 
 export { tabs as tabsMeta } from './tabs';
