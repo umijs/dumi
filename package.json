@@ -144,7 +144,7 @@
     "sass": "^1.64.1",
     "sitemap": "^7.1.1",
     "sucrase": "^3.34.0",
-    "umi": "^4.7.1",
+    "umi": "^4.7.2",
     "unified": "^10.1.2",
     "unist-util-visit": "^4.1.2",
     "unist-util-visit-parents": "^5.1.3",
