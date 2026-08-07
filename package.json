@@ -56,9 +56,7 @@
     "prepare": "husky install && npm run build && npm run build:suites && node ./bin/dumi.js setup && npm run docs:sync",
     "release": "esno scripts/release.ts",
     "release:publish": "esno scripts/releasePublish.ts",
-    "test": "vitest run",
-    "vercel:build": "npm run docs:build",
-    "vercel:install": "./scripts/vercel-install.sh"
+    "test": "vitest run"
   },
   "commitlint": {
     "extends": [
