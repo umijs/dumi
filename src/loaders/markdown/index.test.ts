@@ -49,11 +49,13 @@ test('utoopack frontmatter self-accepts text-only markdown updates', () => {
     } as any,
   );
 
-  expect(output).toContain('__turbopack_context__.m.hot.accept();');
+  expect(output).toContain('const hot = import.meta.turbopackHot;');
+  expect(output).toContain('hot.accept();');
+  expect(output).not.toContain('__turbopack_context__');
   expect(output).toContain('Object.assign(frontmatter, nextFrontmatter)');
   expect(output).toContain('toc.splice(0, toc.length, ...nextToc)');
   expect(output).toContain('if (didRouteStructureChange)');
-  expect(output).toContain('__turbopack_context__.m.hot.invalidate();');
+  expect(output).toContain('hot.invalidate();');
   expect(output).toContain('notifyRouteMetaHMR("docs/button")');
   expect(output).toMatch(/export const routeStructureHash = '[a-f0-9]+';/);
 });
@@ -71,7 +73,7 @@ test('non-utoopack frontmatter keeps existing output without HMR runtime', () =>
     } as any,
   );
 
-  expect(output).not.toContain('__turbopack_context__');
+  expect(output).not.toContain('import.meta.turbopackHot');
   expect(output).not.toContain('notifyRouteMetaHMR');
 });
 
@@ -115,7 +117,9 @@ test('utoopack text metadata self-accepts and preserves its array reference', ()
     } as any,
   );
 
-  expect(output).toContain('__turbopack_context__.m.hot.accept();');
+  expect(output).toContain('const hot = import.meta.turbopackHot;');
+  expect(output).toContain('hot.accept();');
+  expect(output).not.toContain('__turbopack_context__');
   expect(output).toContain('texts.splice(0, texts.length, ...nextTexts)');
   expect(output).toContain('notifyRouteMetaHMR("docs/button")');
 });
@@ -172,7 +176,7 @@ test('utoopack render text dependency propagates to React Refresh', () => {
   );
 
   expect(output).toContain('export const texts =');
-  expect(output).not.toContain('__turbopack_context__');
+  expect(output).not.toContain('import.meta.turbopackHot');
   expect(output).not.toContain('notifyRouteMetaHMR');
 });
 
@@ -183,7 +187,7 @@ test('non-utoopack text metadata keeps existing output', () => {
     { meta: { texts: [] } } as any,
   );
 
-  expect(output).not.toContain('__turbopack_context__');
+  expect(output).not.toContain('import.meta.turbopackHot');
   expect(output).not.toContain('notifyRouteMetaHMR');
 });
 
@@ -228,9 +232,9 @@ test('utoopack production keeps the existing markdown module identities', () => 
 
     expect(pageOutput).toContain('/docs/button.md?type=text');
     expect(pageOutput).not.toContain('type=text-render');
-    expect(frontmatterOutput).not.toContain('__turbopack_context__');
+    expect(frontmatterOutput).not.toContain('import.meta.turbopackHot');
     expect(frontmatterOutput).not.toContain('routeStructureHash');
-    expect(textOutput).not.toContain('__turbopack_context__');
+    expect(textOutput).not.toContain('import.meta.turbopackHot');
   } finally {
     vi.unstubAllEnvs();
   }

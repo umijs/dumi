@@ -495,17 +495,15 @@ export const routeStructureHash = '{{{routeStructureHash}}}';
 {{/enableUtoopackHMR}}
 {{{demoIndex}}}
 {{#enableUtoopackHMR}}
-if (
-  typeof __turbopack_context__ !== 'undefined' &&
-  typeof __turbopack_context__.m?.hot?.accept === 'function'
-) {
-  __turbopack_context__.m.hot.accept();
+const hot = import.meta.turbopackHot;
+if (hot) {
+  hot.accept();
   if (didRouteStructureChange) {
-    __turbopack_context__.m.hot.invalidate();
+    hot.invalidate();
   }{{#routeId}} else if (hadPreviousMeta) {
     notifyRouteMetaHMR({{{routeId}}});
   }{{/routeId}}{{^routeId}} else if (hadPreviousMeta) {
-    __turbopack_context__.m.hot.invalidate();
+    hot.invalidate();
   }{{/routeId}}
 }
 {{/enableUtoopackHMR}}`,
@@ -565,15 +563,13 @@ texts.splice(0, texts.length, ...nextTexts);
 globalThis.__DUMI_TEXTS__[{{{resourceSpecifier}}}] = texts;
 export { texts };
 
-if (
-  typeof __turbopack_context__ !== 'undefined' &&
-  typeof __turbopack_context__.m?.hot?.accept === 'function'
-) {
-  __turbopack_context__.m.hot.accept();
+const hot = import.meta.turbopackHot;
+if (hot) {
+  hot.accept();
   {{#routeId}}if (hadPreviousTexts) {
     notifyRouteMetaHMR({{{routeId}}});
   }{{/routeId}}{{^routeId}}if (hadPreviousTexts) {
-    __turbopack_context__.m.hot.invalidate();
+    hot.invalidate();
   }{{/routeId}}
 }`,
       {
