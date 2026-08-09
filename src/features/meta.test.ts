@@ -41,11 +41,11 @@ test('utoopack metadata index is a stable HMR boundary', () => {
   expect(output).toContain("'meta-files-hash'");
   expect(output).toContain('rsh0,');
   expect(output).toContain('JSON.stringify([fm1, t1])');
-  expect(output).toContain('const hot = import.meta.turbopackHot;');
-  expect(output).toContain('hot.accept();');
+  expect(output).toContain('module.hot.accept();');
+  expect(output).not.toContain('import.meta.turbopackHot');
   expect(output).not.toContain('__turbopack_context__');
   expect(output).toContain('if (didMetaStructureChange)');
-  expect(output).toContain('hot.invalidate();');
+  expect(output).toContain('module.hot.invalidate();');
 });
 
 test('non-utoopack metadata index keeps its existing output', () => {
@@ -55,5 +55,5 @@ test('non-utoopack metadata index keeps its existing output', () => {
   expect(output).toContain('demoIndex as dmi0');
   expect(output).not.toContain('routeStructureHash as rsh0');
   expect(output).not.toContain('__DUMI_FILES_META__');
-  expect(output).not.toContain('import.meta.turbopackHot');
+  expect(output).not.toContain('module.hot');
 });

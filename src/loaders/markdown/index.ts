@@ -495,15 +495,14 @@ export const routeStructureHash = '{{{routeStructureHash}}}';
 {{/enableUtoopackHMR}}
 {{{demoIndex}}}
 {{#enableUtoopackHMR}}
-const hot = import.meta.turbopackHot;
-if (hot) {
-  hot.accept();
+if (module.hot) {
+  module.hot.accept();
   if (didRouteStructureChange) {
-    hot.invalidate();
+    module.hot.invalidate();
   }{{#routeId}} else if (hadPreviousMeta) {
     notifyRouteMetaHMR({{{routeId}}});
   }{{/routeId}}{{^routeId}} else if (hadPreviousMeta) {
-    hot.invalidate();
+    module.hot.invalidate();
   }{{/routeId}}
 }
 {{/enableUtoopackHMR}}`,
@@ -563,13 +562,12 @@ texts.splice(0, texts.length, ...nextTexts);
 globalThis.__DUMI_TEXTS__[{{{resourceSpecifier}}}] = texts;
 export { texts };
 
-const hot = import.meta.turbopackHot;
-if (hot) {
-  hot.accept();
+if (module.hot) {
+  module.hot.accept();
   {{#routeId}}if (hadPreviousTexts) {
     notifyRouteMetaHMR({{{routeId}}});
   }{{/routeId}}{{^routeId}}if (hadPreviousTexts) {
-    hot.invalidate();
+    module.hot.invalidate();
   }{{/routeId}}
 }`,
       {

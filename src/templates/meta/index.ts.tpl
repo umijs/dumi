@@ -49,14 +49,13 @@ const previousMetaStructureHash = dumiGlobal.__DUMI_META_INDEX_STRUCTURE_HASH__;
 const didMetaStructureChange = previousMetaStructureHash !== undefined && previousMetaStructureHash !== nextMetaStructureHash;
 dumiGlobal.__DUMI_META_INDEX_STRUCTURE_HASH__ = nextMetaStructureHash;
 
-const hot = import.meta.turbopackHot;
-if (hot) {
+if (module.hot) {
   // Dynamic imports have an async-loader wrapper module. Accept at this
   // stable metadata boundary as well as inside the loaded text module so an
   // already-loaded search chunk cannot invalidate the global runtime graph.
-  hot.accept();
+  module.hot.accept();
   if (didMetaStructureChange) {
-    hot.invalidate();
+    module.hot.invalidate();
   }
 }
 {{/enableUtoopackHMR}}
