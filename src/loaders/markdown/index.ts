@@ -151,6 +151,7 @@ export function emitDefault(
   ret: IMdTransformerResult,
 ) {
   const { frontmatter, demos } = ret.meta;
+  const sharedDemoProps = ret.meta.demoSharedProps ?? [];
   const isTabContent = isTabRouteFile(this.resourcePath);
   // do not wrap DumiPage for tab content
   const wrapper = isTabContent ? '' : 'DumiPage';
@@ -213,6 +214,11 @@ import { DumiPage } from 'dumi';
 import { texts as ${CONTENT_TEXTS_OBJ_NAME} } from '${winPath(
     this.resourcePath,
   )}?type=${textMode}';
+${
+  sharedDemoProps.length
+    ? `const __dumi_demo_shared_props__ = ${JSON.stringify(sharedDemoProps)};`
+    : ''
+}
 
 // export named function for fastRefresh
 // ref: https://github.com/pmmmwh/react-refresh-webpack-plugin/blob/main/docs/TROUBLESHOOTING.md#edits-always-lead-to-full-reload

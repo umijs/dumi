@@ -146,6 +146,31 @@ test('utoopack Markdown component uses a separate render text dependency', () =>
   expect(output).not.toContain('subscribeRouteMetaHMR');
 });
 
+test('utoopack Markdown component emits shared demo props once', () => {
+  const output = emitDefault.call(
+    { resourcePath: '/docs/button.md' },
+    {
+      builtins: {},
+      cwd: '/docs',
+      locales: [],
+      __dumiLoaderContextPath: '/docs/.dumi/loader-context.cjs',
+    } as any,
+    {
+      content: '<DumiDemo previewerProps={__dumi_demo_shared_props__[0]} />',
+      meta: {
+        demos: [],
+        frontmatter: {},
+        demoSharedProps: [{ react: '^19.0.0' }],
+      },
+    } as any,
+  );
+
+  expect(output).toContain(
+    'const __dumi_demo_shared_props__ = [{"react":"^19.0.0"}];',
+  );
+  expect(output).toContain('__dumi_demo_shared_props__[0]');
+});
+
 test('non-utoopack Markdown component keeps the existing text dependency', () => {
   const output = emitDefault.call(
     { resourcePath: '/docs/button.md' },

@@ -21,6 +21,17 @@ class FakeTechStack implements IDumiTechStack {
   }
 }
 
+class SharedPreviewerPropsTechStack extends FakeTechStack {
+  generatePreviewerProps(props: Record<string, unknown>) {
+    return {
+      ...props,
+      dependencyVersions: {
+        react: 'x'.repeat(1100),
+      },
+    };
+  }
+}
+
 function getTransformerOptions(
   fileAbsPath: string,
   useUtoopackDemoHMR?: boolean,
@@ -65,4 +76,25 @@ test('markdown transformer: skips local demo loader by default', async () => {
 
   expect(ret.content).not.toContain('"loader": () => import');
   expect(ret.content).not.toContain('"version":');
+});
+
+test('markdown transformer: hoists repeated large demo props for utoopack HMR', async () => {
+  const fileAbsPath = path.join(CASES_DIR, 'demo', 'shared-props.md');
+  const content = [
+    '```jsx',
+    'export default () => <>First</>;',
+    '```',
+    '',
+    '```jsx',
+    'export default () => <>Second</>;',
+    '```',
+  ].join('\n');
+  const ret = await transformer(content, {
+    ...getTransformerOptions(fileAbsPath, true),
+    techStacks: [new SharedPreviewerPropsTechStack()],
+  });
+
+  expect(ret.meta.demoSharedProps).toEqual([{ react: 'x'.repeat(1100) }]);
+  expect(ret.content.match(/__dumi_demo_shared_props__\[0\]/g)).toHaveLength(2);
+  expect(ret.content).not.toContain('x'.repeat(100));
 });
