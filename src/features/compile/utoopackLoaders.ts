@@ -368,6 +368,18 @@ export const getUtoopackRules = (
         ],
         as: '*.js',
       },
+      // Keep page rendering on a separate module identity from lazy route
+      // metadata so React Refresh can accept text changes locally.
+      {
+        condition: { query: /^\?type=text-render$/ },
+        loaders: [
+          {
+            loader: mdLoaderPath,
+            options: { ...serializableBaseOpts, mode: 'text-render' },
+          },
+        ],
+        as: '*.js',
+      },
       // extract demo index metadata from markdown
       {
         condition: { query: /^\?type=demo-index$/ },

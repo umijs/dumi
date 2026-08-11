@@ -10,6 +10,22 @@ function registerTsResolveExtension() {
   extensions['.ts'] ??= extensions['.js'];
 }
 
+test('replaceTechStacks keeps a stable array without accumulating entries', async () => {
+  registerTsResolveExtension();
+  const { replaceTechStacks, techStacks } = await import('.');
+  const originalReference = techStacks;
+  const first = { name: 'first' } as any;
+  const second = { name: 'second' } as any;
+
+  replaceTechStacks([first]);
+  replaceTechStacks([second]);
+
+  expect(techStacks).toBe(originalReference);
+  expect(techStacks).toEqual([second]);
+
+  replaceTechStacks([]);
+});
+
 test.each([
   ['development', true, undefined],
   ['test', true, undefined],

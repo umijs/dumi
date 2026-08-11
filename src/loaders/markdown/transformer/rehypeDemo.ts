@@ -22,6 +22,8 @@ const DEMO_LOADER_PLACEHOLDER_VALUE =
   DEMO_LOADER_PLACEHOLDER as unknown as NonNullable<
     IDumiDemoProps['demo']['loader']
   >;
+const DEMO_SHARED_PROP_PLACEHOLDER_PREFIX = '__DUMI_DEMO_SHARED_PROP_';
+const MIN_SHARED_PREVIEWER_PROP_SIZE = 1024;
 export const DUMI_DEMO_TAG = 'DumiDemo';
 export const DUMI_DEMO_GRID_TAG = 'DumiDemoGrid';
 export const SKIP_DEMO_PARSE = 'pure';
@@ -48,6 +50,65 @@ type IRehypeDemoOptions = Pick<
   fileLocale?: string;
   useUtoopackDemoHMR?: boolean;
 };
+
+function getDemoPropsFromNode(node: Element) {
+  return ([] as IDumiDemoProps[]).concat(
+    node.data?.[DEMO_PROP_VALUE_KEY] as IDumiDemoProps | IDumiDemoProps[],
+  );
+}
+
+function hoistSharedPreviewerProps(nodes: Element[]) {
+  const candidates = new Map<string, { count: number; value: unknown }>();
+
+  nodes.forEach((node) => {
+    getDemoPropsFromNode(node).forEach(({ previewerProps }) => {
+      Object.values(previewerProps).forEach((value) => {
+        if (!value || typeof value !== 'object') return;
+
+        // Custom tech stacks can attach the same large configuration object to
+        // every demo. Keep one module-level copy instead of expanding it into
+        // every JSX prop and its source map.
+        const serialized = JSON.stringify(value);
+        if (serialized.length < MIN_SHARED_PREVIEWER_PROP_SIZE) return;
+
+        const candidate = candidates.get(serialized);
+        if (candidate) {
+          candidate.count += 1;
+        } else {
+          candidates.set(serialized, { count: 1, value });
+        }
+      });
+    });
+  });
+
+  const sharedValues: unknown[] = [];
+  const sharedIndexes = new Map<string, number>();
+  candidates.forEach(({ count, value }, serialized) => {
+    if (count > 1) {
+      sharedIndexes.set(serialized, sharedValues.length);
+      sharedValues.push(value);
+    }
+  });
+
+  if (!sharedValues.length) return sharedValues;
+
+  nodes.forEach((node) => {
+    getDemoPropsFromNode(node).forEach(({ previewerProps }) => {
+      Object.entries(previewerProps).forEach(([key, value]) => {
+        if (!value || typeof value !== 'object') return;
+
+        const index = sharedIndexes.get(JSON.stringify(value));
+        if (index !== undefined) {
+          (previewerProps as Record<string, unknown>)[
+            key
+          ] = `${DEMO_SHARED_PROP_PLACEHOLDER_PREFIX}${index}__`;
+        }
+      });
+    });
+  });
+
+  return sharedValues;
+}
 
 /**
  * get language for code element
@@ -533,6 +594,12 @@ export default function rehypeDemo(
     await Promise.all(deferrers).then((demos) => {
       // to make sure the order of demos is correct
       vFile.data.demos = demos;
+      const sharedPreviewerProps = opts.useUtoopackDemoHMR
+        ? hoistSharedPreviewerProps(replaceNodes)
+        : [];
+      if (sharedPreviewerProps.length) {
+        vFile.data.demoSharedProps = sharedPreviewerProps;
+      }
 
       // parse final value for jsx attributes
       replaceNodes.forEach((node) => {
@@ -546,6 +613,11 @@ export default function rehypeDemo(
             new RegExp(`"${DEMO_LOADER_PLACEHOLDER}"`, 'g'),
             demoLoader,
           );
+          sharedPreviewerProps.forEach((_, index) => {
+            value = value
+              .split(`"${DEMO_SHARED_PROP_PLACEHOLDER_PREFIX}${index}__"`)
+              .join(`__dumi_demo_shared_props__[${index}]`);
+          });
         }
 
         if (node.JSXAttributes![0].type === 'JSXAttribute') {

@@ -65,6 +65,7 @@ declare module 'vfile' {
     frontmatter: IRouteMeta['frontmatter'];
     toc: IRouteMeta['toc'];
     embeds: string[];
+    demoSharedProps?: unknown[];
   }
 }
 

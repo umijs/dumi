@@ -51,12 +51,18 @@ interface IMdLoaderTextModeOptions
   mode: 'text';
 }
 
+interface IMdLoaderRenderTextModeOptions
+  extends Omit<IMdLoaderDefaultModeOptions, 'builtins' | 'mode'> {
+  mode: 'text-render';
+}
+
 export type IMdLoaderOptions =
   | IMdLoaderDefaultModeOptions
   | IMdLoaderDemosModeOptions
   | IMdLoaderDemoModeOptions
   | IMdLoaderFrontmatterModeOptions
   | IMdLoaderTextModeOptions
+  | IMdLoaderRenderTextModeOptions
   | IMdLoaderDemoIndexModeOptions;
 
 interface IDemoDependency {
@@ -139,15 +145,25 @@ function getRouteId(opts: IMdLoaderOptions, fileAbsPath: string) {
   return (route as any)?.id as string | undefined;
 }
 
-function emitDefault(
+export function emitDefault(
   this: any,
   opts: IMdLoaderDefaultModeOptions,
   ret: IMdTransformerResult,
 ) {
   const { frontmatter, demos } = ret.meta;
+  const sharedDemoProps = ret.meta.demoSharedProps ?? [];
   const isTabContent = isTabRouteFile(this.resourcePath);
   // do not wrap DumiPage for tab content
   const wrapper = isTabContent ? '' : 'DumiPage';
+  // Keep the render dependency separate from the lazy metadata dependency in
+  // Utoopack development. The render dependency can then propagate updates to
+  // this React Refresh boundary, while the metadata dependency self-accepts
+  // without pulling the global metadata graph into each Markdown update.
+  const textMode =
+    UTOOPACK_LOADER_CTX_KEY in (opts as any) &&
+    process.env.NODE_ENV !== 'production'
+      ? 'text-render'
+      : 'text';
 
   // apply demos resolve hook
   if (demos && opts.onResolveDemos) {
@@ -197,7 +213,12 @@ import React, { Suspense } from 'react';
 import { DumiPage } from 'dumi';
 import { texts as ${CONTENT_TEXTS_OBJ_NAME} } from '${winPath(
     this.resourcePath,
-  )}?type=text';
+  )}?type=${textMode}';
+${
+  sharedDemoProps.length
+    ? `const __dumi_demo_shared_props__ = ${JSON.stringify(sharedDemoProps)};`
+    : ''
+}
 
 // export named function for fastRefresh
 // ref: https://github.com/pmmmwh/react-refresh-webpack-plugin/blob/main/docs/TROUBLESHOOTING.md#edits-always-lead-to-full-reload
@@ -416,30 +437,91 @@ function emitDemoIndex(
 ${renderDemoIndex(this.resourcePath, opts, demos)}`;
 }
 
-function emitFrontmatter(
+export function emitFrontmatter(
   this: any,
   opts: IMdLoaderFrontmatterModeOptions,
   ret: IMdTransformerResult,
 ) {
-  const { frontmatter, toc, demos } = ret.meta;
+  const { demos } = ret.meta;
+  const frontmatter = ret.meta.frontmatter!;
+  const toc = ret.meta.toc ?? [];
   const resourcePath = winPath(this.resourcePath);
   const isUtoopack = UTOOPACK_LOADER_CTX_KEY in (opts as any);
+  const enableUtoopackHMR = isUtoopack && process.env.NODE_ENV !== 'production';
+  const routeMetaHMRPath = enableUtoopackHMR
+    ? winPath(require.resolve('../../client/theme-api/routeMetaHMR'))
+    : undefined;
+  const routeId = getRouteId(opts, this.resourcePath);
   const demoIndex = renderDemoIndex(this.resourcePath, opts, demos);
 
   if (isUtoopack) {
+    const routeStructureHash = getContentHash(
+      JSON.stringify({
+        atomId: frontmatter.atomId,
+        demoIds: demos?.map(({ id }) => id),
+        filename: frontmatter.filename,
+        group: frontmatter.group,
+        nav: frontmatter.nav,
+        order: frontmatter.order,
+        title: frontmatter.title,
+      }),
+    );
     const rendered = Mustache.render(
-      `import '${resourcePath}?watch=parent';
+      `{{#enableUtoopackHMR}}
+import { notifyRouteMetaHMR } from {{{routeMetaHMRSpecifier}}};
+{{/enableUtoopackHMR}}
+import '${resourcePath}?watch=parent';
 globalThis.__DUMI_FM__ = globalThis.__DUMI_FM__ || {};
 globalThis.__DUMI_TOC__ = globalThis.__DUMI_TOC__ || {};
+{{#enableUtoopackHMR}}
+const hadPreviousMeta = Object.prototype.hasOwnProperty.call(globalThis.__DUMI_FM__, '${resourcePath}');
+globalThis.__DUMI_META_STRUCTURE_HASH__ = globalThis.__DUMI_META_STRUCTURE_HASH__ || {};
+const previousRouteStructureHash = globalThis.__DUMI_META_STRUCTURE_HASH__['${resourcePath}'];
+const didRouteStructureChange = previousRouteStructureHash !== undefined && previousRouteStructureHash !== '{{{routeStructureHash}}}';
+globalThis.__DUMI_META_STRUCTURE_HASH__['${resourcePath}'] = '{{{routeStructureHash}}}';
+const nextFrontmatter = {{{frontmatter}}};
+const nextToc = {{{toc}}};
+const frontmatter = globalThis.__DUMI_FM__['${resourcePath}'] || {};
+const toc = globalThis.__DUMI_TOC__['${resourcePath}'] || [];
+Object.keys(frontmatter).forEach((key) => delete frontmatter[key]);
+Object.assign(frontmatter, nextFrontmatter);
+toc.splice(0, toc.length, ...nextToc);
+globalThis.__DUMI_FM__['${resourcePath}'] = frontmatter;
+globalThis.__DUMI_TOC__['${resourcePath}'] = toc;
+{{/enableUtoopackHMR}}
+{{^enableUtoopackHMR}}
 globalThis.__DUMI_FM__['${resourcePath}'] = {{{frontmatter}}};
 globalThis.__DUMI_TOC__['${resourcePath}'] = {{{toc}}};
-export const frontmatter = globalThis.__DUMI_FM__['${resourcePath}'];
-export const toc = globalThis.__DUMI_TOC__['${resourcePath}'];
-{{{demoIndex}}}`,
+const frontmatter = globalThis.__DUMI_FM__['${resourcePath}'];
+const toc = globalThis.__DUMI_TOC__['${resourcePath}'];
+{{/enableUtoopackHMR}}
+export { frontmatter, toc };
+{{#enableUtoopackHMR}}
+export const routeStructureHash = '{{{routeStructureHash}}}';
+{{/enableUtoopackHMR}}
+{{{demoIndex}}}
+{{#enableUtoopackHMR}}
+if (module.hot) {
+  module.hot.accept();
+  if (didRouteStructureChange) {
+    module.hot.invalidate();
+  }{{#routeId}} else if (hadPreviousMeta) {
+    notifyRouteMetaHMR({{{routeId}}});
+  }{{/routeId}}{{^routeId}} else if (hadPreviousMeta) {
+    module.hot.invalidate();
+  }{{/routeId}}
+}
+{{/enableUtoopackHMR}}`,
       {
         toc: JSON.stringify(toc),
         frontmatter: JSON.stringify(frontmatter),
         demoIndex,
+        enableUtoopackHMR,
+        routeId: routeId ? JSON.stringify(routeId) : undefined,
+        routeMetaHMRSpecifier: routeMetaHMRPath
+          ? JSON.stringify(routeMetaHMRPath)
+          : undefined,
+        routeStructureHash,
       },
     );
     return rendered;
@@ -458,20 +540,78 @@ export const frontmatter = new Proxy({{{frontmatter}}}, {});
   );
 }
 
-function emitText(
+export function emitText(
   this: any,
   opts: IMdLoaderTextModeOptions,
   ret: IMdTransformerResult,
 ) {
-  const { texts } = ret.meta;
+  const texts = ret.meta.texts ?? [];
+  const resourcePath = winPath(this.resourcePath);
+  const enableUtoopackHMR =
+    UTOOPACK_LOADER_CTX_KEY in (opts as any) &&
+    process.env.NODE_ENV !== 'production';
+
+  if (enableUtoopackHMR) {
+    const routeId = getRouteId(opts, this.resourcePath);
+    const routeMetaHMRSpecifier = JSON.stringify(
+      winPath(require.resolve('../../client/theme-api/routeMetaHMR')),
+    );
+
+    return Mustache.render(
+      `import { notifyRouteMetaHMR } from {{{routeMetaHMRSpecifier}}};
+import {{{watchSpecifier}}};
+globalThis.__DUMI_TEXTS__ = globalThis.__DUMI_TEXTS__ || {};
+const hadPreviousTexts = Object.prototype.hasOwnProperty.call(globalThis.__DUMI_TEXTS__, {{{resourceSpecifier}}});
+const nextTexts = {{{texts}}};
+const texts = globalThis.__DUMI_TEXTS__[{{{resourceSpecifier}}}] || [];
+texts.splice(0, texts.length, ...nextTexts);
+globalThis.__DUMI_TEXTS__[{{{resourceSpecifier}}}] = texts;
+export { texts };
+
+if (module.hot) {
+  module.hot.accept();
+  {{#routeId}}if (hadPreviousTexts) {
+    notifyRouteMetaHMR({{{routeId}}});
+  }{{/routeId}}{{^routeId}}if (hadPreviousTexts) {
+    module.hot.invalidate();
+  }{{/routeId}}
+}`,
+      {
+        resourceSpecifier: JSON.stringify(resourcePath),
+        routeId: routeId ? JSON.stringify(routeId) : undefined,
+        routeMetaHMRSpecifier,
+        texts: JSON.stringify(texts),
+        watchSpecifier: JSON.stringify(`${resourcePath}?watch=parent`),
+      },
+    );
+  }
 
   return Mustache.render(
     `
-  import '${winPath(this.resourcePath)}?watch=parent';
+  import '${resourcePath}?watch=parent';
   export const texts = {{{texts}}};
   `,
     {
       texts: JSON.stringify(texts),
+    },
+  );
+}
+
+export function emitRenderText(
+  this: any,
+  _opts: IMdLoaderRenderTextModeOptions,
+  ret: IMdTransformerResult,
+) {
+  return Mustache.render(
+    `
+  import {{{watchSpecifier}}};
+  export const texts = {{{texts}}};
+  `,
+    {
+      texts: JSON.stringify(ret.meta.texts ?? []),
+      watchSpecifier: JSON.stringify(
+        `${winPath(this.resourcePath)}?watch=parent`,
+      ),
     },
   );
 }
@@ -500,6 +640,8 @@ function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
       return emitFrontmatter.call(this, opts, ret);
     case 'text':
       return emitText.call(this, opts, ret);
+    case 'text-render':
+      return emitRenderText.call(this, opts, ret);
     default:
       return emitDefault.call(this, opts as IMdLoaderDefaultModeOptions, ret);
   }
