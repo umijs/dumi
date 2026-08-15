@@ -182,7 +182,7 @@ export default (props: ComponentProps<'div'>) => {
       }}
       onClick={onClick}
       treeData={[{ key: '0', title: props.title || '<root>', children: data }]}
-      defaultExpandAll
+      defaultExpandAll={ props.defaultExpandAll !== undefined ? props.defaultExpandAll : true }
       switcherIcon={renderSwitcherIcon}
     />
   );
