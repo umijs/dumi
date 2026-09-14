@@ -3,6 +3,7 @@ import type { ILocalesConfig, IRouteMeta } from '@/client/theme-api/types';
 import { VERSION_2_DEPRECATE_SOFT_BREAKS } from '@/constants';
 import type { IApi, IDumiConfig, IDumiTechStack } from '@/types';
 import { isVersionInRange } from '@/utils';
+import type { PluginItem } from '@umijs/bundler-utils/compiled/@babel/core';
 import enhancedResolve, { type ResolveOptions } from 'enhanced-resolve';
 import type { IRoute } from 'umi';
 import type { Plugin, Processor } from 'unified';
@@ -82,6 +83,11 @@ export interface IMdTransformerOptions {
   routes: Record<string, IRoute>;
   locales: ILocalesConfig;
   pkg: IApi['pkg'];
+  /**
+   * babel plugins which should be applied to code-block demos before wrapping,
+   * must be serializable, see `getCodeBlockBabelPlugins`
+   */
+  codeBlockBabelPlugins?: PluginItem[];
 }
 
 export interface IMdTransformerResult {
@@ -194,6 +200,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
       useUtoopackDemoHMR: opts.useUtoopackDemoHMR,
       resolve: opts.resolve,
       resolver,
+      codeBlockBabelPlugins: opts.codeBlockBabelPlugins,
     })
     .use(rehypeSlug)
     .use(rehypeLink, {

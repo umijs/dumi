@@ -5,6 +5,7 @@ import type { IDumiDemoProps } from '@/client/theme-api/DumiDemo';
 import type { ILocalesConfig, IThemeConfig } from '@/client/theme-api/types';
 import type { IContentTab } from '@/features/tabs';
 import type { IThemeLoadResult } from '@/features/theme/loader';
+import type { PluginItem } from '@umijs/bundler-utils/compiled/@babel/core';
 import {
   OnLoadArgs,
   OnLoadResult,
@@ -118,7 +119,16 @@ export abstract class IDumiTechStack {
    */
   abstract transformCode(
     raw: string,
-    opts: { type: 'external' | 'code-block'; fileAbsPath: string },
+    opts: {
+      type: 'external' | 'code-block';
+      fileAbsPath: string;
+      /**
+       * babel plugins which should be applied to the original source of code-block demo,
+       * before it is wrapped into an async function (which rewrites static imports
+       * into dynamic imports), e.g. @emotion/babel-plugin
+       */
+      babelPlugins?: PluginItem[];
+    },
   ): string;
 
   /**

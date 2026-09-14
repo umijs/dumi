@@ -2,7 +2,7 @@ import type { IApi, IDumiTechStack } from '@/types';
 import esbuild from '@umijs/bundler-utils/compiled/esbuild';
 import { register } from '@umijs/utils';
 import path from 'path';
-import { shouldDisabledLiveDemo } from './utils';
+import { getCodeBlockBabelPlugins, shouldDisabledLiveDemo } from './utils';
 
 const mdLoaderPath = require.resolve('../../loaders/markdown');
 const utilsRegisterPath = require.resolve('@umijs/utils');
@@ -255,6 +255,10 @@ export const getUtoopackRules = (
     locales: config.locales || [],
     pkg: api.pkg,
     disableLiveDemo,
+    codeBlockBabelPlugins: getCodeBlockBabelPlugins(
+      config.extraBabelPlugins,
+      api.cwd,
+    ),
     [UTOOPACK_LOADER_CTX_KEY]: loaderContextPath,
   });
 

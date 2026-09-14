@@ -8,7 +8,7 @@ import fs from 'fs';
 import path from 'path';
 import { addAtomMeta, addExampleAssets } from '../assets';
 import { getLoadHook } from './makoHooks';
-import { shouldDisabledLiveDemo } from './utils';
+import { getCodeBlockBabelPlugins, shouldDisabledLiveDemo } from './utils';
 import {
   LOADER_CTX_FILENAME,
   UTOOPACK_DEMO_ASSETS_FILENAME,
@@ -181,6 +181,10 @@ export default (api: IApi) => {
       locales: api.config.locales,
       pkg: api.pkg,
       disableLiveDemo: shouldDisabledLiveDemo(api),
+      codeBlockBabelPlugins: getCodeBlockBabelPlugins(
+        api.config.extraBabelPlugins,
+        api.cwd,
+      ),
     };
     memo.module
       .rule('watch-parent')
