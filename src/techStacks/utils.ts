@@ -1,5 +1,9 @@
 import type { ParserConfig } from '@swc/core';
 import { transformSync } from '@swc/core';
+import type {
+  ParserOptions,
+  PluginItem,
+} from '@umijs/bundler-utils/compiled/@babel/core';
 import { IDumiTechStack } from '../types';
 
 export {
@@ -25,9 +29,58 @@ export function extractScript(htmlLike: string) {
   return scripts;
 }
 
+type BabelCore = typeof import('@umijs/bundler-utils/compiled/babel/core');
+
 export interface IWrapDemoWithFnOptions {
   filename: string;
   parserConfig: ParserConfig;
+  /**
+   * babel plugins which will be applied to the original code before wrapping.
+   * The wrapping rewrites static imports into dynamic imports, so plugins which
+   * rely on import declarations (e.g. @emotion/babel-plugin) must run before it,
+   * otherwise they never see the original `import` statements.
+   */
+  babelPlugins?: PluginItem[];
+}
+
+/**
+ * Apply babel plugins to the demo code while keeping its syntax as-is
+ * (no preset, only parse & print), so the result can still be handled by swc.
+ */
+export function applyBabelPlugins(
+  code: string,
+  opts: Pick<IWrapDemoWithFnOptions, 'filename' | 'parserConfig'> & {
+    plugins: PluginItem[];
+  },
+) {
+  const { filename, parserConfig, plugins } = opts;
+
+  if (!plugins.length) return code;
+
+  // lazy require, babel is only needed when plugins are configured
+  const babel: BabelCore = require('@umijs/bundler-utils/compiled/babel/core');
+  const parserPlugins: NonNullable<ParserOptions['plugins']> = [];
+
+  if (parserConfig.syntax === 'typescript') {
+    parserPlugins.push('typescript');
+    if (parserConfig.tsx) parserPlugins.push('jsx');
+  } else if (parserConfig.jsx) {
+    parserPlugins.push('jsx');
+  }
+
+  const result = babel.transformSync(code, {
+    filename,
+    babelrc: false,
+    configFile: false,
+    browserslistConfigFile: false,
+    sourceType: 'module',
+    sourceMaps: false,
+    compact: false,
+    parserOpts: { plugins: parserPlugins },
+    plugins,
+  });
+
+  return result?.code ?? code;
 }
 
 /**
@@ -36,8 +89,15 @@ export interface IWrapDemoWithFnOptions {
  * https://github.com/umijs/dumi/blob/master/crates/swc_plugin_react_demo/src/lib.rs#L126
  */
 export function wrapDemoWithFn(code: string, opts: IWrapDemoWithFnOptions) {
-  const { filename, parserConfig } = opts;
-  const result = transformSync(code, {
+  const { filename, parserConfig, babelPlugins } = opts;
+  const source = babelPlugins?.length
+    ? applyBabelPlugins(code, {
+        filename,
+        parserConfig,
+        plugins: babelPlugins,
+      })
+    : code;
+  const result = transformSync(source, {
     filename: filename,
     jsc: {
       parser: parserConfig,

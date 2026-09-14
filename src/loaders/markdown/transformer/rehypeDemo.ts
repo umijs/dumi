@@ -43,7 +43,7 @@ const alwaysDemoRE = new RegExp(
 
 type IRehypeDemoOptions = Pick<
   IMdTransformerOptions,
-  'techStacks' | 'cwd' | 'fileAbsPath' | 'resolve'
+  'techStacks' | 'cwd' | 'fileAbsPath' | 'resolve' | 'codeBlockBabelPlugins'
 > & {
   resolver: typeof sync;
   fileLocaleLessPath: string;
@@ -397,6 +397,7 @@ export default function rehypeDemo(
               component = techStack.transformCode(codeValue, {
                 type: 'code-block',
                 fileAbsPath: parseOpts.fileAbsPath,
+                babelPlugins: opts.codeBlockBabelPlugins,
               });
             }
 
