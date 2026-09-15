@@ -1,14 +1,22 @@
 import { ReactComponent as IconError } from '@ant-design/icons-svg/inline-svg/filled/close-circle.svg';
 import classnames from 'classnames';
-import { useLiveDemo, useLocation, type IPreviewerProps } from 'dumi';
+import {
+  useLiveDemo,
+  useLocation,
+  usePrefersColor,
+  type IPreviewerProps,
+} from 'dumi';
 import PreviewerActions from 'dumi/theme/slots/PreviewerActions';
-import React, { useRef, type FC } from 'react';
+import React, { useEffect, useRef, useState, type FC } from 'react';
 import './index.less';
 
 const Previewer: FC<IPreviewerProps> = (props) => {
   const demoContainer = useRef<HTMLDivElement>(null);
   const { hash } = useLocation();
   const link = `#${props.asset.id}`;
+
+  const [preferredColorScheme] = usePrefersColor();
+  const [iframeKey, setIframeKey] = useState(0);
 
   const {
     node: liveDemoNode,
@@ -19,6 +27,12 @@ const Previewer: FC<IPreviewerProps> = (props) => {
     iframe: Boolean(props.iframe || props._live_in_iframe),
     containerRef: demoContainer,
   });
+
+  useEffect(() => {
+    if (props.iframe) {
+      setIframeKey((key) => key + 1);
+    }
+  }, [preferredColorScheme, props.iframe]);
 
   return (
     <div
@@ -46,6 +60,7 @@ const Previewer: FC<IPreviewerProps> = (props) => {
                 : {}
             }
             src={props.demoUrl}
+            key={iframeKey}
           ></iframe>
         ) : (
           liveDemoNode || props.children
