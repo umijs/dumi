@@ -26,6 +26,22 @@ dumi 对 HTML 默认的 `embed` 标签做了扩展，允许在 Markdown 文档�
 <!-- 根据正则引入部分 Markdown 文件内容 -->
 
 <embed src="/path/to/some.md#RE-/^[^\r\n]+/"></embed>
+
+<!-- 根据 VS Code region 引入部分 Markdown 文件内容 -->
+
+<embed src="/path/to/some.md#some-region"></embed>
+```
+
+### region 引入 <Badge>2.4.51+</Badge>
+
+region 的标记写法与 [VS Code](https://code.visualstudio.com/docs/editing/codebasics#_folding) 一致，需要写在被嵌入的文件里：
+
+```md
+<!-- #region some-region -->
+
+这里的 Markdown 内容会被嵌入
+
+<!-- #endregion some-region -->
 ```
 
 ## Badge

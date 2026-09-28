@@ -9,3 +9,5 @@
 <embed src="./embed.md#RE-/^(first)+/"></embed>
 
 <embed src="@/fixtures/embed/embed.md"></embed>
+
+<embed src="./embed.md#snippet"></embed>
