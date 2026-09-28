@@ -312,3 +312,17 @@ export default defineConfig({
 ```
 
 :::
+
+<br/>
+
+## 自定义锚点 <Badge>2.4.51+</Badge> {#custom-anchor}
+
+标题默认以标题文本自动生成锚点，如果希望使用自定义锚点，可以在标题末尾追加 `{#custom-id}`：
+
+```md
+## 自定义标题 {#custom-anchor}
+```
+
+上面的标题会被渲染为 `<h2 id="custom-anchor">`，而不是 `<h2 id="自定义标题">`。
+
+锚点标记必须**位于标题末尾**，如果标题中还有 `<Badge>` 等行内标签，需要写在标签之后。
