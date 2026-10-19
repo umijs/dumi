@@ -83,8 +83,8 @@ test('block cache updates style usage when only a nested import changes', async 
   const initial = await fixture.parse();
 
   expect(initial.sideEffectStyles).toContain(fixture.style);
-  expect(Object.values(initial.resolveMap)).toContain(
-    path.join(fixture.dir, 'nested.ts'),
+  expect(Object.values(initial.resolveMap).map(winPath)).toContain(
+    winPath(path.join(fixture.dir, 'nested.ts')),
   );
 
   const nested = "import styles from './style.less';\nexport default styles;";

@@ -4,6 +4,7 @@ import Module from 'module';
 import os from 'os';
 import path from 'path';
 import { transform } from 'sucrase';
+import { winPath } from 'umi/plugin-utils';
 import { vi } from 'vitest';
 
 let mdLoader: typeof import('.')['default'];
@@ -141,7 +142,7 @@ test('live demo styles retain CSS and source assets without reading exports', as
   const { demos } = evaluateDemos(output);
 
   Object.entries(styles).forEach(([file, content]) => {
-    const absolute = path.join(dir, file);
+    const absolute = winPath(path.join(dir, file));
     expect(output).toContain(`import '${absolute}';`);
     expect(output).not.toMatch(
       new RegExp(
@@ -151,7 +152,7 @@ test('live demo styles retain CSS and source assets without reading exports', as
     expect(demos[0].context[`./${file}`]).toEqual({});
     expect(demos[0].context[absolute]).toEqual({});
     expect(demos[0].asset.dependencies[`./${file}`].value).toBe(content);
-    expect(dependencies).toContain(absolute);
+    expect(dependencies.map(winPath)).toContain(absolute);
   });
 });
 
@@ -171,7 +172,7 @@ test('live demo dependency analysis uses aliases from the generated loader conte
     path.join(dir, 'loader-context.cjs'),
     `exports.alias = ${JSON.stringify({ '@fixture': dir })};`,
   );
-  const absolute = path.join(dir, 'style.less');
+  const absolute = winPath(path.join(dir, 'style.less'));
   const { output } = await loadDemos(dir);
   const { demos, namespaces } = evaluateDemos(output);
 
@@ -232,7 +233,7 @@ test.each([
       'demo.tsx': code,
       [style]: '.demo { color: red; }',
     });
-    const absolute = path.join(dir, style);
+    const absolute = winPath(path.join(dir, style));
     const { output } = await loadDemos(dir);
     const { demos, namespaces } = evaluateDemos(output);
 
@@ -256,7 +257,7 @@ test.each([true, false])(
       'demo.tsx': [...imports, 'export default () => sheet;'].join('\n'),
       'style.less': '.demo { color: red; }',
     });
-    const absolute = path.join(dir, 'style.less');
+    const absolute = winPath(path.join(dir, 'style.less'));
     const { output } = await loadDemos(dir);
     const { demos, namespaces } = evaluateDemos(output);
 
@@ -281,7 +282,7 @@ test.each([true, false])(
         "import sheet from './style.less';\nexport default () => sheet;",
       'style.less': '.demo { color: red; }',
     });
-    const absolute = path.join(dir, 'style.less');
+    const absolute = winPath(path.join(dir, 'style.less'));
     const { output } = await loadDemos(dir);
     const { demos, namespaces } = evaluateDemos(output);
     const styleImports = Array.from(
@@ -309,7 +310,7 @@ test('value imports in nested dependencies retain stylesheet exports', async () 
     'nested/helper.ts': "import sheet from '../style.less';\nexport { sheet };",
     'style.less': '.demo { color: red; }',
   });
-  const absolute = path.join(dir, 'style.less');
+  const absolute = winPath(path.join(dir, 'style.less'));
   const { output } = await loadDemos(dir);
   const { demos, namespaces } = evaluateDemos(output);
 
@@ -341,7 +342,7 @@ test.each(['tsx', 'vue'])(
         ].join('\n'),
       };
     });
-    const absolute = path.join(dir, 'style.less');
+    const absolute = winPath(path.join(dir, 'style.less'));
     const { output } = await loadDemos(dir, false, techStack);
     const { demos, namespaces } = evaluateDemos(output);
 
@@ -360,7 +361,7 @@ test('generateSources retains stylesheet namespaces when taking over dependency 
   });
   const techStack: IDumiTechStack = new ReactTechStack();
   techStack.generateSources = vi.fn((sources) => ({ ...sources }));
-  const absolute = path.join(dir, 'style.less');
+  const absolute = winPath(path.join(dir, 'style.less'));
   const { output } = await loadDemos(dir, false, techStack);
   const { demos, namespaces } = evaluateDemos(output);
 
@@ -400,7 +401,7 @@ test('live demo compilation preserves lazy style-loader APIs and module metadata
   });
   const { output } = await loadDemos(dir);
   const { demos } = evaluateDemos(output, {
-    [path.join(dir, 'style.less')]: styleNamespace,
+    [winPath(path.join(dir, 'style.less'))]: styleNamespace,
   });
   const liveCode = transform(demos[0].asset.dependencies['index.tsx'].value, {
     transforms: ['typescript', 'jsx', 'imports'],
@@ -444,7 +445,7 @@ test('live demo CSS Modules and JavaScript or JSON dependencies retain exports',
   const { demos, namespaces } = evaluateDemos(output);
 
   ['style.module.less', 'data.json', 'helper.ts'].forEach((file) => {
-    const absolute = path.join(dir, file);
+    const absolute = winPath(path.join(dir, file));
     expect(namespaces[absolute]).toBeDefined();
     expect(demos[0].context[absolute]).toBe(namespaces[absolute]);
     expect(demos[0].context[`./${file}`]).toBe(namespaces[absolute]);
@@ -469,9 +470,11 @@ test('nested and shared live demo styles are deduplicated and respect disableLiv
     'nested/nested.less': '.nested { color: blue; }',
   });
   const { output } = await loadDemos(dir);
-  const sharedImport = `import '${path.join(dir, 'shared.less')}';`;
+  const sharedImport = `import '${winPath(path.join(dir, 'shared.less'))}';`;
   expect(output.split(sharedImport)).toHaveLength(2);
-  expect(output).toContain(`import '${path.join(dir, 'nested/nested.less')}';`);
+  expect(output).toContain(
+    `import '${winPath(path.join(dir, 'nested/nested.less'))}';`,
+  );
   const { demos } = evaluateDemos(output);
   expect(demos).toHaveLength(2);
   demos.forEach((demo) => {
