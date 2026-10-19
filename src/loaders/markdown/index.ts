@@ -692,12 +692,17 @@ export default function mdLoader(this: any, content: string) {
       techStacks: any[];
       builtins?: Record<string, { specifier: string; source: string }>;
       routes?: IMdLoaderOptions['routes'];
+      alias?: IMdLoaderOptions['alias'];
       extraRemarkPlugins?: IMdLoaderOptions['extraRemarkPlugins'];
       extraRehypePlugins?: IMdLoaderOptions['extraRehypePlugins'];
       demoAssetsFile?: string;
     };
     if (!opts.techStacks?.length) {
       (opts as any).techStacks = ctx.techStacks;
+    }
+    // autoAlias and framework plugins may update aliases after loader rules are built.
+    if (ctx.alias !== undefined) {
+      opts = { ...opts, alias: ctx.alias };
     }
     // builtins are not available at modifyConfig time in utoopack mode
     // (themeData is only set in modifyAppData, which is later).

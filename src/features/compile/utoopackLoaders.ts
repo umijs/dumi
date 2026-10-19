@@ -199,6 +199,7 @@ export function buildLoaderContextContent(
   extraRehypePlugins: IApi['config']['extraRehypePlugins'] = [],
   sourceFiles: string[] = [],
   demoAssetsFile?: string,
+  alias?: IApi['config']['alias'],
 ): string {
   const refs = toTechStackRefs(techStacks);
 
@@ -216,6 +217,7 @@ export function buildLoaderContextContent(
     `exports.techStacks = [${refs.join(', ')}];\n` +
     `exports.builtins = ${JSON.stringify(builtins)};\n` +
     `exports.routes = ${JSON.stringify(routes)};\n` +
+    `exports.alias = ${JSON.stringify(alias)};\n` +
     `exports.demoAssetsFile = ${JSON.stringify(demoAssetsFile)};\n` +
     `exports.extraRemarkPlugins = ${toPluginRefs(
       extraRemarkPlugins,

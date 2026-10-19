@@ -155,6 +155,34 @@ test('live demo styles retain CSS and source assets without reading exports', as
   });
 });
 
+test('live demo dependency analysis uses aliases from the generated loader context', async () => {
+  const dir = createFixture({
+    'package.json': JSON.stringify({ name: 'fixture-docs', version: '1.0.0' }),
+    'index.md': '<code src="./demo.tsx"></code>',
+    'demo.tsx': [
+      "import './style.less';",
+      "import { value } from '@fixture/helper';",
+      'export default () => value;',
+    ].join('\n'),
+    'helper.ts': 'export const value = 1;',
+    'style.less': '.demo { color: red; }',
+  });
+  fs.writeFileSync(
+    path.join(dir, 'loader-context.cjs'),
+    `exports.alias = ${JSON.stringify({ '@fixture': dir })};`,
+  );
+  const absolute = path.join(dir, 'style.less');
+  const { output } = await loadDemos(dir);
+  const { demos, namespaces } = evaluateDemos(output);
+
+  expect(output).toContain(`import '${absolute}';`);
+  expect(demos[0].context['./style.less']).toEqual({});
+  expect(namespaces['@fixture/helper']).toBeDefined();
+  expect(demos[0].context['@fixture/helper']).toBe(
+    namespaces['@fixture/helper'],
+  );
+});
+
 test.each([
   {
     name: 'default import',
