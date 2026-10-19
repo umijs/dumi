@@ -49,6 +49,7 @@ type IRehypeDemoOptions = Pick<
   fileLocaleLessPath: string;
   fileLocale?: string;
   useUtoopackDemoHMR?: boolean;
+  collectSideEffectStyles?: boolean;
 };
 
 function getDemoPropsFromNode(node: Element) {
@@ -412,6 +413,7 @@ export default function rehypeDemo(
               parseBlockAsset({
                 ...parseOpts,
                 cacheable: opts.useUtoopackDemoHMR,
+                collectSideEffectStyles: opts.collectSideEffectStyles,
               }).then(
                 async ({
                   asset,

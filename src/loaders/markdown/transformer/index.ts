@@ -75,6 +75,7 @@ export interface IMdTransformerOptions {
   cwd: string;
   fileAbsPath: string;
   useUtoopackDemoHMR?: boolean;
+  collectSideEffectStyles?: boolean;
   alias: ResolveOptions['alias'];
   parentAbsPath?: string;
   techStacks: IDumiTechStack[];
@@ -199,6 +200,7 @@ export default async (raw: string, opts: IMdTransformerOptions) => {
       fileLocaleLessPath,
       fileLocale,
       useUtoopackDemoHMR: opts.useUtoopackDemoHMR,
+      collectSideEffectStyles: opts.collectSideEffectStyles,
       resolve: opts.resolve,
       resolver,
       codeBlockBabelPlugins: opts.codeBlockBabelPlugins,

@@ -50,6 +50,7 @@ function loadDemos(
   dir: string,
   disableLiveDemo = false,
   techStack?: IDumiTechStack,
+  useUtoopack = true,
 ) {
   const resourcePath = path.join(dir, 'index.md');
   const dependencies: string[] = [];
@@ -73,7 +74,11 @@ function loadDemos(
             routes: {},
             pkg: {},
             disableLiveDemo,
-            __dumiLoaderContextPath: path.join(dir, 'loader-context.cjs'),
+            ...(useUtoopack
+              ? {
+                  __dumiLoaderContextPath: path.join(dir, 'loader-context.cjs'),
+                }
+              : {}),
           }),
           addDependency: (file: string) => dependencies.push(file),
           async: () => (error: Error | null, output: string) => {
@@ -153,6 +158,29 @@ test('live demo styles retain CSS and source assets without reading exports', as
     expect(demos[0].context[absolute]).toEqual({});
     expect(demos[0].asset.dependencies[`./${file}`].value).toBe(content);
     expect(dependencies.map(winPath)).toContain(absolute);
+  });
+});
+
+test('webpack retains existing stylesheet namespaces for side-effect imports', async () => {
+  const dir = createFixture({
+    'index.md': '<code src="./demo.tsx"></code>',
+    'demo.tsx': [
+      "import './style.less';",
+      "import './style.css';",
+      'export default () => null;',
+    ].join('\n'),
+    'style.less': '.less { color: red; }',
+    'style.css': '.css { color: blue; }',
+  });
+  const { output } = await loadDemos(dir, false, undefined, false);
+  const { demos, namespaces } = evaluateDemos(output);
+
+  ['style.less', 'style.css'].forEach((file) => {
+    const absolute = winPath(path.join(dir, file));
+    expect(namespaces[absolute]).toBeDefined();
+    expect(output).not.toContain(`import '${absolute}';`);
+    expect(demos[0].context[`./${file}`]).toBe(namespaces[absolute]);
+    expect(demos[0].context[absolute]).toBe(namespaces[absolute]);
   });
 });
 
@@ -371,62 +399,65 @@ test('generateSources retains stylesheet namespaces when taking over dependency 
   expect(demos[0].context['./style.less']).toBe(namespaces[absolute]);
 });
 
-test('live demo compilation preserves lazy style-loader APIs and module metadata', async () => {
-  const dir = createFixture({
-    'index.md': '<code src="./demo.tsx"></code>',
-    'demo.tsx': [
-      "import sheet from './style.less';",
-      "import * as sheetNamespace from './style.less';",
-      "import { theme } from './style.less';",
-      'sheet.use();',
-      'sheetNamespace.default.unuse();',
-      'export const details = {',
-      '  sameDefault: sheet === sheetNamespace.default,',
-      '  theme,',
-      '  esModule: sheetNamespace.__esModule,',
-      '  tag: Object.prototype.toString.call(sheetNamespace),',
-      '};',
-      'export default () => null;',
-    ].join('\n'),
-    'style.less': '.demo { color: red; }',
-  });
-  const sheet = { use: vi.fn(), unuse: vi.fn() };
-  const styleNamespace = Object.assign(Object.create(null), {
-    default: sheet,
-    theme: 'lazy-style',
-  });
-  Object.defineProperty(styleNamespace, '__esModule', { value: true });
-  Object.defineProperty(styleNamespace, Symbol.toStringTag, {
-    value: 'Module',
-  });
-  const { output } = await loadDemos(dir);
-  const { demos } = evaluateDemos(output, {
-    [winPath(path.join(dir, 'style.less'))]: styleNamespace,
-  });
-  const liveCode = transform(demos[0].asset.dependencies['index.tsx'].value, {
-    transforms: ['typescript', 'jsx', 'imports'],
-  }).code;
-  const exports: Record<string, unknown> = {};
-  new Function('exports', 'module', 'require', liveCode)(
-    exports,
-    { exports },
-    (source: string) => demos[0].context[source],
-  );
+test.each([true, false])(
+  'live demo compilation preserves lazy style-loader APIs and module metadata (utoopack: %s)',
+  async (useUtoopack) => {
+    const dir = createFixture({
+      'index.md': '<code src="./demo.tsx"></code>',
+      'demo.tsx': [
+        "import sheet from './style.less';",
+        "import * as sheetNamespace from './style.less';",
+        "import { theme } from './style.less';",
+        'sheet.use();',
+        'sheetNamespace.default.unuse();',
+        'export const details = {',
+        '  sameDefault: sheet === sheetNamespace.default,',
+        '  theme,',
+        '  esModule: sheetNamespace.__esModule,',
+        '  tag: Object.prototype.toString.call(sheetNamespace),',
+        '};',
+        'export default () => null;',
+      ].join('\n'),
+      'style.less': '.demo { color: red; }',
+    });
+    const sheet = { use: vi.fn(), unuse: vi.fn() };
+    const styleNamespace = Object.assign(Object.create(null), {
+      default: sheet,
+      theme: 'lazy-style',
+    });
+    Object.defineProperty(styleNamespace, '__esModule', { value: true });
+    Object.defineProperty(styleNamespace, Symbol.toStringTag, {
+      value: 'Module',
+    });
+    const { output } = await loadDemos(dir, false, undefined, useUtoopack);
+    const { demos } = evaluateDemos(output, {
+      [winPath(path.join(dir, 'style.less'))]: styleNamespace,
+    });
+    const liveCode = transform(demos[0].asset.dependencies['index.tsx'].value, {
+      transforms: ['typescript', 'jsx', 'imports'],
+    }).code;
+    const exports: Record<string, unknown> = {};
+    new Function('exports', 'module', 'require', liveCode)(
+      exports,
+      { exports },
+      (source: string) => demos[0].context[source],
+    );
 
-  expect(sheet.use).toHaveBeenCalledOnce();
-  expect(sheet.unuse).toHaveBeenCalledOnce();
-  expect(exports.details).toEqual({
-    sameDefault: true,
-    theme: 'lazy-style',
-    esModule: true,
-    tag: '[object Module]',
-  });
-  expect(demos[0].context['./style.less']).toBe(styleNamespace);
-  expect(demos[0].context['./style.less'].__esModule).toBe(true);
-  expect(Object.prototype.toString.call(demos[0].context['./style.less'])).toBe(
-    '[object Module]',
-  );
-});
+    expect(sheet.use).toHaveBeenCalledOnce();
+    expect(sheet.unuse).toHaveBeenCalledOnce();
+    expect(exports.details).toEqual({
+      sameDefault: true,
+      theme: 'lazy-style',
+      esModule: true,
+      tag: '[object Module]',
+    });
+    expect(demos[0].context['./style.less']).toBe(styleNamespace);
+    expect(demos[0].context['./style.less'].__esModule).toBe(true);
+    expect(
+      Object.prototype.toString.call(demos[0].context['./style.less']),
+    ).toBe('[object Module]');
+  },
+);
 
 test('live demo CSS Modules and JavaScript or JSON dependencies retain exports', async () => {
   const dir = createFixture({

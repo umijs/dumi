@@ -53,7 +53,8 @@ function createFixture(files: Record<string, string>) {
   return {
     dir,
     onBlockLoad,
-    parse: () => parseBlockAsset(opts),
+    parse: (collectSideEffectStyles = true) =>
+      parseBlockAsset({ ...opts, collectSideEffectStyles }),
     style: winPath(path.join(dir, 'style.less')),
   };
 }
@@ -118,4 +119,28 @@ test('mutating returned side-effect styles does not change a cached block', asyn
   cached.sideEffectStyles!.push('another-mutation.less');
   expect((await fixture.parse()).sideEffectStyles).toEqual([fixture.style]);
   expect(fixture.onBlockLoad).toHaveBeenCalledTimes(loadCount);
+});
+
+test('block cache isolates opt-in style metadata from ordinary parsing', async () => {
+  const fixture = createFixture({
+    'demo.ts': "import './style.less';\nexport default 1;",
+    'style.less': '.demo { color: red; }',
+  });
+  const ordinary = await fixture.parse(false);
+  const ordinaryLoadCount = fixture.onBlockLoad.mock.calls.length;
+
+  expect(ordinary.sideEffectStyles ?? []).toEqual([]);
+
+  const collected = await fixture.parse(true);
+  const collectedLoadCount = fixture.onBlockLoad.mock.calls.length;
+
+  expect(collected.sideEffectStyles).toEqual([fixture.style]);
+  expect(collectedLoadCount).toBeGreaterThan(ordinaryLoadCount);
+  expect(collected.asset).toEqual(ordinary.asset);
+  expect(collected.resolveMap).toEqual(ordinary.resolveMap);
+
+  expect((await fixture.parse(false)).sideEffectStyles ?? []).toEqual([]);
+  expect(fixture.onBlockLoad).toHaveBeenCalledTimes(collectedLoadCount);
+  expect((await fixture.parse(true)).sideEffectStyles).toEqual([fixture.style]);
+  expect(fixture.onBlockLoad).toHaveBeenCalledTimes(collectedLoadCount);
 });

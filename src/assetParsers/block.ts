@@ -36,6 +36,7 @@ interface IParseBlockAssetOptions {
   resolver: typeof sync;
   techStack: IDumiTechStack;
   cacheable?: boolean;
+  collectSideEffectStyles?: boolean;
 }
 
 type BlockAssetCache = {
@@ -89,6 +90,7 @@ function getParseCacheKey(opts: IParseBlockAssetOptions) {
     hasOnBlockLoad: Boolean(opts.techStack.onBlockLoad),
     hasGenerateMetadata: Boolean(opts.techStack.generateMetadata),
     hasGenerateSources: Boolean(opts.techStack.generateSources),
+    collectSideEffectStyles: Boolean(opts.collectSideEffectStyles),
   });
 }
 
@@ -216,6 +218,7 @@ async function parseBlockAsset(opts: IParseBlockAssetOptions) {
             );
 
             if (
+              opts.collectSideEffectStyles &&
               opts.techStack.runtimeOpts &&
               args.kind !== 'entry-point' &&
               !/[?#]/.test(args.path) &&
@@ -355,9 +358,10 @@ async function parseBlockAsset(opts: IParseBlockAssetOptions) {
                 contents: isModule ? contents ?? file.value : '',
                 loader: isModule ? (ext.slice(1) as any) : 'text',
                 pluginData: {
-                  sideEffectImports: isModule
-                    ? getSideEffectImports(contents ?? file.value, ext)
-                    : {},
+                  sideEffectImports:
+                    opts.collectSideEffectStyles && isModule
+                      ? getSideEffectImports(contents ?? file.value, ext)
+                      : {},
                 },
               };
             }

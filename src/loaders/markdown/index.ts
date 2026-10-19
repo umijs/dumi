@@ -296,8 +296,10 @@ function emitDemo(
                 return {
                   key,
                   specifier,
-                  // Every consumer must request side effects only.
-                  sideEffectOnly: sideEffectDepsMap.get(key) === true,
+                  // Preserve webpack's namespace behavior, including custom style exports.
+                  sideEffectOnly:
+                    Boolean((opts as any)[UTOOPACK_LOADER_CTX_KEY]) &&
+                    sideEffectDepsMap.get(key) === true,
                 };
               }
               return undefined;
@@ -776,6 +778,7 @@ export default function mdLoader(this: any, content: string) {
     >),
     fileAbsPath: winPath(this.resourcePath),
     useUtoopackDemoHMR,
+    collectSideEffectStyles: Boolean(loaderContextPath),
   });
 
   deferrer[cacheKey]
