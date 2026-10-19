@@ -156,6 +156,26 @@ test('utoopack loader context serializes extra unified plugins', async () => {
   );
 });
 
+test('utoopack loader context serializes final aliases', async () => {
+  const { buildLoaderContextContent } = await import('./utoopackLoaders');
+  const alias = { '@': '/tmp/dumi-app/src', 'my-library': '/tmp/dumi-app/src' };
+  const content = buildLoaderContextContent(
+    [],
+    {},
+    {},
+    [],
+    [],
+    [],
+    undefined,
+    alias,
+  );
+  const exports: any = {};
+
+  new Function('require', 'exports', content)(require, exports);
+
+  expect(exports.alias).toEqual(alias);
+});
+
 test('utoopack loader context registers TS hook without project root phantom deps', async () => {
   const { buildLoaderContextContent } = await import('./utoopackLoaders');
   const content = buildLoaderContextContent([]);

@@ -1,4 +1,5 @@
 import { getContentHash, parseCodeFrontmatter } from '@/utils';
+import { parseSync } from '@swc/core';
 import { build } from '@umijs/bundler-utils/compiled/esbuild';
 import assert from 'assert';
 import type { ExampleBlockAsset } from 'dumi-assets-types';
@@ -21,6 +22,8 @@ export interface IParsedBlockAsset {
    * }
    */
   resolveMap: Record<string, string>;
+  /** Resolved ordinary styles requested exclusively by side-effect imports. */
+  sideEffectStyles?: string[];
   frontmatter: ReturnType<typeof parseCodeFrontmatter>['frontmatter'];
 }
 
@@ -33,6 +36,7 @@ interface IParseBlockAssetOptions {
   resolver: typeof sync;
   techStack: IDumiTechStack;
   cacheable?: boolean;
+  collectSideEffectStyles?: boolean;
 }
 
 type BlockAssetCache = {
@@ -48,6 +52,7 @@ function cloneParsedBlockAsset(ret: IParsedBlockAsset): IParsedBlockAsset {
   return {
     asset: JSON.parse(JSON.stringify(ret.asset)),
     resolveMap: { ...ret.resolveMap },
+    sideEffectStyles: ret.sideEffectStyles?.slice(),
     frontmatter: ret.frontmatter
       ? JSON.parse(JSON.stringify(ret.frontmatter))
       : ret.frontmatter,
@@ -85,6 +90,7 @@ function getParseCacheKey(opts: IParseBlockAssetOptions) {
     hasOnBlockLoad: Boolean(opts.techStack.onBlockLoad),
     hasGenerateMetadata: Boolean(opts.techStack.generateMetadata),
     hasGenerateSources: Boolean(opts.techStack.generateSources),
+    collectSideEffectStyles: Boolean(opts.collectSideEffectStyles),
   });
 }
 
@@ -119,6 +125,50 @@ function setCachedBlockAsset(
   });
 }
 
+function getSideEffectImports(code: string, ext: string) {
+  const imports: Record<string, boolean> = Object.create(null);
+
+  try {
+    const program = parseSync(
+      code,
+      ext === '.ts' || ext === '.tsx'
+        ? { syntax: 'typescript', tsx: ext === '.tsx', decorators: true }
+        : { syntax: 'ecmascript', jsx: ext === '.jsx', decorators: true },
+    );
+
+    for (const item of program.body) {
+      if (item.type === 'ImportDeclaration') {
+        if (
+          item.typeOnly ||
+          (item.specifiers.length > 0 &&
+            item.specifiers.every(
+              (specifier) =>
+                specifier.type === 'ImportSpecifier' && specifier.isTypeOnly,
+            ))
+        ) {
+          continue;
+        }
+
+        const source = item.source.value;
+        imports[source] =
+          imports[source] !== false && item.specifiers.length === 0;
+      } else if (
+        (item.type === 'ExportNamedDeclaration' ||
+          item.type === 'ExportAllDeclaration') &&
+        item.source &&
+        !(item.type === 'ExportNamedDeclaration' && item.typeOnly)
+      ) {
+        imports[item.source.value] = false;
+      }
+    }
+  } catch {
+    // Unknown syntax must keep namespace imports rather than discard exports.
+    return {};
+  }
+
+  return imports;
+}
+
 async function parseBlockAsset(opts: IParseBlockAssetOptions) {
   const cacheKey = opts.cacheable ? getParseCacheKey(opts) : '';
   const cached = cacheKey ? getCachedBlockAsset(cacheKey) : undefined;
@@ -137,8 +187,10 @@ async function parseBlockAsset(opts: IParseBlockAssetOptions) {
   const result: IParsedBlockAsset = {
     asset,
     resolveMap: {},
+    sideEffectStyles: [],
     frontmatter: null,
   };
+  const styleImports = new Map<string, boolean>();
   // demo dependency analysis and asset processing
   const deferrer = build({
     // do not emit file
@@ -156,12 +208,35 @@ async function parseBlockAsset(opts: IParseBlockAssetOptions) {
         name: 'plugin-dumi-collect-deps',
         setup: (builder) => {
           builder.onResolve({ filter: /.*/ }, (args) => {
-            if (args.kind !== 'entry-point' && !args.path.startsWith('.')) {
-              const resolved = opts.resolver(args.resolveDir, args.path);
-              assert(
-                resolved,
-                `Can't resolve ${args.path} from ${args.resolveDir}`,
+            const resolved =
+              args.kind === 'entry-point'
+                ? path.join(args.resolveDir, args.path)
+                : opts.resolver(args.resolveDir, args.path);
+            assert(
+              resolved,
+              `Can't resolve ${args.path} from ${args.resolveDir}`,
+            );
+
+            if (
+              opts.collectSideEffectStyles &&
+              opts.techStack.runtimeOpts &&
+              args.kind !== 'entry-point' &&
+              !/[?#]/.test(args.path) &&
+              /\.(css|less|sass|scss|styl)$/i.test(resolved) &&
+              !/\.module\.[^.]+$/i.test(resolved)
+            ) {
+              const key = args.path.startsWith('.')
+                ? winPath(resolved)
+                : args.path;
+              styleImports.set(
+                key,
+                styleImports.get(key) !== false &&
+                  args.kind === 'import-statement' &&
+                  args.pluginData?.sideEffectImports?.[args.path] === true,
               );
+            }
+
+            if (args.kind !== 'entry-point' && !args.path.startsWith('.')) {
               const pkgJsonPath = pkgUp.pkgUpSync({
                 cwd: resolved,
               });
@@ -182,10 +257,7 @@ async function parseBlockAsset(opts: IParseBlockAssetOptions) {
             }
 
             return {
-              path:
-                args.kind !== 'entry-point'
-                  ? (opts.resolver(args.resolveDir, args.path) as string)
-                  : path.join(args.resolveDir, args.path),
+              path: resolved,
               pluginData: {
                 kind: args.kind,
                 resolveDir: args.resolveDir,
@@ -285,6 +357,12 @@ async function parseBlockAsset(opts: IParseBlockAssetOptions) {
                 // only continue to load for module files
                 contents: isModule ? contents ?? file.value : '',
                 loader: isModule ? (ext.slice(1) as any) : 'text',
+                pluginData: {
+                  sideEffectImports:
+                    opts.collectSideEffectStyles && isModule
+                      ? getSideEffectImports(contents ?? file.value, ext)
+                      : {},
+                },
               };
             }
           });
@@ -303,6 +381,12 @@ async function parseBlockAsset(opts: IParseBlockAssetOptions) {
      * to make sure the parent md can be re-compiling when demo errors be fixed
      * and don't worry, the real error still be reported by the demo loader
      */
+  }
+
+  if (!hasError) {
+    result.sideEffectStyles = Array.from(styleImports)
+      .filter(([, sideEffectOnly]) => sideEffectOnly)
+      .map(([key]) => key);
   }
 
   if (!hasError && cacheKey) {

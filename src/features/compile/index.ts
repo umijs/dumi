@@ -144,6 +144,7 @@ export default (api: IApi) => {
             api.config.extraRehypePlugins,
             (api as any).service.configManager?.files ?? [],
             demoAssetsFile,
+            api.config.alias,
           ),
         });
       }

@@ -68,11 +68,15 @@ export type IMdLoaderOptions =
 interface IDemoDependency {
   key: string;
   specifier: string;
+  sideEffectOnly: boolean;
 }
 
 type MdLoaderCache = {
   getSync: (key: string, defaultValue: any) => any;
 };
+
+// Parsed demo metadata now includes source import usage.
+const MD_LOADER_CACHE_VERSION = 1;
 
 function isMalformedCacheError(err: unknown) {
   return (
@@ -244,6 +248,7 @@ function emitDemo(
   const shareDepsMap: Record<string, string> = {};
   const demoDepsMap: Record<string, Record<string, string>> = {};
   const relativeDepsMap: Record<string, Record<string, string>> = {};
+  const sideEffectDepsMap = new Map<string, boolean>();
 
   demos?.forEach((demo) => {
     if ('resolveMap' in demo && 'asset' in demo) {
@@ -257,6 +262,11 @@ function emitDemo(
           const normalizedKey = isRelative
             ? winPath(demo.resolveMap[key])
             : key;
+          sideEffectDepsMap.set(
+            normalizedKey,
+            sideEffectDepsMap.get(normalizedKey) !== false &&
+              demo.sideEffectStyles?.includes(normalizedKey) === true,
+          );
 
           if (!shareDepsMap[normalizedKey]) {
             demoDepsMap[demo.id][normalizedKey] = specifier;
@@ -283,7 +293,14 @@ function emitDemo(
             .map(([key, specifier]) => {
               const existingIndex = acc.findIndex((obj) => obj.key === key);
               if (existingIndex === -1) {
-                return { key, specifier };
+                return {
+                  key,
+                  specifier,
+                  // Preserve webpack's namespace behavior, including custom style exports.
+                  sideEffectOnly:
+                    Boolean((opts as any)[UTOOPACK_LOADER_CTX_KEY]) &&
+                    sideEffectDepsMap.get(key) === true,
+                };
               }
               return undefined;
             })
@@ -296,7 +313,13 @@ function emitDemo(
     `import React from 'react';
 import '${winPath(this.resourcePath)}?watch=parent';
 {{#dedupedDemosDeps}}
+{{#sideEffectOnly}}
+import '{{{key}}}';
+const {{{specifier}}} = {};
+{{/sideEffectOnly}}
+{{^sideEffectOnly}}
 import * as {{{specifier}}} from '{{{key}}}';
+{{/sideEffectOnly}}
 {{/dedupedDemosDeps}}
 export const demos = {
   {{#demos}}
@@ -671,12 +694,17 @@ export default function mdLoader(this: any, content: string) {
       techStacks: any[];
       builtins?: Record<string, { specifier: string; source: string }>;
       routes?: IMdLoaderOptions['routes'];
+      alias?: IMdLoaderOptions['alias'];
       extraRemarkPlugins?: IMdLoaderOptions['extraRemarkPlugins'];
       extraRehypePlugins?: IMdLoaderOptions['extraRehypePlugins'];
       demoAssetsFile?: string;
     };
     if (!opts.techStacks?.length) {
       (opts as any).techStacks = ctx.techStacks;
+    }
+    // autoAlias and framework plugins may update aliases after loader rules are built.
+    if (ctx.alias !== undefined) {
+      opts = { ...opts, alias: ctx.alias };
     }
     // builtins are not available at modifyConfig time in utoopack mode
     // (themeData is only set in modifyAppData, which is later).
@@ -713,8 +741,9 @@ export default function mdLoader(this: any, content: string) {
   }
 
   const cache = getCache('md-loader');
-  // format: {path:contenthash:loaderOpts}
+  // format: {version:path:contenthash:loaderOpts}
   const baseCacheKey = [
+    MD_LOADER_CACHE_VERSION,
     this.resourcePath,
     getContentHash(content),
     useUtoopackDemoHMR,
@@ -749,6 +778,7 @@ export default function mdLoader(this: any, content: string) {
     >),
     fileAbsPath: winPath(this.resourcePath),
     useUtoopackDemoHMR,
+    collectSideEffectStyles: Boolean(loaderContextPath),
   });
 
   deferrer[cacheKey]
