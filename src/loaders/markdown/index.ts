@@ -68,6 +68,7 @@ export type IMdLoaderOptions =
 interface IDemoDependency {
   key: string;
   specifier: string;
+  sideEffectOnly: boolean;
 }
 
 type MdLoaderCache = {
@@ -283,7 +284,16 @@ function emitDemo(
             .map(([key, specifier]) => {
               const existingIndex = acc.findIndex((obj) => obj.key === key);
               if (existingIndex === -1) {
-                return { key, specifier };
+                return {
+                  key,
+                  specifier,
+                  // Ordinary styles have no JS exports. Keep module styles and
+                  // custom resource queries as namespaces for their exported values.
+                  sideEffectOnly:
+                    !/[?#]/.test(key) &&
+                    /\.(css|less|sass|scss|styl)$/i.test(key) &&
+                    !/\.module\.[^.]+$/i.test(key),
+                };
               }
               return undefined;
             })
@@ -296,7 +306,13 @@ function emitDemo(
     `import React from 'react';
 import '${winPath(this.resourcePath)}?watch=parent';
 {{#dedupedDemosDeps}}
+{{#sideEffectOnly}}
+import '{{{key}}}';
+const {{{specifier}}} = {};
+{{/sideEffectOnly}}
+{{^sideEffectOnly}}
 import * as {{{specifier}}} from '{{{key}}}';
+{{/sideEffectOnly}}
 {{/dedupedDemosDeps}}
 export const demos = {
   {{#demos}}
