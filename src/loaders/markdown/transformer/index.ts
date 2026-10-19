@@ -44,6 +44,7 @@ declare module 'vfile' {
           component: string;
           asset: IParsedBlockAsset['asset'];
           resolveMap: IParsedBlockAsset['resolveMap'];
+          sideEffectStyles?: IParsedBlockAsset['sideEffectStyles'];
           renderOpts: {
             type?: string;
             rendererPath?: string;

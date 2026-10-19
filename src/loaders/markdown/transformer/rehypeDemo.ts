@@ -413,7 +413,12 @@ export default function rehypeDemo(
                 ...parseOpts,
                 cacheable: opts.useUtoopackDemoHMR,
               }).then(
-                async ({ asset, resolveMap, frontmatter }) => {
+                async ({
+                  asset,
+                  resolveMap,
+                  frontmatter,
+                  sideEffectStyles,
+                }) => {
                   // repeat id to give warning
                   if (
                     demoIds.indexOf(parseOpts.id) !==
@@ -541,6 +546,10 @@ export default function rehypeDemo(
                           techStackOpts,
                         )
                       : resolveMap,
+                    // Custom source mappings may replace the original dependencies.
+                    sideEffectStyles: techStack.generateSources
+                      ? undefined
+                      : sideEffectStyles,
                     renderOpts: {
                       rendererPath: runtimeOpts?.rendererPath,
                       compilePath: runtimeOpts?.compilePath,

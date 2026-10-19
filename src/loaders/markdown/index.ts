@@ -75,6 +75,9 @@ type MdLoaderCache = {
   getSync: (key: string, defaultValue: any) => any;
 };
 
+// Parsed demo metadata now includes source import usage.
+const MD_LOADER_CACHE_VERSION = 1;
+
 function isMalformedCacheError(err: unknown) {
   return (
     err instanceof SyntaxError ||
@@ -245,6 +248,7 @@ function emitDemo(
   const shareDepsMap: Record<string, string> = {};
   const demoDepsMap: Record<string, Record<string, string>> = {};
   const relativeDepsMap: Record<string, Record<string, string>> = {};
+  const sideEffectDepsMap = new Map<string, boolean>();
 
   demos?.forEach((demo) => {
     if ('resolveMap' in demo && 'asset' in demo) {
@@ -258,6 +262,11 @@ function emitDemo(
           const normalizedKey = isRelative
             ? winPath(demo.resolveMap[key])
             : key;
+          sideEffectDepsMap.set(
+            normalizedKey,
+            sideEffectDepsMap.get(normalizedKey) !== false &&
+              demo.sideEffectStyles?.includes(normalizedKey) === true,
+          );
 
           if (!shareDepsMap[normalizedKey]) {
             demoDepsMap[demo.id][normalizedKey] = specifier;
@@ -287,12 +296,8 @@ function emitDemo(
                 return {
                   key,
                   specifier,
-                  // Ordinary styles have no JS exports. Keep module styles and
-                  // custom resource queries as namespaces for their exported values.
-                  sideEffectOnly:
-                    !/[?#]/.test(key) &&
-                    /\.(css|less|sass|scss|styl)$/i.test(key) &&
-                    !/\.module\.[^.]+$/i.test(key),
+                  // Every consumer must request side effects only.
+                  sideEffectOnly: sideEffectDepsMap.get(key) === true,
                 };
               }
               return undefined;
@@ -729,8 +734,9 @@ export default function mdLoader(this: any, content: string) {
   }
 
   const cache = getCache('md-loader');
-  // format: {path:contenthash:loaderOpts}
+  // format: {version:path:contenthash:loaderOpts}
   const baseCacheKey = [
+    MD_LOADER_CACHE_VERSION,
     this.resourcePath,
     getContentHash(content),
     useUtoopackDemoHMR,

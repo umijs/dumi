@@ -1,7 +1,9 @@
+import type { IDumiTechStack } from '@/types';
 import fs from 'fs';
 import Module from 'module';
 import os from 'os';
 import path from 'path';
+import { transform } from 'sucrase';
 import { vi } from 'vitest';
 
 let mdLoader: typeof import('.')['default'];
@@ -43,7 +45,11 @@ function createFixture(files: Record<string, string>) {
   return dir;
 }
 
-function loadDemos(dir: string, disableLiveDemo = false) {
+function loadDemos(
+  dir: string,
+  disableLiveDemo = false,
+  techStack?: IDumiTechStack,
+) {
   const resourcePath = path.join(dir, 'index.md');
   const dependencies: string[] = [];
   return new Promise<{ output: string; dependencies: string[] }>(
@@ -55,7 +61,7 @@ function loadDemos(dir: string, disableLiveDemo = false) {
           getOptions: () => ({
             cwd: dir,
             mode: 'demo',
-            techStacks: [new ReactTechStack()],
+            techStacks: [techStack ?? new ReactTechStack()],
             resolve: {
               codeBlockMode: 'active',
               atomDirs: [],
@@ -80,12 +86,18 @@ function loadDemos(dir: string, disableLiveDemo = false) {
   );
 }
 
-function evaluateDemos(output: string) {
+function evaluateDemos(
+  output: string,
+  importedNamespaces: Record<string, unknown> = {},
+) {
   const namespaceImports = Array.from(
     output.matchAll(/^import \* as (\w+) from '([^']+)';$/gm),
   );
   const namespaces = Object.fromEntries(
-    namespaceImports.map(([, , source]) => [source, { default: source }]),
+    namespaceImports.map(([, , source]) => [
+      source,
+      importedNamespaces[source] ?? { default: source },
+    ]),
   );
   const source = output
     .replace(/^import .*;$/gm, '')
@@ -141,6 +153,250 @@ test('live demo styles retain CSS and source assets without reading exports', as
     expect(demos[0].asset.dependencies[`./${file}`].value).toBe(content);
     expect(dependencies).toContain(absolute);
   });
+});
+
+test.each([
+  {
+    name: 'default import',
+    style: 'style.less',
+    code: "import sheet from './style.less';\nexport default () => sheet;",
+  },
+  {
+    name: 'named import',
+    style: 'style.css',
+    code: "import { use } from './style.css';\nexport default () => use;",
+  },
+  {
+    name: 'namespace import',
+    style: 'style.less',
+    code: "import * as sheet from './style.less';\nexport default () => sheet;",
+  },
+  {
+    name: 'named re-export',
+    style: 'style.css',
+    code: "export { default as sheet } from './style.css';\nexport default () => null;",
+  },
+  {
+    name: 'namespace re-export',
+    style: 'style.less',
+    code: "export * as sheet from './style.less';\nexport default () => null;",
+  },
+  {
+    name: 'star re-export',
+    style: 'style.css',
+    code: "export * from './style.css';\nexport default () => null;",
+  },
+  {
+    name: 'require call',
+    style: 'style.less',
+    code: "const sheet = require('./style.less');\nexport default () => sheet;",
+  },
+  {
+    name: 'dynamic import',
+    style: 'style.css',
+    code: "const load = () => import('./style.css');\nexport default () => load;",
+  },
+])(
+  'live demo preserves stylesheet exports for $name',
+  async ({ style, code }) => {
+    const dir = createFixture({
+      'index.md': '<code src="./demo.tsx"></code>',
+      'demo.tsx': code,
+      [style]: '.demo { color: red; }',
+    });
+    const absolute = path.join(dir, style);
+    const { output } = await loadDemos(dir);
+    const { demos, namespaces } = evaluateDemos(output);
+
+    expect(namespaces[absolute]).toBeDefined();
+    expect(output).not.toContain(`import '${absolute}';`);
+    expect(demos[0].context[`./${style}`]).toBe(namespaces[absolute]);
+    expect(demos[0].context[absolute]).toBe(namespaces[absolute]);
+  },
+);
+
+test.each([true, false])(
+  'value imports take priority over side-effect imports in one file (side effect first: %s)',
+  async (sideEffectFirst) => {
+    const sideEffectImport = "import './style.less';";
+    const valueImport = "import sheet from './style.less';";
+    const imports = sideEffectFirst
+      ? [sideEffectImport, valueImport]
+      : [valueImport, sideEffectImport];
+    const dir = createFixture({
+      'index.md': '<code src="./demo.tsx"></code>',
+      'demo.tsx': [...imports, 'export default () => sheet;'].join('\n'),
+      'style.less': '.demo { color: red; }',
+    });
+    const absolute = path.join(dir, 'style.less');
+    const { output } = await loadDemos(dir);
+    const { demos, namespaces } = evaluateDemos(output);
+
+    expect(namespaces[absolute]).toBeDefined();
+    expect(output).not.toContain(`import '${absolute}';`);
+    expect(demos[0].context['./style.less']).toBe(namespaces[absolute]);
+  },
+);
+
+test.each([true, false])(
+  'shared stylesheet exports survive side-effect imports from another demo (side effect first: %s)',
+  async (sideEffectFirst) => {
+    const files = sideEffectFirst
+      ? ['side-effect', 'value']
+      : ['value', 'side-effect'];
+    const dir = createFixture({
+      'index.md': files
+        .map((file) => `<code src="./${file}.tsx"></code>`)
+        .join('\n\n'),
+      'side-effect.tsx': "import './style.less';\nexport default () => null;",
+      'value.tsx':
+        "import sheet from './style.less';\nexport default () => sheet;",
+      'style.less': '.demo { color: red; }',
+    });
+    const absolute = path.join(dir, 'style.less');
+    const { output } = await loadDemos(dir);
+    const { demos, namespaces } = evaluateDemos(output);
+    const styleImports = Array.from(
+      output.matchAll(/^import \* as (\w+) from '([^']+)';$/gm),
+    ).filter(([, , source]) => source === absolute);
+
+    expect(styleImports).toHaveLength(1);
+    expect(namespaces[absolute]).toBeDefined();
+    expect(output).not.toContain(`import '${absolute}';`);
+    expect(demos).toHaveLength(2);
+    demos.forEach((demo) => {
+      expect(demo.context['./style.less']).toBe(namespaces[absolute]);
+    });
+  },
+);
+
+test('value imports in nested dependencies retain stylesheet exports', async () => {
+  const dir = createFixture({
+    'index.md': '<code src="./demo.tsx"></code>',
+    'demo.tsx': [
+      "import './style.less';",
+      "import { sheet } from './nested/helper';",
+      'export default () => sheet;',
+    ].join('\n'),
+    'nested/helper.ts': "import sheet from '../style.less';\nexport { sheet };",
+    'style.less': '.demo { color: red; }',
+  });
+  const absolute = path.join(dir, 'style.less');
+  const { output } = await loadDemos(dir);
+  const { demos, namespaces } = evaluateDemos(output);
+
+  expect(namespaces[absolute]).toBeDefined();
+  expect(output).not.toContain(`import '${absolute}';`);
+  expect(demos[0].context[absolute]).toBe(namespaces[absolute]);
+});
+
+test.each(['tsx', 'vue'])(
+  'onBlockLoad retains stylesheet bindings injected into transformed %s demos',
+  async (extension) => {
+    const originalCode = "import './style.less';\nexport default () => null;";
+    const dir = createFixture({
+      'index.md': `<code src="./demo.${extension}"></code>`,
+      [`demo.${extension}`]:
+        extension === 'vue' ? `<script>${originalCode}</script>` : originalCode,
+      'style.less': '.demo { color: red; }',
+    });
+    const techStack: IDumiTechStack = new ReactTechStack();
+    techStack.isSupported = (_, lang) => lang === extension;
+    techStack.onBlockLoad = vi.fn((args) => {
+      if (!args.path.endsWith(`.${extension}`)) return null;
+      return {
+        type: 'tsx',
+        content: [
+          "import './style.less';",
+          "import sheet from './style.less';",
+          'export default () => <div>{sheet}</div>;',
+        ].join('\n'),
+      };
+    });
+    const absolute = path.join(dir, 'style.less');
+    const { output } = await loadDemos(dir, false, techStack);
+    const { demos, namespaces } = evaluateDemos(output);
+
+    expect(techStack.onBlockLoad).toHaveBeenCalled();
+    expect(namespaces[absolute]).toBeDefined();
+    expect(output).not.toContain(`import '${absolute}';`);
+    expect(demos[0].context['./style.less']).toBe(namespaces[absolute]);
+  },
+);
+
+test('generateSources retains stylesheet namespaces when taking over dependency mappings', async () => {
+  const dir = createFixture({
+    'index.md': '<code src="./demo.tsx"></code>',
+    'demo.tsx': "import './style.less';\nexport default () => null;",
+    'style.less': '.demo { color: red; }',
+  });
+  const techStack: IDumiTechStack = new ReactTechStack();
+  techStack.generateSources = vi.fn((sources) => ({ ...sources }));
+  const absolute = path.join(dir, 'style.less');
+  const { output } = await loadDemos(dir, false, techStack);
+  const { demos, namespaces } = evaluateDemos(output);
+
+  expect(techStack.generateSources).toHaveBeenCalled();
+  expect(namespaces[absolute]).toBeDefined();
+  expect(output).not.toContain(`import '${absolute}';`);
+  expect(demos[0].context['./style.less']).toBe(namespaces[absolute]);
+});
+
+test('live demo compilation preserves lazy style-loader APIs and module metadata', async () => {
+  const dir = createFixture({
+    'index.md': '<code src="./demo.tsx"></code>',
+    'demo.tsx': [
+      "import sheet from './style.less';",
+      "import * as sheetNamespace from './style.less';",
+      "import { theme } from './style.less';",
+      'sheet.use();',
+      'sheetNamespace.default.unuse();',
+      'export const details = {',
+      '  sameDefault: sheet === sheetNamespace.default,',
+      '  theme,',
+      '  esModule: sheetNamespace.__esModule,',
+      '  tag: Object.prototype.toString.call(sheetNamespace),',
+      '};',
+      'export default () => null;',
+    ].join('\n'),
+    'style.less': '.demo { color: red; }',
+  });
+  const sheet = { use: vi.fn(), unuse: vi.fn() };
+  const styleNamespace = Object.assign(Object.create(null), {
+    default: sheet,
+    theme: 'lazy-style',
+  });
+  Object.defineProperty(styleNamespace, '__esModule', { value: true });
+  Object.defineProperty(styleNamespace, Symbol.toStringTag, {
+    value: 'Module',
+  });
+  const { output } = await loadDemos(dir);
+  const { demos } = evaluateDemos(output, {
+    [path.join(dir, 'style.less')]: styleNamespace,
+  });
+  const liveCode = transform(demos[0].asset.dependencies['index.tsx'].value, {
+    transforms: ['typescript', 'jsx', 'imports'],
+  }).code;
+  const exports: Record<string, unknown> = {};
+  new Function('exports', 'module', 'require', liveCode)(
+    exports,
+    { exports },
+    (source: string) => demos[0].context[source],
+  );
+
+  expect(sheet.use).toHaveBeenCalledOnce();
+  expect(sheet.unuse).toHaveBeenCalledOnce();
+  expect(exports.details).toEqual({
+    sameDefault: true,
+    theme: 'lazy-style',
+    esModule: true,
+    tag: '[object Module]',
+  });
+  expect(demos[0].context['./style.less']).toBe(styleNamespace);
+  expect(demos[0].context['./style.less'].__esModule).toBe(true);
+  expect(Object.prototype.toString.call(demos[0].context['./style.less'])).toBe(
+    '[object Module]',
+  );
 });
 
 test('live demo CSS Modules and JavaScript or JSON dependencies retain exports', async () => {
