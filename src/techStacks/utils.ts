@@ -103,7 +103,8 @@ export function wrapDemoWithFn(code: string, opts: IWrapDemoWithFnOptions) {
       parser: parserConfig,
       target: 'es2022',
       experimental: {
-        cacheRoot: 'node_modules/.cache/swc',
+        // Wasmer maps cache files into memory, so other processes must not overwrite them.
+        cacheRoot: `node_modules/.cache/swc/${process.pid}`,
         plugins: [
           [
             require.resolve('../../compiled/crates/swc_plugin_react_demo.wasm'),
