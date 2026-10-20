@@ -22,10 +22,17 @@ export function getFileIdFromFsPath(fsPath: string) {
 }
 
 /**
+ * file range pattern, such as `L1` or `L1-L3`
+ *
+ * @see https://regex101.com/r/A602tN/1
+ */
+export const FILE_RANGE_RE = /^L(\d+)(?:-L(\d+))?$/;
+
+/**
  * get range lines of markdown file
  */
 export const getFileRangeLines = (content: string, range: string) => {
-  const [, start, end] = range?.match(/^L(\d+)(?:-L(\d+))?$/) || [];
+  const [, start, end] = range?.match(FILE_RANGE_RE) || [];
 
   if (start) {
     const lineStart = parseInt(start, 10) - 1;
@@ -61,6 +68,38 @@ File: ${filePath}
 Error: ${err}`);
     return content;
   }
+};
+
+/**
+ * get file content by vscode region
+ * @param content   source file content
+ * @param region    region name
+ * @param filePath  source file path
+ *
+ * @see https://code.visualstudio.com/docs/editing/codebasics#_folding
+ */
+export const getFileContentByRegion = (
+  content: string,
+  region: string,
+  filePath: string,
+) => {
+  // embed only works for markdown, so region syntax is limited to html comment
+  const lines = content.split(/\r\n|\n/g);
+  const start = lines.findIndex(
+    (line) => line.trim() === `<!-- #region ${region} -->`,
+  );
+  const end = lines.findIndex(
+    (line) => line.trim() === `<!-- #endregion ${region} -->`,
+  );
+
+  if (start !== -1 && end > start) {
+    return lines.slice(start + 1, end).join('\n');
+  }
+
+  logger.error(`Extract markdown content failed, use the full content.
+Region: ${region}
+File: ${filePath}`);
+  return content;
 };
 
 /**
