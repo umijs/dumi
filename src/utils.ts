@@ -1,17 +1,20 @@
 import type { Range, RangeOptions } from '@umijs/utils/compiled/semver';
 import { createHash } from 'crypto';
-import Cache from 'file-system-cache';
 import fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'path';
 import { lodash, logger, semver, winPath } from 'umi/plugin-utils';
 import { promisify } from 'util';
+import type CreateCache from '../compiled/file-system-cache';
 import type {
   RunLoaderOption as InternalRunLoaderOption,
   RunLoaderResult,
 } from '../compiled/loader-runner';
 import { runLoaders as callbackRunLoaders } from '../compiled/loader-runner';
 import { FS_CACHE_DIR } from './constants';
+// Read the CommonJS default consistently in Node and source test runners.
+const Cache: typeof CreateCache =
+  require('../compiled/file-system-cache').default;
 export type * from '../compiled/loader-runner';
 export { getContext } from '../compiled/loader-runner';
 /**

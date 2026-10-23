@@ -29,6 +29,9 @@ export default defineConfig({
       // pre-bundle analytics for reduce install size
       // because @umijs/plugins depends on a lot of 3rd-party deps
       '@umijs/plugins/dist/analytics': { dts: false },
+      // Keep the cache implementation and format, while avoiding hundreds of
+      // individual dependency loads in each documentation loader worker.
+      'file-system-cache': { dts: false },
     },
   },
 });
