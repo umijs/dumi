@@ -47,6 +47,13 @@ type BlockAssetCache = {
 
 const MAX_BLOCK_ASSET_CACHE_SIZE = 512;
 const blockAssetCache = new Map<string, BlockAssetCache>();
+const MAX_SIDE_EFFECT_IMPORT_CACHE_ENTRIES = 512;
+const MAX_SIDE_EFFECT_IMPORT_CACHE_CHARACTERS = 1024 * 1024;
+const sideEffectImportCache = new Map<
+  string,
+  { imports: Record<string, boolean>; size: number }
+>();
+let sideEffectImportCacheCharacters = 0;
 
 function cloneParsedBlockAsset(ret: IParsedBlockAsset): IParsedBlockAsset {
   return {
@@ -126,6 +133,13 @@ function setCachedBlockAsset(
 }
 
 function getSideEffectImports(code: string, ext: string) {
+  // Keep the exact source and parser extension in the key: truncated content
+  // hashes could reuse a different module's import usage. Only cache this pure
+  // analysis; custom tech stack loaders must still run for every block.
+  const cacheKey = process.env.DUMI_CACHE === 'none' ? '' : `${ext}\0${code}`;
+  const cached = cacheKey ? sideEffectImportCache.get(cacheKey) : undefined;
+  if (cached) return cached.imports;
+
   const imports: Record<string, boolean> = Object.create(null);
 
   try {
@@ -164,6 +178,28 @@ function getSideEffectImports(code: string, ext: string) {
   } catch {
     // Unknown syntax must keep namespace imports rather than discard exports.
     return {};
+  }
+
+  if (cacheKey) {
+    const size =
+      cacheKey.length +
+      Object.keys(imports).reduce((total, source) => total + source.length, 0);
+
+    // Bound retained source and import strings as well as entry count, and never
+    // retain the parsed AST. Oversized modules continue through the same parser.
+    if (size <= MAX_SIDE_EFFECT_IMPORT_CACHE_CHARACTERS) {
+      while (
+        sideEffectImportCache.size >= MAX_SIDE_EFFECT_IMPORT_CACHE_ENTRIES ||
+        sideEffectImportCacheCharacters + size >
+          MAX_SIDE_EFFECT_IMPORT_CACHE_CHARACTERS
+      ) {
+        const first = sideEffectImportCache.entries().next().value!;
+        sideEffectImportCache.delete(first[0]);
+        sideEffectImportCacheCharacters -= first[1].size;
+      }
+      sideEffectImportCache.set(cacheKey, { imports, size });
+      sideEffectImportCacheCharacters += size;
+    }
   }
 
   return imports;
