@@ -7,6 +7,9 @@ import path from 'path';
 import { winPath } from 'umi/plugin-utils';
 import { vi } from 'vitest';
 
+const swc: typeof import('@swc/core') = require('@swc/core');
+const parseSync = vi.spyOn(swc, 'parseSync');
+
 let parseBlockAsset: typeof import('./block')['default'];
 const fixtureDirs: string[] = [];
 
@@ -16,7 +19,13 @@ beforeAll(async () => {
   parseBlockAsset = (await import('./block')).default;
 });
 
+afterAll(() => {
+  parseSync.mockRestore();
+});
+
 afterEach(() => {
+  vi.mocked(parseSync).mockClear();
+  vi.unstubAllEnvs();
   fixtureDirs.splice(0).forEach((dir) => {
     fs.rmSync(dir, { recursive: true, force: true });
   });
@@ -33,7 +42,9 @@ function createFixture(files: Record<string, string>) {
     fs.writeFileSync(file, content);
   });
 
-  const onBlockLoad = vi.fn(() => null);
+  const onBlockLoad = vi.fn<NonNullable<IDumiTechStack['onBlockLoad']>>(
+    () => null,
+  );
   const techStack: IDumiTechStack = {
     name: 'style-cache-test',
     runtimeOpts: { compilePath: path.join(dir, 'compiler.js') },
@@ -53,11 +64,170 @@ function createFixture(files: Record<string, string>) {
   return {
     dir,
     onBlockLoad,
-    parse: (collectSideEffectStyles = true) =>
-      parseBlockAsset({ ...opts, collectSideEffectStyles }),
+    parse: (collectSideEffectStyles = true, cacheable = true) =>
+      parseBlockAsset({ ...opts, collectSideEffectStyles, cacheable }),
     style: winPath(path.join(dir, 'style.less')),
   };
 }
+
+test('uncached production blocks reuse import analysis while running custom loaders', async () => {
+  vi.stubEnv('NODE_ENV', 'production');
+  const shared =
+    "import './style.less';\nexport const shared = 'production-import-analysis';";
+  const fixture = createFixture({
+    'demo.ts':
+      "import './shared';\nexport default 'production-import-analysis';",
+    'shared.ts': shared,
+    'style.less': '.demo { color: red; }',
+  });
+  const initial = await fixture.parse(true, false);
+  const loadCount = fixture.onBlockLoad.mock.calls.length;
+  const repeated = await fixture.parse(true, false);
+
+  expect(initial.sideEffectStyles).toEqual([fixture.style]);
+  expect(initial.asset.dependencies['./shared.ts'].value).toBe(shared);
+  expect(repeated).toEqual(initial);
+  expect(fixture.onBlockLoad).toHaveBeenCalledTimes(loadCount * 2);
+  expect(
+    vi.mocked(parseSync).mock.calls.filter(([code]) => code === shared),
+  ).toHaveLength(1);
+});
+
+test('import analysis follows custom loader output without changing displayed sources', async () => {
+  const raw = "export default 'custom-import-analysis';";
+  const fixture = createFixture({
+    'demo.ts': raw,
+    'style.less': '.demo { color: red; }',
+  });
+  const sideEffect =
+    "import './style.less';\nexport default 'custom-import-analysis';";
+  const namespace =
+    "import styles from './style.less';\nexport default styles; // custom-import-analysis";
+  let transformed = sideEffect;
+  fixture.onBlockLoad.mockImplementation(({ path: filename }) =>
+    filename.endsWith('demo.ts') ? { type: 'ts', content: transformed } : null,
+  );
+
+  expect((await fixture.parse(true, false)).sideEffectStyles).toEqual([
+    fixture.style,
+  ]);
+  const loadCount = fixture.onBlockLoad.mock.calls.length;
+  transformed = namespace;
+  const updated = await fixture.parse(true, false);
+  const repeated = await fixture.parse(true, false);
+
+  expect(updated.sideEffectStyles).toEqual([]);
+  expect(updated.asset.dependencies['index.ts'].value).toBe(raw);
+  expect(repeated).toEqual(updated);
+  expect(fixture.onBlockLoad).toHaveBeenCalledTimes(loadCount * 3);
+  expect(vi.mocked(parseSync).mock.calls.map(([code]) => code)).toEqual([
+    sideEffect,
+    namespace,
+  ]);
+});
+
+test('import analysis separates parser extensions for identical transformed code', async () => {
+  const transformed =
+    "import './style.less';\nexport default 'parser-extension-analysis';";
+  const fixture = createFixture({
+    'demo.ts': transformed,
+    'style.less': '.demo { color: red; }',
+  });
+  let extension = 'ts';
+  fixture.onBlockLoad.mockImplementation(({ path: filename }) =>
+    filename.endsWith('demo.ts')
+      ? { type: extension, content: transformed }
+      : null,
+  );
+  const initial = await fixture.parse(true, false);
+  extension = 'tsx';
+  const changed = await fixture.parse(true, false);
+  const repeated = await fixture.parse(true, false);
+
+  expect(changed).toEqual(initial);
+  expect(repeated).toEqual(initial);
+  expect(changed.sideEffectStyles).toEqual([fixture.style]);
+  expect(vi.mocked(parseSync).mock.calls.map(([, options]) => options)).toEqual(
+    [
+      { syntax: 'typescript', tsx: false, decorators: true },
+      { syntax: 'typescript', tsx: true, decorators: true },
+    ],
+  );
+});
+
+test('DUMI_CACHE=none bypasses import analysis cache reads and writes', async () => {
+  vi.stubEnv('DUMI_CACHE', 'none');
+  const code =
+    "import './style.less';\nexport default 'disabled-import-analysis-cache';";
+  const fixture = createFixture({
+    'demo.ts': code,
+    'style.less': '.demo { color: red; }',
+  });
+  const initial = await fixture.parse(true, false);
+  const loadCount = fixture.onBlockLoad.mock.calls.length;
+  await fixture.parse(true, false);
+  expect(vi.mocked(parseSync)).toHaveBeenCalledTimes(2);
+
+  vi.stubEnv('DUMI_CACHE', 'enabled');
+  await fixture.parse(true, false);
+  expect(vi.mocked(parseSync)).toHaveBeenCalledTimes(3);
+  await fixture.parse(true, false);
+  expect(vi.mocked(parseSync)).toHaveBeenCalledTimes(3);
+
+  vi.stubEnv('DUMI_CACHE', 'none');
+  const uncached = await fixture.parse(true, false);
+  expect(vi.mocked(parseSync)).toHaveBeenCalledTimes(4);
+  expect(uncached).toEqual(initial);
+  expect(fixture.onBlockLoad).toHaveBeenCalledTimes(loadCount * 5);
+});
+
+test('import analysis bounds retained module count in large dependency graphs', async () => {
+  const entry = `${Array.from(
+    { length: 520 },
+    (_, index) => `import './module-${index}';`,
+  ).join('\n')}\nexport default 'bounded-entry-import-analysis';`;
+  const fixture = createFixture({
+    'demo.ts': entry,
+    ...Object.fromEntries(
+      Array.from({ length: 520 }, (_, index) => [
+        `module-${index}.ts`,
+        `export default ${index}; // bounded-entry-import-analysis`,
+      ]),
+    ),
+  });
+  const initial = await fixture.parse(true, false);
+  const repeated = await fixture.parse(true, false);
+
+  expect(repeated).toEqual(initial);
+  expect(Object.keys(repeated.asset.dependencies)).toHaveLength(521);
+  expect(
+    vi.mocked(parseSync).mock.calls.filter(([code]) => code === entry),
+  ).toHaveLength(2);
+});
+
+test('import analysis bounds retained source size for large modules', async () => {
+  const entry = `${Array.from(
+    { length: 5 },
+    (_, index) => `import './module-${index}';`,
+  ).join('\n')}\nexport default 'bounded-source-import-analysis';`;
+  const fixture = createFixture({
+    'demo.ts': entry,
+    ...Object.fromEntries(
+      Array.from({ length: 5 }, (_, index) => [
+        `module-${index}.ts`,
+        `export default ${index}; /*${'x'.repeat(300000)}*/`,
+      ]),
+    ),
+  });
+  const initial = await fixture.parse(true, false);
+  const repeated = await fixture.parse(true, false);
+
+  expect(repeated).toEqual(initial);
+  expect(Object.keys(repeated.asset.dependencies)).toHaveLength(6);
+  expect(
+    vi.mocked(parseSync).mock.calls.filter(([code]) => code === entry),
+  ).toHaveLength(2);
+});
 
 test('block cache updates style usage when the entry import changes', async () => {
   const fixture = createFixture({
