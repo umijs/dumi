@@ -1,9 +1,9 @@
+import { lodash, logger, semver, winPath } from '@umijs/utils';
 import type { Range, RangeOptions } from '@umijs/utils/compiled/semver';
 import { createHash } from 'crypto';
 import fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'path';
-import { lodash, logger, semver, winPath } from 'umi/plugin-utils';
 import { promisify } from 'util';
 import type CreateCache from '../compiled/file-system-cache';
 import type {

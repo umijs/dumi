@@ -5,9 +5,9 @@ import {
   UTOOPACK_LOADER_CTX_KEY,
 } from '@/loaders/constants';
 import { generateMetaChunkName, getCache, getContentHash } from '@/utils';
+import { Mustache, lodash, winPath } from '@umijs/utils';
 import fs from 'fs';
 import path from 'path';
-import { Mustache, lodash, winPath } from 'umi/plugin-utils';
 import transform, {
   type IMdTransformerOptions,
   type IMdTransformerResult,

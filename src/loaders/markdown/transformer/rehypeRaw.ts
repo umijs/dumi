@@ -1,5 +1,5 @@
+import { logger } from '@umijs/utils';
 import type { Root } from 'hast';
-import { logger } from 'umi/plugin-utils';
 import type { Transformer } from 'unified';
 import type { IMdTransformerOptions } from '.';
 

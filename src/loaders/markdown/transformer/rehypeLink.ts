@@ -1,7 +1,7 @@
 import { getHostForTabRouteFile } from '@/features/tabs/utils';
+import { lodash, logger, winPath } from '@umijs/utils';
 import type { Root } from 'hast';
 import path from 'path';
-import { lodash, logger, winPath } from 'umi/plugin-utils';
 import type { Transformer } from 'unified';
 import url from 'url';
 import type { IMdTransformerOptions } from '.';
