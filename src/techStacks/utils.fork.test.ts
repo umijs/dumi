@@ -12,6 +12,62 @@ const esnoPath = path.join(
 const utilsPath = path.join(__dirname, 'utils.ts');
 const swcPath = require.resolve('@swc/core');
 
+test('React tech stack loads SWC only when transforming an inline demo', async () => {
+  const cwd = fs.mkdtempSync(path.join(os.tmpdir(), 'dumi-swc-lazy-'));
+
+  try {
+    const code = `
+      const swcPath = ${JSON.stringify(swcPath)};
+      const { default: ReactTechStack } = require(${JSON.stringify(
+        path.join(__dirname, 'react.ts'),
+      )});
+      const stack = new ReactTechStack();
+      const loadedAfterInit = Boolean(require.cache[swcPath]);
+      const raw = 'export default () => <div>external</div>;';
+      const external = stack.transformCode(raw, {
+        type: 'external',
+        fileAbsPath: 'external.tsx',
+      });
+      const loadedAfterExternal = Boolean(require.cache[swcPath]);
+      const inline = stack.transformCode(
+        'const label: string = "inline"; export default () => <div>{label}</div>;',
+        { type: 'code-block', fileAbsPath: 'inline.tsx' },
+      );
+      const React = {
+        memo: value => value,
+        lazy: factory => factory,
+        createElement: (tag, props, ...children) => ({ tag, children }),
+      };
+      const factory = new Function('React', 'return (' + inline + ');')(React);
+      factory().then(result => console.log(JSON.stringify({
+        loadedAfterInit,
+        externalUnchanged: external === raw,
+        loadedAfterExternal,
+        loadedAfterInline: Boolean(require.cache[swcPath]),
+        value: result.default(),
+      }))).catch(error => {
+        console.error(error);
+        process.exitCode = 1;
+      });
+    `;
+    const { stdout } = await execFileAsync(
+      process.execPath,
+      [esnoPath, '--eval', code],
+      { cwd, timeout: 10000 },
+    );
+
+    expect(JSON.parse(stdout)).toEqual({
+      loadedAfterInit: false,
+      externalUnchanged: true,
+      loadedAfterExternal: false,
+      loadedAfterInline: true,
+      value: { tag: 'div', children: ['inline'] },
+    });
+  } finally {
+    fs.rmSync(cwd, { recursive: true, force: true });
+  }
+});
+
 interface ChildResult {
   roots: string[];
   filesBefore: { file: string; size: number; mtimeMs: number }[];

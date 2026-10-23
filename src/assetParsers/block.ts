@@ -1,6 +1,4 @@
 import { getContentHash, parseCodeFrontmatter } from '@/utils';
-import { parseSync } from '@swc/core';
-import { build } from '@umijs/bundler-utils/compiled/esbuild';
 import assert from 'assert';
 import type { ExampleBlockAsset } from 'dumi-assets-types';
 import type { sync } from 'enhanced-resolve';
@@ -141,6 +139,7 @@ function getSideEffectImports(code: string, ext: string) {
   if (cached) return cached.imports;
 
   const imports: Record<string, boolean> = Object.create(null);
+  const { parseSync }: typeof import('@swc/core') = require('@swc/core');
 
   try {
     const program = parseSync(
@@ -228,6 +227,9 @@ async function parseBlockAsset(opts: IParseBlockAssetOptions) {
   };
   const styleImports = new Map<string, boolean>();
   // demo dependency analysis and asset processing
+  const {
+    build,
+  }: typeof import('@umijs/bundler-utils/compiled/esbuild') = require('@umijs/bundler-utils/compiled/esbuild');
   const deferrer = build({
     // do not emit file
     write: false,
