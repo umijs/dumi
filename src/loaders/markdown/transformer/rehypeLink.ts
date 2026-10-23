@@ -16,10 +16,31 @@ let SKIP: typeof import('unist-util-visit').SKIP;
 
 type IRehypeLinkOptions = Pick<IMdTransformerOptions, 'fileAbsPath' | 'routes'>;
 
+function createRouteInfo(
+  routes: IRehypeLinkOptions['routes'],
+  hostAbsPath: string,
+) {
+  const pathsByFile = new Map<string | undefined, string>();
+  const absPaths = new Set<string>();
+  let currentRoute: IRehypeLinkOptions['routes'][string] | undefined;
+
+  Object.values(routes).forEach((route) => {
+    // Markdown links use the last matching route, while relative links use the first.
+    pathsByFile.set(route.file, route.absPath);
+    absPaths.add(route.absPath);
+    if (!currentRoute && route.file === hostAbsPath) currentRoute = route;
+  });
+
+  return { pathsByFile, absPaths, currentRoute };
+}
+
 export default function rehypeLink(
   opts: IRehypeLinkOptions,
 ): Transformer<Root> {
   return (tree) => {
+    const hostAbsPath = getHostForTabRouteFile(opts.fileAbsPath);
+    let routeInfo: ReturnType<typeof createRouteInfo> | undefined;
+
     visit<Root, 'element'>(tree, 'element', (node, i, parent) => {
       if (
         node.tagName === 'a' &&
@@ -31,7 +52,6 @@ export default function rehypeLink(
       ) {
         const href = node.properties.href;
         const parsedUrl = url.parse(href);
-        const hostAbsPath = getHostForTabRouteFile(opts.fileAbsPath);
 
         // skip external or special links:
         //   - http://www.example.com or mailto:xxx@example.com or data:image/xxx
@@ -40,26 +60,27 @@ export default function rehypeLink(
 
         if (/\.md$/i.test(parsedUrl.pathname!)) {
           // handle markdown link
-          const { routes } = opts;
+          const { pathsByFile } = (routeInfo ??= createRouteInfo(
+            opts.routes,
+            hostAbsPath,
+          ));
           const absPath = winPath(
             path.resolve(hostAbsPath, '..', parsedUrl.pathname!),
           );
 
-          Object.keys(routes).forEach((key) => {
-            if (routes[key].file === absPath) {
-              parsedUrl.pathname = routes[key].absPath;
-            }
-          });
+          if (pathsByFile.has(absPath)) {
+            parsedUrl.pathname = pathsByFile.get(absPath)!;
+          }
         } else if (parsedUrl.pathname && /^[^/]+/.test(parsedUrl.pathname)) {
           // handle relative link
           // transform relative link to absolute link
           // because react-router@6 and HTML href are different in processing relative link
           // e.g. in /a page, <Link to="./b">b</Link> will be resolved to /a/b in react-router@6
           //      but will be resolved to /b in <a href="./b">b</a>
-          const routes = Object.values(opts.routes);
-          const currentRoute = routes.find(
-            (route) => route.file === hostAbsPath,
-          );
+          const { currentRoute, absPaths } = (routeInfo ??= createRouteInfo(
+            opts.routes,
+            hostAbsPath,
+          ));
 
           if (!currentRoute) return;
 
@@ -73,10 +94,7 @@ export default function rehypeLink(
           parsedUrl.pathname = htmlTargetPath;
 
           // warn if user already use react-router@6 way
-          if (
-            routes.every((route) => route.absPath !== htmlTargetPath) &&
-            routes.some((route) => route.absPath === rr6TargetPath)
-          ) {
+          if (!absPaths.has(htmlTargetPath) && absPaths.has(rr6TargetPath)) {
             parsedUrl.pathname = rr6TargetPath;
             logger.warn(
               `Detected ambiguous link \`${href}\` in \`${opts.fileAbsPath}\`, please use \`./xxx.md\` file path instead of normal relative path, dumi will deprecate this behavior in the future.
