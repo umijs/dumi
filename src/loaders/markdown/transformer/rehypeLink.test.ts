@@ -1,13 +1,14 @@
+import { winPath } from '@umijs/utils';
 import type { Element, Root } from 'hast';
 import path from 'path';
 import { visit } from 'unist-util-visit';
 import { vi } from 'vitest';
 import transformer, { type IMdTransformerOptions } from '.';
 
-const fixtureFile = path.join(__dirname, 'fixtures/normal/index.md');
+const fixtureFile = winPath(path.join(__dirname, 'fixtures/normal/index.md'));
 
 function route(id: string, file: string, absPath: string) {
-  return { id, file, absPath, path: absPath };
+  return { id, file: winPath(file), absPath, path: absPath };
 }
 
 async function transformLinks(
@@ -63,20 +64,21 @@ test('Markdown links keep the last matching route and relative links keep the fi
 test('ambiguous relative links keep their fallback, query, hash, and per-link warning for tab pages', async () => {
   const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
   const tabFile = fixtureFile.replace(/\.md$/, '.$tab-api.md');
+  const targetPath = winPath(path.resolve('/guide', './neighbor'));
 
   try {
     const links = await transformLinks(
       '[One](./neighbor?view=one#first)\n\n[Two](./neighbor?view=two#second)',
       {
         host: route('host', fixtureFile, '/guide'),
-        neighbor: route('neighbor', '/other.md', '/guide/neighbor'),
+        neighbor: route('neighbor', '/other.md', targetPath),
       },
       tabFile,
     );
 
     expect(links.map((link) => link.properties?.to)).toEqual([
-      '/guide/neighbor?view=one#first',
-      '/guide/neighbor?view=two#second',
+      `${targetPath}?view=one#first`,
+      `${targetPath}?view=two#second`,
     ]);
     expect(warn).toHaveBeenCalledTimes(2);
     expect(warn.mock.calls[0].join(' ')).toContain(
