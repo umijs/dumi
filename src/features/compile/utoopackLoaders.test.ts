@@ -196,6 +196,17 @@ test('utoopack loader context shares the service cache session with workers', as
   expect(exports.cacheSession).toBe('service-session');
 });
 
+test('utoopack loader context without a session keeps its existing exports', async () => {
+  const { buildLoaderContextContent } = await import('./utoopackLoaders');
+  const content = buildLoaderContextContent([]);
+  const exports: any = {};
+
+  new Function('require', 'exports', content)(require, exports);
+
+  expect(content).not.toContain('cacheSession');
+  expect(exports).not.toHaveProperty('cacheSession');
+});
+
 test('utoopack loader context registers TS hook without project root phantom deps', async () => {
   const { buildLoaderContextContent } = await import('./utoopackLoaders');
   const content = buildLoaderContextContent([]);

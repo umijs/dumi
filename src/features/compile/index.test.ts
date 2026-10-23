@@ -66,6 +66,50 @@ test('utoopack cache sessions stay stable for file regeneration and change betwe
 });
 
 test.each([
+  ['production', { utoopack: {} }, undefined],
+  ['test', { utoopack: {} }, undefined],
+  ['development', {}, undefined],
+  ['production', {}, undefined],
+  ['development', { mako: {} }, undefined],
+  ['development', { utoopack: {} }, 'none'],
+] as const)(
+  'worker cache sessions do not affect env %s with config %j and cache %s',
+  async (env, config, cache) => {
+    registerTsResolveExtension();
+    const { default: compile } = await import('.');
+    const api = {
+      env,
+      config,
+      paths: { absTmpPath },
+      appData: { routes: {} },
+      service: {},
+      describe: vi.fn(),
+      register: vi.fn(),
+      modifyConfig: vi.fn(),
+      onGenerateFiles: vi.fn(),
+      addRuntimePlugin: vi.fn(),
+      chainWebpack: vi.fn(),
+      writeTmpFile: vi.fn(),
+      isPluginEnable: vi.fn(() => false),
+    };
+    if (cache) vi.stubEnv('DUMI_CACHE', cache);
+    try {
+      compile(api as any);
+      api.onGenerateFiles.mock.calls[1][0].fn();
+
+      expect(api.writeTmpFile).toHaveBeenCalledTimes(
+        'utoopack' in config ? 1 : 0,
+      );
+      expect(
+        api.writeTmpFile.mock.calls.map(([file]) => file.content).join(''),
+      ).not.toContain('cacheSession');
+    } finally {
+      if (cache) vi.unstubAllEnvs();
+    }
+  },
+);
+
+test.each([
   ['development', true, undefined],
   ['test', true, undefined],
   ['production', false, undefined],

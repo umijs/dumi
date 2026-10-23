@@ -10,6 +10,11 @@ const { transform } = vi.hoisted(() => ({ transform: vi.fn() }));
 vi.mock('./transformer', () => ({ default: transform }));
 
 const fixtureDirs: string[] = [];
+const legacyModes = [
+  'without session',
+  'without utoopack',
+  'production',
+] as const;
 
 beforeAll(() => {
   const extensions = (Module as any)._extensions as NodeJS.RequireExtensions;
@@ -18,6 +23,7 @@ beforeAll(() => {
 
 afterEach(() => {
   vi.unstubAllEnvs();
+  vi.restoreAllMocks();
   transform.mockReset();
   fixtureDirs.splice(0).forEach((dir) => {
     fs.rmSync(dir, { force: true, recursive: true });
@@ -135,6 +141,19 @@ function createFixture() {
       };
     },
   };
+}
+
+function createLegacyFixture(kind: (typeof legacyModes)[number]) {
+  const fixture = createFixture();
+  if (kind === 'production') vi.stubEnv('NODE_ENV', 'production');
+  else if (kind === 'without session') fixture.setCacheSession(undefined);
+
+  const overrides =
+    kind === 'without utoopack'
+      ? ({ __dumiLoaderContextPath: undefined } as any)
+      : {};
+
+  return { fixture, overrides };
 }
 
 test('markdown workers in one service reuse disk cache across modes', async () => {
@@ -285,19 +304,17 @@ test('a new service preserves existing cache hits for documents without dependen
   expect(cached.output).toBe(initial.output);
 });
 
-test.each(['without session', 'without utoopack'])(
+test.each(legacyModes)(
   'markdown loaders %s keep their existing process-local dependency mapping',
   async (kind) => {
-    const fixture = createFixture();
-    fixture.setCacheSession(undefined);
-    const overrides =
-      kind === 'without utoopack'
-        ? ({ __dumiLoaderContextPath: undefined } as any)
-        : {};
+    const { fixture, overrides } = createLegacyFixture(kind);
     const load = await fixture.restart();
+    const { getCache } = await import('@/utils');
+    const read = vi.spyOn(getCache('md-loader'), 'getSync');
     await load(overrides);
     await load(overrides);
     expect(transform).toHaveBeenCalledTimes(1);
+    expect(read.mock.calls.map((call) => call[1])).toEqual(['', '']);
     await (
       await fixture.restart()
     )(overrides);
@@ -306,6 +323,97 @@ test.each(['without session', 'without utoopack'])(
     expect(
       fs.readdirSync(path.join(fixture.dir, 'cache/md-loader')),
     ).toHaveLength(1);
+    const cacheFile = fs.readdirSync(
+      path.join(fixture.dir, 'cache/md-loader'),
+    )[0];
+    const { value } = JSON.parse(
+      fs.readFileSync(
+        path.join(fixture.dir, 'cache/md-loader', cacheFile),
+        'utf-8',
+      ),
+    );
+    expect(value).not.toHaveProperty('__dumiCacheSession');
+  },
+);
+
+test.each(legacyModes)(
+  'markdown loaders %s preserve master dependency invalidation',
+  async (kind) => {
+    const { fixture, overrides } = createLegacyFixture(kind);
+    const load = await fixture.restart();
+    const initial = await load(overrides);
+    fs.writeFileSync(path.join(fixture.dir, 'demo.tsx'), 'Updated dependency');
+    const updated = await load(overrides);
+
+    expect(transform).toHaveBeenCalledTimes(2);
+    expect(updated.output).not.toBe(initial.output);
+    expect(updated.output).toContain('Updated dependency');
+  },
+);
+
+test.each(legacyModes)(
+  'markdown loaders %s preserve master caching when a sidecar is added',
+  async (kind) => {
+    const { fixture, overrides } = createLegacyFixture(kind);
+    fs.unlinkSync(path.join(fixture.dir, 'demo.md'));
+    const load = await fixture.restart();
+    const initial = await load(overrides);
+    fs.writeFileSync(
+      path.join(fixture.dir, 'demo.md'),
+      'New sidecar description',
+    );
+    const cached = await load(overrides);
+
+    // Master hashes only its previously collected dependency paths. A new
+    // sidecar is parsed after restarting the worker, not on this cache hit.
+    expect(transform).toHaveBeenCalledTimes(1);
+    expect(cached.output).toBe(initial.output);
+    const refreshed = await (await fixture.restart())(overrides);
+    expect(transform).toHaveBeenCalledTimes(2);
+    expect(refreshed.output).toContain('New sidecar description');
+  },
+);
+
+test.each(legacyModes)(
+  'markdown loaders %s preserve master errors for missing known dependencies',
+  async (kind) => {
+    const { fixture, overrides } = createLegacyFixture(kind);
+    const load = await fixture.restart();
+    await load(overrides);
+    fs.unlinkSync(path.join(fixture.dir, 'demo.tsx'));
+
+    await expect(load(overrides)).rejects.toMatchObject({ code: 'ENOENT' });
+    expect(transform).toHaveBeenCalledTimes(1);
+  },
+);
+
+test.each(legacyModes)(
+  'markdown loaders %s preserve master dependency key order and duplicates',
+  async (kind) => {
+    const { fixture, overrides } = createLegacyFixture(kind);
+    const implementation = transform.getMockImplementation()!;
+    transform.mockImplementation(async (...args) => {
+      const result = await implementation(...args);
+      result.meta.embeds.push(...result.meta.embeds);
+      return result;
+    });
+    const load = await fixture.restart();
+    const { getCache } = await import('@/utils');
+    const write = vi.spyOn(getCache('md-loader'), 'setSync');
+    await load(overrides);
+    const key = write.mock.calls[0][0];
+    const dependencies = JSON.parse(key.slice(key.lastIndexOf(':[') + 1));
+
+    expect(write).toHaveBeenCalledTimes(1);
+    expect(
+      dependencies.map((entry: string) =>
+        entry.slice(0, entry.lastIndexOf(':')),
+      ),
+    ).toEqual(
+      ['embedded.md', 'embedded.md', 'demo.tsx', 'demo.md', 'nested.ts'].map(
+        (file) => path.join(fixture.dir, file),
+      ),
+    );
   },
 );
 
@@ -382,7 +490,7 @@ test('a malformed dependency index is treated as a cache miss', async () => {
   expect(transform).toHaveBeenCalledTimes(2);
 });
 
-test('cached markdown still emits production asset hooks', async () => {
+test('production preserves master caching and emits asset hooks for every load', async () => {
   vi.stubEnv('NODE_ENV', 'production');
   const fixture = createFixture();
   const hooks = {
@@ -391,17 +499,22 @@ test('cached markdown still emits production asset hooks', async () => {
     onResolveAtomMeta: vi.fn(),
     demoAssetsFile: path.join(fixture.dir, 'assets.jsonl'),
   };
-  const initial = await (await fixture.restart())(hooks);
-  const cached = await (await fixture.restart())(hooks);
+  const load = await fixture.restart();
+  const initial = await load(hooks);
+  const cached = await load(hooks);
+  const freshWorker = await (await fixture.restart())(hooks);
 
-  expect(transform).toHaveBeenCalledTimes(1);
-  expect(hooks.onResolveDemos).toHaveBeenCalledTimes(2);
-  expect(hooks.onResolveAtomMeta).toHaveBeenCalledTimes(2);
+  expect(transform).toHaveBeenCalledTimes(2);
+  expect(cached.output).toBe(initial.output);
+  expect(freshWorker.output).toBe(initial.output);
+  expect(hooks.onResolveDemos).toHaveBeenCalledTimes(3);
+  expect(hooks.onResolveAtomMeta).toHaveBeenCalledTimes(3);
   expect(initial.cacheable).toHaveBeenCalledWith(false);
   expect(cached.cacheable).toHaveBeenCalledWith(false);
+  expect(freshWorker.cacheable).toHaveBeenCalledWith(false);
   expect(
     fs.readFileSync(hooks.demoAssetsFile, 'utf-8').trim().split('\n'),
-  ).toHaveLength(2);
+  ).toHaveLength(3);
 });
 
 test('disabling dumi cache also disables the persisted dependency index', async () => {
@@ -415,5 +528,17 @@ test('disabling dumi cache also disables the persisted dependency index', async 
   await load();
 
   expect(transform).toHaveBeenCalledTimes(3);
+  expect(fs.existsSync(path.join(fixture.dir, 'cache'))).toBe(false);
+});
+
+test('disabling dumi cache preserves master errors for missing dependencies', async () => {
+  vi.stubEnv('DUMI_CACHE', 'none');
+  const fixture = createFixture();
+  const load = await fixture.restart();
+  await load();
+  fs.unlinkSync(path.join(fixture.dir, 'demo.tsx'));
+
+  await expect(load()).rejects.toMatchObject({ code: 'ENOENT' });
+  expect(transform).toHaveBeenCalledTimes(1);
   expect(fs.existsSync(path.join(fixture.dir, 'cache'))).toBe(false);
 });

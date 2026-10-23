@@ -679,7 +679,18 @@ function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
   }
 }
 
-function getDepsCacheKey(deps: (typeof depsMapping)['0'] = []) {
+function getDepsCacheKey(
+  deps: (typeof depsMapping)['0'] = [],
+  cacheSession?: string,
+) {
+  if (!cacheSession) {
+    return JSON.stringify(
+      deps.map(
+        (file) => `${file}:${getContentHash(fs.readFileSync(file, 'utf-8'))}`,
+      ),
+    );
+  }
+
   // A sidecar may have been added since the dependency paths were cached.
   const files = Array.from(
     new Set(deps.concat(deps.flatMap(getDemoSidecarFiles))),
@@ -724,7 +735,10 @@ export default function mdLoader(this: any, content: string) {
       demoAssetsFile?: string;
       cacheSession?: string;
     };
-    cacheSession = ctx.cacheSession;
+    cacheSession =
+      useUtoopackDemoHMR && process.env.DUMI_CACHE !== 'none'
+        ? ctx.cacheSession
+        : undefined;
     if (!opts.techStacks?.length) {
       (opts as any).techStacks = ctx.techStacks;
     }
@@ -795,23 +809,19 @@ export default function mdLoader(this: any, content: string) {
     cachedDeps.deps.every((file) => typeof file === 'string')
       ? cachedDeps.deps
       : depsMapping[depsMappingKey];
-  const depsKey = getDepsCacheKey(deps);
+  const depsKey = getDepsCacheKey(deps, cacheSession);
   // format: {baseCacheKey:{deps:contenthash}[]}
   const cacheKey = [baseCacheKey, depsKey].join(':');
   const cacheRet =
     depsKey === undefined
-      ? undefined
-      : getMdLoaderCacheSync<MdLoaderCachedResult | undefined>(
-          cache,
-          cacheKey,
-          undefined,
-        );
+      ? ''
+      : getMdLoaderCacheSync<MdLoaderCachedResult | ''>(cache, cacheKey, '');
   // An older service can finish after this one and overwrite the shared result
   // file. Validate its owner before trusting the current service's path index.
   const matchesSession =
     !cacheSession ||
     !deps?.length ||
-    cacheRet?.__dumiCacheSession === cacheSession;
+    (cacheRet && cacheRet.__dumiCacheSession === cacheSession);
   const deferrerKey = cacheSession ? `${cacheSession}:${cacheKey}` : cacheKey;
 
   if (cacheRet && matchesSession) {
@@ -847,7 +857,10 @@ export default function mdLoader(this: any, content: string) {
       );
 
       // re-generate cache key with latest embeds & source data
-      const finalDepsKey = getDepsCacheKey(depsMapping[depsMappingKey]);
+      const finalDepsKey = getDepsCacheKey(
+        depsMapping[depsMappingKey],
+        cacheSession,
+      );
 
       // save cache with final cache key
       if (finalDepsKey !== undefined) {

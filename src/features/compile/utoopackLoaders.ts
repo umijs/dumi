@@ -219,7 +219,9 @@ export function buildLoaderContextContent(
     `exports.builtins = ${JSON.stringify(builtins)};\n` +
     `exports.routes = ${JSON.stringify(routes)};\n` +
     `exports.alias = ${JSON.stringify(alias)};\n` +
-    `exports.cacheSession = ${JSON.stringify(cacheSession)};\n` +
+    (cacheSession === undefined
+      ? ''
+      : `exports.cacheSession = ${JSON.stringify(cacheSession)};\n`) +
     `exports.demoAssetsFile = ${JSON.stringify(demoAssetsFile)};\n` +
     `exports.extraRemarkPlugins = ${toPluginRefs(
       extraRemarkPlugins,
