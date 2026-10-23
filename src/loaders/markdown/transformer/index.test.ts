@@ -98,3 +98,60 @@ test('markdown transformer: hoists repeated large demo props for utoopack HMR', 
   expect(ret.content.match(/__dumi_demo_shared_props__\[0\]/g)).toHaveLength(2);
   expect(ret.content).not.toContain('x'.repeat(100));
 });
+
+describe('markdown transformer: custom anchor', () => {
+  const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+  beforeEach(() => {
+    warn.mockClear();
+  });
+
+  const transform = (raw: string) =>
+    transformer(
+      raw,
+      getTransformerOptions(path.join(CASES_DIR, 'normal/index.md')),
+    );
+
+  const toHaveWarned = (message: string) =>
+    expect(warn).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.stringContaining(message),
+    );
+
+  test('explicit anchor wins over auto-generated slug', async () => {
+    const ret = await transform(['## foo', '', '## bar {#foo}'].join('\n'));
+
+    expect(ret.meta.toc).toEqual([
+      { id: 'foo-1', depth: 2, title: 'foo' },
+      { id: 'foo', depth: 2, title: 'bar' },
+    ]);
+    toHaveWarned('conflicts with custom anchor "foo"');
+  });
+
+  test('duplicate explicit anchors fallback with suffix', async () => {
+    const ret = await transform(['## a {#dup}', '', '## b {#dup}'].join('\n'));
+
+    expect(ret.meta.toc).toEqual([
+      { id: 'dup', depth: 2, title: 'a' },
+      { id: 'dup-1', depth: 2, title: 'b' },
+    ]);
+    toHaveWarned('Duplicate custom anchor "dup"');
+  });
+
+  test('invalid slug only warns and keeps the given value', async () => {
+    const ret = await transform('## a {#Foo Bar}');
+
+    expect(ret.meta.toc).toEqual([{ id: 'Foo Bar', depth: 2, title: 'a' }]);
+    toHaveWarned('is not a valid slug');
+  });
+
+  test('heading with existing id keeps it and renders marker as text', async () => {
+    const ret = await transform('<h3 id="raw-id">a {#other}</h3>');
+
+    expect(ret.meta.toc).toEqual([
+      { id: 'raw-id', depth: 3, title: 'a {#other}' },
+    ]);
+    expect(ret.content).toContain('{#other}');
+    expect(warn).not.toHaveBeenCalled();
+  });
+});
