@@ -714,6 +714,7 @@ function getDepsCacheKey(
 
 const deferrer: Record<string, Promise<IMdTransformerResult>> = {};
 const depsMapping: Record<string, string[]> = {};
+const loaderContextHashes = new WeakMap<NodeJS.Module, string>();
 
 export default function mdLoader(this: any, content: string) {
   let opts: IMdLoaderOptions = this.getOptions();
@@ -725,7 +726,20 @@ export default function mdLoader(this: any, content: string) {
     process.env.NODE_ENV !== 'production' && Boolean(loaderContextPath);
 
   if (loaderContextPath) {
-    const ctx = require(loaderContextPath) as {
+    const contextModuleId =
+      useUtoopackDemoHMR && process.env.DUMI_CACHE !== 'none'
+        ? require.resolve(loaderContextPath)
+        : undefined;
+    const cachedContextModule = contextModuleId
+      ? require.cache[contextModuleId]
+      : undefined;
+    // Fingerprint before a fresh require: a concurrent rewrite must never bind
+    // newer file contents to an already evaluated, older context module.
+    const initialContextHash =
+      contextModuleId && !cachedContextModule
+        ? getContentHash(fs.readFileSync(loaderContextPath, 'utf-8'), 32)
+        : undefined;
+    let ctx = require(loaderContextPath) as {
       techStacks: any[];
       builtins?: Record<string, { specifier: string; source: string }>;
       routes?: IMdLoaderOptions['routes'];
@@ -735,6 +749,35 @@ export default function mdLoader(this: any, content: string) {
       demoAssetsFile?: string;
       cacheSession?: string;
     };
+    if (contextModuleId && ctx.cacheSession) {
+      // Workers can outlive a service. Check the generated context itself so a
+      // cached Node module cannot hide its next service session. Hash content
+      // rather than relying on timestamp precision or generated code syntax.
+      const contextHash =
+        initialContextHash ??
+        getContentHash(fs.readFileSync(loaderContextPath, 'utf-8'), 32);
+      if (
+        cachedContextModule &&
+        loaderContextHashes.get(cachedContextModule) !== contextHash
+      ) {
+        // Node also retains cached modules through each parent's children.
+        // Detach only this context, leaving its imported modules untouched.
+        const parents = new Set([
+          cachedContextModule.parent,
+          typeof module === 'undefined' ? undefined : module,
+          ...Object.values(require.cache),
+        ]);
+        for (const parent of parents) {
+          const children = parent?.children;
+          const index = children?.indexOf(cachedContextModule) ?? -1;
+          if (index !== -1) children!.splice(index, 1);
+        }
+        delete require.cache[contextModuleId];
+        ctx = require(contextModuleId);
+      }
+      const contextModule = require.cache[contextModuleId];
+      if (contextModule) loaderContextHashes.set(contextModule, contextHash);
+    }
     cacheSession =
       useUtoopackDemoHMR && process.env.DUMI_CACHE !== 'none'
         ? ctx.cacheSession

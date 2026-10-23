@@ -91,7 +91,6 @@ function createFixture() {
           session,
         )};`,
       );
-      delete require.cache[contextFile];
     },
     async restart() {
       // A fresh loader module has no in-memory dependency mapping, just as in
@@ -182,8 +181,18 @@ test('markdown workers in one service reuse disk cache across modes', async () =
 
 test('a new service refreshes custom plugin output in retained workers', async () => {
   const fixture = createFixture();
+  const contextFile = path.join(fixture.dir, 'loader-context.cjs');
+  fixture.setCacheSession('previous-service');
+  const previousContext = require(contextFile);
+  fixture.setCacheSession('first-service');
   const load = await fixture.restart();
   const initial = await load();
+  const initialContext = require(contextFile);
+  expect(initialContext).not.toBe(previousContext);
+  expect(initialContext.cacheSession).toBe('first-service');
+  fixture.setCacheSession('first-service');
+  await load();
+  expect(require(contextFile)).toBe(initialContext);
   const previousImplementation = transform.getMockImplementation()!;
   transform.mockImplementation(async (...args) => {
     const result = await previousImplementation(...args);
@@ -191,7 +200,14 @@ test('a new service refreshes custom plugin output in retained workers', async (
     return result;
   });
   fixture.setCacheSession('next-service');
+  // Keep Node's cached context: the loader must detect the rewrite itself.
+  expect(require(contextFile)).toBe(initialContext);
   const refreshed = await load();
+  const refreshedContext = require(contextFile);
+  expect(refreshedContext).not.toBe(initialContext);
+  expect(refreshedContext.cacheSession).toBe('next-service');
+  await load();
+  expect(require(contextFile)).toBe(refreshedContext);
   const nextWorker = await (await fixture.restart())();
 
   expect(transform).toHaveBeenCalledTimes(2);
@@ -201,6 +217,71 @@ test('a new service refreshes custom plugin output in retained workers', async (
   expect(
     fs.readdirSync(path.join(fixture.dir, 'cache/md-loader')),
   ).toHaveLength(2);
+});
+
+test('a retained worker returns to legacy caching when its session is removed', async () => {
+  const fixture = createFixture();
+  const load = await fixture.restart();
+  const initial = await load();
+  const { getCache } = await import('@/utils');
+  const read = vi.spyOn(getCache('md-loader'), 'getSync');
+  fixture.setCacheSession(undefined);
+  const refreshed = await load();
+
+  expect(transform).toHaveBeenCalledTimes(2);
+  expect(refreshed.output).toBe(initial.output);
+  expect(read.mock.calls.map((call) => call[1])).toEqual(['']);
+  expect(
+    require(path.join(fixture.dir, 'loader-context.cjs')).cacheSession,
+  ).toBeUndefined();
+});
+
+test('reloading contexts does not retain old modules in require parents', async () => {
+  const fixture = createFixture();
+  const contextFile = path.join(fixture.dir, 'loader-context.cjs');
+  for (const filename of ['first-parent.cjs', 'second-parent.cjs']) {
+    const parentFile = path.join(fixture.dir, filename);
+    fs.writeFileSync(parentFile, "require('./loader-context.cjs');");
+    require(parentFile);
+  }
+  const contextId = require.resolve(contextFile);
+  const load = await fixture.restart();
+  const parents = new Set<NodeJS.Module>();
+  for (const session of ['first-service', 'next-service', 'last-service']) {
+    const previous = require.cache[contextId]!;
+    for (const parent of Object.values(require.cache)) {
+      if (parent) parents.add(parent);
+    }
+    if (previous.parent) parents.add(previous.parent);
+    fixture.setCacheSession(session);
+    await load();
+
+    expect(require.cache[contextId]).not.toBe(previous);
+    for (const parent of parents) {
+      expect(parent.children).not.toContain(previous);
+    }
+  }
+});
+
+test('a context rewrite during its first load is detected by the next request', async () => {
+  const fixture = createFixture();
+  const contextFile = path.join(fixture.dir, 'loader-context.cjs');
+  const readFile = fs.readFileSync;
+  let rewritten = false;
+  vi.spyOn(fs, 'readFileSync').mockImplementation((...args) => {
+    const contents = readFile(...args);
+    if (args[0] === contextFile && !rewritten) {
+      rewritten = true;
+      fixture.setCacheSession('next-service');
+    }
+    return contents;
+  });
+  const load = await fixture.restart();
+  await load();
+  await load();
+
+  expect(rewritten).toBe(true);
+  expect(require(contextFile).cacheSession).toBe('next-service');
 });
 
 test('a late previous-service transform cannot poison the current service cache', async () => {
@@ -312,7 +393,13 @@ test.each(legacyModes)(
     const { getCache } = await import('@/utils');
     const read = vi.spyOn(getCache('md-loader'), 'getSync');
     await load(overrides);
+    const readFile = vi.spyOn(fs, 'readFileSync');
     await load(overrides);
+    expect(
+      readFile.mock.calls.filter(
+        ([file]) => file === path.join(fixture.dir, 'loader-context.cjs'),
+      ),
+    ).toHaveLength(0);
     expect(transform).toHaveBeenCalledTimes(1);
     expect(read.mock.calls.map((call) => call[1])).toEqual(['', '']);
     await (
@@ -524,11 +611,17 @@ test('disabling dumi cache also disables the persisted dependency index', async 
     await fixture.restart()
   )();
   const load = await fixture.restart();
+  const readFile = vi.spyOn(fs, 'readFileSync');
   await load();
   await load();
 
   expect(transform).toHaveBeenCalledTimes(3);
   expect(fs.existsSync(path.join(fixture.dir, 'cache'))).toBe(false);
+  expect(
+    readFile.mock.calls.filter(
+      ([file]) => file === path.join(fixture.dir, 'loader-context.cjs'),
+    ),
+  ).toHaveLength(0);
 });
 
 test('disabling dumi cache preserves master errors for missing dependencies', async () => {
