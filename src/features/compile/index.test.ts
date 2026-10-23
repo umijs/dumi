@@ -1,5 +1,6 @@
 import Module from 'module';
 import path from 'path';
+import { vi } from 'vitest';
 
 const absTmpPath = path.join(path.sep, 'tmp', 'dumi-app', '.dumi', 'tmp');
 const demoAssetsFile = path.join(absTmpPath, 'dumi-utoopack-demo-assets.jsonl');
@@ -24,6 +25,44 @@ test('replaceTechStacks keeps a stable array without accumulating entries', asyn
   expect(techStacks).toEqual([second]);
 
   replaceTechStacks([]);
+});
+
+test('utoopack cache sessions stay stable for file regeneration and change between services', async () => {
+  registerTsResolveExtension();
+  const { default: compile } = await import('.');
+  function createService() {
+    const api = {
+      env: 'development',
+      config: { utoopack: {} },
+      paths: { absTmpPath },
+      appData: { routes: {} },
+      service: {},
+      describe: vi.fn(),
+      register: vi.fn(),
+      modifyConfig: vi.fn(),
+      onGenerateFiles: vi.fn(),
+      addRuntimePlugin: vi.fn(),
+      chainWebpack: vi.fn(),
+      writeTmpFile: vi.fn(),
+    };
+    compile(api as any);
+    const generateContext = api.onGenerateFiles.mock.calls[1][0].fn;
+
+    return () => {
+      generateContext();
+      const { content } = api.writeTmpFile.mock.calls.at(-1)![0];
+      return JSON.parse(
+        content.match(/exports\.cacheSession = ("[^"]+");/)![1],
+      );
+    };
+  }
+
+  const firstService = createService();
+  const firstSession = firstService();
+
+  expect(firstSession).toMatch(/^[0-9a-f]{32}$/);
+  expect(firstService()).toBe(firstSession);
+  expect(createService()()).not.toBe(firstSession);
 });
 
 test.each([

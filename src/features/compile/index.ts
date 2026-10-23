@@ -3,6 +3,7 @@ import type { IMdLoaderOptions } from '@/loaders/markdown';
 import ReactTechStack from '@/techStacks/react';
 import type { IApi, IDumiTechStack } from '@/types';
 import { _setFSCacheDir } from '@/utils';
+import { randomBytes } from 'crypto';
 import enhancedResolve from 'enhanced-resolve';
 import fs from 'fs';
 import path from 'path';
@@ -69,6 +70,7 @@ function normalizeMakoAliases(
 }
 
 export default (api: IApi) => {
+  const utoopackCacheSession = randomBytes(16).toString('hex');
   api.describe({ key: 'dumi:compile' });
 
   // register react tech stack by default
@@ -145,6 +147,7 @@ export default (api: IApi) => {
             (api as any).service.configManager?.files ?? [],
             demoAssetsFile,
             api.config.alias,
+            utoopackCacheSession,
           ),
         });
       }

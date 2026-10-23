@@ -75,6 +75,15 @@ type MdLoaderCache = {
   getSync: (key: string, defaultValue: any) => any;
 };
 
+type MdLoaderCachedResult = IMdTransformerResult & {
+  __dumiCacheSession?: string;
+};
+
+type MdLoaderCachedDeps = {
+  cacheSession: string;
+  deps: string[];
+};
+
 // Parsed demo metadata now includes source import usage.
 const MD_LOADER_CACHE_VERSION = 1;
 
@@ -671,11 +680,25 @@ function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
 }
 
 function getDepsCacheKey(deps: (typeof depsMapping)['0'] = []) {
-  return JSON.stringify(
-    deps.map(
-      (file) => `${file}:${getContentHash(fs.readFileSync(file, 'utf-8'))}`,
-    ),
+  // A sidecar may have been added since the dependency paths were cached.
+  const files = Array.from(
+    new Set(deps.concat(deps.flatMap(getDemoSidecarFiles))),
   );
+
+  try {
+    return JSON.stringify(
+      files.map(
+        (file) => `${file}:${getContentHash(fs.readFileSync(file, 'utf-8'))}`,
+      ),
+    );
+  } catch (err) {
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code === 'ENOENT' || code === 'ENOTDIR') {
+      return undefined;
+    }
+
+    throw err;
+  }
 }
 
 const deferrer: Record<string, Promise<IMdTransformerResult>> = {};
@@ -683,6 +706,7 @@ const depsMapping: Record<string, string[]> = {};
 
 export default function mdLoader(this: any, content: string) {
   let opts: IMdLoaderOptions = this.getOptions();
+  let cacheSession: string | undefined;
   const loaderContextPath: string | undefined = (opts as any)[
     UTOOPACK_LOADER_CTX_KEY
   ];
@@ -698,7 +722,9 @@ export default function mdLoader(this: any, content: string) {
       extraRemarkPlugins?: IMdLoaderOptions['extraRemarkPlugins'];
       extraRehypePlugins?: IMdLoaderOptions['extraRehypePlugins'];
       demoAssetsFile?: string;
+      cacheSession?: string;
     };
+    cacheSession = ctx.cacheSession;
     if (!opts.techStacks?.length) {
       (opts as any).techStacks = ctx.techStacks;
     }
@@ -749,20 +775,52 @@ export default function mdLoader(this: any, content: string) {
     useUtoopackDemoHMR,
     JSON.stringify(lodash.omit(opts, ['mode', 'builtins', 'onResolveDemos'])),
   ].join(':');
+  // Share dependency paths between workers of one service. A new service must
+  // re-run custom plugins and tech stacks, whose functions cannot be hashed here.
+  const depsCacheKey = cacheSession ? `deps:${baseCacheKey}` : undefined;
+  const depsMappingKey = cacheSession
+    ? `${cacheSession}:${this.resourcePath}`
+    : this.resourcePath;
+  const cachedDeps = depsCacheKey
+    ? getMdLoaderCacheSync<MdLoaderCachedDeps | undefined>(
+        cache,
+        depsCacheKey,
+        undefined,
+      )
+    : undefined;
+  const deps =
+    cachedDeps &&
+    cachedDeps.cacheSession === cacheSession &&
+    Array.isArray(cachedDeps.deps) &&
+    cachedDeps.deps.every((file) => typeof file === 'string')
+      ? cachedDeps.deps
+      : depsMapping[depsMappingKey];
+  const depsKey = getDepsCacheKey(deps);
   // format: {baseCacheKey:{deps:contenthash}[]}
-  const cacheKey = [
-    baseCacheKey,
-    getDepsCacheKey(depsMapping[this.resourcePath]),
-  ].join(':');
-  const cacheRet = getMdLoaderCacheSync(cache, cacheKey, '');
+  const cacheKey = [baseCacheKey, depsKey].join(':');
+  const cacheRet =
+    depsKey === undefined
+      ? undefined
+      : getMdLoaderCacheSync<MdLoaderCachedResult | undefined>(
+          cache,
+          cacheKey,
+          undefined,
+        );
+  // An older service can finish after this one and overwrite the shared result
+  // file. Validate its owner before trusting the current service's path index.
+  const matchesSession =
+    !cacheSession ||
+    !deps?.length ||
+    cacheRet?.__dumiCacheSession === cacheSession;
+  const deferrerKey = cacheSession ? `${cacheSession}:${cacheKey}` : cacheKey;
 
-  if (cacheRet) {
+  if (cacheRet && matchesSession) {
     // file cache
     cb(null, emit.call(this, opts, cacheRet));
     return;
-  } else if (cacheKey in deferrer) {
+  } else if (deferrerKey in deferrer) {
     // deferrer cache
-    deferrer[cacheKey]
+    deferrer[deferrerKey]
       .then((res) => {
         cb(null, emit.call(this, opts, res));
       })
@@ -771,7 +829,7 @@ export default function mdLoader(this: any, content: string) {
   }
 
   // share deferrer for same cache key
-  deferrer[cacheKey] = transform(content, {
+  deferrer[deferrerKey] = transform(content, {
     ...(lodash.omit(opts, ['mode', 'builtins', 'onResolveDemos']) as Omit<
       IMdLoaderOptions,
       'mode' | 'builtins' | 'onResolveDemos'
@@ -781,23 +839,32 @@ export default function mdLoader(this: any, content: string) {
     collectSideEffectStyles: Boolean(loaderContextPath),
   });
 
-  deferrer[cacheKey]
+  deferrer[deferrerKey]
     .then((ret) => {
       // update deps mapping
-      depsMapping[this.resourcePath] = ret.meta.embeds!.concat(
+      depsMapping[depsMappingKey] = ret.meta.embeds!.concat(
         getDemoSourceFiles(ret.meta.demos),
       );
 
       // re-generate cache key with latest embeds & source data
-      const finalCacheKey = [
-        baseCacheKey,
-        getDepsCacheKey(depsMapping[this.resourcePath]),
-      ].join(':');
+      const finalDepsKey = getDepsCacheKey(depsMapping[depsMappingKey]);
 
       // save cache with final cache key
-      cache.setSync(finalCacheKey, ret);
+      if (finalDepsKey !== undefined) {
+        cache.setSync(
+          [baseCacheKey, finalDepsKey].join(':'),
+          cacheSession && depsMapping[depsMappingKey].length
+            ? { ...ret, __dumiCacheSession: cacheSession }
+            : ret,
+        );
+        if (depsCacheKey)
+          cache.setSync(depsCacheKey, {
+            cacheSession,
+            deps: depsMapping[depsMappingKey],
+          });
+      }
       cb(null, emit.call(this, opts, ret));
-      delete deferrer[cacheKey];
+      delete deferrer[deferrerKey];
     })
     .catch(cb);
 }
