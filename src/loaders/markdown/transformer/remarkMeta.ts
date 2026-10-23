@@ -2,7 +2,7 @@ import {
   getHostForTabRouteFile,
   getTabKeyFromFile,
   isTabRouteFile,
-} from '@/features/tabs';
+} from '@/features/tabs/utils';
 import { execSync } from 'child_process';
 import fs from 'fs';
 import yaml from 'js-yaml';

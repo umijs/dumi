@@ -3,6 +3,13 @@ import { createRouteId } from '@umijs/core/dist/route/utils';
 import path from 'path';
 import { lodash, Mustache, winPath } from 'umi/plugin-utils';
 import { TABS_META_PATH } from './meta';
+import { getTabKeyFromFile, isTabRouteFile } from './tabs/utils';
+
+export {
+  getHostForTabRouteFile,
+  getTabKeyFromFile,
+  isTabRouteFile,
+} from './tabs/utils';
 
 export interface IContentTab {
   key: string;
@@ -11,18 +18,6 @@ export interface IContentTab {
   title?: string;
   titleIntlId?: string;
   component: string;
-}
-
-export function isTabRouteFile(file: string) {
-  return file.includes('$tab-');
-}
-
-export function getTabKeyFromFile(file: string) {
-  return file.match(/\$tab-([^.]+)/)![1];
-}
-
-export function getHostForTabRouteFile(file: string) {
-  return file.replace(/\$tab-[^.]+\./, '');
 }
 
 /**

@@ -1,4 +1,4 @@
-import { isTabRouteFile } from '@/features/tabs';
+import { isTabRouteFile } from '@/features/tabs/utils';
 import type { IThemeLoadResult } from '@/features/theme/loader';
 import {
   CONTENT_TEXTS_OBJ_NAME,

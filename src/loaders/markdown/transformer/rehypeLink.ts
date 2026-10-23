@@ -1,4 +1,4 @@
-import { getHostForTabRouteFile } from '@/features/tabs';
+import { getHostForTabRouteFile } from '@/features/tabs/utils';
 import type { Root } from 'hast';
 import path from 'path';
 import { lodash, logger, winPath } from 'umi/plugin-utils';
