@@ -826,13 +826,20 @@ export default function mdLoader(this: any, content: string) {
   }
 
   const cache = getCache('md-loader');
-  // format: {version:path:contenthash:loaderOpts}
+  // Keep shared-worker keys compact: loader options include the entire route
+  // table, and pending transforms retain several keys derived from this one.
+  // Hash every option on each load so in-place route changes still invalidate.
+  // Preserve the existing key format outside the shared-worker cache.
+  let optionsCacheKey = JSON.stringify(
+    lodash.omit(opts, ['mode', 'builtins', 'onResolveDemos']),
+  );
+  if (cacheSession) optionsCacheKey = getContentHash(optionsCacheKey, 32);
   const baseCacheKey = [
     MD_LOADER_CACHE_VERSION,
     this.resourcePath,
     getContentHash(content),
     useUtoopackDemoHMR,
-    JSON.stringify(lodash.omit(opts, ['mode', 'builtins', 'onResolveDemos'])),
+    optionsCacheKey,
   ].join(':');
   // Share dependency paths between workers of one service. A new service must
   // re-run custom plugins and tech stacks, whose functions cannot be hashed here.
@@ -924,5 +931,9 @@ export default function mdLoader(this: any, content: string) {
       cb(null, emit.call(this, opts, ret));
       delete deferrer[deferrerKey];
     })
-    .catch(cb);
+    .catch((err) => {
+      // A failed transform must not retain its key or poison later retries.
+      delete deferrer[deferrerKey];
+      cb(err);
+    });
 }
