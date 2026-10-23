@@ -1,6 +1,9 @@
-import { UTOOPACK_LOADER_CTX_KEY } from '@/features/compile/utoopackLoaders';
 import { isTabRouteFile } from '@/features/tabs';
 import type { IThemeLoadResult } from '@/features/theme/loader';
+import {
+  CONTENT_TEXTS_OBJ_NAME,
+  UTOOPACK_LOADER_CTX_KEY,
+} from '@/loaders/constants';
 import { generateMetaChunkName, getCache, getContentHash } from '@/utils';
 import fs from 'fs';
 import path from 'path';
@@ -9,7 +12,6 @@ import transform, {
   type IMdTransformerOptions,
   type IMdTransformerResult,
 } from './transformer';
-import { CONTENT_TEXTS_OBJ_NAME } from './transformer/rehypeText';
 
 interface IMdLoaderDefaultModeOptions
   extends Omit<IMdTransformerOptions, 'fileAbsPath'> {

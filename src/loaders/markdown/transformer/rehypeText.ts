@@ -1,9 +1,10 @@
+import { CONTENT_TEXTS_OBJ_NAME } from '@/loaders/constants';
 import type { Element, Root } from 'hast';
 import type { Transformer } from 'unified';
 import { isReactComponent } from './rehypeIsolation';
 import { HEADING_TAGS } from './rehypeSlug';
 
-export const CONTENT_TEXTS_OBJ_NAME = '$$contentTexts';
+export { CONTENT_TEXTS_OBJ_NAME };
 
 let visit: typeof import('unist-util-visit-parents').visitParents;
 

@@ -1,3 +1,4 @@
+import { UTOOPACK_LOADER_CTX_KEY } from '@/loaders/constants';
 import type { IApi, IDumiTechStack } from '@/types';
 import esbuild from '@umijs/bundler-utils/compiled/esbuild';
 import { register } from '@umijs/utils';
@@ -10,7 +11,7 @@ const esbuildImplementorPath = require.resolve(
   '@umijs/bundler-utils/compiled/esbuild',
 );
 
-export const UTOOPACK_LOADER_CTX_KEY = '__dumiLoaderContextPath';
+export { UTOOPACK_LOADER_CTX_KEY };
 
 export const LOADER_CTX_FILENAME = 'dumi-loader-ctx.cjs';
 export const UTOOPACK_DEMO_ASSETS_FILENAME = 'dumi-utoopack-demo-assets.jsonl';
