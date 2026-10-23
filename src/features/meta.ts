@@ -7,7 +7,7 @@ import {
 import path from 'path';
 import type { IRoute } from 'umi';
 import { winPath } from 'umi/plugin-utils';
-import { isTabRouteFile } from './tabs';
+import { isTabRouteFile } from './tabs/utils';
 
 export const TABS_META_PATH = 'dumi/meta/tabs.ts';
 export const ATOMS_META_PATH = 'dumi/meta/atoms.ts';
