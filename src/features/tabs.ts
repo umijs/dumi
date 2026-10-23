@@ -1,7 +1,7 @@
 import type { IApi } from '@/types';
 import { createRouteId } from '@umijs/core/dist/route/utils';
+import { lodash, Mustache, winPath } from '@umijs/utils';
 import path from 'path';
-import { lodash, Mustache, winPath } from 'umi/plugin-utils';
 import { TABS_META_PATH } from './meta';
 import { getTabKeyFromFile, isTabRouteFile } from './tabs/utils';
 

@@ -1,10 +1,10 @@
 import { getContentHash, parseCodeFrontmatter } from '@/utils';
+import { pkgUp, winPath } from '@umijs/utils';
 import assert from 'assert';
 import type { ExampleBlockAsset } from 'dumi-assets-types';
 import type { sync } from 'enhanced-resolve';
 import fs from 'fs';
 import path from 'path';
-import { pkgUp, winPath } from 'umi/plugin-utils';
 import {
   DEFAULT_DEMO_MODULE_EXTENSIONS,
   DEFAULT_DEMO_PLAIN_TEXT_EXTENSIONS,
