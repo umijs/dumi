@@ -179,6 +179,128 @@ test('markdown workers in one service reuse disk cache across modes', async () =
   );
 });
 
+test('shared-worker cache keys stay compact as the route table grows', async () => {
+  const fixture = createFixture();
+  const load = await fixture.restart();
+  const { getCache } = await import('@/utils');
+  const cache = getCache('md-loader');
+  const read = vi.spyOn(cache, 'getSync');
+  const write = vi.spyOn(cache, 'setSync');
+  const routes = Object.fromEntries(
+    Array.from({ length: 2000 }, (_, index) => [
+      `route-${index}`,
+      {
+        id: `route-${index}`,
+        file: path.join(fixture.dir, `docs/route-${index}.md`),
+        absPath: `/docs/route-${index}`,
+      },
+    ]),
+  ) as IMdLoaderOptions['routes'];
+  const cacheKeys = () =>
+    [...read.mock.calls, ...write.mock.calls].map(([key]) => key);
+  await load({ routes: { 'route-0': routes['route-0'] } });
+  const smallKeys = cacheKeys();
+  read.mockClear();
+  write.mockClear();
+  await load({ routes });
+  const largeKeys = cacheKeys();
+
+  expect(transform).toHaveBeenCalledTimes(2);
+  expect(JSON.stringify(routes).length).toBeGreaterThan(200000);
+  expect(Math.max(...largeKeys.map((key) => key.length))).toBe(
+    Math.max(...smallKeys.map((key) => key.length)),
+  );
+  for (const key of largeKeys) {
+    expect(key).not.toContain('route-0');
+    expect(key.length).toBeLessThan(1024);
+  }
+});
+
+test('shared-worker cache invalidates when a route changes in place', async () => {
+  const fixture = createFixture();
+  const implementation = transform.getMockImplementation()!;
+  transform.mockImplementation(async (...args) => {
+    const result = await implementation(...args);
+    result.meta.frontmatter.title = args[1].routes.document.absPath;
+    return result;
+  });
+  const routes = {
+    document: {
+      id: 'document',
+      file: path.join(fixture.dir, 'index.md'),
+      absPath: '/before',
+    },
+  } as IMdLoaderOptions['routes'];
+  const load = await fixture.restart();
+  const initial = await load({ routes });
+  routes.document.absPath = '/after';
+  const updated = await load({ routes });
+  const cached = await (await fixture.restart())({ routes });
+
+  expect(transform).toHaveBeenCalledTimes(2);
+  expect(initial.output).toContain('/before');
+  expect(updated.output).toContain('/after');
+  expect(cached.output).toBe(updated.output);
+});
+
+test.each(legacyModes)(
+  'markdown loaders %s keep complete options in their legacy cache keys',
+  async (kind) => {
+    const { fixture, overrides } = createLegacyFixture(kind);
+    const load = await fixture.restart();
+    const { getCache } = await import('@/utils');
+    const read = vi.spyOn(getCache('md-loader'), 'getSync');
+    const routes = {
+      document: {
+        id: 'document',
+        file: path.join(fixture.dir, 'index.md'),
+        absPath: '/legacy-route',
+      },
+    } as IMdLoaderOptions['routes'];
+    await load({ ...overrides, routes });
+
+    expect(read.mock.calls[0][0]).toContain(
+      `"routes":${JSON.stringify(routes)}`,
+    );
+  },
+);
+
+test('a failed markdown transform can be retried with the same input', async () => {
+  const fixture = createFixture();
+  const load = await fixture.restart();
+  const error = new Error('Temporary transform failure');
+  transform.mockRejectedValueOnce(error);
+
+  await expect(load()).rejects.toBe(error);
+  const retried = await load();
+
+  expect(transform).toHaveBeenCalledTimes(2);
+  expect(retried.output).toContain('Embedded documentation');
+});
+
+test('concurrent markdown loads share a failure without poisoning retries', async () => {
+  const fixture = createFixture();
+  const load = await fixture.restart();
+  const error = new Error('Concurrent transform failure');
+  let fail!: (err: Error) => void;
+  transform.mockImplementationOnce(
+    () =>
+      new Promise((_, reject) => {
+        fail = reject;
+      }),
+  );
+  const pending = Promise.allSettled([load(), load({ mode: 'text' })]);
+  expect(transform).toHaveBeenCalledTimes(1);
+  fail(error);
+
+  expect(await pending).toEqual([
+    { status: 'rejected', reason: error },
+    { status: 'rejected', reason: error },
+  ]);
+  await load();
+  expect(transform).toHaveBeenCalledTimes(2);
+});
+
 test('a new service refreshes custom plugin output in retained workers', async () => {
   const fixture = createFixture();
   const contextFile = path.join(fixture.dir, 'loader-context.cjs');
