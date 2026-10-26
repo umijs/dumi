@@ -7,11 +7,11 @@ group:
   order: -1
 ---
 
-# 什么是 dumi
+# 什么是 dumi {#what-is-dumi}
 
 dumi，中文发音**嘟米**，是一款为组件开发场景而生的静态站点框架，与 [father](https://github.com/umijs/father) 一起为开发者提供一站式的组件开发体验，**father 负责组件源码构建，而 dumi 负责组件开发及组件文档生成**。
 
-## 特性
+## 特性 {#features}
 
 全新的 dumi 2.0 主要具备以下特性：
 
@@ -22,7 +22,7 @@ dumi，中文发音**嘟米**，是一款为组件开发场景而生的静态站
 - 💡 **资产元数据 2.0**：在 1.x 及 JSON Schema 的基础上对资产属性定义结构进行全新设计，为资产的流通提供更多可能
 - 💎 **继续为组件研发而生**：提供与全新的 NPM 包研发工具 <a href="https://github.com/umijs/father" target="_blank" rel="noreferrer">father 4</a> 集成的脚手架，为开发者提供一站式的研发体验
 
-## 问题反馈
+## 问题反馈 {#feedback}
 
 如果在使用过程中发现任何问题、或者有改善建议，欢迎在 GitHub Issues 进行反馈：https://github.com/umijs/dumi/issues
 
