@@ -100,10 +100,14 @@ test('markdown transformer: hoists repeated large demo props for utoopack HMR', 
 });
 
 describe('markdown transformer: custom anchor', () => {
-  const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+  let warn: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
-    warn.mockClear();
+    warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    warn.mockRestore();
   });
 
   const transform = (raw: string) =>
@@ -146,35 +150,44 @@ describe('markdown transformer: custom anchor', () => {
       { id: 'dup', depth: 2, title: 'a' },
       { id: 'dup-1', depth: 2, title: 'b' },
     ]);
-    toHaveWarned('Duplicate custom anchor "dup"');
+    toHaveWarned('Custom anchor "dup" is duplicated');
   });
 
-  test('invalid slug falls back to the slugged id', async () => {
-    const ret = await transform('## a {#Foo Bar}');
+  test('custom anchor is used as-is without slugging', async () => {
+    const ret = await transform('## a {#Foo.Bar}');
 
-    expect(ret.meta.toc).toEqual([{ id: 'foo-bar', depth: 2, title: 'a' }]);
-    expect(ret.content).toContain('id="foo-bar"');
-    toHaveWarned('is not a valid slug');
+    expect(ret.meta.toc).toEqual([{ id: 'Foo.Bar', depth: 2, title: 'a' }]);
+    expect(ret.content).toContain('id="Foo.Bar"');
+    expect(warn).not.toHaveBeenCalled();
   });
 
-  test('duplicate invalid slugs share the same slugged prefix', async () => {
-    const ret = await transform(
-      ['## a {#Foo Bar}', '', '## b {#Foo Bar}'].join('\n'),
-    );
+  test.each([
+    ['before', ['## a {#hello}', '', '<h3 id="hello">x</h3>']],
+    ['after', ['<h3 id="hello">x</h3>', '', '## a {#hello}']],
+  ])('custom anchor gives way to an existing id %s it', async (_, lines) => {
+    const ret = await transform(lines.join('\n'));
+    const ids = ret.meta.toc!.map(({ id }) => id);
 
-    expect(ret.meta.toc).toEqual([
-      { id: 'foo-bar', depth: 2, title: 'a' },
-      { id: 'foo-bar-1', depth: 2, title: 'b' },
-    ]);
-    toHaveWarned('Duplicate custom anchor "foo-bar"');
+    expect(ids).toContain('hello');
+    expect(ids).toContain('hello-1');
+    expect(ret.meta.toc!.find(({ id }) => id === 'hello')!.title).toBe('x');
+    toHaveWarned('conflicts with an existing heading id');
   });
 
-  test('heading with existing id keeps it and strips the marker', async () => {
+  test('marker overrides the id written in raw html', async () => {
     const ret = await transform('<h3 id="raw-id">a {#other}</h3>');
 
-    expect(ret.meta.toc).toEqual([{ id: 'raw-id', depth: 3, title: 'a' }]);
+    expect(ret.meta.toc).toEqual([{ id: 'other', depth: 3, title: 'a' }]);
+    expect(ret.content).toContain('id="other"');
+    expect(ret.content).not.toContain('id="raw-id"');
     expect(ret.content).not.toContain('{#other}');
-    // existing id always wins, no need to warn about the ignored marker
+    toHaveWarned('overrides the existing id "raw-id"');
+  });
+
+  test('no warning when the marker equals the existing id', async () => {
+    const ret = await transform('<h3 id="same">a {#same}</h3>');
+
+    expect(ret.meta.toc).toEqual([{ id: 'same', depth: 3, title: 'a' }]);
     expect(warn).not.toHaveBeenCalled();
   });
 
@@ -191,17 +204,11 @@ describe('markdown transformer: custom anchor', () => {
 
   test('marker tolerates trailing whitespace', async () => {
     const ret = await transform(
-      [
-        '<h3 id="raw">a {#other} </h3>',
-        '',
-        '## b {#b}\t',
-        '',
-        '## c {#c}',
-      ].join('\n'),
+      ['<h3>a {#other} </h3>', '', '## b {#b}\t', '', '## c {#c}'].join('\n'),
     );
 
     expect(ret.meta.toc).toEqual([
-      { id: 'raw', depth: 3, title: 'a' },
+      { id: 'other', depth: 3, title: 'a' },
       { id: 'b', depth: 2, title: 'b' },
       { id: 'c', depth: 2, title: 'c' },
     ]);
@@ -270,16 +277,16 @@ describe('markdown transformer: custom anchor', () => {
         extraRemarkPlugins: [pluginSetId(id)],
       });
 
-    test('marker is stripped and the existing id wins', async () => {
+    test('marker overrides the id set by another plugin', async () => {
       const ret = await transformWithId('# User Guide {#guide}');
 
       expect(ret.meta.frontmatter!.title).toBe('User Guide');
       expect(ret.meta.toc).toEqual([
-        { id: 'plugin-set-id', depth: 1, title: 'User Guide' },
+        { id: 'guide', depth: 1, title: 'User Guide' },
       ]);
+      expect(ret.content).toContain('id="guide"');
       expect(ret.content).not.toContain('{#guide}');
-      // the custom anchor behavior is skipped entirely, so no warning at all
-      expect(warn).not.toHaveBeenCalled();
+      toHaveWarned('overrides the existing id "plugin-set-id"');
     });
 
     test('explicit frontmatter title still wins', async () => {
@@ -295,7 +302,7 @@ describe('markdown transformer: custom anchor', () => {
 
       expect(ret.meta.frontmatter!.title).toBe('Explicit Title');
       expect(ret.meta.toc).toEqual([
-        { id: 'plugin-set-id', depth: 1, title: 'User Guide' },
+        { id: 'guide', depth: 1, title: 'User Guide' },
       ]);
     });
   });

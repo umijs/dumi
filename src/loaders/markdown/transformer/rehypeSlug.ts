@@ -97,47 +97,58 @@ export default function rehypeSlug(): Transformer<Root> {
       });
     });
 
-    // collect custom anchors, they always win over auto-generated slugs
+    /** ids from raw HTML or other remark plugins on headings without marker */
+    const existingIds = new Set<string>();
+    const markedHeadings: {
+      node: Element;
+      rawId: string;
+      existingId?: string;
+    }[] = [];
+
+    // collect markers and existing ids first, so the result is independent of heading order
     visit<Root, 'element'>(tree, 'element', (node) => {
       if (!HEADING_TAGS.includes(node.tagName)) return;
 
-      // existing id comes from raw HTML or other remark plugins, it always wins,
-      // skip resolving the custom anchor to avoid redundant work
-      if (node.properties?.id) {
-        // the marker is still syntax rather than content, strip it for consistent text
-        extractCustomAnchor(node);
-        // reserve it, so auto-generated slugs will not conflict with it
-        reservedIds.add(node.properties.id as string);
-
-        return;
-      }
-
+      const existingId = node.properties?.id as string | undefined;
       const rawId = extractCustomAnchor(node);
 
-      if (!rawId) return;
-
-      // custom anchor must be a valid slug, otherwise fallback to the slugged one
-      const sluggedId = Slugger.slug(rawId);
-
-      if (sluggedId !== rawId) {
-        logger.warn(
-          `Custom anchor "${rawId}" is not a valid slug, use "${sluggedId}" instead. at ${filename}`,
-        );
+      if (rawId) {
+        markedHeadings.push({ node, rawId, existingId });
+      } else if (existingId) {
+        // auto-generated slugs and custom anchors should not conflict with it
+        existingIds.add(existingId);
+        reservedIds.add(existingId);
       }
+    });
 
-      let id = sluggedId;
+    // resolve custom anchors, the marker wins over the existing id of its own heading
+    markedHeadings.forEach(({ node, rawId, existingId }) => {
+      let id = rawId;
       let suffix = 1;
 
       // demo anchors are rendered by previewer, so custom anchors must give way to them
       while (reservedIds.has(id) || demoIds.has(id)) {
-        id = `${sluggedId}-${suffix++}`;
+        id = `${rawId}-${suffix++}`;
       }
 
-      if (id !== sluggedId) {
+      if (id !== rawId) {
+        const reason = demoIds.has(rawId)
+          ? 'conflicts with demo id'
+          : existingIds.has(rawId)
+          ? 'conflicts with an existing heading id'
+          : 'is duplicated';
+
         logger.warn(
-          demoIds.has(sluggedId)
-            ? `Custom anchor "${sluggedId}" conflicts with demo id, fallback to "${id}" instead. at ${filename}`
-            : `Duplicate custom anchor "${sluggedId}", fallback to "${id}" instead. at ${filename}`,
+          `Custom anchor "${rawId}" ${reason}, fallback to "${id}" instead. at ${filename}`,
+        );
+      }
+
+      // the marker is explicit user intent, never drop it silently
+      if (existingId && existingId !== id) {
+        logger.warn(
+          `Custom anchor "${id}" overrides the existing id "${existingId}" of heading "${toString(
+            node,
+          )}". at ${filename}`,
         );
       }
 
