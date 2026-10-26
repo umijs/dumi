@@ -8,11 +8,13 @@
       "compiled/**",
       "theme-default/**",
       "suites/*/compiled/**",
-      "suites/preset-vue/lib/**"
+      "suites/preset-vue/lib/**",
+      "examples/vue/**",
+      "suites/dumi-vue-meta/tests/**"
     ]
   },
   {
-    "files": ["{src,test}/**/*.{js,jsx,ts,tsx}"],
+    "files": ["**/*.{js,jsx,ts,tsx}"],
     "rules": {
       "@typescript-eslint/no-unused-vars": [
         "error",
@@ -71,7 +73,7 @@
     }
   },
   {
-    "files": ["{src,test}/**/*.{ts,tsx}"],
+    "files": ["**/*.{ts,tsx}"],
     "rules": {
       "@typescript-eslint/ban-types": "error",
       "@typescript-eslint/no-confusing-non-null-assertion": "error",
@@ -91,7 +93,7 @@
     }
   },
   {
-    "files": ["{src,test}/**/*.{test,spec,unit,e2e}.{ts,tsx,js,jsx}"],
+    "files": ["**/*.{test,spec,unit,e2e}.{ts,tsx,js,jsx}"],
     "rules": {
       "jest/no-conditional-expect": "error",
       "jest/no-deprecated-functions": "error",

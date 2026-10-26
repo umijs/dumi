@@ -74,11 +74,11 @@
       "prettier --cache --write"
     ],
     "*.{js,jsx}": [
-      "eslint --fix",
+      "utoo-lint --fix",
       "prettier --cache --write"
     ],
     "*.{ts,tsx}": [
-      "eslint --fix",
+      "utoo-lint --fix",
       "prettier --cache --parser=typescript --write"
     ]
   },
@@ -172,7 +172,6 @@
     "@umijs/plugins": "4.7.4",
     "@utoo/lint": "^0.4.10",
     "dumi-theme-mobile": "workspace:*",
-    "eslint": "^8.46.0",
     "esno": "^4.7.0",
     "fast-glob": "^3.3.1",
     "father": "^4.6.23",
