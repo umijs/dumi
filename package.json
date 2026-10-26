@@ -168,7 +168,7 @@
     "@types/react-copy-to-clipboard": "^5.0.4",
     "@types/react-dom": "^18.2.7",
     "@typescript/native-preview": "7.0.0-dev.20260623.1",
-    "@umijs/lint": "^4.7.4",
+    "@umijs/lint": "^4.7.28",
     "@umijs/plugins": "4.7.4",
     "@utoo/lint": "^0.4.10",
     "dumi-theme-mobile": "workspace:*",
