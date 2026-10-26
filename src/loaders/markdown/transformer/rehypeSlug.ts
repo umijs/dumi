@@ -1,7 +1,7 @@
 import type { IDumiDemoProps } from '@/client/theme-api/DumiDemo';
+import { logger } from '@umijs/utils';
 import Slugger from 'github-slugger';
 import type { Element, Root } from 'hast';
-import { logger } from 'umi/plugin-utils';
 import type { Transformer } from 'unified';
 import {
   DEMO_PROP_VALUE_KEY,
