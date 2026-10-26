@@ -118,6 +118,17 @@ describe('markdown transformer: custom anchor', () => {
       expect.stringContaining(message),
     );
 
+  const demoBlock = [
+    '```jsx',
+    '/**',
+    ' * title: Demo Title',
+    ' */',
+    'export default () => 1;',
+    '```',
+  ].join('\n');
+
+  const getDemoId = async () => (await transform(demoBlock)).meta.toc![0].id;
+
   test('explicit anchor wins over auto-generated slug', async () => {
     const ret = await transform(['## foo', '', '## bar {#foo}'].join('\n'));
 
@@ -125,7 +136,7 @@ describe('markdown transformer: custom anchor', () => {
       { id: 'foo-1', depth: 2, title: 'foo' },
       { id: 'foo', depth: 2, title: 'bar' },
     ]);
-    toHaveWarned('conflicts with custom anchor "foo"');
+    toHaveWarned('conflicts with the anchor "foo"');
   });
 
   test('duplicate explicit anchors fallback with suffix', async () => {
@@ -158,14 +169,52 @@ describe('markdown transformer: custom anchor', () => {
     toHaveWarned('Duplicate custom anchor "foo-bar"');
   });
 
-  test('heading with existing id keeps it and renders marker as text', async () => {
+  test('heading with existing id keeps it and strips the marker', async () => {
     const ret = await transform('<h3 id="raw-id">a {#other}</h3>');
 
-    expect(ret.meta.toc).toEqual([
-      { id: 'raw-id', depth: 3, title: 'a {#other}' },
-    ]);
-    expect(ret.content).toContain('{#other}');
+    expect(ret.meta.toc).toEqual([{ id: 'raw-id', depth: 3, title: 'a' }]);
+    expect(ret.content).not.toContain('{#other}');
+    // existing id always wins, no need to warn about the ignored marker
     expect(warn).not.toHaveBeenCalled();
+  });
+
+  test('auto slug gives way to an existing id', async () => {
+    const ret = await transform(
+      ['## Hello', '', '<h3 id="hello">x</h3>'].join('\n'),
+    );
+
+    expect(ret.meta.toc).toEqual([
+      { id: 'hello-1', depth: 2, title: 'Hello' },
+      { id: 'hello', depth: 3, title: 'x' },
+    ]);
+  });
+
+  test('marker tolerates trailing whitespace', async () => {
+    const ret = await transform(
+      [
+        '<h3 id="raw">a {#other} </h3>',
+        '',
+        '## b {#b}\t',
+        '',
+        '## c {#c}',
+      ].join('\n'),
+    );
+
+    expect(ret.meta.toc).toEqual([
+      { id: 'raw', depth: 3, title: 'a' },
+      { id: 'b', depth: 2, title: 'b' },
+      { id: 'c', depth: 2, title: 'c' },
+    ]);
+    expect(ret.content).not.toContain('{#');
+  });
+
+  test('marker in the middle of heading stays as text', async () => {
+    const ret = await transform('## Use {#id} syntax');
+
+    expect(ret.meta.toc).toEqual([
+      { id: 'use-id-syntax', depth: 2, title: 'Use {#id} syntax' },
+    ]);
+    expect(ret.content).toContain('{#id}');
   });
 
   test('default title derived from heading ignores the marker', async () => {
@@ -200,5 +249,79 @@ describe('markdown transformer: custom anchor', () => {
       { id: expect.any(String), depth: 1, title: 'User Guide {# }' },
     ]);
     expect(ret.content).toContain('{# }');
+  });
+
+  describe('heading with an existing id', () => {
+    const pluginSetId = (id: string) => () => (tree: any) => {
+      const walk = (node: any) => {
+        if (node.type === 'heading' && node.depth === 1) {
+          node.data ??= {};
+          node.data.hProperties = { id };
+        }
+        node.children?.forEach(walk);
+      };
+
+      walk(tree);
+    };
+
+    const transformWithId = (raw: string, id = 'plugin-set-id') =>
+      transformer(raw, {
+        ...getTransformerOptions(path.join(CASES_DIR, 'normal/index.md')),
+        extraRemarkPlugins: [pluginSetId(id)],
+      });
+
+    test('marker is stripped and the existing id wins', async () => {
+      const ret = await transformWithId('# User Guide {#guide}');
+
+      expect(ret.meta.frontmatter!.title).toBe('User Guide');
+      expect(ret.meta.toc).toEqual([
+        { id: 'plugin-set-id', depth: 1, title: 'User Guide' },
+      ]);
+      expect(ret.content).not.toContain('{#guide}');
+      // the custom anchor behavior is skipped entirely, so no warning at all
+      expect(warn).not.toHaveBeenCalled();
+    });
+
+    test('explicit frontmatter title still wins', async () => {
+      const ret = await transformWithId(
+        [
+          '---',
+          'title: Explicit Title',
+          '---',
+          '',
+          '# User Guide {#guide}',
+        ].join('\n'),
+      );
+
+      expect(ret.meta.frontmatter!.title).toBe('Explicit Title');
+      expect(ret.meta.toc).toEqual([
+        { id: 'plugin-set-id', depth: 1, title: 'User Guide' },
+      ]);
+    });
+  });
+
+  test('custom anchor gives way to demo anchor', async () => {
+    const demoId = await getDemoId();
+    const ret = await transform(
+      [`# Demo {#${demoId}}`, '', demoBlock].join('\n'),
+    );
+    const toc = ret.meta.toc!;
+
+    expect(toc).toEqual([
+      { id: `${demoId}-1`, depth: 1, title: 'Demo' },
+      { id: demoId, depth: 3, title: 'Demo Title' },
+    ]);
+    expect(new Set(toc.map(({ id }) => id)).size).toBe(toc.length);
+    toHaveWarned('conflicts with demo id');
+  });
+
+  test('auto slug gives way to demo anchor before it', async () => {
+    const demoId = await getDemoId();
+    const ret = await transform(['## Demo 0', '', demoBlock].join('\n'));
+
+    expect(ret.meta.toc).toEqual([
+      { id: `${demoId}-1`, depth: 2, title: 'Demo 0' },
+      { id: demoId, depth: 3, title: 'Demo Title' },
+    ]);
   });
 });
