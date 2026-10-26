@@ -1,8 +1,9 @@
+import { UTOOPACK_LOADER_CTX_KEY } from '@/loaders/constants';
 import type { IApi, IDumiTechStack } from '@/types';
 import esbuild from '@umijs/bundler-utils/compiled/esbuild';
 import { register } from '@umijs/utils';
 import path from 'path';
-import { shouldDisabledLiveDemo } from './utils';
+import { getCodeBlockBabelPlugins, shouldDisabledLiveDemo } from './utils';
 
 const mdLoaderPath = require.resolve('../../loaders/markdown');
 const utilsRegisterPath = require.resolve('@umijs/utils');
@@ -10,7 +11,7 @@ const esbuildImplementorPath = require.resolve(
   '@umijs/bundler-utils/compiled/esbuild',
 );
 
-export const UTOOPACK_LOADER_CTX_KEY = '__dumiLoaderContextPath';
+export { UTOOPACK_LOADER_CTX_KEY };
 
 export const LOADER_CTX_FILENAME = 'dumi-loader-ctx.cjs';
 export const UTOOPACK_DEMO_ASSETS_FILENAME = 'dumi-utoopack-demo-assets.jsonl';
@@ -199,6 +200,8 @@ export function buildLoaderContextContent(
   extraRehypePlugins: IApi['config']['extraRehypePlugins'] = [],
   sourceFiles: string[] = [],
   demoAssetsFile?: string,
+  alias?: IApi['config']['alias'],
+  cacheSession?: string,
 ): string {
   const refs = toTechStackRefs(techStacks);
 
@@ -216,6 +219,10 @@ export function buildLoaderContextContent(
     `exports.techStacks = [${refs.join(', ')}];\n` +
     `exports.builtins = ${JSON.stringify(builtins)};\n` +
     `exports.routes = ${JSON.stringify(routes)};\n` +
+    `exports.alias = ${JSON.stringify(alias)};\n` +
+    (cacheSession === undefined
+      ? ''
+      : `exports.cacheSession = ${JSON.stringify(cacheSession)};\n`) +
     `exports.demoAssetsFile = ${JSON.stringify(demoAssetsFile)};\n` +
     `exports.extraRemarkPlugins = ${toPluginRefs(
       extraRemarkPlugins,
@@ -255,6 +262,10 @@ export const getUtoopackRules = (
     locales: config.locales || [],
     pkg: api.pkg,
     disableLiveDemo,
+    codeBlockBabelPlugins: getCodeBlockBabelPlugins(
+      config.extraBabelPlugins,
+      api.cwd,
+    ),
     [UTOOPACK_LOADER_CTX_KEY]: loaderContextPath,
   });
 
@@ -364,6 +375,18 @@ export const getUtoopackRules = (
           {
             loader: mdLoaderPath,
             options: { ...serializableBaseOpts, mode: 'text' },
+          },
+        ],
+        as: '*.js',
+      },
+      // Keep page rendering on a separate module identity from lazy route
+      // metadata so React Refresh can accept text changes locally.
+      {
+        condition: { query: /^\?type=text-render$/ },
+        loaders: [
+          {
+            loader: mdLoaderPath,
+            options: { ...serializableBaseOpts, mode: 'text-render' },
           },
         ],
         as: '*.js',

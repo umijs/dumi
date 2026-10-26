@@ -21,6 +21,7 @@ export default class ReactTechStack implements IDumiTechStack {
           syntax: isTSX ? 'typescript' : 'ecmascript',
           [isTSX ? 'tsx' : 'jsx']: true,
         },
+        babelPlugins: opts.babelPlugins,
       });
       return `React.memo(React.lazy(${code}))`;
     }

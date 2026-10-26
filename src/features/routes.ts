@@ -8,6 +8,7 @@ import type { IRoute } from 'umi';
 import { glob, winPath } from 'umi/plugin-utils';
 
 const CTX_LAYOUT_ID = 'dumi-context-layout';
+const ATOM_ROUTE_MARKDOWN_GLOB = '{*,*/index,*/index.*,*/README,*/README.*}.md';
 
 /**
  * normalize item of `resolve.docDirs` to object
@@ -93,12 +94,27 @@ export default (api: IApi) => {
   api.describe({ key: 'dumi:routes' });
 
   // watch docs paths to re-generate routes
-  api.addTmpGenerateWatcherPaths(() =>
-    [
-      ...api.config.resolve.atomDirs,
-      ...api.config.resolve.docDirs.map(normalizeDocDir),
-    ].map(({ dir }) => path.join(api.cwd, dir, '**/*.md')),
-  );
+  api.addTmpGenerateWatcherPaths(() => {
+    const watcherPaths = [
+      ...api.config.resolve.atomDirs.map(({ dir }) =>
+        path.join(api.cwd, dir, ATOM_ROUTE_MARKDOWN_GLOB),
+      ),
+      ...api.config.resolve.docDirs
+        .map(normalizeDocDir)
+        .map(({ dir }) => path.join(api.cwd, dir, '**/*.md')),
+    ].map(winPath);
+
+    if (api.env === 'development' && api.config.utoopack) {
+      return watcherPaths.map((watcherPath) => ({
+        path: watcherPath,
+        // Existing Markdown files are already watched by the bundler. Only
+        // route topology changes need to regenerate Umi's temporary files.
+        events: ['add', 'unlink'],
+      }));
+    }
+
+    return watcherPaths;
+  });
 
   api.modifyDefaultConfig((memo) => {
     // support to disable docDirs & atomDirs by empty array

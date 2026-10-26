@@ -3,12 +3,13 @@ import type { IMdLoaderOptions } from '@/loaders/markdown';
 import ReactTechStack from '@/techStacks/react';
 import type { IApi, IDumiTechStack } from '@/types';
 import { _setFSCacheDir } from '@/utils';
+import { randomBytes } from 'crypto';
 import enhancedResolve from 'enhanced-resolve';
 import fs from 'fs';
 import path from 'path';
 import { addAtomMeta, addExampleAssets } from '../assets';
 import { getLoadHook } from './makoHooks';
-import { shouldDisabledLiveDemo } from './utils';
+import { getCodeBlockBabelPlugins, shouldDisabledLiveDemo } from './utils';
 import {
   LOADER_CTX_FILENAME,
   UTOOPACK_DEMO_ASSETS_FILENAME,
@@ -16,6 +17,22 @@ import {
   getUtoopackRules,
 } from './utoopackLoaders';
 export const techStacks: IDumiTechStack[] = [];
+
+export function replaceTechStacks(nextTechStacks: IDumiTechStack[]) {
+  techStacks.splice(0, techStacks.length, ...nextTechStacks);
+}
+
+export function getUtoopackDemoAssetsFile(api: {
+  env: string;
+  paths: { absTmpPath: string };
+  isPluginEnable: (key: string) => boolean;
+}) {
+  if (api.env !== 'production' || !api.isPluginEnable('exportStatic')) {
+    return undefined;
+  }
+
+  return path.join(api.paths.absTmpPath, UTOOPACK_DEMO_ASSETS_FILENAME);
+}
 
 function normalizeMakoAliases(
   alias: NonNullable<IApi['config']['alias']>,
@@ -53,6 +70,7 @@ function normalizeMakoAliases(
 }
 
 export default (api: IApi) => {
+  let utoopackCacheSession: string | undefined;
   api.describe({ key: 'dumi:compile' });
 
   // register react tech stack by default
@@ -102,11 +120,11 @@ export default (api: IApi) => {
     // and `before` only insert before the last one
     stage: -Infinity,
     async fn() {
-      techStacks.push(
-        ...(await api.applyPlugins({
+      replaceTechStacks(
+        await api.applyPlugins({
           key: 'registerTechStack',
           type: api.ApplyPluginsType.add,
-        })),
+        }),
       );
     },
   });
@@ -114,12 +132,13 @@ export default (api: IApi) => {
   api.onGenerateFiles({
     fn() {
       if (api.config.utoopack) {
-        const demoAssetsFile = path.join(
-          api.paths.absTmpPath,
-          UTOOPACK_DEMO_ASSETS_FILENAME,
-        );
+        const demoAssetsFile = getUtoopackDemoAssetsFile(api);
+        const cacheSession =
+          api.env === 'development' && process.env.DUMI_CACHE !== 'none'
+            ? (utoopackCacheSession ??= randomBytes(16).toString('hex'))
+            : undefined;
 
-        fs.rmSync(demoAssetsFile, { force: true });
+        if (demoAssetsFile) fs.rmSync(demoAssetsFile, { force: true });
         api.writeTmpFile({
           noPluginDir: true,
           path: LOADER_CTX_FILENAME,
@@ -131,6 +150,8 @@ export default (api: IApi) => {
             api.config.extraRehypePlugins,
             (api as any).service.configManager?.files ?? [],
             demoAssetsFile,
+            api.config.alias,
+            cacheSession,
           ),
         });
       }
@@ -168,6 +189,10 @@ export default (api: IApi) => {
       locales: api.config.locales,
       pkg: api.pkg,
       disableLiveDemo: shouldDisabledLiveDemo(api),
+      codeBlockBabelPlugins: getCodeBlockBabelPlugins(
+        api.config.extraBabelPlugins,
+        api.cwd,
+      ),
     };
     memo.module
       .rule('watch-parent')

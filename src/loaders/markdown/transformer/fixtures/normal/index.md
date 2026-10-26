@@ -56,3 +56,9 @@ manual pre tag
 Auto-link: https://d.umijs.org
 
 ![img](https://d.umijs.org)
+
+## custom anchor title {#custom-anchor}
+
+### 中文标题 {#custom-anchor-chinese}
+
+#### custom anchor with Badge <Badge>1.0.0+</Badge> {#custom-anchor-with-badge}

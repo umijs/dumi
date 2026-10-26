@@ -1,15 +1,17 @@
-import { UTOOPACK_LOADER_CTX_KEY } from '@/features/compile/utoopackLoaders';
-import { isTabRouteFile } from '@/features/tabs';
+import { isTabRouteFile } from '@/features/tabs/utils';
 import type { IThemeLoadResult } from '@/features/theme/loader';
+import {
+  CONTENT_TEXTS_OBJ_NAME,
+  UTOOPACK_LOADER_CTX_KEY,
+} from '@/loaders/constants';
 import { generateMetaChunkName, getCache, getContentHash } from '@/utils';
+import { Mustache, lodash, winPath } from '@umijs/utils';
 import fs from 'fs';
 import path from 'path';
-import { Mustache, lodash, winPath } from 'umi/plugin-utils';
 import transform, {
   type IMdTransformerOptions,
   type IMdTransformerResult,
 } from './transformer';
-import { CONTENT_TEXTS_OBJ_NAME } from './transformer/rehypeText';
 
 interface IMdLoaderDefaultModeOptions
   extends Omit<IMdTransformerOptions, 'fileAbsPath'> {
@@ -51,22 +53,41 @@ interface IMdLoaderTextModeOptions
   mode: 'text';
 }
 
+interface IMdLoaderRenderTextModeOptions
+  extends Omit<IMdLoaderDefaultModeOptions, 'builtins' | 'mode'> {
+  mode: 'text-render';
+}
+
 export type IMdLoaderOptions =
   | IMdLoaderDefaultModeOptions
   | IMdLoaderDemosModeOptions
   | IMdLoaderDemoModeOptions
   | IMdLoaderFrontmatterModeOptions
   | IMdLoaderTextModeOptions
+  | IMdLoaderRenderTextModeOptions
   | IMdLoaderDemoIndexModeOptions;
 
 interface IDemoDependency {
   key: string;
   specifier: string;
+  sideEffectOnly: boolean;
 }
 
 type MdLoaderCache = {
   getSync: (key: string, defaultValue: any) => any;
 };
+
+type MdLoaderCachedResult = IMdTransformerResult & {
+  __dumiCacheSession?: string;
+};
+
+type MdLoaderCachedDeps = {
+  cacheSession: string;
+  deps: string[];
+};
+
+// Parsed demo metadata now includes source import usage.
+const MD_LOADER_CACHE_VERSION = 1;
 
 function isMalformedCacheError(err: unknown) {
   return (
@@ -139,15 +160,25 @@ function getRouteId(opts: IMdLoaderOptions, fileAbsPath: string) {
   return (route as any)?.id as string | undefined;
 }
 
-function emitDefault(
+export function emitDefault(
   this: any,
   opts: IMdLoaderDefaultModeOptions,
   ret: IMdTransformerResult,
 ) {
   const { frontmatter, demos } = ret.meta;
+  const sharedDemoProps = ret.meta.demoSharedProps ?? [];
   const isTabContent = isTabRouteFile(this.resourcePath);
   // do not wrap DumiPage for tab content
   const wrapper = isTabContent ? '' : 'DumiPage';
+  // Keep the render dependency separate from the lazy metadata dependency in
+  // Utoopack development. The render dependency can then propagate updates to
+  // this React Refresh boundary, while the metadata dependency self-accepts
+  // without pulling the global metadata graph into each Markdown update.
+  const textMode =
+    UTOOPACK_LOADER_CTX_KEY in (opts as any) &&
+    process.env.NODE_ENV !== 'production'
+      ? 'text-render'
+      : 'text';
 
   // apply demos resolve hook
   if (demos && opts.onResolveDemos) {
@@ -197,7 +228,12 @@ import React, { Suspense } from 'react';
 import { DumiPage } from 'dumi';
 import { texts as ${CONTENT_TEXTS_OBJ_NAME} } from '${winPath(
     this.resourcePath,
-  )}?type=text';
+  )}?type=${textMode}';
+${
+  sharedDemoProps.length
+    ? `const __dumi_demo_shared_props__ = ${JSON.stringify(sharedDemoProps)};`
+    : ''
+}
 
 // export named function for fastRefresh
 // ref: https://github.com/pmmmwh/react-refresh-webpack-plugin/blob/main/docs/TROUBLESHOOTING.md#edits-always-lead-to-full-reload
@@ -223,6 +259,7 @@ function emitDemo(
   const shareDepsMap: Record<string, string> = {};
   const demoDepsMap: Record<string, Record<string, string>> = {};
   const relativeDepsMap: Record<string, Record<string, string>> = {};
+  const sideEffectDepsMap = new Map<string, boolean>();
 
   demos?.forEach((demo) => {
     if ('resolveMap' in demo && 'asset' in demo) {
@@ -236,6 +273,11 @@ function emitDemo(
           const normalizedKey = isRelative
             ? winPath(demo.resolveMap[key])
             : key;
+          sideEffectDepsMap.set(
+            normalizedKey,
+            sideEffectDepsMap.get(normalizedKey) !== false &&
+              demo.sideEffectStyles?.includes(normalizedKey) === true,
+          );
 
           if (!shareDepsMap[normalizedKey]) {
             demoDepsMap[demo.id][normalizedKey] = specifier;
@@ -262,7 +304,14 @@ function emitDemo(
             .map(([key, specifier]) => {
               const existingIndex = acc.findIndex((obj) => obj.key === key);
               if (existingIndex === -1) {
-                return { key, specifier };
+                return {
+                  key,
+                  specifier,
+                  // Preserve webpack's namespace behavior, including custom style exports.
+                  sideEffectOnly:
+                    Boolean((opts as any)[UTOOPACK_LOADER_CTX_KEY]) &&
+                    sideEffectDepsMap.get(key) === true,
+                };
               }
               return undefined;
             })
@@ -275,7 +324,13 @@ function emitDemo(
     `import React from 'react';
 import '${winPath(this.resourcePath)}?watch=parent';
 {{#dedupedDemosDeps}}
+{{#sideEffectOnly}}
+import '{{{key}}}';
+const {{{specifier}}} = {};
+{{/sideEffectOnly}}
+{{^sideEffectOnly}}
 import * as {{{specifier}}} from '{{{key}}}';
+{{/sideEffectOnly}}
 {{/dedupedDemosDeps}}
 export const demos = {
   {{#demos}}
@@ -416,30 +471,91 @@ function emitDemoIndex(
 ${renderDemoIndex(this.resourcePath, opts, demos)}`;
 }
 
-function emitFrontmatter(
+export function emitFrontmatter(
   this: any,
   opts: IMdLoaderFrontmatterModeOptions,
   ret: IMdTransformerResult,
 ) {
-  const { frontmatter, toc, demos } = ret.meta;
+  const { demos } = ret.meta;
+  const frontmatter = ret.meta.frontmatter!;
+  const toc = ret.meta.toc ?? [];
   const resourcePath = winPath(this.resourcePath);
   const isUtoopack = UTOOPACK_LOADER_CTX_KEY in (opts as any);
+  const enableUtoopackHMR = isUtoopack && process.env.NODE_ENV !== 'production';
+  const routeMetaHMRPath = enableUtoopackHMR
+    ? winPath(require.resolve('../../client/theme-api/routeMetaHMR'))
+    : undefined;
+  const routeId = getRouteId(opts, this.resourcePath);
   const demoIndex = renderDemoIndex(this.resourcePath, opts, demos);
 
   if (isUtoopack) {
+    const routeStructureHash = getContentHash(
+      JSON.stringify({
+        atomId: frontmatter.atomId,
+        demoIds: demos?.map(({ id }) => id),
+        filename: frontmatter.filename,
+        group: frontmatter.group,
+        nav: frontmatter.nav,
+        order: frontmatter.order,
+        title: frontmatter.title,
+      }),
+    );
     const rendered = Mustache.render(
-      `import '${resourcePath}?watch=parent';
+      `{{#enableUtoopackHMR}}
+import { notifyRouteMetaHMR } from {{{routeMetaHMRSpecifier}}};
+{{/enableUtoopackHMR}}
+import '${resourcePath}?watch=parent';
 globalThis.__DUMI_FM__ = globalThis.__DUMI_FM__ || {};
 globalThis.__DUMI_TOC__ = globalThis.__DUMI_TOC__ || {};
+{{#enableUtoopackHMR}}
+const hadPreviousMeta = Object.prototype.hasOwnProperty.call(globalThis.__DUMI_FM__, '${resourcePath}');
+globalThis.__DUMI_META_STRUCTURE_HASH__ = globalThis.__DUMI_META_STRUCTURE_HASH__ || {};
+const previousRouteStructureHash = globalThis.__DUMI_META_STRUCTURE_HASH__['${resourcePath}'];
+const didRouteStructureChange = previousRouteStructureHash !== undefined && previousRouteStructureHash !== '{{{routeStructureHash}}}';
+globalThis.__DUMI_META_STRUCTURE_HASH__['${resourcePath}'] = '{{{routeStructureHash}}}';
+const nextFrontmatter = {{{frontmatter}}};
+const nextToc = {{{toc}}};
+const frontmatter = globalThis.__DUMI_FM__['${resourcePath}'] || {};
+const toc = globalThis.__DUMI_TOC__['${resourcePath}'] || [];
+Object.keys(frontmatter).forEach((key) => delete frontmatter[key]);
+Object.assign(frontmatter, nextFrontmatter);
+toc.splice(0, toc.length, ...nextToc);
+globalThis.__DUMI_FM__['${resourcePath}'] = frontmatter;
+globalThis.__DUMI_TOC__['${resourcePath}'] = toc;
+{{/enableUtoopackHMR}}
+{{^enableUtoopackHMR}}
 globalThis.__DUMI_FM__['${resourcePath}'] = {{{frontmatter}}};
 globalThis.__DUMI_TOC__['${resourcePath}'] = {{{toc}}};
-export const frontmatter = globalThis.__DUMI_FM__['${resourcePath}'];
-export const toc = globalThis.__DUMI_TOC__['${resourcePath}'];
-{{{demoIndex}}}`,
+const frontmatter = globalThis.__DUMI_FM__['${resourcePath}'];
+const toc = globalThis.__DUMI_TOC__['${resourcePath}'];
+{{/enableUtoopackHMR}}
+export { frontmatter, toc };
+{{#enableUtoopackHMR}}
+export const routeStructureHash = '{{{routeStructureHash}}}';
+{{/enableUtoopackHMR}}
+{{{demoIndex}}}
+{{#enableUtoopackHMR}}
+if (module.hot) {
+  module.hot.accept();
+  if (didRouteStructureChange) {
+    module.hot.invalidate();
+  }{{#routeId}} else if (hadPreviousMeta) {
+    notifyRouteMetaHMR({{{routeId}}});
+  }{{/routeId}}{{^routeId}} else if (hadPreviousMeta) {
+    module.hot.invalidate();
+  }{{/routeId}}
+}
+{{/enableUtoopackHMR}}`,
       {
         toc: JSON.stringify(toc),
         frontmatter: JSON.stringify(frontmatter),
         demoIndex,
+        enableUtoopackHMR,
+        routeId: routeId ? JSON.stringify(routeId) : undefined,
+        routeMetaHMRSpecifier: routeMetaHMRPath
+          ? JSON.stringify(routeMetaHMRPath)
+          : undefined,
+        routeStructureHash,
       },
     );
     return rendered;
@@ -458,20 +574,78 @@ export const frontmatter = new Proxy({{{frontmatter}}}, {});
   );
 }
 
-function emitText(
+export function emitText(
   this: any,
   opts: IMdLoaderTextModeOptions,
   ret: IMdTransformerResult,
 ) {
-  const { texts } = ret.meta;
+  const texts = ret.meta.texts ?? [];
+  const resourcePath = winPath(this.resourcePath);
+  const enableUtoopackHMR =
+    UTOOPACK_LOADER_CTX_KEY in (opts as any) &&
+    process.env.NODE_ENV !== 'production';
+
+  if (enableUtoopackHMR) {
+    const routeId = getRouteId(opts, this.resourcePath);
+    const routeMetaHMRSpecifier = JSON.stringify(
+      winPath(require.resolve('../../client/theme-api/routeMetaHMR')),
+    );
+
+    return Mustache.render(
+      `import { notifyRouteMetaHMR } from {{{routeMetaHMRSpecifier}}};
+import {{{watchSpecifier}}};
+globalThis.__DUMI_TEXTS__ = globalThis.__DUMI_TEXTS__ || {};
+const hadPreviousTexts = Object.prototype.hasOwnProperty.call(globalThis.__DUMI_TEXTS__, {{{resourceSpecifier}}});
+const nextTexts = {{{texts}}};
+const texts = globalThis.__DUMI_TEXTS__[{{{resourceSpecifier}}}] || [];
+texts.splice(0, texts.length, ...nextTexts);
+globalThis.__DUMI_TEXTS__[{{{resourceSpecifier}}}] = texts;
+export { texts };
+
+if (module.hot) {
+  module.hot.accept();
+  {{#routeId}}if (hadPreviousTexts) {
+    notifyRouteMetaHMR({{{routeId}}});
+  }{{/routeId}}{{^routeId}}if (hadPreviousTexts) {
+    module.hot.invalidate();
+  }{{/routeId}}
+}`,
+      {
+        resourceSpecifier: JSON.stringify(resourcePath),
+        routeId: routeId ? JSON.stringify(routeId) : undefined,
+        routeMetaHMRSpecifier,
+        texts: JSON.stringify(texts),
+        watchSpecifier: JSON.stringify(`${resourcePath}?watch=parent`),
+      },
+    );
+  }
 
   return Mustache.render(
     `
-  import '${winPath(this.resourcePath)}?watch=parent';
+  import '${resourcePath}?watch=parent';
   export const texts = {{{texts}}};
   `,
     {
       texts: JSON.stringify(texts),
+    },
+  );
+}
+
+export function emitRenderText(
+  this: any,
+  _opts: IMdLoaderRenderTextModeOptions,
+  ret: IMdTransformerResult,
+) {
+  return Mustache.render(
+    `
+  import {{{watchSpecifier}}};
+  export const texts = {{{texts}}};
+  `,
+    {
+      texts: JSON.stringify(ret.meta.texts ?? []),
+      watchSpecifier: JSON.stringify(
+        `${winPath(this.resourcePath)}?watch=parent`,
+      ),
     },
   );
 }
@@ -500,24 +674,53 @@ function emit(this: any, opts: IMdLoaderOptions, ret: IMdTransformerResult) {
       return emitFrontmatter.call(this, opts, ret);
     case 'text':
       return emitText.call(this, opts, ret);
+    case 'text-render':
+      return emitRenderText.call(this, opts, ret);
     default:
       return emitDefault.call(this, opts as IMdLoaderDefaultModeOptions, ret);
   }
 }
 
-function getDepsCacheKey(deps: (typeof depsMapping)['0'] = []) {
-  return JSON.stringify(
-    deps.map(
-      (file) => `${file}:${getContentHash(fs.readFileSync(file, 'utf-8'))}`,
-    ),
+function getDepsCacheKey(
+  deps: (typeof depsMapping)['0'] = [],
+  cacheSession?: string,
+) {
+  if (!cacheSession) {
+    return JSON.stringify(
+      deps.map(
+        (file) => `${file}:${getContentHash(fs.readFileSync(file, 'utf-8'))}`,
+      ),
+    );
+  }
+
+  // A sidecar may have been added since the dependency paths were cached.
+  const files = Array.from(
+    new Set(deps.concat(deps.flatMap(getDemoSidecarFiles))),
   );
+
+  try {
+    return JSON.stringify(
+      files.map(
+        (file) => `${file}:${getContentHash(fs.readFileSync(file, 'utf-8'))}`,
+      ),
+    );
+  } catch (err) {
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code === 'ENOENT' || code === 'ENOTDIR') {
+      return undefined;
+    }
+
+    throw err;
+  }
 }
 
 const deferrer: Record<string, Promise<IMdTransformerResult>> = {};
 const depsMapping: Record<string, string[]> = {};
+const loaderContextHashes = new WeakMap<NodeJS.Module, string>();
 
 export default function mdLoader(this: any, content: string) {
   let opts: IMdLoaderOptions = this.getOptions();
+  let cacheSession: string | undefined;
   const loaderContextPath: string | undefined = (opts as any)[
     UTOOPACK_LOADER_CTX_KEY
   ];
@@ -525,16 +728,68 @@ export default function mdLoader(this: any, content: string) {
     process.env.NODE_ENV !== 'production' && Boolean(loaderContextPath);
 
   if (loaderContextPath) {
-    const ctx = require(loaderContextPath) as {
+    const contextModuleId =
+      useUtoopackDemoHMR && process.env.DUMI_CACHE !== 'none'
+        ? require.resolve(loaderContextPath)
+        : undefined;
+    const cachedContextModule = contextModuleId
+      ? require.cache[contextModuleId]
+      : undefined;
+    // Fingerprint before a fresh require: a concurrent rewrite must never bind
+    // newer file contents to an already evaluated, older context module.
+    const initialContextHash =
+      contextModuleId && !cachedContextModule
+        ? getContentHash(fs.readFileSync(loaderContextPath, 'utf-8'), 32)
+        : undefined;
+    let ctx = require(loaderContextPath) as {
       techStacks: any[];
       builtins?: Record<string, { specifier: string; source: string }>;
       routes?: IMdLoaderOptions['routes'];
+      alias?: IMdLoaderOptions['alias'];
       extraRemarkPlugins?: IMdLoaderOptions['extraRemarkPlugins'];
       extraRehypePlugins?: IMdLoaderOptions['extraRehypePlugins'];
       demoAssetsFile?: string;
+      cacheSession?: string;
     };
+    if (contextModuleId && ctx.cacheSession) {
+      // Workers can outlive a service. Check the generated context itself so a
+      // cached Node module cannot hide its next service session. Hash content
+      // rather than relying on timestamp precision or generated code syntax.
+      const contextHash =
+        initialContextHash ??
+        getContentHash(fs.readFileSync(loaderContextPath, 'utf-8'), 32);
+      if (
+        cachedContextModule &&
+        loaderContextHashes.get(cachedContextModule) !== contextHash
+      ) {
+        // Node also retains cached modules through each parent's children.
+        // Detach only this context, leaving its imported modules untouched.
+        const parents = new Set([
+          cachedContextModule.parent,
+          typeof module === 'undefined' ? undefined : module,
+          ...Object.values(require.cache),
+        ]);
+        for (const parent of parents) {
+          const children = parent?.children;
+          const index = children?.indexOf(cachedContextModule) ?? -1;
+          if (index !== -1) children!.splice(index, 1);
+        }
+        delete require.cache[contextModuleId];
+        ctx = require(contextModuleId);
+      }
+      const contextModule = require.cache[contextModuleId];
+      if (contextModule) loaderContextHashes.set(contextModule, contextHash);
+    }
+    cacheSession =
+      useUtoopackDemoHMR && process.env.DUMI_CACHE !== 'none'
+        ? ctx.cacheSession
+        : undefined;
     if (!opts.techStacks?.length) {
       (opts as any).techStacks = ctx.techStacks;
+    }
+    // autoAlias and framework plugins may update aliases after loader rules are built.
+    if (ctx.alias !== undefined) {
+      opts = { ...opts, alias: ctx.alias };
     }
     // builtins are not available at modifyConfig time in utoopack mode
     // (themeData is only set in modifyAppData, which is later).
@@ -571,27 +826,63 @@ export default function mdLoader(this: any, content: string) {
   }
 
   const cache = getCache('md-loader');
-  // format: {path:contenthash:loaderOpts}
+  // Keep shared-worker keys compact: loader options include the entire route
+  // table, and pending transforms retain several keys derived from this one.
+  // Hash every option on each load so in-place route changes still invalidate.
+  // Preserve the existing key format outside the shared-worker cache.
+  let optionsCacheKey = JSON.stringify(
+    lodash.omit(opts, ['mode', 'builtins', 'onResolveDemos']),
+  );
+  if (cacheSession) optionsCacheKey = getContentHash(optionsCacheKey, 32);
   const baseCacheKey = [
+    MD_LOADER_CACHE_VERSION,
     this.resourcePath,
     getContentHash(content),
     useUtoopackDemoHMR,
-    JSON.stringify(lodash.omit(opts, ['mode', 'builtins', 'onResolveDemos'])),
+    optionsCacheKey,
   ].join(':');
+  // Share dependency paths between workers of one service. A new service must
+  // re-run custom plugins and tech stacks, whose functions cannot be hashed here.
+  const depsCacheKey = cacheSession ? `deps:${baseCacheKey}` : undefined;
+  const depsMappingKey = cacheSession
+    ? `${cacheSession}:${this.resourcePath}`
+    : this.resourcePath;
+  const cachedDeps = depsCacheKey
+    ? getMdLoaderCacheSync<MdLoaderCachedDeps | undefined>(
+        cache,
+        depsCacheKey,
+        undefined,
+      )
+    : undefined;
+  const deps =
+    cachedDeps &&
+    cachedDeps.cacheSession === cacheSession &&
+    Array.isArray(cachedDeps.deps) &&
+    cachedDeps.deps.every((file) => typeof file === 'string')
+      ? cachedDeps.deps
+      : depsMapping[depsMappingKey];
+  const depsKey = getDepsCacheKey(deps, cacheSession);
   // format: {baseCacheKey:{deps:contenthash}[]}
-  const cacheKey = [
-    baseCacheKey,
-    getDepsCacheKey(depsMapping[this.resourcePath]),
-  ].join(':');
-  const cacheRet = getMdLoaderCacheSync(cache, cacheKey, '');
+  const cacheKey = [baseCacheKey, depsKey].join(':');
+  const cacheRet =
+    depsKey === undefined
+      ? ''
+      : getMdLoaderCacheSync<MdLoaderCachedResult | ''>(cache, cacheKey, '');
+  // An older service can finish after this one and overwrite the shared result
+  // file. Validate its owner before trusting the current service's path index.
+  const matchesSession =
+    !cacheSession ||
+    !deps?.length ||
+    (cacheRet && cacheRet.__dumiCacheSession === cacheSession);
+  const deferrerKey = cacheSession ? `${cacheSession}:${cacheKey}` : cacheKey;
 
-  if (cacheRet) {
+  if (cacheRet && matchesSession) {
     // file cache
     cb(null, emit.call(this, opts, cacheRet));
     return;
-  } else if (cacheKey in deferrer) {
+  } else if (deferrerKey in deferrer) {
     // deferrer cache
-    deferrer[cacheKey]
+    deferrer[deferrerKey]
       .then((res) => {
         cb(null, emit.call(this, opts, res));
       })
@@ -600,32 +891,49 @@ export default function mdLoader(this: any, content: string) {
   }
 
   // share deferrer for same cache key
-  deferrer[cacheKey] = transform(content, {
+  deferrer[deferrerKey] = transform(content, {
     ...(lodash.omit(opts, ['mode', 'builtins', 'onResolveDemos']) as Omit<
       IMdLoaderOptions,
       'mode' | 'builtins' | 'onResolveDemos'
     >),
     fileAbsPath: winPath(this.resourcePath),
     useUtoopackDemoHMR,
+    collectSideEffectStyles: Boolean(loaderContextPath),
   });
 
-  deferrer[cacheKey]
+  deferrer[deferrerKey]
     .then((ret) => {
       // update deps mapping
-      depsMapping[this.resourcePath] = ret.meta.embeds!.concat(
+      depsMapping[depsMappingKey] = ret.meta.embeds!.concat(
         getDemoSourceFiles(ret.meta.demos),
       );
 
       // re-generate cache key with latest embeds & source data
-      const finalCacheKey = [
-        baseCacheKey,
-        getDepsCacheKey(depsMapping[this.resourcePath]),
-      ].join(':');
+      const finalDepsKey = getDepsCacheKey(
+        depsMapping[depsMappingKey],
+        cacheSession,
+      );
 
       // save cache with final cache key
-      cache.setSync(finalCacheKey, ret);
+      if (finalDepsKey !== undefined) {
+        cache.setSync(
+          [baseCacheKey, finalDepsKey].join(':'),
+          cacheSession && depsMapping[depsMappingKey].length
+            ? { ...ret, __dumiCacheSession: cacheSession }
+            : ret,
+        );
+        if (depsCacheKey)
+          cache.setSync(depsCacheKey, {
+            cacheSession,
+            deps: depsMapping[depsMappingKey],
+          });
+      }
       cb(null, emit.call(this, opts, ret));
-      delete deferrer[cacheKey];
+      delete deferrer[deferrerKey];
     })
-    .catch(cb);
+    .catch((err) => {
+      // A failed transform must not retain its key or poison later retries.
+      delete deferrer[deferrerKey];
+      cb(err);
+    });
 }

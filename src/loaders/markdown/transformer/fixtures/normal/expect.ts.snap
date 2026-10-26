@@ -109,5 +109,24 @@
     <p>
       <img src="https://d.umijs.org" alt="img" />
     </p>
+    <h2 id="custom-anchor">
+      <a aria-hidden="true" tabIndex="-1" href="#custom-anchor">
+        <span className="icon icon-link" />
+      </a>
+      {"custom anchor title"}
+    </h2>
+    <h3 id="custom-anchor-chinese">
+      <a aria-hidden="true" tabIndex="-1" href="#custom-anchor-chinese">
+        <span className="icon icon-link" />
+      </a>
+      {"中文标题"}
+    </h3>
+    <h4 id="custom-anchor-with-badge">
+      <a aria-hidden="true" tabIndex="-1" href="#custom-anchor-with-badge">
+        <span className="icon icon-link" />
+      </a>
+      {"custom anchor with Badge "}
+      <Badge>{$$contentTexts[23].value}</Badge>
+    </h4>
   </div>
 </>;

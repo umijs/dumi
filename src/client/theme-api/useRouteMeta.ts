@@ -7,11 +7,13 @@ import {
   useRouteData,
 } from 'dumi';
 import { useCallback, useState } from 'react';
+import { getRouteMetaHMRRevision, subscribeRouteMetaHMR } from './routeMetaHMR';
 import type { IRouteMeta, IRoutesById } from './types';
 import { useIsomorphicLayoutEffect } from './utils';
 
 const cache = new Map<string, IRouteMeta>();
 const asyncCache = new Map<string, Promise<IRouteMeta>>();
+const cacheRevisions = new Map<string, number>();
 const EMPTY_META = {
   frontmatter: {},
   toc: [],
@@ -19,8 +21,17 @@ const EMPTY_META = {
 } as any;
 const ASYNC_META_PROPS = ['texts'];
 
-function getCachedRouteMeta(route: IRoutesById[string]) {
+export function getCachedRouteMeta(
+  route: IRoutesById[string],
+  revision: number,
+) {
   const cacheKey = route.id;
+
+  if (cacheRevisions.get(cacheKey) !== revision) {
+    cache.delete(cacheKey);
+    asyncCache.delete(cacheKey);
+    cacheRevisions.set(cacheKey, revision);
+  }
 
   if (!cache.get(cacheKey)) {
     const merge = (meta: IRouteMeta = EMPTY_META) => {
@@ -28,9 +39,13 @@ function getCachedRouteMeta(route: IRoutesById[string]) {
         Object.keys(route.meta).forEach((key) => {
           (meta as any)[key] ??= (route.meta as any)[key];
         });
-        meta.frontmatter = deepmerge(meta.frontmatter, route.meta.frontmatter, {
-          arrayMerge: (_destinationArray, sourceArray) => sourceArray,
-        });
+        meta.frontmatter = deepmerge(
+          (revision ? route.meta.frontmatter : meta.frontmatter) ?? {},
+          (revision ? meta.frontmatter : route.meta.frontmatter) ?? {},
+          {
+            arrayMerge: (_destinationArray, sourceArray) => sourceArray,
+          },
+        );
       }
       return meta;
     };
@@ -43,9 +58,16 @@ function getCachedRouteMeta(route: IRoutesById[string]) {
           if (routeMetaPromise) {
             asyncCache.set(
               cacheKey,
-              routeMetaPromise.then(
-                (full) => cache.set(cacheKey, merge(full)).get(cacheKey)!,
-              ),
+              routeMetaPromise.then((full) => {
+                if (cacheRevisions.get(cacheKey) !== revision) {
+                  return getCachedRouteMeta(
+                    route,
+                    cacheRevisions.get(cacheKey) ?? 0,
+                  );
+                }
+
+                return cache.set(cacheKey, merge(full)).get(cacheKey)!;
+              }),
             );
           }
         }
@@ -111,6 +133,26 @@ export const useMatchedRoute = () => {
  */
 export const useRouteMeta = () => {
   const route = useMatchedRoute();
+  const [, forceUpdate] = useState(0);
+  const revision =
+    process.env.NODE_ENV === 'production'
+      ? 0
+      : getRouteMetaHMRRevision(route.id);
 
-  return getCachedRouteMeta(route);
+  useIsomorphicLayoutEffect(() => {
+    if (process.env.NODE_ENV === 'production') return;
+
+    const unsubscribe = subscribeRouteMetaHMR(route.id, () => {
+      forceUpdate((count) => count + 1);
+    });
+
+    // Do not miss an update dispatched between render and subscription.
+    if (getRouteMetaHMRRevision(route.id) !== revision) {
+      forceUpdate((count) => count + 1);
+    }
+
+    return unsubscribe;
+  }, [route.id, revision]);
+
+  return getCachedRouteMeta(route, revision);
 };
