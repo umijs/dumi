@@ -1,5 +1,5 @@
 import type { IApi } from 'dumi';
-import { VueApiParser, type VueParserOptions } from './atomParser';
+import type { VueParserOptions } from './atomParser';
 
 export default (api: IApi) => {
   api.describe({
@@ -14,17 +14,15 @@ export default (api: IApi) => {
     return memo;
   });
 
-  // Create the Vue atom parser only for commands that actually need it (dev/build).
-  // `onCheckPkgJSON` is NOT triggered by the `setup` command, so the parser's
-  // worker_threads Worker is never spawned during `dumi setup`; previously it was
-  // created in `modifyConfig` (which runs for every command) and never terminated,
-  // keeping the process alive and hanging on "generate files" (#2283).
-  // Lowest stage so this runs before dumi core's apiParser feature, which skips
-  // creating its React parser when `api.service.atomParser` is already a
-  // BaseAtomAssetsParser.
+  // Initialize before core's React parser fallback in dev/build.
+  // setup does not run this hook and must not load the worker-owning module.
   api.onCheckPkgJSON({
     stage: -Infinity,
     fn() {
+      // Package changes trigger this hook again during dev. Keep the parser
+      // that already owns the worker and its watch callbacks.
+      if (api.service.atomParser) return;
+
       const vueConfig = api.userConfig?.vue;
 
       const parserOptions: Partial<VueParserOptions> = {
@@ -43,6 +41,11 @@ export default (api: IApi) => {
 
       if (!options.entryFile || !options.resolveDir) return;
 
+      // Loading atomParser calls createApiParser and starts its worker.
+      // Defer the module itself as well as the parser instance until dev/build.
+      const {
+        VueApiParser,
+      }: typeof import('./atomParser') = require('./atomParser');
       api.service.atomParser = VueApiParser(options as VueParserOptions);
     },
   });
