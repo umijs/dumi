@@ -1,10 +1,10 @@
 import { getFileContentByRegExp, getFileRangeLines } from '@/utils';
+import { winPath } from '@umijs/utils';
 import enhancedResolve from 'enhanced-resolve';
 import fs from 'fs';
 import type { Paragraph, Root } from 'mdast';
 import path from 'path';
 import type { Root as YAMLRoot } from 'remark-frontmatter';
-import { winPath } from 'umi/plugin-utils';
 import type { FrozenProcessor, Transformer } from 'unified';
 import url from 'url';
 import type { IMdTransformerOptions } from '.';

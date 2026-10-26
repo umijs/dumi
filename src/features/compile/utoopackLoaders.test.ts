@@ -156,6 +156,57 @@ test('utoopack loader context serializes extra unified plugins', async () => {
   );
 });
 
+test('utoopack loader context serializes final aliases', async () => {
+  const { buildLoaderContextContent } = await import('./utoopackLoaders');
+  const alias = { '@': '/tmp/dumi-app/src', 'my-library': '/tmp/dumi-app/src' };
+  const content = buildLoaderContextContent(
+    [],
+    {},
+    {},
+    [],
+    [],
+    [],
+    undefined,
+    alias,
+  );
+  const exports: any = {};
+
+  new Function('require', 'exports', content)(require, exports);
+
+  expect(exports.alias).toEqual(alias);
+});
+
+test('utoopack loader context shares the service cache session with workers', async () => {
+  const { buildLoaderContextContent } = await import('./utoopackLoaders');
+  const content = buildLoaderContextContent(
+    [],
+    {},
+    {},
+    [],
+    [],
+    [],
+    undefined,
+    undefined,
+    'service-session',
+  );
+  const exports: any = {};
+
+  new Function('require', 'exports', content)(require, exports);
+
+  expect(exports.cacheSession).toBe('service-session');
+});
+
+test('utoopack loader context without a session keeps its existing exports', async () => {
+  const { buildLoaderContextContent } = await import('./utoopackLoaders');
+  const content = buildLoaderContextContent([]);
+  const exports: any = {};
+
+  new Function('require', 'exports', content)(require, exports);
+
+  expect(content).not.toContain('cacheSession');
+  expect(exports).not.toHaveProperty('cacheSession');
+});
+
 test('utoopack loader context registers TS hook without project root phantom deps', async () => {
   const { buildLoaderContextContent } = await import('./utoopackLoaders');
   const content = buildLoaderContextContent([]);

@@ -1,7 +1,7 @@
 import type { IMdTransformerOptions } from '@/loaders/markdown/transformer/index';
+import { chalk, logger } from '@umijs/utils';
 import type { Root } from 'mdast';
 import type { ReplaceFunction } from 'mdast-util-find-and-replace';
-import { chalk, logger } from 'umi/plugin-utils';
 
 let findAndReplace: typeof import('mdast-util-find-and-replace').findAndReplace;
 

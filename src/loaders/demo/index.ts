@@ -1,4 +1,4 @@
-import { UTOOPACK_LOADER_CTX_KEY } from '@/features/compile/utoopackLoaders';
+import { UTOOPACK_LOADER_CTX_KEY } from '@/loaders/constants';
 import type { IDumiTechStack } from '@/types';
 import { winPath } from '@umijs/utils';
 export interface IDemoLoaderOptions {

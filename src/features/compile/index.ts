@@ -3,6 +3,7 @@ import type { IMdLoaderOptions } from '@/loaders/markdown';
 import ReactTechStack from '@/techStacks/react';
 import type { IApi, IDumiTechStack } from '@/types';
 import { _setFSCacheDir } from '@/utils';
+import { randomBytes } from 'crypto';
 import enhancedResolve from 'enhanced-resolve';
 import fs from 'fs';
 import path from 'path';
@@ -69,6 +70,7 @@ function normalizeMakoAliases(
 }
 
 export default (api: IApi) => {
+  let utoopackCacheSession: string | undefined;
   api.describe({ key: 'dumi:compile' });
 
   // register react tech stack by default
@@ -131,6 +133,10 @@ export default (api: IApi) => {
     fn() {
       if (api.config.utoopack) {
         const demoAssetsFile = getUtoopackDemoAssetsFile(api);
+        const cacheSession =
+          api.env === 'development' && process.env.DUMI_CACHE !== 'none'
+            ? (utoopackCacheSession ??= randomBytes(16).toString('hex'))
+            : undefined;
 
         if (demoAssetsFile) fs.rmSync(demoAssetsFile, { force: true });
         api.writeTmpFile({
@@ -144,6 +150,8 @@ export default (api: IApi) => {
             api.config.extraRehypePlugins,
             (api as any).service.configManager?.files ?? [],
             demoAssetsFile,
+            api.config.alias,
+            cacheSession,
           ),
         });
       }

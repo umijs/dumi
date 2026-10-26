@@ -1,5 +1,4 @@
 import type { ParserConfig } from '@swc/core';
-import { transformSync } from '@swc/core';
 import type {
   ParserOptions,
   PluginItem,
@@ -97,13 +96,16 @@ export function wrapDemoWithFn(code: string, opts: IWrapDemoWithFnOptions) {
         plugins: babelPlugins,
       })
     : code;
+  // External demos and custom tech stacks can use these helpers without SWC.
+  const { transformSync }: typeof import('@swc/core') = require('@swc/core');
   const result = transformSync(source, {
     filename: filename,
     jsc: {
       parser: parserConfig,
       target: 'es2022',
       experimental: {
-        cacheRoot: 'node_modules/.cache/swc',
+        // Wasmer maps cache files into memory, so other processes must not overwrite them.
+        cacheRoot: `node_modules/.cache/swc/${process.pid}`,
         plugins: [
           [
             require.resolve('../../compiled/crates/swc_plugin_react_demo.wasm'),

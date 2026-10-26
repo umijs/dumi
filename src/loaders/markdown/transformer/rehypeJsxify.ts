@@ -1,5 +1,4 @@
 import type { JSXElement } from '@umijs/bundler-utils/compiled/@babel/types';
-import * as parser from '@umijs/bundler-utils/compiled/babel/parser';
 import type {
   JSXAttribute,
   JSXExpressionContainer,
@@ -46,6 +45,7 @@ function getJSXAttrAST(
   } />`;
   // why babel rather than swc?
   // because babel support to return the standard estree
+  const parser: typeof import('@umijs/bundler-utils/compiled/babel/parser') = require('@umijs/bundler-utils/compiled/babel/parser');
   const ast = parser.parseExpression(tmpCode, {
     plugins: ['jsx', 'estree'],
   }) as JSXElement;

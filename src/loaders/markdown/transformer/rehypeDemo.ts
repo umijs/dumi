@@ -1,10 +1,10 @@
 import parseBlockAsset from '@/assetParsers/block';
 import type { IDumiDemoProps } from '@/client/theme-api/DumiDemo';
 import { getContentHash, getFileIdFromFsPath } from '@/utils';
+import { logger, winPath } from '@umijs/utils';
 import type { sync } from 'enhanced-resolve';
 import type { Element, Root } from 'hast';
 import path from 'path';
-import { logger, winPath } from 'umi/plugin-utils';
 import type { Transformer } from 'unified';
 import type { DataMap } from 'vfile';
 import type { IMdTransformerOptions } from '.';
@@ -49,6 +49,7 @@ type IRehypeDemoOptions = Pick<
   fileLocaleLessPath: string;
   fileLocale?: string;
   useUtoopackDemoHMR?: boolean;
+  collectSideEffectStyles?: boolean;
 };
 
 function getDemoPropsFromNode(node: Element) {
@@ -412,8 +413,14 @@ export default function rehypeDemo(
               parseBlockAsset({
                 ...parseOpts,
                 cacheable: opts.useUtoopackDemoHMR,
+                collectSideEffectStyles: opts.collectSideEffectStyles,
               }).then(
-                async ({ asset, resolveMap, frontmatter }) => {
+                async ({
+                  asset,
+                  resolveMap,
+                  frontmatter,
+                  sideEffectStyles,
+                }) => {
                   // repeat id to give warning
                   if (
                     demoIds.indexOf(parseOpts.id) !==
@@ -541,6 +548,10 @@ export default function rehypeDemo(
                           techStackOpts,
                         )
                       : resolveMap,
+                    // Custom source mappings may replace the original dependencies.
+                    sideEffectStyles: techStack.generateSources
+                      ? undefined
+                      : sideEffectStyles,
                     renderOpts: {
                       rendererPath: runtimeOpts?.rendererPath,
                       compilePath: runtimeOpts?.compilePath,
