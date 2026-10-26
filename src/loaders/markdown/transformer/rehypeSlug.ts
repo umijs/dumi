@@ -1,6 +1,7 @@
 import type { IDumiDemoProps } from '@/client/theme-api/DumiDemo';
+import { logger } from '@umijs/utils';
 import Slugger from 'github-slugger';
-import type { Root } from 'hast';
+import type { Element, Root } from 'hast';
 import type { Transformer } from 'unified';
 import {
   DEMO_PROP_VALUE_KEY,
@@ -19,13 +20,148 @@ let toString: typeof import('hast-util-to-string').toString;
 
 export const HEADING_TAGS = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
 
+// custom anchor marker, e.g. `## Title {#custom-id}`, only the trailing marker is valid
+// trailing whitespace is tolerated, such as `<h3>Title {#id} </h3>`
+const CUSTOM_ANCHOR_RE = /\s*\{#([^}]+)\}\s*$/;
+
+/**
+ * get the custom anchor id from plain heading text,
+ * blank id (e.g. `{# }`) is not a valid marker
+ */
+function getCustomAnchorId(text: string) {
+  return text.match(CUSTOM_ANCHOR_RE)?.[1].trim() || undefined;
+}
+
+/**
+ * strip the trailing custom anchor marker from plain heading text,
+ * keep text untouched if the marker is invalid
+ */
+export function stripCustomAnchorMarker(text: string) {
+  return getCustomAnchorId(text) ? text.replace(CUSTOM_ANCHOR_RE, '') : text;
+}
+
+/**
+ * strip the marker from the heading, and return the raw custom anchor id if matched.
+ * the marker is syntax rather than content, so it is always removed
+ */
+function extractCustomAnchor(node: Element) {
+  const lastChild = node.children[node.children.length - 1];
+
+  // fast path: `{#` is a necessary condition of the marker regex,
+  // so this check never skips a valid marker
+  if (lastChild?.type !== 'text' || !lastChild.value.includes('{#')) return;
+
+  const rawId = getCustomAnchorId(lastChild.value);
+
+  // keep the text untouched if the marker is invalid, such as `{# }`
+  if (!rawId) return;
+
+  lastChild.value = stripCustomAnchorMarker(lastChild.value);
+
+  // drop empty text node
+  if (!lastChild.value) node.children.pop();
+
+  return rawId;
+}
+
 export default function rehypeSlug(): Transformer<Root> {
   return async (tree, vFile) => {
     const slugger = new Slugger();
+    /** resolved custom anchor id, only for headings without an existing id */
+    const customAnchors = new Map<Element, string>();
+    /** ids already taken by custom anchors, demos or existing heading ids */
+    const reservedIds = new Set<string>();
+    const demoIds = new Set<string>();
+    const filename = vFile.data.frontmatter?.filename;
+
+    // reserve demo anchors first, their ids are rendered by previewer and cannot be changed
+    visit<Root, 'element'>(tree, 'element', (node) => {
+      if (
+        ![DUMI_DEMO_TAG, DUMI_DEMO_GRID_TAG].includes(node.tagName) ||
+        !node.data?.[DEMO_PROP_VALUE_KEY]
+      ) {
+        return;
+      }
+
+      const demos = ([] as any).concat(
+        node.data?.[DEMO_PROP_VALUE_KEY],
+      ) as IDumiDemoProps[];
+
+      demos.forEach(({ demo }) => {
+        // inline demo renders no anchor
+        if (demo.inline) return;
+
+        demoIds.add(demo.id);
+        // make slugger skip demo ids, so auto-generated slugs give way to them
+        slugger.slug(demo.id);
+      });
+    });
+
+    /** ids from raw HTML or other remark plugins on headings without marker */
+    const existingIds = new Set<string>();
+    const markedHeadings: {
+      node: Element;
+      rawId: string;
+      existingId?: string;
+    }[] = [];
+
+    // collect markers and existing ids first, so the result is independent of heading order
+    visit<Root, 'element'>(tree, 'element', (node) => {
+      if (!HEADING_TAGS.includes(node.tagName)) return;
+
+      const existingId = node.properties?.id as string | undefined;
+      const rawId = extractCustomAnchor(node);
+
+      if (rawId) {
+        markedHeadings.push({ node, rawId, existingId });
+      } else if (existingId) {
+        // auto-generated slugs and custom anchors should not conflict with it
+        existingIds.add(existingId);
+        reservedIds.add(existingId);
+      }
+    });
+
+    // resolve custom anchors, the marker wins over the existing id of its own heading
+    markedHeadings.forEach(({ node, rawId, existingId }) => {
+      let id = rawId;
+      let suffix = 1;
+
+      // demo anchors are rendered by previewer, so custom anchors must give way to them
+      while (reservedIds.has(id) || demoIds.has(id)) {
+        id = `${rawId}-${suffix++}`;
+      }
+
+      if (id !== rawId) {
+        const reason = demoIds.has(rawId)
+          ? 'conflicts with demo id'
+          : existingIds.has(rawId)
+          ? 'conflicts with an existing heading id'
+          : 'is duplicated';
+
+        logger.warn(
+          `Custom anchor "${rawId}" ${reason}, fallback to "${id}" instead. at ${filename}`,
+        );
+      }
+
+      // the marker is explicit user intent, never drop it silently
+      if (existingId && existingId !== id) {
+        logger.warn(
+          `Custom anchor "${id}" overrides the existing id "${existingId}" of heading "${toString(
+            node,
+          )}". at ${filename}`,
+        );
+      }
+
+      reservedIds.add(id);
+      customAnchors.set(node, id);
+    });
 
     vFile.data.toc = [];
+
     visit<Root, 'element'>(tree, 'element', (node) => {
       if (HEADING_TAGS.includes(node.tagName)) {
+        const customAnchor = customAnchors.get(node);
+
         // handle headings in current doc
         const title = toString({
           type: 'element',
@@ -38,8 +174,26 @@ export default function rehypeSlug(): Transformer<Root> {
         const depth = Number(node.tagName.slice(1));
 
         node.properties ??= {};
-        // add slug to heading node（if not exists）
-        node.properties.id ??= slugger.slug(title);
+
+        if (customAnchor) {
+          node.properties.id = customAnchor;
+        } else if (!node.properties.id) {
+          let id = slugger.slug(title);
+          const conflictedId = id;
+
+          // auto-generated slug should give way to custom anchors
+          while (reservedIds.has(id)) {
+            id = slugger.slug(title);
+          }
+
+          if (id !== conflictedId) {
+            logger.warn(
+              `Heading "${title}" conflicts with the anchor "${conflictedId}", fallback to "${id}" instead. at ${filename}`,
+            );
+          }
+
+          node.properties.id = id;
+        }
 
         // add heading node to toc
         vFile.data.toc!.push({
@@ -60,7 +214,8 @@ export default function rehypeSlug(): Transformer<Root> {
           // do not collect inline demo & no title demo
           if (!demo.inline && previewerProps.title) {
             vFile.data.toc!.push({
-              id: slugger.slug(demo.id),
+              // must keep the same id as previewer rendered anchor
+              id: demo.id,
               depth: vFile.data.frontmatter?.demo?.tocDepth || 3,
               title: previewerProps.title,
               // put debug flag to control hide/show in toc
