@@ -21,7 +21,23 @@ let toString: typeof import('hast-util-to-string').toString;
 export const HEADING_TAGS = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
 
 // custom anchor marker, e.g. `## Title {#custom-id}`, only the trailing marker is valid
-export const CUSTOM_ANCHOR_RE = /\s*\{#([^}]+)\}$/;
+const CUSTOM_ANCHOR_RE = /\s*\{#([^}]+)\}$/;
+
+/**
+ * get the custom anchor id from plain heading text,
+ * blank id (e.g. `{# }`) is not a valid marker
+ */
+export function getCustomAnchorId(text: string) {
+  return text.match(CUSTOM_ANCHOR_RE)?.[1].trim() || undefined;
+}
+
+/**
+ * strip the trailing custom anchor marker from plain heading text,
+ * keep text untouched if the marker is invalid
+ */
+export function stripCustomAnchorMarker(text: string) {
+  return getCustomAnchorId(text) ? text.replace(CUSTOM_ANCHOR_RE, '') : text;
+}
 
 function getCustomAnchor(node: Element) {
   // existing id comes from raw HTML or other remark plugins, keep it untouched
@@ -31,7 +47,7 @@ function getCustomAnchor(node: Element) {
 
   if (lastChild?.type !== 'text') return;
 
-  return lastChild.value.match(CUSTOM_ANCHOR_RE)?.[1].trim() || undefined;
+  return getCustomAnchorId(lastChild.value);
 }
 
 function stripCustomAnchor(node: Element) {
@@ -39,7 +55,7 @@ function stripCustomAnchor(node: Element) {
 
   if (lastChild?.type !== 'text') return;
 
-  lastChild.value = lastChild.value.replace(CUSTOM_ANCHOR_RE, '');
+  lastChild.value = stripCustomAnchorMarker(lastChild.value);
 
   // drop empty text node
   if (!lastChild.value) node.children.pop();
@@ -60,6 +76,7 @@ export default function rehypeSlug(): Transformer<Root> {
 
       if (!rawId) return;
 
+      // custom anchor must be a valid slug, otherwise fallback to the slugged one
       const sluggedId = new Slugger().slug(rawId);
 
       if (sluggedId !== rawId) {
@@ -68,16 +85,16 @@ export default function rehypeSlug(): Transformer<Root> {
         );
       }
 
-      let id = rawId;
+      let id = sluggedId;
       let suffix = 1;
 
       while (reservedIds.has(id)) {
-        id = `${rawId}-${suffix++}`;
+        id = `${sluggedId}-${suffix++}`;
       }
 
-      if (id !== rawId) {
+      if (id !== sluggedId) {
         logger.warn(
-          `Duplicate custom anchor "${rawId}", fallback to "${id}" instead. at ${filename}`,
+          `Duplicate custom anchor "${sluggedId}", fallback to "${id}" instead. at ${filename}`,
         );
       }
 

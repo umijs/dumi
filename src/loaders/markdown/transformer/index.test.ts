@@ -138,11 +138,24 @@ describe('markdown transformer: custom anchor', () => {
     toHaveWarned('Duplicate custom anchor "dup"');
   });
 
-  test('invalid slug only warns and keeps the given value', async () => {
+  test('invalid slug falls back to the slugged id', async () => {
     const ret = await transform('## a {#Foo Bar}');
 
-    expect(ret.meta.toc).toEqual([{ id: 'Foo Bar', depth: 2, title: 'a' }]);
+    expect(ret.meta.toc).toEqual([{ id: 'foo-bar', depth: 2, title: 'a' }]);
+    expect(ret.content).toContain('id="foo-bar"');
     toHaveWarned('is not a valid slug');
+  });
+
+  test('duplicate invalid slugs share the same slugged prefix', async () => {
+    const ret = await transform(
+      ['## a {#Foo Bar}', '', '## b {#Foo Bar}'].join('\n'),
+    );
+
+    expect(ret.meta.toc).toEqual([
+      { id: 'foo-bar', depth: 2, title: 'a' },
+      { id: 'foo-bar-1', depth: 2, title: 'b' },
+    ]);
+    toHaveWarned('Duplicate custom anchor "foo-bar"');
   });
 
   test('heading with existing id keeps it and renders marker as text', async () => {
@@ -153,5 +166,39 @@ describe('markdown transformer: custom anchor', () => {
     ]);
     expect(ret.content).toContain('{#other}');
     expect(warn).not.toHaveBeenCalled();
+  });
+
+  test('default title derived from heading ignores the marker', async () => {
+    const ret = await transform('# User Guide {#guide}');
+
+    expect(ret.meta.frontmatter!.title).toBe('User Guide');
+    expect(ret.meta.toc).toEqual([
+      { id: 'guide', depth: 1, title: 'User Guide' },
+    ]);
+    expect(ret.content).not.toContain('{#guide}');
+    expect(warn).not.toHaveBeenCalled();
+  });
+
+  test('explicit frontmatter title is kept for heading with marker', async () => {
+    const ret = await transform(
+      ['---', 'title: Explicit Title', '---', '', '# User Guide {#guide}'].join(
+        '\n',
+      ),
+    );
+
+    expect(ret.meta.frontmatter!.title).toBe('Explicit Title');
+    expect(ret.meta.toc).toEqual([
+      { id: 'guide', depth: 1, title: 'User Guide' },
+    ]);
+  });
+
+  test('blank marker is kept as plain text everywhere', async () => {
+    const ret = await transform('# User Guide {# }');
+
+    expect(ret.meta.frontmatter!.title).toBe('User Guide {# }');
+    expect(ret.meta.toc).toEqual([
+      { id: expect.any(String), depth: 1, title: 'User Guide {# }' },
+    ]);
+    expect(ret.content).toContain('{# }');
   });
 });

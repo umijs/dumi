@@ -12,6 +12,7 @@ import path from 'path';
 import type { Root as YAMLRoot } from 'remark-frontmatter';
 import type { Transformer } from 'unified';
 import type { IMdTransformerOptions } from '.';
+import { stripCustomAnchorMarker } from './rehypeSlug';
 
 let visit: typeof import('unist-util-visit').visit;
 let toString: typeof import('mdast-util-to-string').toString;
@@ -98,7 +99,9 @@ export default function remarkMeta(opts: IRemarkMetaOpts): Transformer<Root> {
       () => {
         visit<Root, 'heading'>(tree, 'heading', (node) => {
           if (node.depth === 1) {
-            vFile.data.frontmatter!.title = toString(node.children);
+            vFile.data.frontmatter!.title = stripCustomAnchorMarker(
+              toString(node.children),
+            );
           }
         });
       },
