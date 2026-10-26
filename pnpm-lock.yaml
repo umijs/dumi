@@ -261,8 +261,8 @@ importers:
         specifier: 4.7.4
         version: 4.7.4(@babel/core@7.23.7)(@types/react-dom@18.2.7)(@types/react@18.2.17)(antd@5.13.2)(dva@2.5.0-beta.2)(rc-field-form@1.41.0)(react-dom@19.0.0-rc-fb9a90fa48-20240614)(react@19.0.0-rc-fb9a90fa48-20240614)(webpack@5.89.0)
       '@utoo/lint':
-        specifier: ^0.4.10
-        version: 0.4.10
+        specifier: ^0.4.11
+        version: 0.4.11
       dumi-theme-mobile:
         specifier: workspace:*
         version: link:suites/theme-mobile
@@ -6092,48 +6092,48 @@ packages:
     deprecated: Potential CWE-502 - Update to 1.3.1 or higher
     dev: true
 
-  /@utoo/lint-darwin-arm64@0.4.10:
-    resolution: {integrity: sha512-xsQzAROEzVHJXkgeFo3kbUWoTX/gPCWrJA4pJUmsIfd8ePKmIaQDZlSNZzJSurbQYyQ4DqBT78rfiTX43RWjSQ==}
+  /@utoo/lint-darwin-arm64@0.4.11:
+    resolution: {integrity: sha512-+keUduz6cH1MGrw157pRbL0t1X8uuyVB793339acnENJa+/6FzfrB7nK8t1EWGr4r5+2X/3mdIr0cKtbbVJmDQ==}
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /@utoo/lint-darwin-x64@0.4.10:
-    resolution: {integrity: sha512-2ZtmHHyMY493MLhhXUzOk4dDP6RAWaU+1g18ftLxfa0uGpsSxLLkBHg5/zqTAMpzjLb55y11FdfvbFxWA0q3VA==}
+  /@utoo/lint-darwin-x64@0.4.11:
+    resolution: {integrity: sha512-01AtMJoAFBU7w7h+ULkiJgaH2x7Sn3L23shnHSVGrlO4m4GlJyV9HUXBGYSMUE9BJ4c48Js2e8Vh/D1k98zn4w==}
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /@utoo/lint-linux-arm64@0.4.10:
-    resolution: {integrity: sha512-s45E1/7qmQHBv8LC/GIAzhPjeWhhJ8YkdLJnSolrMDz89LJCuPzhB5ULw//nr6gtRWkm1vUHRMKkx4RQsBZ1CA==}
+  /@utoo/lint-linux-arm64@0.4.11:
+    resolution: {integrity: sha512-jUX+wAG5LY4C+Xkq7LBwiy2eMGn0VnHPx4fdZTPNDE2uGbBSf5TiLBywvJ9IokWWFZTON5Sy/d8F05F+avlbMQ==}
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /@utoo/lint-linux-x64@0.4.10:
-    resolution: {integrity: sha512-Pnkq5TFOMy0HrBqdLj2A7lp28oYS7yLSbyPB0Hj/txVmgZ5Ak1UX14Xlz25IIETP4j0lCHwhT7ao+Hhbj0uUZA==}
+  /@utoo/lint-linux-x64@0.4.11:
+    resolution: {integrity: sha512-OjSANFLj98PNOHgseSzve1uPYxZbARKHW1txYlCgUvVfYIGEmdEJej+IbpP+Y/3aeseVDg2xi3s5QG3OW7ldLQ==}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /@utoo/lint-win32-x64@0.4.10:
-    resolution: {integrity: sha512-iqGiD6Rtvfs76etTup+p9s8RiRdB4rblF7iTs2Z4vV3pOBywAWJe01zGn2a1UwMEPoYRviyTVLjpI0s8aLMzGA==}
+  /@utoo/lint-win32-x64@0.4.11:
+    resolution: {integrity: sha512-gfS/Emf4GJoVD64Hr1LES0rKqPzcg7I49mAeO3m1qiDOooys9+gBCrcTxU1rFpReSgZH8Hgy3K8AmoxRc/kpKQ==}
     cpu: [x64]
     os: [win32]
     requiresBuild: true
     dev: true
     optional: true
 
-  /@utoo/lint@0.4.10:
-    resolution: {integrity: sha512-1PuWs5Gz48jzr5vztKD57baSdcFln+Px2Kv5yZ12lA1CpkBqqWUNemGIQo6bmuXjDLnPLcQ6Q3QtisNYmgo5vQ==}
+  /@utoo/lint@0.4.11:
+    resolution: {integrity: sha512-p4zZ6hhezLtVoKYzRu+rAeERnMzZ0gy04x4Uyja9f81aP4rSnA/PBdWLDyNSeWnxgyXGCZGvNsTMVfFmI5zDqQ==}
     engines: {node: '>=20.0.0'}
     hasBin: true
     dependencies:
@@ -6146,11 +6146,11 @@ packages:
       jiti: 2.7.0
       yuku: 0.22.1
     optionalDependencies:
-      '@utoo/lint-darwin-arm64': 0.4.10
-      '@utoo/lint-darwin-x64': 0.4.10
-      '@utoo/lint-linux-arm64': 0.4.10
-      '@utoo/lint-linux-x64': 0.4.10
-      '@utoo/lint-win32-x64': 0.4.10
+      '@utoo/lint-darwin-arm64': 0.4.11
+      '@utoo/lint-darwin-x64': 0.4.11
+      '@utoo/lint-linux-arm64': 0.4.11
+      '@utoo/lint-linux-x64': 0.4.11
+      '@utoo/lint-win32-x64': 0.4.11
     transitivePeerDependencies:
       - supports-color
     dev: true
