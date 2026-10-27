@@ -170,7 +170,7 @@
     "@typescript/native-preview": "7.0.0-dev.20260623.1",
     "@umijs/lint": "^4.7.28",
     "@umijs/plugins": "4.7.4",
-    "@utoo/lint": "^0.4.11",
+    "@utoo/lint": "^0.4.12",
     "dumi-theme-mobile": "workspace:*",
     "esno": "^4.7.0",
     "fast-glob": "^3.3.1",
