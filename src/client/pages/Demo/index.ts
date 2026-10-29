@@ -1,5 +1,9 @@
 import { useDemo, useLiveDemo, useLocation, useParams } from 'dumi';
 import { ComponentType, createElement, useEffect, type FC } from 'react';
+import {
+  isLiveDemoMessage,
+  isLiveDemoSource,
+} from '../../theme-api/liveDemoMessage';
 import type { IDemoData } from '../../theme-api/types';
 import { useRenderer } from '../../theme-api/useRenderer';
 import './index.less';
@@ -42,13 +46,22 @@ const DemoRenderPage: FC = () => {
 
   // listen message event for setSource
   useEffect(() => {
+    const dependencies = demo.asset?.dependencies;
+    const entryFileName =
+      dependencies &&
+      Object.keys(dependencies).find(
+        (key) => dependencies[key].type === 'FILE',
+      );
     const handler = (
       ev: MessageEvent<{
         type: string;
         value: Parameters<typeof setSource>[0];
       }>,
     ) => {
-      if (ev.data.type === 'dumi.liveDemo.setSource') {
+      if (
+        isLiveDemoMessage(ev, window.parent, 'dumi.liveDemo.setSource') &&
+        isLiveDemoSource(ev.data.value, entryFileName)
+      ) {
         setSource(ev.data.value);
       }
     };
@@ -56,15 +69,18 @@ const DemoRenderPage: FC = () => {
     window.addEventListener('message', handler);
 
     return () => window.removeEventListener('message', handler);
-  }, [setSource]);
+  }, [demo.asset, setSource]);
 
-  // notify parent window that compile done
+  // The parent listens on this window for compilation completion.
   useEffect(() => {
     if (!loading && (liveDemoError || liveDemoNode)) {
-      window.postMessage({
-        type: 'dumi.liveDemo.compileDone',
-        value: { err: liveDemoError },
-      });
+      window.postMessage(
+        {
+          type: 'dumi.liveDemo.compileDone',
+          value: { err: liveDemoError },
+        },
+        window.location.origin,
+      );
     }
   }, [liveDemoError, liveDemoNode, loading]);
 
