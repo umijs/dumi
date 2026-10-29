@@ -11,6 +11,7 @@ import {
   type RefObject,
 } from 'react';
 import DemoErrorBoundary from './DumiDemo/DemoErrorBoundary';
+import { isLiveDemoCompileResult, isLiveDemoMessage } from './liveDemoMessage';
 import type { AgnosticComponentType } from './types';
 import { useRenderer } from './useRenderer';
 import { getAgnosticComponentModule } from './utils';
@@ -81,17 +82,27 @@ export const useLiveDemo = (
                 value: { err: null | Error };
               }>,
             ) => {
-              if (ev.data.type.startsWith('dumi.liveDemo.compileDone')) {
+              if (
+                isLiveDemoMessage(
+                  ev,
+                  iframeWindow,
+                  'dumi.liveDemo.compileDone',
+                ) &&
+                isLiveDemoCompileResult(ev.data.value)
+              ) {
                 iframeWindow.removeEventListener('message', handler);
                 setError(ev.data.value.err);
                 resolve();
               }
             };
             iframeWindow.addEventListener('message', handler);
-            iframeWindow.postMessage({
-              type: 'dumi.liveDemo.setSource',
-              value: source,
-            });
+            iframeWindow.postMessage(
+              {
+                type: 'dumi.liveDemo.setSource',
+                value: source,
+              },
+              window.location.origin,
+            );
           });
         } else {
           const entryFileName = Object.keys(asset.dependencies).find(

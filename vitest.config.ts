@@ -13,9 +13,11 @@ export default defineConfig({
     },
     globals: true,
     testTimeout: 15000,
-    alias: {
-      '@': path.join(__dirname, 'src'),
-    },
+    alias: [
+      { find: '@', replacement: path.join(__dirname, 'src') },
+      // Resolve the package before jsdom's import analysis applies vi.mock.
+      { find: /^dumi$/, replacement: path.join(__dirname, 'src/index.ts') },
+    ],
     poolMatchGlobs: [['**/__tests__/**/*.fork.test.*', 'forks']],
   },
 });
