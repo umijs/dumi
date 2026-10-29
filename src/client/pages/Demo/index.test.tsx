@@ -106,6 +106,10 @@ describe('Demo live editing message boundary', () => {
     act(() => root.render(createElement(DemoRenderPage)));
   }
 
+  function update(value: unknown = source) {
+    return { type: 'dumi.liveDemo.setSource', value };
+  }
+
   function send(
     data: unknown,
     origin = window.location.origin,
@@ -120,7 +124,7 @@ describe('Demo live editing message boundary', () => {
 
   test('accepts the same-origin parent and only requires the actual entry file', () => {
     mount();
-    send({ type: 'dumi.liveDemo.setSource', value: source });
+    send(update());
     expect(mocks.setSource).toHaveBeenCalledTimes(1);
     expect(mocks.setSource).toHaveBeenCalledWith(source);
     expect(runtimeErrors).toEqual([]);
@@ -132,7 +136,7 @@ describe('Demo live editing message boundary', () => {
       value: window,
     });
     mount();
-    send({ type: 'dumi.liveDemo.setSource', value: source });
+    send(update());
     expect(mocks.setSource).toHaveBeenCalledWith(source);
   });
 
@@ -141,7 +145,7 @@ describe('Demo live editing message boundary', () => {
     mocks.demo.component = () => createElement('span', null, 'static demo');
     mount();
     expect(host.textContent).toBe('static demo');
-    send({ type: 'dumi.liveDemo.setSource', value: source });
+    send(update());
     expect(mocks.setSource).not.toHaveBeenCalled();
     expect(runtimeErrors).toEqual([]);
   });
@@ -150,7 +154,7 @@ describe('Demo live editing message boundary', () => {
     'rejects an untrusted origin %j even with the expected parent source',
     (origin) => {
       mount();
-      send({ type: 'dumi.liveDemo.setSource', value: source }, origin);
+      send(update(), origin);
       expect(mocks.setSource).not.toHaveBeenCalled();
       expect(runtimeErrors).toEqual([]);
     },
@@ -161,7 +165,7 @@ describe('Demo live editing message boundary', () => {
     (sender) => {
       mount();
       send(
-        { type: 'dumi.liveDemo.setSource', value: source },
+        update(),
         window.location.origin,
         sender === 'sibling'
           ? siblingFrame.contentWindow
@@ -185,27 +189,12 @@ describe('Demo live editing message boundary', () => {
       'a suffixed type',
       { type: 'dumi.liveDemo.setSource.extra', value: source },
     ],
-    ['null value', { type: 'dumi.liveDemo.setSource', value: null }],
-    ['array value', { type: 'dumi.liveDemo.setSource', value: [] }],
-    [
-      'missing entry',
-      { type: 'dumi.liveDemo.setSource', value: { 'helper.ts': '' } },
-    ],
-    [
-      'non-string entry',
-      { type: 'dumi.liveDemo.setSource', value: { 'example.tsx': 1 } },
-    ],
-    [
-      'non-string extra file',
-      {
-        type: 'dumi.liveDemo.setSource',
-        value: { ...source, 'helper.ts': {} },
-      },
-    ],
-    [
-      'inherited entry',
-      { type: 'dumi.liveDemo.setSource', value: Object.create(source) },
-    ],
+    ['null value', update(null)],
+    ['array value', update([])],
+    ['missing entry', update({ 'helper.ts': '' })],
+    ['non-string entry', update({ 'example.tsx': 1 })],
+    ['non-string extra file', update({ ...source, 'helper.ts': {} })],
+    ['inherited entry', update(Object.create(source))],
   ])('rejects %s without invoking compilation or throwing', (_name, data) => {
     mount();
     send(data);
@@ -226,7 +215,7 @@ describe('Demo live editing message boundary', () => {
     mount();
     act(() => root.unmount());
     root = createRoot(host);
-    send({ type: 'dumi.liveDemo.setSource', value: source });
+    send(update());
     expect(mocks.setSource).not.toHaveBeenCalled();
   });
 });

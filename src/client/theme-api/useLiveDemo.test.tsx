@@ -133,6 +133,35 @@ describe('useLiveDemo message exchange', () => {
     return { type: 'dumi.liveDemo.compileDone', value: { err } };
   }
 
+  function startIframeEdit() {
+    const frame = createIframe();
+    const fixture = mount({
+      iframe: true,
+      containerRef: { current: frame.container },
+    });
+    let settled = false;
+    let pending!: Promise<void>;
+    act(() => {
+      pending = fixture.result.setSource(source);
+      pending.then(() => {
+        settled = true;
+      });
+    });
+    return {
+      frame,
+      fixture,
+      get settled() {
+        return settled;
+      },
+      async finish(error: unknown = null) {
+        await act(async () => {
+          receive(frame.iframeWindow, completion(error));
+          await pending;
+        });
+      },
+    };
+  }
+
   test('still compiles and renders an ordinary inline edit', async () => {
     const fixture = mount();
     await act(async () => {
@@ -158,15 +187,7 @@ describe('useLiveDemo message exchange', () => {
   });
 
   test('sends iframe updates with an explicit origin and accepts its completion', async () => {
-    const frame = createIframe();
-    const fixture = mount({
-      iframe: true,
-      containerRef: { current: frame.container },
-    });
-    let pending!: Promise<void>;
-    act(() => {
-      pending = fixture.result.setSource(source);
-    });
+    const { frame, fixture, finish } = startIframeEdit();
     try {
       act(() => vi.advanceTimersByTime(499));
       expect(fixture.result.loading).toBe(true);
@@ -175,10 +196,7 @@ describe('useLiveDemo message exchange', () => {
         window.location.origin,
       );
     } finally {
-      await act(async () => {
-        receive(frame.iframeWindow, completion());
-        await pending;
-      });
+      await finish();
     }
     expect(fixture.result.error).toBe(null);
     expect(fixture.result.loading).toBe(false);
@@ -188,19 +206,8 @@ describe('useLiveDemo message exchange', () => {
     new Error('test iframe compile error'),
     'a custom compiler throw value',
   ])('preserves iframe compiler feedback %j', async (error) => {
-    const frame = createIframe();
-    const fixture = mount({
-      iframe: true,
-      containerRef: { current: frame.container },
-    });
-    let pending!: Promise<void>;
-    act(() => {
-      pending = fixture.result.setSource(source);
-    });
-    await act(async () => {
-      receive(frame.iframeWindow, completion(error));
-      await pending;
-    });
+    const { frame, fixture, finish } = startIframeEdit();
+    await finish(error);
     expect(fixture.result.error).toBe(error);
     expect(fixture.result.loading).toBe(false);
     act(() => receive(frame.iframeWindow, completion('late response')));
@@ -233,19 +240,8 @@ describe('useLiveDemo message exchange', () => {
   ])(
     'ignores %s, then accepts a valid completion',
     async (_name, data, origin, sender) => {
-      const frame = createIframe();
-      const fixture = mount({
-        iframe: true,
-        containerRef: { current: frame.container },
-      });
-      let settled = false;
-      let pending!: Promise<void>;
-      act(() => {
-        pending = fixture.result.setSource(source);
-        pending.then(() => {
-          settled = true;
-        });
-      });
+      const edit = startIframeEdit();
+      const { frame, fixture } = edit;
       try {
         await act(async () => {
           receive(
@@ -259,62 +255,38 @@ describe('useLiveDemo message exchange', () => {
               : frame.iframeWindow,
           );
         });
-        expect(settled).toBe(false);
+        expect(edit.settled).toBe(false);
         expect(fixture.result.error).toBe(null);
         expect(runtimeErrors).toEqual([]);
       } finally {
-        await act(async () => {
-          receive(frame.iframeWindow, completion());
-        });
+        await edit.finish();
       }
-      expect(settled).toBe(true);
+      expect(edit.settled).toBe(true);
     },
   );
 
   test('does not let one iframe complete another iframe edit', async () => {
-    const frameA = createIframe();
-    const frameB = createIframe();
-    const fixtureA = mount({
-      iframe: true,
-      containerRef: { current: frameA.container },
-    });
-    const fixtureB = mount({
-      iframe: true,
-      containerRef: { current: frameB.container },
-    });
-    let settledA = false;
-    let settledB = false;
-    let pendingA!: Promise<void>;
-    let pendingB!: Promise<void>;
-    act(() => {
-      pendingA = fixtureA.result.setSource(source);
-      pendingB = fixtureB.result.setSource(source);
-      pendingA.then(() => {
-        settledA = true;
-      });
-      pendingB.then(() => {
-        settledB = true;
-      });
-    });
+    const editA = startIframeEdit();
+    const editB = startIframeEdit();
     try {
       await act(async () => {
         receive(
-          frameB.iframeWindow,
+          editB.frame.iframeWindow,
           completion(),
           window.location.origin,
-          frameA.iframeWindow,
+          editA.frame.iframeWindow,
         );
       });
-      expect(settledA).toBe(false);
-      expect(settledB).toBe(false);
+      expect(editA.settled).toBe(false);
+      expect(editB.settled).toBe(false);
     } finally {
-      await act(async () => {
-        receive(frameA.iframeWindow, completion());
-        receive(frameB.iframeWindow, completion());
-        await Promise.all([pendingA, pendingB]);
-      });
+      try {
+        await editA.finish();
+      } finally {
+        await editB.finish();
+      }
     }
-    expect(settledA).toBe(true);
-    expect(settledB).toBe(true);
+    expect(editA.settled).toBe(true);
+    expect(editB.settled).toBe(true);
   });
 });
