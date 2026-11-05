@@ -1,0 +1,19 @@
+package.json
+  s_1bd0936703a8fc::t_b58c128626e201 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "28c8965613fca2b6994aa6c0c43343e71cb610a2",
+  "prompts": {},
+  "sessions": {
+    "s_1bd0936703a8fc": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1ab30-5a20-73a3-b119-e1c7aa1cd768",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "zoomdong <1344492820@qq.com>"
+    }
+  }
+}
