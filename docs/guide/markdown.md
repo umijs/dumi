@@ -32,7 +32,7 @@ dumi 对 HTML 默认的 `embed` 标签做了扩展，允许在 Markdown 文档�
 <embed src="/path/to/some.md#some-region"></embed>
 ```
 
-### region 引入 <Badge>2.4.51+</Badge>
+### region 引入 <Badge>2.4.57+</Badge>
 
 region 的标记写法与 [VS Code](https://code.visualstudio.com/docs/editing/codebasics#_folding) 一致，需要写在被嵌入的文件里：
 
@@ -41,8 +41,10 @@ region 的标记写法与 [VS Code](https://code.visualstudio.com/docs/editing/c
 
 这里的 Markdown 内容会被嵌入
 
-<!-- #endregion some-region -->
+<!-- #endregion -->
 ```
+
+结束标记也可以带上对应的 region 名，例如 `<!-- #endregion some-region -->`。
 
 ## Badge
 

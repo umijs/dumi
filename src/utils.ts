@@ -88,15 +88,35 @@ export const getFileContentByRegion = (
 ) => {
   // embed only works for markdown, so region syntax is limited to html comment
   const lines = content.split(/\r\n|\n/g);
-  const start = lines.findIndex(
-    (line) => line.trim() === `<!-- #region ${region} -->`,
-  );
-  const end = lines.findIndex(
-    (line) => line.trim() === `<!-- #endregion ${region} -->`,
-  );
+  const regionName = region.trim();
+  const regions: string[] = [];
+  let start = -1;
 
-  if (start !== -1 && end > start) {
-    return lines.slice(start + 1, end).join('\n');
+  for (let i = 0; i < lines.length; i++) {
+    const marker = lines[i].match(
+      /^\s*<!--\s*#?(region|endregion)\b(.*?)-->\s*$/,
+    );
+    if (!marker) continue;
+
+    const [, type, name] = marker;
+    const markerName = name.trim();
+
+    if (type === 'region') {
+      if (start === -1) {
+        if (!regionName || markerName !== regionName) continue;
+        start = i;
+      }
+      regions.push(markerName);
+    } else if (
+      start !== -1 &&
+      (!markerName || markerName === regions[regions.length - 1])
+    ) {
+      // An anonymous end closes the innermost region; named ends must match it.
+      regions.pop();
+      if (!regions.length) {
+        return lines.slice(start + 1, i).join('\n');
+      }
+    }
   }
 
   logger.error(`Extract markdown content failed, use the full content.
