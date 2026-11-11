@@ -1,4 +1,4 @@
-import type { IMdTransformerResult } from '../..';
+import type { IMdTransformerResult } from '../../..';
 import { omitDemoLoader } from '../../utils';
 
 export default (ret: IMdTransformerResult) => {

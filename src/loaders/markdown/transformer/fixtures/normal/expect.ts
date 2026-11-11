@@ -1,7 +1,6 @@
-import type { IMdTransformerResult } from '../..';
-// @ts-ignore
 import fs from 'fs';
 import * as prettier from 'prettier';
+import type { IMdTransformerResult } from '../..';
 
 export default (ret: IMdTransformerResult) => {
   const content = prettier.format(ret.content, {

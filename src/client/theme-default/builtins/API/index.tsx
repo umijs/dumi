@@ -38,7 +38,7 @@ const CompositeType: FC<PropertySchema> = (prop: PropertySchema) => {
       {prop.className}
     </a>
   ) : (
-    prop.className
+    <>{prop.className}</>
   );
 };
 
@@ -100,21 +100,24 @@ const HANDLERS = {
       </span>
     );
   },
-  array(prop: Extract<PropertySchema, { type: 'array' }> & { items?: any[] }): ReactNode {
+  array(
+    prop: Extract<PropertySchema, { type: 'array' }> & { items?: any[] },
+  ): ReactNode {
     let arrayType: ReactNode = <span>any</span>;
     if (prop.items) {
-      if (Array.isArray(prop.items)) return (
-        <span>
-          <Token>{'['}</Token>
-          {prop.items.map((item, i) => (
-            <span key={`${i}`}>
+      if (Array.isArray(prop.items))
+        return (
+          <span>
+            <Token>{'['}</Token>
+            {prop.items.map((item, i) => (
+              <span key={`${i}`}>
                 {i > 0 && ', '}
                 {this.toNode(item)}
-            </span>
-          ))}
-          <Token>{']'}</Token>
-        </span>
-      );
+              </span>
+            ))}
+            <Token>{']'}</Token>
+          </span>
+        );
       const className = this.getValidClassName(prop.items);
       arrayType = className ?? this.toNode(prop.items);
     }

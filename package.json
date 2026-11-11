@@ -57,6 +57,7 @@
     "release": "esno scripts/release.ts",
     "release:publish": "esno scripts/releasePublish.ts",
     "test": "vitest run",
+    "typecheck": "tsc --noEmit",
     "vercel:build": "npm run docs:build",
     "vercel:install": "./scripts/vercel-install.sh"
   },
@@ -163,6 +164,7 @@
     "@types/lodash.throttle": "^4.1.7",
     "@types/node": "^18.17.1",
     "@types/pluralize": "^0.0.30",
+    "@types/prettier": "^2.7.3",
     "@types/prismjs": "^1.26.0",
     "@types/react": "^18.2.17",
     "@types/react-copy-to-clipboard": "^5.0.4",
