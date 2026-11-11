@@ -359,17 +359,19 @@ test.each(['tsx', 'vue'])(
     });
     const techStack: IDumiTechStack = new ReactTechStack();
     techStack.isSupported = (_, lang) => lang === extension;
-    techStack.onBlockLoad = vi.fn((args) => {
-      if (!args.path.endsWith(`.${extension}`)) return null;
-      return {
-        type: 'tsx',
-        content: [
-          "import './style.less';",
-          "import sheet from './style.less';",
-          'export default () => <div>{sheet}</div>;',
-        ].join('\n'),
-      };
-    });
+    techStack.onBlockLoad = vi.fn<NonNullable<IDumiTechStack['onBlockLoad']>>(
+      (args) => {
+        if (!args.path.endsWith(`.${extension}`)) return null;
+        return {
+          type: 'tsx',
+          content: [
+            "import './style.less';",
+            "import sheet from './style.less';",
+            'export default () => <div>{sheet}</div>;',
+          ].join('\n'),
+        };
+      },
+    );
     const absolute = winPath(path.join(dir, 'style.less'));
     const { output } = await loadDemos(dir, false, techStack);
     const { demos, namespaces } = evaluateDemos(output);

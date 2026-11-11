@@ -80,6 +80,9 @@ jobs:
       - name: Lint code
         run: pnpm lint:es
 
+      - name: Check types
+        run: pnpm typecheck
+
       - name: Run tests
         run: pnpm test
         env:

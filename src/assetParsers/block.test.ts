@@ -133,7 +133,7 @@ test('import analysis separates parser extensions for identical transformed code
     'demo.ts': transformed,
     'style.less': '.demo { color: red; }',
   });
-  let extension = 'ts';
+  let extension: 'ts' | 'tsx' = 'ts';
   fixture.onBlockLoad.mockImplementation(({ path: filename }) =>
     filename.endsWith('demo.ts')
       ? { type: extension, content: transformed }

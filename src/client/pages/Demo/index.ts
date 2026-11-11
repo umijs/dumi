@@ -1,5 +1,11 @@
 import { useDemo, useLiveDemo, useLocation, useParams } from 'dumi';
-import { ComponentType, createElement, useEffect, type FC } from 'react';
+import {
+  ComponentType,
+  Fragment,
+  createElement,
+  useEffect,
+  type FC,
+} from 'react';
 import {
   isLiveDemoMessage,
   isLiveDemoSource,
@@ -84,7 +90,7 @@ const DemoRenderPage: FC = () => {
     }
   }, [liveDemoError, liveDemoNode, loading]);
 
-  return finalNode;
+  return createElement(Fragment, null, finalNode);
 };
 
 export default DemoRenderPage;

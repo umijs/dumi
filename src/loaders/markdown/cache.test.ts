@@ -1,9 +1,16 @@
+import type { IThemeLoadResult } from '@/features/theme/loader';
+import { UTOOPACK_LOADER_CTX_KEY } from '@/loaders/constants';
 import fs from 'fs';
 import Module from 'module';
 import os from 'os';
 import path from 'path';
 import { vi } from 'vitest';
 import type { IMdLoaderOptions } from '.';
+
+type MdLoaderTestOptions = IMdLoaderOptions & {
+  builtins: IThemeLoadResult['builtins'];
+  [UTOOPACK_LOADER_CTX_KEY]?: string;
+};
 
 const { transform } = vi.hoisted(() => ({ transform: vi.fn() }));
 
@@ -100,20 +107,26 @@ function createFixture() {
       _setFSCacheDir(path.join(dir, 'cache'));
       const { default: loader } = await import('.');
 
-      return (overrides: Partial<IMdLoaderOptions> = {}) => {
-        const opts = {
+      return (overrides: Partial<MdLoaderTestOptions> = {}) => {
+        const opts: MdLoaderTestOptions = {
           cwd: dir,
           mode: 'frontmatter',
           alias: {},
-          resolve: {},
+          techStacks: [],
+          resolve: {
+            codeBlockMode: 'active',
+            atomDirs: [],
+            docDirs: [],
+            forceKebabCaseRouting: true,
+          },
           routes: {},
           locales: [],
           pkg: {},
           builtins: {},
           disableLiveDemo: false,
-          __dumiLoaderContextPath: path.join(dir, 'loader-context.cjs'),
+          [UTOOPACK_LOADER_CTX_KEY]: path.join(dir, 'loader-context.cjs'),
           ...overrides,
-        } as IMdLoaderOptions;
+        };
         const addedDependencies: string[] = [];
         const cacheable = vi.fn();
 
@@ -147,10 +160,8 @@ function createLegacyFixture(kind: (typeof legacyModes)[number]) {
   if (kind === 'production') vi.stubEnv('NODE_ENV', 'production');
   else if (kind === 'without session') fixture.setCacheSession(undefined);
 
-  const overrides =
-    kind === 'without utoopack'
-      ? ({ __dumiLoaderContextPath: undefined } as any)
-      : {};
+  const overrides: Partial<MdLoaderTestOptions> =
+    kind === 'without utoopack' ? { [UTOOPACK_LOADER_CTX_KEY]: undefined } : {};
 
   return { fixture, overrides };
 }
@@ -186,16 +197,21 @@ test('shared-worker cache keys stay compact as the route table grows', async () 
   const cache = getCache('md-loader');
   const read = vi.spyOn(cache, 'getSync');
   const write = vi.spyOn(cache, 'setSync');
-  const routes = Object.fromEntries(
-    Array.from({ length: 2000 }, (_, index) => [
-      `route-${index}`,
-      {
-        id: `route-${index}`,
-        file: path.join(fixture.dir, `docs/route-${index}.md`),
-        absPath: `/docs/route-${index}`,
-      },
-    ]),
-  ) as IMdLoaderOptions['routes'];
+  const routes: IMdLoaderOptions['routes'] = Object.fromEntries(
+    Array.from(
+      { length: 2000 },
+      (_, index) =>
+        [
+          `route-${index}`,
+          {
+            id: `route-${index}`,
+            path: `/docs/route-${index}`,
+            file: path.join(fixture.dir, `docs/route-${index}.md`),
+            absPath: `/docs/route-${index}`,
+          },
+        ] as const,
+    ),
+  );
   const cacheKeys = () =>
     [...read.mock.calls, ...write.mock.calls].map(([key]) => key);
   await load({ routes: { 'route-0': routes['route-0'] } });
@@ -224,13 +240,14 @@ test('shared-worker cache invalidates when a route changes in place', async () =
     result.meta.frontmatter.title = args[1].routes.document.absPath;
     return result;
   });
-  const routes = {
+  const routes: IMdLoaderOptions['routes'] = {
     document: {
       id: 'document',
+      path: '/before',
       file: path.join(fixture.dir, 'index.md'),
       absPath: '/before',
     },
-  } as IMdLoaderOptions['routes'];
+  };
   const load = await fixture.restart();
   const initial = await load({ routes });
   routes.document.absPath = '/after';
@@ -250,13 +267,14 @@ test.each(legacyModes)(
     const load = await fixture.restart();
     const { getCache } = await import('@/utils');
     const read = vi.spyOn(getCache('md-loader'), 'getSync');
-    const routes = {
+    const routes: IMdLoaderOptions['routes'] = {
       document: {
         id: 'document',
+        path: '/legacy-route',
         file: path.join(fixture.dir, 'index.md'),
         absPath: '/legacy-route',
       },
-    } as IMdLoaderOptions['routes'];
+    };
     await load({ ...overrides, routes });
 
     expect(read.mock.calls[0][0]).toContain(

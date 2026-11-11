@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "target": "ES2018",
+    "module": "CommonJS",
     "strict": true,
     "declaration": true,
     "skipLibCheck": true,
@@ -12,7 +14,8 @@
       "@/*": ["src/*"],
       "@@/*": [".dumi/tmp/*"],
       "dumi": ["."],
-      "dumi/dist/*": ["src/*"]
+      "dumi/dist/*": ["src/*"],
+      "dumi/theme-default/*": ["src/client/theme-default/*"]
     },
     "types": ["vitest/globals"]
   },
